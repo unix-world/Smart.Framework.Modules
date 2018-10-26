@@ -1,4 +1,4 @@
-<!-- Pagebuilder/Manage @ List # Filter :: v.181012 -->
+<!-- Pagebuilder/Manage @ List # Filter :: v.181026 -->
 <div style="height:5px;"></div>
 <form id="filtering" name="filtering" class="ux-form" action="[####LIST-FORM-URL|html####]" method="[####LIST-FORM-METHOD|html####]">
 	[%%%%LOOP:LIST-FORM-VARS%%%%]<input type="hidden" name="[####LIST-FORM-VARS.NAME|html####]" value="[####LIST-FORM-VARS.VALUE|html####]">[%%%%/LOOP:LIST-FORM-VARS%%%%]
@@ -15,7 +15,7 @@
 		</select>
 	</td>
 	<td style="width:1px;">
-		<span style="display:inline-block;"><input type="text" id="filter-src" name="src" placeholder="[####TXT-SEARCH-BY|html####] ..." value="" class="ux-input-def ux-input-1-4" title="[####HINT-3|html####]"></span>
+		<span style="display:inline-block;"><input type="text" id="filter-src" name="src" placeholder="[####TXT-SEARCH-BY|html####] ..." value="" class="ux-input-def ux-input-1-4" title="[####HINT-3|html####]" autocomplete="off"></span>
 	</td>
 	<td style="width:1px;">&nbsp;</td>
 	<td style="width:1px;"><button type="button" class="ux-button ux-button-primary" onClick="try { pageBuilderFormBtnFilter(); } catch(err) { console.log(err); } return false;">[####TXT-FILTER|html####] &nbsp; <i class="fa fa-filter"></i></button></td>

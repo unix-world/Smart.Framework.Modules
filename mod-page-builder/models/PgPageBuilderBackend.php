@@ -21,7 +21,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PgPageBuilderBackend {
 
 	// ::
-	// v.181012
+	// v.181026
 
 
 	public static function getRecordsUniqueControllers() {
@@ -755,7 +755,7 @@ final class PgPageBuilderBackend {
 		} else {
 			//--
 			$query = '
-				SELECT
+				SELECT DISTINCT
 				convert_from(decode("a"."code", \'base64\'), \'UTF8\') AS "lang_en", COALESCE(convert_from(decode("b"."code", \'base64\'), \'UTF8\'), \'\') AS '.\SmartPgsqlDb::escape_identifier((string)'lang_'.$lang).'
 				FROM "web"."page_builder" "a"
 				LEFT OUTER JOIN "web"."page_translations" "b" ON
