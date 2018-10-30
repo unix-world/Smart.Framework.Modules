@@ -39,8 +39,8 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 			require_once('modules/smart-extra-libs/lib_langid_cli.php'); 		// langid client
 			break;
 		//--
-		case 'SmartAbstractPgsqlOrmDb':
-			require_once('modules/smart-extra-libs/lib_db_orm_pgsql.php'); 		// pgsql orm db connector
+		case 'SmartAbstractPgsqlExtDb':
+			require_once('modules/smart-extra-libs/lib_db_ext_pgsql.php'); 		// pgsql extended db connector
 			break;
 		case 'SmartMysqliDb':
 		case 'SmartMysqliExtDb':

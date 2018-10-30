@@ -21,7 +21,7 @@ require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); 	// curl htt
 //--
 require_once('modules/smart-extra-libs/lib_langid_cli.php'); 			// langid client
 //--
-require_once('modules/smart-extra-libs/lib_db_orm_pgsql.php'); 			// pgsql orm db connector
+require_once('modules/smart-extra-libs/lib_db_ext_pgsql.php'); 			// pgsql extended db connector
 require_once('modules/smart-extra-libs/lib_db_mysqli.php'); 			// mysqli db connector
 require_once('modules/smart-extra-libs/lib_db_solr.php'); 				// solr db connector
 //--

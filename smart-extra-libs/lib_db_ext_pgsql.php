@@ -1,5 +1,5 @@
 <?php
-// [LIB - SmartFramework / ExtraLibs / ORM PgSQL Database Client (Abstract)]
+// [LIB - SmartFramework / ExtraLibs / Extended PgSQL Database Client (Abstract)]
 // (c) 2006-2018 unix-world.org - all rights reserved
 // v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
 
@@ -11,7 +11,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //-----------------------------------------------------
 
 //======================================================
-// Smart-Framework - ORM PostgreSQL Database Client (Abstract)
+// Smart-Framework - Extended PostgreSQL Database Client (Abstract)
 // DEPENDS:
 //	* Smart::
 //	* SmartUnicode::
@@ -26,20 +26,20 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 /**
- * Abstract Class: SmartAbstractPgsqlOrmDb - provides a basic ORM PostgreSQL DB Server Client that can be used with custom made connections.
+ * Abstract Class: SmartAbstractPgsqlExtDb - provides a basic Extended PostgreSQL DB Server Client that can be used with custom made connections.
  *
  * This class is based and extended from SmartPgsqlExtDb.
  * It should be extended further ...
  *
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
- * @hints		needs to be extended and a constructor to be defined to init this ORM as: $this->initConnection('pgsql-orm');
+ * @hints		needs to be extended and a constructor to be defined to init this class as: $this->initConnection('pgsql-custom');
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartPgsqlExtDb
  * @version 	v.181019
  * @package 	Database:PostgreSQL
  *
  */
-abstract class SmartAbstractPgsqlOrmDb {
+abstract class SmartAbstractPgsqlExtDb {
 
 	// ->
 
@@ -125,7 +125,7 @@ abstract class SmartAbstractPgsqlOrmDb {
 		//--
 		$replacements = '';
 		//--
-		if(is_array($where)) { // {{{SYNC-PG-ORM-WHERE-BUILD-UP}}}
+		if(is_array($where)) { // {{{SYNC-PG-EXT-WHERE-BUILD-UP}}}
 			$tmp_where = (array) $this->parseArrWhere($where);
 			$where = (string) $tmp_where['where']; // string
 			$replacements = $tmp_where['replacements']; // mixed
@@ -193,7 +193,7 @@ abstract class SmartAbstractPgsqlOrmDb {
 		//--
 		$replacements = '';
 		//--
-		if(is_array($where)) { // {{{SYNC-PG-ORM-WHERE-BUILD-UP}}}
+		if(is_array($where)) { // {{{SYNC-PG-EXT-WHERE-BUILD-UP}}}
 			$tmp_where = (array) $this->parseArrWhere($where);
 			$where = (string) $tmp_where['where']; // string
 			$replacements = $tmp_where['replacements']; // mixed
@@ -216,7 +216,7 @@ abstract class SmartAbstractPgsqlOrmDb {
 		//--
 		$replacements = '';
 		//--
-		if(is_array($where)) { // {{{SYNC-PG-ORM-WHERE-BUILD-UP}}}
+		if(is_array($where)) { // {{{SYNC-PG-EXT-WHERE-BUILD-UP}}}
 			$tmp_where = (array) $this->parseArrWhere($where);
 			$where = (string) $tmp_where['where']; // string
 			$replacements = $tmp_where['replacements']; // mixed
