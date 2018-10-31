@@ -35,7 +35,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints		needs to be extended and a constructor to be defined to init this class as: $this->initConnection('pgsql-custom');
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartPgsqlExtDb
- * @version 	v.181019
+ * @version 	v.181031
  * @package 	Database:PostgreSQL
  *
  */

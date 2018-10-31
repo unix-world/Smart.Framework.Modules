@@ -21,6 +21,8 @@ require_once('modules/smart-extra-libs/version.php'); // extra libs version
  * @access 		private
  * @internal
  *
+ * @version 	181031
+ *
  */
 function autoload__SmartFrameworkModulesExtraLibs($classname) {
 	//--

@@ -15,7 +15,7 @@ require_once('modules/smart-extra-libs/version.php'); 					// extra libs version
 //--
 
 //--
-// StaticLoad Extra Libs from (Smart.Framework.Modules)
+// StaticLoad Extra Libs from (Smart.Framework.Modules), version 181031
 //--
 require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); 	// curl http/ftp connector
 //--

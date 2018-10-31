@@ -50,7 +50,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 		//--
 		$data = [
-			'hello' => '<h1>Demo Twig TPL, rendered using the Twig Templating</h1>',
+			'hello' => '<h1>Demo: Twig Templating as module for Smart.Framework</h1>',
 			'navigation' => [
 				array('href' => '#link1', 'caption' => 'Sample Link <1>'),
 				array('href' => '#link2', 'caption' => 'Sample Link <2>'),

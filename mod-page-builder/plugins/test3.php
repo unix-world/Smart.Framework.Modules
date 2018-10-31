@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // (c) 2006-2018 unix-world.org - all rights reserved
 // Author: Radu Ovidiu I.
-// r.180615
+// r.181031
 
 //----------------------------------------------------- PREVENT DIRECT EXECUTION
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
