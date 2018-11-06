@@ -19,10 +19,82 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //===================================================================================== CLASS START
 //=====================================================================================
 
+/**
+ * Class: \SmartModExtLib\DbalZend\DbalPdo - provides a general PDO Database Adapter using Zend/Db as a module for Smart.Framework that supports the following PDO drivers such as: PDO SQLite, PDO MySQL, PDO PostgreSQL.
+ *
+ * If you wish to use the PDO drivers in your projects instead of the direct ones supported directly by Smart.Framework this is a good solution.
+ *
+* <code>
+ *
+ * $conf_driver = [
+ *		'driver'   => 'pdo_sqlite',
+ *		'database' => 'tmp/zend-test.sqlite'
+ * ];
+ * //$conf_driver = [
+ * //	'host'     => '127.0.0.1',
+ * //	'driver'   => 'pdo_mysql',
+ * //	'database' => 'smart_framework',
+ * //	'username' => 'root',
+ * //	'password' => 'root'
+ * //];
+ * //$conf_driver = [
+ * //	'host'     => '127.0.0.1',
+ * //	'driver'   => 'pdo_pgsql',
+ * //	'database' => 'smart_framework',
+ * //	'username' => 'pgsql',
+ * //	'password' => 'pgsql'
+ * //];
+ *
+ * $db = new \SmartModExtLib\DbalZend\DbalPdo((array)$conf_driver);
+ * $adapter = $db->getConnection();
+ *
+ * // write test using the Zend DB Objects
+ * $db->write_data('DROP TABLE IF EXISTS sf_zend_dbal_test', 'QUERY_MODE_EXECUTE');
+ * $table = new \Zend\Db\Sql\Ddl\CreateTable('sf_zend_dbal_test', true);
+ * $table->addColumn(new \Zend\Db\Sql\Ddl\Column\Integer('id'));
+ * $table->addConstraint(new \Zend\Db\Sql\Ddl\Constraint\PrimaryKey('id'));
+ * $table->addColumn(new \Zend\Db\Sql\Ddl\Column\Varchar('name', 100));
+ * $table->addColumn(new \Zend\Db\Sql\Ddl\Column\Text('descr'));
+ * $table->addColumn(new \Zend\Db\Sql\Ddl\Column\Integer('cnt'));
+ * $sql = new \Zend\Db\Sql\Sql($adapter);
+ * $adapter->query(
+ * 		$sql->getSqlStringForSqlObject($table),
+ * 		$adapter::QUERY_MODE_EXECUTE
+ * );
+ *
+ * // read test using the Zend DB Objects
+ * $sql = new \Zend\Db\Sql\Sql($adapter);
+ * $select = $sql->select();
+ * $select->from('sf_zend_dbal_test');
+ * $select->where(array('id' => 1));
+ * $sqlstr = (string) $sql->getSqlStringForSqlObject($select);
+ * $results = (array) $adapter->query($sqlstr, [])->toArray();
+ *
+ * // tests using Smart.Framework DB compatibility: count, read, write
+ * $db->write_data('DELETE FROM sf_zend_dbal_test');
+ * $count = $db->count_data('SELECT COUNT(1) FROM sf_zend_dbal_test');
+ * $results = $db->read_adata( // get many rows 0..n [field1, field2, ..., fieldn]
+ * 		'SELECT * FROM sf_zend_dbal_test WHERE id > ?', // id > 0
+ * 		[ 0 ]
+ * );
+ * $results = $db->read_asdata( // get just one row [field1, field2, ..., fieldn]
+ * 		'SELECT * FROM sf_zend_dbal_test WHERE id > ? LIMIT 1 OFFSET 0', // id > 1
+ * 		[ 1 ]
+ * );
+ *
+ * </code>
+ *
+ * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
+ *
+ * @access 		PUBLIC
+ * @depends 	extensions: classes: \Zend\Db
+ * @version 	v.181105
+ * @package 	Database:ZendDb-PDO
+ *
+ */
 final class DbalPdo {
 
 	// ->
-	// v.181019
 
 	private $zend_db_version = 'Zend/Db 2.9.3 ; Zend/Stdlib 3.1.1';
 
@@ -36,9 +108,17 @@ final class DbalPdo {
 	private $slow_query_time = 0;
 
 
-	// NOTE: The sense of this DBAL Driver is to serve the missing PDO Drivers of PDO/PgSQL, PDO/SQLite and PDO/MySQL from Smart.Framework that can make a project cross-DB
-	// The Zend/DBAL MySQLi, PgSQL and other Non-PDO drivers are not compatible with cross DB queries such as parameter mode is different: ? :param $#
-	// For the DB direct access Drivers (Adapters) such as: PgSQL, SQlite3 and MySQLi the Smart.Framework provides built-in / includded and more optimized libraries
+	/**
+	 * Class Constructor for using Zend/DB with a custom driver and options, using PDO, providing a compatible layer to use a project with any of PDO/PgSQL, PDO/SQLite and PDO/MySQL.
+	 * The utility of this DB Driver is to serve the missing cross-db PDO Drivers support from Smart.Framework such as PDO/PgSQL, PDO/SQLite and PDO/MySQL to support a cross-DB project.
+	 * The Zend/DB provides a unified query parameters implementation using PDO and is not 100% compatible with the queries written for the direct drivers supplied by Smart.Framework when parameters are used (PostgreSQL, MySQLi, SQLite and other Non-PDO drivers) because the parameter mode can differ from driver to driver (Ex: ? :param $# ...)
+	 *
+	 * @hint: 	For the DB direct access Drivers (Adapters) such as: PgSQL, SQlite3 and MySQLi the Smart.Framework provides built-in / includded and more optimized libraries
+	 *
+	 * @param ARRAY 	$cfg							:: the driver options
+	 * @param INTEGER+ 	$timeout 						:: the connection timeout (applies only to MySQL and PostgreSQL)
+	 *
+	 */
 	public function __construct($cfg, $timeout=30) {
 		//--
 		$this->cfg = (array) $cfg;
@@ -106,6 +186,11 @@ final class DbalPdo {
 	} //END FUNCTION
 
 
+	/**
+	 * Zend/DB: Get the Current Driver
+	 *
+	 * @return STRING
+	 */
 	public function getDriver() {
 		//--
 		return (string) $this->cfg['driver'];
@@ -113,6 +198,11 @@ final class DbalPdo {
 	} //END FUNCTION
 
 
+	/**
+	 * Zend/DB: Get the Connection
+	 *
+	 * @return OBJECT
+	 */
 	public function getConnection() {
 		//--
 		return $this->connection;
@@ -120,6 +210,11 @@ final class DbalPdo {
 	} //END FUNCTION
 
 
+	/**
+	 * Zend/DB: Get the Platform
+	 *
+	 * @return OBJECT
+	 */
 	public function getPlatform() {
 		//--
 		return $this->platform;
@@ -127,6 +222,14 @@ final class DbalPdo {
 	} //END FUNCTION
 
 
+	/**
+	 * PDO Query :: Count
+	 * This function is intended to be used for count type queries: SELECT COUNT().
+	 *
+	 * @param STRING $queryval						:: the query
+	 * @param STRING $values 						:: *optional* array of parameters
+	 * @return INTEGER								:: the result of COUNT()
+	 */
 	public function count_data($query, $values='') {
 		//--
 		if(!is_array($values)) {
@@ -156,6 +259,14 @@ final class DbalPdo {
 	} //END FUNCTION
 
 
+	/**
+	 * PDO Query :: Read (Non-Associative) one or multiple rows.
+	 * This function is intended to be used for read type queries: SELECT.
+	 *
+	 * @param STRING $queryval						:: the query
+	 * @param STRING $values 						:: *optional* array of parameters
+	 * @return ARRAY (non-asociative) of results	:: array('column-0-0', 'column-0-1', ..., 'column-0-n', 'column-1-0', 'column-1-1', ... 'column-1-n', ..., 'column-m-0', 'column-m-1', ..., 'column-m-n')
+	 */
 	public function read_data($query, $values='') {
 		//--
 		if(!is_array($values)) {
@@ -185,6 +296,14 @@ final class DbalPdo {
 	} //END FUNCTION
 
 
+	/**
+	 * PDO Query :: Read (Associative) one or multiple rows.
+	 * This function is intended to be used for read type queries: SELECT.
+	 *
+	 * @param STRING $queryval						:: the query
+	 * @param STRING $values 						:: *optional* array of parameters
+	 * @return ARRAY (asociative) of results		:: array(0 => array('column1', 'column2', ... 'column-n'), 1 => array('column1', 'column2', ... 'column-n'), ..., m => array('column1', 'column2', ... 'column-n'))
+	 */
 	public function read_adata($query, $values='') {
 		//--
 		if(!is_array($values)) {
@@ -213,6 +332,19 @@ final class DbalPdo {
 	} //END FUNCTION
 
 
+	/**
+	 * PDO Query :: Read (Associative) - Single Row (just for 1 row, to easy the use of data from queries).
+	 * !!! This will raise an error if more than one row(s) are returned !!!
+	 * This function does not support multiple rows because the associative data is structured without row iterator.
+	 * For queries that return more than one row use: read_adata() or read_data().
+	 * This function is intended to be used for read type queries: SELECT.
+	 *
+	 * @hints	ALWAYS use a LIMIT 1 OFFSET 0 with all queries using this function to avoid situations that will return more than 1 rows and will raise ERROR with this function.
+	 *
+	 * @param STRING $queryval						:: the query
+	 * @param STRING $values 						:: *optional* array of parameters
+	 * @return ARRAY (asociative) of results		:: Returns just a SINGLE ROW as: array('column1', 'column2', ... 'column-n')
+	 */
 	public function read_asdata($query, $values='') {
 		//--
 		if(!is_array($values)) {
@@ -246,6 +378,14 @@ final class DbalPdo {
 	} //END FUNCTION
 
 
+	/**
+	 * PDO Query :: Write.
+	 * This function is intended to be used for write type queries: BEGIN (TRANSACTION) ; COMMIT ; ROLLBACK ; INSERT ; INSERT IGNORE ; REPLACE ; UPDATE ; CREATE SCHEMAS ; CALLING STORED PROCEDURES ...
+	 *
+	 * @param STRING $queryval						:: the query
+	 * @param STRING $values_or_mode 				:: *optional* ARRAY of parameters OR the PDO query execution mode as STRING (QUERY_MODE_EXECUTE, implementing \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE)
+	 * @return ARRAY 								:: [0 => 'control-message', 1 => #affected-rows]
+	 */
 	public function write_data($query, $values_or_mode='') {
 		//--
 		if((string)strtoupper((string)$values_or_mode) == 'QUERY_MODE_EXECUTE') {

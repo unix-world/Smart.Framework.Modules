@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Twig, \SmartModExtLib\TplTwig\Templating
- * @version 	v.181019
+ * @version 	v.181105
  * @package 	Templating:Engines
  *
  */
@@ -46,7 +46,7 @@ final class SmartTwigTemplating {
 
 	// ::
 
-	public static $twig = null;
+	private static $twig = null;
 
 
 	public static function render_file_template($file, $arr_vars=array()) {
@@ -55,7 +55,8 @@ final class SmartTwigTemplating {
 			return '{# ERROR: SmartTwigTemplating ('.SMART_APP_MODULES_EXTRALIBS_VER.') :: The module mod-tpl-twig cannot be found ... #}';
 		} //end if
 		//--
-		if(self::$twig === null) {
+	//	if(self::$twig === null) {
+		if((self::$twig === null) OR (\SmartFrameworkRuntime::ifDebug())) { // bug fix: on debug do not reuse the object
 			self::$twig = new \SmartModExtLib\TplTwig\Templating();
 		} //end if
 		//--

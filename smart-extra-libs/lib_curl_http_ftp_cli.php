@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @depends 	extensions: PHP CURL, PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
  * @version 	v.171007
- * @package 	Network:CURL
+ * @package 	Network
  *
  */
 final class SmartCurlHttpFtpClient {

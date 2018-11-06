@@ -27,7 +27,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @internal
  *
  * @depends 	extensions: classes: Twig
- * @version 	v.181018
+ * @version 	v.181105
  * @package 	Templating:Engines
  *
  */
@@ -55,11 +55,19 @@ final class SmartTwigEnvironment extends \Twig_Environment {
 	} //END FUNCTION
 
 
-	public function smartDebugGetLoadedTemplates($mode='set') {
+	public function smartDebugGetLoadedTemplates($mode) {
 		//--
 		if(!\SmartFrameworkRuntime::ifDebug()) {
 			return array();
 		} //end if
+		//--
+		switch((string)$mode) {
+			case 'set':
+			case 'get':
+				break;
+			default:
+				return array();
+		} //end switch
 		//--
 		$the_twig_cache_dir = (string) $this->smartSetupCacheDir();
 		if((string)$the_twig_cache_dir != '') {
