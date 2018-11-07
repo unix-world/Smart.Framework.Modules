@@ -88,7 +88,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: \Zend\Db
- * @version 	v.181105
+ * @version 	v.181107
  * @package 	Database:ZendDb-PDO
  *
  */
@@ -133,7 +133,7 @@ final class DbalPdo {
 				$this->cfg['port'] = 0;
 				$this->slow_query_time = 0.0025;
 				break;
-		//	case 'mysqli':
+		//	case 'mysqli': // do not use as the cross-db params compatibility in queries would be broken !
 			case 'pdo_mysql':
 				if((string)$this->cfg['host'] == '') {
 					$this->cfg['host'] = '127.0.0.1';
@@ -143,7 +143,7 @@ final class DbalPdo {
 				} //end if
 				$this->slow_query_time = 0.0050;
 				break;
-		//	case 'pgsql':
+		//	case 'pgsql': // do not use as the cross-db params compatibility in queries would be broken !
 			case 'pdo_pgsql':
 				if((string)$this->cfg['host'] == '') {
 					$this->cfg['host'] = '127.0.0.1';
@@ -154,7 +154,7 @@ final class DbalPdo {
 				$this->slow_query_time = 0.0050;
 				break;
 			default:
-				$this->error('INIT', 'Unsupported PDO Zend/Dbal Driver', $this->cfg['driver'], '');
+				$this->error('INIT', 'Unsupported PDO Zend/Db Driver', $this->cfg['driver'], '');
 				return;
 		} //end switch
 		//--
