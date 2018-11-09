@@ -1,0 +1,35 @@
+<style>
+.div_line {
+	border: 1px solid #FFFFFF;
+}
+.div_line:hover {
+	border: 1px solid #FFCC00;
+}
+</style>
+<div class="ux-grid-row">
+	<div class="ux-grid-col s3">
+		<a href="[####HOME-URL|html####]" class="ux-link"><h1>Smart::Web SVN</h1></a>
+		<hr>
+	</div>
+	<div class="ux-grid-col s9">
+		<h2>SVN Repositories</h2>
+		<div class="ux-grid-row ux-border" style="padding:8px;">
+		[%%%%LOOP:REPOS%%%%]
+		<div class="div_line" style="height:28px;">
+			<div class="ux-grid-col s5" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+				<img src="[####VIEWS-PATH|html####]img/repo.png" alt="repo" title="repo"> &nbsp; <a class="ux-link" href="[####SELECT-URLBASE|html####][####REPOS.REPO-NAME|url|html####]"><span style="font-weight:bold;">[####REPOS.REPO-NAME|html####]</span></a>
+			</div>
+			<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+				<span style="font-weight:bold;">Rev.&nbsp;[####REPOS.LAST-REV-NUM|html####]</span>
+			</div>
+			<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+				<span>[####REPOS.LAST-REV-AUTHOR|html####]</span>
+			</div>
+			<div class="ux-grid-col s3" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+				<span>[####REPOS.LAST-REV-DATE|html####]</span>
+			</div>
+		</div>
+		[%%%%/LOOP:REPOS%%%%]
+		</div>
+	</div>
+</div>

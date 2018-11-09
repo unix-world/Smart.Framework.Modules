@@ -1,0 +1,118 @@
+<!-- TPL: Smart.Cloud / WebAddressbook / WebCards :: [####USER-ACC|html####] -->
+<div align="center">
+	<span style="font-size:40px!important; color:#778899;"><b><i>Smart.Cloud</i></b> <img width="32" height="32" src="modules/mod-cloud/views/img/server.png" alt="Smart.Cloud WebAddressbook" title="Smart.Cloud WebAddressbook" style="cursor:help;"> <b>WebAddressbook</b></span>
+	<br>
+</div>
+<hr>
+<script type="text/javascript" src="lib/js/jquery/jquery.event.drag.js"></script>
+<script type="text/javascript" src="lib/js/jquery/jquery.event.drop.js"></script>
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid.css">
+<script type="text/javascript" src="lib/js/jquery/slickgrid/slick.grid.js"></script>
+<div align="center">
+	<h3>Addressbook: [####USER-ABK|html####] (Cards: [####COUNT-CARDS|int####]) / Account: [####USER-ACC|html####]</h3>
+</div>
+<style>
+.slick-cell {
+	background: white!important;
+	border-color: transparent!important;
+	line-height: 19px!important;
+}
+/* alternating offsets */
+.slick-row .cell-inner {
+	margin-right: 50px;
+}
+.slick-row[row$="1"] .cell-inner,  .slick-row[row$="3"] .cell-inner, .slick-row[row$="5"] .cell-inner,
+.slick-row[row$="7"] .cell-inner, .slick-row[row$="9"] .cell-inner {
+	margin-left: 50px;
+	margin-right: 0;
+}
+.contact-card-cell {
+	border-color: transparent!important;
+}
+.cell-inner {
+	width: 500px;
+	height: 150px;
+	margin: 10px;
+	padding: 10px;
+	background: #fafafa;
+	border: 1px solid gray;
+	border-radius: 10px;
+	box-shadow: 1px 1px 5px silver;
+}
+.cell-inner:hover {
+	background: #f0f0f0;
+}
+.cell-left {
+	width: 40px;
+	height: 100%;
+	float: left;
+	border-right: 1px dotted #CCCCCC;
+	color: #555555;
+}
+.cell-main {
+	max-width: 450px !important;
+	height: 147px !important;
+	margin-left: 50px;
+	cursor: text !important;
+	white-space: normal !important;
+	text-wrap: normal !important;
+	overflow: hidden;
+	overflow-y: auto;
+}
+</style>
+<br>
+<div align="center">
+	<div id="abook-grid" style="text-align:left; font-size:12px;width:600px;height:80vh; border:1px solid #ECECEC;"></div>
+</div>
+<script>
+var tpl = '[####CARD-TPL|js####]';
+</script>
+<script type="text/javascript">
+jQuery(function() {
+
+	var data = [####JSON-CARDS|json####];
+
+	function waitingFormatter(row, cell, value, columnDef, dataContext) {
+		return '<img width="32" height="32" src="lib/framework/img/loading-bubbles.svg">';
+	}
+
+	var ctpl = String(decodeURIComponent(tpl));
+
+	function renderAsyncCell(cellNode, row, dataContext, colDef) {
+		var cell = SmartJS_CoreUtils.render_markers_template(ctpl, {
+			'UUID': String(dataContext.id),
+			'NAME': String(dataContext.name),
+			'ORGANIZATION': String(dataContext.organization),
+			'PHONE': String(dataContext.phone),
+			'EMAIL': String(dataContext.email),
+			'ADDRESS': String(dataContext.address),
+		});
+		$(cellNode).empty().html(cell);
+	}
+
+	var columns = [
+		{
+			id: 'id',
+			name: '[####USER-ABK|js####] :: Contacts',
+			width: 750,
+			cssClass: 'contact-card-cell',
+			formatter: waitingFormatter,
+			rerenderOnResize: true,
+			asyncPostRenderDelay: 25,
+			asyncPostRender: renderAsyncCell
+		}
+	];
+
+	var options = {
+		rowHeight: 200,
+		editable: false,
+		enableAddRow: false,
+		enableCellNavigation: false,
+		enableColumnReorder: false,
+		enableAsyncPostRender: true
+	};
+
+	var grid = new Slick.Grid($("#abook-grid"), data, columns, options);
+
+});
+</script>

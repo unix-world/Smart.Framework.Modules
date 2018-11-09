@@ -1,0 +1,166 @@
+<style>
+.div_line {
+	border: 1px solid #FFFFFF;
+}
+.div_line:hover {
+	border: 1px solid #FFCC00;
+}
+</style>
+<link rel="stylesheet" href="lib/css/v-timeline/style.css">
+<link rel="stylesheet" href="lib/css/v-timeline/style-small.css">
+<div class="ux-grid-row">
+	<div class="ux-grid-col s3">
+		<a href="[####HOME-URL|html####]" class="ux-link"><h1>Smart::Web SVN</h1></a>
+		<hr>
+		<div style="height:80vh; overflow-x:hidden; overflow-y:auto;">
+			<section id="vtml-timeline" class="vtml-container">
+			<!-- Current Rev. is [####REV-CRR|html####] ; First Rev. is: [####REV-FIRST|html####] -->
+			[%%%%LOOP:REVSDATA%%%%]
+			<div class="vtml-timeline-block">
+				[%%%%IF:REVSDATA._-ITERATOR-_:<=0;(1)%%%%]
+					[%%%%IF:REVSDATA.REVISION:==####REV-HEAD####;(1)%%%%]
+				<div class="vtml-timeline-icon vtml-red" title="# [####REVSDATA.-_INDEX_-|int####] # Selected Revision is the HEAD Revision: Rev.[####REVSDATA.REVISION|html####]">
+					[%%%%ELSE:REVSDATA.REVISION(1)%%%%]
+						[%%%%IF:REVSDATA.REVISION:==####REV-CRR####;(2)%%%%]
+				<div class="vtml-timeline-icon vtml-yellow" title="# [####REVSDATA.-_INDEX_-|int####] # Selected Revision: Rev.[####REVSDATA.REVISION|html####]">
+						[%%%%ELSE:REVSDATA.REVISION(2)%%%%]
+				<div class="vtml-timeline-icon vtml-blue" title="# [####REVSDATA.-_INDEX_-|int####] # Revision: Rev.[####REVSDATA.REVISION|html####]">
+						[%%%%/IF:REVSDATA.REVISION(2)%%%%]
+					[%%%%/IF:REVSDATA.REVISION(1)%%%%]
+				[%%%%ELSE:REVSDATA._-ITERATOR-_(1)%%%%]
+					[%%%%IF:REVSDATA._-ITERATOR-_:>=####REVSDATA._-MAXCOUNT-_####;(2)%%%%]
+						[%%%%IF:LASTREVISFIRST:==yes;%%%%]
+				<div class="vtml-timeline-icon vtml-green" title="# [####REVSDATA.-_INDEX_-|int####] # FIRST Revision: Rev.[####REVSDATA.REVISION|html####]">
+						[%%%%ELSE:LASTREVISFIRST%%%%]
+				<div class="vtml-timeline-icon vtml-white" title="# [####REVSDATA.-_INDEX_-|int####] # Revision (NOT FIRST): Rev.[####REVSDATA.REVISION|html####]">
+						[%%%%/IF:LASTREVISFIRST%%%%]
+					[%%%%ELSE:REVSDATA._-ITERATOR-_(2)%%%%]
+				<div class="vtml-timeline-icon vtml-grey" title="# [####REVSDATA.-_INDEX_-|int####] # Revision: Rev.[####REVSDATA.REVISION|html####]">
+					[%%%%/IF:REVSDATA._-ITERATOR-_(2)%%%%]
+				[%%%%/IF:REVSDATA._-ITERATOR-_(1)%%%%]
+					<div style="margin-top:3px!important;"><i class="fa fa-tag fa-xl"></i></div>
+				</div>
+				<div class="vtml-timeline-content div_line">
+					<h2>Rev.&nbsp;[####REVSDATA.REVISION|html####]</h2>
+					&nbsp; <a data-smart="open.modal" href="[####COMPARE-ROOT-URL|html####][####REVSDATA.REVISION|url|html####]"><img width="16" height="16" src="[####VIEWS-PATH|html####]img/changes.png" alt="View Revision #[####REVSDATA.REVISION|html####] Log for Root Path: /" title="View Revision #[####REVSDATA.REVISION|html####] Log for Root Path: /"></a>
+					[%%%%IF:REVSDATA.REVISION:!=####REV-CRR####;%%%%]
+					&nbsp; <a href="[####SELECT-URLBASE|html####]&rev=[####REVSDATA.REVISION|url|html####]&prev=[####REV-CRR|url|html####]&type=[####TYPE|url|html####]"><img width="16" height="16" src="[####VIEWS-PATH|html####]img/revselect.png" alt="Select and Display the Revision #[####REVSDATA.REVISION|html####]" title="Select and Display the Revision #[####REVSDATA.REVISION|html####]"></a>
+					[%%%%/IF:REVSDATA.REVISION%%%%]
+					<p style="color:#778899; font-weight:bold;">[####REVSDATA.AUTHOR|html####]</p>
+					<p style="color:#778899; font-style:italic;">[####REVSDATA.MSG|html|nl2br####]</p>
+					<span class="vtml-date" style="color:#888888;">[####REVSDATA.DATE|html####]</span>
+				</div>
+			</div>
+			[%%%%/LOOP:REVSDATA%%%%]
+			</section>
+		</div>
+		<br>
+		<br>
+	</div>
+	<div class="ux-grid-col s9">
+		<h2 style="display:inline;">SVN Repository: <span style="color:#72C100;">[####REPO-NAME|html####]</span> @ / <span style="color:#666699;">HEAD Rev.</span> <a class="ux-link" href="[####HEAD-ROOT-URL|html####]">[####REV-HEAD|html####]</a></h2>
+		<br>
+		<h5 style="display:inline;"><span style="color:#FF5500;">Selected Rev.</span> <span style="color:#72C100;">[####REV-CRR|html####]</span> <span style="color:#CCCCCC;">@</span> <span style="color:#778899;">[####REPO-PATH|html####]</span></h5>
+		<div class="ux-grid-row ux-border" style="padding:4px; border-bottom:0px;">
+			<div class="ux-grid-col s4" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+				<a class="ux-link" href="[####BACK-URL|html####]" title="Level Up">^..^</a>
+				[%%%%IF:DOWNLOAD-ARCH-URL:!=;%%%%]
+				&nbsp;
+				<a class="ux-link" href="[####DOWNLOAD-ARCH-URL|html####]&rev=[####REV-CRR|url|html####]"><img width="16" height="16" src="[####VIEWS-PATH|html####]img/compress.png" alt="Download as Archive (7-Zip) : [####REPO-NAME|html####][####REPO-PATH|html####] @ Revision: [####REV-CRR|html####]" title="Download as Archive (7-Zip) : [####REPO-NAME|html####][####REPO-PATH|html####] @ Revision: [####REV-CRR|html####]"></a>
+				[%%%%ELSE:DOWNLOAD-ARCH-URL%%%%]
+					[%%%%IF:TYPE:==file;%%%%]
+				&nbsp;
+				<a class="ux-link" href="[####SELECT-URLFILE|html####]&rev=[####REV-CRR|url|html####]"><img width="16" height="16" src="[####VIEWS-PATH|html####]img/download.png" alt="Download File ([####MIMEDISP|html####]) : [####REPO-NAME|html####][####REPO-PATH|html####] @ Revision: [####REV-CRR|html####]" title="Download File ([####MIMEDISP|html####]) : [####REPO-NAME|html####][####REPO-PATH|html####] @ Revision: [####REV-CRR|html####]"></a>
+					[%%%%/IF:TYPE%%%%]
+				[%%%%/IF:DOWNLOAD-ARCH-URL%%%%]
+				&nbsp;
+				<a data-smart="open.modal" href="[####COMPARE-URL|html####][####REV-CRR|url|html####]"><img width="16" height="16" src="[####VIEWS-PATH|html####]img/change.png" alt="View Revision #[####REV-CRR|html####] Log for Current Path: [####REPO-PATH|html####]" title="View Revision #[####REV-CRR|html####] Log for Current Path : [####REPO-NAME|html####][####REPO-PATH|html####]"></a>
+			</div>
+			<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
+				<span style="font-weight:bold; color:#CCCCCC;">Size</span>
+			</div>
+			<div class="ux-grid-col s1" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
+				<span style="font-weight:bold; color:#333333;" title="Revision">Rev.</span>
+			</div>
+			<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:center;">
+				<span style="font-weight:bold; color:#778899;">Author</span>
+			</div>
+			<div class="ux-grid-col s3" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
+				<span style="font-weight:bold; color:#999999;">Date</span>
+			</div>
+		</div>
+		<div class="ux-grid-row ux-border" style="padding:4px; height:75vh; overflow-y:auto;">
+	[%%%%IF:TYPE:==file;%%%%]
+		[%%%%IF:REPODATA:@+0;%%%%]
+			[%%%%LOOP:REPODATA%%%%]
+		<div class="div_line" style="height:28px;">
+			<div class="ux-grid-col s4" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+				<img width="16" height="16" src="[####VIEWS-PATH|html####]img/file[####REPODATA.ICON-SUFFIX|html####].png" alt="file: [####MIMETYPE|html####]" title="file: [####MIMETYPE|html####]">
+				&nbsp;
+				[%%%%IF:DISPLAY-LINK:==;%%%%]
+				<span style="font-weight:bold; color:#20639E; cursor:help;" title="file: [####REPODATA.NAME|html####]">[####REPODATA.NAME|html####]</span>
+				[%%%%ELSE:DISPLAY-LINK%%%%]
+				<a class="ux-link" data-smart="open.modal" href="[####DISPLAY-LINK|html####][####TYPE|url|html####]&rev=[####REV-CRR|url|html####]" title="file: [####REPODATA.NAME|html####]">[####REPODATA.NAME|html####]</a>
+				[%%%%/IF:DISPLAY-LINK%%%%]
+			</div>
+			<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
+				<span style="font-weight:bold; color:#CCCCCC;">[####REPODATA.SIZE|html####]</span>
+			</div>
+			<div class="ux-grid-col s1" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
+				<span style="font-weight:bold; color:#333333;">[####REPODATA.LAST-REV-NUM|html####]</span>
+			</div>
+			<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:center;">
+				<span style="font-weight:bold; color:#778899;">[####REPODATA.LAST-REV-AUTHOR|html####]</span>
+			</div>
+			<div class="ux-grid-col s3" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
+				<span style="font-weight:bold; color:#999999;">[####REPODATA.LAST-REV-DATE|html####]</span>
+			</div>
+		</div>
+			[%%%%/LOOP:REPODATA%%%%]
+		[%%%%ELSE:REPODATA%%%%]
+		<div class="div_line" style="height:28px;">
+			<div class="ux-grid-col s12" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+				<span style="font-weight:normal; font-style:italic; color:#CCCCCC;">Invalid File !</span>
+			</div>
+		</div>
+		[%%%%/IF:REPODATA%%%%]
+	[%%%%ELSE:TYPE%%%%]
+		[%%%%IF:REPODATA:@+0;%%%%]
+			[%%%%LOOP:REPODATA%%%%]
+		<div class="div_line" style="height:28px;">
+			<div class="ux-grid-col s4" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;" title="[####REPODATA.TYPE|html####]: [####REPODATA.NAME|html####]">
+				[%%%%IF:REPODATA.TYPE:==file;%%%%]
+					<img width="16" height="16" src="[####VIEWS-PATH|html####]img/file[####REPODATA.ICON-SUFFIX|html####].png" alt="file" title="file">
+					&nbsp;
+					<a class="ux-link" href="[####SELECT-URLBASE|html####][####REPODATA.NAME|url|html####]&type=file&rev=[####REV-CRR|url|html####]"><span style="font-weight:bold;">[####REPODATA.NAME|html####]</span></a>
+				[%%%%ELSE:REPODATA.TYPE%%%%]
+					<img width="16" height="16" src="[####VIEWS-PATH|html####]img/folder.png" alt="folder" title="folder">
+					&nbsp;
+					<a class="ux-link" href="[####SELECT-URLBASE|html####][####REPODATA.NAME|url|html####]&type=dir&rev=[####REV-CRR|url|html####]"><span style="font-weight:bold;">[####REPODATA.NAME|html####]</span></a>
+				[%%%%/IF:REPODATA.TYPE%%%%]
+			</div>
+			<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
+				<span style="font-weight:bold; color:#CCCCCC;">[####REPODATA.SIZE|html####]</span>
+			</div>
+			<div class="ux-grid-col s1" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
+				<span style="font-weight:bold; color:#333333;">[####REPODATA.LAST-REV-NUM|html####]</span>
+			</div>
+			<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:center;">
+				<span style="font-weight:bold; color:#778899;">[####REPODATA.LAST-REV-AUTHOR|html####]</span>
+			</div>
+			<div class="ux-grid-col s3" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
+				<span style="font-weight:bold; color:#999999;">[####REPODATA.LAST-REV-DATE|html####]</span>
+			</div>
+		</div>
+			[%%%%/LOOP:REPODATA%%%%]
+		[%%%%ELSE:REPODATA%%%%]
+		<div class="div_line" style="height:28px;">
+			<div class="ux-grid-col s12" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+				<span style="font-weight:normal; font-style:italic; color:#CCCCCC;">Empty</span>
+			</div>
+		</div>
+		[%%%%/IF:REPODATA%%%%]
+	[%%%%/IF:TYPE%%%%]
+		</div>
+	</div>
+</div>

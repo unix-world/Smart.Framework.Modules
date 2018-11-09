@@ -1,0 +1,42 @@
+
+/* CSS NetOffice :: v.2014.10.20 */
+
+html {
+/*	height: 100%; */
+}
+body {
+/*	padding: 80px 0 0 0; */
+/*	height: 100%; */
+}
+div#netoffice_top_menu {
+	background-color: #FFFFFF;
+	border:1px solid #CCCCCC;
+	padding:0px;
+	position:absolute;
+	top:0;
+	left:0;
+	width:99%;
+	height:75px;
+}
+@media screen{
+	body > div#netoffice_top_menu {
+		position: fixed;
+	}
+}
+#netoffice_menu_cell:hover {
+	background-color: #DDEEFF;
+}
+#netoffice_menu_title {
+	font-size: 40px;
+	font-weight: bold;
+	font-style: italic;
+	letter-spacing: 4px;
+	color: #778899;
+}
+#netoffice_page {
+/*	background-color: #FFFFFF; */
+	border:1px solid #CCCCCC;
+	padding:0px;
+}
+
+/* END */

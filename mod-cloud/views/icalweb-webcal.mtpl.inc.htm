@@ -1,0 +1,27 @@
+<!-- TPL: Smart.Cloud / WebCalendar / WebCal :: [####USER-ACC|html####] -->
+<div align="center">
+	<span style="font-size:40px!important; color:#778899;"><b><i>Smart.Cloud</i></b> <img width="32" height="32" src="modules/mod-cloud/views/img/server.png" alt="Smart.Cloud WebCalendar" title="Smart.Cloud WebCalendar" style="cursor:help;"> <b>WebCalendar</b></span>
+	<br>
+</div>
+<hr>
+<div align="center">
+	<h3>Calendar: [####USER-CAL|html####] (Events: [####COUNT-EVENTS|int####]) / Account: [####USER-ACC|html####]</h3>
+</div>
+<link rel="stylesheet" href="lib/js/jquery/calendar/monthly.css">
+<script type="text/javascript" src="lib/js/jquery/calendar/monthly.js"></script>
+<div align="center">
+	<div style="width:90%; max-width:800px; display:inline-block;">
+		<div class="monthly" id="web-calendar"></div>
+	</div>
+</div>
+<script type="text/javascript">
+jQuery(function() {
+	jQuery('#web-calendar').monthly({
+		weekStart: 1, // week start on Monday
+		useIsoDateFormat: true,
+		mode: 'event',
+		dataType: 'json',
+		events: { 'monthly': [####JSON-EVTS|json####] }
+	});
+});
+</script>
