@@ -20,7 +20,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class SqAuthAdmins {
 
 	// ->
-	// v.181109
+	// v.181109.r3
 
 	private $db;
 
@@ -401,9 +401,13 @@ final class SqAuthAdmins {
 				} //end if
 				$init_hash_pass = \SmartHashCrypto::password($init_password, 'admin');
 				//--
+				$init_privileges = (string) '<superadmin>,<admin>,'.APP_AUTH_PRIVILEGES;
+				$init_privileges = \Smart::list_to_array((string)$init_privileges, true);
+				$init_privileges = \Smart::array_to_list((array)$init_privileges);
+				//--
 				$this->db->write_data('BEGIN');
 				$this->db->write_data((string)$this->dbDefaultSchema());
-				$this->db->write_data("INSERT INTO admins VALUES ('admin', '".$this->db->escape_str($init_hash_pass)."', 1, 0, 'admin@localhost', 'Mr.', 'Super', 'Admin', '', '', '', '', '', '', '', 0, 0, 0, '<superadmin>,<admin>', '', '', '', 0, ".(int)time().")");
+				$this->db->write_data("INSERT INTO admins VALUES ('admin', '".$this->db->escape_str($init_hash_pass)."', 1, 0, 'admin@localhost', 'Mr.', 'Super', 'Admin', '', '', '', '', '', '', '', 0, 0, 0, '".(string)$init_privileges."', '', '', '', 0, ".(int)time().")");
 				$this->db->write_data('COMMIT');
 				//--
 				http_response_code(202);

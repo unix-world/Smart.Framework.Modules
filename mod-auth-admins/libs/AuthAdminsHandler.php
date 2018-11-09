@@ -45,7 +45,7 @@ define('APP_AUTH_DB_SQLITE', '#db/auth-admins-'.sha1((string)SMART_FRAMEWORK_SEC
 final class AuthAdminsHandler {
 
 	// ::
-	// v.181109
+	// v.181109.r3
 
 
 	private static $template_path = 'etc/templates/default/';
@@ -81,6 +81,10 @@ public static function Authenticate($enforce_ssl=true, $tpl_path='', $tpl_file='
 		if(!defined('APP_AUTH_ADMIN_PASSWORD')) {
 			http_response_code(503);
 			die(\SmartComponents::http_error_message('Set the APP_AUTH_ADMIN_PASSWORD in config !', 'You must set the APP_AUTH_ADMIN_PASSWORD constant into config before installation. Manually REFRESH this page after by pressing F5 ...'));
+		} //end if
+		if(strlen(APP_AUTH_ADMIN_PASSWORD) < 10) {
+			http_response_code(503);
+			die(\SmartComponents::http_error_message('Invalid APP_AUTH_ADMIN_PASSWORD set in config !', 'The APP_AUTH_ADMIN_PASSWORD set in config must be at least 10 characters long ! Manually REFRESH this page after by pressing F5 ...'));
 		} //end if
 	} //end if
 	//--
@@ -242,10 +246,10 @@ public static function Authenticate($enforce_ssl=true, $tpl_path='', $tpl_file='
 	if(((string)$logged_in != 'yes') OR (\SmartAuth::check_login() !== true)) { // IF NOT LOGGED IN
 		//--
 		if((string)$try_auth != 'no') { // this is optional because on this side will die() anyway ...
-			//--
 			header('WWW-Authenticate: Basic realm="Administration Area"');
 			http_response_code(401);
-			//--
+		} else {
+			\SmartFrameworkRuntime::outputHttpHeadersNoCache(); // fix: needs no cache headers
 		} //end if
 		//--
 		die((string)$login_or_logout_form); // display login or logot form
