@@ -40,7 +40,7 @@
 				columnCheckboxes.push($input);
 
 				if (grid.getColumnIndex(columns[i].id) != null) {
-					$input.attr("checked", "checked");
+					$input.prop("checked", true);
 				}
 
 				$("<label />")
@@ -57,7 +57,7 @@
 					.prepend($input)
 					.appendTo($li);
 			if (grid.getOptions().forceFitColumns) {
-				$input.attr("checked", "checked");
+				$input.prop("checked", true);
 			}
 
 			$li = $("<li />").appendTo($menu);
@@ -67,7 +67,7 @@
 					.prepend($input)
 					.appendTo($li);
 			if (grid.getOptions().syncColumnCellResize) {
-				$input.attr("checked", "checked");
+				$input.prop("checked", true);
 			}
 
 			$menu
@@ -128,7 +128,7 @@
 				});
 
 				if (!visibleColumns.length) {
-					$(e.target).attr("checked", "checked");
+					$(e.target).prop("checked", true);
 					return;
 				}
 

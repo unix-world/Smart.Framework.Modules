@@ -1,0 +1,35 @@
+<div align="center"><table><tr><td>
+	<form id="edit_form" name="edit_form" class="ux-form ux-form-aligned" onSubmit="return false;">
+	<legend><h1>Edit Account</h1></legend><br>
+		<div class="ux-control-group">
+			<label>Username</label>
+			<input type="hidden" name="frm[id]" value="[####ID|html####]">
+			<span style="font-weight:bold;">[####ID|html####]</span>
+		</div>
+		<div class="ux-control-group">
+			<label>Email</label>
+			<input name="frm[email]" class="ux-input-1-2" placeholder="Email" type="email" value="[####EMAIL|html####]">
+		</div>
+		<div class="ux-control-group">
+			<label>First Name</label>
+			<input name="frm[name_f]" class="ux-input-1-2" placeholder="First name" type="text" value="[####FIRST-NAME|html####]" required>
+		</div>
+		<div class="ux-control-group">
+			<label>Last Name</label>
+			<input name="frm[name_l]" class="ux-input-1-2" placeholder="Last name" type="text" value="[####LAST-NAME|html####]" required>
+		</div>
+		<div class="ux-control-group">
+			<label>Password:</label>
+			<a href="[####ACTIONS-URL|html####]change-pass-form&id=[####ID|url|html####]" class="ux-button ux-button-small">Change the Password</a>
+		</div>
+		<div class="ux-control-group">
+			<label>Privileges</label>
+			<div style="display:inline-block;">[####PRIV-LIST-HTML####]</div>
+		</div>
+		<div class="ux-controls">
+			<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="SmartJS_BrowserUtils.CloseDelayedModalPopUp();"> Cancel &nbsp; <i class="fa fa-times"></i></button>
+			<button type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="SmartJS_BrowserUtils.Submit_Form_By_Ajax('edit_form', '[####ACTIONS-URL|html####]edit-update', 'yes'); return false;"> Save &nbsp; <i class="fa fa-check"></i></button>
+		</div>
+	</form>
+	</td></tr></table>
+</div>

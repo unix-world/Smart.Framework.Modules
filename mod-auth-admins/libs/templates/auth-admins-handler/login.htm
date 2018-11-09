@@ -1,0 +1,101 @@
+<!-- AuthAdmins Login # -->
+<style>
+body {
+	background-color: #FFFFFF !important;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #ECECEC;
+	height: 1px;
+}
+a#copyright, a#copyright:hover {
+	font-size: 10px !important;
+	font-weight: bold;
+	color: #999999;
+	text-decoration: none;
+	border-bottom: dotted 1px #999999;
+}
+a#nolink {
+	cursor: pointer;
+	text-decoration: none;
+}
+a#special {
+	cursor: pointer;
+	text-decoration: none;
+	border-bottom: dotted 1px #CCCCCC;
+}
+</style>
+<script type="text/javascript">
+	var AuthAdmins_LogURL = "";
+	function AuthAdmins_Login() {
+		if((typeof AuthAdmins_LogURL != "undefined") && (AuthAdmins_LogURL != "") && (AuthAdmins_LogURL != null)) {
+			var AuthAdmins_LogZURL = SmartJS_CryptoBlowfish.decrypt(String(AuthAdmins_LogURL), String(SmartJS_Archiver_LZS.decompressFromBase64(String(SmartJS_CoreUtils.hex2bin('[####SECRET|js####]'))))); if(AuthAdmins_LogZURL) { SmartJS_BrowserUtils.RedirectToURL(String(AuthAdmins_LogZURL)); }
+		} //end if
+	} //END FUNCTION
+</script>
+<div style="text-align: center; padding: 8px;">
+	<div align="center">
+		<table cellpadding="0">
+			<tr>
+				<td><span style="cursor:help" title="This is a PRIVATE AREA and requires LOGIN ..."><img src="lib/framework/img/sign-notice.svg" style="opacity:0.7;"></span></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td><span style="color:#CCCCCC; font-size:27px;"><b>Private&nbsp;Area</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>プライベートエリア</b></span></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td><span style="cursor:help" title="Authentication Management Plugin for Smart.Framework / Private Area"><img src="lib/framework/img/sign-info.svg" style="opacity:0.7;"></span></td>
+			</tr>
+		</table>
+	</div>
+	<hr>
+	<div id="AuthAdmins_LogIn" align="center">
+		<table border="0">
+			<tr>
+				<td align="center">
+					<div title="Select here the Login NameSpace and Click the Login link below ...">
+						<font size="4"><b>Select the Login NameSpace:</b>&nbsp;&nbsp;&nbsp;</font>
+						<select title="Available Login Namespaces" name="NorthICE_LOGIN" id="auth-admins-title-login" size="1" style="max-width:300px!important; " onChange="AuthAdmins_TitleLogin();">
+							[%%%%LOOP:LOGIN-NSPACES%%%%]
+							<option value="[####LOGIN-NSPACES._-VAL-_|html####]">[####LOGIN-NSPACES._-KEY-_|html####]</option>
+							[%%%%/LOOP:LOGIN-NSPACES%%%%]
+						</select>
+						<script type="text/javascript">
+						if(typeof SmartJS_BrowserUIUtils != 'undefined') {
+							try {
+								SmartJS_BrowserUIUtils.Smart_SelectList('auth-admins-title-login', 300, null, false, false);
+							} catch(err) {
+								console.log('Failed to Apply List Select on AuthAdmins Login :: ERR: ' + err);
+							}
+						}
+						</script>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td align="center">
+					<div title="Click here to Login to the selected Namespace ...">
+						<a id="special" href="javascript:void(0)" onClick="javascript:AuthAdmins_Login();"><font color="#7BC043" size="5"><b>Login to :// <span id="AuthAdmins_TitleLogin">[NameSpace]</span></b></font></a>
+					</div>
+					<div style="cursor:help;">
+						<img border="0" width="160" height="160" src="[####MOD-IMG-PATH|html####]globe.svg" style="opacity:0.55;" alt="AuthAdmins module for Smart.Framework" title="AuthAdmins module for Smart.Framework">
+					</div>
+					<div title="Click here to Logout ...">
+						<a id="special" href="[####LOGOUT-URL|html####]"><font color="#778899" size="4"><b>Logout from :// All NameSpaces</b></font></a>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<script type="text/javascript">
+		function AuthAdmins_TitleLogin() {
+			AuthAdmins_LogURL = $("#auth-admins-title-login option:selected").val();
+			var LoginListValue = $("#auth-admins-title-login option:selected").text();
+			$("#AuthAdmins_TitleLogin").text(LoginListValue);
+		} //END FUNCTION
+		AuthAdmins_TitleLogin();
+	</script>
+	<br>
+	<div align="center">
+		[####POWERED-HTML####]
+	</div>
+	<a data-smart="open.modal" href="http://www.unix-world.org" target="unix_world_org" id="copyright"><b>&copy;&nbsp;2006-[####CRR-YEAR|html####]&nbsp;unix-world.org</b></a>
+</div>
+<!-- # AuthAdmins Login -->

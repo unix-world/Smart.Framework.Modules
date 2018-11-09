@@ -1932,7 +1932,7 @@
                                 type: 'checkbox',
                                 disabled: !!$node.attr('disabled'),
                                 name: $node.attr('label'),
-                                selected: !!$node.attr('checked')
+                                selected: !!$node.prop('checked')
                             };
                             break;
                         case 'radio':
@@ -1942,7 +1942,7 @@
                                 name: $node.attr('label'),
                                 radio: $node.attr('radiogroup'),
                                 value: $node.attr('id'),
-                                selected: !!$node.attr('checked')
+                                selected: !!$node.prop('checked')
                             };
                             break;
 
@@ -1971,7 +1971,7 @@
                                 type: 'checkbox',
                                 name: label || inputLabel(node),
                                 disabled: !!$node.attr('disabled'),
-                                selected: !!$node.attr('checked')
+                                selected: !!$node.prop('checked')
                             };
                             break;
 
@@ -1982,7 +1982,7 @@
                                 disabled: !!$node.attr('disabled'),
                                 radio: !!$node.attr('name'),
                                 value: $node.val(),
-                                selected: !!$node.attr('checked')
+                                selected: !!$node.prop('checked')
                             };
                             break;
 
