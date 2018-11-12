@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Controller: Twig Templating Test Sample
-// Route: ?/page/tpl-twig.test (?page=tpl-twig.test)
+// Controller: Typo3 Fluid Templating Test Sample
+// Route: ?/page/tpl-typo3-fluid.test (?page=tpl-typo3-fluid.test)
 // Author: unix-world.org
 // v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
 
@@ -36,25 +36,26 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$tpl = $this->ControllerGetParam('module-view-path').'sample.twig.inc.htm';
+		$tpl = $this->ControllerGetParam('module-view-path').'sample.t3fluid.htm';
 		//--
 
 		//--
 		if((string)$op == 'viewsource') {
 			//--
-			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('div', ['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'<h1>Twig Template (TPL Source)</h1><hr><pre style="background:#FAFAFA;"><code class="twig" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
+			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('div', ['web','tpl']).'<h1>Typo3Fluid Template (TPL Source)</h1><hr><pre style="background:#FAFAFA;"><code class="xml" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
 			return;
 			//--
 		} //end if
 		//--
 
-		//--
+		//-- !!! all include partials must start with @ to avoid camel case (ex: @sample-partial.t3fluid.inc.htm) !!!
 		$data = [
-			'hello' => '<h1>Demo: Twig Templating as module for Smart.Framework</h1>',
+			'version' 	=> (string) \SmartModExtLib\TplTypo3Fluid\Templating::FLUID_VERSION,
+			'hello' 	=> '<h1>Demo: Typo3Fluid Templating as module for Smart.Framework</h1>',
 			'navigation' => [
-				array('href' => '#link1', 'caption' => 'Sample Link <1>'),
-				array('href' => '#link2', 'caption' => 'Sample Link <2>'),
-				array('href' => '#link3', 'caption' => 'Sample Link <3>')
+				[ 'href' => '#link1', 'caption' => 'Sample Link <1>' ],
+				[ 'href' => '#link2', 'caption' => 'Sample Link <2>' ],
+				[ 'href' => '#link3', 'caption' => 'Sample Link <3>' ]
 			],
 			'tbl' => [
 				['a1' => '1.1', 'a2' => '1.2', 'a3' => '1.3'],
@@ -66,25 +67,14 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		];
 		//--
 
-		//-- or alternate (better) rendering, using the smart-extra-libs
-		//require_once('modules/smart-extra-libs/autoload.php');
-		if(class_exists('SmartTwigTemplating') AND (rand(0,1))) {
-			$this->PageViewSetVars([
-				'title' => 'Sample Twig Templating (static)',
-				'main' => (string) SmartTwigTemplating::render_file_template(
-					(string) $tpl,
-					(array)  $data
-				)
-			]);
-		} else {
-			$this->PageViewSetVars([
-				'title' => 'Sample Twig Templating',
-				'main' => (string) (new \SmartModExtLib\TplTwig\Templating())->render(
-					(string) $tpl,
-					(array)  $data
-				)
-			]);
-		} //end if
+		//--
+		$this->PageViewSetVars([
+			'title' => 'Sample Typo3Fluid Templating',
+			'main' => (string) (new \SmartModExtLib\TplTypo3Fluid\Templating())->render(
+				(string) $tpl,
+				(array)  $data
+			)
+		]);
 		//--
 
 	} //END FUNCTION

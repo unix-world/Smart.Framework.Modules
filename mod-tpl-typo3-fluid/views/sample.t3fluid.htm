@@ -1,0 +1,30 @@
+<f:section name="Typo3FluidTpl"><!-- start Typo3Fluid template -->
+<div align="center">
+	<br>
+	<div>
+		<a href="//wiki.typo3.org/Fluid" target="_blank"><img src="modules/mod-tpl-typo3-fluid/views/img/typo3-fluid.svg" width="160" height="160"></a>
+		<br>
+		TYPO3-Fluid Templating Engine v.{version}
+	</div>
+	<f:format.raw>{hello}</f:format.raw>
+	<div align="center">
+		<a href="?/page/tpl-typo3-fluid.test" class="ux-button ux-button-small"><i class="fa fa-refresh"></i> &nbsp; Reload TPL Render Test</a>
+		&nbsp;&nbsp;
+		<a href="?/page/tpl-typo3-fluid.test/op/viewsource" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small"><i class="fa fa-code"></i> &nbsp; View TPL Source</a>
+	</div>
+	<br>
+	<f:render partial="@sample-partial.t3fluid.inc.htm" arguments="{tbl: tbl}" />
+	<ul>
+		<f:for each="{navigation}" as="item" key="key">
+			<li><a href="{item.href}">{item.caption}</a></li>
+		</f:for>
+	</ul>
+	Test condition:
+	<f:if condition="{a} == 'Test 1'">
+		<b>OK</b>
+	</f:if>
+	<f:if condition="{a} == {b}">
+		<b>NOT OK</b>
+	</f:if>
+</div>
+<!-- end Typo3Fluid template --></f:section>

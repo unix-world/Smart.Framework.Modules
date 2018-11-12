@@ -1,25 +1,31 @@
 <!-- start twig template -->
 <div align="center">
-<br>
-<div>
-<a href="https://github.com/twigphp/Twig/tree/v{{ constant('Twig_Environment::VERSION') }}" target="_blank">
-<img src="modules/mod-tpl-twig/views/img/twig.svg" width="160" height="160"></a>
-<br>
-Twig Templating Engine v.{{ constant('Twig_Environment::VERSION') }}
-</div>
-{{ hello|raw }}
-<div align="center">
-	<a href="?/page/tpl-twig.test" class="ux-button ux-button-small"><i class="fa fa-refresh"></i> &nbsp; Reload TPL Render Test</a>
-	&nbsp;&nbsp;
-	<a href="?/page/tpl-twig.test/op/viewsource" target="tpl_twig_view_source" data-smart="open.modal" class="ux-button ux-button-small"><i class="fa fa-code"></i> &nbsp; View TPL Source</a>
-</div>
-<br>
-{% include _tpldir_ ~ 'sample-partial.twig.inc.htm' %}
-<ul>
-{% for item in navigation %}
-	<li><a href="{{ item.href }}">{{ item.caption }}</a></li>
-{% endfor %}
-</ul>
+	<br>
+	<div>
+		<a href="//twig.symfony.com/doc/1.x/" target="_blank"><img src="modules/mod-tpl-twig/views/img/twig.svg" width="160" height="160"></a>
+		<br>
+		Twig Templating Engine v.{{ constant('Twig_Environment::VERSION') }}
+	</div>
+	{{ hello|raw }}
+	<div>
+		<a href="?/page/tpl-twig.test" class="ux-button ux-button-small"><i class="fa fa-refresh"></i> &nbsp; Reload TPL Render Test</a>
+		&nbsp;&nbsp;
+		<a href="?/page/tpl-twig.test/op/viewsource" target="tpl_twig_view_source" data-smart="open.modal" class="ux-button ux-button-small"><i class="fa fa-code"></i> &nbsp; View TPL Source</a>
+	</div>
+	<br>
+	{% include _tpldir_ ~ 'sample-partial.twig.inc.htm' %}
+	<ul>
+	{% for item in navigation %}
+		<li><a href="{{ item.href }}">{{ item.caption }}</a></li>
+	{% endfor %}
+	</ul>
+	Test condition:
+	{% if a == 'Test 1' %}
+		<b>OK</b>
+	{% endif %}
+	{% if a == b %}
+		<b>NOT OK</b>
+	{% endif %}
 </div>
 {# <pre>{{ dump() }}</pre> #}
 <!-- end twig template -->

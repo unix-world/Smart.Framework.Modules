@@ -23,11 +23,11 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //==================================================================
 /*
 //-- PRIVILEGES
-$administrative_privileges['pagebuilder_create'] 	= 'WebPages // Create';
-$administrative_privileges['pagebuilder_edit'] 		= 'WebPages // Edit Code';
-$administrative_privileges['pagebuilder_compose'] 	= 'WebPages // Full Edit';
-$administrative_privileges['pagebuilder_delete'] 	= 'WebPages // Delete';
-$administrative_privileges['pagebuilder_manager'] 	= 'WebPages // Management Ops'; // special pages
+$administrative_privileges['pagebuilder-create'] 		= 'WebPages // Create';
+$administrative_privileges['pagebuilder-edit'] 			= 'WebPages // Edit Code';
+$administrative_privileges['pagebuilder-data-edit'] 	= 'WebPages // Edit Data';
+$administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
+$administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Special Pages)';
 //--
 */
 //==================================================================
@@ -47,7 +47,7 @@ $administrative_privileges['pagebuilder_manager'] 	= 'WebPages // Management Ops
  * @access 		private
  * @internal
  *
- * @version 	v.181031
+ * @version 	v.181112
  * @package 	PageBuilder
  *
  */
@@ -522,7 +522,7 @@ final class Manager {
 		//--
 		$query['code'] = (string) $query['code'];
 		//--
-		if((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder_edit') === true) AND ((string)$query['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder_edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder_manager') === true) AND ((string)$query['special'] == '1'))) {
+		if((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND ((string)$query['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-manage') === true) AND ((string)$query['special'] == '1'))) {
 			//--
 			if((string)$y_mode == 'form') {
 				//--
@@ -714,7 +714,7 @@ final class Manager {
 		//--
 		$query['data'] = (string) base64_decode($query['data']);
 		//--
-		if((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder_edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder_compose') === true) AND ((string)$query['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder_edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder_compose') === true) AND (\SmartAuth::test_login_privilege('pagebuilder_manager') === true) AND ((string)$query['special'] == '1'))) {
+		if((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-data-edit') === true) AND ((string)$query['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-data-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-manage') === true) AND ((string)$query['special'] == '1'))) {
 			//--
 			if((string)$y_mode == 'form') {
 				//-- CODE EDITOR
@@ -849,7 +849,7 @@ final class Manager {
 				//--
 				$proc_mode = 'insert';
 				//--
-				if((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder_create') === true)) {
+				if((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-create') === true)) {
 					//--
 					$y_frm['id'] = (string) trim((string)$y_frm['id']);
 					//--
@@ -945,7 +945,7 @@ final class Manager {
 				//--
 				$query = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordDetailsById($y_id);
 				//--
-				if(((string)$y_id == (string)$query['id']) AND ((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder_edit') === true) AND ((string)$query['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder_edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder_manager') === true) AND ((string)$query['special'] == '1')))) {
+				if(((string)$y_id == (string)$query['id']) AND ((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND ((string)$query['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-manage') === true) AND ((string)$query['special'] == '1')))) {
 					//--
 					$proc_id = (string) $query['id'];
 					//--
@@ -969,7 +969,7 @@ final class Manager {
 							$data['translations'] = 1;
 						} //end if
 						//--
-						if(((\SmartAuth::test_login_privilege('superadmin') !== true) AND (\SmartAuth::test_login_privilege('pagebuilder_manager') !== true)) AND ((string)$query['special'] == '0') AND ((string)$y_frm['special'] == '1')) {
+						if(((\SmartAuth::test_login_privilege('superadmin') !== true) AND (\SmartAuth::test_login_privilege('pagebuilder-manage') !== true)) AND ((string)$query['special'] == '0') AND ((string)$y_frm['special'] == '1')) {
 							// avoid unprivileged admins to mark a page as special
 						} else {
 							//--
@@ -1085,7 +1085,7 @@ final class Manager {
 						//--
 						if((string)$y_frm['code'] == '') { // frm[code] must not be set here
 							//--
-							if((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder_compose') === true)) {
+							if((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-data-edit') === true)) {
 								//--
 								$redirect = self::composeUrl('op=record-view&id='.\Smart::escape_url($query['id']).'&sop=yaml');
 								//--
@@ -1236,7 +1236,7 @@ final class Manager {
 			//--
 			if($tmp_allow_deletion) {
 				//--
-				if((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder_delete') === true) AND ((string)$tmp_rd_arr['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder_delete') === true) AND (\SmartAuth::test_login_privilege('pagebuilder_manager') === true) AND ((string)$tmp_rd_arr['special'] == '1'))) {
+				if((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder-delete') === true) AND ((string)$tmp_rd_arr['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder-delete') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-manage') === true) AND ((string)$tmp_rd_arr['special'] == '1'))) {
 					//--
 					$rdw = '<script type="text/javascript">'.\SmartComponents::js_code_wnd_redirect(self::composeUrl('op=record-view&id='.\Smart::escape_url($tmp_rd_arr['id'])), 3000).'</script>';
 					//--

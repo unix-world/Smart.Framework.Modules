@@ -1,0 +1,6 @@
+
+# Smart.Framework.Modules / TplTypo3Fluid github#master@181109 #
+
+// v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
+
+###
