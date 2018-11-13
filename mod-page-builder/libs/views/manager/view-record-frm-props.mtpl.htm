@@ -14,9 +14,16 @@ ul#lang-list li:last-child:after {
 	content: "";
 }
 ul#related-objects {
-	padding: 0!important;
-	margin: 0!important;
-	[%%%%IF:IS-SUBSEGMENT:==1;%%%%]list-style-type: disc;[%%%%ELSE:IS-SUBSEGMENT%%%%]list-style-type: square;[%%%%/IF:IS-SUBSEGMENT%%%%]
+	padding: 0px !important;
+	margin: 0px !important;
+	list-style-type: [%%%%IF:IS-SUBSEGMENT:==1;%%%%]disc[%%%%ELSE:IS-SUBSEGMENT%%%%]square[%%%%/IF:IS-SUBSEGMENT%%%%] !important;
+}
+ul#related-objects li a {
+	text-decoration: none !important;
+	border-bottom: 1px dotted #777777 !important;
+}
+ul#related-objects li a:hover {
+	border-bottom: 1px dotted #CCCCCC !important;
 }
 </style>
 <table width="100%" border="0">
@@ -148,7 +155,7 @@ ul#related-objects {
 		</td>
 		<td><ul id="related-objects">
 	[%%%%LOOP:ARR-REFS%%%%]
-		<li><a href="[####URL-REF|html####][####ARR-REFS._-VAL-_|url####]">[####ARR-REFS._-VAL-_|html####]</a></li>
+		<li><a href="[####URL-REF|html####][####ARR-REFS._-VAL-_|url|html####]">[####ARR-REFS._-VAL-_|html####]</a></li>[%%%%|N%%%%]
 	[%%%%/LOOP:ARR-REFS%%%%]
 		</ul></td>
 	</tr>
