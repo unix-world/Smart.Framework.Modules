@@ -30,7 +30,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.181031
+ * @version 	v.181112
  * @package 	PageBuilder
  *
  */
@@ -291,6 +291,53 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		return (string) $arr['code'];
 		//--
 
+	} //END FUNCTION
+	//=====
+
+
+	//===== !!! this feature have to be provided as separate since a segment cannot be rendered more than once per controller !!!
+	final public function renderSegmentMarkers($segment_code, $markers) { // (OUTPUTS: HTML)
+		//--
+		if((\Smart::array_size($markers) > 0) AND (strpos((string)$segment_code, '{{=#') !== false)) { // if we provide express markers for replacing
+			//--
+			$segment_code = (string) str_replace( // Safe Fix: comment out any of: [####*####] [%%%%*%%%%] [@@@@*@@@@]
+				[
+					'[####',
+					'####]',
+					'[%%%%',
+					'%%%%]',
+					'[@@@@',
+					'@@@@]'
+				],
+				[
+					'(-####',
+					'####-)',
+					'(-%%%%',
+					'%%%%-)',
+					'(-@@@@',
+					'@@@@-)'
+				],
+				(string) $segment_code
+			);
+			//--
+			$segment_code = (string) str_replace( // Pre-Render: replace {{=#MARKER|escapings#=}} with [####MARKER|escapings####]
+				[
+					'{{=#',
+					'#=}}'
+				],
+				[
+					'[####',
+					'####]'
+				],
+				(string) $segment_code
+			);
+			//--
+			$segment_code = (string) \SmartMarkersTemplating::render_template((string)$segment_code, (array)$markers, 'yes');
+			//--
+		} //end if
+		//--
+		return (string) $segment_code;
+		//--
 	} //END FUNCTION
 	//=====
 

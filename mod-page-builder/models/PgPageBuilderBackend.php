@@ -21,7 +21,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PgPageBuilderBackend {
 
 	// ::
-	// v.181031
+	// v.181113
 
 
 	public static function getRecordsUniqueControllers() {
@@ -76,7 +76,7 @@ final class PgPageBuilderBackend {
 	public static function getRecordIdsById($y_id) {
 		//--
 		return (array) \SmartPgsqlDb::read_asdata(
-			'SELECT "id", "name" FROM "web"."page_builder" WHERE ("id" = $1) LIMIT 1 OFFSET 0',
+			'SELECT "id", "name", "ref" FROM "web"."page_builder" WHERE ("id" = $1) LIMIT 1 OFFSET 0',
 			[
 				(string) $y_id
 			]
@@ -215,38 +215,6 @@ final class PgPageBuilderBackend {
 	} //END FUNCTION
 
 
-	public static function updateRecordRefsById($y_id, $y_refs_arr) {
-		//--
-		if(\Smart::array_size($y_refs_arr) <= 0) {
-			return -1;
-		} //end if
-		if(\Smart::array_type_test($y_refs_arr) !== 1) { // must be array non-associative
-			return -2;
-		} //end if
-		//--
-		$arr_upd = [];
-		foreach($y_refs_arr as $key => $val) {
-			if((strlen((string)$val) < 2) OR (strlen((string)$val) > 63) OR (((string)$val != (string)\Smart::safe_validname((string)$val, '')) AND ((string)$val != (string)'#'.\Smart::safe_validname((string)$val, '')))) { // allow: [a-z0-9] _ - . @
-				return -3;
-			} //end if
-			$arr_upd[] = (string) $val;
-		} //end foreach
-		//--
-		if(\Smart::array_size($arr_upd) <= 0) {
-			return -4;
-		} //end if
-		//--
-		return (array) \SmartPgsqlDb::write_data(
-			'UPDATE "web"."page_builder" SET "ref" = smart_jsonb_arr_append("ref", $1) WHERE ("id" = $2)',
-			[
-				(string) \Smart::json_encode((array)$arr_upd), // ref add: json arr data
-				(string) $y_id // ID
-			]
-		);
-		//--
-	} //END FUNCTION
-
-
 	public static function clearRecordRefsById($y_id) {
 		//--
 		return (array) \SmartPgsqlDb::write_data(
@@ -281,6 +249,12 @@ final class PgPageBuilderBackend {
 		if((string)$rd['id'] == '') {
 			return -4;
 		} //end if
+		//--
+		$tmp_refs = \Smart::json_decode((string)$rd['ref']);
+		if(\Smart::array_size($tmp_refs) > 0) {
+			$y_arr_data['ctrl'] = ''; // fix: do not allow to set controller on sub-segments
+		} //end if
+		$tmp_refs = null;
 		//--
 		$wr = (array) \SmartPgsqlDb::write_data(
 			'UPDATE "web"."page_builder" '.
@@ -569,6 +543,38 @@ final class PgPageBuilderBackend {
 	//##### PRIVATES #####
 
 
+	private static function updateRecordRefsById($y_id, $y_refs_arr) {
+		//--
+		if(\Smart::array_size($y_refs_arr) <= 0) {
+			return -1;
+		} //end if
+		if(\Smart::array_type_test($y_refs_arr) !== 1) { // must be array non-associative
+			return -2;
+		} //end if
+		//--
+		$arr_upd = [];
+		foreach($y_refs_arr as $key => $val) {
+			if((strlen((string)$val) < 2) OR (strlen((string)$val) > 63) OR (((string)$val != (string)\Smart::safe_validname((string)$val, '')) AND ((string)$val != (string)'#'.\Smart::safe_validname((string)$val, '')))) { // allow: [a-z0-9] _ - . @
+				return -3;
+			} //end if
+			$arr_upd[] = (string) $val;
+		} //end foreach
+		//--
+		if(\Smart::array_size($arr_upd) <= 0) {
+			return -4;
+		} //end if
+		//--
+		return (array) \SmartPgsqlDb::write_data(
+			'UPDATE "web"."page_builder" SET "ref" = smart_jsonb_arr_append("ref", $1) WHERE ("id" = $2)',
+			[
+				(string) \Smart::json_encode((array)$arr_upd), // ref add: json arr data
+				(string) $y_id // ID
+			]
+		);
+		//--
+	} //END FUNCTION
+
+
 	private static function buildListWhereCondition($y_xsrc, $y_src) {
 		//--
 		$y_src = (string) trim((string)$y_src);
@@ -590,6 +596,9 @@ final class PgPageBuilderBackend {
 					break;
 				case 'name':
 					$where = 'WHERE (a."name" ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\')';
+					break;
+				case 'ctrl':
+					$where = 'WHERE (a."ctrl" ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\')';
 					break;
 				case 'code':
 					if((string)$y_src == '[]') { // empty

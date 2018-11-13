@@ -1,4 +1,4 @@
-<!-- Pagebuilder/Manage @ View Record / Props :: v.181031 -->
+<!-- Pagebuilder/Manage @ View Record / Props :: v.181113 -->
 <style>
 ul#lang-list {
 	display: inline;
@@ -12,6 +12,11 @@ ul#lang-list li:after {
 }
 ul#lang-list li:last-child:after {
 	content: "";
+}
+ul#related-objects {
+	padding: 0!important;
+	margin: 0!important;
+	[%%%%IF:IS-SUBSEGMENT:==1;%%%%]list-style-type: disc;[%%%%ELSE:IS-SUBSEGMENT%%%%]list-style-type: square;[%%%%/IF:IS-SUBSEGMENT%%%%]
 }
 </style>
 <table width="100%" border="0">
@@ -62,7 +67,7 @@ ul#lang-list li:last-child:after {
 	</tr>
 [%%%%IF:MODE-PAGETYPE:!=settings;%%%%]
 	[%%%%IF:SHOW-TRANSLATIONS:==1;%%%%]
-	<tr>
+	<tr valign="top">
 		<td colspan="2">
 			<hr id="dark">
 		</td>
@@ -80,7 +85,7 @@ ul#lang-list li:last-child:after {
 			[%%%%/IF:IS-TRANSLATABLE%%%%]
 		</td>
 	</tr>
-	<tr>
+	<tr valign="top">
 		<td>
 			<b>[####TEXT-TRANSLATIONS####]:</b>
 		</td>
@@ -131,5 +136,22 @@ ul#lang-list li:last-child:after {
 	</tr>
 	[%%%%/IF:MODE-PAGETYPE%%%%]
 [%%%%/IF:IS-SEGMENT%%%%]
+[%%%%IF:MODE:!=form;%%%%][%%%%IF:ARR-REFS:@+;%%%%]
+	<tr>
+		<td colspan="2">
+			<hr id="dark">
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>
+			<b>[####TEXT-REFS####]:</b>
+		</td>
+		<td><ul id="related-objects">
+	[%%%%LOOP:ARR-REFS%%%%]
+		<li><a href="[####URL-REF|html####][####ARR-REFS._-VAL-_|url####]">[####ARR-REFS._-VAL-_|html####]</a></li>
+	[%%%%/LOOP:ARR-REFS%%%%]
+		</ul></td>
+	</tr>
+[%%%%/IF:ARR-REFS%%%%][%%%%/IF:MODE%%%%]
 </table>
 <!-- #END -->

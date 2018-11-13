@@ -47,7 +47,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.181112
+ * @version 	v.181113
  * @package 	PageBuilder
  *
  */
@@ -135,6 +135,7 @@ final class Manager {
 		//--
 		$text['id'] 				= 'ID';
 		$text['ref'] 				= 'Ref.';
+		$text['refs'] 				= 'Related Objects';
 		$text['ctrl'] 				= 'Controller';
 		$text['layout'] 			= 'Design Layout';
 		$text['name'] 				= 'Name';
@@ -319,6 +320,38 @@ final class Manager {
 			$arr_pmodes = array('html' => 'HTML Code', 'markdown' => 'Markdown Code', 'text' => 'Text / Plain', 'raw' => 'Raw Output');
 		} //end if else
 		//--
+		$arr_refs = array();
+		$q_refs = \Smart::json_decode((string)$query['ref']);
+		if(!is_array($q_refs)) {
+			$q_refs = array();
+		} //end if
+		foreach($q_refs as $key => $val) {
+			if(!is_array($val)) {
+				if((string)$val != '') {
+					if(!in_array((string)$val, $arr_refs)) {
+						$arr_refs[] = (string) $val;
+					} //end if
+				} //end if
+			} //end if
+		} //end if
+		$q_refs = null;
+		$arr_refs = (array) \Smart::array_sort((array)$arr_refs, 'natsort');
+		//--
+		$is_subsegment = false;
+		if(\Smart::array_size($arr_refs) > 0) {
+			$is_subsegment = true;
+		} //end if
+		//--
+		$q_refs = \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordsByRef($y_id);
+		for($i=0; $i<\Smart::array_size($q_refs); $i++) {
+			if((string)$q_refs[$i]['id'] != '') {
+				if(!in_array((string)$q_refs[$i]['id'], $arr_refs)) {
+					$arr_refs[] = (string) $q_refs[$i]['id'];
+				} //end if
+			} //end if
+		} //end if
+		$q_refs = null;
+		//--
 		$bttns = '';
 		//--
 		$translator_window = \SmartTextTranslations::getTranslator('@core', 'window');
@@ -342,7 +375,7 @@ final class Manager {
 				$fld_pmode = \SmartComponents::html_select_list_single('pmode', $query['mode'], 'form', $arr_pmodes, 'frm[mode]', '150/0', '', 'no', 'no');
 			} //end if else
 			//--
-			$fld_ctrl = self::drawListAreas($query['ctrl'], 'form', 'frm[ctrl]');
+			$fld_ctrl = self::drawFieldCtrl($query['ctrl'], $is_subsegment, 'form', 'frm[ctrl]');
 			$fld_special = \SmartComponents::html_selector_true_false('frm[special]', $query['special']);
 			$fld_active = \SmartComponents::html_selector_true_false('frm[active]', $query['active']);
 			$fld_auth = \SmartComponents::html_selector_true_false('frm[auth]', $query['auth']);
@@ -372,7 +405,7 @@ final class Manager {
 			//--
 			$fld_name = \Smart::escape_html($query['name']);
 			$fld_pmode = \SmartComponents::html_select_list_single('pmode', $query['mode'], 'list', $arr_pmodes);
-			$fld_ctrl = self::drawListAreas($query['ctrl'], 'list');
+			$fld_ctrl = self::drawFieldCtrl($query['ctrl'], $is_subsegment, 'list');
 			$fld_special = \SmartComponents::html_selector_true_false('', $query['special']);
 			$fld_active = \SmartComponents::html_selector_true_false('', $query['active']);
 			$fld_auth = \SmartComponents::html_selector_true_false('', $query['auth']);
@@ -423,7 +456,9 @@ final class Manager {
 		$out = \SmartMarkersTemplating::render_file_template(
 			(string) $the_template,
 			[
+				'MODE' 						=> (string) $y_mode,
 				'IS-SEGMENT' 				=> (string) self::testIsSegmentPage($query['id']),
+				'IS-SUBSEGMENT' 			=> (string) $is_subsegment ? 1 : 0,
 				'BUTTONS'					=> (string) $bttns,
 				'CODE-TYPE'					=> (string) $codetype,
 				'TEXT-NAME'					=> (string) self::text('name'),
@@ -440,19 +475,19 @@ final class Manager {
 				'FIELD-AUTH'				=> (string) $fld_auth,
 				'TEXT-TRANS'				=> (string) self::text('translatable'),
 				'FIELD-TRANS'				=> (string) $fld_trans,
-
-				'MODULE-PATH' 			=> (string) self::$ModulePath,
-				'TEXT-TRANSLATIONS' 	=> (string) self::text('translations'),
-				'SHOW-TRANSLATIONS' 	=> (int)    $show_translations,
-				'COUNT-TRANSLATIONS' 	=> (int)    $transl_cnt,
-				'ARR-TRANSLATIONS' 		=> (array)  $transl_arr,
-				'IS-TRANSLATABLE' 		=> (int)    $query['translations'],
-				'WARN-TRANSLATABLE' 	=> (string) self::text('warn_translations'),
-
-
+				'MODULE-PATH' 				=> (string) self::$ModulePath,
+				'TEXT-TRANSLATIONS' 		=> (string) self::text('translations'),
+				'SHOW-TRANSLATIONS' 		=> (int)    $show_translations,
+				'COUNT-TRANSLATIONS' 		=> (int)    $transl_cnt,
+				'ARR-TRANSLATIONS' 			=> (array)  $transl_arr,
+				'IS-TRANSLATABLE' 			=> (int)    $query['translations'],
+				'WARN-TRANSLATABLE' 		=> (string) self::text('warn_translations'),
 				'TEXT-LAYOUT'				=> (string) self::text('layout'),
 				'FIELD-LAYOUT'				=> (string) $fld_layout,
-				'MODE-PAGETYPE' 			=> (string) $query['mode']
+				'MODE-PAGETYPE' 			=> (string) $query['mode'],
+				'TEXT-REFS' 				=> (string) self::text('refs'),
+				'ARR-REFS' 					=> (array)  $arr_refs,
+				'URL-REF' 					=> (string) self::composeUrl('op=record-view&id=')
 			]
 		);
 		//--
@@ -1297,7 +1332,7 @@ final class Manager {
 	private static function composeUrl($y_suffix) {
 		//--
 		return (string) \Smart::url_add_suffix(
-			(string) self::$ModuleScript.'?/'.self::$ModulePageURLParam.'/'.\Smart::escape_url(self::$ModulePageURLId),
+			(string) self::$ModuleScript.'?/'.\Smart::escape_url(self::$ModulePageURLParam).'/'.\Smart::escape_url(self::$ModulePageURLId),
 			(string) $y_suffix
 		);
 		//--
@@ -1493,10 +1528,17 @@ final class Manager {
 
 
 	//==================================================================
-	private static function drawListAreas($y_id, $y_mode, $y_var='', $y_width='65') {
+	private static function drawFieldCtrl($y_id, $y_issubsegment, $y_mode, $y_var='', $y_width='65') {
 		//--
 		if((string)$y_mode == 'form') {
-			return (string) '<input type="text" name="'.\Smart::escape_html((string)$y_var).'" value="'.\Smart::escape_html((string)$y_id).'" size="'.\Smart::format_number_int($y_width,'+').'" maxlength="128" autocomplete="off" placeholder="Controller Name">';
+			if($y_issubsegment === true) {
+				$prop_placeholder = 'Controller Name (N/A)';
+				$prop_readonly = ' readonly disabled';
+			} else {
+				$prop_placeholder = 'Controller Name';
+				$prop_readonly = '';
+			} //end if else
+			return (string) '<input type="text" name="'.\Smart::escape_html((string)$y_var).'" value="'.\Smart::escape_html((string)$y_id).'" size="'.\Smart::format_number_int($y_width,'+').'" maxlength="128" autocomplete="off" placeholder="'.\Smart::escape_html($prop_placeholder).'"'.$prop_readonly.'>';
 		} else {
 			return (string) \Smart::escape_html($y_id);
 		} //end if else
@@ -1654,6 +1696,7 @@ final class Manager {
 				'TXT-COL-ID' 		=> (string) self::text('id', false),
 				'TXT-COL-REFID' 	=> (string) self::text('ref', false),
 				'TXT-COL-NAME' 		=> (string) self::text('name', false),
+				'TXT-COL-CTRL' 		=> (string) self::text('ctrl', false),
 				'TXT-COL-CODE' 		=> (string) self::text('record_code', false),
 				'TXT-COL-RUNTIME' 	=> (string) self::text('record_runtime', false),
 				'TXT-COL-SYNTAX' 	=> (string) self::text('record_syntax', false),
@@ -1715,6 +1758,7 @@ final class Manager {
 				'TXT-COL-ID' 		=> (string) self::text('id', false),
 				'TXT-COL-REFID' 	=> (string) self::text('ref', false),
 				'TXT-COL-NAME' 		=> (string) self::text('name', false),
+				'TXT-COL-CTRL' 		=> (string) self::text('ctrl', false),
 				'TXT-COL-CODE' 		=> (string) self::text('record_code', false),
 				'TXT-COL-RUNTIME' 	=> (string) self::text('record_runtime', false),
 				'TXT-COL-SYNTAX' 	=> (string) self::text('record_syntax', false),
