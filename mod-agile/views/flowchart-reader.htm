@@ -1,0 +1,18 @@
+[@@@@SUB-TEMPLATE:flowchart-init.inc.htm@@@@]
+<div style="text-align:center">
+	<h1 style="text-align:center;">Flowchart: [####TITLE|html####]</h1>
+</div>
+<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<div style="text-align:center;">
+	<button class="ux-button ux-button-highlight" id="flowchartEditBtn" onclick="self.location='admin.php?/page/agile.flowchart-editor/uuid/[####UUID|url|html####]/edit/yes'; return false;" style="margin-left: 15px;">Edit Flowchart</button>
+	<button class="ux-button ux-button-special" id="flowchartCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
+</div>
+<br>
+<div class="jtk-demo-main">
+	<div class="jtk-demo-canvas canvas-wide flowchart-area jtk-surface jtk-surface-nopan" id="canvas" style="border: 1px solid #ECECEC;"></div>
+</div>
+<script>
+	var flowchartDataObj = [####JSON-DATA|json####];
+	flowchartEditorInit(flowchartDataObj);
+	flowchartDataObj = null; // clear
+</script>

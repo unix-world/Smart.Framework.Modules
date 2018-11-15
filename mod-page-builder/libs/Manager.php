@@ -202,7 +202,7 @@ final class Manager {
 		} //end if else
 		//--
 		$out = \SmartComponents::html_jsload_editarea();
-		$out .= \SmartComponents::js_code_highlightsyntax('div');
+		$out .= \SmartComponents::js_code_highlightsyntax('body');
 		$out .= '<div style="text-align:left;">';
 		$out .= '<h3>Code Preview: '.\Smart::escape_html($query['name']).' :: '.\Smart::escape_html($query['id']).'</h3>';
 		$out .= '<pre style="background:#ebe9e9;"><code class="'.\Smart::escape_html($type).'" id="code-view-area">'.\Smart::escape_html(base64_decode((string)$query['code'])).'</code></pre>';
@@ -226,7 +226,7 @@ final class Manager {
 		$type = 'yaml';
 		//--
 		$out = \SmartComponents::html_jsload_editarea();
-		$out .= \SmartComponents::js_code_highlightsyntax('div');
+		$out .= \SmartComponents::js_code_highlightsyntax('body');
 		$out .= '<div style="text-align:left;">';
 		$out .= '<h3>Data Preview: '.\Smart::escape_html($query['name']).' :: '.\Smart::escape_html($query['id']).'</h3>';
 		$out .= '<pre style="background:#ebe9e9;"><code class="'.\Smart::escape_html($type).'" id="data-view-area">'.\Smart::escape_html(base64_decode((string)$query['data'])).'</code></pre>';

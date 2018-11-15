@@ -42,7 +42,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		if((string)$op == 'viewsource') {
 			//--
-			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('div', ['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'<h1>Twig Template (TPL Source)</h1><hr><pre style="background:#FAFAFA;"><code class="twig" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
+			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'<h1>Twig Template (TPL Source)</h1><hr><pre style="background:#FAFAFA;"><code class="twig" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
 			return;
 			//--
 		} //end if

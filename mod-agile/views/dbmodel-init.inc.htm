@@ -1,0 +1,248 @@
+<!-- DB Modeler Styles -->
+<link rel="stylesheet" href="modules/mod-wflow-components/views/dbmodeler/css/style.css" media="all">
+<!-- DB Modeler Scripts -->
+<script src="modules/mod-wflow-components/views/dbmodeler/js/config.js"></script>
+<script type="text/javascript">
+	[%%%%IF:OP-MODE:@=create|edit;%%%%]
+	CONFIG.IS_READONLY = false;
+	[%%%%ELSE:OP-MODE%%%%]
+	CONFIG.IS_READONLY = true;
+	[%%%%/IF:OP-MODE%%%%]
+	CONFIG.DEFAULT_DB = '[####DB-TYPE|js####]';
+	CONFIG.STATIC_PATH = 'modules/mod-wflow-components/views/dbmodeler/';
+	CONFIG.XHR_SAVE_FUNCTION = function(xml, e) {
+		if(xml) {
+			$('#dbmodel_type').val(CONFIG.DEFAULT_DB);
+			$('#dbmodel_data').val(SmartJS_Base64.encode(xml));
+			SmartJS_BrowserUtils.RefreshParent();
+			SmartJS_BrowserUtils.Submit_Form_By_Ajax('dbmodel_form', 'admin.php?page=agile.dbmodel-save', 'yes');
+		} //end if
+		//console.log(xml);
+	};
+</script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/oz.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/globals.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/visual.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/row.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/table.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/relation.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/key.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/rubberband.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/map.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/toggle.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/io.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/tablemanager.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/rowmanager.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/keymanager.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/window.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/options.js"></script>
+<script src="modules/mod-wflow-components/views/dbmodeler/js/wwwsqldesigner.js"></script>
+<!-- DB Modeler Elements -->
+<div id="area"></div><!-- # area -->
+<div id="controls">
+	<div id="bar">
+		<div id="toggle"></div>
+		[%%%%IF:OP-MODE:@=create|edit;(1)%%%%]
+		<input type="button" id="serversave" class="ux-button ux-button-regular" style="margin-left:-5px!important;" name="Save" title="Save">
+			[%%%%IF:OP-MODE:==create;(2)%%%%]
+		<button class="ux-button ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;">Cancel Create</button>
+			[%%%%ELSE:OP-MODE(2)%%%%]
+		<button class="ux-button ux-button-special" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[####UUID|url|js####]'; return false;">Cancel Edit</button>
+			[%%%%/IF:OP-MODE(2)%%%%]
+		[%%%%ELSE:OP-MODE(1)%%%%]
+		<button class="ux-button ux-button-highlight" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[####UUID|url|js####]/edit/yes'; return false;">Edit DB-Model</button>
+		<button class="ux-button ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;">Close View</button>
+		[%%%%/IF:OP-MODE(1)%%%%]
+		<hr>
+		[%%%%IF:OP-MODE:@=create|edit;%%%%]
+		<input type="button" id="addtable">
+		<input type="button" id="edittable">
+		<input type="button" id="addrow">
+		<input type="button" id="editrow">
+		<input type="button" id="uprow" class="small">
+		<input type="button" id="downrow" class="small">
+		<input type="button" id="foreignconnect">
+		<input type="button" id="foreigndisconnect">
+		<input type="button" id="removerow">
+		<input type="button" id="removetable">
+		<input type="button" id="cleartables">
+		<hr>
+		<input type="button" id="saveload">
+		[%%%%/IF:OP-MODE%%%%]
+		<input type="button" id="options">
+		<hr>
+		<div id="the-db-type" style="font-weight:bold; cursor:help;">DB-Type:?</div>
+	</div>
+	<div id="rubberband"></div>
+	<div id="minimap"></div>
+	<div id="background"></div>
+	<div id="window">
+		<div id="windowtitle"><img id="throbber" src="modules/mod-wflow-components/views/dbmodeler/images/throbber.gif" alt="" title=""></div>
+		<div id="windowcontent"></div>
+		<input type="button" id="windowok">
+		<input type="button" id="windowcancel">
+	</div>
+</div><!-- # controls -->
+<div id="opts">
+	<table>
+		<tbody>
+			<tr>
+				<td>
+					<label id="snap" for="optionsnap"></label>
+				</td>
+				<td>
+					<input type="text" size="4" id="optionsnap">
+					<span class="small" id="optionsnapnotice"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label id="hide" for="optionhide"></label>
+				</td>
+				<td>
+					<input type="checkbox" id="optionhide">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					* <label id="vector" for="optionvector"></label>
+				</td>
+				<td>
+					<input type="checkbox" id="optionvector">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					* <label id="showsize" for="optionshowsize"></label>
+				</td>
+				<td>
+					<input type="checkbox" id="optionshowsize">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					* <label id="showtype" for="optionshowtype"></label>
+				</td>
+				<td>
+					<input type="checkbox" id="optionshowtype">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<hr>
+	* <span class="small" id="optionsnotice"></span>
+</div><!-- # options -->
+[%%%%IF:OP-MODE:@=create|edit;%%%%]
+<div id="io">
+	<table>
+		<tbody>
+			<tr valign="top">
+				<td style="width:99%">
+					<fieldset>
+						<legend id="client"></legend>
+						<div id="singlerow">
+							<input type="button" id="clientsave">
+							<input type="button" id="clientload">
+						</div>
+						<hr>
+						<input type="button" id="clientsql">
+					</fieldset>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<fieldset>
+						<legend id="output"></legend>
+						<textarea id="textarea" rows="1" cols="1"></textarea><!--modified by javascript later-->
+					</fieldset>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div><!-- # io load/dump -->
+[%%%%/IF:OP-MODE%%%%]
+<div id="keys">
+	<fieldset>
+		<legend id="keyslistlabel"></legend>
+		<select id="keyslist"><option></option></select>
+		<input type="button" id="keyadd">
+		<input type="button" id="keyremove">
+	</fieldset>
+	<fieldset>
+		<legend id="keyedit"></legend>
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<label for="keytype" id="keytypelabel"></label>
+						<select id="keytype"><option></option></select>
+					</td>
+					<td></td>
+					<td>
+						<label for="keyname" id="keynamelabel"></label>
+						<input type="text" id="keyname" size="10">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3"><hr></td>
+				</tr>
+				<tr>
+					<td>
+						<label for="keyfields" id="keyfieldslabel"></label><br>
+						<select id="keyfields" size="5" multiple="multiple"><option></option></select>
+					</td>
+					<td>
+						<input type="button" id="keyleft" value="&lt;&lt;"><br>
+						<input type="button" id="keyright" value="&gt;&gt;"><br>
+					</td>
+					<td>
+						<label for="keyavail" id="keyavaillabel"></label><br>
+						<select id="keyavail" size="5" multiple="multiple"><option></option></select>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</fieldset>
+</div><!-- # table keys edit -->
+<div id="table">
+	<table>
+		<tbody>
+			<tr>
+				<td>
+					<label id="tablenamelabel" for="tablename"></label>
+				</td>
+				<td>
+					<input id="tablename" type="text">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label id="tablecommentlabel" for="tablecomment"></label>
+				</td>
+				<td>
+					<textarea rows="5" cols="40" id="tablecomment"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="button" id="tablekeys">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div><!-- # table edit -->
+<script type="text/javascript">
+jQuery(function(){
+	var sqlDesigner = null;
+	var sqlDataXml = '[####XML-DATA|js####]';
+	if(sqlDataXml) {
+		sqlDataXml = SmartJS_Base64.decode(sqlDataXml);
+		if(!sqlDataXml) {
+			sqlDataXml = '';
+		} //end if
+	} //end if
+	sqlDesigner = new SQL.Designer(sqlDataXml);
+	sqlDataXml = null;
+});
+</script>
+<!-- # end init -->

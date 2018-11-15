@@ -1,0 +1,14 @@
+<h1>Create Flowchart</h1>
+<br>
+<a class="ux-button ux-button-primary" href="admin.php?/page/agile.flowchart-editor/edit/yes" data-smart="open.modal">New Flowchart</a>
+&nbsp;
+<a class="ux-button ux-button-primary" href="admin.php?/page/agile.flowchart-editor/edit/yes/import/yes" data-smart="open.modal">New Flowchart from Import</a>
+<br>
+<br>
+<h1>Saved Flowcharts</h1>
+<br>
+[%%%%LOOP:FLOW-CHARTS%%%%]
+	<br>
+	<a class="ux-button" href="admin.php?/page/agile.flowchart-editor/uuid/[####FLOW-CHARTS.UUID|url|html####]" data-smart="open.modal" title="UUID: [####FLOW-CHARTS.UUID|html####]">Flowchart: [####FLOW-CHARTS.TITLE|html####] @ [####FLOW-CHARTS.USER|html####] - [####FLOW-CHARTS.DTIME|html####]</a>
+	<br>
+[%%%%/LOOP:FLOW-CHARTS%%%%]

@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="modules/mod-wflow-components/views/flowchart/jsplumbtoolkit-defaults.css">
+<link rel="stylesheet" href="modules/mod-wflow-components/views/flowchart/jsplumb.css">
+<script src="modules/mod-wflow-components/views/flowchart/jsplumb.js"></script>
+<link rel="stylesheet" href="modules/mod-wflow-components/views/flowchart/editor/flowchart-editor.css">
+<script src="modules/mod-wflow-components/views/flowchart/editor/flowchart-editor.js"></script>
+<script>
+jQuery(document).ready(function() {
+	function resizeFlowchartCanvas() {
+		jQuery('#canvas').width(jQuery(window).width()-25).height(jQuery(window).height()-175);
+	}
+	resizeFlowchartCanvas();
+	jQuery(window).resize(function() {
+		resizeFlowchartCanvas();
+	});
+});
+</script>

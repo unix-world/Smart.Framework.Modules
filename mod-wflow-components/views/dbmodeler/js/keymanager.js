@@ -22,6 +22,11 @@ SQL.KeyManager.prototype.build = function() {
 	this.dom.avail = OZ.$("keyavail");
 	this.dom.listlabel = OZ.$("keyslistlabel");
 
+	if(isModeReadOnly) {
+		this.dom.type.disabled = true;
+		this.dom.name.disabled = true;
+	}
+
 	var ids = ["keyadd","keyremove"];
 	for (var i=0;i<ids.length;i++) {
 		var id = ids[i];

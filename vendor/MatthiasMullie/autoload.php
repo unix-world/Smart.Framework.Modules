@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Function AutoLoad Extra Libs for MatthiasMullie
+ * Function AutoLoad Extra Libs for MatthiasMullie: Minify, PathConverter
  * they are loaded via Dependency Injection
  *
  * @access 		private
@@ -26,19 +26,18 @@ function autoload__MatthiasMullie($classname) {
 	//--
 	$dir = 'modules/vendor/MatthiasMullie/';
 	//--
-	if(((string)$parts[1] == 'Minify') OR ((string)$parts[1] == 'PathConverter')) {
-		//--
-		if((string)$parts[1] != '') {
-			for($i=1; $i<$max; $i++) {
-				$dir .= (string) $parts[$i].'/';
-			} //end for
-		} //end if
-		//--
-	} else {
-		//--
-		return; // no module detected
-		//--
-	} //end if
+	switch((string)$parts[1]) {
+		case 'Minify':
+		case 'PathConverter':
+			if((string)$parts[1] != '') {
+				for($i=1; $i<$max; $i++) {
+					$dir .= (string) $parts[$i].'/';
+				} //end for
+			} //end if
+			break;
+		default:
+			return; // no module detected
+	} //end switch
 	//--
 	$dir  = (string) $dir;
 	$file = (string) $parts[(int)$max];
@@ -59,7 +58,6 @@ function autoload__MatthiasMullie($classname) {
 //--
 spl_autoload_register('autoload__MatthiasMullie', true, false); // throw / append
 //--
-
 
 // end of php code
 ?>

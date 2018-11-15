@@ -1,0 +1,49 @@
+[@@@@SUB-TEMPLATE:flowchart-init.inc.htm@@@@]
+<form class="ux-form" id="flowchart_form" name="flowchart_form" method="POST" action="#">
+	<input id="flowchart_uuid" name="uuid" type="hidden" value="[####UUID|html####]">
+	<input id="flowchart_title" name="flowchart_title" type="text" maxlength="255" value="[####TITLE|html####]" title="Flowchart Title" class="ux-field" style="width:99vw; margin-bottom:5px; font-size:28px!important; font-weight:bold; text-align:center;">
+	<input id="flowchart_data" name="flowchart_data" type="hidden" value="">
+</form>
+<br>
+<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<div style="text-align:center;">
+	<button class="ux-button" id="flowchartNewSBtn" onclick="" style="margin-left: 15px;" title="Start / Stop">New Start/Stop</button>
+	<button class="ux-button" id="flowchartNewCBtn" onclick="" style="margin-left: 15px;">New Display</button>
+	<button class="ux-button" id="flowchartNewBtn" onclick="" style="margin-left: 15px;">New Process</button>
+	<button class="ux-button" id="flowchartNewDBtn" onclick="" style="margin-left: 15px;">New Decision</button>
+	<button class="ux-button" id="flowchartNewIOBtn" onclick="" style="margin-left: 15px;">New Data</button>
+	<button class="ux-button ux-button-secondary" id="flowchartExportBtn" onclick="" style="margin-left: 15px;">Export (console)</button>
+	<button class="ux-button ux-button-regular" id="flowchartSaveBtn" onclick="" style="margin-left: 15px;">Save Flowchart</button>
+	[%%%%IF:OP-MODE:==create;%%%%]
+	<button class="ux-button ux-button-special" id="flowchartCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
+	[%%%%ELSE:OP-MODE%%%%]
+	<button class="ux-button ux-button-special" id="flowchartCancelBtn" onclick="self.location='admin.php?/page/agile.flowchart-editor/uuid/[####UUID|url|html####]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
+	[%%%%/IF:OP-MODE%%%%]
+</div>
+<br>
+<div class="jtk-demo-main">
+	<div class="jtk-demo-canvas canvas-wide flowchart-area jtk-surface jtk-surface-nopan" id="canvas" style="border: 1px solid #ECECEC;"></div>
+</div>
+<script>
+	var flowchartIsReadonly = false;
+	var flowchartAddDialogHelper = function(elemType, fxGenerateElement) {
+		SmartJS_BrowserUtils.confirm_Dialog('<h3>Add Element: ' + SmartJS_CoreUtils.escape_html(SmartJS_CoreUtils.ucfirst(elemType)) + '</h3><div>Select the Connector Type for Element: <select id="flowchart-add-element-type"><option value="DEFAULT">Default</option><option value="INVERTED">Inverted</option><option value="PERIMETER">Perimeter</option></select></div>', function(){ var theLabel = $("#flowchart-add-element-type").val(); fxGenerateElement(elemType, theLabel); }, 'Add New Flowchart Element', 550, 200);
+	}
+	var flowchartSaveDataHelper = function(data) {
+		var theData = JSON.stringify(data);
+		$('#flowchart_data').val(theData);
+		SmartJS_BrowserUtils.RefreshParent();
+		SmartJS_BrowserUtils.Submit_Form_By_Ajax('flowchart_form', 'admin.php?page=agile.flowchart-save', 'yes');
+	}
+	var flowchartExportDataHelper = function(data) {
+		console.log(JSON.stringify(data));
+	}
+</script>
+<script>
+	var flowchartDataObj = [####JSON-DATA|json####];
+	flowchartEditorInit(flowchartDataObj, flowchartIsReadonly, flowchartAddDialogHelper, flowchartSaveDataHelper, flowchartExportDataHelper);
+	flowchartDataObj = null; // clear
+</script>
+<script>
+	SmartJS_BrowserUtils.PageAwayControl('Exit without Save ?');
+</script>

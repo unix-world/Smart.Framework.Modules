@@ -9,6 +9,14 @@ SQL.IO = function(owner) {
 		container:OZ.$("io")
 	};
 
+	try { // unixman
+		OZ.$('the-db-type').innerText = 'DB-Type: ' + this.owner.getOption('db');
+	} catch(err){}
+
+	if(!this.dom.container) {
+		return; // unixman fix for readonly
+	}
+
 	var ids = [ "saveload", "clientsql",
 				"clientsave", "clientload",
 				"serversave", "serverload" // "serverlist", "serverimport"
@@ -22,10 +30,6 @@ SQL.IO = function(owner) {
 			elm.value = _(id);
 		} catch(err){}
 	}
-
-	try { // unixman
-		OZ.$('the-db-type').innerText = 'DB-Type: ' + this.owner.getOption('db');
-	} catch(err){}
 
 	var ids = ["client","server","output"];
 	for (var i=0;i<ids.length;i++) {

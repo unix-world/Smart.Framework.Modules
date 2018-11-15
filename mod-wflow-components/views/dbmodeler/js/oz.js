@@ -248,13 +248,13 @@ if (!Function.prototype.bind) {
 
 if (!Array.prototype.indexOf) {
 	Array.prototype.indexOf = function(item, from) {
-	    var len = this.length;
-	    var i = from || 0;
-	    if (i < 0) { i += len; }
-	    for (;i<len;i++) {
+		var len = this.length;
+		var i = from || 0;
+		if (i < 0) { i += len; }
+		for (;i<len;i++) {
 			if (i in this && this[i] === item) { return i; }
-	    }
-	    return -1;
+		}
+		return -1;
 	}
 }
 if (!Array.indexOf) {
@@ -263,13 +263,13 @@ if (!Array.indexOf) {
 
 if (!Array.prototype.lastIndexOf) {
 	Array.prototype.lastIndexOf = function(item, from) {
-	    var len = this.length;
+		var len = this.length;
 		var i = from || len-1;
 		if (i < 0) { i += len; }
-	    for (;i>-1;i--) {
+		for (;i>-1;i--) {
 			if (i in this && this[i] === item) { return i; }
-	    }
-	    return -1;
+		}
+		return -1;
 	}
 }
 if (!Array.lastIndexOf) {
@@ -278,8 +278,8 @@ if (!Array.lastIndexOf) {
 
 if (!Array.prototype.forEach) {
 	Array.prototype.forEach = function(cb, _this) {
-	    var len = this.length;
-	    for (var i=0;i<len;i++) {
+		var len = this.length;
+		for (var i=0;i<len;i++) {
 			if (i in this) { cb.call(_this, this[i], i, this); }
 		}
 	}
@@ -290,11 +290,11 @@ if (!Array.forEach) {
 
 if (!Array.prototype.every) {
 	Array.prototype.every = function(cb, _this) {
-	    var len = this.length;
-	    for (var i=0;i<len;i++) {
+		var len = this.length;
+		for (var i=0;i<len;i++) {
 			if (i in this && !cb.call(_this, this[i], i, this)) { return false; }
-	    }
-	    return true;
+		}
+		return true;
 	}
 }
 if (!Array.every) {
@@ -331,14 +331,14 @@ if (!Array.map) {
 if (!Array.prototype.filter) {
 	Array.prototype.filter = function(cb, _this) {
 		var len = this.length;
-	    var res = [];
+		var res = [];
 			for (var i=0;i<len;i++) {
 				if (i in this) {
 					var val = this[i];
 					if (cb.call(_this, val, i, this)) { res.push(val); }
 				}
 			}
-	    return res;
+		return res;
 	}
 }
 if (!Array.filter) {

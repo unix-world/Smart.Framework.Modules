@@ -107,7 +107,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						'REPO-NAME' 		=> (string) $repo,
 						'REPO-PATH' 		=> (string) $path,
 						'REVISION' 			=> (string) $rev,
-						'CODE-HIGHLIGHT' 	=> (string) SmartComponents::js_code_highlightsyntax('div', ['web']),
+						'CODE-HIGHLIGHT' 	=> (string) SmartComponents::js_code_highlightsyntax('body', ['web']),
 						'CODE-TYPE' 		=> 'diff',
 						'CODE-HTML' 		=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html((string)\SmartModExtLib\Svn\SvnWebManager::getDiffFile($repo, $path, $rev_old, $rev_new)))
 					]
@@ -148,7 +148,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'REPO-NAME' 		=> (string) $repo,
 							'REPO-PATH' 		=> (string) $path,
 							'REVISION' 			=> (string) $rev,
-							'CODE-HIGHLIGHT' 	=> (string) SmartComponents::js_code_highlightsyntax('div', (array)$highlight_arr['pack']),
+							'CODE-HIGHLIGHT' 	=> (string) SmartComponents::js_code_highlightsyntax('body', (array)$highlight_arr['pack']),
 							'CODE-TYPE' 		=> (string) $highlight_arr['type'],
 							'CODE-HTML' 		=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html((string)\SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev)))
 						]

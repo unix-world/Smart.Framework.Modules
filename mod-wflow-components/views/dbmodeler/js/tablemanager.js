@@ -2,6 +2,9 @@
 // wwwsqldesigner: tablemanager.js
 
 SQL.TableManager = function(owner) {
+
+	var isModeReadOnly = owner.getOption("readonly");
+
 	this.owner = owner;
 	this.dom = {
 		container:OZ.$("table"),
@@ -10,6 +13,11 @@ SQL.TableManager = function(owner) {
 	};
 	this.selection = [];
 	this.adding = false;
+
+	if(isModeReadOnly) {
+		this.dom.name.disabled = true;
+		this.dom.comment.disabled = true;
+	}
 
 	var ids = ["addtable","removetable","aligntables","cleartables","addrow","edittable","tablekeys"];
 	for (var i=0;i<ids.length;i++) {
@@ -27,7 +35,6 @@ SQL.TableManager = function(owner) {
 		var elm = OZ.$(id);
 		elm.innerHTML = _(id);
 	}
-
 
 	this.select(false);
 
@@ -136,7 +143,7 @@ SQL.TableManager.prototype.selectRect = function(x,y,width,height) { /* select a
 		var ty = t.y;
 		var ty1 = t.y+t.height;
 		if (((tx>=x && tx<x1) || (tx1>=x && tx1<x1) || (tx<x && tx1>x1)) &&
-		    ((ty>=y && ty<y1) || (ty1>=y && ty1<y1) || (ty<y && ty1>y1)))
+			((ty>=y && ty<y1) || (ty1>=y && ty1<y1) || (ty<y && ty1>y1)))
 			{ this.selection.push(t); }
 	}
 	this.processSelection();

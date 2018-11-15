@@ -1,6 +1,10 @@
 
 /* DB-Modeler :: r.170829 */
 
+#area * {
+	font-size: 11px;
+}
+
 #area {
 	position: relative;
 	background: transparent url(../images/back.png);
