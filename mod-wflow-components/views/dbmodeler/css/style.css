@@ -167,6 +167,25 @@
 	margin-left: 3px;
 }
 
+.foreign:after, .primary.foreign:after {
+	display: inline-block;
+	content: "";
+	width: 16px;
+	height: 16px;
+	background: url('../images/key-foreign.png') transparent no-repeat;
+	margin-left: 3px;
+}
+
+.help:after {
+	display: inline-block;
+	content: "";
+	width: 16px;
+	height: 16px;
+	background: url('../images/help.png') transparent no-repeat;
+	margin-left: 3px;
+	cursor: help;
+}
+
 .key {
 	font-style: italic;
 }

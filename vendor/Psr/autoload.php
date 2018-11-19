@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Function AutoLoad Extra Libs for Psr: Cache
+ * Function AutoLoad Extra Libs for Vendor / Psr (Cache)
  * they are loaded via Dependency Injection
  *
  * @access 		private
  * @internal
  *
  */
-function autoload__Psr($classname) {
+function autoload__VendorPsr($classname) {
 	//--
 	$classname = (string) $classname;
 	//--
@@ -55,7 +55,7 @@ function autoload__Psr($classname) {
 	//--
 } //END FUNCTION
 //--
-spl_autoload_register('autoload__Psr', true, false); // throw / append
+spl_autoload_register('autoload__VendorPsr', true, false); // throw / append
 //--
 
 // end of php code

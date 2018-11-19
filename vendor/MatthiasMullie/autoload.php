@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Function AutoLoad Extra Libs for MatthiasMullie: Minify, PathConverter
+ * Function AutoLoad Extra Libs for Vendor / MatthiasMullie (Minify, PathConverter)
  * they are loaded via Dependency Injection
  *
  * @access 		private
  * @internal
  *
  */
-function autoload__MatthiasMullie($classname) {
+function autoload__VendorMatthiasMullie($classname) {
 	//--
 	$classname = (string) $classname;
 	//--
@@ -56,7 +56,7 @@ function autoload__MatthiasMullie($classname) {
 	//--
 } //END FUNCTION
 //--
-spl_autoload_register('autoload__MatthiasMullie', true, false); // throw / append
+spl_autoload_register('autoload__VendorMatthiasMullie', true, false); // throw / append
 //--
 
 // end of php code

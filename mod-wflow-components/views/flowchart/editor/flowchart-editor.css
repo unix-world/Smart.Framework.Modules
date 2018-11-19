@@ -1,7 +1,7 @@
 /*
-// jsPlumb Flowchart Editor
-// (c) 2017 unix-world.org
-// v.180402
+// jsPlumb Flowchart Editor :: CSS
+// (c) 2017-2018 unix-world.org
+// v.181116.r5 (stable)
 */
 
 .flowchart-area * {
@@ -133,7 +133,14 @@ path, .jtk-endpoint {
 }
 
 .circle span {
+	top: 7px;
+	left: 35px;
 	color: #DC3C48;
+}
+
+.circle p {
+	top: 23px;
+	left: 9px;
 }
 
 .oval {
@@ -172,7 +179,7 @@ path, .jtk-endpoint {
 }
 
 .parallelogram p {
-	top: 27px;
+	top: 25px;
 	left: 23px;
 }
 
@@ -186,14 +193,14 @@ path, .jtk-endpoint {
 }
 
 .diamond span {
-	top: 15px;
-	left: 15px;
+	top: 11px;
+	left: 11px;
 	color: #9F4D75;
 }
 
 .diamond p {
-	top: 23px;
-	left: 17px;
+	top: 17px;
+	left: 11px;
 }
 
 #canvas{

@@ -1,9 +1,9 @@
 
-// jsPlumb Flowchart Editor
-// (c) 2017 unix-world.org
-// v.180402
+// jsPlumb Flowchart Editor :: JS
+// (c) 2017-2018 unix-world.org
+// v.181116.r5 (stable)
 
-function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxSaveDataHelper, fxExportDataHelper) {
+function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxEditDialogHelper, fxDeleteDialogHelper, fxSaveDataHelper, fxExportDataHelper) {
 
 	if(typeof flwcDataObj == 'undefined') {
 		//alert('flwcDataObj not found !!');
@@ -22,77 +22,93 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxS
 			// the overlays to decorate each connection with.  note that the label overlay uses a function to generate the label text; in this
 			// case it returns the 'labelText' member that we set on each connection in the 'init' method below.
 			ConnectionOverlays: [
-				[ "Arrow", {
+				[ 'Arrow', {
 					location: 1,
 					visible: true,
-					width:17,
-					length:17,
-					id:"ARROW"
+					width: 17,
+					length: 17,
+					id: 'ARROW'
 				} ],
-				[ "Diamond", {
+				[ 'Diamond', {
 					location: 0,
 					visible: true,
-					width:9,
-					length:9,
-					id:"ARRDOT"
+					width: 9,
+					length: 9,
+					id: 'ARRDOT'
 				} ],
-				[ "Label", {
+				[ 'Label', {
 					location: 0.5,
-					id: "label",
-					cssClass: "aLabel",
-					events:{
-						tap:function(obj) {
+					id: 'label',
+					cssClass: 'aLabel',
+					events: {
+						tap: function(obj) {
 							if(flwcIsReadonly !== true) {
-								var label = prompt("Connection Label", obj.component.getOverlay("label").getLabel());
-								if(label) {
-									obj.component.getOverlay("label").setLabel(label);
+								var SetConnectionLabel = function(tgtP, label) {
+									if(!label) {
+										label = '';
+									} //end if
+									label = SmartJS_CoreUtils.escape_html(String(label));
+									tgtP.setLabel(label);
+								} //end function
+								var tgtP = obj.component.getOverlay('label');
+								var label = '';
+								var eLbl = tgtP.getLabel();
+								if(!eLbl) {
+									eLbl = '';
 								} //end if
+								eLbl = jQuery('<div/>').html(eLbl).text();
+								if(typeof fxEditDialogHelper == 'function') {
+									fxEditDialogHelper('Connection Label', eLbl, tgtP, SetConnectionLabel);
+								} else {
+									label = prompt('Connection Label', eLbl);
+									SetConnectionLabel(tgtP, label);
+								} //end if else
 							} //end if
-						}
+						} //end function
 					}
 				}]
 			],
-			Container: "canvas"
+			Container: 'canvas'
 		});
 
 		var basicType = {
-			paintStyle: { stroke: "#216477", strokeWidth: 3 },
-			hoverPaintStyle: { stroke: "#61B7CF" }
+			paintStyle: { stroke: '#216477', strokeWidth: 3 },
+			hoverPaintStyle: { stroke: '#61B7CF' }
 		};
-		var connType = [ "Flowchart", { stub: [10, 10], gap: 7, cornerRadius: 3, alwaysRespectStubs: true } ];
-		instance.registerConnectionType("basic", basicType);
+		var connType = [ 'Flowchart', { stub: [10, 10], gap: 7, cornerRadius: 3, alwaysRespectStubs: true } ];
+		instance.registerConnectionType('basic', basicType);
 
 		// this is the paint style for the connecting lines..
 		var connectorPaintStyle = {
 				strokeWidth: 3,
-				stroke: "#61B7CF",
-				joinstyle: "round",
-			//	outlineStroke: "white",
+				stroke: '#61B7CF',
+				joinstyle: 'round',
+			//	outlineStroke: 'white',
 			//	outlineWidth: 2
 			},
-		// .. and this is the hover style.
+			// .. and this is the hover style
 			connectorHoverStyle = {
 				strokeWidth: 4,
-				stroke: "#216477",
-	//			outlineWidth: 5,
-	//			outlineStroke: "white"
+				stroke: '#216477',
+			//	outlineWidth: 5,
+			//	outlineStroke: 'white'
 			},
 			startpointHoverStyle = {
-				fill: "#FF5500",
-				stroke: "#FF5500"
+				fill: '#FF5500',
+				stroke: '#FF5500'
 			},
 			endpointHoverStyle = {
-				fill: "#7AB02C",
-				stroke: "#7AB02C"
+				fill: '#7AB02C',
+				stroke: '#7AB02C'
 			},
-		// the definition of source endpoints (the small blue ones)
+			// the definition of source endpoints (the small blue ones)
 			sourceEndpoint = {
-				endpoint: "Dot",
+				endpoint: 'Dot',
 				paintStyle: {
 					strokeWidth: 1,
-					stroke: "#FF5500",
-				//	stroke: "transparent",
-					fill: "transparent",
+					stroke: '#FF5500',
+				//	stroke: 'transparent',
+					fill: 'transparent',
 					radius: 7
 				},
 				isSource: true,
@@ -102,33 +118,33 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxS
 				connectorHoverStyle: connectorHoverStyle,
 				dragOptions: {},
 				overlays: [
-					[ "Label", {
+					[ 'Label', {
 						location: [0.5, 1.5],
-						label: "Drag",
-						cssClass: "endpointSourceLabel",
+						label: 'Drag',
+						cssClass: 'endpointSourceLabel',
 						visible: false
 					} ]
 				]
 			},
 		// the definition of target endpoints (will appear when the user drags a connection)
 			targetEndpoint = {
-				endpoint: "Dot",
-				paintStyle: { strokeWidth: 1, stroke: "#7AB02C", fill: "transparent", radius: 7 },
-			//	paintStyle: { fill: "transparent", radius: 7 },
+				endpoint: 'Dot',
+				paintStyle: { strokeWidth: 1, stroke: '#7AB02C', fill: 'transparent', radius: 7 },
+			//	paintStyle: { fill: 'transparent', radius: 7 },
 				hoverPaintStyle: endpointHoverStyle,
 				maxConnections: -1,
-				dropOptions: { hoverClass: "hover", activeClass: "active" },
+				dropOptions: { hoverClass: 'hover', activeClass: 'active' },
 				isTarget: true,
 				overlays: [
-					[ "Label", { location: [0.5, -0.5], label: "Drop", cssClass: "endpointTargetLabel", visible:false } ]
+					[ 'Label', { location: [0.5, -0.5], label: 'Drop', cssClass: 'endpointTargetLabel', visible:false } ]
 				]
 			},
 			sourceAnchorPerimeterProperties = {
-				shape: "Circle",
+				shape: 'Circle',
 				anchorCount: 20
 			},
 			targetAnchorPerimeterProperties = {
-				shape: "Circle",
+				shape: 'Circle',
 				anchorCount: 20,
 				rotation: 90
 			},
@@ -166,13 +182,13 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxS
 			}).appendTo('#canvas');
 			if(flwcIsReadonly !== true) {
 				if(usePerimeterAnchors) {
-					instance.addEndpoint(Div, ep1, { anchor: ["Perimeter", sourceAnchorPerimeterProperties], uuid: theID, editable: false, detachable: false, reattach: false });
-					instance.addEndpoint(Div, ep2, { anchor: ["Perimeter", targetAnchorPerimeterProperties], uuid: theID, editable: false, detachable: false, reattach: false });
+					instance.addEndpoint(Div, ep1, { anchor: ['Perimeter', sourceAnchorPerimeterProperties], uuid: theID, editable: false, detachable: false, reattach: false });
+					instance.addEndpoint(Div, ep2, { anchor: ['Perimeter', targetAnchorPerimeterProperties], uuid: theID, editable: false, detachable: false, reattach: false });
 				} else {
-					instance.addEndpoint(Div, ep1, { anchor: "Left", uuid: theID, editable: false, detachable: false, reattach: false });
-					instance.addEndpoint(Div, ep1, { anchor: "Right", uuid: theID, editable: false, detachable: false, reattach: false });
-					instance.addEndpoint(Div, ep2, { anchor: "Top", uuid: theID, editable: false, detachable: false, reattach: false });
-					instance.addEndpoint(Div, ep2, { anchor: "Bottom", uuid: theID, editable: false, detachable: false, reattach: false });
+					instance.addEndpoint(Div, ep1, { anchor: 'Left', uuid: theID, editable: false, detachable: false, reattach: false });
+					instance.addEndpoint(Div, ep1, { anchor: 'Right', uuid: theID, editable: false, detachable: false, reattach: false });
+					instance.addEndpoint(Div, ep2, { anchor: 'Top', uuid: theID, editable: false, detachable: false, reattach: false });
+					instance.addEndpoint(Div, ep2, { anchor: 'Bottom', uuid: theID, editable: false, detachable: false, reattach: false });
 				} //end if else
 			} //end if
 			if(flwcIsReadonly !== true) {
@@ -205,8 +221,8 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxS
 				} //end if else
 				nodes.push({
 					elementId: jqElement.attr('id'),
-					positionX: parseInt(jqElement.css("left"), 10),
-					positionY: parseInt(jqElement.css("top"), 10),
+					positionX: parseInt(jqElement.css('left'), 10),
+					positionY: parseInt(jqElement.css('top'), 10),
 					clsName: jqElement.attr('class').toString(),
 					usePerimeterAnchors: usePerimeterAnchors,
 					isInverted: isInverted,
@@ -226,7 +242,7 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxS
 					pageTargetId: connection.targetId,
 					sourceAnchor: connection.endpoints[0].anchor.type,
 					targetAnchor: connection.endpoints[1].anchor.type,
-					textLabel: connection.getOverlay("label").getLabel(),
+					textLabel: connection.getOverlay('label').getLabel(),
 				});
 			});
 
@@ -246,8 +262,8 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxS
 		// suspend drawing and initialise.
 		instance.batch(function () {
 
-			// listen for new connections; initialise them the same way we initialise the connections at startup.
-			instance.bind("connection", function (connInfo, originalEvent) {
+			// listen for new connections; initialise them the same way we initialise the connections at startup
+			instance.bind('connection', function (connInfo, originalEvent) {
 				init(connInfo.connection); // comment this out to disable new connections
 			});
 
@@ -265,11 +281,11 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxS
 				conn = flwcDataObj.connections[i];
 				anchors = null;
 				if((conn.sourceAnchor == 'Perimeter') && (conn.targetAnchor == 'Perimeter')) {
-					anchors = [ ["Perimeter", sourceAnchorPerimeterProperties], ["Perimeter", targetAnchorPerimeterProperties] ];
+					anchors = [ ['Perimeter', sourceAnchorPerimeterProperties], ['Perimeter', targetAnchorPerimeterProperties] ];
 				} else if(conn.sourceAnchor == 'Perimeter') {
-					anchors = [ ["Perimeter", sourceAnchorPerimeterProperties], conn.targetAnchor ];
+					anchors = [ ['Perimeter', sourceAnchorPerimeterProperties], conn.targetAnchor ];
 				} else if(conn.targetAnchor == 'Perimeter') {
-					anchors = [ conn.sourceAnchor, ["Perimeter", targetAnchorPerimeterProperties] ];
+					anchors = [ conn.sourceAnchor, ['Perimeter', targetAnchorPerimeterProperties] ];
 				} else {
 					anchors = [ conn.sourceAnchor, conn.targetAnchor ];
 				}
@@ -280,43 +296,51 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxS
 					paintStyle: connectorPaintStyle,
 					hoverPaintStyle: connectorHoverStyle,
 					connector: connType,
-					endpoint: "Blank",
+					endpoint: 'Blank',
 					editable: false, detachable: false, reattach: false
 				});
-				cx.getOverlay("label").setLabel("" + conn.textLabel);
+				cx.getOverlay('label').setLabel('' + conn.textLabel);
 			} //end for
 			anchors = null;
 			conn = null;
 
 			// make all the window divs draggable
-			//instance.draggable(jsPlumb.getSelector(".flowchart-demo .window"), { grid: [20, 20] });
+			//instance.draggable(jsPlumb.getSelector('.flowchart-demo .window'), { grid: [20, 20] });
 			// THIS DEMO ONLY USES getSelector FOR CONVENIENCE. Use your library's appropriate selector
 			// method, or document.querySelectorAll:
-			//jsPlumb.draggable(document.querySelectorAll(".window"), { grid: [20, 20] });
+			//jsPlumb.draggable(document.querySelectorAll('.window'), { grid: [20, 20] });
 
 			// listen for clicks on connections, and offer to delete connections on click.
-			instance.bind("click", function (conn, originalEvent) {
-				conn.toggleType("basic");
+			instance.bind('click', function (conn, originalEvent) {
+				conn.toggleType('basic');
 			});
 
 			if(flwcIsReadonly !== true) {
 
-				instance.bind("dblclick", function (conn, originalEvent) {
-					if(confirm("Delete connection from " + conn.sourceId + " to " + conn.targetId + "?")) {
-						instance.deleteConnection(conn);
-					}
+				var RemoveElemConnection = function(conn) {
+					instance.deleteConnection(conn);
+				} //end function
+
+				instance.bind('dblclick', function(conn, originalEvent) {
+					if(typeof fxDeleteDialogHelper == 'function') {
+						fxDeleteDialogHelper('Connection', conn, RemoveElemConnection);
+					} else {
+						if(confirm('Delete connection from ' + conn.sourceId + ' to ' + conn.targetId + '?')) {
+							RemoveElemConnection(conn);
+						} //end if
+					} //end if
 				});
 
-				instance.bind("connectionDrag", function (connection) {
-					//console.log("connection " + connection.id + " is being dragged. suspendedElement is ", connection.suspendedElement, " of type ", connection.suspendedElementType);
+				instance.bind('connectionDrag', function(connection) {
+					//console.log('connection ' + connection.id + ' is being dragged. suspendedElement is ', connection.suspendedElement, ' of type ', connection.suspendedElementType);
 				});
 
-				instance.bind("connectionDragStop", function (connection) {
-					//console.log("connection " + connection.id + " was dragged");
+				instance.bind('connectionDragStop', function(connection) {
+					//console.log('connection ' + connection.id + ' was dragged');
 				});
 
-				instance.bind("connectionMoved", function (params) {
-					//console.log("connection " + params.connection.id + " was moved");
+				instance.bind('connectionMoved', function(params) {
+					//console.log('connection ' + params.connection.id + ' was moved');
 				});
 
 			} //end if
@@ -325,32 +349,66 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxS
 
 		if(flwcIsReadonly !== true) {
 
+			var SetBoxLabel = function(tgtP, label) {
+				if(!label) {
+					label = '';
+				} //end if
+				label = String(label); // this already applies HTML escape
+				tgtP.empty().text(label);
+			} //end function
+
+			var SetBoxIcon = function(tgtP, label) {
+				if(!label) {
+					label = '';
+				} //end if
+				label = SmartJS_CoreUtils.escape_html(String(label));
+				tgtP.parent().attr('data-fa-icon', label);
+				tgtP.attr('class', label);
+			} //end function
+
+			var RemoveElemObj = function(tgtP) {
+				instance.deleteConnectionsForElement(tgtP);
+				instance.removeAllEndpoints(tgtP);
+				//instance.detach(tgtP);
+				tgtP.remove();
+			} //end function
+
 			jQuery('body').on('click', 'div.jtk-node > p', function(el) {
 				var tgtP = jQuery(this);
-				var label = prompt("Box Label", tgtP.text());
-				if(label) {
-					tgtP.empty().text(label);
-				} //end if
+				var label = '';
+				if(typeof fxEditDialogHelper == 'function') {
+					fxEditDialogHelper('Box Label', tgtP.text(), tgtP, SetBoxLabel);
+				} else {
+					label = prompt('Box Label', tgtP.text());
+					SetBoxLabel(tgtP, label);
+				} //end if else
 			});
 
 			jQuery('body').on('click', 'div.jtk-node > span', function(el) {
 				var tgtP = jQuery(this);
 				var eClass = tgtP.attr('class') ? tgtP.attr('class') : '';
-				var label = prompt("Box Icon", eClass);
-				if(label) {
-					tgtP.parent().attr('data-fa-icon', label);
-					tgtP.attr('class', label);
-				} //end if
+				if(eClass) {
+					eClass = jQuery('<div/>').html(eClass).text();
+				}
+				var label = '';
+				if(typeof fxEditDialogHelper == 'function') {
+					fxEditDialogHelper('Box Icon', eClass, tgtP, SetBoxIcon);
+				} else {
+					label = prompt('Box Icon', eClass);
+					SetBoxIcon(tgtP, label);
+				}
 			});
 
 			jQuery('body').on('dblclick', 'div.jtk-node', function(el) {
-				if(confirm("Delete this element ?")) {
-					var targetBoxId = jQuery(this);
-					instance.deleteConnectionsForElement(targetBoxId);
-					instance.removeAllEndpoints(targetBoxId);
-					//instance.detach(targetBoxId);
-					targetBoxId.remove();
-				}
+				var tgtP = jQuery(this);
+				if(typeof fxDeleteDialogHelper == 'function') {
+					fxDeleteDialogHelper('Element', tgtP, RemoveElemObj);
+				} else {
+					var tgtId = tgtP.attr('id');
+					if(confirm('Delete element: ' + tgtId)) {
+						RemoveElemObj(tgtP);
+					}
+				} //end if else
 			});
 
 		} //end if
@@ -449,7 +507,7 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxS
 
 		} //end if
 
-		jsPlumb.fire("jsPlumbDemoLoaded", instance);
+		jsPlumb.fire('jsPlumbDemoLoaded', instance);
 
 	});
 

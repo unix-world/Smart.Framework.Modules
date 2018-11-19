@@ -413,6 +413,17 @@ SQL.Row.prototype.fromXML = function(node) {
 		obj.comment = cs[0].firstChild.nodeValue;
 	}
 
+	//-- unixman
+	var rl = node.getElementsByTagName("relation");
+	if(rl.length && rl[0]) {
+		var rlText = String('FOREIGN KEY: ' + node.parentNode.getAttribute("name") + '.' + name + ' REFERENCES: ' + rl[0].getAttribute("table") + '.' + rl[0].getAttribute("row"));
+		this.dom.selected.title = rlText;
+		OZ.DOM.addClass(this.dom.selected, "help");
+		OZ.DOM.addClass(this.dom.title, "foreign");
+	//	console.log(rlText);
+	}
+	//--
+
 	var d = node.getElementsByTagName("datatype");
 	if (d.length && d[0].firstChild) {
 		var s = d[0].firstChild.nodeValue;

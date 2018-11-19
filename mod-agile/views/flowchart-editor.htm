@@ -12,7 +12,7 @@
 	<button class="ux-button" id="flowchartNewBtn" onclick="" style="margin-left: 15px;">New Process</button>
 	<button class="ux-button" id="flowchartNewDBtn" onclick="" style="margin-left: 15px;">New Decision</button>
 	<button class="ux-button" id="flowchartNewIOBtn" onclick="" style="margin-left: 15px;">New Data</button>
-	<button class="ux-button ux-button-secondary" id="flowchartExportBtn" onclick="" style="margin-left: 15px;">Export (console)</button>
+	<button class="ux-button ux-button-secondary" id="flowchartExportBtn" onclick="" style="margin-left: 15px;">Export as JSON</button>
 	<button class="ux-button ux-button-regular" id="flowchartSaveBtn" onclick="" style="margin-left: 15px;">Save Flowchart</button>
 	[%%%%IF:OP-MODE:==create;%%%%]
 	<button class="ux-button ux-button-special" id="flowchartCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
@@ -29,6 +29,12 @@
 	var flowchartAddDialogHelper = function(elemType, fxGenerateElement) {
 		SmartJS_BrowserUtils.confirm_Dialog('<h3>Add Element: ' + SmartJS_CoreUtils.escape_html(SmartJS_CoreUtils.ucfirst(elemType)) + '</h3><div>Select the Connector Type for Element: <select id="flowchart-add-element-type"><option value="DEFAULT">Default</option><option value="INVERTED">Inverted</option><option value="PERIMETER">Perimeter</option></select></div>', function(){ var theLabel = $("#flowchart-add-element-type").val(); fxGenerateElement(elemType, theLabel); }, 'Add New Flowchart Element', 550, 200);
 	}
+	var flowchartEditDialogHelper = function(labelType, txtElemLabel, objElemLabel, fxSetLabel) {
+		SmartJS_BrowserUtils.confirm_Dialog('<h3>' + SmartJS_CoreUtils.escape_html(labelType) + '</h3><div>Label:&nbsp; <input type="text" maxlength="50" value="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" id="flowchart-element-label" class="ux-field" style="width:425px;"></div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-label").val()); }, 'Modify Flowchart Element', 550, 200);
+	}
+	var flowchartDeleteDialogHelper = function(objType, objElemSel, fxRemoveElem) {
+		SmartJS_BrowserUtils.confirm_Dialog('<h3>Delete this ' + SmartJS_CoreUtils.escape_html(objType) + ' ?</h3>', function(){ fxRemoveElem(objElemSel); }, 'Confirm remove Flowchart ' + SmartJS_CoreUtils.escape_html(objType), 550, 170);
+	}
 	var flowchartSaveDataHelper = function(data) {
 		var theData = JSON.stringify(data);
 		$('#flowchart_data').val(theData);
@@ -36,12 +42,12 @@
 		SmartJS_BrowserUtils.Submit_Form_By_Ajax('flowchart_form', 'admin.php?page=agile.flowchart-save', 'yes');
 	}
 	var flowchartExportDataHelper = function(data) {
-		console.log(JSON.stringify(data));
+		SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'flowchart.json', 'application/json', 'UTF-8');
 	}
 </script>
 <script>
 	var flowchartDataObj = [####JSON-DATA|json####];
-	flowchartEditorInit(flowchartDataObj, flowchartIsReadonly, flowchartAddDialogHelper, flowchartSaveDataHelper, flowchartExportDataHelper);
+	flowchartEditorInit(flowchartDataObj, flowchartIsReadonly, flowchartAddDialogHelper, flowchartEditDialogHelper, flowchartDeleteDialogHelper, flowchartSaveDataHelper, flowchartExportDataHelper);
 	flowchartDataObj = null; // clear
 </script>
 <script>
