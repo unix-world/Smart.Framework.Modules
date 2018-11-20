@@ -21,7 +21,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PgPageBuilderFrontend {
 
 	// ::
-	// v.181031
+	// v.181120
 
 
 	public static function checkIfPageOrSegmentExist($y_id) {

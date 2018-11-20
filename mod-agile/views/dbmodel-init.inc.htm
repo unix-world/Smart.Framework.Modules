@@ -1,6 +1,5 @@
-<!-- DB Modeler Styles -->
+<!-- dbmodel-init.inc.htm v.181120 -->
 <link rel="stylesheet" href="modules/mod-wflow-components/views/dbmodeler/css/style.css" media="all">
-<!-- DB Modeler Scripts -->
 <script src="modules/mod-wflow-components/views/dbmodeler/js/config.js"></script>
 <script type="text/javascript">
 	[%%%%IF:OP-MODE:@=create|edit;%%%%]
@@ -16,8 +15,7 @@
 			$('#dbmodel_data').val(SmartJS_Base64.encode(xml));
 			SmartJS_BrowserUtils.RefreshParent();
 			SmartJS_BrowserUtils.Submit_Form_By_Ajax('dbmodel_form', 'admin.php?page=agile.dbmodel-save', 'yes');
-		} //end if
-		//console.log(xml);
+		}
 	};
 </script>
 <script src="modules/mod-wflow-components/views/dbmodeler/js/oz.js"></script>
@@ -37,7 +35,6 @@
 <script src="modules/mod-wflow-components/views/dbmodeler/js/window.js"></script>
 <script src="modules/mod-wflow-components/views/dbmodeler/js/options.js"></script>
 <script src="modules/mod-wflow-components/views/dbmodeler/js/wwwsqldesigner.js"></script>
-<!-- DB Modeler Elements -->
 <div id="area"></div><!-- # area -->
 <div id="controls">
 	<div id="bar">

@@ -1,7 +1,6 @@
 
-// Js Kanban CSS
-// v.170509
-// (c) 2017 unix-world.org
+// Js Kanban CSS v.181120
+// (c) 2017-2018 unix-world.org
 
 var JS_Kanban = new function() { // START CLASS
 

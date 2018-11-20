@@ -21,7 +21,7 @@ abstract class SqAppTable {
 
 	// ->
 
-private $ver = 'r.181115';
+private $ver = 'r.181120';
 private $db = null;
 private $sqdb = '#db/';
 private $tblname = 'data_objects';
@@ -231,7 +231,7 @@ CREATE TABLE '{$table}' (
 	'dtime' character varying(23) NOT NULL,
 	'uuid' character varying(32) NOT NULL,
 	'user' character varying(96) NOT NULL,
-	'project' character varying(64) NOT NULL,
+	'project' character varying(150) NOT NULL,
 	'title' character varying(255) NOT NULL,
 	'saved_data' TEXT NOT NULL
 );

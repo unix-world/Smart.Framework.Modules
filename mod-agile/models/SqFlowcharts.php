@@ -20,7 +20,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class SqFlowcharts extends \SmartModDataModel\Agile\SqAppTable {
 
 	// ->
-	// v.181115
+	// v.181120
 
 } //END CLASS
 

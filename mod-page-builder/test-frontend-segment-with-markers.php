@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Controller: PageBuilder/TestFrontend
-// Route: ?page=page-builder.test-frontend&section=test-page
+// Controller: PageBuilder/TestFrontendSegmentWithMarkers
+// Route: ?page=page-builder.test-frontend-segment-with-markers
 // Author: unix-world.org
 // r.181120
 
@@ -36,32 +36,25 @@ final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\Abstract
 		} //end if
 		//--
 
-		$section = $this->RequestVarGet('section', 'test-page', 'string');
+		$this->PageViewSetCfg('template-path', '@');
+		$this->PageViewSetCfg('template-file', 'template-test-frontend.htm');
 
-		$this->renderBuilderPage(
-			(string)$section,				// page ID
-			'@',							// TPL Path
-			'template-test-frontend.htm', 	// TPL File
-			[ 'AREA.TOP', 'MAIN', 'AREA.FOOTER', 'TITLE', 'META-DESCRIPTION', 'META-KEYWORDS' ] // Allowed TPL Markers
+		$top = $this->getRenderedBuilderSegmentCode('#website-menu');
+		$main = $this->renderSegmentMarkers(
+			$this->getRenderedBuilderSegmentCode('#segment-with-markers'),
+			[
+				'THE-MARKER' => '<b>This is a marker that should be HTML escaped</b>'
+			]
 		);
+		$foot = $this->getRenderedBuilderSegmentCode('#website-footer');
 
-		//-- INTERNAL DEBUG
-		/*
-		$arr = $this->PageViewGetVars();
-		$this->PageViewResetVars();
-		$hdrs = $this->PageViewGetRawHeaders();
-		$cfgs = $this->PageViewGetCfgs();
-		$this->PageViewResetCfgs();
-		$this->PageViewResetRawHeaders();
-		$this->PageViewSetCfg('rawpage', true);
 		$this->PageViewSetVars([
-			'main' => '<h1>PageBuilder / Test Frontend (Cached='.\Smart::escape_html($this->PageCacheisActive()).')</h1>'.'<pre>'.\Smart::escape_html(print_r($cfgs,1)).\Smart::escape_html(print_r($hdrs,1)).\Smart::escape_html(print_r($arr,1)).'</pre>'
+			'AREA.TOP' => (string) $top,
+			'MAIN' => (string) $main,
+			'AREA.FOOTER' => (string) $foot,
+			'META-DESCRIPTION' => '',
+			'META-KEYWORDS' => ''
 		]);
-		unset($cfgs);
-		unset($hdrs);
-		unset($arr);
-		*/
-		//--
 
 	} //END FUNCTION
 

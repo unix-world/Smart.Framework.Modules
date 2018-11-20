@@ -1,9 +1,9 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Controller: PageBuilder/TestFrontend
-// Route: ?page=page-builder.test-frontend&section=test-page
+// Controller: PageBuilder/TestFrontendSegment
+// Route: ?page=page-builder.test-frontend-segment
 // Author: unix-world.org
-// r.181031
+// r.181120
 
 //----------------------------------------------------- PREVENT S EXECUTION
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application

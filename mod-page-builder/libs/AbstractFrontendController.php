@@ -30,7 +30,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.181112
+ * @version 	v.181120
  * @package 	PageBuilder
  *
  */
@@ -177,7 +177,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			} //end if
 		} //end if
 		//-- render the page
-		$arr = (array) $this->renderPageWithSegments($page_id, $arr);
+		$arr = (array) $this->doRenderPage($page_id, $arr);
 		//--
 		$this->PageViewSetVars((array)$arr);
 		$arr = array(); // free mem
@@ -280,7 +280,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			} //end if
 		} //end if
 		//-- render the page
-		$arr = (array) $this->renderSegmentWithSegments($segment_id, $arr);
+		$arr = (array) $this->doRenderSegment($segment_id, $arr);
 		//print_r($arr); die();
 		//--
 	/*	if((string)trim((string)$arr['code']) == '') {
@@ -811,21 +811,10 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 
 	//=====
-	private function renderPageWithSegments($id, $data_arr) {
+	private function doRenderPage($id, $data_arr) {
 
 		//--
-		return (array) $this->renderSegmentOrPage($id, $data_arr, -1);
-		//--
-
-	} //END FUNCTION
-	//=====
-
-
-	//=====
-	private function renderSegmentWithSegments($id, $data_arr) {
-
-		//--
-		return (array) $this->renderSegmentOrPage($id, $data_arr, 0);
+		return (array) $this->doRenderObject($id, $data_arr, -1);
 		//--
 
 	} //END FUNCTION
@@ -833,7 +822,18 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 
 	//=====
-	private function renderSegmentOrPage($id, $data_arr, $level) {
+	private function doRenderSegment($id, $data_arr) {
+
+		//--
+		return (array) $this->doRenderObject($id, $data_arr, 0);
+		//--
+
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	private function doRenderObject($id, $data_arr, $level) {
 
 		// TODO: ? escape for markers: js, html ... ?
 
@@ -1114,7 +1114,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 						} else { // page / segment
 							//--
 							if(is_array($val[$i]['render'])) {
-								$val[$i] = (array) $this->renderSegmentOrPage($id, $val[$i], $level);
+								$val[$i] = (array) $this->doRenderObject($id, $val[$i], $level);
 							} //end if
 							//--
 							if((string)$val[$i]['mode'] == 'settings') {

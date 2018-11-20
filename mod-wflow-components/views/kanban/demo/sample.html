@@ -1,40 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>Kanban Board - Demo</title>
+<meta charset="UTF-8">
+<title>Kanban Board - Demo</title>
 
-	<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
 
-	<link rel="stylesheet" href="../../../../mod-ui-jqueryui/toolkit-light/jquery.ui-light.css" type="text/css">
-	<script type="text/javascript" src="../../../../mod-ui-jqueryui/toolkit-light/jquery.ui-light.js"></script>
-	<script type="text/javascript" src="../../../../mod-ui-jqueryui/toolkit-light/jquery.ui-touch-punch.js"></script>
+<link rel="stylesheet" href="../../../../mod-ui-jqueryui/toolkit-light/jquery.ui-light.css" type="text/css">
+<script type="text/javascript" src="../../../../mod-ui-jqueryui/toolkit-light/jquery.ui-light.js"></script>
+<script type="text/javascript" src="../../../../mod-ui-jqueryui/toolkit-light/jquery.ui-touch-punch.js"></script>
 
-	<style>
-	body {font-family:Arial;}
-	table { font-size: 1em; }
-	h2 {margin:5px;}
-	input[type=text] {margin:10px;}
-	button {margin:10px;}
-	.jskanban_box {cursor:grab;}
-/*	.ui-draggable, .ui-droppable { background-position: top; } */
-	</style>
-	<link rel="stylesheet" type="text/css" href="../jskanban.css">
-	<script type="text/javascript" src="../jskanban.js"></script>
-	<script>
-	jQuery(function() {
-		JS_Kanban.initBoard('#333333');
-		jQuery('.jskanban_add_bttn').click(function() {
-			var txtNewItem = jQuery('.jskanban_add_field').val();
-			JS_Kanban.addTask('.jskanban_area', txtNewItem);
-		});
-		jQuery('.jskanban_save_bttn').click(function() {
-			JS_Kanban.saveBoard('.jskanban_area', function(json){
-				console.log(json);
-			});
+<style>
+body {
+	font-family:Arial;
+}
+table {
+	font-size: 1em;
+}
+h2 {
+	margin: 5px;
+}
+input[type=text] {
+	margin: 10px;
+}
+button {
+	margin:10px;
+}
+.jskanban_box {
+	cursor:grab;
+}
+/*
+.ui-draggable, .ui-droppable {
+	background-position: top;
+}
+*/
+</style>
+<link rel="stylesheet" type="text/css" href="../jskanban.css">
+<script type="text/javascript" src="../jskanban.js"></script>
+<script>
+jQuery(function() {
+	JS_Kanban.initBoard('#333333');
+	jQuery('.jskanban_add_bttn').click(function() {
+		var txtNewItem = jQuery('.jskanban_add_field').val();
+		JS_Kanban.addTask('.jskanban_area', txtNewItem);
+		jQuery('.jskanban_add_field').val('');
+	});
+	jQuery('.jskanban_save_bttn').click(function() {
+		JS_Kanban.saveBoard('.jskanban_area', function(json){
+			console.log(JSON.stringify(json, null, 2));
 		});
 	});
-	</script>
+});
+</script>
 </head>
 <body>
 </body>
