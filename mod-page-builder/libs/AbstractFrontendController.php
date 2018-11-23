@@ -30,7 +30,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.181120
+ * @version 	v.181121
  * @package 	PageBuilder
  *
  */
@@ -69,7 +69,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 		//--
 		$this->crr_lang = (string) \SmartTextTranslations::getLanguage();
-		if((string)$this->crr_lang == (string)SMART_FRAMEWORK_DEFAULT_LANG) {
+		if((string)$this->crr_lang == (string)\SmartTextTranslations::getDefaultLanguage()) {
 			$this->crr_lang = ''; // fix to avoid query translations on default language
 		} //end if
 		//--
@@ -198,7 +198,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 		//--
 		$this->crr_lang = (string) \SmartTextTranslations::getLanguage();
-		if((string)$this->crr_lang == (string)SMART_FRAMEWORK_DEFAULT_LANG) {
+		if((string)$this->crr_lang == (string)\SmartTextTranslations::getDefaultLanguage()) {
 			$this->crr_lang = ''; // fix to avoid query translations on default language
 		} //end if
 		//--

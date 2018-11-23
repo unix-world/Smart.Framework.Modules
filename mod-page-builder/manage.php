@@ -2,7 +2,7 @@
 // Controller: PageBuilder/Manage
 // Route: ?/page/page-builder.manage
 // Author: unix-world.org
-// r.181120
+// r.181123
 
 //----------------------------------------------------- PREVENT S EXECUTION
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -35,7 +35,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$op = $this->RequestVarGet('op', 'records-list', 'string');
 		//--
 		switch((string)$op) {
-			case 'records-list': // default view
+			case 'records-list': // HTML: list view
 				$tpl = $this->RequestVarGet('tpl', '', 'string');
 				if((string)$tpl != 'custom') {
 					$this->PageViewSetCfg('template-path', 'default');
@@ -45,7 +45,21 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					'main' => (string) \SmartModExtLib\PageBuilder\Manager::ViewDisplayListTable($tpl)
 				]);
 				break;
-			case 'records-tree':
+			case 'records-list-json': // JSON: for list
+				$ofs = $this->RequestVarGet('ofs', 0, 'integer+');
+				$sortby = $this->RequestVarGet('sortby', 'id', 'string');
+				$sortdir = $this->RequestVarGet('sortdir', 'ASC', 'string');
+				$srcby = $this->RequestVarGet('srcby', '', 'string');
+				$src = $this->RequestVarGet('src', '', 'string');
+				$this->PageViewSetCfg('rawpage', true);
+				$this->PageViewSetCfg('rawmime', 'text/json');
+				$this->PageViewSetCfg('rawdisp', 'inline');
+				$this->PageViewSetVar(
+					'main',
+					\SmartModExtLib\PageBuilder\Manager::ViewDisplayListJson($ofs, $sortby, $sortdir, $srcby, $src)
+				);
+				break;
+			case 'records-tree': // HTML: tree view
 				$srcby = $this->RequestVarGet('srcby', '', 'string');
 				$src = $this->RequestVarGet('src', '', 'string');
 				$tpl = $this->RequestVarGet('tpl', '', 'string');
@@ -57,18 +71,6 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					'main' => (string) \SmartModExtLib\PageBuilder\Manager::ViewDisplayTree($tpl, $srcby, $src)
 				]);
 				break;
-			case 'records-list-json':
-				$ofs = $this->RequestVarGet('ofs', 0, 'integer+');
-				$sortby = $this->RequestVarGet('sortby', 'id', 'string');
-				$sortdir = $this->RequestVarGet('sortdir', 'ASC', 'string');
-				$srcby = $this->RequestVarGet('srcby', '', 'string');
-				$src = $this->RequestVarGet('src', '', 'string');
-				$this->PageViewSetCfg('rawpage', true);
-				$this->PageViewSetVar(
-					'main',
-					\SmartModExtLib\PageBuilder\Manager::ViewDisplayListJson($ofs, $sortby, $sortdir, $srcby, $src)
-				);
-				break;
 			case 'record-add-form':
 				$this->PageViewSetCfg('template-path', 'default');
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
@@ -77,9 +79,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewFormAdd()
 				);
 				break;
-			case 'record-add-do':
+			case 'record-add-do': // JSON
 				$frm = $this->RequestVarGet('frm', array(), 'array');
 				$this->PageViewSetCfg('rawpage', true);
+				$this->PageViewSetCfg('rawmime', 'text/json');
+				$this->PageViewSetCfg('rawdisp', 'inline');
 				$this->PageViewSetVar(
 					'main',
 					\SmartModExtLib\PageBuilder\Manager::ViewFormsSubmit('add', $frm)
@@ -96,7 +100,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewDisplayRecord($id, $sop, $translate)
 				);
 				break;
-			case 'record-view-tab-props':
+			case 'record-view-tab-props': // HTML
 				$id = $this->RequestVarGet('id', '', 'string');
 				$this->PageViewSetCfg('rawpage', 'yes');
 				$this->PageViewSetVar(
@@ -104,7 +108,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewFormProps($id, 'view')
 				);
 				break;
-			case 'record-edit-tab-props':
+			case 'record-edit-tab-props': // HTML
 				$id = $this->RequestVarGet('id', '', 'string');
 				$this->PageViewSetCfg('rawpage', 'yes');
 				$this->PageViewSetVar(
@@ -112,7 +116,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewFormProps($id, 'form')
 				);
 				break;
-			case 'record-preview-tab-code':
+			case 'record-preview-tab-code': // HTML
 				$id = $this->RequestVarGet('id', '', 'string');
 				$translate = $this->RequestVarGet('translate', '', 'string');
 				$this->PageViewSetCfg('rawpage', 'yes');
@@ -121,7 +125,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewFormMarkupCode($id, 'view', $translate)
 				);
 				break;
-			case 'record-view-tab-code':
+			case 'record-view-tab-code': // HTML
 				$id = $this->RequestVarGet('id', '', 'string');
 				$mode = $this->RequestVarGet('mode', 'codeview', ['codeview','codesrcview']);
 				$translate = $this->RequestVarGet('translate', '', 'string');
@@ -131,7 +135,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewFormMarkupCode($id, $mode, $translate)
 				);
 				break;
-			case 'record-edit-tab-code':
+			case 'record-edit-tab-code': // HTML
 				$id = $this->RequestVarGet('id', '', 'string');
 				$translate = $this->RequestVarGet('translate', '', 'string');
 				$this->PageViewSetCfg('rawpage', 'yes');
@@ -140,7 +144,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewFormMarkupCode($id, 'form', $translate)
 				);
 				break;
-			case 'record-view-tab-data':
+			case 'record-view-tab-data': // HTML
 				$id = $this->RequestVarGet('id', '', 'string');
 				$this->PageViewSetCfg('rawpage', 'yes');
 				$this->PageViewSetVar(
@@ -148,7 +152,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewFormYamlData($id, 'view')
 				);
 				break;
-			case 'record-edit-tab-data':
+			case 'record-edit-tab-data': // HTML
 				$id = $this->RequestVarGet('id', '', 'string');
 				$this->PageViewSetCfg('rawpage', 'yes');
 				$this->PageViewSetVar(
@@ -156,7 +160,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewFormYamlData($id, 'form')
 				);
 				break;
-			case 'record-view-tab-info':
+			case 'record-view-tab-info': // HTML
 				$id = $this->RequestVarGet('id', '', 'string');
 				$this->PageViewSetCfg('rawpage', 'yes');
 				$this->PageViewSetVar(
@@ -164,7 +168,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewFormInfo($id, 'view')
 				);
 				break;
-			case 'record-view-highlight-code': // preview code
+			case 'record-view-highlight-code': // HTML: preview code
 				$id = $this->RequestVarGet('id', '', 'string');
 				$this->PageViewSetCfg('template-path', 'default');
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
@@ -173,7 +177,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewDisplayHighlightCode($id)
 				);
 				break;
-			case 'record-view-highlight-data': // preview code
+			case 'record-view-highlight-data': // HTML: preview data
 				$id = $this->RequestVarGet('id', '', 'string');
 				$this->PageViewSetCfg('template-path', 'default');
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
@@ -182,7 +186,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewDisplayHighlightData($id)
 				);
 				break;
-			case 'record-edit-do':
+			case 'record-edit-do': // HTML
 				$frm = $this->RequestVarGet('frm', array(), 'array');
 				$id = $this->RequestVarGet('id', '', 'string');
 				$this->PageViewSetCfg('rawpage', 'yes');
@@ -201,17 +205,89 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewFormDelete($id, $delete)
 				);
 				break;
-			case 'reset-counter':
+			case 'reset-counter': // JSON
 				$back = $this->RequestVarGet('back', '', 'string');
 				$this->PageViewSetCfg('rawpage', true);
+				$this->PageViewSetCfg('rawmime', 'text/json');
+				$this->PageViewSetCfg('rawdisp', 'inline');
 				$this->PageViewSetVar(
 					'main',
 					\SmartModExtLib\PageBuilder\Manager::ViewDisplayResetCounter($back)
 				);
 				break;
+			case 'export-translations': // HTML
+				$tpl = $this->RequestVarGet('tpl', '', 'string');
+				if((string)$tpl != 'custom') {
+					$this->PageViewSetCfg('template-path', 'default');
+					$this->PageViewSetCfg('template-file', 'template.htm');
+				} //end if
+				$this->PageViewSetVar(
+					'main',
+					\SmartModExtLib\PageBuilder\Manager::ViewDisplayExportData($tpl)
+				);
+				break;
+			case 'export-translations-ods': // ODS
+				$exportlang = $this->RequestVarGet('exportlang', '', 'string');
+				if(\SmartTextTranslations::validateLanguage($exportlang) !== true) {
+					$this->PageViewSetErrorStatus(400, 'ERROR: Invalid PageBuilder Export Language: '.$exportlang);
+					return;
+				} //end if
+				$mode = $this->RequestVarGet('mode', 'all', ['all','missing']);
+				if(((string)$mode != 'all') AND ((string)$mode != 'missing')) {
+					$this->PageViewSetErrorStatus(400, 'ERROR: Invalid PageBuilder Export Mode: '.$mode);
+					return;
+				} //end if
+				$this->PageViewSetCfg('rawpage', true);
+				$oo = new SmartExportToOpenOffice();
+				$this->PageViewSetCfg('rawmime', (string)$oo->ODS_Mime_Header());
+				if((string)$exportlang == (string)\SmartTextTranslations::getDefaultLanguage()) {
+					$extralang = '@';
+					$arrsheets = [
+						'[lang_'.SmartTextTranslations::getDefaultLanguage().']'
+					];
+				} else {
+					$extralang = (string) substr((string)trim((string)$exportlang), 0, 2);
+					$arrsheets = [
+						'[lang_'.SmartTextTranslations::getDefaultLanguage().']',
+						'[lang_'.$exportlang.']'
+					];
+				} //end if else
+				$this->PageViewSetCfg('rawdisp', (string)$oo->ODS_Disposition_Header('translations-pgbld-'.SmartTextTranslations::getDefaultLanguage().'_'.$extralang.'-'.substr((string)$mode,0,3).'-'.date('Ymd_His').'.ods', 'attachment'));
+				$this->PageViewSetVar(
+					'main',
+					(string) $oo->ODS_SpreadSheet(
+						'PageBuilder Transl. - '.$mode,
+						$arrsheets,
+						(array) \SmartModExtLib\PageBuilder\Manager::ViewDisplayExportOdsData((string)$mode, (string)$exportlang)
+					)
+				);
+				$oo = null;
+				break;
+			case 'import-translations': // HTML
+				$tpl = $this->RequestVarGet('tpl', '', 'string');
+				if((string)$tpl != 'custom') {
+					$this->PageViewSetCfg('template-path', 'default');
+					$this->PageViewSetCfg('template-file', 'template.htm');
+				} //end if
+				$this->PageViewSetVar(
+					'main',
+					\SmartModExtLib\PageBuilder\Manager::ViewDisplayImportData($tpl)
+				);
+				break;
+			case 'import-translations-do': // HTML
+				$tpl = $this->RequestVarGet('tpl', '', 'string');
+				if((string)$tpl != 'custom') {
+					$this->PageViewSetCfg('template-path', 'default');
+					$this->PageViewSetCfg('template-file', 'template.htm');
+				} //end if
+				$this->PageViewSetVar(
+					'main',
+					\SmartModExtLib\PageBuilder\Manager::ViewDisplayImportDoData($tpl)
+				);
+				break;
 			default:
-				$this->PageViewSetCfg('error', 'Invalid FileManager Operation ! ...');
-				return 404;
+				$this->PageViewSetCfg('error', 'ERROR: Invalid PageBuilder Manager Operation: '.$op);
+				return 400;
 		} //end switch
 		//--
 

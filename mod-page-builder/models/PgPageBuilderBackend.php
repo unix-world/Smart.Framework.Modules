@@ -21,7 +21,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PgPageBuilderBackend {
 
 	// ::
-	// v.181120
+	// v.181121
 
 
 	public static function getRecordsUniqueControllers() {
@@ -677,16 +677,16 @@ final class PgPageBuilderBackend {
 	//#####
 
 
-	public static function updateTranslationByText($text_en, $lang, $text_lang, $admin) {
+	public static function updateTranslationByText($text_deflang, $lang, $text_lang, $admin) {
 		//--
 		if((string)trim((string)$text_lang) == '') {
 			return -1;
 		} //end if
 		//--
-		if((string)trim((string)$text_en) == '') {
+		if((string)trim((string)$text_deflang) == '') {
 			return -2;
 		} //end if
-		if(((string)$lang == 'en') OR ((string)$lang == '') OR (strlen($lang) != 2) OR (\SmartTextTranslations::validateLanguage($lang) !== true)) {
+		if(((string)$lang == (string)\SmartTextTranslations::getDefaultLanguage()) OR ((string)$lang == '') OR (strlen($lang) != 2) OR (\SmartTextTranslations::validateLanguage($lang) !== true)) {
 			return -3;
 		} //end if
 		//--
@@ -695,7 +695,7 @@ final class PgPageBuilderBackend {
 		$arr = \SmartPgsqlDb::read_adata(
 			'SELECT "id", "code" FROM "web"."page_builder" WHERE ("code" = $1)',
 			[
-				(string) base64_encode((string)$text_en)
+				(string) base64_encode((string)$text_deflang)
 			]
 		);
 		//--
@@ -751,10 +751,10 @@ final class PgPageBuilderBackend {
 			return array(); // invalid language
 		} //end if
 		//--
-		if((string)$lang == 'en') {
+		if((string)$lang == (string)\SmartTextTranslations::getDefaultLanguage()) {
 			//--
 			$query = '
-				SELECT DISTINCT convert_from(decode("code", \'base64\'), \'UTF8\') AS "lang_en", \'\' AS '.\SmartPgsqlDb::escape_identifier((string)'lang_'.$lang).' FROM "web"."page_builder" WHERE "translations" = 1
+				SELECT DISTINCT convert_from(decode("code", \'base64\'), \'UTF8\') AS '.\SmartPgsqlDb::escape_identifier((string)'lang_'.\SmartTextTranslations::getDefaultLanguage()).' FROM "web"."page_builder" WHERE "translations" = 1
 			';
 			//--
 			if((string)$mode == 'missing') {
@@ -765,7 +765,7 @@ final class PgPageBuilderBackend {
 			//--
 			$query = '
 				SELECT DISTINCT
-				convert_from(decode("a"."code", \'base64\'), \'UTF8\') AS "lang_en", COALESCE(convert_from(decode("b"."code", \'base64\'), \'UTF8\'), \'\') AS '.\SmartPgsqlDb::escape_identifier((string)'lang_'.$lang).'
+				convert_from(decode("a"."code", \'base64\'), \'UTF8\') AS '.\SmartPgsqlDb::escape_identifier((string)'lang_'.\SmartTextTranslations::getDefaultLanguage()).', COALESCE(convert_from(decode("b"."code", \'base64\'), \'UTF8\'), \'\') AS '.\SmartPgsqlDb::escape_identifier((string)'lang_'.$lang).'
 				FROM "web"."page_builder" "a"
 				LEFT OUTER JOIN "web"."page_translations" "b" ON
 					"a"."id" = "b"."id" AND

@@ -1,0 +1,25 @@
+<!-- Pagebuilder/Manage @ Import.Form / Records :: v.181123 -->
+<script type="text/javascript">
+function smartModJS_PgBldr_Validate_Form() {
+	var fodsfile = jQuery('#sel-fodsfile').val();
+	if(!fodsfile) {
+		SmartJS_BrowserUtils.alert_Dialog('Please select a FODS File for upload', null, 'Notification');
+		return false;
+	}
+	return true;
+}
+</script>
+<div align="center">
+	<h1>Import [####APP-NAME|html####] Translations</h1>
+	<br>
+	<form id="import_form" name="import_form" method="post" action="[####URL-FORM-ACTION|html####]" enctype="multipart/form-data" class="ux-form" autocomplete="off">
+		<input type="hidden" name="tpl" value="[####TPL-VAR|html####]">
+		<input id="sel-fodsfile" class="ux-button" type="file" name="import_file" accept=".fods" title="Flat ODS XML File (.fods): application/vnd.oasis.opendocument.spreadsheet">
+		<br>
+		<span style="color:#CCCCCC;"><b>Upload a FODS (XML) file / OpenOffice Flat Spreadsheet</b></span>
+		<br>
+		<br>
+		<button type="submit" class="ux-button ux-button-special" onClick="return smartModJS_PgBldr_Validate_Form();"><i class="fa fa-upload" style="margin-right:10px;"></i> Import Translations</button>
+	</form>
+</div>
+<!-- #END -->

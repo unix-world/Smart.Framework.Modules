@@ -1,0 +1,101 @@
+<!-- Pagebuilder/Manage @ Import.Result / Records :: v.181123 -->
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/datatables/datatables-responsive.css">
+<script type="text/javascript" src="lib/js/jquery/datatables/datatables-responsive.js"></script>
+<h1>Import [####APP-NAME|html####] Translations Result: [####TOTAL-IMPORTED|int####] of [####TOTAL-RECORDS|int####] records. Displaying: <select id="show-chk-rows" class="ux-field"><option value="all">All ([####TOTAL-RECORDS|int####] records)</option><option value="errors">Only Errors ([####TOTAL-ERRORS|int####] records)</option></select></h1>
+<div style="width:98vw; border:1px solid #CCCCCC; padding:10px;">
+<table id="import-results" class="display" style="width:99%;">
+<thead><tr>
+	<th title="Import Status">Status</th>
+	<th title="Import Differences">Diffs</th>
+[%%%%LOOP:HEAD-ARR%%%%]
+	<th>Language: [####HEAD-ARR._-VAL-_|upper|html####]</th>
+[%%%%/LOOP:HEAD-ARR%%%%]
+</tr></thead>
+<tbody>
+[%%%%LOOP:DATA-ARR%%%%]
+<tr>
+	<td title="Import Status: [####DATA-ARR.STATUS|html####]" data-raw="[####DATA-ARR.STATUS|html####]">[####DATA-ARR.STATUS|html####]</td>
+	<td title="Placeholder and Marker diffs: [####DATA-ARR.DIFFS|html####]" data-raw="[####DATA-ARR.DIFFS|html####]">[####DATA-ARR.DIFFS|html####]</td>
+	<td>[####DATA-ARR.DEFAULT|html####]</td>
+	<td>[####DATA-ARR.TRANSLATE|html####]</td>
+</tr>
+[%%%%/LOOP:DATA-ARR%%%%]
+</tbody>
+<tfoot><tr>
+	<th title="Import Status">Status</th>
+	<th title="Import Differences">Diffs</th>
+[%%%%LOOP:HEAD-ARR%%%%]
+	<th>Language: [####HEAD-ARR._-VAL-_|upper|html####]</th>
+[%%%%/LOOP:HEAD-ARR%%%%]
+</tr></tfoot>
+</table></div>
+<script>
+jQuery(document).ready(function() {
+
+	var tbl = jQuery('table#import-results').DataTable({
+		bSort: true,
+		bSortMulti: true,
+		order: [
+			[ 0, 'desc' ],
+			[ 1, 'desc' ]
+		],
+		bPaginate: true,
+		iDisplayLength: 5,
+		aLengthMenu: [ 5, 10, 25, 50, 100 ],
+		uxmHidePagingIfNoMultiPages: true,
+		uxmCssClassLengthField: 'ux-field',
+		uxmCssClassFilterField: 'ux-field',
+		classes: {
+			sPageButton: 'ux-button ux-button-small',
+			sPageButtonActive: 'ux-button ux-button-small ux-button-primary'
+		},
+		columnDefs: [
+			{
+				targets: 0,
+				width: '32px',
+				render: function(data, type, row) {
+					if(type === 'type' || type === 'sort' || type === 'filter') {
+						return data;
+					} else {
+						if(data === 'ok' || data === 'warn' || data === 'warn-crit') {
+							var img = data;
+							if(data === 'warn-crit') {
+								img = 'crit-warn';
+							}
+							return '<img width="32" height="32" src="lib/framework/img/sign-' + SmartJS_CoreUtils.escape_html(img) + '.svg" alt="' + SmartJS_CoreUtils.escape_html(data) + '" title="' + SmartJS_CoreUtils.escape_html(data) + '">';
+						} else {
+							return '<img width="32" height="32" src="lib/framework/img/sign-crit-error.svg" alt="' + SmartJS_CoreUtils.escape_html(data) + '" title="' + SmartJS_CoreUtils.escape_html(data) + '">';
+						}
+					}
+				}
+			},
+			{
+				targets: 1,
+				width: '32px',
+				render: function(data, type, row) {
+					if(type === 'type' || type === 'sort' || type === 'filter') {
+						return data;
+					} else {
+						var img = '';
+						if(data) {
+							img = '<img width="32" height="32" src="lib/framework/img/sign-error.svg" alt="' + SmartJS_CoreUtils.escape_html(data) + '" title="' + SmartJS_CoreUtils.escape_html(data) + '">'
+						}
+						return img;
+					}
+				}
+			}
+		]
+	});
+
+	jQuery('#show-chk-rows').on('change', function() {
+		var val = jQuery(this).val();
+		if(val === 'errors') {
+			tbl.columns(0).search('^(warn|warn\-crit)$', true, false, true).draw();
+		} else {
+			tbl.columns(0).search('').draw();
+		}
+	}).val('errors').change();
+
+});
+</script>
+<!-- #END -->

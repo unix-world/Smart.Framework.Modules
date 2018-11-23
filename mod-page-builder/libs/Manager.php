@@ -47,7 +47,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.181120
+ * @version 	v.181123
  * @package 	PageBuilder
  *
  */
@@ -1841,6 +1841,228 @@ final class Manager {
 		//--
 	} //END FUNCTION
 	//==================================================================
+
+
+	//==================================================================
+	public static function ViewDisplayExportData($y_tpl) {
+		//--
+		$y_tpl = (string) $y_tpl;
+		//--
+		return (string) \SmartMarkersTemplating::render_file_template(
+			(string) self::$ModulePath.'libs/views/manager/view-export.mtpl.htm',
+			[
+				'URL-FORM-ACTION' 	=> (string) self::composeUrl('op=export-translations-ods'),
+				'LANGUAGE-DEFAULT' 	=> (string) \SmartTextTranslations::getDefaultLanguage(),
+				'LANGUAGES-ARR' 	=> (array)  \SmartTextTranslations::getListOfLanguages()
+			]
+		);
+		//--
+	} //END FUNCTION
+	//==================================================================
+
+
+	//==================================================================
+	public static function ViewDisplayExportOdsData($mode, $lang) {
+		//--
+		if(((string)$mode != 'all') AND ((string)$mode != 'missing')) {
+			return array();
+		} //end if else
+		if(\SmartTextTranslations::validateLanguage($lang) !== true) {
+			return array();
+		} //end if
+		//--
+		return (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::exportTranslationsByLang((string)$lang, (string)$mode);
+		//--
+	} //END FUNCTION
+	//==================================================================
+
+
+	//==================================================================
+	public static function ViewDisplayImportData($y_tpl, $y_appname='PageBuilder', $y_action='') {
+		//--
+		$y_tpl = (string) $y_tpl;
+		$y_appname = (string) $y_appname;
+		$y_action = (string) $y_action;
+		//--
+		if((string)$y_action == '') {
+			$y_action = (string) self::composeUrl('op=import-translations-do');
+		} //end if
+		//--
+		return (string) \SmartMarkersTemplating::render_file_template(
+			(string) self::$ModulePath.'libs/views/manager/view-import-form.mtpl.htm',
+			[
+				'TPL-VAR' 			=> (string) $y_tpl,
+				'APP-NAME' 			=> (string) $y_appname,
+				'URL-FORM-ACTION' 	=> (string) $y_action
+			]
+		);
+		//--
+	} //END FUNCTION
+	//==================================================================
+
+
+	//==================================================================
+	public static function ViewDisplayImportDoData($y_tpl, $y_appname='PageBuilder', $y_modelclass='') {
+		//--
+		$y_tpl = (string) $y_tpl;
+		$y_appname = (string) $y_appname;
+		$y_modelclass = (string) $y_modelclass;
+		//--
+		if(!$_FILES['import_file']['tmp_name']) {
+			return (string) \SmartComponents::operation_notice('No File to Import (.fods)');
+		} //end if
+		if(substr((string)$_FILES['import_file']['name'], -5, 5) != '.fods') {
+			return (string) \SmartComponents::operation_warn('Invalid File to Import (.fods)');
+		} //end if
+		//--
+		$input_str = (string) \SmartFileSystem::read_uploaded((string)$_FILES['import_file']['tmp_name']);
+		//--
+		$input_str = (array) \SmartModExtLib\PageBuilder\Utils::parseFodsXmlSpreadSheetToArray($input_str);
+		if(\Smart::array_size($input_str) <= 0) {
+			return \SmartComponents::operation_error('Invalid FODS/Xml File Format to Import');
+		} //end if
+		$hdr_arr = (array) $input_str['header'];
+		$data_arr = (array) $input_str['data'];
+		//print_r($data_arr); die();
+		$input_str = null; // free mem
+		//--
+		$def_lang = (string) \SmartTextTranslations::getDefaultLanguage();
+		//--
+		$real_imported = 0;
+		$arr_xdata = [];
+		foreach($data_arr as $lang => $val) {
+			//--
+			$x_iterator = 0;
+			//--
+			if(((string)$lang != (string)$def_lang) AND (\SmartTextTranslations::validateLanguage((string)$lang))) {
+				//--
+				if(is_array($val)) {
+					//--
+					for($i=0; $i<\Smart::array_size($val); $i++) {
+						//--
+						$x_is_empty = true;
+						$x_is_tempty = true;
+						$x_is_diff = true;
+						$x_is_not_imported = true;
+						$diffs_arr_rows = [];
+						//--
+						if((string)trim((string)$data_arr[(string)$def_lang][$i]) != '') {
+							//--
+							$x_is_empty = false;
+							//--
+							if((string)trim((string)$val[$i]) != '') {
+								//--
+								$x_is_tempty = false;
+								//--
+								$arr_placeholder_and_marker_diffs = (array) \SmartModExtLib\PageBuilder\Utils::comparePlaceholdersAndMarkers((string)$data_arr[(string)$def_lang][$i], (string)$val[$i]);
+								//--
+								if(\Smart::array_size($arr_placeholder_and_marker_diffs) <= 0) {
+									//--
+									$x_is_diff = false;
+									//--
+									if((string)$y_modelclass != '') {
+										$upd = (int) $y_modelclass::updateTranslationByText((string)$data_arr[(string)$def_lang][$i], (string)$lang, (string)$val[$i], (string)\SmartAuth::get_login_id());
+									} else {
+										$upd = (int) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::updateTranslationByText((string)$data_arr[(string)$def_lang][$i], (string)$lang, (string)$val[$i], (string)\SmartAuth::get_login_id());
+									} //end if else
+									//--
+									if($upd > 0) {
+										$real_imported++;
+										$x_is_not_imported = false;
+									} //end if
+									if((string)$dbg == 'yes') {
+										if($upd < -1) {
+											\SmartFrameworkRegistry::setDebugMsg('extra', 'IMPORT-TRANSLATIONS', [
+												'title' => '[Import Translations: '.$y_appname.']',
+												'data' => 'ERROR('.$upd.'): Could not Find for Update PageBuilder Translations for text: `'.(string)$data_arr[(string)$def_lang][$i].'`'
+											]);
+										} elseif($upd == -1) {
+											// no translation
+										} elseif($upd == 0) {
+											\SmartFrameworkRegistry::setDebugMsg('extra', 'IMPORT-TRANSLATIONS', [
+												'title' => '[Import Translations: '.$y_appname.']',
+												'data' => 'WARN: Could not Update PageBuilder Translations for text: `'.(string)$data_arr[(string)$def_lang][$i].'`'
+											]);
+										} //end if else
+									} //end if
+									//--
+								} else {
+									//--
+									$diffs_arr_rows = (array) $arr_placeholder_and_marker_diffs;
+									//--
+								} //end if else
+								//--
+								$arr_placeholder_and_marker_diffs = array();
+								//--
+							} //end if
+							//--
+						} //end if else
+						//--
+						if(!is_array($arr_xdata[(int)$x_iterator])) {
+							$arr_xdata[(int)$x_iterator] = [];
+						} //end if
+						$status = 'ok';
+						if($x_is_empty || $x_is_tempty || $x_is_diff || $x_is_not_imported) {
+							$status = 'warn';
+							if(!$x_is_tempty) {
+								$status = 'warn-crit';
+							} //end if
+						} //end if
+						$arr_xdata[(int)$x_iterator]['status'] = (string) $status;
+						$arr_xdata[(int)$x_iterator]['diffs'] = (string) implode(', ', (array)$diffs_arr_rows);
+						$arr_xdata[(int)$x_iterator]['translate'] = (string) $val[$i];
+						$x_iterator++;
+						//--
+					} //end for
+					//--
+				} //end if
+				//--
+			} elseif((string)$lang == (string)$def_lang) {
+				//--
+				if(is_array($val)) {
+					//--
+					for($i=0; $i<\Smart::array_size($val); $i++) {
+						//--
+						if(!is_array($arr_xdata[(int)$x_iterator])) {
+							$arr_xdata[(int)$x_iterator] = [];
+						} //end if
+						//--
+						$arr_xdata[(int)$x_iterator]['default'] = (string) $val[$i];
+						$x_iterator++;
+						//--
+					} //end for
+					//--
+				} //end if
+				//--
+			} //end if
+			//--
+		} //end foreach
+		//--
+		$out_total = 0;
+		foreach((array)$hdr_arr as $key => $val) {
+			if((string)$val != (string)$def_lang) {
+				if(is_array($data_arr[(string)$val])) {
+					$out_total += \Smart::array_size($data_arr[(string)$val]);
+				} //end if
+			} //end if else
+		} //end foreach
+		//--
+		return (string) \SmartMarkersTemplating::render_file_template(
+			(string) self::$ModulePath.'libs/views/manager/view-import-result.mtpl.htm',
+			[
+				'TPL-VAR' 			=> (string) $y_tpl,
+				'APP-NAME' 			=> (string) $y_appname,
+				'TOTAL-RECORDS' 	=> (int)    $out_total,
+				'TOTAL-IMPORTED' 	=> (int)    $real_imported,
+				'TOTAL-ERRORS' 		=> (int)    ($out_total - $real_imported),
+				'HEAD-ARR' 			=> (array)  $hdr_arr,
+				'DATA-ARR' 			=> (array)  $arr_xdata
+			]
+		);
+		//--
+	} //END FUNCTION
+	//==================================================================
+
 
 } //END CLASS
 
