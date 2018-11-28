@@ -5,8 +5,6 @@
 
 // DEPENDS: jQuery, SmartJS_CoreUtils, SmartJS_BrowserUtils, jQueryUI, jQuery.UI.ListSelect, jQuery.UI.TimePicker
 
-// v.170831
-
 // ! To use jQueryUI bindings for Smart.Framework load this instead of lib/js/jquery/jquery.smartframework.ui.js ; they are a drop-in replacements for LighJS-UI !
 
 //==================================================================
@@ -28,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var SmartJS_BrowserUIUtils = new function() { // START CLASS
+var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.181127.r7
 
 this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
@@ -563,6 +561,109 @@ this.AutoCompleteField = function(single_or_multi, elem_id, data_url, var_term, 
 			return false;
 		}
 	});
+	//--
+	return HtmlElement;
+	//--
+} //END FUNCTION
+
+//=======================================
+
+// Dependencies:
+//	jQuery
+//	lib/js/jquery/datatables/datatables-responsive.css
+//	lib/js/jquery/datatables/datatables-responsive.js
+this.DataTable = function(elem_id, options) {
+	//--
+	if(!options || typeof options !== 'object') {
+		options = {};
+	} //end if
+	//--
+	if(!options.hasOwnProperty('filter')) {
+		options['filter'] = true;
+	} else {
+		options['filter'] = !(!options['filter']); // force boolean
+	} //end if
+	//--
+	if(!options.hasOwnProperty('sort')) {
+		options['sort'] = true;
+	} else {
+		options['sort'] = !(!options['sort']); // force boolean
+	} //end if
+	//--
+	if(!options.hasOwnProperty('paginate')) {
+		options['paginate'] = true;
+	} else {
+		options['paginate'] = !(!options['paginate']); // force boolean
+	} //end if
+	//--
+	if(!options.hasOwnProperty('pagesize')) {
+		options['pagesize'] = 10;
+	} else {
+		options['pagesize'] = parseInt(options['pagesize']); // force integer
+		if(options['pagesize'] < 1) {
+			options['pagesize'] = 1;
+		} //end if
+	} //end if
+	//--
+	var defPageSizes = [ 10, 25, 50, 100 ]; // default array
+	if(!options.hasOwnProperty('pagesizes')) {
+		options['pagesizes'] = defPageSizes;
+	} else if(!Array.isArray(options['pagesizes'])) {
+		options['pagesizes'] = defPageSizes;
+	} //end if else
+	//--
+	if(!options.hasOwnProperty('classField')) {
+		options['classField'] = 'ui-widget'; // default class
+	} //end if
+	//--
+	if(!options.hasOwnProperty('classButton')) {
+		options['classButton'] = 'ui-button ui-corner-all ui-widget'; // default class
+	} //end if
+	//--
+	if(!options.hasOwnProperty('classActiveButton')) {
+		options['classActiveButton'] = 'ui-state-active'; // default class
+	} //end if
+	//--
+	if(!(!!options.paginate)) {
+		options['pagesize'] = Number.MAX_SAFE_INTEGER;
+		options['pagesizes'] = [ Number.MAX_SAFE_INTEGER ];
+	} //end if
+	//--
+	var defCols = [{}]; // default array
+	if(!options.hasOwnProperty('coldefs')) {
+		options['coldefs'] = defCols;
+	} else if(!Array.isArray(options['coldefs'])) {
+		options['coldefs'] = defCols;
+	} //end if else
+	//--
+	var ordCols = []; // default array
+	if(!options.hasOwnProperty('colorder')) {
+		options['colorder'] = ordCols;
+	} else if(!Array.isArray(options['colorder'])) {
+		options['colorder'] = ordCols;
+	} //end if else
+	//--
+	var opts = {
+		bFilter: 		!!options.filter,
+		bSort: 			!!options.sort,
+		bSortMulti: 	!!options.sort,
+		order: 			Array.from(options.colorder),
+		bPaginate: 		!!options.paginate,
+		iDisplayLength: parseInt(options.pagesize),
+		aLengthMenu: 	Array.from(options.pagesizes, x => parseInt(x)),
+		uxmHidePagingIfNoMultiPages: 	true,
+		uxmCssClassLengthField: 		String(options.classField),
+		uxmCssClassFilterField: 		String(options.classField),
+		classes: {
+			sPageButton: 		String(options.classButton),
+			sPageButtonActive: 	String(options.classActiveButton)
+		},
+		columnDefs: 	Array.from(options.coldefs)
+	};
+	//--
+	var HtmlElement = jQuery('table#' + elem_id);
+	//--
+	HtmlElement.DataTable(opts);
 	//--
 	return HtmlElement;
 	//--

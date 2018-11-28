@@ -1,16 +1,19 @@
 <f:section name="Typo3FluidTpl"><!-- start Typo3Fluid template -->
+<f:comment> Template: sample.t3fluid.htm </f:comment><!-- comments are removed -->
 <div align="center">
 	<br>
 	<div>
 		<a href="//wiki.typo3.org/Fluid" target="_blank"><img src="modules/mod-tpl-typo3-fluid/views/img/typo3-fluid.svg" width="160" height="160"></a>
 		<br>
-		TYPO3-Fluid Templating Engine v.{version}
+		<f:if condition="{version} != ''"><b><i>TYPO3-Fluid</i></b> <i>Templating</i> Engine v.{version}</f:if>
 	</div>
 	<f:format.raw>{hello}</f:format.raw>
 	<div align="center">
-		<a href="?/page/tpl-typo3-fluid.test" class="ux-button ux-button-small"><i class="fa fa-refresh"></i> &nbsp; Reload TPL Render Test</a>
+		<a href="?/page/tpl-typo3-fluid.test" class="ux-button ux-button-small ux-button-info"><i class="fa fa-refresh"></i> &nbsp; Reload TPL Render Test</a>
 		&nbsp;&nbsp;
-		<a href="?/page/tpl-typo3-fluid.test/op/viewsource" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small"><i class="fa fa-code"></i> &nbsp; View TPL Source</a>
+		<a href="?/page/tpl-typo3-fluid.test/op/viewsource" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-primary"><i class="fa fa-code"></i> &nbsp; View TPL Source</a>
+		&nbsp;&nbsp;
+		<a href="?/page/tpl-typo3-fluid.test/op/viewpartialsource" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="fa fa-code"></i> &nbsp; View Sub-TPL Source</a>
 	</div>
 	<br>
 	<f:render partial="@sample-partial.t3fluid.inc.htm" arguments="{tbl: tbl}" />
@@ -19,12 +22,18 @@
 			<li><a href="{item.href}">{item.caption}</a></li>
 		</f:for>
 	</ul>
-	Test condition:
-	<f:if condition="{a} == 'Test 1'">
+	Test Condition#1:
+	<f:if condition="{a} == 'Test-1'"><f:then>
 		<b>OK</b>
-	</f:if>
-	<f:if condition="{a} == {b}">
-		<b>NOT OK</b>
-	</f:if>
+	</f:then><f:else>
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	</f:else></f:if>
+	<br>
+	Test Condition#2:
+	<f:if condition="{b} == {a}"><f:then>
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	</f:then><f:else>
+		<b>OK</b>
+	</f:else></f:if>
 </div>
 <!-- end Typo3Fluid template --></f:section>

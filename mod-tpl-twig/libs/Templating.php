@@ -43,7 +43,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: \SmartModExtLib\TplTwig\SmartTwigEnvironment, Twig
- * @version 	v.181105
+ * @version 	v.181127
  * @package 	Templating:Engines
  *
  */
@@ -53,6 +53,13 @@ final class Templating {
 
 	private $dir;
 	private $twig;
+
+
+	public static function getVersion() {
+		//--
+		return (string) \Twig_Environment::VERSION;
+		//--
+	} //END FUNCTION
 
 
 	public function __construct() {

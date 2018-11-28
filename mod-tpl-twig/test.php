@@ -36,13 +36,19 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$tpl = $this->ControllerGetParam('module-view-path').'sample.twig.inc.htm';
+		$tpl = (string) $this->ControllerGetParam('module-view-path').'sample.twig.htm';
+		$ptpl = (string) $this->ControllerGetParam('module-view-path').'sample-partial.twig.inc.htm';
 		//--
 
 		//--
 		if((string)$op == 'viewsource') {
 			//--
-			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'<h1>Twig Template (TPL Source)</h1><hr><pre style="background:#FAFAFA;"><code class="twig" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
+			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'<h1>Twig Template Source:<br><i>'.Smart::escape_html($tpl).'</i></h1><hr><pre style="background:#FAFAFA;"><code class="twig" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
+			return;
+			//--
+		} elseif((string)$op == 'viewpartialsource') {
+			//--
+			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'<h1>Twig Sub-Template Source:<br><i>'.Smart::escape_html($ptpl).'</i></h1><hr><pre style="background:#FAFAFA;"><code class="twig" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$ptpl)).'</code></pre><hr><br>');
 			return;
 			//--
 		} //end if
@@ -50,6 +56,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 		//--
 		$data = [
+			'version' => (string) \SmartModExtLib\TplTwig\Templating::getVersion(),
 			'hello' => '<h1>Demo: Twig Templating as module for Smart.Framework</h1>',
 			'navigation' => [
 				array('href' => '#link1', 'caption' => 'Sample Link <1>'),
@@ -61,8 +68,8 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				['a1' => '2.1', 'a2' => '2.2', 'a3' => '2.3'],
 				['a1' => '3.1', 'a2' => '3.2', 'a3' => '3.3']
 			],
-			'a' 		=> 'Test 1',
-			'b' 		=> 'Test 2'
+			'a' 		=> 'Test-1',
+			'b' 		=> 'Test-2'
 		];
 		//--
 

@@ -2948,4 +2948,4 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 }).call(this);
 
-//# sourceMappingURL=showdown.js.map
+// #END

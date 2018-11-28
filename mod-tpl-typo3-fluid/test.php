@@ -36,19 +36,28 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$tpl = $this->ControllerGetParam('module-view-path').'sample.t3fluid.htm';
+		$tpl = (string) $this->ControllerGetParam('module-view-path').'sample.t3fluid.htm';
+		$ptpl = (string) $this->ControllerGetParam('module-view-path').'@sample-partial.t3fluid.inc.htm';
 		//--
 
 		//--
 		if((string)$op == 'viewsource') {
 			//--
-			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<h1>Typo3Fluid Template (TPL Source)</h1><hr><pre style="background:#FAFAFA;"><code class="xml" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
+			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<h1>Typo3Fluid Template Source:<br><i>'.Smart::escape_html($tpl).'</i></h1><hr><pre style="background:#FAFAFA;"><code class="xml" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
+			return;
+			//--
+		} elseif((string)$op == 'viewpartialsource') {
+			//--
+			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<h1>Typo3Fluid Sub-Template Source:<br><i>'.Smart::escape_html($ptpl).'</i></h1><hr><pre style="background:#FAFAFA;"><code class="xml" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$ptpl)).'</code></pre><hr><br>');
 			return;
 			//--
 		} //end if
 		//--
 
-		//-- !!! all include partials must start with @ to avoid camel case (ex: @sample-partial.t3fluid.inc.htm) !!!
+		//--
+		// !!! all main templates must start / end with the section ID: Typo3FluidTpl
+		// !!! all partials to be included in main templates must start with @ to avoid camel case (enforced by typo3 on file system ; ex: @sample-partial.t3fluid.inc.htm) !!!
+		//--
 		$data = [
 			'version' 	=> (string) \SmartModExtLib\TplTypo3Fluid\Templating::FLUID_VERSION,
 			'hello' 	=> '<h1>Demo: Typo3Fluid Templating as module for Smart.Framework</h1>',
@@ -62,8 +71,8 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				['a1' => '2.1', 'a2' => '2.2', 'a3' => '2.3'],
 				['a1' => '3.1', 'a2' => '3.2', 'a3' => '3.3']
 			],
-			'a' 		=> 'Test 1',
-			'b' 		=> 'Test 2'
+			'a' 		=> 'Test-1',
+			'b' 		=> 'Test-2'
 		];
 		//--
 

@@ -1,0 +1,40 @@
+<!-- start twig template -->
+{# Template: sample.twig.htm #}<!-- comments are removed -->
+<div align="center">
+	<br>
+	<div>
+		<a href="//twig.symfony.com/doc/1.x/" target="_blank"><img src="modules/mod-tpl-twig/views/img/twig.svg" width="160" height="160"></a>
+		<br>
+		{% if version != '' %}<b><i>Twig</i></b> <i>Templating</i> Engine v.{{ version }}{% endif %}
+	</div>
+	{{ hello|raw }}
+	<div>
+		<a href="?/page/tpl-twig.test" class="ux-button ux-button-small ux-button-info"><i class="fa fa-refresh"></i> &nbsp; Reload TPL Render Test</a>
+		&nbsp;&nbsp;
+		<a href="?/page/tpl-twig.test/op/viewsource" target="tpl_twig_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-primary"><i class="fa fa-code"></i> &nbsp; View TPL Source</a>
+		&nbsp;&nbsp;
+		<a href="?/page/tpl-twig.test/op/viewpartialsource" target="tpl_twig_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="fa fa-code"></i> &nbsp; View Sub-TPL Source</a>
+	</div>
+	<br>
+	{% include _tpldir_ ~ 'sample-partial.twig.inc.htm' %}
+	<ul>
+	{% for item in navigation %}
+		<li><a href="{{ item.href }}">{{ item.caption }}</a></li>
+	{% endfor %}
+	</ul>
+	Test Condition#1:
+	{% if a == 'Test-1' %}
+		<b>OK</b>
+	{% else %}
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	{% endif %}
+	<br>
+	Test Condition#2:
+	{% if b == a %}
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	{% else %}
+		<b>OK</b>
+	{% endif %}
+</div>
+<!-- end twig template -->
+{# <pre>{{ dump() }}</pre> #}

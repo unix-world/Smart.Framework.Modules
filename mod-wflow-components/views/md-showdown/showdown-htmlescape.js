@@ -58,4 +58,4 @@
   }
 }())
 
-//# sourceMappingURL=showdown-htmlescape.js.map
+// #END
