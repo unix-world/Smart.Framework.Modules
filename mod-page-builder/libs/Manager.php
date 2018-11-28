@@ -47,7 +47,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.181123
+ * @version 	v.181128
  * @package 	PageBuilder
  *
  */
@@ -2002,12 +2002,19 @@ final class Manager {
 							$arr_xdata[(int)$x_iterator] = [];
 						} //end if
 						$status = 'ok';
+						if($x_is_empty || $x_is_tempty) {
+							$x_is_diff = false; // FIX
+						} //end if
 						if($x_is_empty || $x_is_tempty || $x_is_diff || $x_is_not_imported) {
 							$status = 'warn';
 							if(!$x_is_tempty) {
 								$status = 'warn-crit';
 							} //end if
 						} //end if
+						$arr_xdata[(int)$x_iterator]['is_transl_empty'] = (string) ($x_is_tempty ? 'yes' : 'no');
+						$arr_xdata[(int)$x_iterator]['is_base_empty'] = (string) ($x_is_empty ? 'yes' : 'no');
+						$arr_xdata[(int)$x_iterator]['is_base_diff_transl'] = (string) ($x_is_diff ? 'yes' : 'no');
+						$arr_xdata[(int)$x_iterator]['is_imported'] = (string) (!$x_is_not_imported ? 'yes' : 'no');
 						$arr_xdata[(int)$x_iterator]['status'] = (string) $status;
 						$arr_xdata[(int)$x_iterator]['diffs'] = (string) implode(', ', (array)$diffs_arr_rows);
 						$arr_xdata[(int)$x_iterator]['translate'] = (string) $val[$i];

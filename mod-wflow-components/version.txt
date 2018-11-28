@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules / WflowComponents r.181127 #
+# Smart.Framework.Modules / WflowComponents r.181128 #
 
 // v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
 

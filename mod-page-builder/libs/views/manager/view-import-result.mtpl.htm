@@ -1,5 +1,5 @@
-<!-- Pagebuilder/Manage @ Import.Result / Records :: v.181127 -->
-<h1>Import [####APP-NAME|html####] Translations Result: [####TOTAL-IMPORTED|int####] of [####TOTAL-RECORDS|int####] records. Displaying: <select id="show-chk-rows" class="ux-field"><option value="all">All ([####TOTAL-RECORDS|int####] records)</option><option value="errors">Only Errors ([####TOTAL-ERRORS|int####] records)</option></select></h1>
+<!-- Pagebuilder/Manage @ Import.Result / Records :: v.181128 -->
+<h1><i>[####APP-NAME|html####]</i> Translations Import Result: <span style="color:#[%%%%IF:TOTAL-IMPORTED:!=####TOTAL-RECORDS####;%%%%]FF3300;[%%%%ELSE:TOTAL-IMPORTED%%%%]33CC33[%%%%/IF:TOTAL-IMPORTED%%%%]!important;">[####TOTAL-IMPORTED|int####] of [####TOTAL-RECORDS|int####] records imported</span>. Displaying: <select id="show-chk-rows" class="ux-field"><option value="all">All ([####TOTAL-RECORDS|int####] records)</option><option value="errors">Only Errors ([####TOTAL-ERRORS|int####] records)</option></select></h1>
 <div style="width:98vw; border:1px solid #CCCCCC; padding:10px;">
 <table id="import-results" class="display" style="width:99%;">
 <thead><tr>
@@ -12,8 +12,8 @@
 <tbody>
 [%%%%LOOP:DATA-ARR%%%%]
 <tr>
-	<td title="Import Status: [####DATA-ARR.STATUS|html####]" data-raw="[####DATA-ARR.STATUS|html####]">[####DATA-ARR.STATUS|html####]</td>
-	<td title="Placeholder and Marker diffs: [####DATA-ARR.DIFFS|html####]" data-raw="[####DATA-ARR.DIFFS|html####]">[####DATA-ARR.DIFFS|html####]</td>
+	<td title="Import-Status: [####DATA-ARR.STATUS|upper|html####] ; Imported: [####DATA-ARR.IS_IMPORTED|upper|html####] ; Have-Diffs: [####DATA-ARR.IS_BASE_DIFF_TRANSL|upper|html####]" style="cursor:help;">[####DATA-ARR.STATUS|html####]</td>
+	<td title="[%%%%IF:DATA-ARR.IS_BASE_DIFF_TRANSL:==yes;%%%%]Placeholder or Marker Differences: [####DATA-ARR.DIFFS|html####][%%%%ELSE:DATA-ARR.IS_BASE_DIFF_TRANSL%%%%]NO Placeholder or Marker Differences[%%%%/IF:DATA-ARR.IS_BASE_DIFF_TRANSL%%%%]" style="cursor:help;">[####DATA-ARR.DIFFS|html####]</td>
 	<td>[####DATA-ARR.DEFAULT|html####]</td>
 	<td>[####DATA-ARR.TRANSLATE|html####]</td>
 </tr>
@@ -30,24 +30,16 @@
 <script>
 jQuery(document).ready(function() {
 
-	var tbl = jQuery('table#import-results').DataTable({
-		bSort: true,
-		bSortMulti: true,
-		order: [
+	var id = 'import-results';
+
+	var tbl = SmartJS_BrowserUIUtils.Smart_DataTable_Init(id, {
+		pagesize: 5,
+		pagesizes: [ 5, 10, 25, 50, 100 ],
+		colorder: [
 			[ 0, 'desc' ],
 			[ 1, 'desc' ]
 		],
-		bPaginate: true,
-		iDisplayLength: 5,
-		aLengthMenu: [ 5, 10, 25, 50, 100 ],
-		uxmHidePagingIfNoMultiPages: true,
-		uxmCssClassLengthField: 'ux-field',
-		uxmCssClassFilterField: 'ux-field',
-		classes: {
-			sPageButton: 'ux-button ux-button-small',
-			sPageButtonActive: 'ux-button ux-button-small ux-button-primary'
-		},
-		columnDefs: [
+		coldefs: [
 			{
 				targets: 0,
 				width: '32px',
@@ -85,14 +77,18 @@ jQuery(document).ready(function() {
 		]
 	});
 
-	jQuery('#show-chk-rows').on('change', function() {
-		var val = jQuery(this).val();
-		if(val === 'errors') {
-			tbl.columns(0).search('^(warn|warn\-crit)$', true, false, true).draw();
-		} else {
-			tbl.columns(0).search('').draw();
-		}
-	}).val('errors').change();
+	if(tbl.data('smart-ui-elem-type') === 'DataTable') {
+		jQuery('#show-chk-rows').on('change', function() {
+			var val = jQuery(this).val();
+			if(val === 'errors') {
+				SmartJS_BrowserUIUtils.Smart_DataTable_FilterColumns(id, 0, '^(warn|warn\-crit)$');
+			} else {
+				SmartJS_BrowserUIUtils.Smart_DataTable_FilterColumns(id, 0, '');
+			}
+		}).val('errors').change();
+	} else {
+		jQuery('#show-chk-rows').val('all').change().prop('disabled', 'disabled');
+	}
 
 });
 </script>

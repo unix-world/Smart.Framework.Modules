@@ -3,7 +3,7 @@
 // (c) 2006-2018 unix-world.org - all rights reserved
 // v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
 
-// DEPENDS: jQuery, SmartJS_CoreUtils, SmartJS_BrowserUtils, jQueryUI, jQuery.UI.ListSelect, jQuery.UI.TimePicker
+// DEPENDS: jQuery, SmartJS_CoreUtils, SmartJS_BrowserUtils, jQueryUI, jQuery.UI.ListSelect, jQuery.UI.TimePicker, jQuery.DataTable
 
 // ! To use jQueryUI bindings for Smart.Framework load this instead of lib/js/jquery/jquery.smartframework.ui.js ; they are a drop-in replacements for LighJS-UI !
 
@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.181127.r7
+var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.181128.r5
 
 this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
@@ -572,7 +572,7 @@ this.AutoCompleteField = function(single_or_multi, elem_id, data_url, var_term, 
 //	jQuery
 //	lib/js/jquery/datatables/datatables-responsive.css
 //	lib/js/jquery/datatables/datatables-responsive.js
-this.DataTable = function(elem_id, options) {
+this.Smart_DataTable_Init = function(elem_id, options) {
 	//--
 	if(!options || typeof options !== 'object') {
 		options = {};
@@ -612,6 +612,11 @@ this.DataTable = function(elem_id, options) {
 		options['pagesizes'] = defPageSizes;
 	} //end if else
 	//--
+	if(!(!!options.paginate)) {
+		options['pagesize'] = Number.MAX_SAFE_INTEGER;
+		options['pagesizes'] = [ Number.MAX_SAFE_INTEGER ];
+	} //end if
+	//--
 	if(!options.hasOwnProperty('classField')) {
 		options['classField'] = 'ui-widget'; // default class
 	} //end if
@@ -624,23 +629,18 @@ this.DataTable = function(elem_id, options) {
 		options['classActiveButton'] = 'ui-state-active'; // default class
 	} //end if
 	//--
-	if(!(!!options.paginate)) {
-		options['pagesize'] = Number.MAX_SAFE_INTEGER;
-		options['pagesizes'] = [ Number.MAX_SAFE_INTEGER ];
-	} //end if
+	var ordCols = []; // default array
+	if(!options.hasOwnProperty('colorder')) {
+		options['colorder'] = ordCols;
+	} else if(!Array.isArray(options['colorder'])) {
+		options['colorder'] = ordCols;
+	} //end if else
 	//--
 	var defCols = [{}]; // default array
 	if(!options.hasOwnProperty('coldefs')) {
 		options['coldefs'] = defCols;
 	} else if(!Array.isArray(options['coldefs'])) {
 		options['coldefs'] = defCols;
-	} //end if else
-	//--
-	var ordCols = []; // default array
-	if(!options.hasOwnProperty('colorder')) {
-		options['colorder'] = ordCols;
-	} else if(!Array.isArray(options['colorder'])) {
-		options['colorder'] = ordCols;
 	} //end if else
 	//--
 	var opts = {
@@ -664,6 +664,37 @@ this.DataTable = function(elem_id, options) {
 	var HtmlElement = jQuery('table#' + elem_id);
 	//--
 	HtmlElement.DataTable(opts);
+	HtmlElement.data('smart-ui-elem-type', 'DataTable');
+	//--
+	return HtmlElement;
+	//--
+} //END FUNCTION
+
+//=======================================
+
+// Dependencies:
+//	jQuery, SmartJS_CoreUtils
+//	lib/js/jquery/datatables/datatables-responsive.css
+//	lib/js/jquery/datatables/datatables-responsive.js
+this.Smart_DataTable_FilterColumns = function(elem_id, filterColNumber, regexStr) {
+	//--
+	var HtmlElement = jQuery('table#' + elem_id);
+	//--
+	if(HtmlElement.data('smart-ui-elem-type') !== 'DataTable') {
+		return null;
+	} //end if
+	//--
+	var obj = HtmlElement.DataTable();
+	//--
+	var col = parseInt(filterColNumber);
+	if((col < 0) || !SmartJS_CoreUtils.isFiniteNumber(col)) {
+		col = 0;
+	} //end if
+	if(regexStr) { // ex: '^(val1|val\-2)$'
+		obj.columns(col).search(String(regexStr), true, false, true).draw();
+	} else {
+		obj.columns(col).search('').draw();
+	} //end if else
 	//--
 	return HtmlElement;
 	//--

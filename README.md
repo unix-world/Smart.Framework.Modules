@@ -1,4 +1,4 @@
-# Smart.Framework.Modules
+# Smart.Framework.Modules - a collection of modules for Smart.Framework
 (c) 2009 - 2018 unix-world.org
 License: BSD
 
