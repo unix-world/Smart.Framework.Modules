@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <title>Spreadsheet - Plugin for handsontable using RuleJS library (formulas parser)</title>
+
+	<style>
+		* { font-family: arial,sans-serif; }
+		td { font-size: 13px !important; }
+	</style>
+
+  <script src="../../../../../../lib/js/jquery/jquery.js"></script>
+
+  <link rel="stylesheet" media="screen" href="../../jspikaday/pikaday.css">
+  <script src="../../jspikaday/pikaday.js"></script>
+  <script src="../../../../../mod-js-components/views/js/momentjs/moment.js"></script>
+
+  <script src="../../numbro/numbro.js"></script>
+
+  <script src="../zeroclipboard/ZeroClipboard.js"></script>
+
+  <link rel="stylesheet" media="screen" href="../handsontable.css">
+  <script src="../handsontable.js"></script>
+
+  <!-- ruleJS -->
+
+  <script src="../formulas/lodash.js"></script>
+  <script src="../formulas/underscore.string.js"></script>
+  <script src="../formulas/numeral.js"></script>
+  <script src="../formulas/numeric.js"></script>
+  <!-- script src="../formulas/md5.js"></script -->
+  <script src="../formulas/jstat.js"></script>
+  <script src="../formulas/formula.js"></script>
+  <script src="../formulas/parser.js"></script>
+  <script src="../formulas/ruleJS.js"></script>
+
+  <link rel="stylesheet" media="screen" href="../formulas/handsontable.formula.css">
+  <script src="../formulas/handsontable.formula.js"></script>
+
+</head>
+<body>
+
+<div align="center"><table width="720"><tr><td valign="top">
+
+<div class="wrapper">
+  <div class="wrapper-row">
+
+    <div id="container">
+      <div class="columnLayout">
+
+        <div class="rowLayout">
+          <div class="descLayout">
+            <div class="pad" data-jsfiddle="example1">
+
+              <h1>Sample (active) Spreadsheets with Formulas</h1>
+              <p>The first and 3rd tables are active (editable). The 2nd and 4th tables are static to provide how you should see the active tables ... </p>
+
+<hr size="1">
+<br>
+
+<div class="handsontable" id="example1">
+	<div style="position: relative; overflow: visible;" class="ht_master handsontable">
+		<div class="wtHolder" style="position: relative; overflow: visible;">
+			<div style="width: 550px; height: 175px;" class="wtHider">
+				<div style="position: relative; left: 0px; top: 0px;" class="wtSpreader">
+					<!-- static -->
+					<br>
+					<table class="htCore" title="Static Spreadsheet #2 (Non-Editable)">
+						<colgroup>
+							<col class="rowHeader">
+							<col style="width: 50px;">
+							<col style="width: 58px;">
+							<col style="width: 50px;">
+							<col style="width: 66px;">
+							<col style="width: 50px;">
+							<col style="width: 58px;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="colHeader cornerHeader">&nbsp;</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">A</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">B</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">C</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">D</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">E</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">F</span></div>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">1</span></div>
+								</th>
+								<td class="formula">0</td>
+								<td class="">Maserati</td>
+								<td class="">Mazda</td>
+								<td class="">Mercedes</td>
+								<td class="">Mini</td>
+								<td class="formula">0</td>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">2</span></div>
+								</th>
+								<td class="">2009</td>
+								<td class="">0</td>
+								<td class="">2941</td>
+								<td class="">4303</td>
+								<td class="">354</td>
+								<td class="">5814</td>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">3</span></div>
+								</th>
+								<td class="">2010</td>
+								<td class="">5</td>
+								<td class="">2905</td>
+								<td class="">2867</td>
+								<td class="formula">2016</td>
+								<td class="formula">Maserati</td>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">4</span></div>
+								</th>
+								<td class="">2011</td>
+								<td class="">4</td>
+								<td class="">2517</td>
+								<td class="">4822</td>
+								<td class="">552</td>
+								<td class="">6127</td>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">5</span></div>
+								</th>
+								<td class="">2012</td>
+								<td class="formula">8042</td>
+								<td class="formula">10058</td>
+								<td class="formula-error">#DIV/0!</td>
+								<td class="">12</td>
+								<td class="">4151</td>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">6</span></div>
+								</th>
+								<td class=""></td>
+								<td class=""></td>
+								<td class=""></td>
+								<td class=""></td>
+								<td class=""></td>
+								<td class=""></td>
+							</tr>
+						</tbody>
+					</table>
+					<!-- static -->
+					<div class="htBorders">
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder fill corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder area corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder current corner"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br>
+	<!-- Active -->
+	<div title="Active Spreadsheet: Editable" style="position: absolute; top: 0px; left: 0px; overflow: hidden; transform: translate3d(0px, 0px, 0px); height: 30px;" class="ht_clone_top handsontable">
+		<div class="wtHolder" style="position: relative; height: 45px;">
+			<div style="width: 550px;" class="wtHider">
+				<div style="position: relative; left: 0px;" class="wtSpreader">
+					<table class="htCore">
+						<colgroup>
+							<col class="rowHeader">
+							<col style="width: 50px;">
+							<col style="width: 58px;">
+							<col style="width: 50px;">
+							<col style="width: 66px;">
+							<col style="width: 50px;">
+							<col style="width: 58px;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th style="height: 24px;" class="">
+									<div class="relative"><span class="colHeader cornerHeader">&nbsp;</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">A</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">B</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">C</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">D</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">E</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">F</span></div>
+								</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+					<div class="htBorders">
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder fill corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder area corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder current corner"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- # -->
+	<div style="position: absolute; top: 0px; left: 0px; overflow: hidden; transform: translate3d(0px, 0px, 0px); width: 54px;" class="ht_clone_left handsontable">
+		<div class="wtHolder" style="position: relative; width: 54px;">
+			<div style="height: 165px;" class="wtHider">
+				<div style="position: relative; top: 0px;" class="wtSpreader">
+					<table class="htCore">
+						<colgroup>
+							<col class="rowHeader">
+						</colgroup>
+						<thead>
+							<tr>
+								<th style="height: 24px;" class="">
+									<div class="relative"><span class="colHeader cornerHeader">&nbsp;</span></div>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">1</span></div>
+								</th>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">2</span></div>
+								</th>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">3</span></div>
+								</th>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">4</span></div>
+								</th>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">5</span></div>
+								</th>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">6</span></div>
+								</th>
+							</tr>
+						</tbody>
+					</table>
+					<div class="htBorders">
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder fill corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder area corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder current corner"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div style="position: absolute; top: 0px; left: 0px; overflow: hidden; transform: translate3d(0px, 0px, 0px); height: 30px; width: 54px;" class="ht_clone_corner handsontable">
+		<div class="wtHolder" style="position: relative;">
+			<div class="wtHider">
+				<div style="position: relative;" class="wtSpreader">
+					<table class="htCore">
+						<colgroup>
+							<col class="rowHeader">
+						</colgroup>
+						<thead>
+							<tr>
+								<th style="height: 24px;" class="">
+									<div class="relative"><span class="colHeader cornerHeader">&nbsp;</span></div>
+								</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+					<div class="htBorders">
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder fill corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder area corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder current corner"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<hr size="1">
+<div class="handsontable" id="example2">
+	<div style="position: relative; overflow: visible;" class="ht_master handsontable">
+		<div class="wtHolder" style="position: relative; overflow: visible;">
+			<div style="width: 550px; height: 165px;" class="wtHider">
+				<div style="position: relative; left: 0px; top: 0px;" class="wtSpreader">
+					<!-- static -->
+					<br>
+					<table class="htCore" title="Static Spreadsheet #4 (Non-Editable)">
+						<colgroup>
+							<col class="rowHeader">
+							<col style="width: 50px;">
+							<col style="width: 87px;">
+							<col style="width: 86px;">
+							<col style="width: 66px;">
+							<col style="width: 90px;">
+							<col style="width: 50px;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="colHeader cornerHeader">&nbsp;</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">A</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">B</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">C</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">D</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">E</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">F</span></div>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">1</span></div>
+								</th>
+								<td class="">=$B$2</td>
+								<td class="">Maserati</td>
+								<td class="">Mazda</td>
+								<td class="">Mercedes</td>
+								<td class="">Mini</td>
+								<td class="">=A$1</td>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">2</span></div>
+								</th>
+								<td class="">2009</td>
+								<td class="">0</td>
+								<td class="">2941</td>
+								<td class="">4303</td>
+								<td class="">354</td>
+								<td class="">5814</td>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">3</span></div>
+								</th>
+								<td class="">2010</td>
+								<td class="">5</td>
+								<td class="">2905</td>
+								<td class="">2867</td>
+								<td class="">=SUM(A4,2,3)</td>
+								<td class="">=$B1</td>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">4</span></div>
+								</th>
+								<td class="">2011</td>
+								<td class="">4</td>
+								<td class="">2517</td>
+								<td class="">4822</td>
+								<td class="">552</td>
+								<td class="">6127</td>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">5</span></div>
+								</th>
+								<td class="">2012</td>
+								<td class="">=SUM(A2:A5)</td>
+								<td class="">=SUM(B5,E3)</td>
+								<td class="">=A2/B2</td>
+								<td class="">12</td>
+								<td class="">4151</td>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">6</span></div>
+								</th>
+								<td class=""></td>
+								<td class=""></td>
+								<td class=""></td>
+								<td class=""></td>
+								<td class=""></td>
+								<td class=""></td>
+							</tr>
+						</tbody>
+					</table>
+					<!-- static -->
+					<div class="htBorders">
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder fill corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder area corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder current corner"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div style="position: absolute; top: 0px; left: 0px; overflow: hidden; transform: translate3d(0px, 0px, 0px); height: 30px;" class="ht_clone_top handsontable">
+		<div class="wtHolder" style="position: relative; height: 45px;">
+			<div style="width: 550px;" class="wtHider">
+				<div style="position: relative; left: 0px;" class="wtSpreader">
+					<table class="htCore">
+						<colgroup>
+							<col class="rowHeader">
+							<col style="width: 50px;">
+							<col style="width: 87px;">
+							<col style="width: 86px;">
+							<col style="width: 66px;">
+							<col style="width: 90px;">
+							<col style="width: 50px;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th style="height: 24px;" class="">
+									<div class="relative"><span class="colHeader cornerHeader">&nbsp;</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">A</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">B</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">C</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">D</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">E</span></div>
+								</th>
+								<th class="">
+									<div class="relative"><span class="colHeader">F</span></div>
+								</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+					<div class="htBorders">
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder fill corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder area corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder current corner"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div style="position: absolute; top: 0px; left: 0px; overflow: hidden; transform: translate3d(0px, 0px, 0px); width: 54px;" class="ht_clone_left handsontable">
+		<div class="wtHolder" style="position: relative; width: 54px;">
+			<div style="height: 165px;" class="wtHider">
+				<div style="position: relative; top: 0px;" class="wtSpreader">
+					<table class="htCore">
+						<colgroup>
+							<col class="rowHeader">
+						</colgroup>
+						<thead>
+							<tr>
+								<th style="height: 24px;" class="">
+									<div class="relative"><span class="colHeader cornerHeader">&nbsp;</span></div>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">1</span></div>
+								</th>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">2</span></div>
+								</th>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">3</span></div>
+								</th>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">4</span></div>
+								</th>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">5</span></div>
+								</th>
+							</tr>
+							<tr>
+								<th class="">
+									<div class="relative"><span class="rowHeader">6</span></div>
+								</th>
+							</tr>
+						</tbody>
+					</table>
+					<div class="htBorders">
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder fill corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder area corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder current corner"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div style="position: absolute; top: 0px; left: 0px; overflow: hidden; transform: translate3d(0px, 0px, 0px); height: 30px; width: 54px;" class="ht_clone_corner handsontable">
+		<div class="wtHolder" style="position: relative;">
+			<div class="wtHider">
+				<div style="position: relative;" class="wtSpreader">
+					<table class="htCore">
+						<colgroup>
+							<col class="rowHeader">
+						</colgroup>
+						<thead>
+							<tr>
+								<th style="height: 24px;" class="">
+									<div class="relative"><span class="colHeader cornerHeader">&nbsp;</span></div>
+								</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+					<div class="htBorders">
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 1px; width: 1px; display: none;" class="wtBorder fill"></div>
+							<div style="background-color: red; height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder fill corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 1px; width: 1px; display: none;" class="wtBorder area"></div>
+							<div style="background-color: rgb(137, 175, 249); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder area corner"></div>
+						</div>
+						<div style="position: absolute; top: 0px; left: 0px;">
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 2px; width: 2px; display: none;" class="wtBorder current"></div>
+							<div style="background-color: rgb(82, 146, 247); height: 5px; width: 5px; border: 2px solid rgb(255, 255, 255); display: none;" class="wtBorder current corner"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div style="top: 359.583px; left: 307px;" class="manualColumnResizer"></div>
+</div>
+
+            </div>
+          </div>
+
+          <div class="codeLayout">
+            <div class="pad">
+
+  <script data-jsfiddle="example1">
+
+	var data1 = [
+	  ['=$B$2', "Maserati", "Mazda", "Mercedes", "Mini", "=A$1"],
+	  [2009, 0, 2941, 4303, 354, 5814],
+	  [2010, 5, 2905, 2867, '=SUM(A4,2,3)', '=$B1'],
+	  [2011, 4, 2517, 4822, 552, 6127],
+	  [2012, '=SUM(A2:A5)', '=SUM(B5,E3)', '=A2/B2', 12, 4151]
+	];
+
+	var data2 = [
+	  ['=$B$2', "Maserati", "Mazda", "Mercedes", "Mini", "=A$1"],
+	  [2009, 0, 2941, 4303, 354, 5814],
+	  [2010, 5, 2905, 2867, '=SUM(A4,2,3)', '=$B1'],
+	  [2011, 4, 2517, 4822, 552, 6127],
+	  [2012, '=SUM(A2:A5)', '=SUM(B5,E3)', '=A2/B2', 12, 4151]
+	];
+
+	var container1 = $('#example1');
+
+	container1.handsontable({
+	  data: data1,
+	  minSpareRows: 1,
+	  colHeaders: true,
+	  rowHeaders: true,
+	  contextMenu: true,
+	  manualColumnResize: true,
+	  formulas: true
+	});
+
+	var container2 = $('#example2');
+
+	container2.handsontable({
+	  data: data2,
+	  minSpareRows: 1,
+	  colHeaders: true,
+	  rowHeaders: true,
+	  contextMenu: true,
+	  manualColumnResize: true,
+	  formulas: false
+	});
+
+  </script>
+
+<br><br>
+<hr size="1">
+
+<pre class="javascript"><code class="javascript"><span class="keyword">var</span> data1 = [
+&nbsp;&nbsp;[<span class="string">'=$B$2'</span>, <span class="string">"Maserati"</span>, <span class="string">"Mazda"</span>, <span class="string">"Mercedes"</span>, <span class="string">"Mini"</span>, <span class="string">"=A$1"</span>],
+&nbsp;&nbsp;[<span class="number">2009</span>, <span class="number">0</span>, <span class="number">2941</span>, <span class="number">4303</span>, <span class="number">354</span>, <span class="number">5814</span>],
+&nbsp;&nbsp;[<span class="number">2010</span>, <span class="number">5</span>, <span class="number">2905</span>, <span class="number">2867</span>, <span class="string">'=SUM(A4,2,3)'</span>, <span class="string">'=$B1'</span>],
+&nbsp;&nbsp;[<span class="number">2011</span>, <span class="number">4</span>, <span class="number">2517</span>, <span class="number">4822</span>, <span class="number">552</span>, <span class="number">6127</span>],
+&nbsp;&nbsp;[<span class="number">2012</span>, <span class="string">'=SUM(A2:A5)'</span>, <span class="string">'=SUM(B5,E3)'</span>, <span class="string">'=A2/B2'</span>, <span class="number">12</span>, <span class="number">4151</span>]
+];
+
+<span class="keyword">var</span> data2 = [
+&nbsp;&nbsp;[<span class="string">'=$B$2'</span>, <span class="string">"Maserati"</span>, <span class="string">"Mazda"</span>, <span class="string">"Mercedes"</span>, <span class="string">"Mini"</span>, <span class="string">"=A$1"</span>],
+&nbsp;&nbsp;[<span class="number">2009</span>, <span class="number">0</span>, <span class="number">2941</span>, <span class="number">4303</span>, <span class="number">354</span>, <span class="number">5814</span>],
+&nbsp;&nbsp;[<span class="number">2010</span>, <span class="number">5</span>, <span class="number">2905</span>, <span class="number">2867</span>, <span class="string">'=SUM(A4,2,3)'</span>, <span class="string">'=$B1'</span>],
+&nbsp;&nbsp;[<span class="number">2011</span>, <span class="number">4</span>, <span class="number">2517</span>, <span class="number">4822</span>, <span class="number">552</span>, <span class="number">6127</span>],
+&nbsp;&nbsp;[<span class="number">2012</span>, <span class="string">'=SUM(A2:A5)'</span>, <span class="string">'=SUM(B5,E3)'</span>, <span class="string">'=A2/B2'</span>, <span class="number">12</span>, <span class="number">4151</span>]
+];
+
+<span class="keyword">var</span> container1 = $(<span class="string">'#example1'</span>);
+
+container1.handsontable({
+&nbsp;&nbsp;data: data1,
+&nbsp;&nbsp;minSpareRows: <span class="number">1</span>,
+&nbsp;&nbsp;colHeaders: <span class="literal">true</span>,
+&nbsp;&nbsp;rowHeaders: <span class="literal">true</span>,
+&nbsp;&nbsp;contextMenu: <span class="literal">true</span>,
+&nbsp;&nbsp;manualColumnResize: <span class="literal">true</span>,
+&nbsp;&nbsp;formulas: <span class="literal">true</span>
+});
+
+<span class="keyword">var</span> container2 = $(<span class="string">'#example2'</span>);
+
+container2.handsontable({
+&nbsp;&nbsp;data: data2,
+&nbsp;&nbsp;minSpareRows: <span class="number">1</span>,
+&nbsp;&nbsp;colHeaders: <span class="literal">true</span>,
+&nbsp;&nbsp;rowHeaders: <span class="literal">true</span>,
+&nbsp;&nbsp;contextMenu: <span class="literal">true</span>,
+&nbsp;&nbsp;manualColumnResize: <span class="literal">true</span>,
+&nbsp;&nbsp;formulas: <span class="literal">false</span>
+});
+
+</code></pre>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<hr size="1">
+
+</td></tr></table></div>
+
+<div style="position: fixed; top: -10000px; left: -10000px;" id="CopyPasteDiv"><textarea style="width: 10000px; height: 10000px; overflow: hidden; opacity: 0;" class="copyPaste"></textarea></div>
+
+<br>
+<br>
+
+</body></html>

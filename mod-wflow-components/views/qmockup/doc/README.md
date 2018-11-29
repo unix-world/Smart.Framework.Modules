@@ -53,5 +53,5 @@ Library  | Creator |License | Origin
 ------------- | -------- | ----- | -------------
 jQuery | Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors | [Released under the MIT license](http://jquery.org/license) | http://jquery.com/
 jQueryUI | Copyright jQuery Foundation and other contributors | Released under the MIT license | http://jqueryui.com
-Mousetrap | Craig Campbell in 2012-2015 | [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) | https://craig.is/killing/mice
 Showdown | Showdown Copyright (c) 2007, John Fraser | [Showdown Copyright](https://github.com/showdownjs/showdown/blob/master/license.txt) | https://github.com/showdownjs/showdown
+Mousetrap (Optional) | Craig Campbell in 2012-2015 | [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) | https://craig.is/killing/mice

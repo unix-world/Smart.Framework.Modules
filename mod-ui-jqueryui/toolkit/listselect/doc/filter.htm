@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>jQuery MultiSelect Widget Demo</title>
-<link rel="stylesheet" type="text/css" href="../jquery.multiselect.css" />
-<link rel="stylesheet" type="text/css" href="../jquery.multiselect.filter.css" />
-<link rel="stylesheet" type="text/css" href="assets/style.css" />
-<link rel="stylesheet" type="text/css" href="assets/prettify.css" />
-<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="../jquery.multiselect.css">
+<link rel="stylesheet" type="text/css" href="../jquery.multiselect.filter.css">
+<link rel="stylesheet" type="text/css" href="assets/style.css">
+<link rel="stylesheet" type="text/css" href="assets/prettify.css">
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="../src/jquery.multiselect.js"></script>
@@ -68,9 +68,9 @@ $("select").multiselect().multiselectfilter();
 <ul>
 <li><code><strong>filter</strong></code>
 	<p>A callback function that fires after filtering is complete.  Accepts two arguments: the original event and an array of matches.</p>
-	
+
 	<p>To do something when no matches are found:</p>
-	
+
 <pre class="prettyprint">
 $("select").multiselect().multiselectfilter({
     filter: function(event, matches){
@@ -82,11 +82,11 @@ $("select").multiselect().multiselectfilter({
 </pre>
 
 	<p>To do something with a match:</p>
-	
+
 <pre class="prettyprint">
 $("select").multiselect().multiselectfilter({
     filter: function(event, matches){
-		
+
         // find the first matching checkbox
         var first_match = $( matches[0] );
     }
@@ -94,13 +94,13 @@ $("select").multiselect().multiselectfilter({
 </pre>
 
 	<p>You can also bind to the event after a multiselect has been initialized, like such:
-	
+
 <pre class="prettyprint">
 $("select").bind("multiselectfilterfilter", function(event, matches){
     // do something
 });
 </pre>
-	
+
 </li>
 </ul>
 

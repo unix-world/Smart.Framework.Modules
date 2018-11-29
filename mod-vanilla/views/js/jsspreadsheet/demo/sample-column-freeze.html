@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Manual Column Freeze - Spreadsheet</title>
+
+  <link rel="stylesheet" media="screen" href="../../jspikaday/pikaday.css">
+  <script src="../../jspikaday/pikaday.js"></script>
+  <script src="../../../../../mod-js-components/views/js/momentjs/moment.js"></script>
+
+  <script src="../../numbro/numbro.js"></script>
+
+  <script src="../zeroclipboard/ZeroClipboard.js"></script>
+
+  <link rel="stylesheet" media="screen" href="../handsontable.css">
+  <script src="../handsontable.js"></script>
+
+</head>
+
+<body>
+
+
+<div class="wrapper">
+  <div class="wrapper-row">
+	<div id="global-menu-clone">
+	  <h1>Spreadsheet</h1>
+
+	</div>
+
+	<div id="container">
+	  <div class="columnLayout">
+
+		<div class="rowLayout">
+		  <div class="descLayout">
+			<div class="pad" data-jsfiddle="example1">
+			  <h2>Manual Column Freeze</h2>
+
+			  <p>In order to manually freeze a column (in another words - make it fixed), you need to set the <code>manualColumnFreeze</code>
+				config item to <code>true</code> in Handsontable initialization.</p>
+
+			  <p>When the Manual Column Freeze plugin is enabled, you can freeze any non-fixed column and unfreeze any
+				fixed column in your Handsontable instance using the Context Menu.</p>
+
+			  <p>Note: to properly use this plugin, you need to have the Context Menu plugin enabled.</p>
+
+			  <div id="example1" style="width: 400px; height: 300px; overflow: hidden;"></div>
+
+			  <p>
+
+			  </p>
+			</div>
+		  </div>
+
+		  <div class="codeLayout">
+			<div class="pad">
+			  <div class="jsFiddle">
+
+			  </div>
+
+			  <script data-jsfiddle="example1">
+				var myData = Handsontable.helper.createSpreadsheetData(1000, 100);
+				var container = document.getElementById('example1');
+
+				var ht = new Handsontable(container, {
+				  data: myData,
+				  rowHeaders: true,
+				  colHeaders: true,
+				  fixedColumnsLeft: 2,
+				  contextMenu: true,
+				  manualColumnFreeze: true
+				});
+
+			  </script>
+			</div>
+		  </div>
+		</div>
+
+		<div class="footer-text">
+		</div>
+	  </div>
+
+	</div>
+
+  </div>
+</div>
+
+<div id="outside-links-wrapper"></div>
+
+</body>
+</html>

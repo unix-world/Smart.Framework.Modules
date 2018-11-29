@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Sample Spreadsheet - jQuery integration</title>
+
+  <script src="../../../../../../lib/js/jquery/jquery.js"></script>
+
+  <!-- ruleJS -->
+  <script src="../formulas/lodash.js"></script>
+  <script src="../formulas/underscore.string.js"></script>
+  <script src="../formulas/numeral.js"></script>
+  <script src="../formulas/numeric.js"></script>
+  <!-- script src="../formulas/md5.js"></script -->
+  <script src="../formulas/jstat.js"></script>
+  <script src="../formulas/formula.js"></script>
+  <script src="../formulas/parser.js"></script>
+  <script src="../formulas/ruleJS.js"></script>
+
+  <link rel="stylesheet" media="screen" href="../../jspikaday/pikaday.css">
+  <script src="../../jspikaday/pikaday.js"></script>
+  <script src="../../../../../mod-js-components/views/js/momentjs/moment.js"></script>
+
+  <script src="../../numbro/numbro.js"></script>
+
+  <script src="../zeroclipboard/ZeroClipboard.js"></script>
+  <link rel="stylesheet" media="screen" href="../handsontable.css">
+  <script src="../handsontable.js"></script>
+  <link rel="stylesheet" media="screen" href="../formulas/handsontable.formula.css">
+  <script src="../formulas/handsontable.formula.js"></script>
+
+	<style>
+		* { font-family: arial,sans-serif; }
+		td { font-size: 13px !important; }
+	</style>
+
+</head>
+
+<body>
+
+	<div align="center"><table width="720"><tr><td valign="top">
+		<h1>Sample Spreadsheet with Formulas</h1>
+		The yellow / red colored cells are calculated by formulas.<br>
+		Just double-click on a yellow or red cell to play with formulas !<br>
+		Or you can click on the other cells (white) to change the numbers just like in any other Spreadsheet.<br>
+		Use right-context menu to add rows, use CTRL+C, CTRL+V to copy / paste rows, columns or cells ...
+		<br>
+		<br>
+		<div id="spreadsheet"></div>
+	</td></tr></table></div>
+	<script>
+	function getData() {
+	  return [
+		['', 'Z1', 'Z2', 'Z3', 'Z4'],
+		['2013', 10, 11, 0, 13],
+		['2014', 20, 11, 14, 13],
+		['2015', 30, 15, 12, 13],
+		['TOTAL', '=SUM(B2:B4)', '=C2+C3+C4', '=D3-D4/D2', '=AVERAGE(E2:E4)']
+	  ];
+	}
+	</script>
+	<script>
+	// Instead of creating a new Handsontable instance with the container element passed as an argument,
+	// you can simply call .handsontable method on a jQuery DOM object.
+	var $container = $("#spreadsheet");
+	$container.handsontable({
+	  data: getData(),
+	  startRows: 5,
+	  startCols: 5,
+	  minRows: 5,
+	  minCols: 5,
+	  maxRows: 10,
+	  maxCols: 10,
+	  rowHeaders: true,
+	  colHeaders: true,
+	  minSpareRows: 1,
+	  contextMenu: true,
+	  formulas: true
+	});
+	// This way, you can access Handsontable api methods by passing their names as an argument, e.g.:
+	var hotInstance = $("#hot").handsontable('getInstance');
+	</script>
+</body>
+</html>

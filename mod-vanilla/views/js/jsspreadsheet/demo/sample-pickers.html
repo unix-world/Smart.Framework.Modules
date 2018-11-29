@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Date cell type - Spreadsheet</title>
+
+  <script src="../../../../../../lib/js/jquery/jquery.js"></script>
+
+  <link rel="stylesheet" media="screen" href="../../jspikaday/pikaday.css">
+  <script src="../../jspikaday/pikaday.js"></script>
+  <script src="../../../../../mod-js-components/views/js/momentjs/moment.js"></script>
+
+  <script src="../../numbro/numbro.js"></script>
+
+  <script src="../zeroclipboard/ZeroClipboard.js"></script>
+
+  <link rel="stylesheet" media="screen" href="../handsontable.css">
+  <script src="../handsontable.js"></script>
+
+  <script data-jsfiddle="common">
+	function getCarData() {
+	  return [
+		["Mercedes", "A 160", "01/14/2006", 6999.9999],
+		["Citroen", "C4 Coupe", "12/01/2008", 8330],
+		["Audi", "A4 Avant", "11/19/2011", 33900],
+		["Opel", "Astra", "02/02/2004", 7000],
+		["BMW", "320i Coupe", "07/24/2011", 30500]
+	  ];
+	}
+  </script>
+</head>
+
+<body>
+
+
+<div class="wrapper">
+  <div class="wrapper-row">
+	<div id="global-menu-clone">
+	  <h1>Handsontable</h1>
+
+	</div>
+
+	<div id="container">
+	  <div class="columnLayout">
+
+		<div class="rowLayout">
+		  <div class="descLayout">
+			<div class="pad" data-jsfiddle="example1">
+			  <h2>Date cell type</h2>
+
+			  <p>To trigger the Date cell type, use the option <code>type: 'date'</code> in <code>columns</code> array
+				or <code>cells</code> function.</p>
+
+			  <p>The Date cell uses <a href="https://github.com/dbushell/Pikaday">Pikaday datepicker</a> as
+				the UI control. Pikaday uses <a href="https://github.com/moment/moment">Moment.js</a> as a date formatter.
+
+			  <p>Note that Date cell requires additional files in your <code>&lt;head&gt;</code>:
+
+			  <ul>
+				<li><code>demo/js/moment/moment.js</code></li>
+				<li><code>demo/js/pikaday/pikaday.js</code></li>
+			  <li><code>demo/js/pikaday/css/pikaday.css</code></li>
+			  </ul>
+
+			  <p>All data entered to the data-typed cells are validated agains the default date format (<code><a
+				href="http://momentjs.com/docs/#/parsing/" target="_blank"
+				title="Click here to find how to use different date format">DD/MM/YYYY</a></code>), unless another
+				format is provided.</p>
+
+			  <p>If you enable the <code>correctFormat</code> config item, the dates will be automatically formatted to
+				match the desired format.</p>
+
+			  <div id="example1"></div>
+
+			  <p>
+
+			  </p>
+			</div>
+		  </div>
+
+		  <div class="codeLayout">
+			<div class="pad">
+
+			  <script data-jsfiddle="example1">
+				var container = document.getElementById('example1'),
+				  hot;
+
+				hot = new Handsontable(container, {
+				  data: getCarData(),
+				  startRows: 7,
+				  startCols: 4,
+				  colHeaders: ['Car', 'Model', 'Registration date', 'Price'],
+				  columnSorting: true,
+				  contextMenu: true,
+				  minSpareRows: 1,
+				  columns: [
+					{
+					  type: 'autocomplete',
+					  source: ['Audi', 'BMW', 'Chrysler', 'Citroen', 'Mercedes', 'Nissan', 'Opel', 'Suzuki', 'Toyota', 'Volvo'],
+					  strict: false
+					},
+					{
+					  // 2nd cell is simple text, no special options here
+					},
+					{
+					  type: 'date',
+					  dateFormat: 'MM/DD/YYYY',
+					  correctFormat: true,
+					  defaultDate: '01/01/1900'
+					},
+					{
+					  type: 'numeric',
+					  format: '$ 0,0.00'
+					}
+				  ]
+				});
+
+			  </script>
+			</div>
+		  </div>
+		</div>
+
+		<div class="footer-text">
+		</div>
+	  </div>
+
+	</div>
+
+<br><br><br><br><br><br><br><br><br><br><br>
+
+  </div>
+</div>
+
+<div id="outside-links-wrapper"></div>
+
+</body>
+</html>

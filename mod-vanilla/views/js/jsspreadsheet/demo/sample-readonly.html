@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Read-only cells - Spreadsheet</title>
+
+  <link rel="stylesheet" media="screen" href="../../jspikaday/pikaday.css">
+  <script src="../../jspikaday/pikaday.js"></script>
+  <script src="../../../../../mod-js-components/views/js/momentjs/moment.js"></script>
+
+  <script src="../../numbro/numbro.js"></script>
+
+  <script src="../zeroclipboard/ZeroClipboard.js"></script>
+
+  <link rel="stylesheet" media="screen" href="../handsontable.css">
+  <script src="../handsontable.js"></script>
+
+  <script data-jsfiddle="common">
+	function getCarData() {
+	  return [
+		{car: 'Nissan', year: 2009, chassis: 'black', bumper: 'black'},
+		{car: 'Nissan', year: 2006, chassis: 'blue', bumper: 'blue'},
+		{car: 'Chrysler', year: 2004, chassis: 'yellow', bumper: 'black'},
+		{car: 'Volvo', year: 2012, chassis: 'white', bumper: 'gray'}
+	  ];
+	}
+  </script>
+</head>
+
+<body>
+
+
+<div class="wrapper">
+  <div class="wrapper-row">
+	<div id="global-menu-clone">
+	  <h1>Spreadsheet</h1>
+
+	</div>
+
+	<div id="container">
+	  <div class="columnLayout">
+
+		<div class="rowLayout">
+	  <div class="descLayout">
+		<div class="pad">
+		  <h2>Read-only cells</h2>
+
+		  <p>This page shows ways to configure columns or cells to be read only:</p>
+
+		  <ul>
+			<li><a href="#columns">Read-only columns</a></li>
+			<li><a href="#cells">Read-only specific cells</a></li>
+		  </ul>
+		</div>
+	  </div>
+	</div>
+
+	<div class="rowLayout">
+	  <div class="descLayout">
+		<div class="pad" data-jsfiddle="example1">
+		  <a name="columns"></a>
+
+		  <h2>Read-only columns</h2>
+
+		  <p>In many usage cases, you will need to configure a certain column to be read only. This column will be
+			available for keyboard navigation and CTRL+C. Only editing and pasting data will be disabled.</p>
+
+		  <p>To make a column read-only, declare it in the <code>columns</code> setting. You can also define a special
+			renderer function that will dim the read-only values.</p>
+
+		  <div id="example1"></div>
+
+		  <p>
+
+		  </p>
+		</div>
+	  </div>
+
+	  <div class="codeLayout">
+		<div class="pad">
+		  <div class="jsFiddle">
+
+		  </div>
+
+		  <script data-jsfiddle="example1">
+			var container1 = document.getElementById('example1'),
+			  hot1;
+
+			hot1 = new Handsontable(container1, {
+				data: getCarData(),
+				minSpareRows: 1,
+				colHeaders: ['Car', 'Year', 'Chassis color', 'Bumper color'],
+				columns: [
+				  {
+					data: 'car',
+					readOnly: true
+				  },
+				  {
+					data: 'year'
+				  },
+				  {
+					data: 'chassis'
+				  },
+				  {
+					data: 'bumper'
+				  }
+				]
+			  });
+		  </script>
+		</div>
+	  </div>
+	</div>
+
+	<div class="rowLayout">
+	  <div class="descLayout">
+		<div class="pad" data-jsfiddle="example2">
+		  <a name="cells"></a>
+
+		  <h2>Read-only specific cells</h2>
+
+		  <p>This example makes cells that contain the word "Nissan" read only.</p>
+
+		  <p>It forces all cells to be rendered by <code>myReadonlyRenderer</code>, which will decide wheather a cell is
+			really read only by checking its <code>readOnly</code> property.</p>
+
+		  <div id="example2"></div>
+
+		  <p>
+
+		  </p>
+		</div>
+	  </div>
+
+	  <div class="codeLayout">
+		<div class="pad">
+		  <div class="jsFiddle">
+
+		  </div>
+
+		  <script data-jsfiddle="example2">
+			var container2 = document.getElementById('example2'),
+			  hot2;
+
+			hot2 = new Handsontable(container2, {
+			  data: getCarData(),
+			  minSpareRows: 1,
+			  colHeaders: ['Car', 'Year', 'Chassis color', 'Bumper color']
+
+			});
+			hot2.updateSettings({
+			  cells: function (row, col, prop) {
+				var cellProperties = {};
+
+				if (hot2.getData()[row][prop] === 'Nissan') {
+				  cellProperties.readOnly = true;
+				}
+
+				return cellProperties;
+			  }
+			})
+		  </script>
+		</div>
+	  </div>
+	</div>
+
+		<div class="footer-text">
+		</div>
+	  </div>
+
+	</div>
+
+  </div>
+</div>
+
+<div id="outside-links-wrapper"></div>
+
+</body>
+</html>

@@ -17,8 +17,9 @@
 		<script src="../../md-showdown/showdown-htmlescape.js"></script>
 		<script src="../../md-showdown/showdown-mdui.js"></script>
 
-		<script src="../../../../../modules/mod-js-components/views/js/mousetrap/mousetrap.js"></script>
 		<script src="../jq-ui-edit-md2html.js"></script>
+
+		<!-- optional --><script src="../../../../../modules/mod-js-components/views/js/mousetrap/mousetrap.js"></script>
 
 		<style>
 			html, body {
@@ -297,8 +298,12 @@ Paragraph
 		<button id="saveFile">Save (log to console)</button><br>
 		<button class="delete-element-button" title="deletes the currently selected element (del)">✖ Delete Element</button><br>
 		<button class="undelete-element-button" title="undeletes most recently deleted element (Ctrl+Z)">↶ Undelete Last</button><br>
-		<button class="duplicate-element-button" title="duplicates currently selected element (Ctrl+D)">⚭ Duplicate Element</button><br>
+		<button class="duplicate-element-button" title="duplicates currently selected element (Ctrl+D)">⚭ Duplicate Element</button><br><br>
 		<button class="change-canvasize-button" title="change size of the area you place elements on">⇲ Change Canvas Size</button><br>
+		<div id="change-canvasize-div">
+			<label style="display:inline-block; min-width:70px!important;">Width:&nbsp;</label><input id="change-canvasize-w" name="width" type="text" style="width:70px!important;"><br>
+			<label style="display:inline-block; min-width:70px!important;">Height:&nbsp;</label><input id="change-canvasize-h" name="height" type="text" style="width:70px!important;">
+		</div>
 	</div>
 
 	<div aria-labelledby="ui-id-1" aria-describedby="changeCanvasSizeDialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front ui-dialog-buttons ui-draggable ui-resizable" role="dialog" tabindex="-1" style="display: none; position: absolute;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span class="ui-dialog-title" id="ui-id-1">&nbsp;</span><button title="Close" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" type="button"><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>Close</button></div><div style="display: block;" id="changeCanvasSizeDialog" class="dialog ui-dialog-content ui-widget-content">
@@ -325,77 +330,50 @@ Paragraph
 
 	$(function(){ //setup the gui
 
-		/*a dialog to change the canvas size. Maybe a bit over the top to use jqui for that.*/
-		$("#changeCanvasSizeDialog").dialog({
-			autoOpen: false,
-			open: function( event, ui ) {
-				var $container = $("#canvas");
+		if(!Mousetrap) {
+			var Mousetrap = null;
+		}
 
-				var currentHeight = $container.height();
-				var currentWidth = $container.width();
+		var $container = $("#canvas");
+		var currentWidth = $container.width();
+		var currentHeight = $container.height();
 
-				//show current dimensions in the input filds
-				$(this).
-					find('input[name="height"]').
-					val(currentHeight);
-
-				$(this).
-					find('input[name="width"]').
-					val(currentWidth);
-			},
-			buttons: [
-				{
-					text: "OK",
-					click: function() {
-					var $container = $("#canvas");
-
-					$container.
-						height(
-							$(this).
-							find('input[name="height"]')
-							.val()
-						);
-					$container.
-						width(
-							$(this).
-							find('input[name="width"]').
-							val()
-						);
-					$(this).dialog( "close" );
-					}
-				},
-				{
-					text: "Cancel",
-					click: function() {
-						$(this).dialog( "close" );
-					}
-				}
-			]
-		});
+		$('#change-canvasize-w').val(currentWidth);
+		$('#change-canvasize-h').val(currentHeight);
 
 		//setup toolbar
 		///setup toolbar-delete button
 		$("#toolbar .delete-element-button").click(qMockupEditor.deleteElement); //delete button
-		Mousetrap.bind(['del','backspace'],function(e){
-			if (e.preventDefault) {
-				e.preventDefault();
+		if(Mousetrap) {
+			Mousetrap.bind(['del','backspace'],function(e){
+				if(e.preventDefault) {
+					e.preventDefault();
+				}
+				qMockupEditor.deleteElement();
+			}); //keyboard shortcut
 		}
-			qMockupEditor.deleteElement();
-		}); //keyboard shortcut
 
 		$("#toolbar .undelete-element-button").click(qMockupEditor.undeleteElement);
-		Mousetrap.bind(['ctrl+z','command+z'], qMockupEditor.undeleteElement);
+		if(Mousetrap) {
+			Mousetrap.bind(['ctrl+z','command+z'], qMockupEditor.undeleteElement);
+		}
 
 		$("#toolbar .duplicate-element-button").click(qMockupEditor.duplicateElement);
-		Mousetrap.bind(['ctrl+d','command+d'],function(e){
-			if (e.preventDefault) {
-				e.preventDefault();
-			}
-			qMockupEditor.duplicateElement();
-		});
+		if(Mousetrap) {
+			Mousetrap.bind(['ctrl+d','command+d'],function(e){
+				if (e.preventDefault) {
+					e.preventDefault();
+				}
+				qMockupEditor.duplicateElement();
+			});
+		}
 
 		$("#toolbar .change-canvasize-button").click(function(){
-			$("#changeCanvasSizeDialog").dialog("open");
+			var w = parseInt($('#change-canvasize-w').val());
+			var h = parseInt($('#change-canvasize-h').val());
+			if(w > 100 && h > 100) {
+				$container.width(w).height(h);
+			}
 		});
 
 		$('#saveFile').click(function(){

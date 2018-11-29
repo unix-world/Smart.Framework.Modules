@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Column &amp; row move - Spreadsheet</title>
+
+  <link rel="stylesheet" media="screen" href="../../jspikaday/pikaday.css">
+  <script src="../../jspikaday/pikaday.js"></script>
+  <script src="../../../../../mod-js-components/views/js/momentjs/moment.js"></script>
+
+  <script src="../../numbro/numbro.js"></script>
+
+  <script src="../zeroclipboard/ZeroClipboard.js"></script>
+
+  <link rel="stylesheet" media="screen" href="../handsontable.css">
+  <script src="../handsontable.js"></script>
+
+</head>
+
+<body>
+
+
+<div class="wrapper">
+  <div class="wrapper-row">
+	<div id="global-menu-clone">
+	  <h1>Spreadsheet</h1>
+
+	</div>
+
+	<div id="container">
+	  <div class="columnLayout">
+
+		<div class="rowLayout">
+		  <div class="descLayout">
+			<div class="pad" data-jsfiddle="example1">
+			  <h2>Column &amp; row move</h2>
+
+			  <p>To enable these features, use settings <code>manualColumnMove: true</code> and <code>manualRowMove: true</code></p>
+
+			  <p>The draggable move handle appears:</p>
+
+			  <ul>
+				<li>in the right part of the column header,</li>
+				<li>in the top part of the row header.</li>
+			  </ul>
+
+			  <div class="state-loaded example1 alert">State of the table has been restored. <button class="mini reset-state1">Reset table state</button></div>
+
+			  <div id="example1" style="width: 400px; height: 300px; overflow: hidden;"></div>
+			</div>
+		  </div>
+
+		  <div class="codeLayout">
+			<div class="pad">
+			  <div class="jsFiddle">
+
+			  </div>
+
+			  <script data-jsfiddle="example1">
+				var example1 = document.getElementById('example1'),
+				  hot;
+
+				hot = new Handsontable(example1, {
+				  data: Handsontable.helper.createSpreadsheetData(1000, 10),
+				  rowHeaders: true,
+				  colHeaders: true,
+				  colWidths: [55, 80, 80, 80, 80, 80, 80],
+				  manualColumnMove: true,
+				  manualRowMove: true,
+				  minSpareRows: 1,
+				  persistentState: true
+				});
+			  </script>
+
+			</div>
+		  </div>
+		</div>
+
+
+
+		<script type="text/javascript">
+		  (function(hot){
+			var reset = document.querySelector('.reset-state1'),
+			  stateLoaded = document.querySelector('.state-loaded'),
+			  storedData = {},
+			  savedKeys;
+
+			Handsontable.Dom.addEvent(reset, 'click', function(){
+			  hot.runHooks('persistentStateReset');
+			  hot.updateSettings({
+				manualColumnMove: true,
+				manualRowMove: true,
+				manualColumnResize: true,
+				manualRowResize: true
+			  });
+			  stateLoaded.style.display = 'none';
+			  hot.render();
+			});
+
+			hot.runHooks('persistentStateLoad', '_persistentStateKeys', storedData);
+			savedKeys = storedData.value;
+
+			if (savedKeys && savedKeys.length > 0) {
+			  stateLoaded.style.display = 'block';
+			  hot.render();
+			}
+		  })(hot);
+
+		</script>
+
+		<div class="footer-text">
+		</div>
+	  </div>
+
+	</div>
+
+  </div>
+</div>
+
+<div id="outside-links-wrapper"></div>
+
+</body>
+</html>

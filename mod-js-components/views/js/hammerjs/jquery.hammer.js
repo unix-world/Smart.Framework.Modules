@@ -1,12 +1,11 @@
 
-/* jQuery plugin for Hammer.JS - v2.0.0 - 2014-09-16
- * http://eightmedia.github.com/hammer.js
- * Copyright (c) 2014 Jorik Tangelder <j.tangelder@gmail.com>;
- * Licensed under the MIT license */
+// jQuery plugin for Hammer.JS - v2.0.1
+
 
 /***** hammer.js *****/
 
-/* Hammer.JS - v2.0.7 - 2016-04-22
+
+/*! Hammer.JS - v2.0.8 - 2016-04-23
  * http://hammerjs.github.io/
  *
  * Copyright (c) 2016 Jorik Tangelder;
@@ -2153,7 +2152,7 @@ function Hammer(element, options) {
 /**
  * @const {string}
  */
-Hammer.VERSION = '2.0.7';
+Hammer.VERSION = '2.0.8';
 
 /**
  * default settings
@@ -2651,7 +2650,7 @@ if (typeof define === 'function' && define.amd) {
 })(window, document, 'Hammer');
 
 
-/***** jquery.hammer.js v.2.0 *****/
+/***** jquery.hammer.js *****/
 
 
 (function(factory) {
@@ -2687,5 +2686,6 @@ if (typeof define === 'function' && define.amd) {
 		};
 	})(Hammer.Manager.prototype.emit);
 }));
+
 
 /* END */
