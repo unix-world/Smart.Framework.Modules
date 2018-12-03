@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules / Vanilla r.181129 #
+# Smart.Framework.Modules / Vanilla r.181130 #
 
 // v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
 

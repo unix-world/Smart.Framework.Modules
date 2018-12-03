@@ -26,9 +26,19 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.181128.r5
+var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.181129
 
 this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
+
+//=======================================
+
+// Dependencies:
+//	jQueryUI
+this.ToolTip = function(selector) {
+	//--
+	// TO BE DONE !!!
+	//--
+} //END FUNCTION
 
 //=======================================
 
