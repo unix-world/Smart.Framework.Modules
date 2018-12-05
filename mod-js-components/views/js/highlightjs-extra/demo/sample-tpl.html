@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="../css/codepen-embed.css">
   <script type="text/javascript" src="../../../../../../lib/js/jshighlight/highlight.js"></script>
 
+  <script type="text/javascript" src="../../../../../../lib/js/jshighlight/syntax/web/xml.js"></script>
   <script type="text/javascript" src="../syntax/tpl/twig.js"></script>
   <script type="text/javascript" src="../syntax/tpl/tex.js"></script>
 
@@ -27,10 +28,10 @@
 <h1>Highlight.Js Demo: Templating Engines</h1>
 <hr>
 
-<!-- TWIG -->
+<!-- Twig -->
 
 <div>
-<h2>Twig</h2>
+<h2>Twig (PHP Templating)</h2>
 <pre><code class="twig">{% if posts|length %}
   {% for article in articles %}
   &amp;lt;div&amp;gt;
@@ -47,11 +48,40 @@
 
 {{ include(template_from_string(&quot;Hello {{ name }}&quot;)) }}
 
+&lt;table&gt;
+&lt;tr class=&quot;stripped&quot;&gt;
+  &lt;td&gt;{{ article }}&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
 
 {#
 Comments may be long and multiline.
 Markup is &amp;lt;em&amp;gt;not&amp;lt;/em&amp;gt; highlighted within comments.
 #}
+</code></pre>
+</div>
+
+<!-- Django -->
+
+<div>
+<h2>Django (Python Templating)</h2>
+<pre><code class="django">{% if articles|length %}
+&lt;table&gt;
+{% for article in articles %}
+
+{% custom %}
+
+{# Striped table #}
+&lt;tr class=&quot;{% cycle odd,even %}&quot;&gt;
+  &lt;td&gt;{{ article|default:&quot;Hi... &quot; }}&lt;/td&gt;
+  &lt;td {% if article.today %}class=&quot;today&quot;{% endif %}&gt;
+    Published on {{ article.date }}
+  &lt;/td&gt;
+&lt;/tr&gt;
+
+{% endfor %}
+&lt;/table&gt;
+{% endif %}
 </code></pre>
 </div>
 

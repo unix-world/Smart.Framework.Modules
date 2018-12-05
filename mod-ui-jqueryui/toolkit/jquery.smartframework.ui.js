@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.181129
+var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.181203
 
 this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
@@ -36,7 +36,21 @@ this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 //	jQueryUI
 this.ToolTip = function(selector) {
 	//--
-	// TO BE DONE !!!
+	var HtmlElement = jQuery(selector);
+	var dataTooltipOk = 'tooltip-ok';
+	//--
+	HtmlElement.tooltip().data(dataTooltipOk, '1');
+	//--
+	jQuery('body').on('mousemove', selector, function(el) {
+		jQuery(selector).each(function(index) {
+			if(jQuery(this).data(dataTooltipOk)) {
+				return;
+			} //end if
+			jQuery(this).tooltip().data(dataTooltipOk, '1');
+		});
+	});
+	//--
+	return HtmlElement;
 	//--
 } //END FUNCTION
 

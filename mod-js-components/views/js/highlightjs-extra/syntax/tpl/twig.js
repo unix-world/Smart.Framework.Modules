@@ -4,7 +4,7 @@ Requires: xml.js
 Author: Luke Holder <lukemh@gmail.com>
 Description: Twig is a templating language for PHP
 Category: template
-* ### modified by unixman: change class name: template-tag with symbol
+### modified by unixman: change class name: template-tag with symbol
 */
 
 hljs.registerLanguage('twig',
@@ -50,6 +50,7 @@ function(hljs) {
 		contains: [
 			hljs.COMMENT(/\{#/, /#}/),
 			{
+				//className: 'template-tag', // Fix by unixman
 				className: 'symbol',
 				begin: /\{%/, end: /%}/,
 				contains: [

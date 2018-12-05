@@ -15,12 +15,12 @@
   <script type="text/javascript" src="../syntax/lang/fsharp.js"></script>
   <script type="text/javascript" src="../syntax/lang/haskell.js"></script>
   <script type="text/javascript" src="../syntax/lang/java.js"></script>
+  <script type="text/javascript" src="../syntax/lang/scala.js"></script>
   <script type="text/javascript" src="../syntax/lang/objectivec.js"></script>
   <script type="text/javascript" src="../syntax/lang/ocaml.js"></script>
   <script type="text/javascript" src="../syntax/lang/openscad.js"></script>
+  <script type="text/javascript" src="../syntax/lang/d.js"></script>
   <script type="text/javascript" src="../syntax/lang/r.js"></script>
-  <script type="text/javascript" src="../syntax/lang/ruby.js"></script>
-  <script type="text/javascript" src="../syntax/lang/scala.js"></script>
   <script type="text/javascript" src="../syntax/lang/swift.js"></script>
 
   <script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
@@ -157,26 +157,6 @@ let minutte = 60&lt;s&gt;
 type DefaultMailbox&lt;&#39;a&gt;() =
     let mutable inbox = ConcurrentQueue&lt;&#39;a&gt;()
     let awaitMsg = new AutoResetEvent(false)
-</code></pre>
-</div>
-
-<!-- Ruby -->
-
-<div>
-<h2>Ruby</h2>
-<pre><code class="ruby"># The Greeter class
-class Greeter
-  def initialize(name)
-    @name = name.capitalize
-  end
-
-  def salute
-    puts &quot;Hello #{@name}!&quot;
-  end
-end
-
-g = Greeter.new(&quot;world&quot;)
-g.salute
 </code></pre>
 </div>
 
@@ -495,6 +475,57 @@ End;{CopyFile}
 203 B2! = 12e5			&#39;120000
 204 ITEMS% = 10			&#39;Integer variable
 205 HEXTEST = &amp;H12DB	&#39;Hex value
+</code></pre>
+</div>
+
+<!-- D -->
+
+<div>
+<h2>D</h2>
+<pre><code class="d">#!/usr/bin/rdmd
+// Computes average line length for standard input.
+import std.stdio;
+
+/+
+  this is a /+ nesting +/ comment
++/
+
+enum COMPILED_ON = __TIMESTAMP__;  // special token
+
+enum character = &#39;©&#39;;
+enum copy_valid = &#39;&amp;copy;&#39;;
+enum backslash_escaped = &#39;\\&#39;;
+
+// string literals
+enum str = `hello &quot;world&quot;!`;
+enum multiline = r&quot;lorem
+ipsum
+dolor&quot;;  // wysiwyg string, no escapes here allowed
+enum multiline2 = &quot;sit
+amet
+\&quot;adipiscing\&quot;
+elit.&quot;;
+enum hex = x&quot;66 6f 6f&quot;;   // same as &quot;foo&quot;
+
+#line 5
+
+// float literals
+enum f = [3.14f, .1, 1., 1e100, 0xc0de.01p+100];
+
+static if (something == true) {
+   import std.algorithm;
+}
+
+void main() pure nothrow @safe {
+    ulong lines = 0;
+    double sumLength = 0;
+    foreach (line; stdin.byLine()) {
+        ++lines;
+        sumLength += line.length;
+    }
+    writeln(&quot;Average line length: &quot;,
+        lines ? sumLength / lines : 0);
+}
 </code></pre>
 </div>
 

@@ -2,15 +2,16 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Boostrap UI Toolkit Demo</title>
+	<title>Boostrap v3 UI Toolkit Demo</title>
 	<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
 	<link rel="stylesheet" href="../css/bootstrap.css">
 	<script src="../js/bootstrap.js"></script>
+	<script src="holder.js"></script>
 </head>
 <body>
 <center>
 	<div><h1 style="display:inline; font-weight:bold;">Smart Framework / UI Toolkit Plugins - Demo</h1></div>
-	<div><h2 style="display:inline; color:#5A4080;"><span style="cursor:help;" title="http://getbootstrap.com"><i>Bootstrap</i></span> is the most popular CSS/JS front-end Toolkit for developing responsive and mobile web interfaces</h2></div>
+	<div><h2 style="display:inline; color:#5A4080;"><span style="cursor:help;" title="https://getbootstrap.com/docs/3.3/"><i>Bootstrap</i></span> is the most popular CSS/JS front-end Toolkit for developing responsive and mobile web interfaces</h2></div>
 </center>
 <br>
 <br>
@@ -18,8 +19,8 @@
 
 	<!-- Main jumbotron for a primary marketing message or call to action -->
 	<div class="jumbotron">
-		<h1 style="display:inline-block;">Bootstrap Theme - Overview</h1>
-		<p>This is the default theme included in Bootstrap. Use it as a starting point to create something more unique by building on or modifying it.</p>
+		<h1 style="display:inline-block;">Bootstrap v3 Theme - Overview</h1>
+		<p>This is the default theme included in Bootstrap v3. Use it as a starting point to create something more unique by building on or modifying it.</p>
 	</div>
 
 	<div class="page-header">
@@ -285,18 +286,17 @@
 	<div class="page-header">
 		<h1>Dropdown menus</h1>
 	</div>
-	<div class="dropdown theme-dropdown clearfix">
-		<a id="dropdownMenu1" href="#" class="sr-only dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-		<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-			<li class="active" role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a>
-			</li>
-			<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a>
-			</li>
-			<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a>
-			</li>
-			<li role="presentation" class="divider"></li>
-			<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a>
-			</li>
+	<div class="dropdown">
+		<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			Dropdown
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+			<li><a href="#">Action</a></li>
+			<li><a href="#">Another action</a></li>
+			<li><a href="#">Something else here</a></li>
+			<li role="separator" class="divider"></li>
+			<li><a href="#">Separated link</a></li>
 		</ul>
 	</div>
 
