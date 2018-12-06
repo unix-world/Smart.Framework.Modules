@@ -80,7 +80,7 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmCardDa
 			(string) $safe_user_path,
 			(bool) (defined('NCLOUD_CARDDAV_SHOW_QUOTA') AND (NCLOUD_CARDDAV_SHOW_QUOTA === true)), // you may wish to disable this on large webdav file systems to avoid huge calculations
 			'Addressbook',
-			'Smart.Cloud (c) 2012-'.date('Y').' unix-world.org',
+			'Smart.Cloud/CardDAV (c) 2012-'.date('Y').' unix-world.org',
 			'#',
 			(string) $url_lnk,
 			(string) $txt_lnk
