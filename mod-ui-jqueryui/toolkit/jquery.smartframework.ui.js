@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.181203
+var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.181206
 
 this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
@@ -602,6 +602,12 @@ this.Smart_DataTable_Init = function(elem_id, options) {
 		options = {};
 	} //end if
 	//--
+	if(!options.hasOwnProperty('responsive')) {
+		options['responsive'] = false; // default not responsive (here responsive is something else ... will collapse rows under header with a + sign)
+	} else {
+		options['responsive'] = !(!options['responsive']); // force boolean
+	} //end if
+	//--
 	if(!options.hasOwnProperty('filter')) {
 		options['filter'] = true;
 	} else {
@@ -668,6 +674,7 @@ this.Smart_DataTable_Init = function(elem_id, options) {
 	} //end if else
 	//--
 	var opts = {
+		responsive: 	!!options.responsive,
 		bFilter: 		!!options.filter,
 		bSort: 			!!options.sort,
 		bSortMulti: 	!!options.sort,

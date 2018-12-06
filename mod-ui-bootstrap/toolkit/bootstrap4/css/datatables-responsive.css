@@ -17,6 +17,7 @@ table.dataTable {
 	max-width: none !important;
 	border-collapse: separate !important;
 	border-spacing: 0;
+	background: #FFFFFF;
 }
 table.dataTable td,
 table.dataTable th {

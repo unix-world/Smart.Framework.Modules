@@ -24,6 +24,7 @@ table.dataTable {
 	clear: both;
 	border-collapse: separate;
 	border-spacing: 0;
+	background: #FFFFFF;
 	/*
 	 * Header and footer styles
 	 */
