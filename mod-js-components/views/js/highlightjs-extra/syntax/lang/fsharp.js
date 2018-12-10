@@ -5,6 +5,9 @@ Contributors: Troy Kershaw <hello@troykershaw.com>, Henrik Feldt <henrik@haf.se>
 Category: functional
 */
 
+// syntax/lang/fsharp.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('fsharp',
 function(hljs) {
 	var TYPEPARAM = {
@@ -65,3 +68,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

@@ -5,6 +5,9 @@ Contributors: Zena Treep <zena.treep@gmail.com>
 Category: functional
 */
 
+// syntax/lang/haskell.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('haskell',
 function(hljs) {
 	var COMMENT = {
@@ -128,3 +131,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

@@ -43,7 +43,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.181109
+ * @version 	v.181207
  * @package 	Templating:Engines
  *
  */
@@ -83,6 +83,10 @@ final class Templating {
 		//--
 		if((string)trim((string)$file) == '') {
 			throw new \Exception('Typo3Fluid Templating / Render File / The file name is Empty');
+			return;
+		} //end if
+		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
+			throw new \Exception('Typo3Fluid Templating / Render File / Invalid file Path');
 			return;
 		} //end if
 		//--

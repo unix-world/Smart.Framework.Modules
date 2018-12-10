@@ -3,6 +3,9 @@ Language: VB.NET
 Author: Poren Chiang <ren.chiang@gmail.com>
 */
 
+// syntax/ms/vbnet.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('vbnet',
 function(hljs) {
 	return {
@@ -60,3 +63,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

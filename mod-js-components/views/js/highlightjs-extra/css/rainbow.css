@@ -1,7 +1,10 @@
 /*
+// css/rainbow.css
+// HighlightJs: v.9.13.1
+*/
 
+/*
 Style with support for rainbow parens
-
 */
 
 .hljs {
@@ -83,3 +86,5 @@ Style with support for rainbow parens
 .hljs-emphasis {
 	font-style: italic;
 }
+
+/* END */

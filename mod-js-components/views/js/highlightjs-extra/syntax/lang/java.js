@@ -4,6 +4,9 @@ Author: Vsevolod Solovyov <vsevolod.solovyov@gmail.com>
 Category: common, enterprise
 */
 
+// syntax/lang/java.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('java',
 function(hljs) {
 	var JAVA_IDENT_RE = '[\u00C0-\u02B8a-zA-Z_$][\u00C0-\u02B8a-zA-Z_$0-9]*';
@@ -113,3 +116,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

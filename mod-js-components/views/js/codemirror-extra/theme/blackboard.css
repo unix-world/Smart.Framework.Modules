@@ -1,3 +1,8 @@
+/*
+// theme/blackboard.css
+// codemirror: v.5.42.0
+*/
+
 /* Port of TextMate's Blackboard theme */
 
 .cm-s-blackboard.CodeMirror { background: #0C1021; color: #F8F8F8; }
@@ -30,3 +35,5 @@
 
 .cm-s-blackboard .CodeMirror-activeline-background { background: #3C3636; }
 .cm-s-blackboard .CodeMirror-matchingbracket { outline:1px solid grey;color:white !important; }
+
+/* END */

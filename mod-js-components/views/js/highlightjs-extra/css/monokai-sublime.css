@@ -1,7 +1,10 @@
 /*
+// css/monokai-sublime.css
+// HighlightJs: v.9.13.1
+*/
 
+/*
 Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-license.org/
-
 */
 
 .hljs {
@@ -81,3 +84,5 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 .hljs-meta {
 	color: #75715e;
 }
+
+/* END */

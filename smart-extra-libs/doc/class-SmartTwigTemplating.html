@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Class SmartTwigTemplating | Smart.Framework Documentation :: 2018-12-10 09:11</title>
+</head>
+
+<body>
+<div id="content" class="class">
+	<h1>Class SmartTwigTemplating</h1>
+
+
+	<div class="description">
+
+<p>Provides an easy to use connector for Twig Templating inside the
+Smart.Framework.</p>
+
+<pre>
+
+<span
+class="php-comment">// Sample: use this code in a controller of Smart.Framework (after you install the Smart.Framework.Modules)</span>
+<span
+class="php-var">$this</span>-&gt;PageViewSetVar(
+    <span
+class="php-quote">'main'</span>,
+    SmartTwigTemplating::render_file_template(
+        <span
+class="php-quote">'modules/my-module-name/views/my-view.twig.htm'</span>,
+        [
+            <span
+class="php-quote">'someVar'</span> =&gt; <span
+class="php-quote">'Hello World'</span>,
+            <span
+class="php-quote">'otherVar'</span> =&gt; <span
+class="php-keyword2">date</span>(<span
+class="php-quote">'Y-m-d H:i:s'</span>)
+        ]
+    )
+);
+
+</pre>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		<b>Final</b><br>
+
+
+		<b>Package:</b> <a href="package-Templating.Engines.html">Templating:Engines</a><br>
+
+				<b>Version:</b>
+				v.181105<br>
+				<b>Depends:</b>
+				classes: Twig, \SmartModExtLib\TplTwig\Templating<br>
+				<b>Usage:</b>
+				static object: Class::method() - This class provides only STATIC methods<br>
+		<b>Located at</b> smart-extra-libs/lib_templating_twig.php<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="render_file_template" id="_render_file_template">
+
+		<td class="attributes"><code>
+			 public static
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_render_file_template">#</a>
+		<code>render_file_template( <span>mixed <var>$file</var></span>, <span>mixed <var>$arr_vars</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework Documentation :: 2018-12-10 09:11</a>
+	</div>
+
+</body>
+</html>

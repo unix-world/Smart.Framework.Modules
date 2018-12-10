@@ -1,3 +1,8 @@
+/*
+// theme/erlang-dark.css
+// codemirror: v.5.42.0
+*/
+
 .cm-s-erlang-dark.CodeMirror { background: #002240; color: white; }
 .cm-s-erlang-dark div.CodeMirror-selected { background: #b36539; }
 .cm-s-erlang-dark .CodeMirror-line::selection, .cm-s-erlang-dark .CodeMirror-line > span::selection, .cm-s-erlang-dark .CodeMirror-line > span > span::selection { background: rgba(179, 101, 57, .99); }
@@ -27,8 +32,10 @@
 .cm-s-erlang-dark span.cm-tag        { color: #9effff; }
 .cm-s-erlang-dark span.cm-variable   { color: #50fe50; }
 .cm-s-erlang-dark span.cm-variable-2 { color: #e0e; }
-.cm-s-erlang-dark span.cm-variable-3 { color: #ccc; }
+.cm-s-erlang-dark span.cm-variable-3, .cm-s-erlang-dark span.cm-type { color: #ccc; }
 .cm-s-erlang-dark span.cm-error      { color: #9d1e15; }
 
 .cm-s-erlang-dark .CodeMirror-activeline-background { background: #013461; }
 .cm-s-erlang-dark .CodeMirror-matchingbracket { outline:1px solid grey; color:white !important; }
+
+/* END */

@@ -4,6 +4,9 @@ Author: Joe Cheng <joe@rstudio.org>
 Category: scientific
 */
 
+// syntax/lang/r.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('r',
 function(hljs) {
 	var IDENT_RE = '([a-zA-Z]|\\.[a-zA-Z.])[a-zA-Z0-9._]*';
@@ -75,3 +78,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

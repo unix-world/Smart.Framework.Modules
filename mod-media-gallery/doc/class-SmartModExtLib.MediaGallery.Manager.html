@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Class SmartModExtLib\MediaGallery\Manager | Smart.Framework Documentation :: 2018-12-10 09:11</title>
+</head>
+
+<body>
+<div id="content" class="class">
+	<h1>Class Manager</h1>
+
+
+	<div class="description">
+
+<p>Class: SmartMediaGalleryManager - provides the Media Gallery manager.</p>
+
+	</div>
+
+
+	<div class="info">
+		<b>Final</b><br>
+
+		<b>Namespace:</b> SmartModExtLib\MediaGallery<br>
+		<b>Package:</b> <a href="package-Media.Gallery.html">Media:Gallery</a><br>
+
+				<b>Version:</b>
+				v.181019<br>
+				<b>Depends:</b>
+				extensions: PHP GD Extension (w. TrueColor support) ; executables: imageMagick
+Utility (can replace PHP GD), FFMpeg (for movies) ; classes: Smart, SmartUtils,
+SmartFileSystem<br>
+				<b>Usage:</b>
+				dynamic object: (new Class())-&gt;method() - This class provides only DYNAMIC
+methods<br>
+		<b>Located at</b> mod-media-gallery/libs/Manager.php<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code>__construct( <span>mixed <var>$y_url_player_mov</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="draw" id="_draw">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_draw">#</a>
+		<code>draw( <span>STRING <var>$y_title</var></span>, <span>STRING <var>$y_dir</var></span>, <span>*OPTIONAL[yes/no] <var>$y_process_previews_and_images</var> = <span class="php-quote">'no'</span></span>, <span>*OPTIONAL[yes/no] <var>$y_remove_originals</var> = <span class="php-quote">'no'</span></span>, <span>*OPTIONAL[&gt;=0] <var>$y_display_limit</var> = <span class="php-quote">'0'</span></span> )</code>
+
+		<div class="description short">
+
+<p>[PUBLIC] Draw an Image Gallery</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+
+<p>[PUBLIC] Draw an Image Gallery</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$y_title</var></dt>
+					<dd>:: a title for the gallery</dd>
+					<dt><var>$y_dir</var></dt>
+					<dd>:: path to scan</dd>
+					<dt><var>$y_process_previews_and_images</var></dt>
+					<dd>:: If = 'yes', will create previews for images and videos (movies) and will
+create conformed images</dd>
+					<dt><var>$y_remove_originals</var></dt>
+					<dd>:: If = 'yes', will remove original (images) after creating previews
+[$y_process_previews_and_images must be yes]</dd>
+					<dt><var>$y_display_limit</var></dt>
+					<dd>:: Items limit to display</dd>
+				</dl></div>
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="use_secure_links" id="$use_secure_links">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$use_secure_links</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$use_secure_links" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="secure_download_link" id="$secure_download_link">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$secure_download_link</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$secure_download_link" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="secure_download_ctrl_key" id="$secure_download_ctrl_key">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$secure_download_ctrl_key</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$secure_download_ctrl_key" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="use_styles" id="$use_styles">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$use_styles</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$use_styles" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="preview_formvar" id="$preview_formvar">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$preview_formvar</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$preview_formvar" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="preview_formpict" id="$preview_formpict">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$preview_formpict</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$preview_formpict" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="preview_description" id="$preview_description">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$preview_description</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$preview_description" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="preview_watermark" id="$preview_watermark">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$preview_watermark</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$preview_watermark" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="preview_place_watermark" id="$preview_place_watermark">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$preview_place_watermark</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$preview_place_watermark" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="preview_width" id="$preview_width">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$preview_width</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$preview_width" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="preview_height" id="$preview_height">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$preview_height</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$preview_height" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="preview_quality" id="$preview_quality">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$preview_quality</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$preview_quality" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="force_preview_w" id="$force_preview_w">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$force_preview_w</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$force_preview_w" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="force_preview_h" id="$force_preview_h">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$force_preview_h</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$force_preview_h" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="img_width" id="$img_width">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$img_width</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$img_width" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="img_quality" id="$img_quality">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$img_quality</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$img_quality" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="img_watermark" id="$img_watermark">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$img_watermark</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$img_watermark" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="img_place_watermark" id="$img_place_watermark">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$img_place_watermark</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$img_place_watermark" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="mov_pw_watermark" id="$mov_pw_watermark">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$mov_pw_watermark</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$mov_pw_watermark" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="mov_pw_blank" id="$mov_pw_blank">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$mov_pw_blank</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$mov_pw_blank" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="url_player_mov" id="$url_player_mov">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$url_player_mov</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$url_player_mov" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="pict_reloading" id="$pict_reloading">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$pict_reloading</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$pict_reloading" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="pict_delete" id="$pict_delete">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$pict_delete</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$pict_delete" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="gallery_show_counter" id="$gallery_show_counter">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$gallery_show_counter</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$gallery_show_counter" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="gallery_items" id="$gallery_items">
+		<td class="attributes"><code>
+			public
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$gallery_items</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$gallery_items" class="anchor">#</a><code></code></div></td>
+	</tr>
+	<tr data-order="gallery_img_link_attr" id="$gallery_img_link_attr">
+		<td class="attributes"><code>
+			public
+			string
+		</code></td>
+
+		<td class="name">
+<var>$gallery_img_link_attr</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$gallery_img_link_attr" class="anchor">#</a><code><span class="php-quote">'data-slimbox=&quot;slimbox&quot; rel=&quot;nofollow&quot;'</span></code></div></td>
+	</tr>
+	<tr data-order="gallery_mov_link_attr" id="$gallery_mov_link_attr">
+		<td class="attributes"><code>
+			public
+			string
+		</code></td>
+
+		<td class="name">
+<var>$gallery_mov_link_attr</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$gallery_mov_link_attr" class="anchor">#</a><code><span class="php-quote">'data-smart=&quot;open.modal 780 475 1&quot; rel=&quot;nofollow&quot;'</span></code></div></td>
+	</tr>
+	</table>
+
+
+</div>
+
+	<div id="footer">
+		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework Documentation :: 2018-12-10 09:11</a>
+	</div>
+
+</body>
+</html>

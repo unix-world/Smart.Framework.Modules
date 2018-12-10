@@ -1,7 +1,10 @@
 /*
+// css/sunburst.css
+// HighlightJs: v.9.13.1
+*/
 
+/*
 Sunburst-like style (c) Vasily Polovnyov <vast@whiteants.net>
-
 */
 
 .hljs {
@@ -100,3 +103,5 @@ Sunburst-like style (c) Vasily Polovnyov <vast@whiteants.net>
 .hljs-strong {
 	font-weight: bold;
 }
+
+/* END */

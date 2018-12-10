@@ -5,6 +5,9 @@ Description: language used as intermediate representation in the LLVM compiler f
 Category: assembler
 */
 
+// syntax/hw/llvm.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('llvm',
 function(hljs) {
 	var identifier = '([-a-zA-Z$._][\\w\\-$.]*)';
@@ -95,3 +98,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

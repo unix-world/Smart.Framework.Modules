@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Class SmartImgGfxCharts | Smart.Framework Documentation :: 2018-12-10 09:11</title>
+</head>
+
+<body>
+<div id="content" class="class">
+	<h1>Class SmartImgGfxCharts</h1>
+
+
+	<div class="description">
+
+<p>Class: SmartImgGfxCharts - Generates IMG Gfx Charts.</p>
+
+<pre>
+
+<span class="php-comment">// Sample Usage:</span>
+<span
+class="php-comment">//--</span>
+<span class="php-var">$chart</span> = <span
+class="php-keyword1">new</span> SmartImgGfxCharts(
+        <span
+class="php-quote">'vbars'</span>, <span
+class="php-comment">// vbars, hbars, dots, lines, pie, donut</span>
+        <span
+class="php-quote">&quot;Title goes here&quot;</span>,
+        <span
+class="php-keyword1">array</span>(
+                <span
+class="php-keyword1">array</span>(
+                        <span
+class="php-quote">'x'</span> =&gt; <span
+class="php-quote">&quot;white&quot;</span>,
+                        <span
+class="php-quote">'y'</span> =&gt; Smart::random_number(<span
+class="php-num">10</span>,<span
+class="php-num">90</span>),
+                        <span
+class="php-quote">'z'</span> =&gt; Smart::random_number(<span
+class="php-num">10</span>,<span
+class="php-num">90</span>),
+                        <span
+class="php-quote">'w'</span> =&gt; <span
+class="php-num">10</span>,
+                        <span
+class="php-quote">'v'</span> =&gt; <span
+class="php-quote">'#ECECEC'</span>
+                ),
+                <span
+class="php-keyword1">array</span>(
+                        <span
+class="php-quote">'x'</span> =&gt; <span
+class="php-quote">&quot;red&quot;</span>,
+                        <span
+class="php-quote">'y'</span> =&gt; <span
+class="php-num">22.45</span>,
+                        <span
+class="php-quote">'z'</span> =&gt; Smart::random_number(<span
+class="php-num">10</span>,<span
+class="php-num">90</span>),
+                        <span
+class="php-quote">'w'</span> =&gt; <span
+class="php-num">25</span>,
+                        <span
+class="php-quote">'v'</span> =&gt; <span
+class="php-quote">'#FF3300'</span>
+                ),
+                <span
+class="php-keyword1">array</span>(
+                        <span
+class="php-quote">'x'</span> =&gt; <span
+class="php-quote">&quot;blue&quot;</span>,
+                        <span
+class="php-quote">'y'</span> =&gt; Smart::random_number(<span
+class="php-num">10</span>,<span
+class="php-num">90</span>),
+                        <span
+class="php-quote">'z'</span> =&gt; Smart::random_number(<span
+class="php-num">10</span>,<span
+class="php-num">90</span>),
+                        <span
+class="php-quote">'w'</span> =&gt; <span
+class="php-num">7</span>,
+                        <span
+class="php-quote">'v'</span> =&gt; <span
+class="php-quote">'#003399'</span>
+                ),
+                <span
+class="php-keyword1">array</span>(
+                        <span
+class="php-quote">'x'</span> =&gt; <span
+class="php-quote">&quot;yellow&quot;</span>,
+                        <span
+class="php-quote">'y'</span> =&gt; Smart::random_number(<span
+class="php-num">10</span>,<span
+class="php-num">90</span>),
+                        <span
+class="php-quote">'z'</span> =&gt; Smart::random_number(<span
+class="php-num">10</span>,<span
+class="php-num">90</span>),
+                        <span
+class="php-quote">'w'</span> =&gt; <span
+class="php-num">17</span>,
+                        <span
+class="php-quote">'v'</span> =&gt; <span
+class="php-quote">'#FFCC00'</span>
+                ),
+                <span
+class="php-keyword1">array</span>(
+                        <span
+class="php-quote">'x'</span> =&gt; <span
+class="php-quote">&quot;green&quot;</span>,
+                        <span
+class="php-quote">'y'</span> =&gt; Smart::random_number(<span
+class="php-num">10</span>,<span
+class="php-num">90</span>),
+                        <span
+class="php-quote">'z'</span> =&gt; Smart::random_number(<span
+class="php-num">10</span>,<span
+class="php-num">90</span>),
+                        <span
+class="php-quote">'w'</span> =&gt; <span
+class="php-num">31</span>,
+                        <span
+class="php-quote">'v'</span> =&gt; <span
+class="php-quote">'#33CC33'</span>
+                ),
+                <span
+class="php-keyword1">array</span>(
+                        <span
+class="php-quote">'x'</span> =&gt; <span
+class="php-quote">&quot;black&quot;</span>,
+                        <span
+class="php-quote">'y'</span> =&gt; Smart::random_number(<span
+class="php-num">10</span>,<span
+class="php-num">90</span>),
+                        <span
+class="php-quote">'z'</span> =&gt; Smart::random_number(<span
+class="php-num">10</span>,<span
+class="php-num">90</span>),
+                        <span
+class="php-quote">'w'</span> =&gt; <span
+class="php-num">17</span>,
+                        <span
+class="php-quote">'v'</span> =&gt; <span
+class="php-quote">'#333333'</span>
+                )
+        ),
+        <span
+class="php-quote">'png'</span>
+);
+<span
+class="php-var">$chart</span>-&gt;axis_x = <span
+class="php-quote">'X-Axis'</span>;
+<span
+class="php-var">$chart</span>-&gt;axis_y = <span
+class="php-quote">'Y-Axis'</span>;
+<span class="php-comment">//--</span>
+<span
+class="php-keyword2">header</span>(<span
+class="php-quote">'Content-Type: '</span>.<span
+class="php-var">$chart</span>-&gt;mime_header());
+<span
+class="php-keyword2">header</span>(<span
+class="php-quote">'Content-Disposition: '</span>.<span
+class="php-var">$chart</span>-&gt;disposition_header());
+<span
+class="php-keyword1">echo</span> <span
+class="php-var">$chart</span>-&gt;generate();
+<span
+class="php-comment">//--</span>
+
+</pre>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		<b>Final</b><br>
+
+
+		<b>Package:</b> <a href="package-Components.Misc.html">Components:Misc</a><br>
+
+				<b>Version:</b>
+				v.160827<br>
+				<b>Depends:</b>
+				classes: Smart<br>
+				<b>Usage:</b>
+				dynamic object: (new Class())-&gt;method() - This class provides only DYNAMIC
+methods<br>
+		<b>Located at</b> smart-extra-libs/lib_charts.php<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code>__construct( <span>mixed <var>$y_type</var></span>, <span>mixed <var>$y_title</var></span>, <span>mixed <var>$y_arr_data</var></span>, <span>mixed <var>$y_format</var> = <span class="php-quote">'png'</span></span>, <span>mixed <var>$y_display_graph2</var> = <span class="php-keyword1">true</span></span>, <span>mixed <var>$y_display_graph_depths</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="mime_header" id="_mime_header">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_mime_header">#</a>
+		<code>mime_header( )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="disposition_header" id="_disposition_header">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_disposition_header">#</a>
+		<code>disposition_header( <span>mixed <var>$y_filename</var> = <span class="php-quote">'gfx-chart'</span></span> )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="generate" id="_generate">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_generate">#</a>
+		<code>generate( <span>mixed <var>$y_mode</var> = <span class="php-quote">'raw'</span></span> )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="axis_x" id="$axis_x">
+		<td class="attributes"><code>
+			public
+			string
+		</code></td>
+
+		<td class="name">
+<var>$axis_x</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$axis_x" class="anchor">#</a><code><span class="php-quote">''</span></code></div></td>
+	</tr>
+	<tr data-order="axis_y" id="$axis_y">
+		<td class="attributes"><code>
+			public
+			string
+		</code></td>
+
+		<td class="name">
+<var>$axis_y</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$axis_y" class="anchor">#</a><code><span class="php-quote">''</span></code></div></td>
+	</tr>
+	<tr data-order="axis_dec" id="$axis_dec">
+		<td class="attributes"><code>
+			public
+			integer
+		</code></td>
+
+		<td class="name">
+<var>$axis_dec</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$axis_dec" class="anchor">#</a><code><span class="php-num">0</span></code></div></td>
+	</tr>
+	<tr data-order="tsize" id="$tsize">
+		<td class="attributes"><code>
+			public
+			integer
+		</code></td>
+
+		<td class="name">
+<var>$tsize</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$tsize" class="anchor">#</a><code><span class="php-num">5</span></code></div></td>
+	</tr>
+	<tr data-order="size" id="$size">
+		<td class="attributes"><code>
+			public
+			integer
+		</code></td>
+
+		<td class="name">
+<var>$size</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$size" class="anchor">#</a><code><span class="php-num">2</span></code></div></td>
+	</tr>
+	<tr data-order="h3d" id="$h3d">
+		<td class="attributes"><code>
+			public
+			integer
+		</code></td>
+
+		<td class="name">
+<var>$h3d</var>
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#$h3d" class="anchor">#</a><code><span class="php-num">15</span></code></div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework Documentation :: 2018-12-10 09:11</a>
+	</div>
+
+</body>
+</html>

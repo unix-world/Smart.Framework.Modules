@@ -1,8 +1,13 @@
-/****************************************************************/
-/*   Based on mbonaci's Brackets mbo theme                      */
-/*   https://github.com/mbonaci/global/blob/master/Mbo.tmTheme  */
-/*   Create your own: http://tmtheme-editor.herokuapp.com       */
-/****************************************************************/
+/*
+// theme/mbo.css
+// codemirror: v.5.42.0
+*/
+
+/*
+	Based on mbonaci's Brackets mbo theme
+	https://github.com/mbonaci/global/blob/master/Mbo.tmTheme
+	Create your own: http://tmtheme-editor.herokuapp.com
+*/
 
 .cm-s-mbo.CodeMirror { background: #2c2c2c; color: #ffffec; }
 .cm-s-mbo div.CodeMirror-selected { background: #716C62; }
@@ -35,3 +40,5 @@
 .cm-s-mbo .CodeMirror-activeline-background { background: #494b41; }
 .cm-s-mbo .CodeMirror-matchingbracket { color: #ffb928 !important; }
 .cm-s-mbo .CodeMirror-matchingtag { background: rgba(255, 255, 255, .37); }
+
+/* END */

@@ -5,6 +5,9 @@ Description: MIPS Assembly (up to MIPS32R2)
 Category: assembler
 */
 
+// syntax/hw/mipsasm.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('mipsasm',
 function(hljs) {
 		//local labels: %?[FB]?[AT]?\d{1,2}\w+
@@ -92,3 +95,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

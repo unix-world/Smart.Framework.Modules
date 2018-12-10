@@ -1,3 +1,8 @@
+/*
+// theme/the-matrix.css
+// codemirror: v.5.42.0
+*/
+
 .cm-s-the-matrix.CodeMirror { background: #000000; color: #00FF00; }
 .cm-s-the-matrix div.CodeMirror-selected { background: #2D2D2D; }
 .cm-s-the-matrix .CodeMirror-line::selection, .cm-s-the-matrix .CodeMirror-line > span::selection, .cm-s-the-matrix .CodeMirror-line > span > span::selection { background: rgba(45, 45, 45, 0.99); }
@@ -14,7 +19,7 @@
 .cm-s-the-matrix span.cm-def { color: #99C; }
 .cm-s-the-matrix span.cm-variable { color: #F6C; }
 .cm-s-the-matrix span.cm-variable-2 { color: #C6F; }
-.cm-s-the-matrix span.cm-variable-3 { color: #96F; }
+.cm-s-the-matrix span.cm-variable-3, .cm-s-the-matrix span.cm-type { color: #96F; }
 .cm-s-the-matrix span.cm-property { color: #62FFA0; }
 .cm-s-the-matrix span.cm-operator { color: #999; }
 .cm-s-the-matrix span.cm-comment { color: #CCCCCC; }
@@ -28,3 +33,5 @@
 .cm-s-the-matrix span.cm-error { color: #FF0000; }
 
 .cm-s-the-matrix .CodeMirror-activeline-background { background: #040; }
+
+/* END */

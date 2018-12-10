@@ -1,17 +1,16 @@
 /*
+// css/dracula.css
+// HighlightJs: v.9.13.1
+*/
 
+/*
 Dracula Theme v1.2.0
-
 https://github.com/zenorocha/dracula-theme
-
 Copyright 2015, All rights reserved
-
 Code licensed under the MIT license
 http://zenorocha.mit-license.org
-
 @author Éverton Ribeiro <nuxlli@gmail.com>
 @author Zeno Rocha <hi@zenorocha.com>
-
 */
 
 .hljs {
@@ -74,3 +73,5 @@ http://zenorocha.mit-license.org
 .hljs-emphasis {
 	font-style: italic;
 }
+
+/* END */

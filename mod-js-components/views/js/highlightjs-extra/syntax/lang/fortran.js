@@ -4,6 +4,9 @@ Author: Anthony Scemama <scemama@irsamc.ups-tlse.fr>
 Category: scientific
 */
 
+// syntax/lang/fortran.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('fortran',
 function(hljs) {
 	var PARAMS = {
@@ -76,3 +79,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

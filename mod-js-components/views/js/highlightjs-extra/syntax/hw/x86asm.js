@@ -5,6 +5,9 @@ Description: x86 assembly language using Intel's mnemonic and NASM syntax
 Category: assembler
 */
 
+// syntax/hw/x86asm.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('x86asm',
 function(hljs) {
 	return {
@@ -142,3 +145,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

@@ -5,6 +5,9 @@ Contributor: Nicolas LLOBERA <nllobera@gmail.com>, Pieter Vantorre <pietervantor
 Category: common
 */
 
+// syntax/lang/cs.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('cs',
 function(hljs) {
 	var KEYWORDS = {
@@ -191,3 +194,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

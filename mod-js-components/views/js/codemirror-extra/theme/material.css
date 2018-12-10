@@ -1,20 +1,22 @@
 /*
-
-    Name:       material
-    Author:     Michael Kaminsky (http://github.com/mkaminsky11)
-
-    Original material color scheme by Mattia Astorino (https://github.com/equinusocio/material-theme)
-
+// theme/material.css
+// codemirror: v.5.42.0
 */
 
-.cm-s-material {
-  background-color: #263238;
-  color: rgba(233, 237, 237, 1);
+/*
+	Name:       material
+	Author:     Michael Kaminsky (http://github.com/mkaminsky11)
+	Original material color scheme by Mattia Astorino (https://github.com/equinusocio/material-theme)
+*/
+
+.cm-s-material.CodeMirror {
+	background-color: #263238;
+	color: rgba(233, 237, 237, 1);
 }
 .cm-s-material .CodeMirror-gutters {
-  background: #263238;
-  color: rgb(83,127,126);
-  border: none;
+	background: #263238;
+	color: rgb(83,127,126);
+	border: none;
 }
 .cm-s-material .CodeMirror-guttermarker, .cm-s-material .CodeMirror-guttermarker-subtle, .cm-s-material .CodeMirror-linenumber { color: rgb(83,127,126); }
 .cm-s-material .CodeMirror-cursor { border-left: 1px solid #f8f8f0; }
@@ -27,7 +29,7 @@
 .cm-s-material .cm-keyword { color: rgba(199, 146, 234, 1); }
 .cm-s-material .cm-operator { color: rgba(233, 237, 237, 1); }
 .cm-s-material .cm-variable-2 { color: #80CBC4; }
-.cm-s-material .cm-variable-3 { color: #82B1FF; }
+.cm-s-material .cm-variable-3, .cm-s-material .cm-type { color: #82B1FF; }
 .cm-s-material .cm-builtin { color: #DECB6B; }
 .cm-s-material .cm-atom { color: #F77669; }
 .cm-s-material .cm-number { color: #F77669; }
@@ -41,13 +43,15 @@
 .cm-s-material .cm-attribute { color: #FFCB6B; }
 .cm-s-material .cm-property { color: #80CBAE; }
 .cm-s-material .cm-qualifier { color: #DECB6B; }
-.cm-s-material .cm-variable-3 { color: #DECB6B; }
+.cm-s-material .cm-variable-3, .cm-s-material .cm-type { color: #DECB6B; }
 .cm-s-material .cm-tag { color: rgba(255, 83, 112, 1); }
 .cm-s-material .cm-error {
-  color: rgba(255, 255, 255, 1.0);
-  background-color: #EC5F67;
+	color: rgba(255, 255, 255, 1.0);
+	background-color: #EC5F67;
 }
 .cm-s-material .CodeMirror-matchingbracket {
-  text-decoration: underline;
-  color: white !important;
+	text-decoration: underline;
+	color: white !important;
 }
+
+/* END */

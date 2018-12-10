@@ -1,3 +1,8 @@
+/*
+// addon/merge/merge.css
+// codemirror: v.5.42.0
+*/
+
 .CodeMirror-merge {
   position: relative;
   border: 1px solid #ddd;
@@ -47,6 +52,12 @@
   cursor: pointer;
   color: #555;
   line-height: 1;
+}
+.CodeMirror-merge-scrolllock:after {
+  content: "\21db\00a0\00a0\21da";
+}
+.CodeMirror-merge-scrolllock.CodeMirror-merge-scrolllock-enabled:after {
+  content: "\21db\21da";
 }
 
 .CodeMirror-merge-copybuttons-left, .CodeMirror-merge-copybuttons-right {
@@ -111,3 +122,5 @@
   border-radius: 4px;
 }
 .CodeMirror-merge-collapsed-line .CodeMirror-gutter-elt { display: none; }
+
+/* END */

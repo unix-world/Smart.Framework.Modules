@@ -1,3 +1,8 @@
+/*
+// theme/ttcn.css
+// codemirror: v.5.42.0
+*/
+
 .cm-s-ttcn .cm-quote { color: #090; }
 .cm-s-ttcn .cm-negative { color: #d44; }
 .cm-s-ttcn .cm-positive { color: #292; }
@@ -29,7 +34,7 @@
 .cm-s-ttcn .cm-tag { color: #170; }
 .cm-s-ttcn .cm-variable { color: #8B2252; }
 .cm-s-ttcn .cm-variable-2 { color: #05a; }
-.cm-s-ttcn .cm-variable-3 { color: #085; }
+.cm-s-ttcn .cm-variable-3, .cm-s-ttcn .cm-type { color: #085; }
 
 .cm-s-ttcn .cm-invalidchar { color: #f00; }
 
@@ -62,3 +67,5 @@
 .cm-s-ttcn .cm-ttcn3Macros { color: #27408B; }
 .cm-s-ttcn .cm-types { color: #A52A2A; font-weight:bold; }
 .cm-s-ttcn .cm-visibilityModifiers { font-weight:bold; }
+
+/* END */

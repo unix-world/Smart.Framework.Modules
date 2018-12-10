@@ -5,6 +5,9 @@ Author: Jan Berkel <jan.berkel@gmail.com>
 Contributors: Erik Osheim <d_m@plastic-idolatry.com>
 */
 
+// syntax/lang/scala.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('scala',
 function(hljs) {
 
@@ -121,3 +124,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

@@ -5,6 +5,9 @@ Contributors: Angel G. Olloqui <angelgarcia.mail@gmail.com>, Matt Diephouse <mat
 Category: common
 */
 
+// syntax/lang/objectivec.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('objectivec',
 function(hljs) {
 	var API_CLASS = {
@@ -97,3 +100,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

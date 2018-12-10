@@ -6,6 +6,9 @@ Description: OCaml language definition.
 Category: functional
 */
 
+// syntax/lang/ocaml.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('ocaml',
 function(hljs) {
 	/* missing support for heredoc-like string (OCaml 4.0.2+) */
@@ -78,3 +81,5 @@ function(hljs) {
 	}
 }
 );
+
+// #END

@@ -2,6 +2,9 @@
 Language: Delphi
 */
 
+// syntax/lang/delphi.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('delphi',
 function(hljs) {
 	var KEYWORDS =
@@ -72,3 +75,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

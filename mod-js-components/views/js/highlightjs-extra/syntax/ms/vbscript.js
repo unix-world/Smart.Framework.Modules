@@ -5,6 +5,9 @@ Contributors: Michal Gabrukiewicz <mgabru@gmail.com>
 Category: scripting
 */
 
+// syntax/ms/vbscript.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('vbscript',
 function(hljs) {
 	return {
@@ -45,3 +48,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

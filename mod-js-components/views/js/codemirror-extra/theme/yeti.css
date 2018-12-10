@@ -1,23 +1,24 @@
 /*
-
-    Name:       yeti
-    Author:     Michael Kaminsky (http://github.com/mkaminsky11)
-
-    Original yeti color scheme by Jesse Weed (https://github.com/jesseweed/yeti-syntax)
-
+// theme/yeti.css
+// codemirror: v.5.42.0
 */
 
+/*
+	Name:       yeti
+	Author:     Michael Kaminsky (http://github.com/mkaminsky11)
+	Original yeti color scheme by Jesse Weed (https://github.com/jesseweed/yeti-syntax)
+*/
 
 .cm-s-yeti.CodeMirror {
-  background-color: #ECEAE8 !important;
-  color: #d1c9c0 !important;
-  border: none;
+	background-color: #ECEAE8 !important;
+	color: #d1c9c0 !important;
+	border: none;
 }
 
 .cm-s-yeti .CodeMirror-gutters {
-  color: #adaba6;
-  background-color: #E5E1DB;
-  border: none;
+	color: #adaba6;
+	background-color: #E5E1DB;
+	border: none;
 }
 .cm-s-yeti .CodeMirror-cursor { border-left: solid thin #d1c9c0; }
 .cm-s-yeti .CodeMirror-linenumber { color: #adaba6; }
@@ -39,6 +40,8 @@
 .cm-s-yeti span.cm-qualifier { color: #96c0d8; }
 .cm-s-yeti span.cm-property { color: #a074c4; }
 .cm-s-yeti span.cm-builtin { color: #a074c4; }
-.cm-s-yeti span.cm-variable-3 { color: #96c0d8; }
+.cm-s-yeti span.cm-variable-3, .cm-s-yeti span.cm-type { color: #96c0d8; }
 .cm-s-yeti .CodeMirror-activeline-background { background: #E7E4E0; }
 .cm-s-yeti .CodeMirror-matchingbracket { text-decoration: underline; }
+
+/* END */

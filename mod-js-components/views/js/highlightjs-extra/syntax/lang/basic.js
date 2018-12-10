@@ -4,6 +4,9 @@ Author: Raphaël Assénat <raph@raphnet.net>
 Description: Based on the BASIC reference from the Tandy 1000 guide
 */
 
+// syntax/lang/basic.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('basic',
 function(hljs) {
 	return {
@@ -56,3 +59,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

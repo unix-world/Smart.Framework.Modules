@@ -1,3 +1,8 @@
+/*
+// theme/rubyblue.css
+// codemirror: v.5.42.0
+*/
+
 .cm-s-rubyblue.CodeMirror { background: #112435; color: white; }
 .cm-s-rubyblue div.CodeMirror-selected { background: #38566F; }
 .cm-s-rubyblue .CodeMirror-line::selection, .cm-s-rubyblue .CodeMirror-line > span::selection, .cm-s-rubyblue .CodeMirror-line > span > span::selection { background: rgba(56, 86, 111, 0.99); }
@@ -15,7 +20,7 @@
 .cm-s-rubyblue span.cm-string { color: #F08047; }
 .cm-s-rubyblue span.cm-meta { color: #F0F; }
 .cm-s-rubyblue span.cm-variable-2, .cm-s-rubyblue span.cm-tag { color: #7BD827; }
-.cm-s-rubyblue span.cm-variable-3, .cm-s-rubyblue span.cm-def { color: white; }
+.cm-s-rubyblue span.cm-variable-3, .cm-s-rubyblue span.cm-def, .cm-s-rubyblue span.cm-type { color: white; }
 .cm-s-rubyblue span.cm-bracket { color: #F0F; }
 .cm-s-rubyblue span.cm-link { color: #F4C20B; }
 .cm-s-rubyblue span.CodeMirror-matchingbracket { color:#F0F !important; }
@@ -23,3 +28,5 @@
 .cm-s-rubyblue span.cm-error { color: #AF2018; }
 
 .cm-s-rubyblue .CodeMirror-activeline-background { background: #173047; }
+
+/* END */

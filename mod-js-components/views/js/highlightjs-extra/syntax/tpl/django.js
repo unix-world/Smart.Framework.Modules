@@ -6,6 +6,9 @@ Contributors: Ilya Baryshev <baryshev@gmail.com>
 Category: template
 */
 
+// syntax/tpl/django.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('django',
 function(hljs) {
 	var FILTER = {
@@ -71,3 +74,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

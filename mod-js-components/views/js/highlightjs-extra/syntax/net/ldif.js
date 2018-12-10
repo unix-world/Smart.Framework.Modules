@@ -4,6 +4,9 @@ Contributors: Jacob Childress <jacobc@gmail.com>
 Category: enterprise, config
 */
 
+// syntax/net/ldif.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('ldif',
 function(hljs) {
 	return {
@@ -28,3 +31,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

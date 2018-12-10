@@ -5,6 +5,9 @@ Description: Protocol buffer message definition format
 Category: protocols
 */
 
+// syntax/net/protobuf.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('protobuf',
 function(hljs) {
 	return {
@@ -42,3 +45,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

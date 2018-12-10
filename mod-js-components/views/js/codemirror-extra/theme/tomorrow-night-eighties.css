@@ -1,11 +1,13 @@
 /*
+// theme/tomorrow-night-eighties.css
+// codemirror: v.5.42.0
+*/
 
-    Name:       Tomorrow Night - Eighties
-    Author:     Chris Kempson
-
-    CodeMirror template by Jan T. Sott (https://github.com/idleberg/base16-codemirror)
-    Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16)
-
+/*
+	Name:       Tomorrow Night - Eighties
+	Author:     Chris Kempson
+	CodeMirror template by Jan T. Sott (https://github.com/idleberg/base16-codemirror)
+	Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16)
 */
 
 .cm-s-tomorrow-night-eighties.CodeMirror { background: #000000; color: #CCCCCC; }
@@ -36,3 +38,5 @@
 
 .cm-s-tomorrow-night-eighties .CodeMirror-activeline-background { background: #343600; }
 .cm-s-tomorrow-night-eighties .CodeMirror-matchingbracket { text-decoration: underline; color: white !important; }
+
+/* END */

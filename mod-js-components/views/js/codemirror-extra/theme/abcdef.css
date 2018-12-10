@@ -1,3 +1,8 @@
+/*
+// theme/abcdef.css
+// codemirror: v.5.42.0
+*/
+
 .cm-s-abcdef.CodeMirror { background: #0f0f0f; color: #defdef; }
 .cm-s-abcdef div.CodeMirror-selected { background: #515151; }
 .cm-s-abcdef .CodeMirror-line::selection, .cm-s-abcdef .CodeMirror-line > span::selection, .cm-s-abcdef .CodeMirror-line > span > span::selection { background: rgba(56, 56, 56, 0.99); }
@@ -14,7 +19,7 @@
 .cm-s-abcdef span.cm-def { color: #fffabc; }
 .cm-s-abcdef span.cm-variable { color: #abcdef; }
 .cm-s-abcdef span.cm-variable-2 { color: #cacbcc; }
-.cm-s-abcdef span.cm-variable-3 { color: #def; }
+.cm-s-abcdef span.cm-variable-3, .cm-s-abcdef span.cm-type { color: #def; }
 .cm-s-abcdef span.cm-property { color: #fedcba; }
 .cm-s-abcdef span.cm-operator { color: #ff0; }
 .cm-s-abcdef span.cm-comment { color: #7a7b7c; font-style: italic;}
@@ -30,3 +35,5 @@
 .cm-s-abcdef span.cm-link { color: blueviolet; }
 
 .cm-s-abcdef .CodeMirror-activeline-background { background: #314151; }
+
+/* END */

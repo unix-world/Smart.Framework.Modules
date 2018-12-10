@@ -4,6 +4,9 @@ Author: Alexander Makarov <sam@rmcreative.ru>
 Contributors: Anton Kochkov <anton.kochkov@gmail.com>
 */
 
+// syntax/ms/dos.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('dos',
 function(hljs) {
 	var COMMENT = hljs.COMMENT(
@@ -57,3 +60,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

@@ -7,6 +7,9 @@ Category: template
 ### modified by unixman: change class name: template-tag with symbol
 */
 
+// syntax/tpl/twig.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('twig',
 function(hljs) {
 	var PARAMS = {
@@ -75,3 +78,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

@@ -1,6 +1,11 @@
+/*
+// mode/tiki/tiki.css
+// codemirror: v.5.42.0
+*/
+
 .cm-tw-syntaxerror {
-	color: #FFF;
-	background-color: #900;
+	color: #FFFFFF;
+	background-color: #900900;
 }
 
 .cm-tw-deleted {
@@ -10,7 +15,7 @@
 .cm-tw-header5 {
 	font-weight: bold;
 }
-.cm-tw-listitem:first-child { /*Added first child to fix duplicate padding when highlighting*/
+.cm-tw-listitem:first-child { /* Added first child to fix duplicate padding when highlighting */
 	padding-left: 10px;
 }
 
@@ -24,3 +29,5 @@
 .cm-tw-underline {
 	text-decoration: underline;
 }
+
+/* END */

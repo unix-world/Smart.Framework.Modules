@@ -43,7 +43,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: \SmartModExtLib\TplTwig\SmartTwigEnvironment, Twig
- * @version 	v.181127
+ * @version 	v.181207
  * @package 	Templating:Engines
  *
  */
@@ -110,6 +110,10 @@ final class Templating {
 		//--
 		if((string)trim((string)$file) == '') {
 			throw new \Exception('Twig Templating / Render File / The file name is Empty');
+			return;
+		} //end if
+		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
+			throw new \Exception('Twig Templating / Render File / Invalid file Path');
 			return;
 		} //end if
 		//--

@@ -1,3 +1,8 @@
+/*
+// theme/twilight.css
+// codemirror: v.5.42.0
+*/
+
 .cm-s-twilight.CodeMirror { background: #141414; color: #f7f7f7; } /**/
 .cm-s-twilight div.CodeMirror-selected { background: #323232; } /**/
 .cm-s-twilight .CodeMirror-line::selection, .cm-s-twilight .CodeMirror-line > span::selection, .cm-s-twilight .CodeMirror-line > span > span::selection { background: rgba(50, 50, 50, 0.99); }
@@ -14,7 +19,7 @@
 .cm-s-twilight .cm-number { color:  #ca7841; } /**/
 .cm-s-twilight .cm-def { color: #8DA6CE; }
 .cm-s-twilight span.cm-variable-2, .cm-s-twilight span.cm-tag { color: #607392; } /**/
-.cm-s-twilight span.cm-variable-3, .cm-s-twilight span.cm-def { color: #607392; } /**/
+.cm-s-twilight span.cm-variable-3, .cm-s-twilight span.cm-def, .cm-s-twilight span.cm-type { color: #607392; } /**/
 .cm-s-twilight .cm-operator { color: #cda869; } /**/
 .cm-s-twilight .cm-comment { color:#777; font-style:italic; font-weight:normal; } /**/
 .cm-s-twilight .cm-string { color:#8f9d6a; font-style:italic; } /**/
@@ -30,3 +35,5 @@
 
 .cm-s-twilight .CodeMirror-activeline-background { background: #27282E; }
 .cm-s-twilight .CodeMirror-matchingbracket { outline:1px solid grey; color:white !important; }
+
+/* END */

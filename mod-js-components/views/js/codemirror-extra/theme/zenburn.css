@@ -1,10 +1,12 @@
-/**
- * "
- *  Using Zenburn color palette from the Emacs Zenburn Theme
- *  https://github.com/bbatsov/zenburn-emacs/blob/master/zenburn-theme.el
- *
- *  Also using parts of https://github.com/xavi/coderay-lighttable-theme
- * "
+/*
+// theme/zenburn.css
+// codemirror: v.5.42.0
+*/
+
+/*
+ * Using Zenburn color palette from the Emacs Zenburn Theme
+ * https://github.com/bbatsov/zenburn-emacs/blob/master/zenburn-theme.el
+ * Also using parts of https://github.com/xavi/coderay-lighttable-theme
  * From: https://github.com/wisenomad/zenburn-lighttable-theme/blob/master/zenburn.css
  */
 
@@ -35,3 +37,5 @@
 .cm-s-zenburn .CodeMirror-activeline-background { background: #000000; }
 .cm-s-zenburn div.CodeMirror-selected { background: #545454; }
 .cm-s-zenburn .CodeMirror-focused div.CodeMirror-selected { background: #4f4f4f; }
+
+/* END */

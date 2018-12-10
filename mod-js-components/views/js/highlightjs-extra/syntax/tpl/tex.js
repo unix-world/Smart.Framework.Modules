@@ -5,6 +5,9 @@ Website: http://fulc.ru/
 Category: markup
 */
 
+// syntax/tpl/tex.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('tex',
 function(hljs) {
 	var COMMAND = {
@@ -68,3 +71,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

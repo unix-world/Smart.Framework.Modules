@@ -1,7 +1,10 @@
 /*
+// css/solarized-dark.css
+// HighlightJs: v.9.13.1
+*/
 
+/*
 Orginal Style from ethanschoonover.com/solarized (c) Jeremy Hull <sourdrums@gmail.com>
-
 */
 
 .hljs {
@@ -82,3 +85,5 @@ Orginal Style from ethanschoonover.com/solarized (c) Jeremy Hull <sourdrums@gmai
 .hljs-strong {
 	font-weight: bold;
 }
+
+/* END */

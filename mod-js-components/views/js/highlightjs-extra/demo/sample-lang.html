@@ -22,6 +22,7 @@
   <script type="text/javascript" src="../syntax/lang/d.js"></script>
   <script type="text/javascript" src="../syntax/lang/r.js"></script>
   <script type="text/javascript" src="../syntax/lang/swift.js"></script>
+  <script type="text/javascript" src="../syntax/lang/haxe.js"></script>
 
   <script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
   <script>
@@ -635,6 +636,155 @@ translate([0,0,2])dodecahedron(1);
 dodecahedron(2);
 //call the module with a height of 4 and move down 4
 translate([0,0,-4])dodecahedron(4);
+</code></pre>
+</div>
+
+<!-- Haxe -->
+
+<div>
+<h2>Haxe</h2>
+<pre><code class="haxe">package my.package;
+
+#if js
+import js.Browser;
+#elseif sys
+import Sys;
+#else
+import Date;
+#end
+
+import Lambda;
+using Main.IntExtender;
+
+extern class Math {
+    static var PI(default,null) : Float;
+    static function floor(v:Float):Int;
+}
+
+/**
+ * Abstract forwarding
+ */
+abstract MyAbstract(Int) from Int to Int {
+    inline function new(i:Int) {
+        this = i;
+    }
+
+    @:op(A * B)
+    public function multiply(rhs:MyAbstract) {
+        return this * rhs;
+    }
+}
+
+// an enum
+enum Color {
+    Red;
+    Green;
+    Blue;
+    Rgb(r:Int, g:Int, b:Int);
+}
+
+@:generic
+class Gen&lt;T&gt; {
+    var v:T;
+    public function new(v:T) {
+        this.v = v;
+    }
+
+    public var x(get, set):T;
+
+    private inline function get_x():T
+        return v;
+
+    private inline function set_x(x:T):T
+        return v = x;
+}
+
+class Main extends BaseClass implements SomeFunctionality {
+    var callback:Void-&gt;Void = null;
+    var myArray:Array&lt;Float&gt; = new Array&lt;Float&gt;();
+    var arr = [4,8,0,3,9,1,5,2,6,7];
+
+    public function new(x) {
+        super(x);
+    }
+
+    public static function main() {
+        trace(&#39;What\&#39;s up?&#39;);
+        trace(&#39;Hi, ${name}!&#39;);
+
+        // switch statements!
+        var c:Color = Color.Green;
+        var x:Int = switch(c) {
+            case Red: 0;
+            case Green: 1;
+            case Blue: 2;
+            case Rgb(r, g, b): 3;
+            case _: -1;
+        }
+
+        for(i in 0...3) {
+            trace(i);
+            continue;
+            break;
+        }
+
+        do {
+            trace(&quot;Hey-o!&quot;);
+        } while(false);
+
+        var done:Bool = false;
+        while(!done) {
+            done = true;
+        }
+
+        var H:Int = cast new MyAbstract(42);
+        var h:Int = cast(new MyAbstract(31), Int);
+
+        try {
+            throw &quot;error&quot;;
+        }
+        catch(err:String) {
+            trace(err);
+        }
+
+        var map = new haxe.ds.IntMap&lt;String&gt;();
+        var f = map.set.bind(_, &quot;12&quot;);
+    }
+
+    function nothing():Void
+        trace(&quot;nothing!&quot;);
+
+    private inline function func(a:Int, b:Float, ?c:String, d:Bool=false):Dynamic {
+        return {
+            x: 0,
+            y: true,
+            z: false,
+            a: 1.53,
+            b: 5e10,
+            c: -12,
+            h: null
+        };
+    }
+
+
+    override function quicksort( lo : Int, hi : Int ) : Void {
+        var i = lo;
+        var j = hi;
+        var buf = arr;
+        var p = buf[(lo+hi)&gt;&gt;1];
+        while( i &lt;= j ) {
+            while( arr[i] &gt; p ) i++;
+            while( arr[j] &lt; p ) j--;
+            if( i &lt;= j ) {
+                var t = buf[i];
+                buf[i++] = buf[j];
+                buf[j--] = t;
+            }
+        }
+        if( lo &lt; j ) quicksort( lo, j );
+        if( i &lt; hi ) quicksort( i, hi );
+    }
+}
 </code></pre>
 </div>
 

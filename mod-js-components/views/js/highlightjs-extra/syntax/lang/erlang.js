@@ -5,6 +5,9 @@ Author: Nikolay Zakharov <nikolay.desh@gmail.com>, Dmitry Kovega <arhibot@gmail.
 Category: functional
 */
 
+// syntax/lang/erlang.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('erlang',
 function(hljs) {
 	var BASIC_ATOM_RE = '[a-z\'][a-zA-Z0-9_\']*';
@@ -152,3 +155,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

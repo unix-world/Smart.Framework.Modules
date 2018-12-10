@@ -6,6 +6,9 @@ Description: TypeScript is a strict superset of JavaScript
 Category: scripting
 */
 
+// syntax/ms/typescript.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('typescript',
 function(hljs) {
 	var JS_IDENT_RE = '[A-Za-z$_][0-9A-Za-z$_]*';
@@ -173,3 +176,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

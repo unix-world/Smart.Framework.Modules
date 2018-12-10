@@ -5,6 +5,9 @@ Contributors: Nate Cook <natecook@gmail.com>, Alexander Lichter <manniL@gmx.net>
 Category: system
 */
 
+// syntax/lang/swift.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('swift',
 function(hljs) {
 	var SWIFT_KEYWORDS = {
@@ -130,3 +133,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

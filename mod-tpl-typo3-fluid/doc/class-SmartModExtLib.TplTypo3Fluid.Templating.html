@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Class SmartModExtLib\TplTypo3Fluid\Templating | Smart.Framework Documentation :: 2018-12-10 09:11</title>
+</head>
+
+<body>
+<div id="content" class="class">
+	<h1>Class Templating</h1>
+
+
+	<div class="description">
+
+<p>Provides connector for TYPO3 Fluid Templating inside the Smart.Framework.</p>
+
+<pre>
+
+<span
+class="php-comment">// Sample: use this code in a controller of Smart.Framework (after you install the Smart.Framework.Modules)</span>
+<span
+class="php-var">$this</span>-&gt;PageViewSetVar(
+    <span
+class="php-quote">'main'</span>,
+    (<span
+class="php-keyword1">new</span> \SmartModExtLib\TplTypo3Fluid\Templating())-&gt;render(
+        <span
+class="php-quote">'modules/my-module-name/views/myView.t3fluid.htm'</span>,
+        [
+            <span
+class="php-quote">'someVar'</span> =&gt; <span
+class="php-quote">'Hello World'</span>,
+            <span
+class="php-quote">'otherVar'</span> =&gt; <span
+class="php-keyword2">date</span>(<span
+class="php-quote">'Y-m-d H:i:s'</span>)
+        ]
+    )
+);
+
+</pre>
+
+	</div>
+
+	<div class="info">
+		<b>Final</b><br>
+
+		<b>Namespace:</b> SmartModExtLib\TplTypo3Fluid<br>
+		<b>Package:</b> <a href="package-Templating.Engines.html">Templating:Engines</a><br>
+
+				<b>Version:</b>
+				v.181207<br>
+				<b>Depends:</b>
+				extensions: classes: TYPO3Fluid<br>
+				<b>Usage:</b>
+				dynamic object: (new Class())-&gt;method() - This class provides only DYNAMIC
+methods<br>
+		<b>Located at</b> mod-tpl-typo3-fluid/libs/Templating.php<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code>__construct( )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="render" id="_render">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_render">#</a>
+		<code>render( <span>mixed <var>$file</var></span>, <span>mixed <var>$arr_vars</var> = <span class="php-keyword1">array</span>()</span>, <span>mixed <var>$onlydebug</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+	<table class="summary constants" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="FLUID_VERSION" id="FLUID_VERSION">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+<b>FLUID_VERSION</b>			</code>
+
+			<div class="description short">
+
+			</div>
+
+			<div class="description detailed hidden">
+
+
+			</div>
+		</td>
+		<td class="value"><div><a href="#FLUID_VERSION" class="anchor">#</a><code><span class="php-quote">'master@181112'</span></code></div></td>
+	</tr>
+	</table>
+
+</div>
+
+	<div id="footer">
+		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework Documentation :: 2018-12-10 09:11</a>
+	</div>
+
+</body>
+</html>

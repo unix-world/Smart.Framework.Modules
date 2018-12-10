@@ -5,6 +5,9 @@ Description: OpenSCAD is a language for the 3D CAD modeling software of the same
 Category: scientific
 */
 
+// syntax/lang/openscad.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('openscad',
 function(hljs) {
 	var SPECIAL_VARS = {
@@ -63,3 +66,5 @@ function(hljs) {
 	}
 }
 );
+
+// #END

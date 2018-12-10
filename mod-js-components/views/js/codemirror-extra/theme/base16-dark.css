@@ -1,11 +1,13 @@
 /*
+// theme/base16-dark.css
+// codemirror: v.5.42.0
+*/
 
-    Name:       Base16 Default Dark
-    Author:     Chris Kempson (http://chriskempson.com)
-
-    CodeMirror template by Jan T. Sott (https://github.com/idleberg/base16-codemirror)
-    Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16)
-
+/*
+	Name:       Base16 Default Dark
+	Author:     Chris Kempson (http://chriskempson.com)
+	CodeMirror template by Jan T. Sott (https://github.com/idleberg/base16-codemirror)
+	Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16)
 */
 
 .cm-s-base16-dark.CodeMirror { background: #151515; color: #e0e0e0; }
@@ -36,3 +38,5 @@
 
 .cm-s-base16-dark .CodeMirror-activeline-background { background: #202020; }
 .cm-s-base16-dark .CodeMirror-matchingbracket { text-decoration: underline; color: white !important; }
+
+/* END */

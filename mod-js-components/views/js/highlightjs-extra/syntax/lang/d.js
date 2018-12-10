@@ -6,6 +6,9 @@ Version: 1.0a
 Date: 2012-04-08
 */
 
+// syntax/lang/d.js
+// HighlightJs: v.9.13.1
+
 /**
  * Known issues:
  *
@@ -264,3 +267,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

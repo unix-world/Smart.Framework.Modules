@@ -5,6 +5,9 @@ Description: ARM Assembly including Thumb and Thumb2 instructions
 Category: assembler
 */
 
+// syntax/hw/armasm.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('armasm',
 function(hljs) {
 		//local labels: %?[FB]?[AT]?\d{1,2}\w+
@@ -98,3 +101,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

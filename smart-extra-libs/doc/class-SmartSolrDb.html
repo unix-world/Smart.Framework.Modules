@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Class SmartSolrDb | Smart.Framework Documentation :: 2018-12-10 09:11</title>
+</head>
+
+<body>
+<div id="content" class="class">
+	<h1>Class SmartSolrDb</h1>
+
+
+	<div class="description">
+
+<p>Class Smart Solr (DB) Client</p>
+
+<pre>
+
+<span class="php-comment">// Usage example:</span>
+<span
+class="php-comment">//--</span>
+<span class="php-var">$mySolr</span> = <span
+class="php-keyword1">new</span> SmartSolrDb();
+<span
+class="php-comment">//--</span>
+<span class="php-var">$data</span> = <span
+class="php-var">$mySolr</span>-&gt;findQuery(
+        <span
+class="php-quote">'word1 word2'</span>, <span
+class="php-comment">// this is a real Solr Query and must be escaped in a proper way using SolrUtils::escapeQueryChars()</span>
+        [
+                <span
+class="php-quote">'settings'</span> =&gt; [
+                        <span
+class="php-quote">'start'</span>                         =&gt; <span
+class="php-num">0</span>, <span
+class="php-comment">// offset</span>
+                        <span
+class="php-quote">'rows'</span>                          =&gt; <span
+class="php-num">10</span>, <span
+class="php-comment">// limit</span>
+                ],
+                <span
+class="php-quote">'sort'</span> =&gt; [
+                        <span
+class="php-quote">'score'</span> =&gt; -<span
+class="php-num">1</span>
+                ],
+                <span
+class="php-quote">'filters'</span> =&gt; [
+                        <span
+class="php-quote">'!id'</span> =&gt; <span class="php-quote">'ID1'</span>, <span
+class="php-comment">// not ID1</span>
+                        <span
+class="php-quote">'category'</span> =&gt; <span
+class="php-quote">'Some Categ'</span>,
+                        <span
+class="php-quote">'subcategory'</span> =&gt; <span
+class="php-quote">'Some Sub-Categ'</span>
+                ],
+                <span
+class="php-quote">'fields'</span> =&gt; [] <span
+class="php-comment">// all</span>
+        ]
+);
+<span
+class="php-comment">//--</span>
+
+</pre>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		<b>Final</b><br>
+
+
+		<b>Package:</b> <a href="package-Database.Solr.html">Database:Solr</a><br>
+
+				<b>Version:</b>
+				v.181019<br>
+				<b>Depends:</b>
+				extensions: PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartComponents<br>
+				<b>Usage:</b>
+				dynamic object: (new Class())-&gt;method() - This class provides only DYNAMIC
+methods<br>
+		<b>Located at</b> smart-extra-libs/lib_db_solr.php<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="throwFatalErrors" id="_throwFatalErrors">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_throwFatalErrors">#</a>
+		<code>throwFatalErrors( )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="raiseFatalErrors" id="_raiseFatalErrors">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_raiseFatalErrors">#</a>
+		<code>raiseFatalErrors( )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findQuery" id="_findQuery">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findQuery">#</a>
+		<code>findQuery( <span>mixed <var>$y_query</var></span>, <span>mixed <var>$y_options</var> = <span class="php-keyword1">array</span>(<span class="php-quote">'mode'</span> =&gt; <span class="php-quote">'phrase'</span>, <span class="php-quote">'settings'</span> =&gt; <span class="php-keyword1">array</span>(), <span class="php-quote">'sort'</span> =&gt; <span class="php-keyword1">array</span>(), <span class="php-quote">'filters'</span> =&gt; <span class="php-keyword1">array</span>(), <span class="php-quote">'facets'</span> =&gt; <span class="php-keyword1">array</span>(), <span class="php-quote">'fields'</span> =&gt; <span class="php-keyword1">array</span>(), <span class="php-quote">'boost'</span>=&gt;<span class="php-keyword1">array</span>(), <span class="php-quote">'mlt'</span>=&gt;<span class="php-keyword1">array</span>())</span> )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addDocument" id="_addDocument">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addDocument">#</a>
+		<code>addDocument( <span>mixed <var>$arrdoc</var></span>, <span>mixed <var>$use_autocommit</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="deleteDocument" id="_deleteDocument">
+
+		<td class="attributes"><code>
+			 public
+
+
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_deleteDocument">#</a>
+		<code>deleteDocument( <span>mixed <var>$id</var></span> )</code>
+
+		<div class="description short">
+
+		</div>
+
+		<div class="description detailed hidden">
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+</div>
+
+	<div id="footer">
+		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework Documentation :: 2018-12-10 09:11</a>
+	</div>
+
+</body>
+</html>

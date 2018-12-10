@@ -1,11 +1,13 @@
 /*
+// theme/railscasts.css
+// codemirror: v.5.42.0
+*/
 
-    Name:       Railscasts
-    Author:     Ryan Bates (http://railscasts.com)
-
-    CodeMirror template by Jan T. Sott (https://github.com/idleberg/base16-codemirror)
-    Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16)
-
+/*
+	Name:       Railscasts
+	Author:     Ryan Bates (http://railscasts.com)
+	CodeMirror template by Jan T. Sott (https://github.com/idleberg/base16-codemirror)
+	Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16)
 */
 
 .cm-s-railscasts.CodeMirror {background: #2b2b2b; color: #f4f1ed;}
@@ -32,3 +34,5 @@
 
 .cm-s-railscasts .CodeMirror-matchingbracket { text-decoration: underline; color: white !important;}
 .cm-s-railscasts .CodeMirror-activeline-background { background: #303040; }
+
+/* END */

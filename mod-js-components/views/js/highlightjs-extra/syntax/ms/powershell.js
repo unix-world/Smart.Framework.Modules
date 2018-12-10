@@ -4,6 +4,9 @@ Author: David Mohundro <david@mohundro.com>
 Contributors: Nicholas Blumhardt <nblumhardt@nblumhardt.com>, Victor Zhou <OiCMudkips@users.noreply.github.com>, Nicolas Le Gall <contact@nlegall.fr>
 */
 
+// syntax/ms/powershell.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('powershell',
 function(hljs) {
 	var BACKTICK_ESCAPE = {
@@ -86,3 +89,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END

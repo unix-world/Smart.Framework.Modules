@@ -5,6 +5,9 @@ Contributors: Daniel C.K. Kho <daniel.kho@tauhop.com>, Guillaume Savaton <guilla
 Description: VHDL is a hardware description language used in electronic design automation to describe digital and mixed-signal systems.
 */
 
+// syntax/hw/vhdl.js
+// HighlightJs: v.9.13.1
+
 hljs.registerLanguage('vhdl',
 function(hljs) {
 	// Regular expression for VHDL numeric literals.
@@ -67,3 +70,5 @@ function(hljs) {
 	};
 }
 );
+
+// #END
