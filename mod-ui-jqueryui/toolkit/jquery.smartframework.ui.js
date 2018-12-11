@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.181206
+var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.181211
 
 this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
@@ -681,7 +681,7 @@ this.Smart_DataTable_Init = function(elem_id, options) {
 		order: 			Array.from(options.colorder),
 		bPaginate: 		!!options.paginate,
 		iDisplayLength: parseInt(options.pagesize),
-		aLengthMenu: 	Array.from(options.pagesizes, x => parseInt(x)),
+		aLengthMenu: 	Array.from(options.pagesizes), // , x => parseInt(x)
 		uxmHidePagingIfNoMultiPages: 	true,
 		uxmCssClassLengthField: 		String(options.classField),
 		uxmCssClassFilterField: 		String(options.classField),
