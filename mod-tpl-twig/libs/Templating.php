@@ -28,7 +28,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * // Sample: use this code in a controller of Smart.Framework (after you install the Smart.Framework.Modules)
  * $this->PageViewSetVar(
  *     'main',
- *     (new \SmartModExtLib\TplTwig\Templating())->render(
+ *     (new \SmartModExtLib\TplTwig\Templating())->render_file_template(
  *         'modules/my-module-name/views/myView.twig.htm',
  *         [
  *             'someVar' => 'Hello World',
@@ -43,7 +43,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: \SmartModExtLib\TplTwig\SmartTwigEnvironment, Twig
- * @version 	v.181207
+ * @version 	v.181211
  * @package 	Templating:Engines
  *
  */
@@ -98,7 +98,7 @@ final class Templating {
 	} //END FUNCTION
 
 
-	public function render($file, $arr_vars=array(), $onlydebug=false) {
+	public function render_file_template($file, $arr_vars=array(), $onlydebug=false) {
 		//--
 		if(!\SmartFrameworkRuntime::ifDebug()) {
 			$onlydebug = false;
@@ -117,25 +117,34 @@ final class Templating {
 			return;
 		} //end if
 		//--
+		$invalid_dir = 'modules/mod-tpl-twig/views/INVALID-PATH'; // this path cannot be empty as templates cannot be located in the app's root !!!
+		//--
 		$dir_of_tpl = (string) \Smart::dir_name($file);
 		if((string)$dir_of_tpl != '') {
 			if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
-				$dir_of_tpl = ''; // prevent if unsafe
+				$dir_of_tpl = (string) $invalid_dir; // fix if unsafe
 			} //end if
 			$dir_of_tpl = (string) \SmartFileSysUtils::add_dir_last_slash((string)$dir_of_tpl);
 			if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
-				$dir_of_tpl = ''; // prevent if unsafe
+				$dir_of_tpl = (string) $invalid_dir.'/'; // fix if unsafe
 			} //end if
+		} else {
+			$dir_of_tpl = (string) $invalid_dir.'/'; // fix if empty
 		} //end if
-		$arr_vars['_tpldir_'] = (string) $dir_of_tpl;
-		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($this->dir.$file)) {
-			throw new \Exception('Twig Templating / Render File / The file name / path contains invalid characters: '.$this->dir.$file);
+		if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
+			throw new \Exception('Twig Templating / Render File / Invalid tpl Path');
 			return;
 		} //end if
 		//--
-		if(!is_file($this->dir.$file)) {
-			throw new \Exception('Twig Templating / The Template file to render does not exists: '.$this->dir.$file);
+		$arr_vars['Tpl_Dir__'] = (string) $dir_of_tpl;
+		//--
+		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
+			throw new \Exception('Twig Templating / Render File / The file name / path contains invalid characters: '.$file);
+			return;
+		} //end if
+		//--
+		if(!is_file($file)) {
+			throw new \Exception('Twig Templating / The Template file to render does not exists: '.$file);
 			return;
 		} //end if
 		//--
@@ -185,7 +194,7 @@ final class Templating {
 			//-- the hash
 			$hash = sha1((string)$dbg_tpl['dbg-file-name']);
 			//-- get arr dbg data
-			$dbgarr = (array) $this->render((string)$dbg_tpl['dbg-file-name'], [], true); // need to render before get dbg
+			$dbgarr = (array) $this->render_file_template((string)$dbg_tpl['dbg-file-name'], [], true); // need to render before get dbg
 			//-- pre-render vars
 			$tbl_vars = '<table id="'.'__twig__template__debug-tplvars_'.\Smart::escape_html($hash).'" class="ux-table ux-table-striped" cellspacing="0" cellpadding="4" width="500" style="font-size:0.750em!important;">';
 			$tbl_vars .= '<tr align="center"><th>{{ Twig TPL variables }}</th><th>#</th></tr>';

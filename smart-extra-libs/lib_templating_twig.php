@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Twig, \SmartModExtLib\TplTwig\Templating
- * @version 	v.181105
+ * @version 	v.181211
  * @package 	Templating:Engines
  *
  */
@@ -60,7 +60,7 @@ final class SmartTwigTemplating {
 			self::$twig = new \SmartModExtLib\TplTwig\Templating();
 		} //end if
 		//--
-		return (string) self::$twig->render((string)$file, (array)$arr_vars);
+		return (string) self::$twig->render_file_template((string)$file, (array)$arr_vars);
 		//--
 	} //END FUNCTION
 

@@ -73,7 +73,9 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		];
 		//--
 
-		//-- or alternate (better) rendering, using the smart-extra-libs
+		//--
+		$res_time = (float) microtime(true);
+		//--
 		//require_once('modules/smart-extra-libs/autoload.php');
 		if(class_exists('SmartTwigTemplating') AND (rand(0,1))) {
 			$this->PageViewSetVars([
@@ -81,15 +83,17 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				'main' => (string) SmartTwigTemplating::render_file_template(
 					(string) $tpl,
 					(array)  $data
-				)
+				),
+				'aside' => '<div style="background:#333333; color:#ffffff; position:fixed; right:5px; top:10px; padding:3px;">RenderTime:&nbsp;'.Smart::format_number_dec((float)(microtime(true) - (float)$res_time), 7).'&nbsp;s</div>'
 			]);
 		} else {
 			$this->PageViewSetVars([
 				'title' => 'Sample Twig Templating',
-				'main' => (string) (new \SmartModExtLib\TplTwig\Templating())->render(
+				'main' => (string) (new \SmartModExtLib\TplTwig\Templating())->render_file_template(
 					(string) $tpl,
 					(array)  $data
-				)
+				),
+				'aside' => '<div style="background:#333333; color:#ffffff; position:fixed; right:5px; top:10px; padding:3px;">RenderTime:&nbsp;'.Smart::format_number_dec((float)(microtime(true) - (float)$res_time), 7).'&nbsp;s</div>'
 			]);
 		} //end if
 		//--

@@ -3,9 +3,9 @@
 <div align="center">
 	<br>
 	<div>
-		<a href="//twig.symfony.com/doc/1.x/" target="_blank"><img src="modules/mod-tpl-twig/views/img/twig.svg" width="160" height="160"></a>
+		<a href="//twig.symfony.com/doc/1.x/" target="_blank"><img src="{{Tpl_Dir__}}img/twig.svg" width="160" height="160"></a>
 		<br>
-		{% if version != '' %}<b><i>Twig</i></b> <i>Templating</i> Engine v.{{ version }}{% endif %}
+		{% if version != '' %}<span style="color:#778899;"><b><i>Twig</i></b> <i>Templating</i> Engine v.{{ version }}</span>{% endif %}
 	</div>
 	{{ hello|raw }}
 	<div>
@@ -16,7 +16,7 @@
 		<a href="?/page/tpl-twig.test/op/viewpartialsource" target="tpl_twig_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="fa fa-code"></i> &nbsp; View Sub-TPL Source</a>
 	</div>
 	<br>
-	{% include _tpldir_ ~ 'sample-partial.twig.inc.htm' %}
+	{% include Tpl_Dir__ ~ 'sample-partial.twig.inc.htm' %}
 	<ul>
 	{% for item in navigation %}
 		<li><a href="{{ item.href }}">{{ item.caption }}</a></li>

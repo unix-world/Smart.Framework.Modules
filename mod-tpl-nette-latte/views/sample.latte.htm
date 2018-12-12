@@ -1,0 +1,40 @@
+<!-- start latte template -->
+{* Template: sample.latte.htm *}<!-- comments are removed -->
+<div align="center">
+	<br>
+	<div>
+		<a href="//latte.nette.org/en/" target="_blank"><img src="{$Tpl_Dir__}img/nette-latte.svg" width="160" height="160"></a>
+		<br>
+		<span style="color:#778899;" n:if="$version != ''"><b><i>nette/Latte</i></b> <i>Templating</i> Engine v.{$version}</span>
+	</div>
+	{$hello|noescape}
+	<div>
+		<a href="?/page/tpl-nette-latte.test" class="ux-button ux-button-small ux-button-info"><i class="fa fa-refresh"></i> &nbsp; Reload TPL Render Test</a>
+		&nbsp;&nbsp;
+		<a href="?/page/tpl-nette-latte.test/op/viewsource" target="tpl_latte_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-primary"><i class="fa fa-code"></i> &nbsp; View TPL Source</a>
+		&nbsp;&nbsp;
+		<a href="?/page/tpl-nette-latte.test/op/viewpartialsource" target="tpl_latte_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="fa fa-code"></i> &nbsp; View Sub-TPL Source</a>
+	</div>
+	<br>
+	{include 'sample-partial.latte.inc.htm'}
+	<ul>
+	{foreach $navigation as $item}
+		<li><a href="{$item['href']}">{$item['caption']}</a></li>
+	{/foreach}
+	</ul>
+	Test Condition#1:
+	{if $a == 'Test-1'}
+		<b>OK</b>
+	{else}
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	{/if}
+	<br>
+	Test Condition#2:
+	{if $b == $a}
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	{else}
+		<b>OK</b>
+	{/if}
+</div>
+<!-- end latte template -->
+{* <pre>{dump}</pre> *}

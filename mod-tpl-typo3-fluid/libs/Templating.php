@@ -28,7 +28,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * // Sample: use this code in a controller of Smart.Framework (after you install the Smart.Framework.Modules)
  * $this->PageViewSetVar(
  *     'main',
- *     (new \SmartModExtLib\TplTypo3Fluid\Templating())->render(
+ *     (new \SmartModExtLib\TplTypo3Fluid\Templating())->render_file_template(
  *         'modules/my-module-name/views/myView.t3fluid.htm',
  *         [
  *             'someVar' => 'Hello World',
@@ -43,7 +43,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.181207
+ * @version 	v.181211
  * @package 	Templating:Engines
  *
  */
@@ -56,6 +56,13 @@ final class Templating {
 	private $dir;
 	private $t3fluid;
 	private $t3fpaths;
+
+
+	public static function getVersion() {
+		//--
+		return (string) self::FLUID_VERSION;
+		//--
+	} //END FUNCTION
 
 
 	public function __construct() {
@@ -71,7 +78,7 @@ final class Templating {
 	} //END FUNCTION
 
 
-	public function render($file, $arr_vars=array(), $onlydebug=false) {
+	public function render_file_template($file, $arr_vars=array(), $onlydebug=false) {
 		//--
 		if(!\SmartFrameworkRuntime::ifDebug()) {
 			$onlydebug = false;
@@ -90,17 +97,26 @@ final class Templating {
 			return;
 		} //end if
 		//--
+		$invalid_dir = 'modules/mod-tpl-typo3-fluid/views/INVALID-PATH'; // this path cannot be empty as templates cannot be located in the app's root !!!
+		//--
 		$dir_of_tpl = (string) \Smart::dir_name($file);
 		if((string)$dir_of_tpl != '') {
 			if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
-				$dir_of_tpl = ''; // prevent if unsafe
+				$dir_of_tpl = (string) $invalid_dir; // fix if unsafe
 			} //end if
 			$dir_of_tpl = (string) \SmartFileSysUtils::add_dir_last_slash((string)$dir_of_tpl);
 			if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
-				$dir_of_tpl = ''; // prevent if unsafe
+				$dir_of_tpl = (string) $invalid_dir.'/'; // fix if unsafe
 			} //end if
+		} else {
+			$dir_of_tpl = (string) $invalid_dir.'/'; // fix if empty
 		} //end if
-		$arr_vars['_tpldir_'] = (string) $dir_of_tpl;
+		if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
+			throw new \Exception('Typo3Fluid Templating / Render File / Invalid tpl Path');
+			return;
+		} //end if
+		//--
+		$arr_vars['Tpl_Dir__'] = (string) $dir_of_tpl;
 		//--
 		$this->t3fpaths->setTemplateRootPaths([
 			(string) $dir_of_tpl
@@ -112,13 +128,13 @@ final class Templating {
 			(string) $dir_of_tpl
 		]);
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($this->dir.$file)) {
-			throw new \Exception('Typo3Fluid Templating / Render File / The file name / path contains invalid characters: '.$this->dir.$file);
+		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
+			throw new \Exception('Typo3Fluid Templating / Render File / The file name / path contains invalid characters: '.$file);
 			return;
 		} //end if
 		//--
-		if(!is_file($this->dir.$file)) {
-			throw new \Exception('Typo3Fluid Templating / The Template file to render does not exists: '.$this->dir.$file);
+		if(!is_file($file)) {
+			throw new \Exception('Typo3Fluid Templating / The Template file to render does not exists: '.$file);
 			return;
 		} //end if
 		//--

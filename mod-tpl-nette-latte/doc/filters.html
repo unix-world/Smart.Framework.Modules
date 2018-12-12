@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Nette Foundation; c 2008">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Latte Filters | Nette Framework</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+
+
+<body>
+
+<div class="nettebar-placeholder"></div>
+
+<section class="main">
+	<div class="container">
+			<div class="wikimenu">
+</div>
+
+
+		<div class="main-row">
+			<div class="content content--narrow">
+
+
+
+
+	<div class="content-wiki">
+	<h1 id="toc-latte-filters">Latte Filters</h1>
+
+<p class="perex">Filters are functions which change or format the data to a form we want.</p>
+
+<p>Summary of the built-in filters which are available:</p>
+
+<table class="table-latte-summary table table-striped">
+	<thead>
+		<tr>
+			<th colspan="2">String or array transformation</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<tr class="alt">
+			<td><code>truncate</code> <code class="small">(length, append = '…')</code></td>
+
+			<td><a href="#toc-truncate">shortens the length preserving whole words</a></td>
+		</tr>
+
+		<tr>
+			<td><code>substr</code> <code class="small">(offset [, length])</code></td>
+
+			<td>returns part of the string</td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>trim</code> <code class="small">(charset = whitespace)</code></td>
+
+			<td>strips whitespace or other characters from the beginning and end of the string</td>
+		</tr>
+
+		<tr>
+			<td><code>striptags</code></td>
+
+			<td>removes HTML tags</td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>strip</code></td>
+
+			<td><a href="#toc-strip">removes whitespace</a></td>
+		</tr>
+
+		<tr>
+			<td><code>indent</code> <code class="small">(level = 1, char = "\t")</code></td>
+
+			<td><a href="#toc-indent">indents the text from left with number of tabs</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>replace</code> <code class="small">(search, replace = '')</code></td>
+
+			<td>replaces all occurrences of the search string with the replacement</td>
+		</tr>
+
+		<tr>
+			<td><code>replaceRE</code> <code class="small">(pattern, replace = '')</code></td>
+
+			<td>replaces all occurrences according to regular expression</td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>padLeft</code> <code class="small">(length, pad = ' ')</code></td>
+
+			<td>completes the string to given length from left</td>
+		</tr>
+
+		<tr>
+			<td><code>padRight</code> <code class="small">(length, pad = ' ')</code></td>
+
+			<td>completes the string to given length from right</td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>repeat</code> <code class="small">(count)</code></td>
+
+			<td>repeats the string</td>
+		</tr>
+
+		<tr>
+			<td><code>implode</code> <code class="small">(glue = '')</code></td>
+
+			<td>joins an array to a string</td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>webalize</code></td>
+
+			<td><a href="#toc-webalize">adjusts the UTF-8 string to the shape used in the URL</a></td>
+		</tr>
+
+		<tr>
+			<td><code>breaklines</code></td>
+
+			<td><a href="#toc-breaklines">Inserts HTML line breaks before all newlines</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>reverse</code></td>
+
+			<td><a href="#toc-reverse">reverse an UTF-8 string or array</a></td>
+		</tr>
+
+		<tr>
+			<td><code>length</code></td>
+
+			<td>returns length of a string or array</td>
+		</tr>
+
+		<tr class="alt">
+			<th colspan="2">Letter casing</th>
+		</tr>
+
+		<tr>
+			<td><code>lower</code></td>
+
+			<td><a href="#toc-letter-casing">makes a string lower case</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>upper</code></td>
+
+			<td><a href="#toc-letter-casing">makes a string upper case</a></td>
+		</tr>
+
+		<tr>
+			<td><code>firstUpper</code></td>
+
+			<td><a href="#toc-letter-casing">makes the first letter upper case</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>capitalize</code></td>
+
+			<td><a href="#toc-letter-casing">lower case, the first letter of each word upper case</a></td>
+		</tr>
+
+		<tr>
+			<th colspan="2">Formatting</th>
+		</tr>
+
+		<tr class="alt">
+			<td><code>date</code> <code class="small">(format)</code></td>
+
+			<td><a href="#toc-date">formats date</a></td>
+		</tr>
+
+		<tr>
+			<td><code>number</code> <code class="small">(decimals = 0, decPoint = '.')</code></td>
+
+			<td><a href="#toc-number">format number</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>bytes</code> <code class="small">(precision = 2)</code></td>
+
+			<td><a href="#toc-bytes">formats size in bytes</a></td>
+		</tr>
+
+		<tr>
+			<td><code>dataStream</code> <code class="small">(mimetype = detect)</code></td>
+
+			<td><a href="#toc-datastream">Data URI protocol conversion</a></td>
+		</tr>
+
+		<tr class="alt">
+			<th colspan="2">Security</th>
+		</tr>
+
+		<tr>
+			<td><code>noescape</code></td>
+
+			<td><a href="/en/macros#toc-variable-printing">prints a variable without escaping</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>escapeurl</code></td>
+
+			<td><a href="#toc-escapeurl">escapes parameter in URL</a></td>
+		</tr>
+
+		<tr>
+			<td><code>nocheck</code></td>
+
+			<td><a href="#toc-nocheck">prevents automatic URL sanitization</a></td>
+		</tr>
+
+		<tr class="alt">
+			<td><code>checkurl</code></td>
+
+			<td>sanitizes string for use inside href attribute</td>
+		</tr>
+	</tbody>
+</table>
+
+<p class="note">All built-in filters work with UTF-8 encoded strings.</p>
+
+<h2 id="toc-usage">Usage</h2>
+
+<p>Latte allows calling filters by using the pipe sign notation called modifier (preceding space is allowed):</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;h1&gt;</span>{<span class="php-var">$heading</span>|upper}<span
+class="html-tag">&lt;/h1&gt;</span></code></pre>
+
+<p>Filters can be chained, in that case they apply in order from left to right:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;h1&gt;</span>{<span class="php-var">$heading</span>|lower|capitalize}<span
+class="html-tag">&lt;/h1&gt;</span></code></pre>
+
+<p>Parameters are put after the filter name separated by colon or comma:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;h1&gt;</span>{<span class="php-var">$heading</span>|truncate:<span
+class="php-num">20</span>,<span class="php-quote">''</span>}<span class="html-tag">&lt;/h1&gt;</span></code></pre>
+
+<p>Filters can be applied on expression:</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">var</span> <span class="php-var">$name</span> = (<span
+class="php-var">$title</span>|upper) . (<span class="php-var">$subtitle</span>|lower)}<span
+class="html-tag">&lt;/h1&gt;</span></code></pre>
+
+<p>Custom filters can be registered this way:</p>
+
+<pre class="src-php"><code><span class="php-var">$latte</span> = <span class="php-keyword1">new</span> Latte\Engine;
+<span
+class="php-var">$latte</span>-&gt;addFilter(<span class="php-quote">'shortify'</span>, <span
+class="php-keyword1">function</span> (<span class="php-var">$s</span>, <span class="php-var">$len</span> = <span
+class="php-num">10</span>) {
+    <span class="php-keyword1">return</span> <span class="php-keyword2">mb_substr</span>(<span
+class="php-var">$s</span>, <span class="php-num">0</span>, <span class="php-var">$len</span>);
+});</code></pre>
+
+<p>We use it in a template like this:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;p&gt;</span>{<span class="php-var">$text</span>|shortify}<span
+class="html-tag">&lt;/p&gt;</span>
+<span class="html-tag">&lt;p&gt;</span>{<span class="php-var">$text</span>|shortify:<span
+class="php-num">100</span>}<span class="html-tag">&lt;/p&gt;</span></code></pre>
+
+<h2 id="toc-truncate">Truncate</h2>
+
+<p>Shortens a string to the maximum given length but tries to preserve whole words. If the string is truncated it adds ellipsis at
+the end (this can be changed by the second parameter).</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">var</span> <span class="php-var">$title</span> = <span
+class="php-quote">'Hello, how are you?'</span>}
+{<span class="php-var">$title</span>|truncate:<span
+class="php-num">5</span>} Hell…
+{<span class="php-var">$title</span>|truncate:<span
+class="php-num">17</span>} Hello, how are…
+{<span class="php-var">$title</span>|truncate:<span
+class="php-num">30</span>} Hello, how are you?</code></pre>
+
+<h2 id="toc-strip">Strip</h2>
+
+<p>Removes unnecessary whitespace from the output.</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">block</span> |strip}
+    <span
+class="html-tag">&lt;ul&gt;</span>
+        <span class="html-tag">&lt;li&gt;</span>Hello<span
+class="html-tag">&lt;/li&gt;</span>
+    <span class="html-tag">&lt;/ul&gt;</span>
+{/<span
+class="php-keyword1">block</span>}</code></pre>
+
+<p>Generates</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;ul&gt;</span> <span class="html-tag">&lt;li&gt;</span>Hello<span
+class="html-tag">&lt;/li&gt;</span> <span class="html-tag">&lt;/ul&gt;</span></code></pre>
+
+<h2 id="toc-indent">Indent</h2>
+
+<p>Indents a text from left by a given number of tabs or other characters which we specify in the second optional argument:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;div&gt;</span>
+{<span class="php-keyword1">block</span> |indent}
+<span
+class="html-tag">&lt;p&gt;</span>Hello<span class="html-tag">&lt;/p&gt;</span>
+{/<span class="php-keyword1">block</span>}
+<span
+class="html-tag">&lt;/div&gt;</span></code></pre>
+
+<p>Generates</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;div&gt;</span>
+    <span class="html-tag">&lt;p&gt;</span>Hello<span
+class="html-tag">&lt;/p&gt;</span>
+<span class="html-tag">&lt;/div&gt;</span></code></pre>
+
+<h2 id="toc-webalize">Webalize</h2>
+
+<p>The filter removes the diacritics and replaces all the characters except the letters of the English alphabet and digits by a
+hyphen. Requires the installation of <a href="https://api.nette.org/2.4/ Nette . Utils.html">nette / utils</a>.</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">var</span> <span class="php-var">$s</span> = <span
+class="php-quote">'Our 10. product'</span>}
+{<span class="php-var">$s</span>|webalize} our-10-product</code></pre>
+
+<h2 id="toc-breaklines">Breaklines</h2>
+
+<p>Inserts HTML line breaks before all newlines. Input text is automatically escaped.</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">var</span> <span class="php-var">$s</span> = <span
+class="php-quote">&quot;Text &amp; with \n newline&quot;</span>}
+{<span class="php-var">$s</span>|breaklines} &quot;Text <span
+class="html-entity">&amp;amp;</span> with <span class="html-tag">&lt;br&gt;</span>\n newline&quot;</code></pre>
+
+<h2 id="toc-reverse">Reverse</h2>
+
+<pre class="src-html"><code>{<span class="php-keyword1">var</span> <span class="php-var">$s</span> = <span
+class="php-quote">'Nette'</span>}
+{<span class="php-var">$s</span>|reverse} etteN
+{<span class="php-keyword1">var</span> <span
+class="php-var">$a</span> = [<span class="php-quote">'N'</span>, <span class="php-quote">'e'</span>, <span
+class="php-quote">'t'</span>, <span class="php-quote">'t'</span>, <span class="php-quote">'e'</span>]}
+{<span
+class="php-var">$a</span>|reverse} ['e', 't', 't', 'e', 'N']</code></pre>
+
+<h2 id="toc-letter-casing">Letter casing</h2>
+
+<pre class="src-html"><code>{<span class="php-keyword1">var</span> <span class="php-var">$s</span> = <span
+class="php-quote">'blue COLOR'</span>}
+{<span class="php-var">$s</span>|lower} blue color
+{<span
+class="php-var">$s</span>|upper} BLUE COLOR
+{<span class="php-var">$s</span>|firstUpper} Blue COLOR
+{<span
+class="php-var">$s</span>|capitalize} Blue Color</code></pre>
+
+<h2 id="toc-date">Date</h2>
+
+<p>Returns a date in the given format using options of <a href="http://php.net/strftime">strftime</a> or <a
+href="http://php.net/date">date</a> PHP functions. Filter gets a date as a UNIX timestamp, a string or an object of
+<code>DateTime</code> type.</p>
+
+<pre class="src-html"><code>{<span class="php-var">$today</span>|date:<span class="php-quote">'%d.%m.%Y'</span>}</code></pre>
+
+<h2 id="toc-number">Number</h2>
+
+<p>Formats a number to given number of decimal places. You can also specify a character of the decimal point and thousands
+separator.</p>
+
+<pre class="src-html"><code>{<span class="php-num">1234.20</span> |number}  1,234
+{<span
+class="php-num">1234.20</span> |number:<span class="php-num">1</span>}  1,234.2
+{<span
+class="php-num">1234.20</span> |number:<span class="php-num">2</span>}  1,234.20
+{<span
+class="php-num">1234.20</span> |number:<span class="php-num">2</span>:<span class="php-quote">','</span>:<span
+class="php-quote">' '</span>}  1 234,20</code></pre>
+
+<h2 id="toc-bytes">Bytes</h2>
+
+<p>Formats a size in bytes to human-readable form.</p>
+
+<pre class="src-html"><code>{<span class="php-var">$size</span>|bytes} 0 B, 10 B or 1.25 GB, …</code></pre>
+
+<h2 id="toc-datastream">DataStream</h2>
+
+<p>Converts the data to URI scheme. With this filter you can insert images to HTML or CSS without linking external files. All the
+modern browsers. Requires PHP extension <a href="http://php.net/manual/en/fileinfo.installation.php">fileinfo</a>.</p>
+
+<p>Lets have an image in a variable <code>$img = Image::fromFile('obrazek.gif')</code>, then</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;img</span><span class="html-tagin"> src=</span><span
+class="html-quote">&quot;{</span><span class="php-var">$img</span>|dataStream}<span class="html-quote">&quot;</span><span
+class="html-tag">&gt;</span></code></pre>
+
+<p>generates for example:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;img</span><span class="html-tagin"> src=</span><span
+class="html-quote">&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
+AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+9TXL0Y4OHwAAAABJRU5ErkJggg==&quot;</span><span
+class="html-tag">&gt;</span></code></pre>
+
+<h2 id="toc-escapeurl">EscapeUrl</h2>
+
+<p>Escapes a variable to be used as a parameter in URL.</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> href=</span><span
+class="html-quote">&quot;http://example.com/{</span><span class="php-var">$name</span>|escapeurl}<span
+class="html-quote">&quot;</span><span class="html-tag">&gt;</span>{<span class="php-var">$name</span>}<span
+class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<h2 id="toc-nocheck">NoCheck</h2>
+
+<p>Prevents automatic URL sanitization. Latte automatically checks if the variable contains a web URL (ie. HTTP protocol) and
+prevents the writing of links that may pose a security risk.</p>
+
+<p>If the link uses a different scheme, such as <code>javascript:</code> or <code>data:</code>, and you are sure of its contents,
+you can disable the check via <code>|nocheck</code>.</p>
+
+<pre class="src-html"><code>{<span class="php-keyword1">var</span> <span class="php-var">$link</span> = <span
+class="php-quote">'javascript:window.close()'</span>}
+
+<span class="html-tag">&lt;a</span><span
+class="html-tagin"> href=</span><span class="html-quote">&quot;{</span><span class="php-var">$link</span>}<span
+class="html-quote">&quot;</span><span class="html-tag">&gt;</span>checked<span class="html-tag">&lt;/a&gt;</span>
+<span
+class="html-tag">&lt;a</span><span class="html-tagin"> href=</span><span class="html-quote">&quot;{</span><span
+class="php-var">$link</span>|nocheck}<span class="html-quote">&quot;</span><span class="html-tag">&gt;</span>unchecked<span
+class="html-tag">&lt;/a&gt;</span></code></pre>
+
+<p>Generates:</p>
+
+<pre class="src-html"><code><span class="html-tag">&lt;a</span><span class="html-tagin"> href=</span><span
+class="html-quote">&quot;&quot;</span><span class="html-tag">&gt;</span>checked<span class="html-tag">&lt;/a&gt;</span>
+<span
+class="html-tag">&lt;a</span><span class="html-tagin"> href=</span><span
+class="html-quote">&quot;javascript:window.close()&quot;</span><span class="html-tag">&gt;</span>unchecked<span
+class="html-tag">&lt;/a&gt;</span></code></pre>
+
+	</div>
+
+
+			</div>
+
+				<aside class="sidebar sidebar--doc">
+
+		<h3>Sources</h3>
+
+		<ul>
+			<li><a href="https://github.com/nette/latte">GitHub</a></li>
+			<li><a href="https://api.nette.org/latte/namespace-Latte.html">API documentation</a></li>
+		</ul>
+
+
+		<div class="sidebar-toc">
+			<h3>Contents</h3>
+
+			<ul class="sidebar-fixable">
+				<li class="sidebar-up" value="0"><a href="#">▲</a></li>
+				<li><a href="#toc-usage">Usage</a>
+				</li>
+				<li><a href="#toc-truncate">Truncate</a>
+				</li>
+				<li><a href="#toc-strip">Strip</a>
+				</li>
+				<li><a href="#toc-indent">Indent</a>
+				</li>
+				<li><a href="#toc-webalize">Webalize</a>
+				</li>
+				<li><a href="#toc-breaklines">Breaklines</a>
+				</li>
+				<li><a href="#toc-reverse">Reverse</a>
+				</li>
+				<li><a href="#toc-letter-casing">Letter casing</a>
+				</li>
+				<li><a href="#toc-date">Date</a>
+				</li>
+				<li><a href="#toc-number">Number</a>
+				</li>
+				<li><a href="#toc-bytes">Bytes</a>
+				</li>
+				<li><a href="#toc-datastream">DataStream</a>
+				</li>
+				<li><a href="#toc-escapeurl">EscapeUrl</a>
+				</li>
+				<li><a href="#toc-nocheck">NoCheck</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
+		</div>
+	</div>
+</section>
+
+<div style="background:#333333; width:100%; height:25px;"></div>
+
+</body>
+</html>

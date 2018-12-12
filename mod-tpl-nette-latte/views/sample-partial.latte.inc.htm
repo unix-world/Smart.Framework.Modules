@@ -1,0 +1,17 @@
+<!-- start latte partial / sub-template -->
+{* Partial / Sub-Template: sample-partial.latte.inc.htm *}<!-- comments are removed -->
+<table style="border: 1px solid #ECECEC; width: 550px;">
+<tr>
+	<th>Column 1<th>
+	<th>Column 2<th>
+	<th>Column 3<th>
+</tr>
+{foreach $tbl as $row}
+<tr>
+	<td>cell {$row['a1']}<td>
+	<td>cell {$row['a2']}<td>
+	<td>cell {$row['a3']}<td>
+</tr>
+{/foreach}
+</table>
+<!-- end latte partial / sub-template -->

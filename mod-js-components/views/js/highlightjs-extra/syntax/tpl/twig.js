@@ -4,7 +4,7 @@ Requires: xml.js
 Author: Luke Holder <lukemh@gmail.com>
 Description: Twig is a templating language for PHP
 Category: template
-### modified by unixman: change class name: template-tag with symbol
+### modified by unixman
 */
 
 // syntax/tpl/twig.js
@@ -42,7 +42,7 @@ function(hljs) {
 	};
 
 	var TAGS = 'autoescape block do embed extends filter flush for ' +
-		'if import include macro sandbox set spaceless use verbatim';
+		'if else import include macro sandbox set spaceless use verbatim'; // fix by unixman ; add: else
 
 	TAGS = TAGS + ' ' + TAGS.split(' ').map(function(t){return 'end' + t}).join(' ');
 

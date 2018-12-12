@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Controller: Typo3 Fluid Templating Test Sample
-// Route: ?/page/tpl-typo3-fluid.test (?page=tpl-typo3-fluid.test)
+// Controller: NetteLatte Templating Test Sample
+// Route: ?/page/tpl-nette-latte.test (?page=tpl-nette-latte.test)
 // Author: unix-world.org
 // v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
 
@@ -36,35 +36,32 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$tpl = (string) $this->ControllerGetParam('module-view-path').'sample.t3fluid.htm';
-		$ptpl = (string) $this->ControllerGetParam('module-view-path').'@sample-partial.t3fluid.inc.htm';
+		$tpl = (string) $this->ControllerGetParam('module-view-path').'sample.latte.htm';
+		$ptpl = (string) $this->ControllerGetParam('module-view-path').'sample-partial.latte.inc.htm';
 		//--
 
 		//--
 		if((string)$op == 'viewsource') {
 			//--
-			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<h1>Typo3Fluid Template Source:<br><i>'.Smart::escape_html($tpl).'</i></h1><hr><pre style="background:#FAFAFA;"><code class="xml" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
+			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/latte.js"></script>'.'<h1>nette/Latte Template Source:<br><i>'.Smart::escape_html($tpl).'</i></h1><hr><pre style="background:#FAFAFA;"><code class="latte" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
 			return;
 			//--
 		} elseif((string)$op == 'viewpartialsource') {
 			//--
-			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<h1>Typo3Fluid Sub-Template Source:<br><i>'.Smart::escape_html($ptpl).'</i></h1><hr><pre style="background:#FAFAFA;"><code class="xml" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$ptpl)).'</code></pre><hr><br>');
+			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/latte.js"></script>'.'<h1>nette/Latte Sub-Template Source:<br><i>'.Smart::escape_html($ptpl).'</i></h1><hr><pre style="background:#FAFAFA;"><code class="latte" style="width:96vw; height:75vh; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$ptpl)).'</code></pre><hr><br>');
 			return;
 			//--
 		} //end if
 		//--
 
 		//--
-		// !!! all main templates must start / end with the section ID: Typo3FluidTpl
-		// !!! all partials to be included in main templates must start with @ to avoid camel case (enforced by typo3 on file system ; ex: @sample-partial.t3fluid.inc.htm) !!!
-		//--
 		$data = [
-			'version' 	=> (string) \SmartModExtLib\TplTypo3Fluid\Templating::getVersion(),
-			'hello' 	=> '<h1>Demo: Typo3Fluid Templating as module for Smart.Framework</h1>',
+			'version' => (string) \SmartModExtLib\TplNetteLatte\Templating::getVersion(),
+			'hello' => '<h1>Demo: nette/Latte Templating as module for Smart.Framework</h1>',
 			'navigation' => [
-				[ 'href' => '#link1', 'caption' => 'Sample Link <1>' ],
-				[ 'href' => '#link2', 'caption' => 'Sample Link <2>' ],
-				[ 'href' => '#link3', 'caption' => 'Sample Link <3>' ]
+				array('href' => '#link1', 'caption' => 'Sample Link <1>'),
+				array('href' => '#link2', 'caption' => 'Sample Link <2>'),
+				array('href' => '#link3', 'caption' => 'Sample Link <3>')
 			],
 			'tbl' => [
 				['a1' => '1.1', 'a2' => '1.2', 'a3' => '1.3'],
@@ -79,8 +76,8 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$res_time = (float) microtime(true);
 		$this->PageViewSetVars([
-			'title' => 'Sample Typo3Fluid Templating',
-			'main' => (string) (new \SmartModExtLib\TplTypo3Fluid\Templating())->render_file_template(
+			'title' => 'Sample nette/Latte Templating',
+			'main' => (string) (new \SmartModExtLib\TplNetteLatte\Templating())->render_file_template(
 				(string) $tpl,
 				(array)  $data
 			),
