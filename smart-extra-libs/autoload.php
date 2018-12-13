@@ -57,8 +57,11 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 			require_once('modules/smart-extra-libs/lib_charts.php'); 			// gd charts
 			break;
 		//--
+		case 'SmartTypo3FluidTemplating':
 		case 'SmartTwigTemplating':
-			require_once('modules/smart-extra-libs/lib_templating_twig.php'); 	// twig templating
+		case 'SmartNetteLatteTemplating':
+		case 'SmartTemplating':
+			require_once('modules/smart-extra-libs/lib_templating_ext.php'); 	// extended templating
 			break;
 		//--
 		default:

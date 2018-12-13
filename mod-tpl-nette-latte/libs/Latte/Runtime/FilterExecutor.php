@@ -17,8 +17,8 @@ use Latte\Helpers;
  * Filter executor.
  * @internal
  */
-class FilterExecutor
-{
+class FilterExecutor {
+
 	/** @var array */
 	private $_dynamic = [];
 
@@ -68,49 +68,51 @@ class FilterExecutor
 	 * @param  callable
 	 * @return static
 	 */
-	public function add($name, $callback)
-	{
-		if ($name == null) { // intentionally ==
+	public function add($name, $callback) {
+		//--
+		if($name == null) { // intentionally ==
 			array_unshift($this->_dynamic, $callback);
 		} else {
 			$name = strtolower($name);
 			$this->_static[$name] = [$callback, null];
 			unset($this->$name);
-		}
+		} //end if else
+		//--
 		return $this;
-	}
+		//--
+	} //END FUNCTION
 
 
 	/**
 	 * Returns all run-time filters.
 	 * @return string[]
 	 */
-	public function getAll()
-	{
+	public function getAll() {
+		//--
 		return array_combine($tmp = array_keys($this->_static), $tmp);
-	}
+		//--
+	} //END FUNCTION
 
 
 	/**
 	 * Returns filter for classic calling.
 	 * @return callable
 	 */
-	public function __get($name)
-	{
+	public function __get($name) {
+		//--
 		$lname = strtolower($name);
-		if (isset($this->$lname)) { // case mismatch
+		if(isset($this->$lname)) { // case mismatch
 			return $this->$lname;
-
-		} elseif (isset($this->_static[$lname])) {
+		} elseif(isset($this->_static[$lname])) {
 			list($callback, $aware) = $this->prepareFilter($lname);
-			if ($aware) { // FilterInfo aware filter
+			if($aware) { // FilterInfo aware filter
 				return $this->$lname = function ($arg) use ($callback) {
 					$args = func_get_args();
 					array_unshift($args, $info = new FilterInfo);
-					if ($arg instanceof IHtmlString) {
+					if($arg instanceof IHtmlString) {
 						$args[1] = $arg->__toString();
 						$info->contentType = Engine::CONTENT_HTML;
-					}
+					} //end if
 					$res = call_user_func_array($callback, $args);
 					return $info->contentType === Engine::CONTENT_HTML
 						? new Html($res)
@@ -118,78 +120,100 @@ class FilterExecutor
 				};
 			} else { // classic filter
 				return $this->$lname = $callback;
-			}
-		}
-
+			} //end if else
+		} //end if else
+		//--
 		return $this->$lname = function ($arg) use ($lname, $name) { // dynamic filter
+			//--
 			$args = func_get_args();
 			array_unshift($args, $lname);
-			foreach ($this->_dynamic as $filter) {
+			//--
+			foreach($this->_dynamic as $filter) {
 				$res = call_user_func_array(Helpers::checkCallback($filter), $args);
-				if ($res !== null) {
+				if($res !== null) {
 					return $res;
 				} elseif (isset($this->_static[$lname])) { // dynamic converted to classic
 					$this->$name = Helpers::checkCallback($this->_static[$lname][0]);
 					return call_user_func_array($this->$name, func_get_args());
-				}
-			}
-			$hint = ($t = Helpers::getSuggestion(array_keys($this->_static), $name)) ? ", did you mean '$t'?" : '.';
-			throw new \LogicException("Filter '$name' is not defined$hint");
+				} //end if else
+			} //end foreach
+			//--
+			$hint = ($t = Helpers::getSuggestion(array_keys($this->_static), $name)) ? ', did you mean \''.$t.'\'?' : '.';
+			throw new \LogicException('Filter '.$name.' is not defined'.$hint);
+			//--
 		};
-	}
+		//--
+	} //END FUNCTION
 
 
 	/**
 	 * Calls filter with FilterInfo.
 	 * @return mixed
 	 */
-	public function filterContent($name, FilterInfo $info, $arg)
-	{
+	public function filterContent($name, FilterInfo $info, $arg) {
+		//--
 		$lname = strtolower($name);
 		$args = func_get_args();
 		array_shift($args);
-
-		if (!isset($this->_static[$lname])) {
+		//--
+		if(!isset($this->_static[$lname])) {
 			$hint = ($t = Helpers::getSuggestion(array_keys($this->_static), $name)) ? ", did you mean '$t'?" : '.';
 			throw new \LogicException("Filter |$name is not defined$hint");
-		}
-
+		} //end if
+		//--
 		list($callback, $aware) = $this->prepareFilter($lname);
-		if ($aware) { // FilterInfo aware filter
+		//--
+		if($aware) { // FilterInfo aware filter
+			//--
 			return call_user_func_array($callback, $args);
-
+			//--
 		} else { // classic filter
+			//--
 			array_shift($args);
-			if ($info->contentType !== Engine::CONTENT_TEXT) {
-				trigger_error("Filter |$name is called with incompatible content type " . strtoupper($info->contentType)
-					. ($info->contentType === Engine::CONTENT_HTML ? ', try to prepend |stripHtml.' : '.'), E_USER_WARNING);
-			}
+			if($info->contentType !== Engine::CONTENT_TEXT) {
+			//	trigger_error('Filter |'.$name.' is called with incompatible content type '.strtoupper($info->contentType).($info->contentType === Engine::CONTENT_HTML ? ', try to prepend |stripHtml.' : '.'), E_USER_WARNING);
+				\Smart::log_warning('Filter |'.$name.' is called with incompatible content type '.strtoupper($info->contentType).($info->contentType === Engine::CONTENT_HTML ? ', try to prepend |stripHtml.' : '.'), E_USER_WARNING); // fix by unixman
+			} //end if
 			$res = call_user_func_array($this->$name, $args);
-			if ($res instanceof IHtmlString) {
-				trigger_error("Filter |$name should be changed to content-aware filter.");
+			if($res instanceof IHtmlString) {
+			//	trigger_error("Filter |$name should be changed to content-aware filter.");
+				\Smart::log_warning('Filter |'.$name.' should be changed to content-aware filter.'); // fix by unixman
 				$info->contentType = Engine::CONTENT_HTML;
 				$res = $res->__toString();
-			}
+			} //end if
+			//--
 			return $res;
-		}
-	}
+			//--
+		} //end if else
+		//--
+	} //END FUNCTION
 
 
-	private function prepareFilter($name)
-	{
-		if (!isset($this->_static[$name][1])) {
+	private function prepareFilter($name) {
+		//--
+		if(!isset($this->_static[$name][1])) {
+			//--
 			$callback = Helpers::checkCallback($this->_static[$name][0]);
-			if (is_string($callback) && strpos($callback, '::')) {
+			if(is_string($callback) && strpos($callback, '::')) {
 				$callback = explode('::', $callback);
-			} elseif (is_object($callback)) {
+			} elseif(is_object($callback)) {
 				$callback = [$callback, '__invoke'];
-			}
+			} //end if else
 			$ref = is_array($callback)
 				? new \ReflectionMethod($callback[0], $callback[1])
 				: new \ReflectionFunction($callback);
-			$this->_static[$name][1] = ($tmp = $ref->getParameters())
-				&& $tmp[0]->getClass() && $tmp[0]->getClass()->getName() === 'Latte\Runtime\FilterInfo';
-		}
+			//--
+		//	$this->_static[$name][1] = ($tmp = $ref->getParameters()) && $tmp[0]->getClass() && $tmp[0]->getClass()->getName() === 'Latte\Runtime\FilterInfo';
+			$this->_static[$name][1] = ($tmp = $ref->getParameters()) && $tmp[0]->getClass() && $tmp[0]->getClass()->getName() === 'Latte\\Runtime\\FilterInfo'; // bug fix by unixman
+			//--
+		} //end if
+		//--
 		return $this->_static[$name];
-	}
-}
+		//--
+	} //END FUNCTION
+
+
+} //END CLASS
+
+
+// end of php code

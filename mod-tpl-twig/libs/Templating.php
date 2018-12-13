@@ -43,7 +43,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: \SmartModExtLib\TplTwig\SmartTwigEnvironment, Twig
- * @version 	v.181211
+ * @version 	v.181213
  * @package 	Templating:Engines
  *
  */
@@ -100,6 +100,9 @@ final class Templating {
 
 	public function render_file_template($file, $arr_vars=array(), $onlydebug=false) {
 		//--
+		if($onlydebug !== true) {
+			$onlydebug = false;
+		} //end else
 		if(!\SmartFrameworkRuntime::ifDebug()) {
 			$onlydebug = false;
 		} //end if
@@ -107,6 +110,8 @@ final class Templating {
 		if(!is_array($arr_vars)) {
 			$arr_vars = array();
 		} //end if
+		// allow camelCase keys ; variables are case sensitive in Twig
+		$arr_vars = (array) self::fix_array_keys($arr_vars); // (recursive) replace - and . in array keys with _
 		//--
 		if((string)trim((string)$file) == '') {
 			throw new \Exception('Twig Templating / Render File / The file name is Empty');
@@ -289,6 +294,30 @@ final class Templating {
 		$dbg_tpl = array();
 		//--
 		return (string) $content;
+		//--
+	} //END FUNCTION
+
+
+	private static function fix_array_keys($y_arr) { // v.191213 :: make array keys compatible with Markers-TPL
+		//--
+		if(!is_array($y_arr)) { // fix bug if empty array / max nested level
+			return $y_arr; // mixed
+		} //end if
+		//--
+		$new_arr = [];
+		//--
+		foreach($y_arr as $key => $val) {
+			$key = (string) rtrim((string)str_replace(['-', '.'], '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; also the markers TPL keys can contain: /^[A-Z0-9_\-\.]+$/ ; thus replace - and . with _ to fix (are not supposed to be allowed here ...)
+			if(((string)$key != '') AND (preg_match('/^[a-zA-Z0-9_]+$/', (string)$key))) {
+				if(is_array($val)) {
+					$new_arr[(string)$key] = self::fix_array_keys((array)$val);
+				} else {
+					$new_arr[(string)$key] = $val; // mixed
+				} //end if
+			} //end if else
+		} //end foreach
+		//--
+		return $new_arr; // mixed
 		//--
 	} //END FUNCTION
 

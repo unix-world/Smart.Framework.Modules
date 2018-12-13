@@ -55,34 +55,56 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$data = [
-			'version' => (string) \SmartModExtLib\TplNetteLatte\Templating::getVersion(),
-			'hello' => '<h1>Demo: nette/Latte Templating as module for Smart.Framework</h1>',
-			'navigation' => [
+		$data = [ // variables are case insensitive in controllers ; the template will use all lowercase variables for this instance of Latte ; array keys that contain - and . will be replaced recursive by _ to make compliant with PHP variable names
+			'Version' => (string) \SmartModExtLib\TplNetteLatte\Templating::getVersion(),
+			'heLLo-.World' => '<h1>Demo: nette/Latte Templating as module for Smart.Framework</h1>',
+			'navigatioN' => [
 				array('href' => '#link1', 'caption' => 'Sample Link <1>'),
 				array('href' => '#link2', 'caption' => 'Sample Link <2>'),
 				array('href' => '#link3', 'caption' => 'Sample Link <3>')
 			],
-			'tbl' => [
+			'TBl' => [
 				['a1' => '1.1', 'a2' => '1.2', 'a3' => '1.3'],
 				['a1' => '2.1', 'a2' => '2.2', 'a3' => '2.3'],
 				['a1' => '3.1', 'a2' => '3.2', 'a3' => '3.3']
 			],
-			'a' 		=> 'Test-1',
-			'b' 		=> 'Test-2'
+			'a' => 'Test-1',
+			'B' => 'Test-2'
 		];
 		//--
 
 		//--
 		$res_time = (float) microtime(true);
-		$this->PageViewSetVars([
-			'title' => 'Sample nette/Latte Templating',
-			'main' => (string) (new \SmartModExtLib\TplNetteLatte\Templating())->render_file_template(
-				(string) $tpl,
-				(array)  $data
-			),
-			'aside' => '<div style="background:#333333; color:#ffffff; position:fixed; right:5px; top:10px; padding:3px;">RenderTime:&nbsp;'.Smart::format_number_dec((float)(microtime(true) - (float)$res_time), 7).'&nbsp;s</div>'
-		]);
+		//--
+		if(class_exists('SmartNetteLatteTemplating') AND (rand(0,1))) { // must enable require_once('modules/smart-extra-libs/autoload.php'); in modules/app/app-custom-bootstrap.inc.php
+			if(class_exists('SmartTemplating') AND (rand(0,1))) {
+				$this->PageViewSetVars([
+					'title' => 'Sample netteLatte Templating (static, autodetect file extension)',
+					'main' => (string) SmartTemplating::render_file_template(
+						(string) $tpl, // the TPL view (syntax: netteLatte-TPL ; must contain '.latte.' in the file name)
+						(array)  $data // the Variables array
+					)
+				]);
+			} else {
+				$this->PageViewSetVars([
+					'title' => 'Sample netteLatte Templating (static)',
+					'main' => (string) SmartNetteLatteTemplating::render_file_template(
+						(string) $tpl, // the TPL view (syntax: netteLatte-TPL)
+						(array)  $data // the Variables array
+					)
+				]);
+			} //end if else
+		} else {
+			$this->PageViewSetVars([
+				'title' => 'Sample netteLatte Templating',
+				'main' => (string) (new \SmartModExtLib\TplNetteLatte\Templating())->render_file_template(
+					(string) $tpl, // the TPL view (syntax: netteLatte-TPL)
+					(array)  $data // the Variables array
+				)
+			]);
+		} //end if else
+		//--
+		$this->PageViewSetVar('aside', '<div style="background:#333333; color:#ffffff; position:fixed; right:5px; top:10px; padding:3px;">RenderTime:&nbsp;'.Smart::format_number_dec((float)(microtime(true) - (float)$res_time), 7).'&nbsp;s</div>');
 		//--
 
 	} //END FUNCTION

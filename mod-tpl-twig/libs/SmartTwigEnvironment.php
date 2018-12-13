@@ -39,9 +39,9 @@ final class SmartTwigEnvironment extends \Twig_Environment {
 	public function smartSetupCacheDir() {
 		//--
 		if(SMART_FRAMEWORK_ADMIN_AREA === true) {
-			$the_twig_cache_dir = 'tmp/cache/twig-adm';
+			$the_twig_cache_dir = 'tmp/cache/twig#adm';
 		} else {
-			$the_twig_cache_dir = 'tmp/cache/twig-idx';
+			$the_twig_cache_dir = 'tmp/cache/twig#idx';
 		} //end if else
 		if(!\SmartFileSystem::is_type_dir((string)$the_twig_cache_dir)) {
 			if(!\SmartFileSystem::dir_create((string)$the_twig_cache_dir, true)) {

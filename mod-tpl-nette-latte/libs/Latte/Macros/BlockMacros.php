@@ -3,7 +3,10 @@
 /**
  * This file is part of the Latte (https://latte.nette.org)
  * Copyright (c) 2008 David Grudl (https://davidgrudl.com)
+ * (c) 2018 unix-world.org
  */
+
+// contains fixes by unixman
 
 namespace Latte\Macros;
 
@@ -18,8 +21,8 @@ use Latte\Runtime\SnippetDriver;
 /**
  * Block macros.
  */
-class BlockMacros extends MacroSet
-{
+class BlockMacros extends MacroSet {
+
 	/** @var array */
 	private $namedBlocks = [];
 
@@ -33,8 +36,7 @@ class BlockMacros extends MacroSet
 	private $imports;
 
 
-	public static function install(Latte\Compiler $compiler)
-	{
+	public static function install(Latte\Compiler $compiler) {
 		$me = new static($compiler);
 		$me->addMacro('include', [$me, 'macroInclude']);
 		$me->addMacro('includeblock', [$me, 'macroIncludeBlock']); // deprecated
@@ -47,27 +49,25 @@ class BlockMacros extends MacroSet
 		$me->addMacro('snippetArea', [$me, 'macroBlock'], [$me, 'macroBlockEnd']);
 		$me->addMacro('ifset', [$me, 'macroIfset'], '}');
 		$me->addMacro('elseifset', [$me, 'macroIfset']);
-	}
+	} //END FUNCTION
 
 
 	/**
 	 * Initializes before template parsing.
 	 * @return void
 	 */
-	public function initialize()
-	{
+	public function initialize() {
 		$this->namedBlocks = [];
 		$this->blockTypes = [];
 		$this->extends = null;
 		$this->imports = [];
-	}
+	} //END FUNCTION
 
 
 	/**
 	 * Finishes template parsing.
 	 */
-	public function finalize()
-	{
+	public function finalize() {
 		$compiler = $this->getCompiler();
 		$functions = [];
 		foreach ($this->namedBlocks as $name => $code) {
@@ -77,16 +77,14 @@ class BlockMacros extends MacroSet
 				'$_args'
 			);
 		}
-
 		if ($this->namedBlocks) {
 			$compiler->addProperty('blocks', $functions);
 			$compiler->addProperty('blockTypes', $this->blockTypes);
 		}
-
 		return [
 			($this->extends === null ? '' : '$this->parentName = ' . $this->extends . ';') . implode($this->imports),
 		];
-	}
+	} //END FUNCTION
 
 
 	/********************* macros ****************d*g**/
@@ -95,8 +93,7 @@ class BlockMacros extends MacroSet
 	/**
 	 * {include block}
 	 */
-	public function macroInclude(MacroNode $node, PhpWriter $writer)
-	{
+	public function macroInclude(MacroNode $node, PhpWriter $writer) {
 		$node->replaced = false;
 		$destination = $node->tokenizer->fetchWord(); // destination [,] [params]
 		if (!preg_match('~#|[\w-]+\z~A', $destination)) {
@@ -134,15 +131,14 @@ class BlockMacros extends MacroSet
 				: ($noEscape || $parent ? '' : ', ' . var_export(implode($node->context), true)))
 			. ');'
 		);
-	}
+	} //END FUNCTION
 
 
 	/**
 	 * {includeblock "file"}
 	 * @deprecated
 	 */
-	public function macroIncludeBlock(MacroNode $node, PhpWriter $writer)
-	{
+	public function macroIncludeBlock(MacroNode $node, PhpWriter $writer) {
 		//trigger_error('Macro {includeblock} is deprecated, use similar macro {import}.', E_USER_DEPRECATED);
 		$node->replaced = false;
 		if ($node->modifiers) {
@@ -152,14 +148,13 @@ class BlockMacros extends MacroSet
 			'ob_start(function () {}); $this->createTemplate(%node.word, %node.array? + get_defined_vars(), "includeblock")->renderToContentType(%var); echo rtrim(ob_get_clean());',
 			implode($node->context)
 		);
-	}
+	} //END FUNCTION
 
 
 	/**
 	 * {import "file"}
 	 */
-	public function macroImport(MacroNode $node, PhpWriter $writer)
-	{
+	public function macroImport(MacroNode $node, PhpWriter $writer) {
 		if ($node->modifiers) {
 			throw new CompileException('Modifiers are not allowed in ' . $node->getNotation());
 		}
@@ -171,14 +166,13 @@ class BlockMacros extends MacroSet
 		} else {
 			return $code;
 		}
-	}
+	} //END FUNCTION
 
 
 	/**
 	 * {extends none | $var | "file"}
 	 */
-	public function macroExtends(MacroNode $node, PhpWriter $writer)
-	{
+	public function macroExtends(MacroNode $node, PhpWriter $writer) {
 		$notation = $node->getNotation();
 		if ($node->modifiers) {
 			throw new CompileException("Modifiers are not allowed in $notation");
@@ -196,7 +190,7 @@ class BlockMacros extends MacroSet
 		if (!$this->getCompiler()->isInHead()) {
 			trigger_error("$notation must be placed in template head.", E_USER_WARNING);
 		}
-	}
+	} //END FUNCTION
 
 
 	/**
@@ -205,8 +199,7 @@ class BlockMacros extends MacroSet
 	 * {snippetArea [name]}
 	 * {define name}
 	 */
-	public function macroBlock(MacroNode $node, PhpWriter $writer)
-	{
+	public function macroBlock(MacroNode $node, PhpWriter $writer) {
 		$name = $node->tokenizer->fetchWord();
 
 		if ($node->name === 'block' && $name === false) { // anonymous block
@@ -337,7 +330,7 @@ class BlockMacros extends MacroSet
 			$this->checkExtraArgs($node);
 			return $writer->write($extendsCheck . $include, $name);
 		}
-	}
+	} //END FUNCTION
 
 
 	/**
@@ -346,8 +339,7 @@ class BlockMacros extends MacroSet
 	 * {/snippetArea}
 	 * {/define}
 	 */
-	public function macroBlockEnd(MacroNode $node, PhpWriter $writer)
-	{
+	public function macroBlockEnd(MacroNode $node, PhpWriter $writer) {
 		if (isset($node->data->name)) { // block, snippet, define
 			if ($asInner = $node->name === 'snippet' && $node->prefix === MacroNode::PREFIX_NONE) {
 				$node->content = $node->innerContent;
@@ -389,15 +381,14 @@ class BlockMacros extends MacroSet
 			$node->modifiers .= '|escape';
 			return $writer->write('$_fi = new LR\FilterInfo(%var); echo %modifyContent(ob_get_clean());', $node->context[0]);
 		}
-	}
+	} //END FUNCTION
 
 
 	/**
 	 * {ifset block}
 	 * {elseifset block}
 	 */
-	public function macroIfset(MacroNode $node, PhpWriter $writer)
-	{
+	public function macroIfset(MacroNode $node, PhpWriter $writer) {
 		if ($node->modifiers) {
 			throw new CompileException('Modifiers are not allowed in ' . $node->getNotation());
 		}
@@ -412,17 +403,22 @@ class BlockMacros extends MacroSet
 		}
 		return ($node->name === 'elseifset' ? '} else' : '')
 			. 'if (isset(' . implode(', ', $list) . ')) {';
-	}
+	} //END FUNCTION
 
 
-	private function generateMethodName($blockName)
-	{
+	private function generateMethodName($blockName) {
 		$clean = trim(preg_replace('#\W+#', '_', $blockName), '_');
 		$name = 'block' . ucfirst($clean);
 		$methods = array_keys($this->getCompiler()->getMethods());
 		if (!$clean || in_array(strtolower($name), array_map('strtolower', $methods), true)) {
-			$name .= '_' . substr(md5($blockName), 0, 5);
+		//	$name .= '_' . substr(md5($blockName), 0, 5);
+			$name .= '_'.sha1($blockName); // enhanced by unixman
 		}
 		return $name;
-	}
-}
+	} //END FUNCTION
+
+
+} //END CLASS
+
+
+// end of php code

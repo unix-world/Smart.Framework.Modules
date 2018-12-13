@@ -7,7 +7,7 @@
 		<br>
 		<f:if condition="{version} != ''"><span style="color:#778899;"><b><i>TYPO3-Fluid</i></b> <i>Templating</i> Engine v.{version}</span></f:if>
 	</div>
-	<f:format.raw>{hello}</f:format.raw>
+	<f:format.raw>{hello__world}</f:format.raw>
 	<div align="center">
 		<a href="?/page/tpl-typo3-fluid.test" class="ux-button ux-button-small ux-button-info"><i class="fa fa-refresh"></i> &nbsp; Reload TPL Render Test</a>
 		&nbsp;&nbsp;
@@ -16,7 +16,7 @@
 		<a href="?/page/tpl-typo3-fluid.test/op/viewpartialsource" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="fa fa-code"></i> &nbsp; View Sub-TPL Source</a>
 	</div>
 	<br>
-	<f:render partial="@sample-partial.t3fluid.inc.htm" arguments="{tbl: tbl}" />
+	<f:render partial="sample-partial.t3fluid.inc.htm" arguments="{tbl: tbl}" />
 	<ul>
 		<f:for each="{navigation}" as="item" key="key">
 			<li><a href="{item.href}">{item.caption}</a></li>

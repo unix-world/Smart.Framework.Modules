@@ -37,7 +37,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 		//--
 		$tpl = (string) $this->ControllerGetParam('module-view-path').'sample.t3fluid.htm';
-		$ptpl = (string) $this->ControllerGetParam('module-view-path').'@sample-partial.t3fluid.inc.htm';
+		$ptpl = (string) $this->ControllerGetParam('module-view-path').'sample-partial.t3fluid.inc.htm';
 		//--
 
 		//--
@@ -56,11 +56,10 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 		//--
 		// !!! all main templates must start / end with the section ID: Typo3FluidTpl
-		// !!! all partials to be included in main templates must start with @ to avoid camel case (enforced by typo3 on file system ; ex: @sample-partial.t3fluid.inc.htm) !!!
 		//--
-		$data = [
-			'version' 	=> (string) \SmartModExtLib\TplTypo3Fluid\Templating::getVersion(),
-			'hello' 	=> '<h1>Demo: Typo3Fluid Templating as module for Smart.Framework</h1>',
+		$data = [ // variables are case sensitive in Typo3Fluid ; array keys that contain - and . will be replaced recursive by _ to make compliant with PHP variable names
+			'version' => (string) \SmartModExtLib\TplTypo3Fluid\Templating::getVersion(),
+			'hello-.world' => '<h1>Demo: Typo3Fluid Templating as module for Smart.Framework</h1>',
 			'navigation' => [
 				[ 'href' => '#link1', 'caption' => 'Sample Link <1>' ],
 				[ 'href' => '#link2', 'caption' => 'Sample Link <2>' ],
@@ -71,21 +70,43 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				['a1' => '2.1', 'a2' => '2.2', 'a3' => '2.3'],
 				['a1' => '3.1', 'a2' => '3.2', 'a3' => '3.3']
 			],
-			'a' 		=> 'Test-1',
-			'b' 		=> 'Test-2'
+			'a' => 'Test-1',
+			'b' => 'Test-2'
 		];
 		//--
 
 		//--
 		$res_time = (float) microtime(true);
-		$this->PageViewSetVars([
-			'title' => 'Sample Typo3Fluid Templating',
-			'main' => (string) (new \SmartModExtLib\TplTypo3Fluid\Templating())->render_file_template(
-				(string) $tpl,
-				(array)  $data
-			),
-			'aside' => '<div style="background:#333333; color:#ffffff; position:fixed; right:5px; top:10px; padding:3px;">RenderTime:&nbsp;'.Smart::format_number_dec((float)(microtime(true) - (float)$res_time), 7).'&nbsp;s</div>'
-		]);
+		//--
+		if(class_exists('SmartTypo3FluidTemplating') AND (rand(0,1))) { // must enable require_once('modules/smart-extra-libs/autoload.php'); in modules/app/app-custom-bootstrap.inc.php
+			if(class_exists('SmartTemplating') AND (rand(0,1))) {
+				$this->PageViewSetVars([
+					'title' => 'Sample Typo3Fluid Templating (static, autodetect file extension)',
+					'main' => (string) SmartTemplating::render_file_template(
+						(string) $tpl, // the TPL view (syntax: Typo3Fluid-TPL ; must contain '.t3fluid.' in the file name)
+						(array)  $data // the Variables array
+					)
+				]);
+			} else {
+				$this->PageViewSetVars([
+					'title' => 'Sample Typo3Fluid Templating (static)',
+					'main' => (string) SmartTypo3FluidTemplating::render_file_template(
+						(string) $tpl, // the TPL view (syntax: Typo3Fluid-TPL)
+						(array)  $data // the Variables array
+					)
+				]);
+			} //end if else
+		} else {
+			$this->PageViewSetVars([
+				'title' => 'Sample Typo3Fluid Templating',
+				'main' => (string) (new \SmartModExtLib\TplTypo3Fluid\Templating())->render_file_template(
+					(string) $tpl, // the TPL view (syntax: Typo3Fluid-TPL)
+					(array)  $data // the Variables array
+				)
+			]);
+		} //end if else
+		//--
+		$this->PageViewSetVar('aside', '<div style="background:#333333; color:#ffffff; position:fixed; right:5px; top:10px; padding:3px;">RenderTime:&nbsp;'.Smart::format_number_dec((float)(microtime(true) - (float)$res_time), 7).'&nbsp;s</div>');
 		//--
 
 	} //END FUNCTION

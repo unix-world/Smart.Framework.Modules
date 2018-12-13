@@ -1,6 +1,8 @@
 <?php
 namespace TYPO3Fluid\Fluid\View;
 
+// contains fixes by unixman
+
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
@@ -256,7 +258,8 @@ class TemplatePaths
         }
         $format = $format ?: $this->getFormat();
         $controller = str_replace('\\', '/', $controller);
-        $action = ucfirst($action);
+    //  $action = ucfirst($action);
+        $action = strtolower($action); // fix by unixman
         $identifier = $controller . '/' . $action . '.' . $format;
         if (!array_key_exists($identifier, $this->resolvedFiles['templates'])) {
             $templateRootPaths = $this->getTemplateRootPaths();
@@ -559,6 +562,10 @@ class TemplatePaths
      */
     public function getTemplateIdentifier($controller = 'Default', $action = 'Default')
     {
+        //-- fix by unixman
+        $controller = strtolower((string)$controller);
+        $action = strtolower((string)$action);
+        //-- #fix
         if ($this->templateSource !== null) {
             return 'source_' . sha1($this->templateSource) . '_' . $controller . '_' . $action . '_' . $this->getFormat();
         }
@@ -602,7 +609,8 @@ class TemplatePaths
                     $controller,
                     $action,
                     $format,
-                    $templateReference === null ? $controller . '/' . ucfirst($action) . '.' . $format : $templateReference,
+             //     $templateReference === null ? $controller . '/' . ucfirst($action) . '.' . $format : $templateReference,
+                    $templateReference === null ? $controller . '/' . strtolower($action) . '.' . $format : $templateReference, // fix by unixman
                     count($this->getTemplateRootPaths()) ? 'The following paths were checked: ' . implode(', ', $this->getTemplateRootPaths()) : 'No paths configured.'
                 ),
                 1257246929
@@ -643,7 +651,8 @@ class TemplatePaths
         if ($this->layoutPathAndFilename !== null) {
             return $this->layoutPathAndFilename;
         }
-        $layoutName = ucfirst($layoutName);
+   //   $layoutName = ucfirst($layoutName);
+        $layoutName = strtolower($layoutName); // fix by unixman
         $layoutKey = $layoutName . '.' . $this->getFormat();
         if (!array_key_exists($layoutKey, $this->resolvedFiles[self::NAME_LAYOUTS])) {
             $paths = $this->getLayoutRootPaths();
@@ -695,7 +704,8 @@ class TemplatePaths
         $partialKey = $partialName . '.' . $this->getFormat();
         if (!array_key_exists($partialKey, $this->resolvedFiles[self::NAME_PARTIALS])) {
             $paths = $this->getPartialRootPaths();
-            $partialName = ucfirst($partialName);
+     //     $partialName = ucfirst($partialName);
+            $partialName = strtolower($partialName); // fix by unixman :: disable make paths with first upper character
             $this->resolvedFiles[self::NAME_PARTIALS][$partialKey] = $this->resolveFileInPaths($paths, $partialName);
         }
         return $this->resolvedFiles[self::NAME_PARTIALS][$partialKey];
