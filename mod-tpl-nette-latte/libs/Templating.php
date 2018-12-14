@@ -43,7 +43,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: NetteLatte
- * @version 	v.181213
+ * @version 	v.181214
  * @package 	Templating:Engines
  *
  */
@@ -118,7 +118,7 @@ final class Templating {
 			return;
 		} //end if
 		//--
-		$arr_vars['Tpl_Dir__'] = (string) $dir_of_tpl;
+		$arr_vars['Tpl_Dir__'] = (string) $dir_of_tpl; // this is the only tpl variable that will be case sensitive
 		//--
 		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
 			throw new \Exception('NetteLatte Templating / Render File / The file name / path contains invalid characters: '.$file);

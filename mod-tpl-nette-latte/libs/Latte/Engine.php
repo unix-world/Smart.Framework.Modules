@@ -18,7 +18,7 @@ final class Engine {
 
 	use Strict;
 
-	const VERSION = '2.4.8-r.181213.sfm';
+	const VERSION = '2.4.8-r.181214.sfm';
 
 	/** Content types */
 	const CONTENT_HTML = 'html',
@@ -207,9 +207,9 @@ final class Engine {
 		//	if (file_put_contents("$file.tmp", $code) !== strlen($code) || !rename("$file.tmp", $file)) {
 			//--
 			$tmpname = (string) $file.'.tmp-'.(float)microtime(true);
-		//	if (file_put_contents($tmpname, $code, LOCK_EX) !== strlen($code) || !rename($tmpname, $file)) { // fix by unxixman
-			\SmartFileSystem::delete($file);
-			if(!\SmartFileSystem::write($tmpname, $code) || !\SmartFileSystem::rename($tmpname, $file)) { // fix by unxixman
+		//	if(file_put_contents($tmpname, $code, LOCK_EX) !== strlen($code) || !rename($tmpname, $file)) { // fix by unixman
+		//	\SmartFileSystem::delete($file); // no more necessary as the rename below will use atomic rewrite destination by set rewrite destination to TRUE
+			if(!\SmartFileSystem::write($tmpname, $code) || !\SmartFileSystem::rename($tmpname, $file, true)) { // fix by unixman
 				//--
 		//		@unlink("$file.tmp"); // @ - file may not exist
 		//		@unlink((string)$tmpname);

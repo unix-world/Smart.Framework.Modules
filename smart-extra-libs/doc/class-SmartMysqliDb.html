@@ -2,16 +2,93 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Class SmartMysqliDb | Smart.Framework Documentation :: 2018-12-10 09:11</title>
+	<title>Class SmartMysqliDb | Smart.Framework Documentation :: 2018-12-14 16:23</title>
+	<link rel="stylesheet" href="resources/style.css?2361662816">
+	<script src="resources/combined.js?4174473549"></script>
+	<script src="elementlist.js?1702563815"></script>
 </head>
 
 <body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Packages</h3>
+			<ul>
+				<li><a href="package-Components.Misc.html">Components:Misc</a>
+						</li>
+				<li class="active"><a href="package-Database.MySQL.html">Database:MySQL</a>
+						</li>
+				<li><a href="package-Database.PostgreSQL.html">Database:PostgreSQL</a>
+						</li>
+				<li><a href="package-Database.Solr.html">Database:Solr</a>
+						</li>
+				<li><a href="package-LanguageDetection.html">LanguageDetection</a>
+						</li>
+				<li><a href="package-Network.html">Network</a>
+						</li>
+				<li><a href="package-Templating.Engines.html">Templating:Engines</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-SmartMysqliDb.html">SmartMysqliDb</a></li>
+				<li><a href="class-SmartMysqliExtDb.html">SmartMysqliExtDb</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text">
+		<input type="submit" value="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="package-Database.MySQL.html" title="Summary of Database:MySQL"><span>Package</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
 <div id="content" class="class">
 	<h1>Class SmartMysqliDb</h1>
 
 
 	<div class="description">
-
+	
 <p>Class: SmartMysqliDb - provides a Static MariaDB / MySQLDB Server Client that
 can be used just with the DEFAULT connection from configs.</p>
 
@@ -90,8 +167,8 @@ class="php-num">99</span>]);
 
 	<div class="info">
 		<b>Final</b><br>
-
-
+		
+		
 		<b>Package:</b> <a href="package-Database.MySQL.html">Database:MySQL</a><br>
 
 				<b>Version:</b>
@@ -101,7 +178,7 @@ class="php-num">99</span>]);
 SmartComponents<br>
 				<b>Usage:</b>
 				static object: Class::method() - This class provides only STATIC methods<br>
-		<b>Located at</b> smart-extra-libs/lib_db_mysqli.php<br>
+		<b>Located at</b> lib_db_mysqli.php<br>
 	</div>
 
 
@@ -112,8 +189,8 @@ SmartComponents<br>
 
 		<td class="attributes"><code>
 			 public static
-
-
+			
+			
 			</code>
 		</td>
 
@@ -122,7 +199,7 @@ SmartComponents<br>
 		<code>default_connect( )</code>
 
 		<div class="description short">
-
+			
 <p>Pre-connects manually to the Default MariaDB / MySQLDB Server. This function
 is OPTIONAL as the connection on the DEFAULT MariaDB / MySQLDB Server will be
 done automatically when needed. Anyway, if there is a need to create an explicit
@@ -132,7 +209,7 @@ used by example in App Bootstrap.</p>
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>Pre-connects manually to the Default MariaDB / MySQLDB Server. This function
 is OPTIONAL as the connection on the DEFAULT MariaDB / MySQLDB Server will be
 done automatically when needed. Anyway, if there is a need to create an explicit
@@ -154,7 +231,7 @@ used by example in App Bootstrap.</p>
 		<td class="attributes"><code>
 			 public static
 			STRING
-
+			
 			</code>
 		</td>
 
@@ -163,7 +240,7 @@ used by example in App Bootstrap.</p>
 		<code>escape_str( <span>STRING <var>$y_string</var></span>, <span>RESOURCE <var>$y_connection</var> = <span class="php-quote">'DEFAULT'</span></span> )</code>
 
 		<div class="description short">
-
+			
 <p>Escape a string to be compliant and Safe (against SQL Injection) with MySQL
 standards. This function WILL NOT ADD the SINGLE QUOTES (') arround the string,
 but just will just escape it to be safe.</p>
@@ -171,7 +248,7 @@ but just will just escape it to be safe.</p>
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>Escape a string to be compliant and Safe (against SQL Injection) with MySQL
 standards. This function WILL NOT ADD the SINGLE QUOTES (') arround the string,
 but just will just escape it to be safe.</p>
@@ -202,7 +279,7 @@ but just will just escape it to be safe.</p>
 		<td class="attributes"><code>
 			 public static
 			0/1
-
+			
 			</code>
 		</td>
 
@@ -211,13 +288,13 @@ but just will just escape it to be safe.</p>
 		<code>check_if_table_exists( <span>STRING <var>$y_table</var></span>, <span>RESOURCE <var>$y_connection</var> = <span class="php-quote">'DEFAULT'</span></span> )</code>
 
 		<div class="description short">
-
+			
 <p>Check if a Table Exists in the current Database.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>Check if a Table Exists in the current Database.</p>
 
 
@@ -246,7 +323,7 @@ but just will just escape it to be safe.</p>
 		<td class="attributes"><code>
 			 public static
 			INTEGER
-
+			
 			</code>
 		</td>
 
@@ -255,14 +332,14 @@ but just will just escape it to be safe.</p>
 		<code>count_data( <span>STRING <var>$queryval</var></span>, <span>STRING <var>$params_or_title</var> = <span class="php-quote">''</span></span>, <span>RESOURCE <var>$y_connection</var> = <span class="php-quote">'DEFAULT'</span></span> )</code>
 
 		<div class="description short">
-
+			
 <p>MySQL Query :: Count This function is intended to be used for count type
 queries: SELECT COUNT().</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>MySQL Query :: Count This function is intended to be used for count type
 queries: SELECT COUNT().</p>
 
@@ -294,7 +371,7 @@ queries: SELECT COUNT().</p>
 		<td class="attributes"><code>
 			 public static
 			ARRAY
-
+			
 			</code>
 		</td>
 
@@ -303,14 +380,14 @@ queries: SELECT COUNT().</p>
 		<code>read_data( <span>STRING <var>$queryval</var></span>, <span>STRING <var>$params_or_title</var> = <span class="php-quote">''</span></span>, <span>RESOURCE <var>$y_connection</var> = <span class="php-quote">'DEFAULT'</span></span> )</code>
 
 		<div class="description short">
-
+			
 <p>MySQL Query :: Read (Non-Associative) one or multiple rows. This function is
 intended to be used for read type queries: SELECT.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>MySQL Query :: Read (Non-Associative) one or multiple rows. This function is
 intended to be used for read type queries: SELECT.</p>
 
@@ -344,7 +421,7 @@ intended to be used for read type queries: SELECT.</p>
 		<td class="attributes"><code>
 			 public static
 			ARRAY
-
+			
 			</code>
 		</td>
 
@@ -353,14 +430,14 @@ intended to be used for read type queries: SELECT.</p>
 		<code>read_adata( <span>STRING <var>$queryval</var></span>, <span>STRING <var>$params_or_title</var> = <span class="php-quote">''</span></span>, <span>RESOURCE <var>$y_connection</var> = <span class="php-quote">'DEFAULT'</span></span> )</code>
 
 		<div class="description short">
-
+			
 <p>MySQL Query :: Read (Associative) one or multiple rows. This function is
 intended to be used for read type queries: SELECT.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>MySQL Query :: Read (Associative) one or multiple rows. This function is
 intended to be used for read type queries: SELECT.</p>
 
@@ -394,7 +471,7 @@ array('column1', 'column2', ... 'column-n'))<br>
 		<td class="attributes"><code>
 			 public static
 			ARRAY
-
+			
 			</code>
 		</td>
 
@@ -403,7 +480,7 @@ array('column1', 'column2', ... 'column-n'))<br>
 		<code>read_asdata( <span>STRING <var>$queryval</var></span>, <span>STRING <var>$params_or_title</var> = <span class="php-quote">''</span></span>, <span>RESOURCE <var>$y_connection</var> = <span class="php-quote">'DEFAULT'</span></span> )</code>
 
 		<div class="description short">
-
+			
 <p>MySQL Query :: Read (Associative) - Single Row (just for 1 row, to easy the
 use of data from queries). !!! This will raise an error if more than one row(s)
 are returned !!! This function does not support multiple rows because the
@@ -414,7 +491,7 @@ be used for read type queries: SELECT.</p>
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>MySQL Query :: Read (Associative) - Single Row (just for 1 row, to easy the
 use of data from queries). !!! This will raise an error if more than one row(s)
 are returned !!! This function does not support multiple rows because the
@@ -457,7 +534,7 @@ function.<br>
 		<td class="attributes"><code>
 			 public static
 			ARRAY
-
+			
 			</code>
 		</td>
 
@@ -466,7 +543,7 @@ function.<br>
 		<code>write_data( <span>STRING <var>$queryval</var></span>, <span>STRING <var>$params_or_title</var> = <span class="php-quote">''</span></span>, <span>RESOURCE <var>$y_connection</var> = <span class="php-quote">'DEFAULT'</span></span> )</code>
 
 		<div class="description short">
-
+			
 <p>MySQL Query :: Write. This function is intended to be used for write type
 queries: BEGIN (TRANSACTION) ; COMMIT ; ROLLBACK ; INSERT ; INSERT IGNORE ;
 REPLACE ; UPDATE ; CREATE SCHEMAS ; CALLING STORED PROCEDURES ...</p>
@@ -474,7 +551,7 @@ REPLACE ; UPDATE ; CREATE SCHEMAS ; CALLING STORED PROCEDURES ...</p>
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>MySQL Query :: Write. This function is intended to be used for write type
 queries: BEGIN (TRANSACTION) ; COMMIT ; ROLLBACK ; INSERT ; INSERT IGNORE ;
 REPLACE ; UPDATE ; CREATE SCHEMAS ; CALLING STORED PROCEDURES ...</p>
@@ -507,7 +584,7 @@ REPLACE ; UPDATE ; CREATE SCHEMAS ; CALLING STORED PROCEDURES ...</p>
 		<td class="attributes"><code>
 			 public static
 			STRING
-
+			
 			</code>
 		</td>
 
@@ -516,7 +593,7 @@ REPLACE ; UPDATE ; CREATE SCHEMAS ; CALLING STORED PROCEDURES ...</p>
 		<code>prepare_statement( <span>ARRAY <var>$arrdata</var></span>, <span>ENUM <var>$mode</var></span>, <span>RESOURCE <var>$y_connection</var> = <span class="php-quote">'DEFAULT'</span></span> )</code>
 
 		<div class="description short">
-
+			
 <p>Create Escaped Write SQL Statements from Data - to be used with MySQL for:
 INSERT ; UPDATE ; IN-SELECT Can be used with: write_data() to build INSERT /
 UPDATE queries from an associative array or can be used with read_data(),
@@ -526,7 +603,7 @@ non-associative array</p>
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>Create Escaped Write SQL Statements from Data - to be used with MySQL for:
 INSERT ; UPDATE ; IN-SELECT Can be used with: write_data() to build INSERT /
 UPDATE queries from an associative array or can be used with read_data(),
@@ -563,7 +640,7 @@ $arr[] = 'other-value', ...</dd>
 		<td class="attributes"><code>
 			 public static
 			STRING
-
+			
 			</code>
 		</td>
 
@@ -572,7 +649,7 @@ $arr[] = 'other-value', ...</dd>
 		<code>prepare_param_query( <span>STRING <var>$query</var></span>, <span>ARRAY <var>$replacements_arr</var></span>, <span>RESOURCE <var>$y_connection</var> = <span class="php-quote">'DEFAULT'</span></span> )</code>
 
 		<div class="description short">
-
+			
 <p>Create Escaped SQL Statements from Parameters and Array of Data by replacing
 ? (question marks) This can be used for a full SQL statement or just for a part.
 The statement must not contain any Single Quotes to prevent SQL injections which
@@ -581,7 +658,7 @@ are unpredictable if mixing several statements at once !</p>
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>Create Escaped SQL Statements from Parameters and Array of Data by replacing
 ? (question marks) This can be used for a full SQL statement or just for a part.
 The statement must not contain any Single Quotes to prevent SQL injections which
@@ -615,7 +692,7 @@ are unpredictable if mixing several statements at once !</p>
 		<td class="attributes"><code>
 			 public static
 			STRING
-
+			
 			</code>
 		</td>
 
@@ -624,13 +701,13 @@ are unpredictable if mixing several statements at once !</p>
 		<code>new_safe_id( <span>ENUM <var>$y_mode</var></span>, <span>STRING <var>$y_id_field</var></span>, <span>STRING <var>$y_table_name</var></span>, <span>RESOURCE <var>$y_connection</var> = <span class="php-quote">'DEFAULT'</span></span> )</code>
 
 		<div class="description short">
-
+			
 <p>Get A UNIQUE (SAFE) ID for DB Tables</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>Get A UNIQUE (SAFE) ID for DB Tables</p>
 
 
@@ -662,8 +739,8 @@ are unpredictable if mixing several statements at once !</p>
 
 		<td class="attributes"><code>
 			 public static
-
-
+			
+			
 			</code>
 		</td>
 
@@ -672,10 +749,16 @@ are unpredictable if mixing several statements at once !</p>
 		<code>get_connection_id( <span>mixed <var>$y_connection</var></span> )</code>
 
 		<div class="description short">
-
+			
 		</div>
 
 		<div class="description detailed hidden">
+			
+
+
+
+
+
 
 
 		</div>
@@ -684,10 +767,28 @@ are unpredictable if mixing several statements at once !</p>
 	</table>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </div>
 
 	<div id="footer">
-		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework Documentation :: 2018-12-10 09:11</a>
+		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework Documentation :: 2018-12-14 16:23</a>
 	</div>
+</div>
+</div>
 </body>
 </html>

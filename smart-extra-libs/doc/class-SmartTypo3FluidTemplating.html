@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Class SmartTwigTemplating | Smart.Framework Documentation :: 2018-12-14 16:23</title>
+	<title>Class SmartTypo3FluidTemplating | Smart.Framework Documentation :: 2018-12-14 16:23</title>
 	<link rel="stylesheet" href="resources/style.css?2361662816">
 	<script src="resources/combined.js?4174473549"></script>
 	<script src="elementlist.js?1702563815"></script>
@@ -42,8 +42,8 @@
 			<ul>
 				<li><a href="class-SmartNetteLatteTemplating.html">SmartNetteLatteTemplating</a></li>
 				<li><a href="class-SmartTemplating.html">SmartTemplating</a></li>
-				<li class="active"><a href="class-SmartTwigTemplating.html">SmartTwigTemplating</a></li>
-				<li><a href="class-SmartTypo3FluidTemplating.html">SmartTypo3FluidTemplating</a></li>
+				<li><a href="class-SmartTwigTemplating.html">SmartTwigTemplating</a></li>
+				<li class="active"><a href="class-SmartTypo3FluidTemplating.html">SmartTypo3FluidTemplating</a></li>
 			</ul>
 
 
@@ -86,12 +86,12 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class SmartTwigTemplating</h1>
+	<h1>Class SmartTypo3FluidTemplating</h1>
 
 
 	<div class="description">
 	
-<p>Provides an easy to use connector for Twig Templating Engine inside the
+<p>Provides an easy to use connector for Typo3Fluid Templating Engine inside the
 Smart.Framework.</p>
 
 <pre>
@@ -102,9 +102,9 @@ class="php-comment">// Sample: use this code in a controller of Smart.Framework 
 class="php-var">$this</span>-&gt;PageViewSetVar(
     <span
 class="php-quote">'main'</span>,
-    SmartTwigTemplating::render_file_template(
+    SmartTypo3FluidTemplating::render_file_template(
         <span
-class="php-quote">'modules/my-module-name/views/my-view.twig.htm'</span>,
+class="php-quote">'modules/my-module-name/views/my-view.t3fluid.htm'</span>,
         [
             <span
 class="php-quote">'someVar'</span> =&gt; <span
@@ -138,7 +138,7 @@ class="php-quote">'Y-m-d H:i:s'</span>)
 				<b>Version:</b>
 				v.181213<br>
 				<b>Depends:</b>
-				classes: Twig, \SmartModExtLib\TplTwig\Templating<br>
+				classes: Latte, \SmartModExtLib\TplTypo3Fluid\Templating<br>
 				<b>Usage:</b>
 				static object: Class::method() - This class provides only STATIC methods<br>
 		<b>Located at</b> lib_templating_ext.php<br>

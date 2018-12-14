@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules / Cloud v.181206 #
+# Smart.Framework.Modules / Cloud v.181214 #
 
 // v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
 

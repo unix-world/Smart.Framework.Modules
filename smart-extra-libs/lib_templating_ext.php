@@ -17,7 +17,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 /**
  * Provides an easy to use connector for All Templating Engines available inside the Smart.Framework at once.
- * Depending upon the file name oto render will choose like this:
+ * Depending upon the file name to render will choose like this:
  * some-file.mtpl.htm 		: SmartMarkersTemplating 	(Markers-TPL syntax)
  * some-file.latte.htm 		: SmartNetteLatteTemplating (NetteLatte-TPL syntax)
  * some-file.twig.htm 		: SmartTwigTemplating 		(Twig-TPL syntax)

@@ -79,7 +79,7 @@ jQuery(function() {
 	var ctpl = String(decodeURIComponent(tpl));
 
 	function renderAsyncCell(cellNode, row, dataContext, colDef) {
-		var cell = SmartJS_CoreUtils.render_markers_template(ctpl, {
+		var cell = SmartJS_CoreUtils.renderMarkersTpl(ctpl, {
 			'UUID': String(dataContext.id),
 			'NAME': String(dataContext.name),
 			'ORGANIZATION': String(dataContext.organization),

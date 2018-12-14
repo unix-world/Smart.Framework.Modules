@@ -2,16 +2,92 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Class SmartLangIdClient | Smart.Framework Documentation :: 2018-12-10 09:11</title>
+	<title>Class SmartLangIdClient | Smart.Framework Documentation :: 2018-12-14 16:23</title>
+	<link rel="stylesheet" href="resources/style.css?2361662816">
+	<script src="resources/combined.js?4174473549"></script>
+	<script src="elementlist.js?1702563815"></script>
 </head>
 
 <body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Packages</h3>
+			<ul>
+				<li><a href="package-Components.Misc.html">Components:Misc</a>
+						</li>
+				<li><a href="package-Database.MySQL.html">Database:MySQL</a>
+						</li>
+				<li><a href="package-Database.PostgreSQL.html">Database:PostgreSQL</a>
+						</li>
+				<li><a href="package-Database.Solr.html">Database:Solr</a>
+						</li>
+				<li class="active"><a href="package-LanguageDetection.html">LanguageDetection</a>
+						</li>
+				<li><a href="package-Network.html">Network</a>
+						</li>
+				<li><a href="package-Templating.Engines.html">Templating:Engines</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-SmartLangIdClient.html">SmartLangIdClient</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text">
+		<input type="submit" value="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="package-LanguageDetection.html" title="Summary of LanguageDetection"><span>Package</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
 <div id="content" class="class">
 	<h1>Class SmartLangIdClient</h1>
 
 
 	<div class="description">
-
+	
 <p>Class: SmartLangIdClient - provides a LangId.Py Service Client that can be
 used to validate Language / GetLanguage Confidence for a text.</p>
 
@@ -51,8 +127,8 @@ class="php-quote">'Your text to check goes here ...'</span>);
 
 	<div class="info">
 		<b>Final</b><br>
-
-
+		
+		
 		<b>Package:</b> <a href="package-LanguageDetection.html">LanguageDetection</a><br>
 
 				<b>Version:</b>
@@ -65,7 +141,7 @@ service.<br>
 				<b>Usage:</b>
 				dynamic object: (new Class())-&gt;method() - This class provides only DYNAMIC
 methods<br>
-		<b>Located at</b> smart-extra-libs/lib_langid_cli.php<br>
+		<b>Located at</b> lib_langid_cli.php<br>
 	</div>
 
 
@@ -75,9 +151,9 @@ methods<br>
 	<tr data-order="__construct" id="___construct">
 
 		<td class="attributes"><code>
-			 public
-
-
+			 public 
+			
+			
 			</code>
 		</td>
 
@@ -86,14 +162,14 @@ methods<br>
 		<code>__construct( <span>ARRAY <var>$cfg</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 		<div class="description short">
-
+			
 <p>Class Constructor - will initiate also the LangId.Py Client with the DEFAULT
 or CUSTOM connection.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>Class Constructor - will initiate also the LangId.Py Client with the DEFAULT
 or CUSTOM connection.</p>
 
@@ -116,9 +192,9 @@ will use the DEFAULT config from config.php: $configs['langid'].</dd>
 	<tr data-order="getLanguageConfidence" id="_getLanguageConfidence">
 
 		<td class="attributes"><code>
-			 public
+			 public 
 			ARRAY
-
+			
 			</code>
 		</td>
 
@@ -127,7 +203,7 @@ will use the DEFAULT config from config.php: $configs['langid'].</dd>
 		<code>getLanguageConfidence( <span>STRING <var>$the_text</var></span> )</code>
 
 		<div class="description short">
-
+			
 <p>Checks and Get the Language Confidence information for the best detected
 Language (from the available list) for a given text using the LangId.Py Service.
 If LangId.Py is not set in configuration as it may not be available will return
@@ -136,7 +212,7 @@ a negative confidence score and the default language: en.</p>
 		</div>
 
 		<div class="description detailed hidden">
-
+			
 <p>Checks and Get the Language Confidence information for the best detected
 Language (from the available list) for a given text using the LangId.Py Service.
 If LangId.Py is not set in configuration as it may not be available will return
@@ -156,15 +232,37 @@ a negative confidence score and the default language: en.</p>
 confidence-score, error-message ]<br>
 				</div>
 
+
+
+
 		</div>
 		</div></td>
 	</tr>
 	</table>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </div>
 
 	<div id="footer">
-		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework Documentation :: 2018-12-10 09:11</a>
+		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework Documentation :: 2018-12-14 16:23</a>
 	</div>
+</div>
+</div>
 </body>
 </html>
