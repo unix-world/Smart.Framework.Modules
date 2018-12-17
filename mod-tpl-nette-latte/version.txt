@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules / TplNetteLatte github#v.2.4.8 (r.181214) #
+# Smart.Framework.Modules / TplNetteLatte github#v.2.4.8 (r.181217) #
 
 // v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
 

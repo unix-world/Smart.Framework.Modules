@@ -43,7 +43,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: SmartMarkersTemplating, SmartNetteLatteTemplating, SmartTwigTemplating, SmartTypo3FluidTemplating
- * @version 	v.181213
+ * @version 	v.181217
  * @package 	Templating:Engines
  *
  */
@@ -134,7 +134,7 @@ final class SmartTemplating {
  *
  * @access 		PUBLIC
  * @depends 	classes: Latte, \SmartModExtLib\TplNetteLatte\Templating
- * @version 	v.181213
+ * @version 	v.181217
  * @package 	Templating:Engines
  *
  */
@@ -196,7 +196,7 @@ final class SmartNetteLatteTemplating {
  *
  * @access 		PUBLIC
  * @depends 	classes: Twig, \SmartModExtLib\TplTwig\Templating
- * @version 	v.181213
+ * @version 	v.181217
  * @package 	Templating:Engines
  *
  */
@@ -258,7 +258,7 @@ final class SmartTwigTemplating {
  *
  * @access 		PUBLIC
  * @depends 	classes: Latte, \SmartModExtLib\TplTypo3Fluid\Templating
- * @version 	v.181213
+ * @version 	v.181217
  * @package 	Templating:Engines
  *
  */

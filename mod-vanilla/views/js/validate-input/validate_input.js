@@ -17,7 +17,7 @@
 // added support for Integer Numbers
 // added support for Number of Decimals to Place (0..4)
 
-var SmartJS_FieldControl = new function() { // START CLASS :: v.181214
+var SmartJS_FieldControl = new function() { // START CLASS :: v.181217
 
 // :: static
 

@@ -43,7 +43,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: NetteLatte
- * @version 	v.181214
+ * @version 	v.181217
  * @package 	Templating:Engines
  *
  */
@@ -87,8 +87,8 @@ final class Templating {
 		if(!is_array($arr_vars)) {
 			$arr_vars = array();
 		} //end if
-		$arr_vars = (array) \Smart::array_change_key_case_recursive((array)$arr_vars, 'LOWER'); // make all keys lower (recursive) ; allow only lowercase variables in Latte
-		$arr_vars = (array) self::fix_array_keys($arr_vars); // (recursive) replace - and . in array keys with _
+		$arr_vars = (array) array_change_key_case((array)$arr_vars, CASE_LOWER); // make all keys lower (only 1st level, not nested)
+		$arr_vars = (array) self::fix_array_keys($arr_vars, false); // make keys compatible with PHP variable names, LOWER only (only 1st level, not nested)
 		//--
 		if((string)trim((string)$file) == '') {
 			throw new \Exception('NetteLatte Templating / Render File / The file name is Empty');
@@ -154,7 +154,7 @@ final class Templating {
 	} //END FUNCTION
 
 
-	private static function fix_array_keys($y_arr) { // v.191213 :: make array keys compatible with Markers-TPL
+	private static function fix_array_keys($y_arr, $y_allow_upper_camelcase) { // v.191217 :: fix array keys to be compliant with variable names, but only at level 1 ; level 2..n must not be fixed as tkey are accessible in loops
 		//--
 		if(!is_array($y_arr)) { // fix bug if empty array / max nested level
 			return $y_arr; // mixed
@@ -163,10 +163,10 @@ final class Templating {
 		$new_arr = [];
 		//--
 		foreach($y_arr as $key => $val) {
-			$key = (string) rtrim((string)str_replace(['-', '.'], '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; also the markers TPL keys can contain: /^[A-Z0-9_\-\.]+$/ ; thus replace - and . with _ to fix (are not supposed to be allowed here ...)
-			if(((string)$key != '') AND (preg_match('/^[a-zA-Z0-9_]+$/', (string)$key))) {
+			$key = (string) rtrim((string)preg_replace('/[^0-9a-zA-Z_]/', '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; make safe variable name for PHP
+			if(\SmartFrameworkSecurity::ValidateVariableName((string)$key, (bool)$y_allow_upper_camelcase)) {
 				if(is_array($val)) {
-					$new_arr[(string)$key] = self::fix_array_keys((array)$val);
+					$new_arr[(string)$key] = (array) $val; // do not go recursive as = self::fix_array_keys((array)$val);
 				} else {
 					$new_arr[(string)$key] = $val; // mixed
 				} //end if
