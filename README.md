@@ -15,13 +15,15 @@ License: BSD
 	* Workflow Components: another collection of Javascript components and utils
 	* Language Detect: NGrams Language Detection library
 	* Maps Cache: a caching API for Open Map types
-	* Twig Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy it into smart-framework/modules/
-	* TYPO3Flow Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy it into smart-framework/modules/
+	* Nette Latte Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl-nette-latte into smart-framework/modules/
+	* Twig Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl-twig into smart-framework/modules/
+	* TYPO3Flow Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl-typo3-fluid into smart-framework/modules/
 	* Zend DBAL: PDO based connector for: PgSQL, MySQL and SQLite
 	* SVN (manager): a SVN (subversion) web based manager
 	* Cloud (manager): an advanced Cloud Api: WebDAV, CalDAV / WebCal and CardDAV / WebAddressbook
 	* Agile (manager): an agile management API for Smart.Framework
 	* PageBuilder: a content management API for Smart.Framework
+	* MediaGallery: a media gallery api for Smart.Framework
 
 ## Extra Libs:
 	* MySQLi: connector for MySQL: 5.0, 5.1, 5.5, 5.6, 5.7 / MariaDB: 5.x, 10.x / Percona Server: 5.1 / 5.5 / 5.6 / 5.7 (or later versions)
