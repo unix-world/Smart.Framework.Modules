@@ -48,3 +48,4 @@ License: BSD
 	* using the vendor from Smart.Framework.Modules:
 		uncomment or add the following line into: modules/app/app-custom-bootstrap.php
 			require_once('modules/vendor/autoload.php'); // autoload for Smart.Framework.Modules / Vendor Libs
+
