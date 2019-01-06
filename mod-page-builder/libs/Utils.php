@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\PageBuilder\Utils
-// (c) 2006-2018 unix-world.org - all rights reserved
-// Author: Radu Ovidiu I.
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 namespace SmartModExtLib\PageBuilder;
 
@@ -26,7 +26,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @access 		private
  * @internal
  *
- * @version 	v.181120
+ * @version 	v.20190107
  * @package 	PageBuilder
  *
  */
@@ -36,6 +36,21 @@ final class Utils {
 
 	const REGEX_PLACEHOLDERS = '/\{\{\:[A-Z0-9_\-\.]+\:\}\}/';
 	const REGEX_MARKERS = '/\{\{\=\#[A-Z0-9_\-\.]+(\|[a-z0-9]+)*\#\=\}\}/';
+
+
+	public static function getDbType() {
+		//--
+		$type = 'sqlite';
+		//--
+		if(defined('SMART_PAGEBUILDER_DB_TYPE')) {
+			if((string)SMART_PAGEBUILDER_DB_TYPE == 'pgsql') {
+				$type = 'pgsql';
+			} //end if
+		} //end if
+		//--
+		return (string) $type;
+		//--
+	} //END FUNCTION
 
 
 	public static function fixSafeCode($y_html) {
@@ -223,7 +238,7 @@ final class Utils {
 	} //END FUNCTION
 
 
-	private static function compareMarkers($original_str, $transl_str) {
+	public static function compareMarkers($original_str, $transl_str) {
 		//--
 		$original_arr 	= (array) self::extractMarkers((string)$original_str);
 		$transl_arr 	= (array) self::extractMarkers((string)$transl_str);

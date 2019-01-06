@@ -1,7 +1,7 @@
 <?php
-// [LIB - SmartFramework / ExtraLibs / Extended PgSQL Database Client (Abstract)]
-// (c) 2006-2018 unix-world.org - all rights reserved
-// v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
+// [LIB - Smart.Framework.Modules / ExtraLibs / Extended PgSQL Database Client (Abstract)]
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
 if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.3.7')) {

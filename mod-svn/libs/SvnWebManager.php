@@ -1,6 +1,7 @@
 <?php
 // [LIB - SmartFramework / Svn / Svn Web Manager]
-// (c) 2006-2017 unix-world.org - all rights reserved
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 // Class: \SmartModExtLib\Svn\SvnWebManager
 // Type: Module Library
@@ -23,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class SvnWebManager {
 
 	// ::
-	// v.170917
+	// v.181225
 
 	private static $svn_cache_dir = 'tmp/cache/svn/'; 		// must have trailing slash :: the svn proc jail root
 
@@ -412,7 +413,7 @@ final class SvnWebManager {
 			} //end if
 		} //end if
 		//--
-		\SmartFileSystem::dir_delete((string)self::$svn_cache_dir.$expdir, true);
+		self::rmDirRecursive((string)self::$svn_cache_dir.$expdir); // fix: because some paths in SVN may contain unsafe characters not allowed in Smart.Framework FileSystem this function will check just if dir is safe and minimal safety for paths
 		//--
 		return array(
 			'f-content' => (string) $fcontent,
@@ -887,6 +888,73 @@ final class SvnWebManager {
 		$arg = (string) trim((string)\Smart::normalize_spaces((string)$arg));
 		//--
 		return (string) escapeshellarg((string)$arg);
+		//--
+	} //END FUNCTION
+	//============================================================
+
+
+	//============================================================ OK
+	private static function rmDirRecursive($dir_name) {
+		//--
+		$dir_name = (string) rtrim((string)$dir_name, '/'); // remove any trailing slashes
+		//--
+		if(!\SmartFileSysUtils::check_if_safe_path($dir_name)) {
+			\Smart::log_warning(__METHOD__.'() // FAILED to delete a directory with unsafe path (1): '.$dir_name);
+			return false;
+		} //end if
+		//--
+		clearstatcache(true, (string)$dir_name);
+		//--
+		if(is_link((string)$dir_name)) {
+			return (bool) @unlink((string)$dir_name);
+		} //end if
+		//--
+		$dir_name = (string) $dir_name.'/'; // add trailing slash (previous trailing slashes were removed above)
+		//--
+		if(!\SmartFileSysUtils::check_if_safe_path($dir_name)) {
+			\Smart::log_warning(__METHOD__.'() // FAILED to delete a directory with unsafe path (2): '.$dir_name);
+			return false;
+		} //end if
+		//--
+		$files = (array) @scandir((string)$dir_name);
+		//--
+		foreach($files as $k => $file) {
+			//--
+			if(((string)$file != '') AND ((string)$file != '.') AND ((string)$file != '..')) {
+				//--
+				$path = (string) $dir_name.$file;
+				//-- minimal test: valid, backward, absolute
+				if(
+					(strpos((string)$path, '://') !== false) OR // valid
+					((strpos((string)$path, '/../') !== false) OR (strpos((string)$path, '/./') !== false) OR (strpos((string)$path, '/..') !== false) OR (strpos((string)$path, '../') !== false)) OR // backward
+					((string)substr((string)trim((string)$path), 0, 1) == '/') // absolute
+				) {
+					\Smart::log_warning(__METHOD__.'() // FAILED to delete an unsafe path: '.$path);
+					return false;
+				} //end if
+				//--
+				clearstatcache(true, (string)$path);
+				if((is_dir((string)$path)) AND !is_link($path)) {
+					self::rmDirRecursive((string)$path); // if dir but not link
+				} else {
+					@unlink((string)$path); // if file or link
+				} //end if else
+				//--
+			} //end if
+			//--
+		} //end foreach
+		//--
+		clearstatcache(true, (string)$dir_name);
+		if(rmdir((string)$dir_name)) {
+			if((file_exists((string)$dir_name)) OR (is_link((string)$dir_name))) { // {{{SYNC-SF-PATH-EXISTS}}}
+				\Smart::log_warning(__METHOD__.'() // FAILED to delete a directory: '.$dir_name);
+				return false; // dir still exists after deletion ... why !?
+			} else {
+				return true; // OK
+			} //end if else
+		} else {
+			return false; // not deleted
+		} //end if else
 		//--
 	} //END FUNCTION
 	//============================================================

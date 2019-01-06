@@ -1,7 +1,7 @@
 <?php
-// [APP - (Extra) Libs AutoLoad]
-// (c) 2006-2018 unix-world.org - all rights reserved
-// v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
+// [Smart.Framework.Modules - ExtraLibs AutoLoad]
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -21,7 +21,7 @@ require_once('modules/smart-extra-libs/version.php'); // extra libs version
  * @access 		private
  * @internal
  *
- * @version 	181031
+ * @version 	20190103
  *
  */
 function autoload__SmartFrameworkModulesExtraLibs($classname) {
@@ -43,10 +43,6 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 		//--
 		case 'SmartAbstractPgsqlExtDb':
 			require_once('modules/smart-extra-libs/lib_db_ext_pgsql.php'); 		// pgsql extended db connector
-			break;
-		case 'SmartMysqliDb':
-		case 'SmartMysqliExtDb':
-			require_once('modules/smart-extra-libs/lib_db_mysqli.php'); 		// mysqli db connector
 			break;
 		case 'SmartSolrDb':
 			require_once('modules/smart-extra-libs/lib_db_solr.php'); 			// solr db connector

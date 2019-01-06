@@ -19,7 +19,8 @@
 
 	if (!browser) {
 		//-- code replaced start
-		alert('NetVision JQuery Compat / Browser is required ...'); // unixman
+		console.error('JQuery Compat / Browser is required ...'); // unixman
+		return;
 		//-- code replaced end
 	} //end if
 

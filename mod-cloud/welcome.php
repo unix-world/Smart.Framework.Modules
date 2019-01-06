@@ -1,8 +1,8 @@
 <?php
 // Controller: Cloud/AddressBook
 // Route: admin.php?/page/cloud.welcome/
-// Author: unix-world.org
-// v.181109
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -27,11 +27,6 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
-			$this->PageViewSetErrorStatus(500, 'ERROR: Cloud requires Mod Auth Admins ...');
-			return;
-		} //end if
-		//--
 
 		//--
 		$this->PageViewSetCfg('template-path', '@'); // set template path to this module
@@ -46,7 +41,17 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$version = 'r.181109';
+		if(!SmartFileSystem::is_type_file('wpub/dav/.htaccess')) {
+			SmartFileSystem::write('wpub/dav/.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n");
+			if(!SmartFileSystem::is_type_file('wpub/dav/.htaccess')) {
+				$this->PageViewSetErrorStatus(500, 'ERROR: DAV .htaccess is missing ...');
+				return;
+			} //end if
+		} //end if
+		//--
+
+		//--
+		$version = 'r.181227';
 		//--
 		$this->PageViewSetVars([
 			'VERSION' 		=> (string) $version,

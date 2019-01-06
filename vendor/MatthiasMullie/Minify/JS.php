@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * JavaScript minifier
+ *
+ * Please report bugs on https://github.com/matthiasmullie/minify/issues
+ *
+ * @author Matthias Mullie <minify@mullie.eu>
+ * @copyright Copyright (c) 2012, Matthias Mullie. All rights reserved
+ * @license MIT License
+ */
 namespace MatthiasMullie\Minify;
 
 /**
@@ -188,11 +197,21 @@ class JS extends Minify
 	 */
 	protected function stripComments()
 	{
+		// PHP only supports $this inside anonymous functions since 5.4
+		$minifier = $this;
+		$callback = function ($match) use ($minifier) {
+			$count = count($minifier->extracted);
+			$placeholder = '/*'.$count.'*/';
+			$minifier->extracted[$placeholder] = $match[0];
+
+			return $placeholder;
+		};
+		// multi-line comments
+		$this->registerPattern('/\n?\/\*(!|.*?@license|.*?@preserve).*?\*\/\n?/s', $callback);
+		$this->registerPattern('/\/\*.*?\*\//s', '');
+
 		// single-line comments
 		$this->registerPattern('/\/\/.*$/m', '');
-
-		// multi-line comments
-		$this->registerPattern('/\/\*.*?\*\//s', '');
 	}
 
 	/**
@@ -231,7 +250,7 @@ class JS extends Minify
 		// closing the regex)
 		// then also ignore bare `/` inside `[]`, where they don't need to be
 		// escaped: anything inside `[]` can be ignored safely
-		$pattern = '\\/(?:[^\\[\\/\\\\\n\r]+|(?:\\\\.)+|(?:\\[(?:[^\\]\\\\\n\r]+|(?:\\\\.)+)+\\])+)++\\/[gimuy]*';
+		$pattern = '\\/(?!\*)(?:[^\\[\\/\\\\\n\r]++|(?:\\\\.)++|(?:\\[(?:[^\\]\\\\\n\r]++|(?:\\\\.)++)++\\])++)++\\/[gimuy]*';
 
 		// a regular expression can only be followed by a few operators or some
 		// of the RegExp methods (a `\` followed by a variable or value is
@@ -328,7 +347,9 @@ class JS extends Minify
 			array(
 				'/('.implode('|', $operatorsBefore).')\s+/',
 				'/\s+('.implode('|', $operatorsAfter).')/',
-			), '\\1', $content
+			),
+			'\\1',
+			$content
 		);
 
 		// make sure + and - can't be mistaken for, or joined into ++ and --
@@ -336,7 +357,9 @@ class JS extends Minify
 			array(
 				'/(?<![\+\-])\s*([\+\-])(?![\+\-])/',
 				'/(?<![\+\-])([\+\-])\s*(?![\+\-])/',
-			), '\\1', $content
+			),
+			'\\1',
+			$content
 		);
 
 		// collapse whitespace around reserved words into single space
@@ -589,3 +612,5 @@ class JS extends Minify
 		return $content;
 	}
 }
+
+// #END

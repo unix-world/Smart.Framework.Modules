@@ -1,7 +1,6 @@
 <!-- start twig template -->
 {# Template: sample.twig.htm #}<!-- comments are removed -->
 <div align="center">
-	<br>
 	<div>
 		<a href="//twig.symfony.com/doc/1.x/" target="_blank"><img src="{{Tpl_Dir__}}img/twig.svg" width="160" height="160"></a>
 		<br>
@@ -17,24 +16,6 @@
 	</div>
 	<br>
 	{% include Tpl_Dir__ ~ 'sample-partial.twig.inc.htm' %}
-	<ul>
-	{% for item in navigation %}
-		<li><a href="{{ item.href }}">{{ item.caption }}</a></li>
-	{% endfor %}
-	</ul>
-	Test Condition#1:
-	{% if a == 'Test-1' %}
-		<b>OK</b>
-	{% else %}
-		<span style="color:#FF3300;"><b>NOT OK</b></span>
-	{% endif %}
-	<br>
-	Test Condition#2:
-	{% if b == a %}
-		<span style="color:#FF3300;"><b>NOT OK</b></span>
-	{% else %}
-		<b>OK</b>
-	{% endif %}
 </div>
 <!-- end twig template -->
 {# <pre>{{ dump() }}</pre> #}

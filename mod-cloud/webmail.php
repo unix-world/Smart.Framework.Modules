@@ -1,8 +1,8 @@
 <?php
 // Controller: Cloud/Webmail
 // Route: admin.php?/page/cloud.webmail
-// Author: unix-world.org
-// v.180206
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -13,6 +13,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 define('SMART_APP_MODULE_AREA', 'ADMIN'); // admin only
 define('SMART_APP_MODULE_AUTH', true); // requires auth always
+
 
 /**
  * Admin Controller
@@ -53,51 +54,104 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$this->userpath = (string) SmartFileSysUtils::add_dir_last_slash((string)$safe_user_path);
 		//--
+		$this->pagelink = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('url-page');
+		//--
 
-$this->pagelink = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('url-page');
+
+/*
 $html_content = '<a id="url_recognition" href="'.$this->pagelink.'&msg='.Smart::escape_url(SmartMailerMimeParser::encode_mime_fileurl(
 	(string) $this->userpath.'inbox/test_uxm_multi_mimes.eml',
 	(string) $this->secretKey()
 )).'" target="cloud_webmail_eml_display" data-smart="open.modal">test_uxm_multi_mimes.eml</a>';
+*/
 
-	$msg = $this->RequestVarGet('msg', '', 'string');
-	$reply = $this->RequestVarGet('reply', '', 'string');
+$mbox = 'iradu@unix-world.org';
+$box = 'inbox';
+$the_mbox_path = (string) SmartFileSysUtils::add_dir_last_slash((string)$this->userpath.$mbox);
 
-	if((string)$msg != '') {
+		//--
+		$op = $this->RequestVarGet('op', '', 'string');
+		//--
+		switch((string)$op) {
+			case 'list-json-mbox':
+				//--
+				$this->PageViewSetCfg('rawpage', true);
+				$this->PageViewSetCfg('rawmime', 'application/json');
+				//--
+				$ofs = $this->RequestVarGet('ofs', '', 'integer+');
+				$sortby = $this->RequestVarGet('sortby', '', 'string');
+				$sortdir = $this->RequestVarGet('sortdir', 'ASC', ['ASC','DESC']);
+				$srcby = $this->RequestVarGet('srcby', '', 'string');
+				$src = $this->RequestVarGet('src', '', 'string');
+				//--
+				$this->PageViewSetVar(
+					'main',
+					(string) $this->listJsonMailbox($the_mbox_path, $ofs, $sortby, $sortdir, $srcby, $src)
+				);
+				//--
+				return;
+				//--
+				break;
+			default:
+				// nothing special
+		} //end switch
+		//--
 
-		if($reply) {
-			$arr_repl = SmartMailerMimeParser::get_message_data_structure(
-				(string) $msg,
-				(string) $this->secretKey(),
-				'data-reply', // 'data-full' | 'data-reply'
-				$this->pagelink.'&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}',
-				'_self'
-			);
-			print_r($arr_repl);
-			die();
+$html_content = (string) SmartMarkersTemplating::render_file_template(
+	$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox.mtpl.inc.htm',
+	[
+		'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
+		'URL-PAGE' 			=> (string) $this->pagelink,
+		'CURRENT-MBOX' 		=> (string) $mbox,
+		'CURRENT-BOX' 		=> (string) $box
+	]
+);
+
+		//--
+		$msg = $this->RequestVarGet('msg', '', 'string');
+		$reply = $this->RequestVarGet('reply', '', 'string');
+		//--
+		if((string)$msg != '') {
+			//--
+			if($reply) {
+
+				// TODO:
+				$arr_repl = SmartMailerMimeParser::get_message_data_structure(
+					(string) $msg,
+					(string) $this->secretKey(),
+					'data-reply', // 'data-full' | 'data-reply'
+					$this->pagelink.'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}',
+					'_self'
+				);
+
+				echo '<h1>Reply ...</h1><pre>';
+				echo Smart::escape_html(SmartUtils::pretty_print_var($arr_repl));
+				echo '</pre>';
+				die();
+
+			} else {
+				//--
+				$this->displayMimeMessage($msg);
+				//--
+			} //end if else
+			//--
 		} else {
-			$this->displayMimeMessage($msg);
-		}
-
-	} else {
-
-		//--
-		$this->PageViewSetVars([
-			'title' => 'WebMail',
-			'main' => (string) SmartMarkersTemplating::render_file_template(
-				$this->ControllerGetParam('module-view-path').'webmail-main.mtpl.inc.htm',
-				[
-					'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
-					'AREA-HTML-TOP' 	=> '<h1>WebMail</h1>',
-					'AREA-HTML-VBAR' 	=> '',
-					'AREA-HTML-HBAR' 	=> '',
-					'AREA-HTML-CONTENT' => (string) $html_content
-				]
-			)
-		]);
-		//--
-
-	}
+			//--
+			$this->PageViewSetVars([
+				'title' => 'WebMail',
+				'main' => (string) SmartMarkersTemplating::render_file_template(
+					$this->ControllerGetParam('module-view-path').'webmail.mtpl.inc.htm',
+					[
+						'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
+						'AREA-HTML-TOP' 	=> '<h1>WebMail</h1>',
+						'AREA-HTML-VBAR' 	=> '',
+						'AREA-HTML-HBAR' 	=> '',
+						'AREA-HTML-CONTENT' => (string) $html_content
+					]
+				)
+			]);
+			//--
+		} //end if else
 
 	} //END FUNCTION
 
@@ -111,32 +165,45 @@ $html_content = '<a id="url_recognition" href="'.$this->pagelink.'&msg='.Smart::
 
 	private function displayMimeMessage($msg) {
 		//--
-		$print = $this->RequestVarGet('print', '', 'string');
+		$mode = $this->RequestVarGet('mode', '', 'string');
 		$pdf = $this->RequestVarGet('pdf', '', 'string');
 		//--
-		if(((string)$print == '') AND ((string)$pdf == '')) {
+		$use_sandbox = false;
+		if(((string)$mode == '') AND ((string)$pdf == '')) {
+			// it uses auto sandbox
 			$mime_mode = '';
-			$bttns_area = '<div style="text-align:right; padding-right:10px;"><a href="'.$this->pagelink.'&reply=yes&msg='.Smart::escape_url((string)$msg).'"><img src="lib/core/plugins/img/email/send-reply.svg" alt="Reply" title="Reply" style="cursor:pointer;"></a> &nbsp; <img src="lib/core/plugins/img/email/bttn-pdf.svg" alt="PDF" title="PDF" style="cursor:pointer;" onClick="self.location = self.location + \'&print=yes&pdf=yes\';"></div>';
-		} elseif((string)$pdf == '') {
+			$bttns_area = '<div style="text-align:right; padding-right:10px;"><a href="'.$this->pagelink.'&reply=yes&msg='.Smart::escape_url((string)$msg).'"><img src="lib/core/plugins/img/email/send-reply.svg" alt="Reply" title="Reply" style="cursor:pointer;"></a> &nbsp; <img src="lib/core/plugins/img/email/bttn-pdf.svg" alt="PDF" title="PDF" style="cursor:pointer;" onClick="SmartJS_BrowserUtils.PopUpLink(self.location + \'&print=yes&pdf=yes\', \'webmail-pdf\', null, null, 1);"></div>';
+		} elseif(((string)$mode == 'print') AND ((string)$pdf == '')) {
+			$use_sandbox = true;
 			$mime_mode = 'print';
-			$bttns_area = '<script>SmartJS_BrowserUtils.PrintPage();</script>';
+			$bttns_area = '';
 		} else { // PDF
 			$mime_mode = 'print';
 			$bttns_area = '';
 		} //end if else
 		//--
-		// TODO: test $this->IfRequestPrintable() and set a modal/popup template in this case
+		if((string)$mode != 'partial') {
+			$mime_ttl = 'MIME Message';
+		} else {
+			$use_sandbox = true;
+			$mime_ttl = 'MIME Message Part';
+		} //end if else
+		//--
 		$main = (string) SmartMailerMimeParser::display_message(
 			(string) $msg,
 			(string) $this->secretKey(),
-			$this->pagelink.'&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}',
+			$this->pagelink.'&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
 			'_self',
-			'<div align="center"><h1 style="display:inline;">'.'MIME Message'.'</h1></div>'.$bttns_area,
+			'<div align="center"><h1 style="display:inline;">'.Smart::escape_html($mime_ttl).'</h1></div>'.$bttns_area,
 			(string) $mime_mode // 'default' | 'print'
 		);
+		//-- sandbox if required (print mode) :: use sandbox iframe if non-print mode ; for print mode use iframe sandbox to ensure safety !
+		if($use_sandbox === true) {
+			$main = '<div title="WebMail HTML Safe SandBox / iFrame" style="position:relative;"><img height="16" src="lib/core/plugins/img/email/safe.svg" style="cursor:help; position:absolute; top:3px; left:7px; opacity:0.25;"><iframe name="WebMailMessageSandBox" id="WebMailMessageSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:97vw; min-height:97vh; height:max-content; border:1px solid #EFEFEF;" srcdoc="'.Smart::escape_html('<!DOCTYPE html><html><head><title>'.Smart::escape_html($mime_ttl).'</title><meta charset="'.Smart::escape_html(SMART_FRAMEWORK_CHARSET).'">'.SmartFileSystem::read('lib/core/templates/base-html-styles.inc.htm').'</head><body>'.$main.'<script>alert(\'If you can see this alert the WebMail iFrame Sandbox is unsafe ...\');</script></body></html>').'" sandbox></iframe></div>';
+		} //end if
 		//-- forwarder for misc email parts
 		$test_rawpage = $this->RequestVarGet('rawmode', '', 'string');
-		if((string)$test_rawpage == 'raw') {
+		if(((string)$test_rawpage == 'raw') AND ((string)$mode != 'partial')) {
 			//--
 			$this->PageViewSetCfg('rawpage', true);
 			//--
@@ -173,7 +240,49 @@ $html_content = '<a id="url_recognition" href="'.$this->pagelink.'&msg='.Smart::
 	} //END FUNCTION
 
 
+	private function listJsonMailbox($the_mbox_path, $ofs, $sortby, $sortdir, $srcby, $src) {
+		//--
+		$limit = 25;
+		//--
+		$data = [
+			'status'  			=> 'OK',
+			'crrOffset' 		=> (int)    $ofs,
+			'itemsPerPage' 		=> (int)    $limit,
+			'sortBy' 			=> (string) $sortby,
+			'sortDir' 			=> (string) $sortdir,
+			'sortType' 			=> (string) '', // applies only with clientSort (not used for Server-Side sort)
+			'filter' 			=> [
+				'srcby' => (string) $srcby,
+				'src' 	=> (string) $src
+			]
+		];
+		//--
+		$model = new \SmartModDataModel\Cloud\SqWebmail($the_mbox_path); // open connection / initialize
+		//--
+		$data['totalRows'] 	= (int)   $model->listCountRecords((string)$srcby, (string)$src);
+		$data['rowsList'] 	= (array) $model->listGetRecords((string)$srcby, (string)$src, (int)$limit, (int)$ofs, (string)$sortdir, (string)$sortby);
+		//--
+		unset($model); // close connection
+		//--
+		for($i=0; $i<count($data['rowsList']); $i++) {
+			//--
+			$val = (array) $data['rowsList'][$i];
+			$data['rowsList'][$i]['@link'] = (string) $this->pagelink.'&msg='.Smart::escape_url(SmartMailerMimeParser::encode_mime_fileurl(
+				(string) rtrim($the_mbox_path,'/').'/'.rtrim($val['folder'],'/').'/'.ltrim($val['id'],'/'),
+				(string) $this->secretKey()
+			));
+			//--
+		} //end for
+
+
+		//--
+		return (string) Smart::json_encode((array)$data);
+		//--
+	} //END FUNCTION
+
+
 } //END CLASS
+
 
 //end of php code
 ?>

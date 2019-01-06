@@ -1,7 +1,7 @@
 
 // [LIB - SmartFramework / JS / Validate Input (Fields)]
-// (c) 2006-2018 unix-world.org - all rights reserved
-// v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
+// (c) 2006-2019 unix-world.org - all rights reserved
+// r.20190103
 
 // DEPENDS: SmartJS_CoreUtils
 

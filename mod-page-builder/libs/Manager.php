@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\PageBuilder\Manager
-// (c) 2006-2018 unix-world.org - all rights reserved
-// Author: Radu Ovidiu I.
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 namespace SmartModExtLib\PageBuilder;
 
@@ -32,7 +32,10 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
 */
 //==================================================================
 
+//define('SMART_PAGEBUILDER_DB_TYPE', 'pgsql');
 //define('SMART_PAGEBUILDER_DISABLE_DELETE', true);
+
+// TODO: implement layouts for pages
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -47,7 +50,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.181128
+ * @version 	v.20190107
  * @package 	PageBuilder
  *
  */
@@ -189,14 +192,14 @@ final class Manager {
 	//==================================================================
 	public static function ViewDisplayHighlightCode($y_id) {
 		//--
-		$query = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordById($y_id);
+		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordById($y_id);
 		//--
 		if((string)$query['id'] == '') {
 			return \SmartComponents::operation_warn(self::text('err_4'));
 		} //end if
 		//--
 		if((string)$query['mode'] == 'text') {
-			$type = 'xml'; // fix for text
+			$type = 'plaintext'; // fix for text
 		} else {
 			$type = (string) $query['mode'];
 		} //end if else
@@ -217,7 +220,7 @@ final class Manager {
 	//==================================================================
 	public static function ViewDisplayHighlightData($y_id) {
 		//--
-		$query = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordById($y_id);
+		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordById($y_id);
 		//--
 		if((string)$query['id'] == '') {
 			return \SmartComponents::operation_warn(self::text('err_4'));
@@ -241,7 +244,7 @@ final class Manager {
 	//==================================================================
 	public static function ViewDisplayRecord($y_id, $y_disp, $y_lang='') {
 		//--
-		$query = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordDetailsById($y_id);
+		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordDetailsById($y_id);
 		//--
 		if((string)$query['id'] == '') {
 			return \SmartComponents::operation_warn(self::text('err_4'));
@@ -309,7 +312,7 @@ final class Manager {
 	// $y_mode :: 'list' | 'form'
 	public static function ViewFormProps($y_id, $y_mode) {
 		//--
-		$query = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordPropsById($y_id);
+		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordPropsById($y_id);
 		if((string)$query['id'] == '') {
 			return \SmartComponents::operation_error('FormView Props // Invalid ID');
 		} //end if
@@ -342,7 +345,7 @@ final class Manager {
 			$is_subsegment = true;
 		} //end if
 		//--
-		$q_refs = \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordsByRef($y_id);
+		$q_refs = \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByRef($y_id);
 		for($i=0; $i<\Smart::array_size($q_refs); $i++) {
 			if((string)$q_refs[$i]['id'] != '') {
 				if(!in_array((string)$q_refs[$i]['id'], $arr_refs)) {
@@ -438,7 +441,7 @@ final class Manager {
 		$show_translations = false;
 		if(\Smart::array_size($arr_raw_langs) > 1) {
 			$show_translations = true;
-			$transl_arr = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordsTranslationsById($y_id);
+			$transl_arr = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsTranslationsById($y_id);
 		} //end if
 		if(\Smart::array_size($transl_arr) > 0) {
 			for($i=0; $i<count($transl_arr); $i++) {
@@ -507,9 +510,9 @@ final class Manager {
 		} //end if
 		//--
 		if((string)$y_lang != '') {
-			$query = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getTranslationCodeById($y_id, $y_lang);
+			$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getTranslationCodeById($y_id, $y_lang);
 		} else {
-			$query = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordCodeById($y_id);
+			$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordCodeById($y_id);
 		} //end if else
 		if((string)$query['id'] == '') {
 			return \SmartComponents::operation_error('FormView Code // Invalid ID');
@@ -740,7 +743,7 @@ final class Manager {
 	// $y_mode :: 'list' | 'form'
 	public static function ViewFormYamlData($y_id, $y_mode) {
 		//--
-		$query = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordDataById($y_id);
+		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordDataById($y_id);
 		if((string)$query['id'] == '') {
 			return \SmartComponents::operation_error('FormView YAML Data // Invalid ID');
 		} //end if
@@ -806,7 +809,7 @@ final class Manager {
 	// $y_mode :: 'list'
 	public static function ViewFormInfo($y_id, $y_mode) {
 		//--
-		$query = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordInfById($y_id);
+		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordInfById($y_id);
 		if((string)$query['id'] == '') {
 			return \SmartComponents::operation_error('FormView Info // Invalid ID');
 		} //end if
@@ -847,7 +850,7 @@ final class Manager {
 				'REFRESH-PARENT' 	=> (string) '<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>',
 				'FORM-NAME' 		=> (string) 'page_form_add',
 				'LABELS-TYPE'		=> (string) self::text('record_syntax'),
-				'CONTROLS-TYPE' 	=> (string) \SmartComponents::html_select_list_single('ptype', '', 'form', array('html-page' => 'Page - HTML Syntax', 'markdown-page' => 'Page - Markdown Syntax', 'text-page' => 'Page - Text Syntax', 'raw-page' => 'Page - Raw', 'html-segment' => 'Segment Page - HTML Syntax', 'markdown-segment' => 'Segment Page - Markdown Syntax', 'text-segment' => 'Segment Page - Text Syntax', 'settings-segment' => 'Segment Page - Settings'), 'frm[ptype]', '275/0', '', 'no', 'yes'),
+				'CONTROLS-TYPE' 	=> (string) \SmartComponents::html_select_list_single('ptype', '', 'form', ['#OPTGROUP#Segments' => 'Segments', 'html-segment' => 'Segment Page - HTML Syntax', 'markdown-segment' => 'Segment Page - Markdown Syntax', 'text-segment' => 'Segment Page - Text Syntax', 'settings-segment' => 'Segment Page - Settings', '#OPTGROUP#Pages' => 'Pages', 'html-page' => 'Page - HTML Syntax', 'markdown-page' => 'Page - Markdown Syntax', 'text-page' => 'Page - Text Syntax', 'raw-page' => 'Page - Raw'], 'frm[ptype]', '275/0', '', 'no', 'yes'),
 				'LABELS-ID'			=> (string) self::text('id'),
 				'LABELS-NAME'		=> (string) self::text('name'),
 				'LABELS-CTRL' 		=> (string) self::text('ctrl'),
@@ -943,7 +946,7 @@ final class Manager {
 							} //end if
 						} //end if
 						if((string)$error == '') {
-							$chk_id = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordIdsById($data['id']);
+							$chk_id = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordIdsById($data['id']);
 							if(strlen($chk_id['id']) > 0) {
 								$error = self::text('err_3')."\n"; // duplicate ID
 							} //end if
@@ -978,7 +981,7 @@ final class Manager {
 				//--
 				$proc_mode = 'update';
 				//--
-				$query = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordDetailsById($y_id);
+				$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordDetailsById($y_id);
 				//--
 				if(((string)$y_id == (string)$query['id']) AND ((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND ((string)$query['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-manage') === true) AND ((string)$query['special'] == '1')))) {
 					//--
@@ -1185,13 +1188,13 @@ final class Manager {
 					$data['modified'] = date('Y-m-d H:i:s');
 					//--
 					if((string)$proc_mode == 'insert') {
-						$wr = \SmartModDataModel\PageBuilder\PgPageBuilderBackend::insertRecord($data);
+						$wr = \SmartModDataModel\PageBuilder\PageBuilderBackend::insertRecord($data);
 					} elseif((string)$proc_mode == 'update') {
 						if((string)$y_frm['language'] != '') {
 							$rdr_sufx = '&translate='.\Smart::escape_url((string)$y_frm['language']);
-							$wr = \SmartModDataModel\PageBuilder\PgPageBuilderBackend::updateTranslationById($proc_id, $y_frm['language'], $data);
+							$wr = \SmartModDataModel\PageBuilder\PageBuilderBackend::updateTranslationById($proc_id, $y_frm['language'], $data);
 						} else {
-							$wr = \SmartModDataModel\PageBuilder\PgPageBuilderBackend::updateRecordById($proc_id, $data, $proc_upd_cksum);
+							$wr = \SmartModDataModel\PageBuilder\PageBuilderBackend::updateRecordById($proc_id, $data, $proc_upd_cksum);
 						} //end if
 					} else {
 						$wr = -100; // invalid op mode
@@ -1249,7 +1252,7 @@ final class Manager {
 	public static function ViewFormDelete($y_id, $y_delete) {
 
 		//--
-		$tmp_rd_arr = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordDetailsById($y_id);
+		$tmp_rd_arr = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordDetailsById($y_id);
 		//--
 		if((string)$tmp_rd_arr['id'] == '') {
 			return \SmartComponents::operation_error(self::text('err_4'));
@@ -1277,7 +1280,7 @@ final class Manager {
 					//--
 					$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_refresh_parent().'</script>';
 					//--
-					$chk_del = (int) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::deleteRecordById($tmp_rd_arr['id']);
+					$chk_del = (int) \SmartModDataModel\PageBuilder\PageBuilderBackend::deleteRecordById($tmp_rd_arr['id']);
 					//--
 					if($chk_del == 1) {
 						$out .= '<br>'.\SmartComponents::operation_ok(self::text('op_compl'));
@@ -1549,6 +1552,7 @@ final class Manager {
 
 	//==================================================================
 	private static function drawListLayout($y_mode, $y_listmode, $y_value, $y_htmlvar='') {
+		// TO BE DONE ...
 		//--
 		return \SmartComponents::html_select_list_single('', $y_value, $y_listmode, [ '' => 'N/A' ], $y_htmlvar, '250', '', 'no', 'no');
 		//--
@@ -1572,7 +1576,7 @@ final class Manager {
 		$fcollapse = '';
 		$filter = array();
 		if(((string)trim((string)$src) != '') AND ((string)trim((string)$srcby) != '')) {
-			$tmp_filter = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::listGetRecords($srcby, $src, (int)$flimit, 0, 'ASC', 'id');
+			$tmp_filter = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::listGetRecords($srcby, $src, (int)$flimit, 0, 'ASC', 'id');
 			for($i=0; $i<\Smart::array_size($tmp_filter); $i++) {
 				$filter[] = [ 'id' => (string)$tmp_filter[$i]['id'], 'hash-id' => (string)sha1((string)$tmp_filter[$i]['id']) ];
 			} //end for
@@ -1587,13 +1591,13 @@ final class Manager {
 		$css_cls_a = 'simpletree-item-active';
 		$css_cls_i = 'simpletree-item-inactive';
 		//--
-		$arr_controllers = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordsUniqueControllers();
+		$arr_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers();
 		$arr_pages_data = array();
 		for($i=0; $i<\Smart::array_size($arr_controllers); $i++) {
-			$tmp_arr_lvl1 = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordsByCtrl((string)$arr_controllers[$i]);
+			$tmp_arr_lvl1 = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByCtrl((string)$arr_controllers[$i]);
 			for($j=0; $j<\Smart::array_size($tmp_arr_lvl1); $j++) {
 				if(\Smart::array_size($tmp_arr_lvl1[$j]) > 0) {
-					$tmp_arr_lvl2 = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordsByRef((string)$tmp_arr_lvl1[$j]['id']);
+					$tmp_arr_lvl2 = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByRef((string)$tmp_arr_lvl1[$j]['id']);
 					$tmp_arr_lvl1[$j]['hash-id'] = (string) sha1((string)$tmp_arr_lvl1[$j]['id']);
 					$tmp_arr_lvl1[$j]['is-segment'] = (int) self::testIsSegmentPage((string)$tmp_arr_lvl1[$j]['id']);
 					if(((string)$tmp_arr_lvl1[$j]['active'] == 1) OR ($tmp_arr_lvl1[$j]['is-segment'] == 1)) {
@@ -1607,7 +1611,7 @@ final class Manager {
 					if(\Smart::array_size($tmp_arr_lvl2) > 0) {
 						for($k=0; $k<\Smart::array_size($tmp_arr_lvl2); $k++) {
 							if(\Smart::array_size($tmp_arr_lvl2[$k]) > 0) {
-								$tmp_arr_lvl3 = (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::getRecordsByRef((string)$tmp_arr_lvl2[$k]['id']);
+								$tmp_arr_lvl3 = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByRef((string)$tmp_arr_lvl2[$k]['id']);
 								$tmp_arr_lvl2[$k]['hash-id'] = (string) sha1((string)$tmp_arr_lvl2[$k]['id']);
 								$tmp_arr_lvl2[$k]['is-segment'] = (int) self::testIsSegmentPage((string)$tmp_arr_lvl2[$k]['id']);
 								if(((string)$tmp_arr_lvl2[$k]['active'] == 1) OR ($tmp_arr_lvl2[$k]['is-segment'] == 1)) {
@@ -1658,11 +1662,18 @@ final class Manager {
 		if(!defined('SMART_PAGEBUILDER_DISABLE_DELETE')) {
 			$the_link_delete = (string) self::composeUrl('op=record-delete&id=');
 		} //end if
+		//--
+		if(\Smart::array_size((array)\SmartTextTranslations::getListOfLanguages()) > 1) {
+			$show_translations = 'yes';
+		} else {
+			$show_translations = 'no';
+		} //end if else
 		//-- #{{{SYNC-PAGEBUILDER-MANAGER-DEF-LINKS}}}
 		return (string) \SmartMarkersTemplating::render_file_template(
 			self::$ModulePath.'libs/views/manager/view-list-tree.mtpl.htm',
 			[
 				'SHOW-FILTER-TYPE' 	=> 'no',
+				'SHOW-TRANSLATIONS' => (string) $show_translations,
 				'LIST-FORM-URL' 	=> (string) self::$ModuleScript,
 				'LIST-FORM-METHOD' 	=> 'GET',
 				'LIST-FORM-VARS' 	=> (array) [
@@ -1709,7 +1720,8 @@ final class Manager {
 				'HINT-1' 			=> (string) self::text('hint_1', false),
 				'HINT-2' 			=> (string) self::text('hint_2', false),
 				'HINT-3' 			=> (string) self::text('hint_3', false),
-				'FMT-LIST' 			=> (int)    \Smart::array_size($filter).' / '.\Smart::array_size($total)
+				'FMT-LIST' 			=> (string) \Smart::array_size($filter).' / '.\Smart::array_size($total),
+				'DB-TYPE' 			=> (string) \SmartModExtLib\PageBuilder\Utils::getDbType()
 			]
 		);
 		//--
@@ -1730,11 +1742,18 @@ final class Manager {
 		if(!defined('SMART_PAGEBUILDER_DISABLE_DELETE')) {
 			$the_link_delete = (string) self::composeUrl('op=record-delete&id=');
 		} //end if
+		//--
+		if(\Smart::array_size((array)\SmartTextTranslations::getListOfLanguages()) > 1) {
+			$show_translations = 'yes';
+		} else {
+			$show_translations = 'no';
+		} //end if else
 		//-- #{{{SYNC-PAGEBUILDER-MANAGER-DEF-LINKS}}}
 		return (string) \SmartMarkersTemplating::render_file_template(
 			(string) self::$ModulePath.'libs/views/manager/view-list.mtpl.htm',
 			[
 				'SHOW-FILTER-TYPE' 	=> 'yes',
+				'SHOW-TRANSLATIONS' => (string) $show_translations,
 				'LIST-FORM-URL' 	=> '#',
 				'LIST-FORM-METHOD' 	=> 'POST',
 				'LIST-FORM-VARS' 	=> (array) [],
@@ -1771,7 +1790,8 @@ final class Manager {
 				'HINT-1' 			=> (string) self::text('hint_1', false),
 				'HINT-2' 			=> (string) self::text('hint_2', false),
 				'HINT-3' 			=> (string) self::text('hint_3', false),
-				'FMT-LIST' 			=> '# / # @'
+				'FMT-LIST' 			=> '# / # @',
+				'DB-TYPE' 			=> (string) \SmartModExtLib\PageBuilder\Utils::getDbType()
 			]
 		);
 		//--
@@ -1811,8 +1831,8 @@ final class Manager {
 			]
 		];
 		//--
-		$data['totalRows'] 	= (int) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::listCountRecords((string)$srcby, (string)$src);
-		$data['rowsList'] 	= (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::listGetRecords((string)$srcby, (string)$src, (int)$limit, (int)$ofs, (string)$sortdir, (string)$sortby);
+		$data['totalRows'] 	= (int) \SmartModDataModel\PageBuilder\PageBuilderBackend::listCountRecords((string)$srcby, (string)$src);
+		$data['rowsList'] 	= (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::listGetRecords((string)$srcby, (string)$src, (int)$limit, (int)$ofs, (string)$sortdir, (string)$sortby);
 		//--
 		return (string) \Smart::json_encode((array)$data);
 		//--
@@ -1823,8 +1843,8 @@ final class Manager {
 	//==================================================================
 	public static function ViewDisplayResetCounter($y_redir_url='') {
 		//--
-		$wr = \SmartModDataModel\PageBuilder\PgPageBuilderBackend::resetCounterOnAllRecords();
-		if($wr[1] > 0) {
+		$wr = \SmartModDataModel\PageBuilder\PageBuilderBackend::resetCounterOnAllRecords();
+		if($wr[1] >= 0) { // there can be no records, thus can be also zero
 			$status = 'OK';
 			$message = 'Hit Counter was reset on all records';
 		} else {
@@ -1871,7 +1891,7 @@ final class Manager {
 			return array();
 		} //end if
 		//--
-		return (array) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::exportTranslationsByLang((string)$lang, (string)$mode);
+		return (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::exportTranslationsByLang((string)$lang, (string)$mode);
 		//--
 	} //END FUNCTION
 	//==================================================================
@@ -1963,7 +1983,7 @@ final class Manager {
 									if((string)$y_modelclass != '') {
 										$upd = (int) $y_modelclass::updateTranslationByText((string)$data_arr[(string)$def_lang][$i], (string)$lang, (string)$val[$i], (string)\SmartAuth::get_login_id());
 									} else {
-										$upd = (int) \SmartModDataModel\PageBuilder\PgPageBuilderBackend::updateTranslationByText((string)$data_arr[(string)$def_lang][$i], (string)$lang, (string)$val[$i], (string)\SmartAuth::get_login_id());
+										$upd = (int) \SmartModDataModel\PageBuilder\PageBuilderBackend::updateTranslationByText((string)$data_arr[(string)$def_lang][$i], (string)$lang, (string)$val[$i], (string)\SmartAuth::get_login_id());
 									} //end if else
 									//--
 									if($upd > 0) {

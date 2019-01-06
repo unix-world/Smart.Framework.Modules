@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\PageBuilder\AbstractFrontendPlugin
-// (c) 2006-2018 unix-world.org - all rights reserved
-// Author: Radu Ovidiu I.
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 namespace SmartModExtLib\PageBuilder;
 
@@ -27,7 +27,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.181120
+ * @version 	v.20190107
  * @package 	PageBuilder
  *
  */

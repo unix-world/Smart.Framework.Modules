@@ -1,0 +1,123 @@
+<!-- smart grid -->
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/simplePagination.css">
+<script type="text/javascript" src="lib/js/jquery/pager/jquery.simplePagination.js"></script>
+<script type="text/javascript" src="lib/js/jquery/jquery.simulate.js"></script>
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid.css">
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid-fixes.css">
+<script type="text/javascript" src="lib/js/jquery/slickgrid/slick.grid.js"></script>
+<script type="text/javascript" src="lib/js/jquery/slickgrid/slick.editors.js"></script>
+<script type="text/javascript" src="lib/js/jquery/slickgrid/smart-grid.js"></script>
+<script type="text/javascript">
+	//--
+	var IdOfGrid = 'webmailGrid';
+	var TheGrid = new Smart_Grid(IdOfGrid, 'infoTotalRows', '[####URL-PAGE|js####]&op=list-json-mbox&mbox=[####CURRENT-MBOX|url|js####]&box=[####CURRENT-BOX|url|js####]', 'webmail_slickgrid_list', 'date_time', 'DESC', '', 'filtering');
+	//--
+</script>
+<form id="filtering" name="filtering" class="ux-form">
+	<table class="ux-reflow-table">
+		<tr>
+			<td>
+			<select name="srcby" id="filter-srcby" class="ux-input-def ux-input-1-4">
+				<option value="" title="Select from below">* Filter By: *:</option>
+				<option value="from_addr">From (address)</option>
+				<option value="from_name">From (name)</option>
+				<option value="to_addr">To (address)</option>
+				<option value="to_name">To (name)</option>
+				<option value="msg_subj">Subject</option>
+				<option value="date_time">Date / Time</option>
+		<!--	<option value="keywds">KeyWords</option> -->
+			</select>
+			</td>
+			<td>
+				<input type="text" id="filter-src" name="src" placeholder="Search Value" value="" class="ux-input-def" style="width:99%;">
+			</td>
+			<td>
+				<button type="button" class="ux-button ux-button-primary" onClick="TheGrid.loadGridData(0);" title="Filter Results">Filter &nbsp; <i class="fa fa-filter"></i></button>
+			</td>
+			<td>
+				<button type="button" class="ux-button ux-button-secondary" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);" title="Remove Filter (display all results)">Reset &nbsp; <i class="fa fa-times"></i></button>
+			</td>
+			<td>
+				<div style="width:32px;">&nbsp;</div>
+			</td>
+			<td>
+				<span style="color:#778899; font-size:16px; font-weight:bold;">[####CURRENT-MBOX|html####]/[####CURRENT-BOX|ucfirst|html####]<br>Messages List :: <span id="infoTotalRows"># / # @</span></span>
+			</td>
+		</tr>
+	</table>
+</form>
+<div id="webmailNavPager"></div>
+<form class="ux-form"><div id="webmailGrid" class="slickgrid-table" style="width:100%;height:10px;"></div></form>
+<script type="text/javascript">
+jQuery(function() {
+
+	// Formatters
+	function formatter_ID(row, cell, value, columnDef, dataContext) {
+		value = value || '#';
+		return '<button style="margin:0px; margin-top:-2px;" class="ux-button ux-button-xsmall" onClick="SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(value) +'\', \'webmail_view_msg\'); return false;"><i class="fa fa-envelope-square" style="color:#777777;" title="Display Message"></i></button>';
+	}
+	function formatter_Atts(row, cell, value, columnDef, dataContext) {
+		value = value || '0';
+		if(value != 1) {
+			value = '';
+		} else {
+			value = '<div align="center"><img src="lib/core/plugins/img/email/attachment.svg" width="16" style="margin-top:3px;"></div>';
+		} //end
+		return String(value);
+	}
+
+	// Grid Data Defs
+	var columns = [
+		{id:'@link', field:'@link', name:'', sortable:true, width:20, cssClass:'smartGrid_AlignCenter', formatter:formatter_ID},
+		{id:'have_atts', field:'have_atts', name:'At', sortable:true, width:20, formatter:formatter_Atts},
+		{id:'from_all', field:'from_all', name:'From', sortable:true, width:100, cssClass:'smartGrid_Important', editor:TextCellSelector},
+		{id:'to_all', field:'to_all', name:'To', sortable:true, width:100, cssClass:'smartGrid_Important', editor:TextCellSelector},
+		{id:'msg_subj', field:'msg_subj', name:'Subject', sortable:true, width:200, cssClass:'smartGrid_Default', editor:TextCellSelector},
+		{id:'date_time', field:'date_time', name:'DateTime', sortable:true, width:100, cssClass:'smartGrid_Default', editor:TextCellSelector},
+	];
+
+	//-- Grid Options
+	var options = {
+		enableAddRow: false,
+		enableCellNavigation: true,
+		enableColumnReorder: false,
+		enableAsyncPostRender: true,
+		forceFitColumns: false,
+		asyncPostRenderDelay: 15,
+		rowHeight: 29,
+		editable: true,
+		autoEdit: false,
+	//	enableTextSelectionOnCells: false,
+		asyncEditorLoading: false
+	};
+
+	var getWDiff = function() {
+		return (SmartCloud_DynLayout_Vertical_DynamicBar.getBarWidth() + 60);
+	}
+
+	var getHDiff = function() {
+		return 210;
+	}
+
+	// Grid sizing
+	var winW = jQuery(window).width();
+	var winH = jQuery(window).height();
+	jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - getWDiff()), 'height': parseInt(winH - getHDiff()) });
+	jQuery('#cloud_dynlayout_resizer_div').resize(function() {
+		winW = jQuery(window).width();
+		winH = jQuery(window).height();
+		jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - getWDiff()), 'height': parseInt(winH - getHDiff()) });
+		TheGrid.grid.resizeCanvas();
+		TheGrid.grid.autosizeColumns();
+	});
+
+	// Runtime
+	TheGrid.initNavPager('webmailNavPager', 3);
+	TheGrid.initGrid(columns, options);
+	TheGrid.grid.resizeCanvas();
+	TheGrid.grid.autosizeColumns();
+	TheGrid.loadGridData(0);
+
+});
+//--
+</script>

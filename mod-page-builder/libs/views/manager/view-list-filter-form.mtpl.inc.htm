@@ -1,4 +1,4 @@
-<!-- Pagebuilder/Manage @ List # Filter :: v.181120 -->
+<!-- Pagebuilder/Manage @ List # Filter :: v.20190107 -->
 <div style="height:5px;"></div>
 <form id="filtering" name="filtering" class="ux-form" action="[####LIST-FORM-URL|html####]" method="[####LIST-FORM-METHOD|html####]">
 	[%%%%LOOP:LIST-FORM-VARS%%%%]<input type="hidden" name="[####LIST-FORM-VARS.NAME|html####]" value="[####LIST-FORM-VARS.VALUE|html####]">[%%%%/LOOP:LIST-FORM-VARS%%%%]
@@ -12,7 +12,9 @@
 			<option value="ctrl">[####TXT-COL-CTRL|html####]</option>
 			<option value="code" title="[####HINT-1|html####]">[####TXT-COL-CODE|html####]</option>
 			<option value="data" title="[####HINT-1|html####]">[####TXT-COL-RUNTIME|html####]</option>
+			[%%%%IF:SHOW-TRANSLATIONS:==yes;%%%%]
 			<option value="translations" title="[####HINT-2|html####]">[####TXT-COL-TRANSL|html####]</option>
+			[%%%%/IF:SHOW-TRANSLATIONS%%%%]
 		</select>
 	</td>
 	<td style="width:1px;">
@@ -45,6 +47,13 @@
 	</td>
 	<td style="text-align:right; padding-right:10px;">
 		<span style="color:#CCCCCC; line-height:24px; font-size:24px; font-weight:bold;">[####LIST-RECORDS|html####]&nbsp;[####TXT-RECORDS|html####]<br><span id="infoTotalRows">[####FMT-LIST|html####]</span></span>
+	</td>
+	<td style="width:32px; text-align:right;">
+		[%%%%IF:DB-TYPE:==pgsql;%%%%]
+		<img width="32" height="32" src="lib/core/img/db/postgresql-logo.svg" alt="Powered by PostgreSQL DataBase" title="Powered by PostgreSQL DataBase" style="opacity:0.25; cursor:help;">
+		[%%%%ELSE:DB-TYPE%%%%]
+		<img width="32" height="32" src="lib/core/img/db/sqlite-logo.svg" alt="Powered by SQLite DataBase" title="Powered by SQLite DataBase" style="opacity:0.25; cursor:help;">
+		[%%%%/IF:DB-TYPE%%%%]
 	</td>
 	</tr></table>
 </form><!-- #END -->

@@ -1,8 +1,8 @@
 <?php
 // Controller: Cloud/Files
 // Route: admin.php/page/cloud.files/~
-// Author: unix-world.org
-// v.180206
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -42,7 +42,7 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs 
 		//--
 		if(SmartAuth::check_login() !== true) {
 			http_response_code(503);
-			echo \SmartComponents::http_message_500_internalerror('ERROR: WebDAV Invalid Auth ...');
+			echo \SmartComponents::http_message_503_serviceunavailable('ERROR: WebDAV Invalid Auth ...');
 			return;
 		} //end if
 		//--

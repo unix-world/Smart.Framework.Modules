@@ -194,3 +194,5 @@ class Converter implements ConverterInterface
 		return $path;
 	}
 }
+
+// #END

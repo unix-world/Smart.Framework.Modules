@@ -1,8 +1,8 @@
 <?php
 // Module Lib: OpenMaps Proxy Cache
 // Framework: Smart.Framework
-// Author: unix-world.org
-// r.181109
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 namespace SmartModExtLib\MapsCache;
 
@@ -240,7 +240,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 			$bwdata = (array) $httpclient->browse_url($url, 'GET');
 			//--
 			$tmp_validate_by_header = \SmartUtils::guess_image_extension_by_url_head($bwdata['headers']);
-			$tmp_validate_by_fbytes = \SmartUtils::guess_image_extension_by_first_bytes(substr($bwdata['content'], 0, 10));
+			$tmp_validate_by_fbytes = \SmartUtils::guess_image_extension_by_img_content(substr($bwdata['content'], 0, 256));
 			//--
 			$tmp_uniq_prefix = $file.'.tmp-'.$saferand;
 			$tmp_uniq_file = $tmp_uniq_prefix.'.download'.$ext;

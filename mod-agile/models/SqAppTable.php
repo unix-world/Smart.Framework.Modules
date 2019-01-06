@@ -1,6 +1,7 @@
 <?php
 // Class: \SmartModDataModel\Agile\SqAppTable
-// Author: unix-world.org
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 namespace SmartModDataModel\Agile;
 
@@ -21,7 +22,7 @@ abstract class SqAppTable {
 
 	// ->
 
-private $ver = 'r.181120';
+private $ver = 'r.20190107';
 private $db = null;
 private $sqdb = '#db/';
 private $tblname = 'data_objects';
@@ -212,8 +213,13 @@ final private function initDBSchema() {
 		$this->db->write_data('INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES (?, ?)', [ 'app-namespace', (string)$this->clsname ]);
 		$this->db->write_data('COMMIT');
 	} //end if
+	//--
 	if($this->db->check_if_table_exists((string)$this->tblname) != 1) {
 		return 0; // if fail to create table, stop
+	} //end if
+	//--
+	if(\Smart::random_number(0, 5000) == 2500) {
+		$this->db->write_data('VACUUM');
 	} //end if
 	//--
 	return 1;

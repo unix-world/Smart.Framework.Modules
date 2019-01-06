@@ -109,7 +109,7 @@ Here are the big ticket items you'll want to be aware of when moving from v3 to 
 
 - **Dropped panels, thumbnails, and wells** for a new all-encompassing component, [cards]({{ site.baseurl }}/docs/{{ site.docs_version }}/components/card/).
 - **Dropped the Glyphicons icon font.** If you need icons, some options are:
-  - the upstream version of [Glyphicons](https://glyphicons.com/)
+  - the upstream version of [Glyphicons](https://www.glyphicons.com/)
   - [Octicons](https://octicons.github.com/)
   - [Font Awesome](https://fontawesome.com/)
   - See the [Extend page]({{ site.baseurl }}/docs/{{ site.docs_version }}/extend/icons/) for a list of alternatives. Have additional suggestions? Please open an issue or PR.
@@ -171,7 +171,7 @@ New to Bootstrap 4 is the [Reboot]({{ site.baseurl }}/docs/{{ site.docs_version 
 
 - Renamed `.btn-default` to `.btn-secondary`.
 - Dropped the `.btn-xs` class entirely as `.btn-sm` is proportionally much smaller than v3's.
-- The [stateful button]({{ site.url }}/docs/3.3/javascript/#buttons-stateful) feature of the `button.js` jQuery plugin has been dropped. This includes the `$().button(string)` and `$().button('reset')` methods. We advise using a tiny bit of custom JavaScript instead, which will have the benefit of behaving exactly the way you want it to.
+- The [stateful button]({{ site.url }}/docs/3.4/javascript/#buttons-stateful) feature of the `button.js` jQuery plugin has been dropped. This includes the `$().button(string)` and `$().button('reset')` methods. We advise using a tiny bit of custom JavaScript instead, which will have the benefit of behaving exactly the way you want it to.
   - Note that the other features of the plugin (button checkboxes, button radios, single-toggle buttons) have been retained in v4.
 - Change buttons' `[disabled]` to `:disabled` as IE9+ supports `:disabled`. However `fieldset[disabled]` is still necessary because [native disabled fieldsets are still buggy in IE11](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset#Browser_compatibility).
 

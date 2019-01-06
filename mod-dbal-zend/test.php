@@ -2,8 +2,8 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Zend Dbal Test Sample
 // Route: ?/page/dbal-zend.test (?page=dbal-zend.test)
-// Author: unix-world.org
-// v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -30,37 +30,88 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		if(!defined('SMART_FRAMEWORK_TESTUNIT_ALLOW_ZEND_DBAL_TESTS') OR (SMART_FRAMEWORK_TESTUNIT_ALLOW_ZEND_DBAL_TESTS !== true)) {
+		if((!defined('SMART_FRAMEWORK_TESTUNIT_ALLOW_DATABASE_TESTS')) OR (SMART_FRAMEWORK_TESTUNIT_ALLOW_DATABASE_TESTS !== true)) {
 			$this->PageViewSetErrorStatus(503, 'ERROR: Zend/DBAL Test mode is disabled ...');
 			return;
 		} //end if
 		//--
 
 		//--
-		$conf_sqlite = [
-			'driver'   => 'pdo_sqlite',
-			'database' => 'tmp/zend-test.sqlite'
-		];
-		//--
-		$conf_mysql = [
-			'host'     => '127.0.0.1',
-			'driver'   => 'pdo_mysql',
-			'database' => 'smart_framework',
-			'username' => 'root',
-			'password' => 'root'
-		];
-		//--
-		$conf_pgsql = [
-			'host'     => '127.0.0.1',
-			'driver'   => 'pdo_pgsql',
-			'database' => 'smart_framework',
-			'username' => 'pgsql',
-			'password' => 'pgsql'
-		];
+		$driver = $this->RequestVarGet('driver', '', 'string');
 		//--
 
 		//--
-		$db = new \SmartModExtLib\DbalZend\DbalPdo((array)$conf_sqlite);
+		$configs = [];
+		//--
+		$configs['zend-dbal']['pdo_sqlite'] = Smart::get_from_config('zend-dbal.pdo_sqlite');
+		if(Smart::array_size($configs['zend-dbal']['pdo_sqlite']) <= 0) {
+			$configs['zend-dbal']['pdo_sqlite']					= array();
+			$configs['zend-dbal']['pdo_sqlite']['driver'] 		= 'PDO_SQLITE';
+			$configs['zend-dbal']['pdo_sqlite']['database'] 	= 'tmp/zend-test.sqlite';
+		} //end if
+		//--
+		$configs['zend-dbal']['pdo_pgsql'] = Smart::get_from_config('zend-dbal.pdo_pgsql');
+		if(Smart::array_size($configs['zend-dbal']['pdo_pgsql']) <= 0) {
+			$configs['zend-dbal']['pdo_pgsql']					= array();
+			$configs['zend-dbal']['pdo_pgsql']['driver'] 		= 'PDO_PGSQL';
+			$configs['zend-dbal']['pdo_pgsql']['database'] 		= 'smart_framework';
+			$configs['zend-dbal']['pdo_pgsql']['host'] 			= '127.0.0.1';
+			$configs['zend-dbal']['pdo_pgsql']['port'] 			= 5432;
+			$configs['zend-dbal']['pdo_pgsql']['username'] 		= 'pgsql';
+			$configs['zend-dbal']['pdo_pgsql']['password'] 		= 'pgsql';
+		} //end if
+		//--
+		$configs['zend-dbal']['pdo_mysql'] = Smart::get_from_config('zend-dbal.pdo_mysql');
+		if(Smart::array_size($configs['zend-dbal']['pdo_mysql']) <= 0) {
+			$configs['zend-dbal']['pdo_mysql']					= array();
+			$configs['zend-dbal']['pdo_mysql']['driver'] 		= 'PDO_MYSQL';
+			$configs['zend-dbal']['pdo_mysql']['database'] 		= 'smart_framework';
+			$configs['zend-dbal']['pdo_mysql']['host'] 			= '127.0.0.1';
+			$configs['zend-dbal']['pdo_mysql']['port'] 			= 3306;
+			$configs['zend-dbal']['pdo_mysql']['username'] 		= 'root';
+			$configs['zend-dbal']['pdo_mysql']['password'] 		= 'root';
+		} //end if
+		//--
+
+		//--
+		$zconf = [];
+		switch((string)$driver) {
+			case 'sqlite':
+				if(Smart::array_size($configs['zend-dbal']['pdo_sqlite']) <= 0) {
+					$this->PageViewSetErrorStatus(500, 'ERROR: Zend/DBAL Test: Invalid Config: SQLite');
+					return;
+				} //end if
+				$zconf = (array) $configs['zend-dbal']['pdo_sqlite'];
+				break;
+			case 'pgsql':
+				if(Smart::array_size($configs['zend-dbal']['pdo_pgsql']) <= 0) {
+					$this->PageViewSetErrorStatus(500, 'ERROR: Zend/DBAL Test: Invalid Config: PostgreSQL');
+					return;
+				} //end if
+				$zconf = (array) $configs['zend-dbal']['pdo_pgsql'];
+				break;
+			case 'mysql':
+				if(Smart::array_size($configs['zend-dbal']['pdo_mysql']) <= 0) {
+					$this->PageViewSetErrorStatus(500, 'ERROR: Zend/DBAL Test: Invalid Config: MySQL');
+					return;
+				} //end if
+				$zconf = (array) $configs['zend-dbal']['pdo_mysql'];
+				break;
+			default:
+				$this->PageViewSetErrorStatus(400, 'ERROR: Zend/DBAL Test: Invalid Driver Selected: `'.$driver.'`');
+				return;
+		} //end switch
+		//--
+
+		//--
+		if(Smart::array_size($zconf) <= 0) {
+			$this->PageViewSetErrorStatus(500, 'ERROR: Zend/DBAL Test: Invalid Config Detected ...');
+			return;
+		} //end if
+		//--
+
+		//--
+		$db = new \SmartModExtLib\DbalZend\DbalPdo((array)$zconf);
 		//--
 		$adapter = $db->getConnection();
 		//--
@@ -158,7 +209,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$this->PageViewSetVars([
 			'title' => 'Test: Zend DBAL',
-			'main'  => '<h1>Zend DBAL('.Smart::escape_html($db->getDriver()).'): All Tests Done ... OK</h1>'
+			'main'  => '<h1 id="qunit-test-result">Test OK: Zend-DBAL/PDO-'.Smart::escape_html(strtoupper((string)$driver)).'.</h1><br><h2>Driver: '.Smart::escape_html($db->getDriver())
 		]);
 		//--
 

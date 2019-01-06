@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\PageBuilder\AbstractFrontendController
-// (c) 2006-2018 unix-world.org - all rights reserved
-// Author: Radu Ovidiu I.
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 namespace SmartModExtLib\PageBuilder;
 
@@ -30,7 +30,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.181121
+ * @version 	v.20190107
  * @package 	PageBuilder
  *
  */
@@ -342,6 +342,15 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 	//=====
 
 
+	//=====
+	final public function checkIfPageOrSegmentExist($y_id) {
+		//--
+		return (bool) \SmartModDataModel\PageBuilder\PageBuilderFrontend::checkIfPageOrSegmentExist((string)$y_id);
+		//--
+	} //END FUNCTION
+	//=====
+
+
 	//##### [ PRIVATES ] #####
 
 
@@ -420,7 +429,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 
 		//--
-		$arr = (array) \SmartModDataModel\PageBuilder\PgPageBuilderFrontend::getSegment((string)$id, (string)$this->crr_lang);
+		$arr = (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getSegment((string)$id, (string)$this->crr_lang);
 		//--
 		if((string)$arr['id'] == '') {
 			\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Settings Segment: '.$id.' in Page: '.implode(';', $this->current_page)); // log warning, this is internal, by page settings
@@ -515,7 +524,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 		if((string)$type == 'segment') {
 			//--
-			$arr = (array) \SmartModDataModel\PageBuilder\PgPageBuilderFrontend::getSegment((string)$id, (string)$this->crr_lang);
+			$arr = (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getSegment((string)$id, (string)$this->crr_lang);
 			//--
 			if((string)$arr['id'] == '') {
 				$this->PageViewSetErrorStatus(500, 'Invalid PageBuilder Page Segment');
@@ -531,7 +540,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			//--
 		} else { // page
 			//--
-			$arr = (array) \SmartModDataModel\PageBuilder\PgPageBuilderFrontend::getPage((string)$id, (string)$this->crr_lang);
+			$arr = (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getPage((string)$id, (string)$this->crr_lang);
 			//--
 			if((string)$arr['id'] == '') {
 				$this->PageViewSetErrorStatus(404, 'Invalid PageBuilder Page');

@@ -1,11 +1,8 @@
 # Smart.Framework.Modules - a collection of modules for Smart.Framework
-(c) 2009 - 2018 unix-world.org
+(c) 2009 - 2019 unix-world.org
 License: BSD
 
 ## Extra Modules:
-	* AuthAdmins: a general API for implement authentication in Smart.Framework admin area (admin.php)
-	* SocialMedia Facebook: Js + PHP API
-	* SocialMedia Twitter: Js + PHP API
 	* UI Fonts: Web fonts + Captcha fonts
 	* UI Bootstrap: CSS + Javascript UI Toolkit
 	* UI Uikit: CSS + Javascript UI Toolkit
@@ -19,20 +16,23 @@ License: BSD
 	* Twig Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl-twig into smart-framework/modules/
 	* TYPO3Flow Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl-typo3-fluid into smart-framework/modules/
 	* Zend DBAL: PDO based connector for: PgSQL, MySQL and SQLite
+	* MediaGallery: a media gallery api for Smart.Framework
+	* SocialMedia Facebook: Js + PHP API
+	* SocialMedia Twitter: Js + PHP API
+
+## Extra App Modules:
 	* SVN (manager): a SVN (subversion) web based manager
 	* Cloud (manager): an advanced Cloud Api: WebDAV, CalDAV / WebCal and CardDAV / WebAddressbook
-	* Agile (manager): an agile management API for Smart.Framework
+	* Agile (manager): an Agile project management API for Smart.Framework
 	* PageBuilder: a content management API for Smart.Framework
-	* MediaGallery: a media gallery api for Smart.Framework
 
 ## Extra Libs:
-	* MySQLi: connector for MySQL: 5.0, 5.1, 5.5, 5.6, 5.7 / MariaDB: 5.x, 10.x / Percona Server: 5.1 / 5.5 / 5.6 / 5.7 (or later versions)
-	* PostgreSQL Extended connector: make life easier for the Smart.Framework PostgreSQL connector by providing a more adaptable object
+	* PostgreSQL Extended connector: make life easier for the Smart.Framework PostgreSQL connector by providing an advanced functionality class
 	* Solr: connector for Apache Solr 3.x / 4.x / 5.x / 6.x / 7.x (or later versions)
 	* CURL based HTTP Client Lib with proxy support
 	* LangID.py client wrapper (a language detection utility based on external service)
 	* Charting library for drawing charts with PHP
-	* Twig wrapper Lib for the includded Twig module (this make life easier with implementing a static Twig API for Smart.Framework)
+	* TPL wrapper Lib for the includded TPL engines (this make life easier with existing TPL engines in Smart.Framework: MarkersTPL and Smart.Framework.Modules: netteLatte, Twig and typo3Fluid)
 
 ## Vendor Libs:
 	* CSS and JS Minify vendor/MatthiasMullie

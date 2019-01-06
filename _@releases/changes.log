@@ -1,6 +1,19 @@
 
 # CHANGELOG / MIGRATION NOTES - SMART.FRAMEWORK.MODULES #
 
+January 03, 2019 :: Version 3.7.8
+	* new modules: NetteLatte, MapsCache, UI Bootstrap v4
+	* new app modules: Agile, SVN
+	* moved lib MySQL / MariaDB from Smart.Framework.Modules to Smart.Framework
+	* bug fixes and optimizations
+	* fix compatibility with PHP 7.3 for all code
+	* updated: vendor, TplTwig, ZendDBAL, SmTwiter, SmFacebook
+
+October 10, 2018 :: Version 3.7.7
+	* new modules: ZendDBAL, TplTypo3Fluid
+	* new app modules: Cloud, PageBuilder
+	* bug fixes and optimizations
+
 March 09, 2018 :: Version 3.7.5
 	* many optimizations and fixes
 

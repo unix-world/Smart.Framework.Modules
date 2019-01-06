@@ -1,8 +1,8 @@
 <?php
 // Controller: PageBuilder/Manage
 // Route: ?/page/page-builder.manage
-// Author: unix-world.org
-// r.181123
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 //----------------------------------------------------- PREVENT S EXECUTION
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -17,13 +17,14 @@ define('SMART_APP_MODULE_AUTH', true);
 
 final class SmartAppAdminController extends SmartAbstractAppController {
 
+	// r.20190107
 
 	public function Run() {
 
-		//-- test DB
-		if(Smart::array_size($this->ConfigParamGet('pgsql')) <= 0) {
-			$this->PageViewSetErrorStatus(503, 'ERROR: Service Unavailable, Database not set ...');
-			return;
+		//--
+		if(SmartAuth::check_login() !== true) {
+			$this->PageViewSetCfg('error', 'PageBuilder Manage Requires Authentication ! ...');
+			return 403;
 		} //end if
 		//--
 

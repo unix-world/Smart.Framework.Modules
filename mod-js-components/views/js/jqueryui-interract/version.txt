@@ -1,6 +1,3 @@
 
-# Smart.Framework.Modules / UI jQueryUI Interract (Core, Interractions, Widgets[Mouse], Effects[Core, Fade]) 1.12.1 ; TouchPunch 0.2.3 #
+jQueryUI Interract (Core, Interractions, Widgets[Mouse], Effects[Core, Fade]) 1.12.1 ; TouchPunch 0.2.3
 
-// v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
-
-###

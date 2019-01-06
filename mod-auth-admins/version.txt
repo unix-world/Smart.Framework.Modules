@@ -1,6 +1,0 @@
-
-# Smart.Framework.Modules / AuthAdmins v.181112 #
-
-// v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
-
-###

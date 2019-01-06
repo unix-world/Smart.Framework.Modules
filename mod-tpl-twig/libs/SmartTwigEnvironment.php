@@ -1,7 +1,8 @@
 <?php
-// Twig Templating Advanced Environment for Smart.Framework
-// Module Library
-// v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
+// Class: \SmartModExtLib\TplTwig\SmartTwigEnvironment
+// [Smart.Framework.Modules - Twig / Environment for Smart.Framework]
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 namespace SmartModExtLib\TplTwig;
 

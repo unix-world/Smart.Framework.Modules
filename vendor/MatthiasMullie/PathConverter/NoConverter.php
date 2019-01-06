@@ -21,3 +21,5 @@ class NoConverter implements ConverterInterface
 		return $path;
 	}
 }
+
+// #END

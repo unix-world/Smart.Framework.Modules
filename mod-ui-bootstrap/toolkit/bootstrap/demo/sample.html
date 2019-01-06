@@ -3,6 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Boostrap v3 UI Toolkit Demo</title>
+	<link rel="stylesheet" type="text/css" href="../../../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+	<style type="text/css">
+	* {
+		font-family: 'IBM Plex Sans',arial,sans-serif;
+	}
+	</style>
 	<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
 	<link rel="stylesheet" href="../css/bootstrap.css">
 	<script src="../js/bootstrap.js"></script>
@@ -10,8 +16,8 @@
 </head>
 <body>
 <center>
-	<div><h1 style="display:inline; font-weight:bold;">Smart Framework / UI Toolkit Plugins - Demo</h1></div>
-	<div><h2 style="display:inline; color:#5A4080;"><span style="cursor:help;" title="https://getbootstrap.com/docs/3.3/"><i>Bootstrap</i></span> is the most popular CSS/JS front-end Toolkit for developing responsive and mobile web interfaces</h2></div>
+	<div><h1 style="display:inline; font-weight:bold;">Smart.Framework / UI Toolkit Plugins - Demo</h1></div>
+	<div><h2 style="display:inline; color:#5A4080;"><span style="cursor:help;" title="https://getbootstrap.com/docs/3.4/"><i>Bootstrap v3</i></span> is a very popular CSS/JS front-end Toolkit<br>for developing responsive and mobile web interfaces</h2></div>
 </center>
 <br>
 <br>
@@ -19,8 +25,8 @@
 
 	<!-- Main jumbotron for a primary marketing message or call to action -->
 	<div class="jumbotron">
-		<h1 style="display:inline-block;">Bootstrap v3 Theme - Overview</h1>
-		<p>This is the default theme included in Bootstrap v3. Use it as a starting point to create something more unique by building on or modifying it.</p>
+		<h1 style="display:inline-block; font-size:4rem;"><img src="../../logo.svg" height="64"> &nbsp; Bootstrap v.3.4.0 Theme - Overview</h1>
+		<p>This is the default theme included in Bootstrap v3. Use it as a starting point to create something more unique by building on or modifying it.<br><a href="../../bootstrap4/demo/sample.html">See also Bootstrap v4</a></p>
 	</div>
 
 	<div class="page-header">
@@ -506,6 +512,47 @@
 	</div>
 
 	<div class="page-header">
+		<h1>Collapse (Accordion)</h1>
+	</div>
+	<div class="panel-group" id="accordion">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+				Collapsible Group 1</a>
+			  </h4>
+			</div>
+			<div id="collapse1" class="panel-collapse collapse in">
+				<div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+				Collapsible Group 2</a>
+			  </h4>
+			</div>
+			<div id="collapse2" class="panel-collapse collapse">
+				<div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+				Collapsible Group 3</a>
+			  </h4>
+			</div>
+			<div id="collapse3" class="panel-collapse collapse">
+				<div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+			</div>
+		</div>
+	</div>
+	<br>
+	<br>
+
+	<div class="page-header">
 		<h1>Panels</h1>
 	</div>
 	<div class="row">
@@ -604,6 +651,110 @@
 			<span class="sr-only">Next</span>
 		</a>
 	</div>
+
+	<div class="page-header">
+		<h1>Breadcrumbs</h1>
+	</div>
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item active" aria-current="page">Home</li>
+		</ol>
+	</nav>
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="#">Home</a></li>
+			<li class="breadcrumb-item active" aria-current="page">Library</li>
+		</ol>
+	</nav>
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="#">Home</a></li>
+			<li class="breadcrumb-item"><a href="#">Library</a></li>
+			<li class="breadcrumb-item active" aria-current="page">Data</li>
+		</ol>
+	</nav>
+	<br>
+
+	<div class="page-header">
+		<h1>Jumbotrons</h1>
+	</div>
+	<div class="jumbotron">
+		<h1 class="display-4">Hello, world!</h1>
+		<p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+		<hr class="my-4">
+		<p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+		<a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+	</div>
+	<div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1 class="display-4">Fluid jumbotron</h1>
+			<p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+		</div>
+	</div>
+	<br>
+
+	<div class="page-header">
+		<h1>Modals</h1>
+	</div>
+	<!-- Button trigger modal -->
+	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+		Launch demo modal
+	</button>
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Title</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			</div>
+			<div class="modal-body">
+			... this is a modal ...
+			</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+		</div>
+	</div>
+	<!-- Demo -->
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title">Modal title</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">×</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<p>Modal body text goes here.</p>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary">Save changes</button>
+		</div>
+		</div>
+	</div>
+	<br>
+	<br>
+
+	<div class="page-header">
+		<h1>Pagination</h1>
+	</div>
+	<nav aria-label="Page navigation example">
+		<ul class="pagination">
+			<li class="page-item"><a class="page-link" href="#" onClick="return false;">Previous</a></li>
+			<li class="page-item"><a class="page-link" href="#" onClick="return false;">1</a></li>
+			<li class="page-item"><a class="page-link" href="#" onClick="return false;">2</a></li>
+			<li class="page-item"><a class="page-link" href="#" onClick="return false;">3</a></li>
+			<li class="page-item"><a class="page-link" href="#" onClick="return false;">Next</a></li>
+		</ul>
+	</nav>
+	<br>
+	<br>
 
 	<div class="page-header">
 		<h1>Bootstrap grid examples</h1>

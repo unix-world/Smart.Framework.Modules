@@ -2,8 +2,8 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: PageBuilder/TestFrontend
 // Route: ?page=page-builder.test-frontend&section=test-page
-// Author: unix-world.org
-// r.181120
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 //----------------------------------------------------- PREVENT S EXECUTION
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -29,9 +29,9 @@ final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\Abstract
 			$this->PageViewSetErrorStatus(503, 'ERROR: Test mode is disabled ...');
 			return;
 		} //end if
-		//-- test DB
-		if(Smart::array_size($this->ConfigParamGet('pgsql')) <= 0) {
-			$this->PageViewSetErrorStatus(503, 'ERROR: Service Unavailable, Database not set ...');
+		//--
+		if(!$this->checkIfPageOrSegmentExist('test-page')) {
+			$this->PageViewSetErrorStatus(404, 'PageBuilder SampleData Not Found ...');
 			return;
 		} //end if
 		//--

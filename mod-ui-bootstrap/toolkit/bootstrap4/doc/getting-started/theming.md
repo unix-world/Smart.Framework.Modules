@@ -4,7 +4,6 @@ title: Theming Bootstrap
 description: Customize Bootstrap 4 with our new built-in Sass variables for global style preferences for easy theming and component changes.
 group: getting-started
 toc: true
-redirect_from: "/docs/4.1/getting-started/options/"
 ---
 
 ## Introduction
@@ -293,7 +292,7 @@ We use a subset of all colors to create a smaller color palette for generating c
 
 ### Grays
 
-An expansive set of gray variables and a Sass map in `scss/_variables.scss` for consistent shades of gray across your project.
+An expansive set of gray variables and a Sass map in `scss/_variables.scss` for consistent shades of gray across your project. Note that these are "cool grays", which tend towards a subtle blue tone, rather than neutral grays.
 
 <div class="row mb-3">
   <div class="col-md-4">

@@ -2,7 +2,14 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>jQuery UI Example Page</title>
+	<title>jQuery UI Sample (Demo)</title>
+
+	<link rel="stylesheet" type="text/css" href="../../../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+	<style type="text/css">
+	* {
+		font-family: 'IBM Plex Sans',arial,sans-serif;
+	}
+	</style>
 
 	<script src="../../../../../lib/js/jquery/jquery.js"></script>
 	<link href="jquery-ui.css" rel="stylesheet">
@@ -11,8 +18,8 @@
 
 	<style>
 	body{
-		font-family: "Trebuchet MS", sans-serif;
 		margin: 50px;
+		margin-top: 10px;
 	}
 	.demoHeaders {
 		margin-top: 2em;
@@ -54,15 +61,15 @@
 	</style>
 </head>
 <body>
+<h1>Smart.Framework / UI Toolkit Plugins - Demo</h1>
+<h2 style="display:inline; color:#faa523;"><span style="cursor:help;" title="https://jqueryui.com"><i>jQuery UI</i></span>, a curated set of user interface interactions, effects, widgets, and themes built on top of the jQuery JavaScript Library</h2>
 
-<h1>Welcome to jQuery UI!</h1>
-
-<div class="ui-widget">
-	<p>This page demonstrates the widgets and theme you selected in Download Builder. Please make sure you are using them with a compatible jQuery version.</p>
+<br>
+<br>
+<div class="ui-widget" style="background:#ECECEC; padding:10px;">
+	<h1><img src="../../logo.svg" height="48" align="left"> &nbsp; jQuery UI v.1.12.1 Theme - Overview</h1>
+	<p>This is the default theme included with jQuery UI.</p>
 </div>
-
-<h1>YOUR COMPONENTS:</h1>
-
 
 <!-- Accordion -->
 <h2 class="demoHeaders">Accordion</h2>
@@ -86,14 +93,14 @@
 
 
 <!-- Button -->
-<h2 class="demoHeaders">Button</h2>
+<h2 class="demoHeaders">Buttons</h2>
 <button id="button">A button element</button>
 <button id="button-icon">An icon-only button</button>
 
 
 
 <!-- Checkboxradio -->
-<h2 class="demoHeaders">Checkboxradio</h2>
+<h2 class="demoHeaders">Checkbox / Radio</h2>
 <form style="margin-top: 1em;">
 	<div id="radioset">
 		<input type="radio" id="radio1" name="radio"><label for="radio1">Choice 1</label>
@@ -105,7 +112,7 @@
 
 
 <!-- Controlgroup -->
-<h2 class="demoHeaders">Controlgroup</h2>
+<h2 class="demoHeaders">Control Group</h2>
 <fieldset>
 	<legend>Rental Car</legend>
 	<div id="controlgroup">
@@ -173,7 +180,7 @@
 
 
 
-<h2 class="demoHeaders">Framework Icons (content color preview)</h2>
+<h2 class="demoHeaders">Icons (content color preview)</h2>
 <ul id="icons" class="ui-widget ui-helper-clearfix">
 	<li class="ui-state-default ui-corner-all" title=".ui-icon-caret-1-n"><span class="ui-icon ui-icon-caret-1-n"></span></li>
 	<li class="ui-state-default ui-corner-all" title=".ui-icon-caret-1-ne"><span class="ui-icon ui-icon-caret-1-ne"></span></li>

@@ -2,8 +2,8 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: NetteLatte Templating Test Sample
 // Route: ?/page/tpl-nette-latte.test (?page=tpl-nette-latte.test)
-// Author: unix-world.org
-// v.3.7.7 r.2018.10.19 / smart.framework.v.3.7
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -55,7 +55,8 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$data = [ // variables are case insensitive in controllers ; the template will use all lowercase variables for this instance of Latte ; array keys that contain - and . will be replaced recursive by _ to make compliant with PHP variable names
+		$data = [ // v.181222
+			// ### variables are case insensitive in controllers on the 1st level ; the template will use all lowercase variables for this instance of Latte ; array keys that contain - and . will be replaced recursive by _ to make compliant with PHP variable names
 			'Version' => (string) \SmartModExtLib\TplNetteLatte\Templating::getVersion(),
 			'heLLo-.World' => '<h1>Demo: nette/Latte Templating as module for Smart.Framework</h1>',
 			'navigatioN' => [
@@ -68,6 +69,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				['a1' => '2.1', 'a2' => '2.2', 'a3' => '2.3'],
 				['a1' => '3.1', 'a2' => '3.2', 'a3' => '3.3']
 			],
+			'Tcount' => 3,
 			'a' => 'Test-1',
 			'B' => 'Test-2'
 		];

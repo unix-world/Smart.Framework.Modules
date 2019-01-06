@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Abstract minifier class
+ *
+ * Please report bugs on https://github.com/matthiasmullie/minify/issues
+ *
+ * @author Matthias Mullie <minify@mullie.eu>
+ * @copyright Copyright (c) 2012, Matthias Mullie. All rights reserved
+ * @license MIT License
+ */
 namespace MatthiasMullie\Minify;
 
 use MatthiasMullie\Minify\Exceptions\IOException;
@@ -234,7 +243,7 @@ abstract class Minify
 
 				// we can safely ignore patterns for positions we've unset earlier,
 				// because we know these won't show up anymore
-				if (!isset($positions[$i])) {
+				if (array_key_exists($i, $positions) == false) {
 					continue;
 				}
 
@@ -450,3 +459,5 @@ abstract class Minify
 		}
 	}
 }
+
+// #END

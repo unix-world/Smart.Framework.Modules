@@ -1,7 +1,6 @@
 <!-- start latte template -->
 {* Template: sample.latte.htm *}<!-- comments are removed -->
 <div align="center">
-	<br>
 	<div>
 		<a href="//latte.nette.org/en/" target="_blank"><img src="{$Tpl_Dir__}img/nette-latte.svg" width="160" height="160"></a>
 		<br>
@@ -17,24 +16,6 @@
 	</div>
 	<br>
 	{include 'sample-partial.latte.inc.htm'}
-	<ul>
-	{foreach $navigation as $item}
-		<li><a href="{$item['href']}">{$item['caption']}</a></li>
-	{/foreach}
-	</ul>
-	Test Condition#1:
-	{if $a == 'Test-1'}
-		<b>OK</b>
-	{else}
-		<span style="color:#FF3300;"><b>NOT OK</b></span>
-	{/if}
-	<br>
-	Test Condition#2:
-	{if $b == $a}
-		<span style="color:#FF3300;"><b>NOT OK</b></span>
-	{else}
-		<b>OK</b>
-	{/if}
 </div>
 <!-- end latte template -->
 {* <pre>{dump}</pre> *}
