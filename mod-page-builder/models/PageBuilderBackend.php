@@ -17,7 +17,10 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //===================================================================================== CLASS START
 //=====================================================================================
 
-
+/**
+ * SQLite/PostgreSQL Model for ModPageBuilder/Backend
+ * @ignore
+ */
 final class PageBuilderBackend {
 
 	// ::

@@ -15,6 +15,12 @@ define('SMART_APP_MODULE_AREA', 'ADMIN');
 define('SMART_APP_MODULE_AUTH', true);
 
 
+/**
+ * PageBuilder Manage
+ *
+ * @ignore
+ *
+ */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
 	// r.20190107

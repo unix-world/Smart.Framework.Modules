@@ -17,8 +17,6 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //===================================================================================== CLASS START
 //=====================================================================================
 
-// TODO: use extend from SmartAbstractAppController instead of this !!!
-
 /**
  * Class: AbstractFrontendPlugin - Abstract Frontend Plugin, provides the Abstract Definitions to create PageBuilder (Frontend) Plugins.
  *

@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Class SmartModExtLib\TplTypo3Fluid\Templating | Smart.Framework Documentation :: 2019-01-07 13:01</title>
+	<title>Class SmartModExtLib\TplNetteLatte\Templating | Smart.Framework Documentation :: 2019-01-07 13:01</title>
 	<link rel="stylesheet" href="resources/style.css?2361662816">
 	<script src="resources/combined.js?4174473549"></script>
 	<script src="elementlist.js?1757911618"></script>
@@ -28,9 +28,9 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
-				<li><a href="class-SmartModExtLib.TplNetteLatte.Templating.html">SmartModExtLib\TplNetteLatte\Templating</a></li>
+				<li class="active"><a href="class-SmartModExtLib.TplNetteLatte.Templating.html">SmartModExtLib\TplNetteLatte\Templating</a></li>
 				<li><a href="class-SmartModExtLib.TplTwig.Templating.html">SmartModExtLib\TplTwig\Templating</a></li>
-				<li class="active"><a href="class-SmartModExtLib.TplTypo3Fluid.Templating.html">SmartModExtLib\TplTypo3Fluid\Templating</a></li>
+				<li><a href="class-SmartModExtLib.TplTypo3Fluid.Templating.html">SmartModExtLib\TplTypo3Fluid\Templating</a></li>
 			</ul>
 
 
@@ -78,7 +78,7 @@
 
 	<div class="description">
 	
-<p>Provides connector for TYPO3 Fluid Templating inside the Smart.Framework.</p>
+<p>Provides connector for Nette Latte Templating inside the Smart.Framework.</p>
 
 <pre>
 
@@ -89,9 +89,9 @@ class="php-var">$this</span>-&gt;PageViewSetVar(
     <span
 class="php-quote">'main'</span>,
     (<span
-class="php-keyword1">new</span> \SmartModExtLib\TplTypo3Fluid\Templating())-&gt;render_file_template(
+class="php-keyword1">new</span> \SmartModExtLib\TplNetteLatte\Templating())-&gt;render_file_template(
         <span
-class="php-quote">'modules/my-module-name/views/myView.t3fluid.htm'</span>,
+class="php-quote">'modules/my-module-name/views/myView.latte.htm'</span>,
         [
             <span
 class="php-quote">'someVar'</span> =&gt; <span
@@ -119,17 +119,17 @@ class="php-quote">'Y-m-d H:i:s'</span>)
 	<div class="info">
 		<b>Final</b><br>
 		
-		<b>Namespace:</b> SmartModExtLib\TplTypo3Fluid<br>
+		<b>Namespace:</b> SmartModExtLib\TplNetteLatte<br>
 		<b>Package:</b> <a href="package-Templating.Engines.html">Templating:Engines</a><br>
 
 				<b>Version:</b>
 				v.181217<br>
 				<b>Depends:</b>
-				extensions: classes: TYPO3Fluid<br>
+				extensions: classes: NetteLatte<br>
 				<b>Usage:</b>
 				dynamic object: (new Class())-&gt;method() - This class provides only DYNAMIC
 methods<br>
-		<b>Located at</b> modules/mod-tpl-typo3-fluid/libs/Templating.php<br>
+		<b>Located at</b> modules/mod-tpl-nette-latte/libs/Templating.php<br>
 	</div>
 
 
@@ -232,27 +232,6 @@ methods<br>
 
 
 
-	<table class="summary constants" id="constants">
-	<caption>Constants summary</caption>
-	<tr data-order="FLUID_VERSION" id="FLUID_VERSION">
-
-		<td class="attributes"><code>string</code></td>
-		<td class="name">
-			<code>
-<b>FLUID_VERSION</b>			</code>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</td>
-		<td class="value"><div><a href="#FLUID_VERSION" class="anchor">#</a><code><span class="php-quote">'master@181208'</span></code></div></td>
-	</tr>
-	</table>
 
 
 

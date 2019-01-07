@@ -18,11 +18,6 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //=====================================================================================
 
 /**
- * Frontend Abstract Controller :: PageBuilder
- * @ignore
- */
-
-/**
  * Class: AbstractFrontendController - Abstract Frontend Controller, provides the Abstract Definitions to create PageBuilder (Frontend) Controllers.
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
