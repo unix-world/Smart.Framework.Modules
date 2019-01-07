@@ -52,24 +52,36 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$configs['zend-dbal']['pdo_pgsql'] = Smart::get_from_config('zend-dbal.pdo_pgsql');
 		if(Smart::array_size($configs['zend-dbal']['pdo_pgsql']) <= 0) {
-			$configs['zend-dbal']['pdo_pgsql']					= array();
-			$configs['zend-dbal']['pdo_pgsql']['driver'] 		= 'PDO_PGSQL';
-			$configs['zend-dbal']['pdo_pgsql']['database'] 		= 'smart_framework';
-			$configs['zend-dbal']['pdo_pgsql']['host'] 			= '127.0.0.1';
-			$configs['zend-dbal']['pdo_pgsql']['port'] 			= 5432;
-			$configs['zend-dbal']['pdo_pgsql']['username'] 		= 'pgsql';
-			$configs['zend-dbal']['pdo_pgsql']['password'] 		= 'pgsql';
+			$cfg_pgsql = Smart::get_from_config('pgsql');
+			$configs['zend-dbal']['pdo_pgsql']						= array();
+			if(Smart::array_size($cfg_pgsql) > 0) {
+				$configs['zend-dbal']['pdo_pgsql']['driver'] 		= 'PDO_PGSQL';
+				$configs['zend-dbal']['pdo_pgsql']['database'] 		= (string) $cfg_pgsql['dbname'];
+				$configs['zend-dbal']['pdo_pgsql']['host'] 			= (string) $cfg_pgsql['server-host'];
+				$configs['zend-dbal']['pdo_pgsql']['port'] 			= (int)    $cfg_pgsql['server-port'];
+				$configs['zend-dbal']['pdo_pgsql']['username'] 		= (string) $cfg_pgsql['username'];
+				$configs['zend-dbal']['pdo_pgsql']['password'] 		= (string) base64_decode((string)$cfg_pgsql['password']);
+			} else {
+				$configs['zend-dbal']['pdo_pgsql']['database'] 		= 'smart_framework';
+				$configs['zend-dbal']['pdo_pgsql']['host'] 			= '127.0.0.1';
+				$configs['zend-dbal']['pdo_pgsql']['port'] 			= 5432;
+				$configs['zend-dbal']['pdo_pgsql']['username'] 		= 'pgsql';
+				$configs['zend-dbal']['pdo_pgsql']['password'] 		= 'pgsql';
+			} //end if else
 		} //end if
 		//--
 		$configs['zend-dbal']['pdo_mysql'] = Smart::get_from_config('zend-dbal.pdo_mysql');
 		if(Smart::array_size($configs['zend-dbal']['pdo_mysql']) <= 0) {
-			$configs['zend-dbal']['pdo_mysql']					= array();
-			$configs['zend-dbal']['pdo_mysql']['driver'] 		= 'PDO_MYSQL';
-			$configs['zend-dbal']['pdo_mysql']['database'] 		= 'smart_framework';
-			$configs['zend-dbal']['pdo_mysql']['host'] 			= '127.0.0.1';
-			$configs['zend-dbal']['pdo_mysql']['port'] 			= 3306;
-			$configs['zend-dbal']['pdo_mysql']['username'] 		= 'root';
-			$configs['zend-dbal']['pdo_mysql']['password'] 		= 'root';
+			$cfg_mysqli = Smart::get_from_config('mysqli');
+			$configs['zend-dbal']['pdo_mysql']						= array();
+			if(Smart::array_size($cfg_mysqli) > 0) {
+				$configs['zend-dbal']['pdo_mysql']['driver'] 		= 'PDO_MYSQL';
+				$configs['zend-dbal']['pdo_mysql']['database'] 		= (string) $cfg_mysqli['dbname'];
+				$configs['zend-dbal']['pdo_mysql']['host'] 			= (string) $cfg_mysqli['server-host'];
+				$configs['zend-dbal']['pdo_mysql']['port'] 			= (int)    $cfg_mysqli['server-port'];
+				$configs['zend-dbal']['pdo_mysql']['username'] 		= (string) $cfg_mysqli['username'];
+				$configs['zend-dbal']['pdo_mysql']['password'] 		= (string) base64_decode((string)$cfg_mysqli['password']);
+			} //end if else
 		} //end if
 		//--
 

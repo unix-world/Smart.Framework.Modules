@@ -34,8 +34,8 @@ final class Utils {
 
 	// ::
 
-	const REGEX_PLACEHOLDERS = '/\{\{\:[A-Z0-9_\-\.]+\:\}\}/';
-	const REGEX_MARKERS = '/\{\{\=\#[A-Z0-9_\-\.]+(\|[a-z0-9]+)*\#\=\}\}/';
+	const REGEX_PLACEHOLDERS 	= '/\{\{\:[A-Z0-9_\-\.]+\:\}\}/';
+	const REGEX_MARKERS 		= '/\{\{\=\#[A-Z0-9_\-\.]+(\|[a-z0-9]+)*\#\=\}\}/';
 
 
 	public static function getDbType() {

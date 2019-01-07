@@ -53,7 +53,7 @@ abstract class AbstractFrontendPlugin extends \SmartAbstractAppController {
 		} //end if
 		//--
 		if(is_array($plugin_config)) {
-			$this->plugin_config = (array) array_change_key_case((array)$plugin_config, CASE_LOWER); // plugin config ; make all keys lower
+			$this->plugin_config = (array) array_change_key_case((array)$plugin_config, CASE_LOWER); // plugin config ; all keys lower case
 		} //end if
 		//--
 		$this->plugin_initialized = true;

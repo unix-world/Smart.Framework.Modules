@@ -37,27 +37,27 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 
-	protected $max_depth = 2; 			// 0=page, 1=segment, 2=sub-segment
-	protected $cache_time = 3600; 		// cache time in seconds
+	protected $max_depth 		= 2; 						// 0=page, 1=segment, 2=sub-segment
+	protected $cache_time 		= 3600; 					// cache time in seconds
 
-	private $crr_lang = '';				// current language
+	private $crr_lang 			= '';						// current language
 
-	private $page_markers = [];			// extra markers to allow be direct set in template except MAIN (and others as: TITLE, META-DESCRIPTION, META-KEYWORDS)
-	private $regex_tpl_marker = '/^[A-Z0-9_\-\.@]+$/'; // regex for tpl markers
-	private $regex_marker     = '/^[A-Z0-9_\-\.]+$/';  // regex for internal markers
+	private $page_markers 		= [];						// extra markers to allow be direct set in template except MAIN (and others as: TITLE, META-DESCRIPTION, META-KEYWORDS)
+	private $regex_tpl_marker 	= '/^[A-Z0-9_\-\.@]+$/'; 	// regex for tpl markers
+	private $regex_marker 		= '/^[A-Z0-9_\-\.]+$/'; 	// regex for internal markers
 
-	private $auth_required = 0; 		// 0: no auth ; if > 0, will req. auth
-	private $recursion_control = 0; 	// initialize
-	private $current_page = []; 		// array of page load
-	private $page_params = [];			// array of important page params to pass from controller to plugins
+	private $auth_required 		= 0; 						// 0: no auth ; if > 0, will req. auth
+	private $recursion_control 	= 0; 						// initialize
+	private $current_page 		= []; 						// array of page load
+	private $page_params 		= [];						// array of important page params to pass from controller to plugins
 
-	private $page_is_cached = false;	// true if found in pcache
-	private $segments_cached = [];		// registers cached segments
+	private $page_is_cached 	= false; 					// true if found in pcache
+	private $segments_cached 	= []; 						// registers cached segments
 
-	private $render_done = false;		// internal flag to avoid re-render
-	private $rendered_segments = []; 	// register rendered segments
+	private $render_done 		= false; 					// internal flag to avoid re-render
+	private $rendered_segments 	= []; 						// register rendered segments
 
-	private $debug = false; 			// internal debug
+	private $debug 				= false; 					// internal debug
 
 
 	//=====

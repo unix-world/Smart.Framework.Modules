@@ -32,8 +32,8 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
 */
 //==================================================================
 
-//define('SMART_PAGEBUILDER_DB_TYPE', 'pgsql');
-//define('SMART_PAGEBUILDER_DISABLE_DELETE', true);
+//define('SMART_PAGEBUILDER_DB_TYPE', 'pgsql'); // for use with PostgreSQL set this in etc/init.php ; otherwise will use SQLite
+//define('SMART_PAGEBUILDER_DISABLE_DELETE', true); // to disable page deletions in PageBuilder Manager, set this in etc/config-admin.php
 
 // TODO: implement layouts for pages
 
