@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// r.20190107
+	// r.20190108
 
 	public function Run() {
 
@@ -31,6 +31,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		if(SmartAuth::check_login() !== true) {
 			$this->PageViewSetCfg('error', 'PageBuilder Manage Requires Authentication ! ...');
 			return 403;
+		} //end if
+		//--
+		if((string)\SmartModExtLib\PageBuilder\Utils::getDbType() == '') {
+			$this->PageViewSetCfg('error', 'PageBuilder DB Type not set in configs: SMART_PAGEBUILDER_DB_TYPE ! ...');
+			return 503;
 		} //end if
 		//--
 

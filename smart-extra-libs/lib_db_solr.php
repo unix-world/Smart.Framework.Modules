@@ -128,6 +128,9 @@ private $fatal_err = true;
 /** @var connid */
 private $connid = '';
 
+/** @var extver */
+private $extver;
+
 //======================================================
 /**
  * Object Constructor
@@ -157,7 +160,9 @@ public function __construct($mode='json', $host='', $port='', $ssl='', $db='', $
 	} //end if else
 	$this->mode = (string) $mode;
 	//--
-	if(version_compare(phpversion('solr'), '2.0') < 0) {
+	$this->extver = (string) phpversion('solr');
+	//--
+	if(version_compare((string)$this->extver, '2.0') < 0) {
 		$this->error('PHP Solr Extension', 'This version of SOLR Client Library needs the Solr PHP Extension version 2.0 or later', 'CHECK PHP Solr Version');
 		return;
 	} //end if
@@ -187,6 +192,11 @@ public function __construct($mode='json', $host='', $port='', $ssl='', $db='', $
 	$this->description = (string) $y_description;
 	//--
 	if(SmartFrameworkRuntime::ifDebug()) {
+		//--
+		SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
+			'type' => 'metainfo',
+			'data' => 'Solr Extension Version: '.$this->extver
+		]);
 		//--
 		if((float)$y_debug_exch_slowtime > 0) {
 			$this->slow_time = (float) $y_debug_exch_slowtime;
@@ -249,6 +259,22 @@ public function __destruct() {
 		//--
 	} //end try catch
 	//--
+} //END FUNCTION
+//======================================================
+
+
+//======================================================
+/**
+ * Get the Solr Extension version
+ *
+ * @return 	STRING						:: Solr extension version
+ */
+public function get_ext_version() {
+
+	//--
+	return (string) $this->extver;
+	//--
+
 } //END FUNCTION
 //======================================================
 

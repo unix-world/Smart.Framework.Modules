@@ -24,28 +24,22 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20190107
+	// v.20190108
 
 	private static $db = null;
 	private static function dbType() {
 		//--
-		if((string)\SmartModExtLib\PageBuilder\Utils::getDbType() == 'pgsql') {
-			//--
-			if(\Smart::array_size(\Smart::get_from_config('pgsql')) <= 0) {
-				throw new \Exception(__CLASS__.': PostgreSQL DB CONFIG Not Found !');
-				return;
-			} //end if
-			//--
-			return 'pgsql';
-			//--
-		} else {
+		if((string)\SmartModExtLib\PageBuilder\Utils::getDbType() == 'sqlite') {
 			//--
 			if(self::$db === null) {
 				//--
 				$sqlitedbfile = '#db/page-builder.sqlite';
 				//--
 				if(!\SmartFileSysUtils::check_if_safe_path((string)$sqlitedbfile, 'yes', 'yes')) { // dissalow absolute ; allow protected
-					throw new \Exception(__CLASS__.': SQLite DB PATH is UNSAFE !');
+					\Smart::raise_error(
+						__CLASS__.': SQLite DB PATH is UNSAFE !',
+						'PageBuilder ERROR: UNSAFE DB ACCESS (1)'
+					);
 					return;
 				} //end if
 				//--
@@ -56,13 +50,33 @@ final class PageBuilderFrontend {
 					if(self::$db instanceof \SmartSQliteDb) {
 						self::$db->close();
 					} //end if
-					throw new \Exception(__CLASS__.': SQLite DB File does NOT Exists !');
+					\Smart::raise_error(
+						__CLASS__.': SQLite DB File does NOT Exists !',
+						'PageBuilder ERROR: DB NOT FOUND (1)'
+					);
 					return;
 				} //end if
 				//--
 			} //end if
 			//--
 			return 'sqlite';
+			//--
+		} elseif((string)\SmartModExtLib\PageBuilder\Utils::getDbType() == 'pgsql') {
+			//--
+			if(\Smart::array_size(\Smart::get_from_config('pgsql')) <= 0) {
+				\Smart::raise_error(
+					__CLASS__.': PostgreSQL DB CONFIG Not Found !',
+					'PageBuilder ERROR: DB CONFIG Not Found (2)'
+				);
+				return;
+			} //end if
+			//--
+			return 'pgsql';
+			//--
+		} else {
+			//--
+			http_response_code(503);
+			die(\SmartComponents::http_error_message('503 Service Unavailable / PageBuilder', 'PageBuilder DB Type is not set in configs ! ...'));
 			//--
 		} //end if else
 		//--

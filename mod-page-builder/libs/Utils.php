@@ -26,7 +26,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @access 		private
  * @internal
  *
- * @version 	v.20190107
+ * @version 	v.20190108
  * @package 	PageBuilder
  *
  */
@@ -40,10 +40,12 @@ final class Utils {
 
 	public static function getDbType() {
 		//--
-		$type = 'sqlite';
+		$type = '';
 		//--
 		if(defined('SMART_PAGEBUILDER_DB_TYPE')) {
-			if((string)SMART_PAGEBUILDER_DB_TYPE == 'pgsql') {
+			if((string)SMART_PAGEBUILDER_DB_TYPE == 'sqlite') {
+				$type = 'sqlite';
+			} elseif((string)SMART_PAGEBUILDER_DB_TYPE == 'pgsql') {
 				$type = 'pgsql';
 			} //end if
 		} //end if

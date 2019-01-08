@@ -32,8 +32,8 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
 */
 //==================================================================
 
-//define('SMART_PAGEBUILDER_DB_TYPE', 'pgsql'); // for use with PostgreSQL set this in etc/init.php ; otherwise will use SQLite
-//define('SMART_PAGEBUILDER_DISABLE_DELETE', true); // to disable page deletions in PageBuilder Manager, set this in etc/config-admin.php
+//define('SMART_PAGEBUILDER_DB_TYPE', 'sqlite'); // this must be set in etc/init.php to activate the PageBuilder module ; possible values for the DB Type: 'sqlite' to use with SQLite DB or 'pgsql' to use with PostgreSQL DB
+//define('SMART_PAGEBUILDER_DISABLE_DELETE', true); // this can be set in etc/config-admin.php to disable page deletions in PageBuilder Manager (optional)
 
 // TODO: implement layouts for pages
 
@@ -50,7 +50,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190107
+ * @version 	v.20190108
  * @package 	PageBuilder
  *
  */
@@ -1948,6 +1948,7 @@ final class Manager {
 		//--
 		$def_lang = (string) \SmartTextTranslations::getDefaultLanguage();
 		//--
+		$out_total = 0;
 		$real_imported = 0;
 		$arr_xdata = [];
 		foreach($data_arr as $lang => $val) {
@@ -1960,6 +1961,7 @@ final class Manager {
 					//--
 					for($i=0; $i<\Smart::array_size($val); $i++) {
 						//--
+						$x_is_all_empty = false;
 						$x_is_empty = true;
 						$x_is_tempty = true;
 						$x_is_diff = true;
@@ -2016,29 +2018,37 @@ final class Manager {
 								//--
 							} //end if
 							//--
+						} elseif((string)trim((string)$val[$i]) == '') { // skip if both empty
+							//--
+							$x_is_all_empty = true;
+							//--
 						} //end if else
 						//--
-						if(!is_array($arr_xdata[(int)$x_iterator])) {
-							$arr_xdata[(int)$x_iterator] = [];
-						} //end if
-						$status = 'ok';
-						if($x_is_empty || $x_is_tempty) {
-							$x_is_diff = false; // FIX
-						} //end if
-						if($x_is_empty || $x_is_tempty || $x_is_diff || $x_is_not_imported) {
-							$status = 'warn';
-							if(!$x_is_tempty) {
-								$status = 'warn-crit';
+						if($x_is_all_empty === false) {
+							//--
+							if(!is_array($arr_xdata[(int)$x_iterator])) {
+								$arr_xdata[(int)$x_iterator] = [];
 							} //end if
+							$status = 'ok';
+							if($x_is_empty || $x_is_tempty) {
+								$x_is_diff = false; // FIX
+							} //end if
+							if($x_is_empty || $x_is_tempty || $x_is_diff || $x_is_not_imported) {
+								$status = 'warn';
+								if(!$x_is_tempty) {
+									$status = 'warn-crit';
+								} //end if
+							} //end if
+							$arr_xdata[(int)$x_iterator]['is_transl_empty'] = (string) ($x_is_tempty ? 'yes' : 'no');
+							$arr_xdata[(int)$x_iterator]['is_base_empty'] = (string) ($x_is_empty ? 'yes' : 'no');
+							$arr_xdata[(int)$x_iterator]['is_base_diff_transl'] = (string) ($x_is_diff ? 'yes' : 'no');
+							$arr_xdata[(int)$x_iterator]['is_imported'] = (string) (!$x_is_not_imported ? 'yes' : 'no');
+							$arr_xdata[(int)$x_iterator]['status'] = (string) $status;
+							$arr_xdata[(int)$x_iterator]['diffs'] = (string) implode(', ', (array)$diffs_arr_rows);
+							$arr_xdata[(int)$x_iterator]['translate'] = (string) $val[$i];
+							$x_iterator++;
+							//--
 						} //end if
-						$arr_xdata[(int)$x_iterator]['is_transl_empty'] = (string) ($x_is_tempty ? 'yes' : 'no');
-						$arr_xdata[(int)$x_iterator]['is_base_empty'] = (string) ($x_is_empty ? 'yes' : 'no');
-						$arr_xdata[(int)$x_iterator]['is_base_diff_transl'] = (string) ($x_is_diff ? 'yes' : 'no');
-						$arr_xdata[(int)$x_iterator]['is_imported'] = (string) (!$x_is_not_imported ? 'yes' : 'no');
-						$arr_xdata[(int)$x_iterator]['status'] = (string) $status;
-						$arr_xdata[(int)$x_iterator]['diffs'] = (string) implode(', ', (array)$diffs_arr_rows);
-						$arr_xdata[(int)$x_iterator]['translate'] = (string) $val[$i];
-						$x_iterator++;
 						//--
 					} //end for
 					//--
@@ -2050,12 +2060,18 @@ final class Manager {
 					//--
 					for($i=0; $i<\Smart::array_size($val); $i++) {
 						//--
-						if(!is_array($arr_xdata[(int)$x_iterator])) {
-							$arr_xdata[(int)$x_iterator] = [];
+						if(((string)trim((string)$data_arr[(string)$def_lang][$i]) != '') AND ((string)trim((string)$val[$i]) != '')) { // skip all empty records
+							//--
+							if(!is_array($arr_xdata[(int)$x_iterator])) {
+								$arr_xdata[(int)$x_iterator] = [];
+							} //end if
+							//--
+							$arr_xdata[(int)$x_iterator]['default'] = (string) $val[$i];
+							$x_iterator++;
+							//--
+							$out_total++;
+							//--
 						} //end if
-						//--
-						$arr_xdata[(int)$x_iterator]['default'] = (string) $val[$i];
-						$x_iterator++;
 						//--
 					} //end for
 					//--
@@ -2063,15 +2079,6 @@ final class Manager {
 				//--
 			} //end if
 			//--
-		} //end foreach
-		//--
-		$out_total = 0;
-		foreach((array)$hdr_arr as $key => $val) {
-			if((string)$val != (string)$def_lang) {
-				if(is_array($data_arr[(string)$val])) {
-					$out_total += \Smart::array_size($data_arr[(string)$val]);
-				} //end if
-			} //end if else
 		} //end foreach
 		//--
 		return (string) \SmartMarkersTemplating::render_file_template(

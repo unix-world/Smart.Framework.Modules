@@ -24,44 +24,22 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderBackend {
 
 	// ::
-	// v.20190107
+	// v.20190108
 
 	private static $db = null;
 	private static function dbType() {
 		//--
-		if((string)\SmartModExtLib\PageBuilder\Utils::getDbType() == 'pgsql') {
-			//--
-			if(\Smart::array_size(\Smart::get_from_config('pgsql')) <= 0) {
-				throw new \Exception(__CLASS__.': PostgreSQL DB CONFIG Not Found !');
-				return;
-			} //end if
-			if(\SmartPgsqlDb::check_if_schema_exists('smart_runtime') != 1) {
-				$sql = \SmartFileSystem::read('_sql/postgresql/init-smart-framework.sql');
-				if(!$sql) {
-					throw new \Exception(__CLASS__.': PostgreSQL Init Schema SQL File does NOT Exists or is NOT Readable !');
-					return;
-				} //end if
-				\SmartPgsqlDb::write_data((string)$sql);
-			} //end if
-			if((\SmartPgsqlDb::check_if_schema_exists('web') != 1) OR (\SmartPgsqlDb::check_if_table_exists('page_builder', 'web') != 1) OR (\SmartPgsqlDb::check_if_table_exists('page_translations', 'web') != 1)) {
-				$sql = \SmartFileSystem::read('modules/mod-page-builder/models/sql/postgresql/page-builder-schema.sql');
-				if(!$sql) {
-					throw new \Exception(__CLASS__.': PostgreSQL Schema SQL File does NOT Exists or is NOT Readable !');
-					return;
-				} //end if
-				\SmartPgsqlDb::write_data((string)$sql);
-			} //end if
-			//--
-			return 'pgsql';
-			//--
-		} else {
+		if((string)\SmartModExtLib\PageBuilder\Utils::getDbType() == 'sqlite') {
 			//--
 			if(self::$db === null) {
 				//--
 				$sqlitedbfile = '#db/page-builder.sqlite';
 				//--
 				if(!\SmartFileSysUtils::check_if_safe_path((string)$sqlitedbfile, 'yes', 'yes')) { // dissalow absolute ; allow protected
-					throw new \Exception(__CLASS__.': SQLite DB PATH is UNSAFE !');
+					\Smart::raise_error(
+						__CLASS__.': SQLite DB PATH is UNSAFE !',
+						'PageBuilder ERROR: UNSAFE DB ACCESS (1)'
+					);
 					return;
 				} //end if
 				//--
@@ -72,7 +50,10 @@ final class PageBuilderBackend {
 					if(self::$db instanceof \SmartSQliteDb) {
 						self::$db->close();
 					} //end if
-					throw new \Exception(__CLASS__.': SQLite DB File does NOT Exists !');
+					\Smart::raise_error(
+						__CLASS__.': SQLite DB File does NOT Exists !',
+						'PageBuilder ERROR: DB NOT FOUND (1)'
+					);
 					return;
 				} //end if
 				//--
@@ -82,7 +63,10 @@ final class PageBuilderBackend {
 						if(self::$db instanceof \SmartSQliteDb) {
 							self::$db->close();
 						} //end if
-						throw new \Exception(__CLASS__.': SQLite Schema SQL File does NOT Exists or is NOT Readable !');
+						\Smart::raise_error(
+							__CLASS__.': SQLite Schema SQL File does NOT Exists or is NOT Readable !',
+							'PageBuilder ERROR: DB Schema SQL File does NOT Exists or is NOT Readable (1)'
+						);
 						return;
 					} //end if
 					self::$db->write_data((string)$sql);
@@ -91,6 +75,45 @@ final class PageBuilderBackend {
 			} //end if
 			//--
 			return 'sqlite';
+			//--
+		} elseif((string)\SmartModExtLib\PageBuilder\Utils::getDbType() == 'pgsql') {
+			//--
+			if(\Smart::array_size(\Smart::get_from_config('pgsql')) <= 0) {
+				\Smart::raise_error(
+					__CLASS__.': PostgreSQL DB CONFIG Not Found !',
+					'PageBuilder ERROR: DB CONFIG Not Found (2)'
+				);
+				return;
+			} //end if
+			if(\SmartPgsqlDb::check_if_schema_exists('smart_runtime') != 1) {
+				$sql = \SmartFileSystem::read('_sql/postgresql/init-smart-framework.sql');
+				if(!$sql) {
+					\Smart::raise_error(
+						__CLASS__.': PostgreSQL Init Schema SQL File does NOT Exists or is NOT Readable !',
+						'PageBuilder ERROR: DB Init Schema SQL File does NOT Exists or is NOT Readable (2)'
+					);
+					return;
+				} //end if
+				\SmartPgsqlDb::write_data((string)$sql);
+			} //end if
+			if((\SmartPgsqlDb::check_if_schema_exists('web') != 1) OR (\SmartPgsqlDb::check_if_table_exists('page_builder', 'web') != 1) OR (\SmartPgsqlDb::check_if_table_exists('page_translations', 'web') != 1)) {
+				$sql = \SmartFileSystem::read('modules/mod-page-builder/models/sql/postgresql/page-builder-schema.sql');
+				if(!$sql) {
+					\Smart::raise_error(
+						__CLASS__.': PostgreSQL Schema SQL File does NOT Exists or is NOT Readable !',
+						'PageBuilder ERROR: DB Schema SQL File does NOT Exists or is NOT Readable (2)'
+					);
+					return;
+				} //end if
+				\SmartPgsqlDb::write_data((string)$sql);
+			} //end if
+			//--
+			return 'pgsql';
+			//--
+		} else {
+			//--
+			http_response_code(500);
+			die(\SmartComponents::http_error_message('500 Internal Server Error / PageBuilder is Unavailable', 'DB Type not set in configs: SMART_PAGEBUILDER_DB_TYPE ! ...'));
 			//--
 		} //end if else
 		//--
@@ -189,7 +212,7 @@ final class PageBuilderBackend {
 			);
 		} elseif((string)self::dbType() == 'sqlite') {
 			return (array) self::$db->read_adata(
-				'SELECT `id`, `active`, `auth`, `special`, `name`, `mode`, `translations`, `counter` FROM `page_builder` WHERE (smart_json_arr_contains(`ref`, ?) IS TRUE) ORDER BY `ref` ASC, `name` ASC, `id` ASC',
+				'SELECT `id`, `active`, `auth`, `special`, `name`, `mode`, `translations`, `counter` FROM `page_builder` WHERE (smart_json_arr_contains(`ref`, ?) = 1) ORDER BY `ref` ASC, `name` ASC, `id` ASC',
 				[
 					(string) $y_ref
 				]
@@ -944,7 +967,7 @@ final class PageBuilderBackend {
 						if((string)self::dbType() == 'pgsql') {
 							$where = 'WHERE ((a."id" = \''.\SmartPgsqlDb::escape_str((string)$y_src).'\') OR (a."ref" ? \''.\SmartPgsqlDb::escape_str((string)$y_src).'\'))';
 						} elseif((string)self::dbType() == 'sqlite') {
-							$where = 'WHERE ((a.`id` = \''.self::$db->escape_str((string)$y_src).'\') OR (smart_json_arr_contains(a.`ref`, \''.self::$db->escape_str((string)$y_src).'\') IS TRUE))';
+							$where = 'WHERE ((a.`id` = \''.self::$db->escape_str((string)$y_src).'\') OR (smart_json_arr_contains(a.`ref`, \''.self::$db->escape_str((string)$y_src).'\') = 1))';
 						} //end if else
 					} //end if else
 					break;
