@@ -25,7 +25,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.20190108
+ * @version 	v.20190109
  * @package 	PageBuilder
  *
  */
@@ -466,6 +466,54 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 
 	//=====
+	// load a text value from YAML Data
+	private function loadValue($id, $syntax, $arr) {
+
+		//--
+		$uid = (string) 'val@'.\Smart::uuid_10_num().'-'.sha1((string)print_r($arr,1));
+		//--
+		if((string)$syntax == 'html') {
+			$syntax = 'html';
+			$arr['mode'] = 'html';
+			$arr['id'] = (string) trim((string)$arr['id']); // trim
+			if((string)$arr['id'] != '') {
+				$arr['id'] = (string) \SmartModExtLib\PageBuilder\Utils::fixSafeCode((string)$arr['id']); // {{{SYNC-PAGEBUILDER-HTML-SAFETY}}} avoid PHP code + cleanup XHTML tag style
+			} //end if
+		} elseif((string)$syntax == 'markdown') {
+			$syntax = 'markdown';
+			$arr['mode'] = 'markdown:rendered';
+			$arr['id'] = (string) trim((string)$arr['id']); // trim
+			if((string)$arr['id'] != '') {
+				$arr['id'] = (string) \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$arr['id']); // render as markdown
+			} //end if
+		} else {
+			$syntax = 'text';
+			$arr['mode'] = 'text:rendered';
+			$arr['id'] = (string) trim((string)$arr['id']); // trim
+			if((string)$arr['id'] != '') {
+				$arr['id'] = (string) \Smart::escape_html((string)$arr['id']); // escape text to HTML
+			} //end if
+		} //end if else
+		//--
+		$out_arr = [
+			'id' 	=> (string) $uid,
+			'type' 	=> 'value', // preserve type
+			'auth' 	=> 0, // n/a
+			'mode' 	=> (string) $arr['mode'],
+			'name' 	=> (string) $id.' :: '.strtoupper((string)$syntax).' :: '.$uid,
+			'code' 	=> (string) $arr['id']
+		];
+		//--
+
+		//--
+		return (array) $out_arr;
+		//--
+
+	} //END FUNCTION
+	//=====
+
+
+	//=====
 	// load page or segment ; page is level -1 ; segment is higher level
 	// the execution of this method is pcached thus it never returns to re-render if pcached
 	private function loadSegmentOrPage($id, $type, $level=-1) {
@@ -561,7 +609,11 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			//--
 		} else {
 			//--
-			$data_arr['layout'] = (string) $arr['layout']; // no html escape on this as it is a file
+			if((string)$type == 'segment') {
+				$data_arr['layout'] = '';
+			} else {
+				$data_arr['layout'] = (string) $arr['layout']; // no html escape on this as it is a file
+			} //end if else
 			//--
 			$data_arr['code'] = (string) base64_decode((string)$arr['code']);
 			if((string)$data_arr['mode'] == 'raw') { // FIX: RAW Pages might have the code empty if need to output from a plugin and to avoid inject spaces ...
@@ -587,6 +639,11 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 				$data_arr['mode'] = 'markdown:rendered';
 				if((string)trim((string)$data_arr['code']) != '') {
 					$data_arr['code'] = (string) \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$data_arr['code']);
+				} //end if
+			} elseif((string)$data_arr['mode'] == 'html') {
+				$data_arr['mode'] = 'html:safe';
+				if((string)trim((string)$data_arr['code']) != '') {
+					$data_arr['code'] = (string) \SmartModExtLib\PageBuilder\Utils::fixSafeCode((string)$data_arr['code']); // {{{SYNC-PAGEBUILDER-HTML-SAFETY}}} avoid PHP code + cleanup XHTML tag style
 				} //end if
 			} //end if
 			//--
@@ -619,7 +676,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 					foreach((array)$val as $k => $v) {
 						$k = (string) trim((string)$k);
 						if((strpos((string)$k, 'content') === 0) AND (\Smart::array_size($v) > 0)) {
-							if(((string)$v['type'] === 'segment') OR ((string)$v['type'] === 'plugin')) {
+							if(((string)$v['type'] === 'value') OR ((string)$v['type'] === 'segment') OR ((string)$v['type'] === 'plugin')) {
 								$preparse_arr[(string)$key][] = [(string)$k => $v];
 							} else {
 								\Smart::raise_error(
@@ -650,20 +707,62 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		} //end if
 		//--
 		$props_arr = [];
-		if((string)$data_arr['mode'] == 'raw') {
-			if(is_array($yaml['PROPS'])) {
-				foreach((array)$yaml['PROPS'] as $key => $val) {
-					$key = (string) strtolower((string)trim((string)$key));
-					$val = (string) trim((string)$val);
-					if(((string)$key != '') AND ((string)$val != '')) {
-						if(in_array($key, [ 'rawmime', 'rawdisp' ])) {
-							$props_arr[(string)$key] = (string) $val;
-						} //end if
-					} //end if
-				} //end foreach
-			} //end if
-			$data_arr['props'] = (array) $props_arr;
+		if((string)$type == 'segment') {
+			//--
 			unset($data_arr['layout']);
+			//--
+		} elseif((string)$data_arr['mode'] == 'raw') { // {{{SYNC-PAGEBUILDER-RAWPAGE-SAFETY}}}
+			//--
+			unset($data_arr['layout']);
+			//--
+			$props_arr['rawmime'] = ''; // default to: text/html (protected against PHP code injection)
+			$props_arr['rawdisp'] = ''; // default to: inline
+			//--
+			if(is_array($yaml['PROPS'])) { // PROPS [ FileName, Disposition ]
+				//--
+				$tmp_arr_props = (array) array_change_key_case((array)$yaml['PROPS'], CASE_LOWER);
+				//--
+				if((string)$tmp_arr_props['filename'] != '') {
+					//--
+					$mime_type = (array) \SmartFileSysUtils::mime_eval((string)$tmp_arr_props['filename'], (string)$tmp_arr_props['disposition']);
+					$mime_disp = (string) $mime_type[1];
+					$mime_type = (string) $mime_type[0];
+					//--
+					switch((string)$mime_type) { // for RAW Pages allow only certain mime types
+						case 'text/html':
+							$props_arr['rawmime'] = ''; // default to: text/html (protected against PHP code injection)
+							$props_arr['rawdisp'] = ''; // default to: inline
+							break;
+						case 'text/css':
+						case 'application/javascript':
+						case 'application/json':
+						case 'application/xml':
+						case 'text/plain':
+						case 'image/svg+xml':
+						case 'message/rfc822':
+						case 'text/calendar':
+						case 'text/x-vcard':
+						case 'text/x-vcalendar':
+						case 'text/ldif':
+						case 'application/pgp-signature':
+						case 'text/csv':
+							$props_arr['rawmime'] = (string) $mime_type;
+							$props_arr['rawdisp'] = (string) $mime_disp;
+							break;
+						default: // force
+							$props_arr['rawmime'] = 'text/plain';
+							$props_arr['rawdisp'] = 'inline';
+					} //end switch
+					//--
+					$mime_type = null; // free mem
+					$mime_disp = null; // free mem
+					//--
+				} //end if
+				//--
+			} //end if
+			//--
+			$data_arr['props'] = (array) $props_arr;
+			//--
 		} //end if
 		//--
 
@@ -695,7 +794,11 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 										'id' 		=> (string) $v['id']
 									];
 									//--
-									if((string)$v['type'] == 'segment') {
+									if((string)$v['type'] == 'value') {
+										//--
+										$arr_tmp_item = (array) $this->loadValue((string)$id, (string)$v['config'], (array)$arr_tmp_item);
+										//--
+									} elseif((string)$v['type'] == 'segment') {
 										//--
 										$arr_tmp_item['id'] = '#'.$arr_tmp_item['id'];
 										//--
@@ -818,7 +921,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 	private function doRenderPage($id, $data_arr) {
 
 		//--
-		return (array) $this->doRenderObject($id, $data_arr, -1);
+		return (array) $this->doRenderObject($id, $data_arr, -1); // pages MUST START AT -1 !!! {{{SYNC-PAGEBUILDER-RENDER-LEVELS}}}
 		//--
 
 	} //END FUNCTION
@@ -829,7 +932,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 	private function doRenderSegment($id, $data_arr) {
 
 		//--
-		return (array) $this->doRenderObject($id, $data_arr, 0);
+		return (array) $this->doRenderObject($id, $data_arr, 0); // segments MUST START AT 0 !!! {{{SYNC-PAGEBUILDER-RENDER-LEVELS}}}
 		//--
 
 	} //END FUNCTION
@@ -842,7 +945,16 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		// TODO: ? escape for markers: js, html ... ?
 
 		//--
-		$level = (int) ((int)$level + 1);
+		$level = (int) ((int)$level + 1); // must increment at start (pages default start at: -1 ; segments default start at : 0) {{{SYNC-PAGEBUILDER-RENDER-LEVELS}}}
+		//--
+
+		//--
+		if($level === 0) {
+			if(\SmartModExtLib\PageBuilder\Utils::allowPages() !== true) {
+				$this->PageViewSetErrorStatus(503, 'PageBuilder: Page Objects are Disabled ... Only Segments are Allowed');
+				return array();
+			} //end if
+		} //end if
 		//--
 
 		//--
@@ -874,20 +986,36 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			//--
 		} elseif((string)$data_arr['mode'] == 'raw') {
 			//--
-			if($level === 0) {
+			if($level === 0) { // {{{SYNC-PAGEBUILDER-RENDER-LEVELS}}} (Level Zero is just for Pages, not for segments) ;
 				//--
-				$is_raw_page = true;
+				$is_raw_page = true; // {{{SYNC-PAGEBUILDER-RAWPAGE-SAFETY}}}
 				//--
 				$this->PageViewSetCfg('rawpage', true);
 				//--
-				if(\Smart::array_size($data_arr['props']) > 0) {
+				if(\Smart::array_size($data_arr['props']) > 0) { // for RAW Page this is mandatory
+					//--
 					if((string)$data_arr['props']['rawmime'] != '') {
 						$this->PageViewSetCfg('rawmime', (string)$data_arr['props']['rawmime']);
+					} else { // text/html : to avoid security risk, escape all PHP code
+						$data_arr['code'] = (string) \SmartModExtLib\PageBuilder\Utils::fixSafeCode((string)$data_arr['code']); // {{{SYNC-PAGEBUILDER-HTML-SAFETY}}} avoid PHP code + cleanup XHTML tag style
+						$data_arr['props']['rawdisp'] = ''; // in this case do not use ...
 					} //end if
+					//--
 					if((string)$data_arr['props']['rawdisp'] != '') {
 						$this->PageViewSetCfg('rawdisp', (string)$data_arr['props']['rawdisp']);
 					} //end if
+					//--
+				} else {
+					$this->PageViewSetErrorStatus(500, 'Invalid Raw Page Data Props on Page/Segment');
+					\Smart::log_warning('PageBuilder: Invalid Raw Page Data Props on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
+					return array();
 				} //end if
+				//--
+			} else { // do not allow RAW Page at higher levels than zero
+				//--
+				$this->PageViewSetErrorStatus(500, 'Invalid Raw Page/Segment at Level ['.$level.']');
+				\Smart::log_warning('PageBuilder: Invalid Raw Page/Segment at Level ['.$level.']: '.(string)$id.' ; Level: '.(int)$level);
+				return array();
 				//--
 			} //end if
 			//--
@@ -895,13 +1023,16 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 
 		//--
-		if($level === 0) {
+		if($level === 0) { // {{{SYNC-PAGEBUILDER-RENDER-LEVELS}}} (Level Zero is just for Pages, not for segments)
 			//--
 			if($is_raw_page === true) {
 				$data_arr['smart-markers'] = [
 					'MAIN' 				=> ''
 				];
 			} else {
+				if((string)trim((string)$data_arr['layout']) != '') {
+					$this->PageViewSetCfg('template-file', (string)$data_arr['layout']);
+				} //end if
 				$data_arr['smart-markers'] = [
 					'MAIN' 				=> '',
 					'TITLE' 			=> '',

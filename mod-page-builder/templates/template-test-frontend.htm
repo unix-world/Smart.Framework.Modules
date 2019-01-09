@@ -3,7 +3,7 @@
 <!-- Base URL is: [####BASE-URL####] -->
 <!-- Base Path is: [####BASE-PATH####] -->
 <!-- [####TEMPLATE-FILE####] -->
-<!-- Version: 20190108 -->
+<!-- Version: 20190109 -->
 <html>
 <head>
 <meta charset="UTF-8">
@@ -12,12 +12,14 @@
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Pragma" content="no-cache">
 <meta name="viewport" content="initial-scale=0.75">
-<title>[####TITLE####]</title>
 <meta name="description" content="[####META-DESCRIPTION####]">
 <meta name="keywords" content="[####META-KEYWORDS####]">
-[####HEAD-META####]
-[####HEAD-CSS####]
-[####HEAD-JS####]
+<title>[####TITLE####]</title>
+<!-- Styles -->
+[@@@@SUB-TEMPLATE:!etc/templates/default/css-app.inc.htm!@@@@]
+<link rel="stylesheet" type="text/css" href="etc/templates/default/styles.css?[####RELEASE-HASH|url|html####]">
+<!-- Scripts -->
+[@@@@SUB-TEMPLATE:!etc/templates/default/js-base.inc.htm!@@@@]
 </head>
 <body>
 [####AREA.TOP####]

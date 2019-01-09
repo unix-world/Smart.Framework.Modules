@@ -26,7 +26,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @access 		private
  * @internal
  *
- * @version 	v.20190108
+ * @version 	v.20190109
  * @package 	PageBuilder
  *
  */
@@ -51,6 +51,46 @@ final class Utils {
 		} //end if
 		//--
 		return (string) $type;
+		//--
+	} //END FUNCTION
+
+
+	public static function allowPages() {
+		//--
+		$allow = true;
+		//--
+		if(defined('SMART_PAGEBUILDER_DISABLE_PAGES')) {
+			if(SMART_PAGEBUILDER_DISABLE_PAGES === true) {
+				$allow = false;
+			} //end if
+		} //end if
+		//--
+		return (bool) $allow;
+		//--
+	} //END FUNCTION
+
+
+	public static function getAvailableLayouts() {
+		//--
+		$layouts = [];
+		//--
+		$layouts[''] = 'DEFAULT';
+		//--
+		$available_layouts = \Smart::get_from_config('pagebuilder.layouts');
+		if(\Smart::array_size($available_layouts) > 0) {
+			if(\Smart::array_type_test($available_layouts) == 1) { // non-associative
+				for($i=0; $i<\Smart::array_size($available_layouts); $i++) {
+					$available_layouts[$i] = (string) trim((string)$available_layouts[$i]);
+					if((string)$available_layouts[$i] != '') {
+						if(\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$available_layouts[$i])) {
+							$layouts[(string)$available_layouts[$i]] = (string) $available_layouts[$i];
+						} //end if
+					} //end if
+				} //end for
+			} //end if
+		} //end if
+		//--
+		return (array) $layouts;
 		//--
 	} //END FUNCTION
 

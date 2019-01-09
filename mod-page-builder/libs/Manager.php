@@ -32,10 +32,9 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
 */
 //==================================================================
 
-//define('SMART_PAGEBUILDER_DB_TYPE', 'sqlite'); // this must be set in etc/init.php to activate the PageBuilder module ; possible values for the DB Type: 'sqlite' to use with SQLite DB or 'pgsql' to use with PostgreSQL DB
+//define('SMART_PAGEBUILDER_DB_TYPE', 'sqlite'); // this must be set in etc/config.php to activate the PageBuilder module ; possible values for the DB Type: 'sqlite' to use with SQLite DB or 'pgsql' to use with PostgreSQL DB
+//define('SMART_PAGEBUILDER_DISABLE_PAGES', true); // this can be set in etc/config.php to disable the use of pages and allow only segments
 //define('SMART_PAGEBUILDER_DISABLE_DELETE', true); // this can be set in etc/config-admin.php to disable page deletions in PageBuilder Manager (optional)
-
-// TODO: implement layouts for pages
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -50,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190108
+ * @version 	v.20190109
  * @package 	PageBuilder
  *
  */
@@ -695,6 +694,7 @@ final class Manager {
 								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code']); // render on the fly
 							} else {
 							//	$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/js/jsedithtml/cleditor/jquery.cleditor.smartframeworkcomponents.css">'; // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
+								$query['code'] = (string) \SmartModExtLib\PageBuilder\Utils::fixSafeCode((string)$query['code']); // {{{SYNC-PAGEBUILDER-HTML-SAFETY}}} avoid PHP code + cleanup XHTML tag style
 							} //end if else
 							//$the_website_styles = '<link rel="stylesheet" type="text/css" href="etc/templates/website/styles.css">';
 							$the_website_styles = '<style>* { font-family: tahoma,arial,sans-serif; font-smooth: always; } a, th, td, div, span, p, blockquote, pre, code { font-size:13px; }</style>';
@@ -840,6 +840,26 @@ final class Manager {
 		$translator_window = \SmartTextTranslations::getTranslator('@core', 'window');
 		//--
 		$out = '';
+		//-- SMART_PAGEBUILDER_DISABLE_PAGES
+		$arr_objects_segments = [
+			'#OPTGROUP#Segments' => 'Segments',
+				'html-segment' 		=> 'Segment Page - HTML Syntax',
+				'markdown-segment' 	=> 'Segment Page - Markdown Syntax',
+				'text-segment' 		=> 'Segment Page - Text Syntax',
+				'settings-segment' 	=> 'Segment Page - Settings'
+		];
+		$arr_objects_pages = [
+			'#OPTGROUP#Pages' => 'Pages',
+				'html-page' 		=> 'Page - HTML Syntax',
+				'markdown-page' 	=> 'Page - Markdown Syntax',
+				'text-page' 		=> 'Page - Text Syntax',
+				'raw-page' 			=> 'Page - Raw'
+		];
+		if(\SmartModExtLib\PageBuilder\Utils::allowPages() === true) {
+			$arr_objects = (array) array_merge((array)$arr_objects_pages, (array)$arr_objects_segments);
+		} else {
+			$arr_objects = (array) $arr_objects_segments;
+		} //end if else
 		//--
 		$out .= '<script>'.\SmartComponents::js_code_init_away_page('The changes will be lost !').'</script>';
 		$out .= \SmartMarkersTemplating::render_file_template(
@@ -850,7 +870,7 @@ final class Manager {
 				'REFRESH-PARENT' 	=> (string) '<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>',
 				'FORM-NAME' 		=> (string) 'page_form_add',
 				'LABELS-TYPE'		=> (string) self::text('record_syntax'),
-				'CONTROLS-TYPE' 	=> (string) \SmartComponents::html_select_list_single('ptype', '', 'form', ['#OPTGROUP#Segments' => 'Segments', 'html-segment' => 'Segment Page - HTML Syntax', 'markdown-segment' => 'Segment Page - Markdown Syntax', 'text-segment' => 'Segment Page - Text Syntax', 'settings-segment' => 'Segment Page - Settings', '#OPTGROUP#Pages' => 'Pages', 'html-page' => 'Page - HTML Syntax', 'markdown-page' => 'Page - Markdown Syntax', 'text-page' => 'Page - Text Syntax', 'raw-page' => 'Page - Raw'], 'frm[ptype]', '275/0', '', 'no', 'yes'),
+				'CONTROLS-TYPE' 	=> (string) \SmartComponents::html_select_list_single('ptype', '', 'form', (array)$arr_objects, 'frm[ptype]', '275/0', '', 'no', 'yes'),
 				'LABELS-ID'			=> (string) self::text('id'),
 				'LABELS-NAME'		=> (string) self::text('name'),
 				'LABELS-CTRL' 		=> (string) self::text('ctrl'),
@@ -1059,7 +1079,7 @@ final class Manager {
 							$data['active'] = 0;
 							$data['auth'] = 0;
 							//--
-							$data['mode'] = strtolower(trim($y_frm['mode']));
+							$data['mode'] = (string) strtolower((string)trim((string)$y_frm['mode']));
 							switch((string)$data['mode']) {
 								case 'settings':
 									$data['mode'] = 'settings';
@@ -1093,17 +1113,32 @@ final class Manager {
 							$data = array();
 							//--
 							if((string)trim((string)$y_frm['code']) == '') {
+								//--
 								$data['code'] = ''; // avoid save empty with only spaces
+								//--
 							} else {
-								$data['code'] = (string) \SmartModExtLib\PageBuilder\Utils::fixSafeCode((string)$y_frm['code']);
-								$data['code'] = (string) str_replace(["\r\n", "\r"], "\n", (string)$data['code']); // normalize line endings
+								//--
+								$data['code'] = (string) $y_frm['code'];
+								//--
+								/*
+								if(((string)$query['mode'] == 'markdown') OR ((string)$query['mode'] == 'html')) {
+									// {{{SYNC-PAGEBUILDER-HTML-SAFETY}}} :: fixSafeCode is managed later on display
+								} elseif((string)$query['mode'] == 'raw') {
+									// {{{SYNC-PAGEBUILDER-RAWPAGE-SAFETY}}} :: managed later on display, depends on mime type
+								} //end if
+								*/
+								//--
+								$data['code'] = (string) str_replace(["\r\n", "\r"], "\n", (string)$data['code']); 		// normalize line endings
 								$data['code'] = (string) str_replace(["\x0B", "\0", "\f"], ' ', (string)$data['code']); // fix weird characters
-								$data['code'] = (string) preg_replace('/[ ]+[\\n]/', "\n", (string)$data['code']); // remove empty line spaces
+								$data['code'] = (string) preg_replace('/[ ]+[\\n]/', "\n", (string)$data['code']); 		// remove empty line spaces
+								//--
 								$data['code'] = (string) base64_encode((string)$data['code']);
+								//--
 							} //end if
-							$y_frm['code'] = ''; // free memory
 							//--
-							if((int)strlen($data['code']) > (int)self::$MaxStrCodeSize) {
+							$y_frm['code'] = ''; // free mem
+							//--
+							if((int)strlen((string)$data['code']) > (int)self::$MaxStrCodeSize) {
 								$error = 'Page Code is OVERSIZED !'."\n";
 							} //end if
 							//--
@@ -1554,7 +1589,7 @@ final class Manager {
 	private static function drawListLayout($y_mode, $y_listmode, $y_value, $y_htmlvar='') {
 		// TO BE DONE ...
 		//--
-		return \SmartComponents::html_select_list_single('', $y_value, $y_listmode, [ '' => 'N/A' ], $y_htmlvar, '250', '', 'no', 'no');
+		return \SmartComponents::html_select_list_single('', $y_value, $y_listmode, (array)\SmartModExtLib\PageBuilder\Utils::getAvailableLayouts(), $y_htmlvar, '250', '', 'no', 'no');
 		//--
 	} //END FUNCTION
 	//==================================================================
