@@ -21,7 +21,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class SqWebmail {
 
 	// ->
-	// v.20190107
+	// v.20190113
 
 	private $db;
 
@@ -78,6 +78,65 @@ final class SqWebmail {
 		} //end if
 		//--
 		return (array) $this->db->read_asdata('SELECT `id`, `stat_uid`, `stat_del`, `date_time` FROM `messages` WHERE ((`stat_uid` IS NOT NULL) AND (`stat_uid` = \''.$this->db->escape_str((string)$uid).'\')) LIMIT 1 OFFSET 0');
+		//--
+	} //END FUNCTION
+
+
+	public function markOneMessageAsReadById($id) {
+		//--
+		if(!$this->db instanceof \SmartSQliteDb) {
+			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		return (array) $this->db->write_data(
+			'UPDATE `messages` SET `stat_read` = 1 WHERE ((`id` = ?) AND (`stat_read` != 1))',
+			[
+				(string) $id
+			]
+		);
+		//--
+	} //END FUNCTION
+
+
+	public function updOneMessageAttsById($id, $atts_num, $atts_lst) {
+		//--
+		if(!$this->db instanceof \SmartSQliteDb) {
+			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		$atts_num = (int) $atts_num;
+		if($atts_num < 0) {
+			$atts_num = 0;
+		} //end if
+		//--
+		return (array) $this->db->write_data(
+			'UPDATE `messages` SET `have_atts` = ?, `atts` = ? WHERE (`id` = ?)',
+			[
+				(int)    $atts_num,
+				(string) trim((string)$atts_lst),
+				(string) $id
+			]
+		);
+		//--
+	} //END FUNCTION
+
+
+	public function updOneMessageKeywordsById($id, $keywords) {
+		//--
+		if(!$this->db instanceof \SmartSQliteDb) {
+			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		return (array) $this->db->write_data(
+			'UPDATE `messages` SET `keywds` = ? WHERE (`id` = ?)',
+			[
+				(string) trim((string)$keywords),
+				(string) $id
+			]
+		);
 		//--
 	} //END FUNCTION
 
@@ -161,8 +220,11 @@ final class SqWebmail {
 				case 'to_name':
 				case 'msg_subj':
 				case 'date_time':
-				case 'keywds':
 					$where = ' WHERE (`'.$srcby.'` LIKE \''.$this->db->escape_str((string)$src).'\')';
+					break;
+				case 'keywds':
+				case 'atts':
+					$where = ' WHERE (`'.$srcby.'` LIKE \'%'.$this->db->escape_str((string)$src, 'likes').'%\')';
 					break;
 				default:
 					// nothing, leave as is set above

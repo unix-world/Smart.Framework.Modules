@@ -34,7 +34,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$safe_user_path = (string) 'wpub/dav/'.$safe_user_dir.'/carddav';
+		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/carddav';
 		if(SmartFileSysUtils::check_if_safe_path((string)$safe_user_path) != '1') {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebAddressbook Unsafe User Path ...');
 			return;

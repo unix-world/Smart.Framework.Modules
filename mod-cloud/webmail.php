@@ -41,7 +41,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$safe_user_path = (string) 'wpub/dav/'.$safe_user_dir.'/mail';
+		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/mail';
 		if(SmartFileSysUtils::check_if_safe_path((string)$safe_user_path) != '1') {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebMail Unsafe User Path ...');
 			return;
@@ -67,7 +67,6 @@ $html_content = '<a id="url_recognition" href="'.$this->pagelink.'&msg='.Smart::
 
 $mbox = 'iradu@unix-world.org';
 $box = 'inbox';
-$the_mbox_path = (string) SmartFileSysUtils::add_dir_last_slash((string)$this->userpath.$mbox);
 
 		//--
 		$op = $this->RequestVarGet('op', '', 'string');
@@ -86,7 +85,7 @@ $the_mbox_path = (string) SmartFileSysUtils::add_dir_last_slash((string)$this->u
 				//--
 				$this->PageViewSetVar(
 					'main',
-					(string) $this->listJsonMailbox($the_mbox_path, $ofs, $sortby, $sortdir, $srcby, $src)
+					(string) $this->listJsonMailbox($mbox, $ofs, $sortby, $sortdir, $srcby, $src)
 				);
 				//--
 				return;
@@ -131,6 +130,9 @@ $html_content = (string) SmartMarkersTemplating::render_file_template(
 
 			} else {
 				//--
+				$id = $this->RequestVarGet('id', '', 'string');
+				//--
+				$this->markMessageAsRead($mbox, $id, $msg);
 				$this->displayMimeMessage($msg);
 				//--
 			} //end if else
@@ -156,6 +158,18 @@ $html_content = (string) SmartMarkersTemplating::render_file_template(
 	} //END FUNCTION
 
 
+	private function mboxPath($mbox) {
+		//--
+		if((!$mbox) OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name($mbox))) {
+			Smart::raise_error(__METHOD__.'() :: MailBox parameter is Empty or Invalid: '.$mbox);
+			return 'tmp/#invalid@mail.box#';
+		} //end if
+		//--
+		return (string) SmartFileSysUtils::add_dir_last_slash((string)$this->userpath.$mbox);
+		//--
+	} //END FUNCTION
+
+
 	private function secretKey() {
 		//--
 		return (string) $this->ControllerGetParam('controller').':'.sha1(SMART_FRAMEWORK_SECURITY_KEY.'|'.$this->username.'|'.$this->userpath);
@@ -163,7 +177,45 @@ $html_content = (string) SmartMarkersTemplating::render_file_template(
 	} //END FUNCTION
 
 
+	private function markMessageAsRead($mbox, $id, $msg) {
+		//--
+		$the_mbox_path = $this->mboxPath($mbox);
+		//--
+		$model = new \SmartModDataModel\Cloud\SqWebmail($the_mbox_path); // open connection / initialize
+		//--
+		$wr = $model->markOneMessageAsReadById($id);
+		//--
+		if($wr[1] == 1) { // update just on first read
+				//--
+				$arr_msg = SmartMailerMimeParser::get_message_data_structure(
+					(string) $msg,
+					(string) $this->secretKey(),
+					'data-full'
+				);
+				//print_r($arr_msg); die();
+				if((int)$arr_msg['atts_num'] > 0) {
+					$model->updOneMessageAttsById($id, (int)$arr_msg['atts_num'], (string)$arr_msg['atts_lst']);
+				} //end if
+				//--
+				$arr_msg = SmartMailerMimeParser::get_message_data_structure(
+					(string) $msg,
+					(string) $this->secretKey(),
+					'data-reply'
+				);
+				//print_r($arr_msg); die();
+				$model->updOneMessageKeywordsById($id, (string)SmartUtils::extract_keywords((string)$arr_msg['message'], 255));
+				//--
+				$arr_msg = null; // free mem
+				//--
+		} //end if
+		//--
+		unset($model); // close connection
+		//--
+	} //END FUNCTION
+
+
 	private function displayMimeMessage($msg) {
+
 		//--
 		$mode = $this->RequestVarGet('mode', '', 'string');
 		$pdf = $this->RequestVarGet('pdf', '', 'string');
@@ -240,7 +292,11 @@ $html_content = (string) SmartMarkersTemplating::render_file_template(
 	} //END FUNCTION
 
 
-	private function listJsonMailbox($the_mbox_path, $ofs, $sortby, $sortdir, $srcby, $src) {
+	private function listJsonMailbox($mbox, $ofs, $sortby, $sortdir, $srcby, $src) {
+		//--
+		$the_mbox_path = $this->mboxPath($mbox);
+		//--
+		$model = new \SmartModDataModel\Cloud\SqWebmail($the_mbox_path); // open connection / initialize
 		//--
 		$limit = 25;
 		//--
@@ -254,27 +310,22 @@ $html_content = (string) SmartMarkersTemplating::render_file_template(
 			'filter' 			=> [
 				'srcby' => (string) $srcby,
 				'src' 	=> (string) $src
-			]
+			],
+			'totalRows' 		=> (int)    $model->listCountRecords((string)$srcby, (string)$src),
+			'rowsList' 			=> (array)  $model->listGetRecords((string)$srcby, (string)$src, (int)$limit, (int)$ofs, (string)$sortdir, (string)$sortby)
 		];
-		//--
-		$model = new \SmartModDataModel\Cloud\SqWebmail($the_mbox_path); // open connection / initialize
-		//--
-		$data['totalRows'] 	= (int)   $model->listCountRecords((string)$srcby, (string)$src);
-		$data['rowsList'] 	= (array) $model->listGetRecords((string)$srcby, (string)$src, (int)$limit, (int)$ofs, (string)$sortdir, (string)$sortby);
 		//--
 		unset($model); // close connection
 		//--
 		for($i=0; $i<count($data['rowsList']); $i++) {
 			//--
 			$val = (array) $data['rowsList'][$i];
-			$data['rowsList'][$i]['@link'] = (string) $this->pagelink.'&msg='.Smart::escape_url(SmartMailerMimeParser::encode_mime_fileurl(
+			$data['rowsList'][$i]['@link'] = (string) $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&id='.Smart::escape_url($val['id']).'&msg='.Smart::escape_url(SmartMailerMimeParser::encode_mime_fileurl(
 				(string) rtrim($the_mbox_path,'/').'/'.rtrim($val['folder'],'/').'/'.ltrim($val['id'],'/'),
 				(string) $this->secretKey()
 			));
 			//--
 		} //end for
-
-
 		//--
 		return (string) Smart::json_encode((array)$data);
 		//--

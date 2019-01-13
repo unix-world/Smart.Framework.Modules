@@ -34,7 +34,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$safe_user_path = (string) 'wpub/dav/'.$safe_user_dir.'/caldav';
+		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/caldav';
 		if(SmartFileSysUtils::check_if_safe_path((string)$safe_user_path) != '1') {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebCalendar Unsafe User Path ...');
 			return;

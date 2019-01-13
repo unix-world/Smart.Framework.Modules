@@ -41,9 +41,9 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		if(!SmartFileSystem::is_type_file('wpub/dav/.htaccess')) {
-			SmartFileSystem::write('wpub/dav/.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n");
-			if(!SmartFileSystem::is_type_file('wpub/dav/.htaccess')) {
+		if(!SmartFileSystem::is_type_file('wpub/cloud/.htaccess')) {
+			SmartFileSystem::write('wpub/cloud/.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n");
+			if(!SmartFileSystem::is_type_file('wpub/cloud/.htaccess')) {
 				$this->PageViewSetErrorStatus(500, 'ERROR: DAV .htaccess is missing ...');
 				return;
 			} //end if
@@ -51,7 +51,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$version = 'r.181227';
+		$version = 'r.20190113';
 		//--
 		$this->PageViewSetVars([
 			'VERSION' 		=> (string) $version,

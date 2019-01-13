@@ -25,7 +25,8 @@
 				<option value="to_name">To (name)</option>
 				<option value="msg_subj">Subject</option>
 				<option value="date_time">Date / Time</option>
-		<!--	<option value="keywds">KeyWords</option> -->
+				<option value="keywds">KeyWords</option>
+				<option value="atts">Attachments</option>
 			</select>
 			</td>
 			<td>
@@ -54,14 +55,20 @@ jQuery(function() {
 	// Formatters
 	function formatter_ID(row, cell, value, columnDef, dataContext) {
 		value = value || '#';
-		return '<button style="margin:0px; margin-top:-2px;" class="ux-button ux-button-xsmall" onClick="SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(value) +'\', \'webmail_view_msg\'); return false;"><i class="fa fa-envelope-square" style="color:#777777;" title="Display Message"></i></button>';
+		var color = '#777777';
+		var rcolor = '#333333';
+		if(dataContext['stat_read'] <= 0) {
+			color = '#FF5500';
+		} //end if else
+		return '<button title="Display Message" style="margin:0px; margin-top:-2px;" class="ux-button ux-button-xsmall" onClick="jQuery(this).children().first().css({\'color\':\'' + SmartJS_CoreUtils.escape_js(rcolor) + '\'}); SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(value) +'\', \'webmail_view_msg\'); return false;"><i class="fa fa-envelope-square" style="color:' + SmartJS_CoreUtils.escape_html(color) + ';"></i></button>';
 	}
 	function formatter_Atts(row, cell, value, columnDef, dataContext) {
 		value = value || '0';
+		var atts = dataContext['atts'] || '';
 		if(value != 1) {
 			value = '';
 		} else {
-			value = '<div align="center"><img src="lib/core/plugins/img/email/attachment.svg" width="16" style="margin-top:3px;"></div>';
+			value = '<div align="center" title="' + SmartJS_CoreUtils.escape_html(atts) + '" style="cursor:help;"><img src="lib/core/plugins/img/email/attachment.svg" width="16" style="margin-top:3px;"></div>';
 		} //end
 		return String(value);
 	}
@@ -69,7 +76,7 @@ jQuery(function() {
 	// Grid Data Defs
 	var columns = [
 		{id:'@link', field:'@link', name:'', sortable:true, width:20, cssClass:'smartGrid_AlignCenter', formatter:formatter_ID},
-		{id:'have_atts', field:'have_atts', name:'At', sortable:true, width:20, formatter:formatter_Atts},
+		{id:'have_atts', field:'have_atts', name:'A.', sortable:true, width:20, formatter:formatter_Atts},
 		{id:'from_all', field:'from_all', name:'From', sortable:true, width:100, cssClass:'smartGrid_Important', editor:TextCellSelector},
 		{id:'to_all', field:'to_all', name:'To', sortable:true, width:100, cssClass:'smartGrid_Important', editor:TextCellSelector},
 		{id:'msg_subj', field:'msg_subj', name:'Subject', sortable:true, width:200, cssClass:'smartGrid_Default', editor:TextCellSelector},

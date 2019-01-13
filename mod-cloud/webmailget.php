@@ -47,7 +47,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$safe_user_path = (string) 'wpub/dav/'.$safe_user_dir.'/mail';
+		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/mail';
 		if(SmartFileSysUtils::check_if_safe_path((string)$safe_user_path) != '1') {
 			if(!headers_sent()) {
 				http_response_code(500);
