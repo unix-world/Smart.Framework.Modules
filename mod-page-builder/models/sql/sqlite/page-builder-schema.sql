@@ -1,5 +1,5 @@
 
--- START :: SQLite: PageBuilder r.20190108 #####
+-- START :: SQLite: PageBuilder r.20190114 #####
 
 --
 
@@ -22,7 +22,7 @@ CREATE TABLE 'page_builder' ( 								-- Web - Page Builder v.2019.01.08
 	`mode` CHARACTER VARYING(8) NOT NULL, 					-- Render Mode: html / markdown / text / raw / settings
 	`data` TEXT DEFAULT '' NOT NULL, 						-- Render Active Runtime (Txt/B64)
 	`code` TEXT DEFAULT '' NOT NULL, 						-- Render Code (Yaml/B64)
-	`layout` CHARACTER VARYING(75) DEFAULT '' NOT NULL, 	-- Page Design Layout, Pages Only
+	`layout` CHARACTER VARYING(75) DEFAULT '' NOT NULL, 	-- Page Design Layout (Pages Only) / Segment Area (Segments Only)
 	`checksum` CHARACTER VARYING(32) DEFAULT '' NOT NULL, 	-- Checksum (MD5)
 	`translations` SMALLINT DEFAULT 1 NOT NULL, 			-- Allow Translations (1 = yes ; 0 = no)
 	`counter` BIGINT DEFAULT 0 NOT NULL, 					-- Hit Counter

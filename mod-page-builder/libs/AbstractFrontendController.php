@@ -25,7 +25,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.20190109
+ * @version 	v.20190114
  * @package 	PageBuilder
  *
  */
@@ -341,6 +341,15 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 	final public function checkIfPageOrSegmentExist($y_id) {
 		//--
 		return (bool) \SmartModDataModel\PageBuilder\PageBuilderFrontend::checkIfPageOrSegmentExist((string)$y_id);
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	final public function getListOfSegmentsByArea($y_area) {
+		//--
+		return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfSegmentsByArea((string)$y_area);
 		//--
 	} //END FUNCTION
 	//=====

@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ View Record / Props :: v.20190109 -->
+<!-- Pagebuilder / Manage @ View Record / Props :: v.20190114 -->
 <style>
 ul#lang-list {
 	display: inline;
@@ -135,10 +135,21 @@ ul#related-objects li a:hover {
 	[%%%%IF:MODE-PAGETYPE:!=raw;%%%%]
 	<tr>
 		<td>
-			<b>[####TEXT-LAYOUT####]:</b>
+			<b>[####TEXT-TEMPLATE####]:</b>
 		</td>
 		<td>
-			[####FIELD-LAYOUT####]
+			[####FIELD-TEMPLATE####]
+		</td>
+	</tr>
+	[%%%%/IF:MODE-PAGETYPE%%%%]
+[%%%%ELSE:IS-SEGMENT%%%%]
+	[%%%%IF:MODE-PAGETYPE:!=settings;%%%%]
+	<tr>
+		<td>
+			<b>[####TEXT-AREA####]:</b>
+		</td>
+		<td>
+			[####FIELD-AREA####]
 		</td>
 	</tr>
 	[%%%%/IF:MODE-PAGETYPE%%%%]

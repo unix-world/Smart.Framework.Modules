@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190109
+ * @version 	v.20190114
  * @package 	PageBuilder
  *
  */
@@ -139,7 +139,8 @@ final class Manager {
 		$text['ref'] 				= 'Ref.';
 		$text['refs'] 				= 'Related Objects';
 		$text['ctrl'] 				= 'Controller';
-		$text['layout'] 			= 'Design Layout';
+		$text['template'] 			= 'Page Template';
+		$text['area'] 				= 'Segment Area';
 		$text['name'] 				= 'Name';
 		$text['active']				= 'Active';
 		$text['special'] 			= 'Special';
@@ -364,7 +365,7 @@ final class Manager {
 			$bttns .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 			$bttns .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-back.svg'.'" alt="'.self::text('cancel').'" title="'.self::text('cancel').'" style="cursor:pointer;" onClick="'.\SmartComponents::js_code_ui_confirm_dialog('<h3>'.self::text('msg_unsaved').'</h3>'.'<br>'.'<b>'.\Smart::escape_html($translator_window->text('confirm_action')).'</b>', "SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#adm-page-props').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-props&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');").'">';
 			//--
-			$fld_name = '<input type="text" name="frm[name]" value="'.\Smart::escape_html($query['name']).'" size="70" maxlength="150" autocomplete="off" placeholder="Internal Page Title" required>';
+			$fld_name = '<input type="text" name="frm[name]" value="'.\Smart::escape_html($query['name']).'" size="70" maxlength="150" autocomplete="off" placeholder="'.self::text('name').'" required>';
 			//--
 			if(((string)$query['mode'] == 'raw') OR ((string)$query['mode'] == 'settings')) { // raw or settings cannot be changed to other modes !
 				unset($arr_pmodes['html']);
@@ -383,7 +384,13 @@ final class Manager {
 			$fld_auth = \SmartComponents::html_selector_true_false('frm[auth]', $query['auth']);
 			$fld_trans = \SmartComponents::html_selector_true_false('frm[translations]', $query['translations']);
 			//--
-			$fld_layout = self::drawListLayout($query['mode'], 'form', $query['layout'], 'frm[layout]');
+			if(self::testIsSegmentPage($query['id'])) {
+				$fld_area = '<input type="text" name="frm[layout]" value="'.\Smart::escape_html($query['layout']).'" size="35" maxlength="75" autocomplete="off" placeholder="'.self::text('template').'">';
+				$fld_template = '';
+			} else {
+				$fld_area = '';
+				$fld_template = self::drawFieldLayoutPages($query['mode'], 'form', $query['layout'], 'frm[layout]');
+			} //end if else
 			//--
 			$extra_form_start = '<form class="ux-form" name="page_form_props" id="page_form_props" method="post" action="#" onsubmit="return false;"><input type="hidden" name="frm[form_mode]" value="props">';
 			$extra_form_end = '</form>';
@@ -413,7 +420,13 @@ final class Manager {
 			$fld_auth = \SmartComponents::html_selector_true_false('', $query['auth']);
 			$fld_trans = \SmartComponents::html_selector_true_false('', $query['translations']);
 			//--
-			$fld_layout = self::drawListLayout($query['mode'], 'list', $query['layout']);
+			if(self::testIsSegmentPage($query['id'])) {
+				$fld_area = (string) \Smart::escape_html($query['layout']);
+				$fld_template = '';
+			} else {
+				$fld_area = '';
+				$fld_template = self::drawFieldLayoutPages($query['mode'], 'list', $query['layout']);
+			} //end if else
 			//--
 			$extra_form_start = '';
 			$extra_form_end = '';
@@ -484,8 +497,10 @@ final class Manager {
 				'ARR-TRANSLATIONS' 			=> (array)  $transl_arr,
 				'IS-TRANSLATABLE' 			=> (int)    $query['translations'],
 				'WARN-TRANSLATABLE' 		=> (string) self::text('warn_translations'),
-				'TEXT-LAYOUT'				=> (string) self::text('layout'),
-				'FIELD-LAYOUT'				=> (string) $fld_layout,
+				'TEXT-TEMPLATE'				=> (string) self::text('template'),
+				'FIELD-TEMPLATE'			=> (string) $fld_template,
+				'TEXT-AREA'					=> (string) self::text('area'),
+				'FIELD-AREA'				=> (string) $fld_area,
 				'MODE-PAGETYPE' 			=> (string) $query['mode'],
 				'TEXT-REFS' 				=> (string) self::text('refs'),
 				'ARR-REFS' 					=> (array)  $arr_refs,
@@ -1067,6 +1082,8 @@ final class Manager {
 							} //end switch
 							//--
 							$data['layout'] = (string) trim((string)$y_frm['layout']);
+							$data['layout'] = (string) \Smart::safe_filename((string)$data['layout']);
+							$data['layout'] = (string) strtolower((string)$data['layout']);
 							if(strlen((string)$data['layout']) > 75) {
 								$data['layout'] = ''; // fix to avoid DB overflow
 							} //end if
@@ -1096,7 +1113,15 @@ final class Manager {
 									$data['mode'] = 'html';
 							} //end switch
 							//--
-							$data['layout'] = '';
+							$data['layout'] = (string) trim((string)$y_frm['layout']);
+							$data['layout'] = (string) \Smart::safe_filename((string)$data['layout']);
+							$data['layout'] = (string) strtolower((string)$data['layout']);
+							if(strlen((string)$data['layout']) > 75) {
+								$data['layout'] = ''; // fix to avoid DB overflow
+							} //end if
+							if((string)$data['mode'] == 'settings') {
+								$data['layout'] = ''; // force for settings segments
+							} //end if
 							//--
 						} //end if
 						//--
@@ -1586,7 +1611,7 @@ final class Manager {
 
 
 	//==================================================================
-	private static function drawListLayout($y_mode, $y_listmode, $y_value, $y_htmlvar='') {
+	private static function drawFieldLayoutPages($y_mode, $y_listmode, $y_value, $y_htmlvar='') {
 		// TO BE DONE ...
 		//--
 		return \SmartComponents::html_select_list_single('', $y_value, $y_listmode, (array)\SmartModExtLib\PageBuilder\Utils::getAvailableLayouts(), $y_htmlvar, '250', '', 'no', 'no');
@@ -1703,12 +1728,19 @@ final class Manager {
 		} else {
 			$show_translations = 'no';
 		} //end if else
+		//--
+		if(\SmartModExtLib\PageBuilder\Utils::allowPages() === true) {
+			$allow_pages = 'yes';
+		} else {
+			$allow_pages = 'no';
+		} //end if else
 		//-- #{{{SYNC-PAGEBUILDER-MANAGER-DEF-LINKS}}}
 		return (string) \SmartMarkersTemplating::render_file_template(
 			self::$ModulePath.'libs/views/manager/view-list-tree.mtpl.htm',
 			[
 				'SHOW-FILTER-TYPE' 	=> 'no',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
+				'ALLOW-PAGES' 		=> (string) $allow_pages,
 				'LIST-FORM-URL' 	=> (string) self::$ModuleScript,
 				'LIST-FORM-METHOD' 	=> 'GET',
 				'LIST-FORM-VARS' 	=> (array) [
@@ -1743,6 +1775,8 @@ final class Manager {
 				'TXT-COL-REFID' 	=> (string) self::text('ref', false),
 				'TXT-COL-NAME' 		=> (string) self::text('name', false),
 				'TXT-COL-CTRL' 		=> (string) self::text('ctrl', false),
+				'TXT-COL-TEMPLATE' 	=> (string) self::text('template', false),
+				'TXT-COL-AREA' 		=> (string) self::text('area', false),
 				'TXT-COL-CODE' 		=> (string) self::text('record_code', false),
 				'TXT-COL-RUNTIME' 	=> (string) self::text('record_runtime', false),
 				'TXT-COL-SYNTAX' 	=> (string) self::text('record_syntax', false),
@@ -1783,12 +1817,19 @@ final class Manager {
 		} else {
 			$show_translations = 'no';
 		} //end if else
+		//--
+		if(\SmartModExtLib\PageBuilder\Utils::allowPages() === true) {
+			$allow_pages = 'yes';
+		} else {
+			$allow_pages = 'no';
+		} //end if else
 		//-- #{{{SYNC-PAGEBUILDER-MANAGER-DEF-LINKS}}}
 		return (string) \SmartMarkersTemplating::render_file_template(
 			(string) self::$ModulePath.'libs/views/manager/view-list.mtpl.htm',
 			[
 				'SHOW-FILTER-TYPE' 	=> 'yes',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
+				'ALLOW-PAGES' 		=> (string) $allow_pages,
 				'LIST-FORM-URL' 	=> '#',
 				'LIST-FORM-METHOD' 	=> 'POST',
 				'LIST-FORM-VARS' 	=> (array) [],
@@ -1813,6 +1854,8 @@ final class Manager {
 				'TXT-COL-REFID' 	=> (string) self::text('ref', false),
 				'TXT-COL-NAME' 		=> (string) self::text('name', false),
 				'TXT-COL-CTRL' 		=> (string) self::text('ctrl', false),
+				'TXT-COL-TEMPLATE' 	=> (string) self::text('template', false),
+				'TXT-COL-AREA' 		=> (string) self::text('area', false),
 				'TXT-COL-CODE' 		=> (string) self::text('record_code', false),
 				'TXT-COL-RUNTIME' 	=> (string) self::text('record_runtime', false),
 				'TXT-COL-SYNTAX' 	=> (string) self::text('record_syntax', false),

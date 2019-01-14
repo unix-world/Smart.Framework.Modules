@@ -1,5 +1,5 @@
 
--- START :: PostgreSQL: Web/PageBuilder r.20190108 #####
+-- START :: PostgreSQL: Web/PageBuilder r.20190114 #####
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -61,7 +61,7 @@ COMMENT ON COLUMN web.page_builder.name IS 'Record Name (for management only)';
 COMMENT ON COLUMN web.page_builder.mode IS 'Render Mode: html / markdown / text / raw / settings';
 COMMENT ON COLUMN web.page_builder.data IS 'Render Active Runtime (Yaml/B64)';
 COMMENT ON COLUMN web.page_builder.code IS 'Render Code (Txt/B64)';
-COMMENT ON COLUMN web.page_builder.layout IS 'Page Design Layout, Pages Only';
+COMMENT ON COLUMN web.page_builder.layout IS 'Page Design Layout (Pages Only) / Segment Area (Segments Only)';
 COMMENT ON COLUMN web.page_builder.checksum IS 'Checksum (MD5)';
 COMMENT ON COLUMN web.page_builder.translations IS 'Allow Translations (1 = yes ; 0 = no)';
 COMMENT ON COLUMN web.page_builder.counter IS 'Hit Counter';

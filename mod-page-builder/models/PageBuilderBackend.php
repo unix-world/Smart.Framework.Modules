@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderBackend {
 
 	// ::
-	// v.20190108
+	// v.20190114
 
 	private static $db = null;
 	private static function dbType() {
@@ -985,6 +985,20 @@ final class PageBuilderBackend {
 						$where = 'WHERE (a.`ctrl` LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\')';
 					} //end if else
 					break;
+				case 'template':
+					if((string)self::dbType() == 'pgsql') {
+						$where = 'WHERE ((a."layout" ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\') AND (SUBSTR("id",1,1) != \'#\'))';
+					} elseif((string)self::dbType() == 'sqlite') {
+						$where = 'WHERE ((a.`layout` LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\') AND (substr(`id`,1,1) != \'#\'))';
+					} //end if else
+					break;
+				case 'area':
+					if((string)self::dbType() == 'pgsql') {
+						$where = 'WHERE ((a."layout" ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\') AND (SUBSTR("id",1,1) = \'#\'))';
+					} elseif((string)self::dbType() == 'sqlite') {
+						$where = 'WHERE ((a.`layout` LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\') AND (substr(`id`,1,1) = \'#\'))';
+					} //end if else
+					break;
 				case 'code':
 					if((string)$y_src == '[]') { // empty
 						if((string)self::dbType() == 'pgsql') {
@@ -1050,7 +1064,7 @@ final class PageBuilderBackend {
 								if((string)self::dbType() == 'pgsql') {
 									$where = 'WHERE FALSE';
 								} elseif((string)self::dbType() == 'sqlite') {
-									$where = 'WHERE FALSE';
+									$where = 'WHERE 0';
 								} //end if else
 							} //end if
 						} else {
@@ -1079,8 +1093,12 @@ final class PageBuilderBackend {
 						} //end if else
 					} //end if
 					break;
-				default:
-					// nothing, leave as is set above
+				default: // invalid search
+					if((string)self::dbType() == 'pgsql') {
+						$where = 'WHERE FALSE';
+					} elseif((string)self::dbType() == 'sqlite') {
+						$where = 'WHERE 0';
+					} //end if else
 			} // end switch
 		} //end if
 		//--

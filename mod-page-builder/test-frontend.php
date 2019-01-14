@@ -45,6 +45,9 @@ final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\Abstract
 			[ 'AREA.TOP', 'MAIN', 'AREA.FOOTER', 'TITLE', 'META-DESCRIPTION', 'META-KEYWORDS' ] // Allowed TPL Markers
 		);
 
+		$test_segments = (array) $this->getListOfSegmentsByArea('%'); // just for test ...
+	//	print_r($test_segments); die();
+
 		//-- INTERNAL DEBUG
 		/*
 		$arr = $this->PageViewGetVars();

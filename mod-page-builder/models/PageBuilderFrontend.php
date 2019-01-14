@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20190108
+	// v.20190114
 
 	private static $db = null;
 	private static function dbType() {
@@ -239,6 +239,42 @@ final class PageBuilderFrontend {
 		} //end if
 		//--
 		return (array) $arr;
+		//--
+	} //END FUNCTION
+
+
+	public static function getListOfSegmentsByArea($y_area) {
+		//--
+		if((string)self::dbType() == 'pgsql') {
+			$arr = (array) \SmartPgsqlDb::read_adata(
+				'SELECT "id" FROM "web"."page_builder" WHERE (("layout" LIKE $1) AND (SUBSTR("id",1,1) = $2)) ORDER BY "id" ASC',
+				[
+					(string) $y_area,
+					(string) '#'
+				]
+			);
+		} elseif((string)self::dbType() == 'sqlite') {
+			$arr = (array) self::$db->read_adata(
+				'SELECT `id` FROM `page_builder` WHERE ((`layout` LIKE ?) AND (substr(`id`,1,1) = ?)) ORDER BY `id` ASC',
+				[
+					(string) $y_area,
+					(string) '#'
+				]
+			);
+		} else {
+			$arr = array();
+		} //end if else
+		//--
+		$out_arr = [];
+		for($i=0; $i<\Smart::array_size($arr); $i++) {
+			if(is_array($arr[$i])) {
+				if((string)$arr[$i]['id'] != '') {
+					$out_arr[] = (string) $arr[$i]['id'];
+				} //end if
+			} //end if
+		} //end for
+		//--
+		return (array) $out_arr;
 		//--
 	} //END FUNCTION
 
