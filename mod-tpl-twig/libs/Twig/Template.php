@@ -508,8 +508,9 @@ abstract class Twig_Template implements Twig_TemplateInterface
         if (self::METHOD_CALL !== $type) {
             $arrayItem = is_bool($item) || is_float($item) ? (int) $item : $item;
 
-     //     if ((is_array($object) || $object instanceof ArrayAccess) && (isset($object[$arrayItem]) || array_key_exists($arrayItem, $object))) {
-            if (((is_array($object) || $object instanceof ArrayObject) && (isset($object[$arrayItem]) || array_key_exists($arrayItem, $object))) || ($object instanceof ArrayAccess && isset($object[$arrayItem]))) { // fix by unixman (bug #2813 fix key exists check for non ArrayObject objects) from: https://github.com/twigphp/Twig/commit/366a0fd34d4bf31f42f8d3f0f152cd6da5260e35
+            if (((is_array($object) || $object instanceof ArrayObject) && (isset($object[$arrayItem]) || array_key_exists($arrayItem, $object)))
+                || ($object instanceof ArrayAccess && isset($object[$arrayItem]))
+            ) {
                 if ($isDefinedTest) {
                     return true;
                 }

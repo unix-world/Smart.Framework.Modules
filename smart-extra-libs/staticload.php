@@ -17,16 +17,16 @@ require_once('modules/smart-extra-libs/version.php'); 					// extra libs version
 //--
 // StaticLoad Extra Libs from (Smart.Framework.Modules), v.20190103
 //--
-require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); 	// curl http/ftp connector
+require_once('modules/smart-extra-libs/lib_templating_ext.php'); 		// extended templating
 //--
-require_once('modules/smart-extra-libs/lib_langid_cli.php'); 			// langid client
+require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); 	// curl http/ftp connector
 //--
 require_once('modules/smart-extra-libs/lib_db_ext_pgsql.php'); 			// pgsql extended db connector
 require_once('modules/smart-extra-libs/lib_db_solr.php'); 				// solr db connector
 //--
 require_once('modules/smart-extra-libs/lib_charts.php'); 				// gd charts
 //--
-require_once('modules/smart-extra-libs/lib_templating_ext.php'); 		// extended templating
+require_once('modules/smart-extra-libs/lib_langid_cli.php'); 			// langid client
 //--
 
 // end of php code

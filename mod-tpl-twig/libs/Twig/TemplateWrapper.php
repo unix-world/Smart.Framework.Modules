@@ -42,8 +42,7 @@ final class Twig_TemplateWrapper
     {
         // using func_get_args() allows to not expose the blocks argument
         // as it should only be used by internal code
-   //   return $this->template->render($context, func_num_args() >= 1 ? func_get_arg(1) : []);
-        return $this->template->render($context, func_num_args() > 1 ? func_get_arg(1) : []); // fix by unixman (fixed logic in TemplateWrapper) from: https://github.com/twigphp/Twig/commit/361d864178ea6abb86722633b6c9bd509a6e9930
+        return $this->template->render($context, func_num_args() > 1 ? func_get_arg(1) : []);
     }
 
     /**

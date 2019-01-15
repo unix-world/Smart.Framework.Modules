@@ -16,11 +16,11 @@
  */
 class Twig_Environment
 {
-    const VERSION = '1.37.0.2'; // 1.37.0 with fixes by unixman from https://github.com/twigphp @ head.20190114.1615
-    const VERSION_ID = 13700;
+    const VERSION = '1.37.1';
+    const VERSION_ID = 13701;
     const MAJOR_VERSION = 1;
     const MINOR_VERSION = 37;
-    const RELEASE_VERSION = 0;
+    const RELEASE_VERSION = 1;
     const EXTRA_VERSION = '';
 
     protected $charset;

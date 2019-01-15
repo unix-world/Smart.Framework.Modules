@@ -44,7 +44,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: NetteLatte
- * @version 	v.181217
+ * @version 	v.20190115
  * @package 	Templating:Engines
  *
  */

@@ -3,7 +3,7 @@
 /**
  * This file is part of the Latte (https://latte.nette.org)
  * Copyright (c) 2008 David Grudl (https://davidgrudl.com)
- * (c) 2018 unix-world.org
+ * (c) 2018-2019 unix-world.org
  */
 
 // contains fixes by unixman
@@ -18,7 +18,7 @@ final class Engine {
 
 	use Strict;
 
-	const VERSION = '2.4.8-r.181217.sfm';
+	const VERSION = '2.4.8-r.20190115.sfm';
 
 	/** Content types */
 	const CONTENT_HTML = 'html',

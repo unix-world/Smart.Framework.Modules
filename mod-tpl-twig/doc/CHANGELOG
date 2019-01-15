@@ -1,8 +1,7 @@
-* 1.37.0.2 (2019-01-14) by unixman
- * bug #2813 fix key exists check for non ArrayObject objects) (https://github.com/twigphp/Twig/commit/366a0fd34d4bf31f42f8d3f0f152cd6da5260e35)
+* 1.37.1 (2019-01-14)
 
-* 1.37.0.1 (2019-01-14) by unixman
- * fixed logic in TemplateWrapper (https://github.com/twigphp/Twig/commit/361d864178ea6abb86722633b6c9bd509a6e9930)
+ * fixed regression (key exists check for non ArrayObject objects)
+ * fixed logic in TemplateWrapper
 
 * 1.37.0 (2019-01-14)
 

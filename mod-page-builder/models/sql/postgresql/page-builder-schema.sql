@@ -1,5 +1,5 @@
 
--- START :: PostgreSQL: Web/PageBuilder r.20190114 #####
+-- START :: PostgreSQL: Web/PageBuilder r.20190115 #####
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -50,7 +50,7 @@ CREATE TABLE web.page_builder (
 	CONSTRAINT page_builder__chk__published CHECK ((published >= 0))
 );
 
-COMMENT ON TABLE web.page_builder IS 'Web - Page Builder v.2019.01.08';
+COMMENT ON TABLE web.page_builder IS 'Web - Page Builder v.2019.01.15';
 COMMENT ON COLUMN web.page_builder.id IS 'Unique ID for the Record: Page or Segment (segments must begin with: #)';
 COMMENT ON COLUMN web.page_builder.ref IS 'Reference Parent IDs as Json-Array [], Optional';
 COMMENT ON COLUMN web.page_builder.ctrl IS 'Parent Controller ID, Optional';
@@ -61,7 +61,7 @@ COMMENT ON COLUMN web.page_builder.name IS 'Record Name (for management only)';
 COMMENT ON COLUMN web.page_builder.mode IS 'Render Mode: html / markdown / text / raw / settings';
 COMMENT ON COLUMN web.page_builder.data IS 'Render Active Runtime (Yaml/B64)';
 COMMENT ON COLUMN web.page_builder.code IS 'Render Code (Txt/B64)';
-COMMENT ON COLUMN web.page_builder.layout IS 'Page Design Layout (Pages Only) / Segment Area (Segments Only)';
+COMMENT ON COLUMN web.page_builder.layout IS 'Page Template (Pages Only) / Segment Area (Segments Only)';
 COMMENT ON COLUMN web.page_builder.checksum IS 'Checksum (MD5)';
 COMMENT ON COLUMN web.page_builder.translations IS 'Allow Translations (1 = yes ; 0 = no)';
 COMMENT ON COLUMN web.page_builder.counter IS 'Hit Counter';
@@ -97,7 +97,7 @@ CREATE TABLE web.page_translations (
 
 ALTER TABLE ONLY web.page_translations ADD CONSTRAINT page_translations_pkey PRIMARY KEY (id, lang);
 
-COMMENT ON TABLE web.page_translations IS 'Web - Page (Builder) Translations v.2019.01.08';
+COMMENT ON TABLE web.page_translations IS 'Web - Page (Builder) Translations v.2019.01.15';
 COMMENT ON COLUMN web.page_translations.id IS 'Unique ID for the Record: Page or Segment (segments must begin with: #)';
 COMMENT ON COLUMN web.page_translations.lang IS 'Language ID: de, fr, ro, ...';
 COMMENT ON COLUMN web.page_translations.code IS 'Render Code (Txt/B64)';

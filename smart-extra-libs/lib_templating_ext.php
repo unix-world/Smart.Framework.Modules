@@ -16,12 +16,12 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //=====================================================================================
 
 /**
- * Provides an easy to use connector for All Templating Engines available inside the Smart.Framework at once.
- * Depending upon the file name to render will choose like this:
- * some-file.mtpl.htm 		: SmartMarkersTemplating 	(Markers-TPL syntax)
- * some-file.latte.htm 		: SmartNetteLatteTemplating (NetteLatte-TPL syntax)
- * some-file.twig.htm 		: SmartTwigTemplating 		(Twig-TPL syntax)
- * some-file.t3fluid.htm 	: SmartTypo3FluidTemplating (Typo3Fluid-TPL syntax)
+ * Provides an easy to use connector for All available Templating Engines inside the Smart.Framework at once.
+ * Depending upon the file name extension will choose to render as:
+ * some-file.mtpl.htm 		: SmartMarkersTemplating 	(Markers-TPL syntax: .mtpl.)
+ * some-file.latte.htm 		: SmartNetteLatteTemplating (NetteLatte-TPL syntax: .latte.)
+ * some-file.twig.htm 		: SmartTwigTemplating 		(Twig-TPL syntax: .twig.)
+ * some-file.t3fluid.htm 	: SmartTypo3FluidTemplating (Typo3Fluid-TPL syntax: .t3fluid.)
  *
  * <code>
  *
@@ -43,7 +43,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: SmartMarkersTemplating, SmartNetteLatteTemplating, SmartTwigTemplating, SmartTypo3FluidTemplating
- * @version 	v.181217
+ * @version 	v.20190115
  * @package 	Templating:Engines
  *
  */

@@ -34,11 +34,16 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 	//--
 	switch((string)$classname) {
 		//--
+		//--
+		case 'SmartTypo3FluidTemplating':
+		case 'SmartTwigTemplating':
+		case 'SmartNetteLatteTemplating':
+		case 'SmartTemplating':
+			require_once('modules/smart-extra-libs/lib_templating_ext.php'); 	// extended templating
+			break;
+		//--
 		case 'SmartCurlHttpFtpClient':
 			require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); // curl http/ftp connector
-			break;
-		case 'SmartLangIdClient':
-			require_once('modules/smart-extra-libs/lib_langid_cli.php'); 		// langid client
 			break;
 		//--
 		case 'SmartAbstractPgsqlExtDb':
@@ -53,11 +58,8 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 			require_once('modules/smart-extra-libs/lib_charts.php'); 			// gd charts
 			break;
 		//--
-		case 'SmartTypo3FluidTemplating':
-		case 'SmartTwigTemplating':
-		case 'SmartNetteLatteTemplating':
-		case 'SmartTemplating':
-			require_once('modules/smart-extra-libs/lib_templating_ext.php'); 	// extended templating
+		case 'SmartLangIdClient':
+			require_once('modules/smart-extra-libs/lib_langid_cli.php'); 		// langid client
 			break;
 		//--
 		default:

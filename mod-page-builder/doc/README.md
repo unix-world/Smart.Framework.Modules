@@ -11,10 +11,12 @@ define('SMART_PAGEBUILDER_DB_TYPE', 'sqlite'); // to use PageBuilder with SQLite
 ## optional settings in etc/config.php when using with Pages and Extra Layouts ; Layouts must be in the same folder as the DEFAULT Layout
 ```php
 //define('SMART_PAGEBUILDER_DISABLE_PAGES', true); // this can be set in etc/config.php to disable the use of pages and allow only segments
+/* customize and uncomment this to allow set custom templates for pages
 $configs['pagebuilder']['layouts'] = [
 	'template-3col.htm',
 	'template-2col.htm'
 ];
+*/
 ```
 
 ## optional settings in etc/config-admin.php

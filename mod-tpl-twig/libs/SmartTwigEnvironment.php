@@ -28,7 +28,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @internal
  *
  * @depends 	extensions: classes: Twig
- * @version 	v.181105
+ * @version 	v.20190115
  * @package 	Templating:Engines
  *
  */
