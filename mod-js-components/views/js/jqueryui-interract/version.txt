@@ -1,3 +1,0 @@
-
-jQueryUI Interract (Core, Interractions, Widgets[Mouse], Effects[Core, Fade]) 1.12.1 ; TouchPunch 0.2.3
-

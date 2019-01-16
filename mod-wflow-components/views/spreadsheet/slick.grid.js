@@ -2,11 +2,12 @@
  * (c) 2009-2016 Michael Leibman
  * michael{dot}leibman{at}gmail{dot}com
  * http://github.com/mleibman/slickgrid
- *
  * Distributed under MIT license.
  * All rights reserved.
  *
- * SlickGrid v2.3
+ * (c) 2017-2019 unix-world.org
+ *
+ * SlickGrid v2.3.uxm190116
  *
  * NOTES:
  *     Cell/row DOM manipulations are done directly bypassing jQuery's DOM manipulation methods.
@@ -62,7 +63,7 @@ if (typeof Slick === "undefined") {
 			editable: false,
 			autoEdit: true,
 			enableCellNavigation: true,
-			enableColumnReorder: true,
+			enableColumnReorder: false, // changed from TRUE to FALSE by unixman
 			asyncEditorLoading: false,
 			asyncEditorLoadDelay: 100,
 			forceFitColumns: false,
@@ -246,7 +247,8 @@ if (typeof Slick === "undefined") {
 
 			// validate loaded JavaScript modules against requested options
 			if (options.enableColumnReorder && !$.fn.sortable) {
-				throw new Error("SlickGrid's 'enableColumnReorder = true' option requires jquery-ui.sortable module to be loaded");
+				options.enableColumnReorder = false;
+				console.error("WARNING: SlickGrid's `enableColumnReorder = true` option requires jQueryUI Sortable which is NOT Available ...");
 			}
 
 			editController = {
@@ -3877,3 +3879,5 @@ if (typeof Slick === "undefined") {
 		init();
 	}
 }(jQuery));
+
+// #END
