@@ -52,7 +52,7 @@ final class Templating {
 
 	// ->
 
-	const FLUID_VERSION = 'master@20190116';
+	const FLUID_VERSION = 'master@20190117';
 
 	private $dir;
 	private $t3fluid;

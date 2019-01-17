@@ -2,6 +2,7 @@
  * FullCalendar v3.8.2
  * Docs & License: https://fullcalendar.io/
  * (c) 2018 Adam Shaw
+ * requires: moment.js
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
