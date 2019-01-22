@@ -7,7 +7,7 @@
 $configs['svn']['cmd'] = '/usr/local/bin/svn';
 $configs['svn']['7za'] = '/usr/local/bin/7za';
 $configs['svn']['repos'] = [
-	'some-repo' => [ 'url' => 'https://repos/svn/some-repo/', 'user' => 'user123', 'pass' => 'pass123' ],
+	'some-repo' => [ 'url' => 'https://repos/svn/some-repo/', 'user' => 'user123', 'pass' => 'pass123' ], // 'allow-download' => '7z'
 	// ...
 ];
 ```

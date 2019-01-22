@@ -22,6 +22,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	 *
 	 */
 
+	// v.20190122
+
 	public function Run() {
 
 		//--
@@ -222,6 +224,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					return;
 				} //end if
 
+				$arch_dwn_allow = false;
+				$arch_dwn_mode = '';
+				if(!!$repos[(string)trim((string)$repo)]['allow-download']) {
+					$arch_dwn_allow = true;
+					$arch_dwn_mode = (string) $repos[(string)trim((string)$repo)]['allow-download'];
+				} //end if
+
 				if((string)$rev != (string)$prev) {
 					$prev_path = (string) \SmartModExtLib\Svn\SvnWebManager::getRealPathFromPrevRevision($repo, $path, $rev, $prev);
 					if(!$prev_path) {
@@ -279,27 +288,29 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$main = (string) SmartMarkersTemplating::render_file_template(
 					$this->ControllerGetParam('module-view-path').'web-manager-list-repo.inc.htm',
 					[
-						'VIEWS-PATH' 		=> (string) $this->ControllerGetParam('module-view-path'),
-						'HOME-URL' 			=> (string) 'admin.php?page='.$this->ControllerGetParam('controller'),
-						'REPO-NAME' 		=> (string) $repo,
-						'REPO-PATH' 		=> (string) $crr_path,
-						'BACK-URL' 			=> $path ? 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url(Smart::dir_name($path)).'&rev='.Smart::escape_url($rev) : 'admin.php?page='.$this->ControllerGetParam('controller'),
-						'SELECT-URLBASE' 	=> 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($crr_path),
-						'SELECT-URLFILE' 	=> $isfile ? 'admin.php?page='.$this->ControllerGetParam('controller').'&op=cat&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($crr_path).'&type=file' : '#',
-						'DOWNLOAD-ARCH-URL' => $isfile ? '' : 'admin.php?page='.$this->ControllerGetParam('controller').'&op=dwarch&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($crr_path),
-						'TYPE' 				=> (string) $type,
-						'MIMETYPE' 			=> (string) $mimetype,
-						'MIMEDISP' 			=> (string) $mimedisp,
-						'DISPLAY-LINK' 		=> (string) $display_link,
-						'REPODATA' 			=> (array) $arr,
-						'REVSDATA' 			=> (array) $revs,
-						'LASTREVISFIRST' 	=> (string) $lastrevisfirst,
-						'REV-CRR' 			=> (int) $rev_crr,
-						'REV-FIRST' 		=> (int) $rev_first,
-						'REV-HEAD' 			=> (int) $rev_head,
-						'COMPARE-ROOT-URL' 	=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=compare&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url('/').'&rev=',
-						'COMPARE-URL' 		=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=compare&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($path).'&rev=',
-						'HEAD-ROOT-URL' 	=> 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path=/&rev=' // head revision must go into ROOT folder to avoid errors if the current folder have been deleted and is not available in the HEAD revision !!
+						'VIEWS-PATH' 			=> (string) $this->ControllerGetParam('module-view-path'),
+						'HOME-URL' 				=> (string) 'admin.php?page='.$this->ControllerGetParam('controller'),
+						'REPO-NAME' 			=> (string) $repo,
+						'REPO-PATH' 			=> (string) $crr_path,
+						'BACK-URL' 				=> $path ? 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url(Smart::dir_name($path)).'&rev='.Smart::escape_url($rev) : 'admin.php?page='.$this->ControllerGetParam('controller'),
+						'SELECT-URLBASE' 		=> 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($crr_path),
+						'SELECT-URLFILE' 		=> $isfile ? 'admin.php?page='.$this->ControllerGetParam('controller').'&op=cat&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($crr_path).'&type=file' : '#',
+						'DOWNLOAD-ARCH-ALLOW' 	=> $arch_dwn_allow ? 'yes' : 'no',
+						'DOWNLOAD-ARCH-MODE' 	=> (string) $arch_dwn_mode,
+						'DOWNLOAD-ARCH-URL' 	=> $isfile ? '' : 'admin.php?page='.$this->ControllerGetParam('controller').'&op=dwarch&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($crr_path),
+						'TYPE' 					=> (string) $type,
+						'MIMETYPE' 				=> (string) $mimetype,
+						'MIMEDISP' 				=> (string) $mimedisp,
+						'DISPLAY-LINK' 			=> (string) $display_link,
+						'REPODATA' 				=> (array) $arr,
+						'REVSDATA' 				=> (array) $revs,
+						'LASTREVISFIRST' 		=> (string) $lastrevisfirst,
+						'REV-CRR' 				=> (int) $rev_crr,
+						'REV-FIRST' 			=> (int) $rev_first,
+						'REV-HEAD' 				=> (int) $rev_head,
+						'COMPARE-ROOT-URL' 		=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=compare&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url('/').'&rev=',
+						'COMPARE-URL' 			=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=compare&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($path).'&rev=',
+						'HEAD-ROOT-URL' 		=> 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path=/&rev=' // head revision must go into ROOT folder to avoid errors if the current folder have been deleted and is not available in the HEAD revision !!
 					]
 				);
 
@@ -321,6 +332,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$this->PageViewSetErrorStatus(400, 'ERROR: Invalid SVN Repo: ['.$repo.']');
 					return;
 				} //end if
+				if(!$repos[(string)trim((string)$repo)]['allow-download']) {
+					$this->PageViewSetErrorStatus(400, 'ERROR: This SVN Repo cannot be Downloaded: ['.$repo.']');
+					return;
+				} //end if
 
 				if((string)$type == 'file') {
 					$this->PageViewSetErrorStatus(400, 'ERROR: Invalid SVN Path Type: ['.$repo.']');
@@ -328,7 +343,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} // end if
 				$crr_path = (string) $path.'/';
 
-				$arr = (array) \SmartModExtLib\Svn\SvnWebManager::exportPath($repo, $path, $rev);
+				$arr = (array) \SmartModExtLib\Svn\SvnWebManager::exportPath((string)$repos[(string)trim((string)$repo)]['allow-download'], $repo, $path, $rev);
 				if(((string)$arr['f-content'] == '') OR ((string)$arr['f-mime'] == '') OR ((string)$arr['f-name'] == '')) {
 					$this->PageViewSetErrorStatus(500, 'ERROR: Invalid SVN Archive Export');
 					return;

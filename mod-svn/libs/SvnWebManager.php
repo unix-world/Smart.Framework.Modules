@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class SvnWebManager {
 
 	// ::
-	// v.181225
+	// v.20190122
 
 	private static $svn_cache_dir = 'tmp/cache/svn/'; 		// must have trailing slash :: the svn proc jail root
 
@@ -375,9 +375,23 @@ final class SvnWebManager {
 
 
 	//============================================================ OK
-	public static function exportPath($repo, $path, $rev) {
+	public static function exportPath($archtype, $repo, $path, $rev) {
 		//--
-		$repo = (string) trim((string)$repo);
+		if((string)$archtype == '') {
+			return array();
+		} //end if
+		//--
+		switch((string)$archtype) {
+			case '7z':
+				// OK
+				break;
+			default:
+				// NOT OK
+				\Smart::log_warning((string)__METHOD__.' #ERR# SVN Export: Invalid Export Mode:['.$archtype.']');
+				return array();
+		} //end switch
+		//--
+		$repo  = (string) trim((string)$repo);
 		$repos = (array) \Smart::get_from_config('svn.repos');
 		$rdata = (array) $repos[(string)trim((string)$repo)];
 		if(((string)trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
@@ -394,11 +408,8 @@ final class SvnWebManager {
 		$expdir = (string) 'svn-exp/'.\Smart::uuid_10_seq().'-'.\Smart::uuid_10_str().'-'.\Smart::uuid_10_num();
 		$archdir = (string) \SmartFileSysUtils::add_dir_last_slash((string)$expdir).$expname;
 		if(!\SmartFileSysUtils::check_if_safe_path($archdir)) {
-			\Smart::raise_error(
-				__METHOD__.' #ERR# SVN Export: Invalid Export Dir:['.$archdir.']',
-				'ERR: Invalid SVN Export Dir' // msg to display
-			);
-			die(''); // just in case
+			\Smart::log_warning((string)__METHOD__.' #ERR# SVN Export: Invalid Export Dir:['.$archdir.']');
+			return array();
 		} //end if
 		//--
 		\SmartFileSystem::dir_create((string)self::$svn_cache_dir.$expdir, true); // recursive
@@ -417,8 +428,8 @@ final class SvnWebManager {
 		//--
 		return array(
 			'f-content' => (string) $fcontent,
-			'f-mime' => (string) ($archname ? 'application/zip' : ''),
-			'f-name' => (string) ($archname ? (string) \SmartFileSysUtils::get_file_name_from_path((string)$archname) : '')
+			'f-mime' 	=> (string) ($archname ? 'application/x-7z-compressed' : ''), // 'application/zip'
+			'f-name' 	=> (string) ($archname ? (string) \SmartFileSysUtils::get_file_name_from_path((string)$archname) : '')
 		);
 		//--
 	} //END FUNCTION
@@ -527,7 +538,8 @@ final class SvnWebManager {
 		//--
 		$ext = (string) \SmartFileSysUtils::get_file_extension_from_path($path);
 		$type = '';
-		switch((string)strtolower((string)$ext)) { // SYNC WITH \SmartFileSysUtils::mime_eval()
+		// TODO: make this based on \SmartFileSysUtils::mime_eval()
+		switch((string)strtolower((string)$ext)) {
 			case 'cs': // C#
 			case 'c': // C
 			case 'y': // Yacc source code file
@@ -536,6 +548,7 @@ final class SvnWebManager {
 			case 'cxx': // C++
 			case 'yxx': // Bison source code file
 			case 'm': // Objective-C Method
+			case 'go': // GO Language
 				$type = 'c';
 				break;
 			case 'h': // C header
@@ -544,6 +557,7 @@ final class SvnWebManager {
 				$type = 'h';
 				break;
 			case 'txt': // text
+			case 'md': // markdown
 			case 'log': // log file
 				$type = 'txt';
 				break;

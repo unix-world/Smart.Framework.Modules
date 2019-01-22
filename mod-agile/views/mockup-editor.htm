@@ -1,0 +1,79 @@
+<!-- mockup-editor.htm v.20190117 -->
+<form class="ux-form" id="mockup_form" name="mockup_form" method="POST" action="#">
+	<input id="mockup_uuid" name="uuid" type="hidden" value="[####UUID|html####]">
+	<input id="mockup_title" name="mockup_title" type="text" maxlength="255" value="[####TITLE|html####]" title="Mockup Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:28px!important; font-weight:bold; text-align:center;">
+	<input id="mockup_data" name="mockup_data" type="hidden" value="">
+</form>
+<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<br>
+<div style="text-align:center;">
+	<button class="ux-button ux-button-regular" id="mockupSaveBtn" onclick="doSaveMockup();" style="margin-left: 15px;">Save Mockup</button>
+	[%%%%IF:OP-MODE:==create;%%%%]
+	<button class="ux-button ux-button-special" id="mockupCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
+	[%%%%ELSE:OP-MODE%%%%]
+	<button class="ux-button ux-button-special" id="mockupCancelBtn" onclick="self.location='admin.php?/page/agile.mockup-editor/uuid/[####UUID|url|html####]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
+	[%%%%/IF:OP-MODE%%%%]
+</div>
+<br>
+<!-- jQueryUI Interractions -->
+<link rel="stylesheet" href="lib/js/jquery/ui-interractions/jquery.ui-interractions.css" type="text/css">
+<script type="text/javascript" src="lib/js/jquery/ui-interractions/jquery.ui-interractions.js"></script>
+<script type="text/javascript" src="lib/js/jquery/ui-interractions/jquery.ui-touch-punch.js"></script>
+<!-- MD ShowDown -->
+<script src="modules/mod-wflow-components/views/md-showdown/showdown.js"></script>
+<script src="modules/mod-wflow-components/views/md-showdown/showdown-htmlescape.js"></script>
+<script src="modules/mod-wflow-components/views/md-showdown/showdown-mdui.js"></script>
+<!-- QMockup -->
+<script src="modules/mod-wflow-components/views/qmockup/jq-ui-edit-md2html.js"></script>
+<link href="modules/mod-wflow-components/views/qmockup/qmockup-editor.css" rel="stylesheet">
+<script src="modules/mod-wflow-components/views/qmockup/qmockup-editor.js"></script>
+<link href="modules/mod-wflow-components/views/qmockup/qmockup-elements.css" rel="stylesheet">
+<style>
+#mockupContainer {
+	background: #333333;
+	border: 1px solid #555555;
+	padding: 0px !important;
+	margin: 0px;
+	width: calc(100vw - 100px) !important;
+	height: calc(100vh - 175px) !important;
+	overflow: scroll;
+	display: flex;
+	text-align: left;
+}
+#canvasWrap {
+	margin: 0px;
+	padding: 0px;
+	flex: 1 1 100%;
+	position: relative;
+	background-color: #333333;
+}
+</style>
+<div id="mockupContainer">
+	<div id="widgetsArea"></div>
+	<div id="canvasWrap">
+		<div id="canvas">
+			<!-- Js.QuickMockup:Content -->
+			<!-- Js.QuickMockup:#END -->
+		</div>
+	</div>
+</div>
+<script>
+	var mockupDataObj = [####JSON-DATA|json####];
+	qMockupEditor.setupEditor('widgetsArea', 350);
+	qMockupEditor.loadDocumentData(mockupDataObj);
+	mockupDataObj = null; // clear
+	qMockupEditor.setupElements();
+</script>
+<script>
+	SmartJS_BrowserUtils.PageAwayControl('Exit without Save ?');
+</script>
+<script>
+function doSaveMockup() {
+	var data = qMockupEditor.getCanvasData();
+//	data.docTitle = String($('#mockup_title').val());
+	data = JSON.stringify(data);
+	$('#mockup_data').val(data);
+	SmartJS_BrowserUtils.RefreshParent();
+	SmartJS_BrowserUtils.Submit_Form_By_Ajax('mockup_form', 'admin.php?page=agile.mockup-save', 'yes');
+}
+</script>

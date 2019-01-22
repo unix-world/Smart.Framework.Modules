@@ -1,10 +1,11 @@
 [@@@@SUB-TEMPLATE:flowchart-init.inc.htm@@@@]
-<!-- flowchart-reader.htm v.181120 -->
+<!-- flowchart-reader.htm v.20190117 -->
 <div style="text-align:center">
-	<h1 style="text-align:center;">Flowchart: [####TITLE|html####]</h1>
+	<h1 style="text-align:center;">Flowchart: <span id="flowchart_title">[####TITLE|html####]</span></h1>
 </div>
 <div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
 <div style="text-align:center;">
+	<button class="ux-button ux-button-secondary" id="flowchartExportBtn" onclick="doExportFlowchart();" style="margin-left: 15px;">Export as JSON</button>
 	<button class="ux-button ux-button-highlight" id="flowchartEditBtn" onclick="self.location='admin.php?/page/agile.flowchart-editor/uuid/[####UUID|url|html####]/edit/yes'; return false;" style="margin-left: 15px;">Edit Flowchart</button>
 	<button class="ux-button ux-button-special" id="flowchartCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
 </div>
@@ -13,7 +14,14 @@
 	<div class="jtk-demo-canvas canvas-wide flowchart-area jtk-surface jtk-surface-nopan" id="canvas" style="border: 1px solid #ECECEC;"></div>
 </div>
 <script>
-	var flowchartDataObj = [####JSON-DATA|json####];
-	flowchartEditorInit(flowchartDataObj);
-	flowchartDataObj = null; // clear
+var flowchartDataObj = [####JSON-DATA|json####];
+flowchartEditorInit(flowchartDataObj);
+// do not clear flowchartDataObj, it is req. by export
+</script>
+<script>
+function doExportFlowchart() {
+	var data = flowchartDataObj;
+	data.docTitle = String($('#flowchart_title').text());
+	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'flowchart.json', 'application/json', 'UTF-8');
+}
 </script>

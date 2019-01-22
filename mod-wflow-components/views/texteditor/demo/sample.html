@@ -1,15 +1,134 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>Text Editor Samples</title>
+<meta charset="UTF-8">
+<title>SummerNote Demo</title>
+<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+<link href="../summernote-lite.css" rel="stylesheet">
+<script src="../summernote-lite.js"></script>
+<script src="../plugins/summernote-paper-size.js"></script>
+<script src="../plugins/summernote-ext-print.js"></script>
+<!--	<script src="../plugins/summernote-cleaner.js"></script> not necessary -->
+<!--	<script src="../plugins/summernote-ext-addclass.js"></script> req. BootStrap Styles -->
+<link href="../plugins/summernote-pagebreak.css" rel="stylesheet">
+<script src="../plugins/summernote-pagebreak.js"></script>
+<script src="../plugins/summernote-table-headers.js"></script>
+<script src="../plugins/summernote-table-styles.js"></script>
+<script src="../plugins/summernote-text-findnreplace.js"></script>
+<script src="../plugins/summernote-ext-specialchars.js"></script>
+<!--	<script src="../plugins/summernote-image-attributes.js"></script> req. BootStrap Styles -->
+<style>
+	.hidden {
+		display: none;
+	}
+</style>
 </head>
 <body>
-<h1>Text Editor :: Samples</h1>
+<textarea id="summernote" spellcheck="false">
+&lt;h1 style="text-align:center"&gt;&lt;span style="font-family:Georgia,serif"&gt;&lt;span
+			style="color:#006699"&gt;Recognition of Achievement&lt;/span&gt;&lt;/span&gt;&lt;/h1&gt;
 
-<a href="sample-wysiwyg.html">Sample Wysywyg Text Editor</a><br>
-<br>
-<a href="sample-document.html">Sample Document Text Editor</a><br>
+	&lt;p style="text-align:justify"&gt;&lt;span style="font-family:Georgia,serif"&gt;This letter acknowledges the invaluable input &lt;strong&gt;you&lt;/strong&gt;, as a member
+		of our &lt;em&gt;Innovation Team&lt;/em&gt;,&amp;nbsp;have provided in the &amp;ldquo;Implement Rich Text Editor&amp;rdquo;&amp;nbsp;project. The Management would like to hereby thank you for this great accomplishment that was delivered in a timely fashion, up to the highest company standards, and with great results:&lt;/span&gt;&lt;/p&gt;
 
+	&lt;table border="1" bordercolor="#ccc" cellpadding="5" cellspacing="0" style="border-collapse:collapse;width:100%"
+		   summary="Project Schedule"&gt;
+		&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th scope="col" style="background-color:#cccccc"&gt;&lt;span style="font-family:Georgia,serif"&gt;Project Phase&lt;/span&gt;&lt;/th&gt;
+			&lt;th scope="col" style="background-color:#cccccc"&gt;&lt;span style="font-family:Georgia,serif"&gt;Deadline&lt;/span&gt;&lt;/th&gt;
+			&lt;th scope="col" style="background-color:#cccccc"&gt;&lt;span style="font-family:Georgia,serif"&gt;Status&lt;/span&gt;&lt;/th&gt;
+		&lt;/tr&gt;
+		&lt;/thead&gt;
+		&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;span style="font-family:Georgia,serif"&gt;Phase 1: Market research&lt;/span&gt;&lt;/td&gt;
+			&lt;td style="text-align:center"&gt;&lt;span style="font-family:Georgia,serif"&gt;2017-05-15&lt;/span&gt;&lt;/td&gt;
+			&lt;td style="text-align:center"&gt;&lt;span style="font-family:Georgia,serif"&gt;&lt;span style="color:#19b159"&gt;✓&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td style="background-color:#eeeeee"&gt;&lt;span style="font-family:Georgia,serif"&gt;Phase 2: Editor implementation&lt;/span&gt;&lt;/td&gt;
+			&lt;td style="background-color:#eeeeee; text-align:center"&gt;&lt;span style="font-family:Georgia,serif"&gt;2017-05-20&lt;/span&gt;&lt;/td&gt;
+			&lt;td style="background-color:#eeeeee; text-align:center"&gt;&lt;span style="font-family:Georgia,serif"&gt;&lt;span
+					style="color:#19b159"&gt;✓&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;span style="font-family:Georgia,serif"&gt;Phase 3: Rollout to Production&lt;/span&gt;&lt;/td&gt;
+			&lt;td style="text-align:center"&gt;&lt;span style="font-family:Georgia,serif"&gt;2017-05-22&lt;/span&gt;&lt;/td&gt;
+			&lt;td style="text-align:center"&gt;&lt;span style="font-family:Georgia,serif"&gt;&lt;span style="color:#19b159"&gt;✓&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;/tbody&gt;
+	&lt;/table&gt;
+
+	&lt;p style="text-align:justify"&gt;&lt;span style="font-family:Georgia,serif"&gt;The project that you participated in is of utmost importance to the future success of our platform. &amp;nbsp;We are very proud to share that&amp;nbsp;the&amp;nbsp;Text Editor implementation was a huge success and brought congratulations from both the key Stakeholders and the Customers:&lt;/span&gt;&lt;/p&gt;
+
+	&lt;blockquote&gt;
+		&lt;p style="text-align:center"&gt;This new editor has totally changed our content creation experience!&lt;/p&gt;
+
+		&lt;p style="text-align:center"&gt;&amp;mdash; John F. Smith, CEO, The New Web&lt;/p&gt;
+	&lt;/blockquote&gt;
+
+	&lt;p style="text-align:justify"&gt;&lt;span style="font-family:Georgia,serif"&gt;This letter recognizes that much of our success is directly attributable to your efforts.&amp;nbsp;You deserve to be proud of your achievement. May your future efforts be equally successful and rewarding.&lt;/span&gt;&lt;/p&gt;
+
+	&lt;p style="text-align:justify"&gt;&lt;span style="font-family:Georgia,serif"&gt;I am sure we will be seeing and hearing a great deal more about your accomplishments in the future. Keep up the good work!&lt;/span&gt;&lt;/p&gt;
+
+	&lt;p&gt;&lt;img src=&quot;../../../../../lib/core/img/app/server.svg&quot; style=&quot;height:80px; width:80px;&quot; alt=&quot;Sample Image&quot;&gt;&lt;/p&gt;
+
+	&lt;p&gt;&lt;span style="font-family:Georgia,serif"&gt;Best regards,&lt;/span&gt;&lt;/p&gt;
+
+	&lt;p&gt;&lt;span style="font-family:Georgia,serif"&gt;&lt;em&gt;The Management&lt;/em&gt;&lt;/span&gt;&lt;/p&gt;
+</textarea>
+<script>
+	$('#summernote').summernote({
+		codeviewFilter: true,
+		placeholder: '',
+		tabsize: 2,
+		height: '85vh',
+		toolbar:[
+			['paperSize',['paperSize']],
+			['print', ['print']],
+			['cleaner',['cleaner']],
+			//--
+			['style',['style', 'clear', 'pagebreak']], // , 'addclass'
+			['font',['bold','italic','underline']],
+			['fontstyleextra', ['strikethrough', 'underline', 'superscript', 'subscript']],
+			['fontname',['fontname']],
+			['color',['color', 'hr']],
+			['para',['ul','ol','paragraph']],
+			['height',['height']],
+			['table',['table']],
+			['insert',['media','link','hr','picture','video']],
+			['view',['fullscreen','codeview']],
+			['misc', ['undo', 'redo', 'findnreplace', 'specialchars']], // 'imageAttributes'
+			['help',['help']]
+		],
+		popover: {
+			table: [
+				['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+				['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
+				['custom', ['tableHeaders', 'tableStyles']] // , 'tableStyles'
+			],
+			link: [
+				['link', ['linkDialogShow', 'unlink']]
+			],
+			image: [
+			//	['custom', ['imageAttributes']],
+				['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
+				['float', ['floatLeft', 'floatRight', 'floatNone']],
+				['remove', ['removeMedia']]
+			],
+		},
+		print: {
+			'stylesheetUrl': '../plugins/summernote-pagebreak.css'
+		}
+	});
+	// var myText = $('#myField').summernote('isEmpty')? '' : $('#myField').summernote('code');
+</script>
+<script>
+	//--
+	$(function() {
+		summertnotePaperSize_A4(); // autoselect A4
+	});
+</script>
 </body>
 </html>

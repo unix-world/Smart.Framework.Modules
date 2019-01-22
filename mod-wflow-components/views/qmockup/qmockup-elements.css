@@ -1,20 +1,20 @@
+/*
+ * QMockup Editor: CSS Widgets
+ * LICENSE: MIT, (c) 2015 Jan Dittrich & Contributors,
+ * (c) 2017-2019 unix-world.org
+ */
 
 /* The Style for QMockup Elements */
 
-#canvas {
-	background-color: #FFFFFF;
-}
-
-#canvas div {
-	padding:0;
-	margin:0;
-}
-
 /*all*/
+.newMockElement {
+	cursor: grab;
+}
+
 .newMockElement, .mockElement {
 	box-sizing: border-box;
 	position: relative;
-	background:rgba(255,255,255,0.8);
+	background: #FFFFFF;
 	width:10rem;
 }
 .newMockElement > div.editableArea, .mockElement > div.editableArea {
@@ -40,26 +40,25 @@
 	justify-content: center;
 	align-items: center;
 	display: flex;
-	border:2px solid #333;
+	border:2px solid #777777;
 	border-radius:3px;
-	background:white;
-	width: 8rem;
-	width: 8rem;
-	height:3rem;
-	box-shadow: 2px 2px rgba(0, 0, 0, 0.5);
+	background:#FFFFFF;
+	width: 7rem;
+	height:2rem;
+	box-shadow: 1px 1px #CCCCCC;
 }
 
 /*Window*/
 .newMockElement.dialogWindow, .mockElement.dialogWindow {
 	border:2px solid gray;
 	border-radius:3px;
-	width: 400px;
-	height:200px;
+	width: 250px;
+	height:100px;
 }
 
 .newMockElement.dialogWindow > .dialogWindow-bar, .mockElement.dialogWindow > .dialogWindow-bar {
-	background-color:silver;
-	border-bottom: 2px solid #333;
+	background-color: #ECECEC;
+	border-bottom: 2px solid #555555;
 	border-radius: 3px;
 	padding:7px;
 	height:1.6rem;
@@ -74,14 +73,14 @@
 
 /*tabs*/
 .newMockElement.tabs, .mockElement.tabs {
-	background: rgba(0,0,0,0);
+	background: #FFFFFF;
 	width:30rem;
 	border-bottom:1px solid rgba(0,0,0,0.3);
 }
 
 .newMockElement.tabs>.editableArea, .mockElement.tabs>.editableArea {
 	border-bottom: 2px solid gray;
-	background: rgba(0,0,0,0);
+	background: #FFFFFF;
 	box-sizing: border-box;
 	width:100%;
 	margin:0;
@@ -105,11 +104,11 @@
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 	margin: 0 0 -2px 0.3rem;
-	background:white;
+	background:#FFFFFF;
 }
 
 .mockElement.tabs>.editableArea>ul>li.item-highlighted, .newMockElement.tabs>.editableArea>ul>li.item-highlighted {
-	background: #DDD;
+	background: #DDDDDD;
 }
 
 .newMockElement.label .mockElement.label {
@@ -124,7 +123,12 @@
 }
 
 /*headline*/
-.newMockElement.headline>h1, .mockElement.headline>h1 {
+.newMockElement.headline>h1, .mockElement.headline>h1,
+.newMockElement.headline>h2, .mockElement.headline>h2,
+.newMockElement.headline>h3, .mockElement.headline>h3,
+.newMockElement.headline>h4, .mockElement.headline>h4,
+.newMockElement.headline>h5, .mockElement.headline>h5,
+.newMockElement.headline>h6, .mockElement.headline>h6 {
 	margin:0;
 	background-color: transparent;
 }
@@ -151,24 +155,26 @@
 
 /*just a rectangle*/
 .newMockElement.rect , .mockElement.rect {
-	border:2px solid rgba(0,0,0,0.8);
+	border:2px solid #CCCCCC;
 	width:200px;
 	height:50px;
 	background-color: transparent;
 }
 
 .newMockElement.grayrect , .mockElement.grayrect {
-	border:2px solid #333;
+	border:2px solid #555555;
 	width:200px;
 	height:50px;
-	background-color: lightgrey;
+	background-color: #AAAAAA;
 }
 
 .newMockElement.invisiblerect, .mockElement.invisiblerect {
+	border:2px dashed #FFFFFF;
 	width:200px;
 	height:50px;
 	background-color: transparent;
 	margin:2px;
+	margin:0;
 }
 
 .mockElement.invisiblerect > .desc {
@@ -176,7 +182,7 @@
 }
 
 .newMockElement.invisiblerect, .mockElement.invisiblerect:hover, .mockElement.invisiblerect.custom-selected {
-	border:2px solid lightgrey;
+	border:2px dashed #CCCCCC;
 	margin:0;
 }
 
@@ -184,7 +190,7 @@
 	border:2px solid rgba(150,150,150,0.05);
 	width:200px;
 	height:50px;
-	background-color: white;
+	background-color: #FFFFFF;
 }
 
 
@@ -208,7 +214,7 @@
 	/*implements a simulated radio button, since uiconde circles and the "fisheye" character were inconsisted in size*/
 	content: " ";
 	display: inline-block;
-	background: white;
+	background: #FFFFFF;
 	width: 0.8rem;
 	height: 0.8rem;
 	position: relative;
@@ -255,7 +261,7 @@
 	border-radius: 3px;
 	padding: 0px 0 0px 0.4rem;
 	display: table;
-	background-color: white;
+	background-color: #FFFFFF;
 }
 
 .dropdownList .editableArea {
@@ -266,7 +272,7 @@
 }
 
 .dropdownList .mockelement-dropdown-arrow {
-	border-left: 1px solid rgb(128, 128, 128);
+	border-left: 1px solid #CCCCCC;
 	padding: 0px 0.4rem;
 	display: table-cell;
 	text-align: center;
@@ -280,18 +286,17 @@
 	border:2px solid darkgray;
 	align-items: center;
 	display: flex;
-	border:2px solid #333;
+	border:2px solid #CCCCCC;
 	padding-left:0.4rem;
 }
 
 	/*spinner*/
 .newMockElement.spinner, .mockElement.spinner {
-	border:2px solid darkgray;
+	border:2px solid #CCCCCC;
 	justify-content: center;
 	align-items: center;
 	display: flex;
-	border:2px solid #333;
-	background-color: white;
+	background-color: #FFFFFF;
 }
 
 .newMockElement.spinner::before, .mockElement.spinner::before {
@@ -335,7 +340,7 @@
 	content:" ";
 	height:0.5rem;
 	width:0.5rem;
-	background: white;
+	background: #FFFFFF;
 	border: 3px solid #333;
 	border-radius: 10rem;
 	position: relative;
@@ -353,7 +358,7 @@
 .newMockElement.loadingIndicator, .mockElement.loadingIndicator {
 	border: 1px solid gray;
 	border-radius: 2px;
-	background-color: white;
+	background-color: #FFFFFF;
 	padding: 0;
 	justify-content: center;
 	align-items: center;
@@ -375,12 +380,12 @@
 
 /*entries vertical*/
 .newMockElement.entries-horizontal, .mockElement.entries-horizontal {
-	background: white;
+	background: #FFFFFF;
 	width:15rem;
 }
 
 .newMockElement.entries-horizontal .editableArea, .mockElement.entries-horizontal .editableArea {
-	background: white;
+	background: #FFFFFF;
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
@@ -408,16 +413,16 @@
 }
 
 .mockElement.entries-horizontal ul li.item-highlighted {
-	background: #DDD;
+	background: #DDDDDD;
 }
 
 /*entries horizontal*/
 .newMockElement.entries-vertical, .mockElement.entries-vertical {
-	background: white;
+	background: #FFFFFF;
 }
 
 .newMockElement.entries-vertical .editableArea, .mockElement.entries-vertical .editableArea {
-	background:white;
+	background:#FFFFFF;
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
@@ -443,24 +448,23 @@
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
-	border: 1px solid rgb(128, 128, 128);
+	border: 1px solid #CCCCCC;
 	border-collapse: collapse;
 	margin-top: -1px;
 }
 
 .mockElement.entries-vertical ul li.item-highlighted {
-	background: #DDD;
+	background: #DDDDDD;
 }
-
 
 /*boxes vertical*/
 .newMockElement.boxes-horizontal, .mockElement.boxes-horizontal {
-	background: rgba(0,0,0,0);
+	background: #FFFFFF;
 	width:15rem;
 }
 
 .newMockElement.boxes-horizontal .editableArea, .mockElement.boxes-horizontal .editableArea {
-	background: rgba(0,0,0,0);
+	background: #FFFFFF;
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
@@ -479,7 +483,7 @@
 
 .newMockElement.boxes-horizontal ul li, .mockElement.boxes-horizontal ul li {
 	padding: 0.2rem;
-	border: 1px solid rgb(128, 128, 128);
+	border: 1px solid #CCCCCC;
 	margin: 0.2rem;
 	display: flex;
 	flex: 1 1 auto;
@@ -488,16 +492,16 @@
 }
 
 .mockElement.boxes-horizontal ul li.item-highlighted {
-	background: #DDD;
+	background: #DDDDDD;
 }
 
 /*boxes vertical*/
 .newMockElement.boxes-vertical, .mockElement.boxes-vertical {
-	background: rgba(0,0,0,0);
+	background: #FFFFFF;
 }
 
 .newMockElement.boxes-vertical .editableArea, .mockElement.boxes-vertical .editableArea {
-	background: rgba(0,0,0,0);
+	background: #FFFFFF;
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
@@ -523,28 +527,28 @@
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
-	border: 1px solid rgb(128, 128, 128);
+	border: 1px solid #CCCCCC;
 	border-collapse: collapse;
 }
 
 .mockElement.boxes-vertical ul li.item-highlighted {
-	background: #DDD;
+	background: #DDDDDD;
 }
 
 /*iconbar*/
 
 .newMockElement.boxes-iconbar-horizontal ul>li, .mockElement.boxes-iconbar-horizontal ul>li {
-	border: 2px solid rgb(128, 128, 128);
+	border: 2px solid #CCCCCC;
 	display: flex;
 	justify-content: center;
 	font-size: 1.7rem;
 	align-items: center;
 	border-radius: 3px;
-	color: rgb(51, 51, 51);
+	color: #555555;
 	flex: 1 1 0%;
 	margin: 0.1rem;
 	padding: 0.1rem 0.1rem 0.2rem;
-	background: white;
+	background: #FFFFFF;
 }
 
 .newMockElement.boxes-iconbar-horizontal ul>li {
@@ -565,6 +569,7 @@
 /*actual image*/
 .newMockElement.actualimage, .mockElement.actualimage {
 	height:5rem;
+	background: #ECECEC;
 }
 
 .mockElement.actualimage>p {
@@ -583,17 +588,19 @@
 	background: linear-gradient(to bottom, #f7ee9e 0%,#e0d68f 99%);
 	border: 0px none;
 	box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.4);
-	transform: rotate(-3deg);
+	transform: rotate(5deg);
 	width:150px;
 	height:150px;
 }
 
+/*
 .newMockElement.note > *, .mockElement.note > * {
-	transform: rotate(3deg); /*so the text is not rotated*/
 }
+*/
 
 .newMockElement.note .editableArea, .mockElement.note .editableArea{
-	padding:0.5rem;
+	padding: 0.25rem;
+	margin-left: 1rem;
 }
 
 /*Meta: arrow note*/
@@ -603,10 +610,12 @@
 	box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.4);
 	width:150px;
 	height:30px;
+	font-weight: bold;
 }
 
 .newMockElement.arrownote .editableArea, .mockElement.arrownote .editableArea {
 	padding:0.2rem;
+	padding-left: 0.5rem;
 }
 
 .newMockElement.arrownote::before, .mockElement.arrownote::before {

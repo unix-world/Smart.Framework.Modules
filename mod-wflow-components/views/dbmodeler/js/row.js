@@ -218,6 +218,7 @@ SQL.Row.prototype.expand = function() {
 	this.buildEdit();
 	this.load();
 	this.redraw();
+	this.dom.container.classList.add('expanded'); // add comments indicator @ https://github.com/ondras/wwwsqldesigner/commit/c45c8488f50f7c43fe9f29e4c8e2d6d0dafe796c#diff-21303e1aa46f2983519652441030b6d7
 	this.dom.name.focus();
 	this.dom.name.select();
 }
@@ -225,7 +226,7 @@ SQL.Row.prototype.expand = function() {
 SQL.Row.prototype.collapse = function() {
 	if (!this.expanded) { return; }
 	this.expanded = false;
-
+	this.dom.container.classList.remove('expanded'); // add comments indicator @ https://github.com/ondras/wwwsqldesigner/commit/c45c8488f50f7c43fe9f29e4c8e2d6d0dafe796c#diff-21303e1aa46f2983519652441030b6d7
 	var data = {
 		type: this.dom.type.selectedIndex,
 		def: this.dom.def.value,
@@ -233,10 +234,8 @@ SQL.Row.prototype.collapse = function() {
 		nll: this.dom.nll.checked,
 		ai: this.dom.ai.checked
 	}
-
 	OZ.DOM.clear(this.dom.container);
 	this.dom.container.appendChild(this.dom.content);
-
 	this.update(data);
 	this.setTitle(this.dom.name.value);
 }

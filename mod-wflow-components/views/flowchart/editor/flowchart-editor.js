@@ -1,13 +1,27 @@
 
 // jsPlumb Flowchart Editor :: JS
-// (c) 2017-2018 unix-world.org
-// v.181116.r5 (stable)
+// (c) 2017-2019 unix-world.org
+// v.20190120 (stable)
 
 function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxEditDialogHelper, fxDeleteDialogHelper, fxSaveDataHelper, fxExportDataHelper) {
 
 	if(typeof flwcDataObj == 'undefined') {
-		//alert('flwcDataObj not found !!');
-		console.error('flwcDataObj not found !!');
+		flwcDataObj = {};
+		console.error('Invalid JSON');
+	} //end if
+
+	if(!(flwcDataObj.hasOwnProperty('data'))) {
+		flwcDataObj.data = {};
+		console.error('Invalid JSON Structure: Data');
+	} //end if
+	if(!(flwcDataObj.data.hasOwnProperty('nodes'))) {
+		flwcDataObj.data.numberOfElements = 0;
+		flwcDataObj.data.nodes = [];
+		console.error('Invalid JSON Structure: Data.Nodes');
+	} //end if
+	if(!(flwcDataObj.data.hasOwnProperty('connections'))) {
+		flwcDataObj.data.connections = [];
+		console.error('Invalid JSON Structure: Data.Connections');
 	} //end if
 
 	if(typeof flwcIsReadonly == 'undefined') {
@@ -247,9 +261,15 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 			});
 
 			flowchartSave = {};
-			flowchartSave.numberOfElements = totalCount;
-			flowchartSave.nodes = nodes;
-			flowchartSave.connections = connections;
+			flowchartSave.docTitle = ''; // to be updated later
+			flowchartSave.docType = 'smartWorkFlow.FlowChart';
+			flowchartSave.docVersion = '1.0';
+			flowchartSave.dataFormat = 'data/structure';
+			flowchartSave.data = {
+				numberOfElements: totalCount,
+				nodes: nodes,
+				connections: connections
+			};
 
 			if(typeof fxSaveOrExportFunction == 'function') {
 				fxSaveOrExportFunction(flowchartSave);
@@ -268,17 +288,17 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 			});
 
 			var node;
-			for(var i=0; i<flwcDataObj.nodes.length; i++) {
-				node = flwcDataObj.nodes[i];
+			for(var i=0; i<flwcDataObj.data.nodes.length; i++) {
+				node = flwcDataObj.data.nodes[i];
 				_AddNodeElement(node.elementId, node.positionX, node.positionY, node.clsName, node.usePerimeterAnchors, node.isInverted, node.label, node.icon);
 			} //end for
 			node = null;
 
 			var conn;
 			var anchors;
-			for(var i=0; i<flwcDataObj.connections.length; i++) {
+			for(var i=0; i<flwcDataObj.data.connections.length; i++) {
 				conn = null;
-				conn = flwcDataObj.connections[i];
+				conn = flwcDataObj.data.connections[i];
 				anchors = null;
 				if((conn.sourceAnchor == 'Perimeter') && (conn.targetAnchor == 'Perimeter')) {
 					anchors = [ ['Perimeter', sourceAnchorPerimeterProperties], ['Perimeter', targetAnchorPerimeterProperties] ];

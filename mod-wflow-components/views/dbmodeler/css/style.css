@@ -142,6 +142,38 @@
 	display: inline-block;
 }
 
+/* fix: for add comments indicator @ https://github.com/ondras/wwwsqldesigner/commit/c45c8488f50f7c43fe9f29e4c8e2d6d0dafe796c#diff-21303e1aa46f2983519652441030b6d7 */
+
+.table thead td[title]:after{
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	border-color: #778899;
+	border-style: solid;
+	border-width: 5px;
+	border-bottom-color: transparent;
+	border-left-color: transparent;
+}
+
+.table tbody tr {
+	position: relative;
+}
+
+.table tbody[title]:not(.expanded):not([title=""]) tr:after{
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	border-color: #778899;
+	border-style: solid;
+	border-width: 5px;
+	border-bottom-color: transparent;
+	border-left-color: transparent;
+}
+
+/* end fix */
+
 .primary {
 	font-weight: bold;
 }

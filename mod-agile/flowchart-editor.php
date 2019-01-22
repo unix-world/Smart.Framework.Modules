@@ -28,7 +28,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if((string)$import == 'yes') {
 
 			$this->PageViewSetVars([
-				'title' 	=> 'Agile :: FlowCharts / Editor',
+				'title' 	=> 'Agile :: FlowCharts / Import',
 				'main' 		=> SmartMarkersTemplating::render_file_template(
 					$this->ControllerGetParam('module-view-path').'flowchart-import.htm', // the view
 					[

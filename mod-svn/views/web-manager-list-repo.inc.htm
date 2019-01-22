@@ -64,17 +64,19 @@
 		<div class="ux-grid-row ux-border" style="padding:4px; border-bottom:0px;">
 			<div class="ux-grid-col s4" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
 				<a class="ux-link" href="[####BACK-URL|html####]" title="Level Up">^..^</a>
-				[%%%%IF:DOWNLOAD-ARCH-URL:!=;%%%%]
 				&nbsp;
-				<a class="ux-link" href="[####DOWNLOAD-ARCH-URL|html####]&rev=[####REV-CRR|url|html####]"><img width="16" height="16" src="[####VIEWS-PATH|html####]img/compress.png" alt="Download as Archive (7-Zip) : [####REPO-NAME|html####][####REPO-PATH|html####] @ Revision: [####REV-CRR|html####]" title="Download as Archive (7-Zip) : [####REPO-NAME|html####][####REPO-PATH|html####] @ Revision: [####REV-CRR|html####]"></a>
+				<a data-smart="open.modal" href="[####COMPARE-URL|html####][####REV-CRR|url|html####]"><img width="16" height="16" src="[####VIEWS-PATH|html####]img/change.png" alt="View Revision #[####REV-CRR|html####] Log for Current Path: [####REPO-PATH|html####]" title="View Revision #[####REV-CRR|html####] Log for Current Path : [####REPO-NAME|html####][####REPO-PATH|html####]"></a>
+				[%%%%IF:DOWNLOAD-ARCH-URL:!=;%%%%]
+				[%%%%IF:DOWNLOAD-ARCH-ALLOW:==yes;%%%%]
+				&nbsp;
+				<a class="ux-link" href="[####DOWNLOAD-ARCH-URL|html####]&rev=[####REV-CRR|url|html####]"><img width="16" height="16" src="[####VIEWS-PATH|html####]img/compress.png" alt="Download as Archive ([####DOWNLOAD-ARCH-MODE|html####]) : [####REPO-NAME|html####][####REPO-PATH|html####] @ Revision: [####REV-CRR|html####]" title="Download as Archive ([####DOWNLOAD-ARCH-MODE|html####]) : [####REPO-NAME|html####][####REPO-PATH|html####] @ Revision: [####REV-CRR|html####]"></a>
+				[%%%%/IF:DOWNLOAD-ARCH-ALLOW%%%%]
 				[%%%%ELSE:DOWNLOAD-ARCH-URL%%%%]
 					[%%%%IF:TYPE:==file;%%%%]
 				&nbsp;
 				<a class="ux-link" href="[####SELECT-URLFILE|html####]&rev=[####REV-CRR|url|html####]"><img width="16" height="16" src="[####VIEWS-PATH|html####]img/download.png" alt="Download File ([####MIMEDISP|html####]) : [####REPO-NAME|html####][####REPO-PATH|html####] @ Revision: [####REV-CRR|html####]" title="Download File ([####MIMEDISP|html####]) : [####REPO-NAME|html####][####REPO-PATH|html####] @ Revision: [####REV-CRR|html####]"></a>
 					[%%%%/IF:TYPE%%%%]
 				[%%%%/IF:DOWNLOAD-ARCH-URL%%%%]
-				&nbsp;
-				<a data-smart="open.modal" href="[####COMPARE-URL|html####][####REV-CRR|url|html####]"><img width="16" height="16" src="[####VIEWS-PATH|html####]img/change.png" alt="View Revision #[####REV-CRR|html####] Log for Current Path: [####REPO-PATH|html####]" title="View Revision #[####REV-CRR|html####] Log for Current Path : [####REPO-NAME|html####][####REPO-PATH|html####]"></a>
 			</div>
 			<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
 				<span style="font-weight:bold; color:#CCCCCC;">Size</span>

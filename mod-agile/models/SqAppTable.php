@@ -22,7 +22,7 @@ abstract class SqAppTable {
 
 	// ->
 
-private $ver = 'r.20190107';
+private $ver = 'r.20190117';
 private $db = null;
 private $sqdb = '#db/';
 private $tblname = 'data_objects';
@@ -233,7 +233,7 @@ $table = (string) $table;
 //--
 $sql = <<<SQL
 CREATE TABLE '{$table}' (
-	'id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	'id' integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	'dtime' character varying(23) NOT NULL,
 	'uuid' character varying(32) NOT NULL,
 	'user' character varying(96) NOT NULL,
@@ -241,10 +241,10 @@ CREATE TABLE '{$table}' (
 	'title' character varying(255) NOT NULL,
 	'saved_data' TEXT NOT NULL
 );
-CREATE INDEX 'idx_dtime' ON '{$table}' ('dtime');
-CREATE INDEX 'idx_uuid' ON '{$table}' ('uuid');
-CREATE INDEX 'idx_user' ON '{$table}' ('user');
-CREATE INDEX 'idx_project' ON '{$table}' ('project');
+CREATE INDEX '{$table}__idx_dtime' ON '{$table}' ('dtime');
+CREATE INDEX '{$table}__idx_uuid' ON '{$table}' ('uuid');
+CREATE INDEX '{$table}__idx_user' ON '{$table}' ('user');
+CREATE INDEX '{$table}__idx_project' ON '{$table}' ('project');
 SQL;
 //--
 return (string) $sql;
