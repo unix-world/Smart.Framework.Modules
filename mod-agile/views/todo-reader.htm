@@ -1,0 +1,44 @@
+[@@@@SUB-TEMPLATE:todo-init.inc.htm@@@@]
+<!-- todo-reader.htm v.20190128 -->
+<div style="text-align:center; border:1px solid #ECECEC; border-radius:3px;">
+	<span style="text-align:center; font-size:28px!important; font-weight:bold;">ToDo-List: <span id="todo_title">[####TITLE|html####]</span></span>
+</div>
+<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<script>
+var gChart = null;
+jQuery(document).ready(function() {
+	var ganttDataObj = [####JSON-DATA|json####];
+	gChart = SmartGanttManager.drawInstance(ganttDataObj, false, true, 'gantt-chart', null, null, null);
+	ganttDataObj = null; // clear
+	jQuery('#gantchangedate').val(SmartGanttManager.getDate(gChart));
+	jQuery('#date-entry-gantchangedate').val(SmartGanttManager.getDate(gChart));
+	jQuery('#gant-change-view').val(SmartGanttManager.getScale(gChart));
+	jQuery('#gant-change-view').change(function(){
+		SmartGanttManager.changeScale(gChart, this.value, null, null);
+	});
+});
+</script>
+<script>
+function doExportToDoList() {
+	var data = SmartGanttManager.getExportData(gChart);
+	data.docTitle = String($('#todo_title').text());
+	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'todo-list.json', 'application/json', 'UTF-8');
+}
+</script>
+<div style="text-align:center;">
+	<label for="date-entry-gantchangedate">Date</label>
+	[####DATE-FLD-HTML####]
+	<label for="gant-change-view">Scale</label>
+	<select class="ux-field ux-input-medium" id="gant-change-view" autocomplete="off">
+		<option value="day">Day</option>
+		<option value="week">Week</option>
+		<option value="month">Month</option>
+<!--	<option value="quarter">Quarter</option> -->
+		<option value="year">Year</option>
+	</select>
+	<button class="ux-button ux-button-secondary" onclick="doExportToDoList();" style="margin-left: 15px;">Export as JSON</button>
+	<button class="ux-button ux-button-highlight" onclick="self.location='admin.php?/page/agile.todo-editor/uuid/[####UUID|url|html####]/edit/yes'; return false;" style="margin-left: 15px;">Edit ToDo-List</button>
+	<button class="ux-button ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
+</div>
+<br>
+<div id="gantt-chart"></div>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>CodeFlow Diagrams - Demo</title>
+
+	<style type="text/css">
+		.end-element {
+			background-color: #FFCCFF;
+		}
+		textarea[readonly] {
+			background-color: #ECECEC;
+		}
+		#canvas {
+			position: absolute;
+			top: 10px;
+			right: 20px;
+		}
+		#editorMainArea {
+			position: fixed;
+			top: 10px;
+			left: 20px;
+		}
+	</style>
+
+	<script src="../../../../../lib/js/jquery/jquery.js" type="text/javascript"></script>
+	<script src="../../vector-svg/raphael.js" type="text/javascript"></script>
+	<script src="../codeflow-chart.js" type="text/javascript"></script>
+
+</head>
+<body>
+<div id="editorMainArea">
+<h1>CodeFlow Diagrams</h1>
+<select id="sel-list">
+	<option value="st=&gt;start: Start|past:&gt;http://www.unix-world.org[blank]
+e=&gt;end: End|future:&gt;http://www.unix-world.org
+op1=&gt;operation: My Operation|past
+op2=&gt;operation: Stuff|current
+sub1=&gt;subroutine: My Subroutine|invalid
+cond=&gt;condition: Yes or No?|approved:&gt;http://www.unix-world.org
+c2=&gt;condition: Good idea|rejected
+io=&gt;inputoutput: catch something...|future
+
+st-&gt;op1(right)-&gt;cond
+cond(yes, right)-&gt;c2
+cond(no)-&gt;sub1(left)-&gt;op1
+c2(yes)-&gt;io-&gt;e
+c2(no)-&gt;op2-&gt;e
+" selected>Sample 1</option>
+	<option value="st=&gt;start: Start:&gt;http://www.unix-world.org[blank]
+e=&gt;end:&gt;http://www.unix-world.org
+op1=&gt;operation: My Operation
+sub1=&gt;subroutine: My Subroutine
+cond=&gt;condition: Yes
+or No?:&gt;http://www.unix-world.org
+io=&gt;inputoutput: catch something...
+
+st-&gt;op1-&gt;cond
+cond(yes)-&gt;io-&gt;e
+cond(no)-&gt;sub1(right)-&gt;op1
+">Sample 2</option>
+	<option value="st=&gt;start: Improve your
+l10n process!
+e=&gt;end: Continue to have fun!:&gt;https://youtu.be/YQryHo1iHb8[blank]
+op1=&gt;operation: Go to locize.com:&gt;https://locize.com[blank]
+sub1=&gt;subroutine: Read the awesomeness
+cond(align-next=no)=&gt;condition: Interested to
+getting started?
+io=&gt;inputoutput: Register:&gt;https://www.locize.io/register[blank]
+sub2=&gt;subroutine: Read about improving
+your localization workflow
+or another source:&gt;https://medium.com/@adrai/8-signs-you-should-improve-your-localization-process-3dc075d53998[blank]
+op2=&gt;operation: Login:&gt;https://www.locize.io/login[blank]
+cond2=&gt;condition: valid password?
+cond3=&gt;condition: reset password?
+op3=&gt;operation: send email
+sub3=&gt;subroutine: Create a demo project
+sub4=&gt;subroutine: Start your real project
+io2=&gt;inputoutput: Subscribe
+
+st-&gt;op1-&gt;sub1-&gt;cond
+cond(yes)-&gt;io-&gt;op2-&gt;cond2
+cond2(no)-&gt;cond3
+cond3(no,bottom)-&gt;op2
+cond3(yes)-&gt;op3
+op3(right)-&gt;op2
+cond2(yes)-&gt;sub3
+sub3-&gt;sub4-&gt;io2-&gt;e
+cond(no)-&gt;sub2(right)-&gt;op1
+
+st@&gt;op1({&quot;stroke&quot;:&quot;Red&quot;})@&gt;sub1({&quot;stroke&quot;:&quot;Red&quot;})@&gt;cond({&quot;stroke&quot;:&quot;Red&quot;})@&gt;io({&quot;stroke&quot;:&quot;Red&quot;})@&gt;op2({&quot;stroke&quot;:&quot;Red&quot;})@&gt;cond2({&quot;stroke&quot;:&quot;Red&quot;})@&gt;sub3({&quot;stroke&quot;:&quot;Red&quot;})@&gt;sub4({&quot;stroke&quot;:&quot;Red&quot;})@&gt;io2({&quot;stroke&quot;:&quot;Red&quot;})@&gt;e({&quot;stroke&quot;:&quot;Red&quot;,&quot;stroke-width&quot;:6,&quot;arrow-end&quot;:&quot;classic-wide-long&quot;})
+">Sample 3</option>
+<option value="">Custom</option>
+</select>
+<select id="drawMode" onChange="jQuery('#sel-list').trigger('change'); return false;">
+	<option value="color">Color</option>
+	<option value="bw">Black &amp; White</option>
+</select>
+<button onClick="jQuery('#sel-list').trigger('change'); return false;">Render</button>
+<br>
+<textarea id="code" style="width:550px;" rows="11" spellcheck="false"></textarea>
+</div>
+<div id="canvas" class="diagram diagram3"></div>
+<script>
+jQuery(function() {
+
+	var myChart;
+
+	var renderMyCodeFlow = function(code) {
+
+			if(!code) {
+				return;
+			}
+
+			if(myChart) {
+				myChart.clean();
+			}
+
+			var isColor = true;
+			if($('#drawMode').val() == 'bw') {
+				isColor = false;
+			}
+
+			var flowState = null;
+			if(isColor) {
+				flowState = {
+					'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
+					'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
+					'future' : { 'fill' : '#FFFF99'},
+					'request' : { 'fill' : 'blue'},
+					'invalid': {'fill' : '#444444'},
+					'approved' : { 'fill' : '#58C4A3', 'font-size' : 12, 'yes-text' : 'APPROVED', 'no-text' : 'n/a' },
+					'rejected' : { 'fill' : '#C45879', 'font-size' : 12, 'yes-text' : 'n/a', 'no-text' : 'REJECTED' }
+				};
+			}
+
+			myChart = flowchart.parse(code);
+			myChart.drawSVG('canvas', {
+				// 'x': 30,
+				// 'y': 50,
+				'line-width': 3,
+				'maxWidth': 50,//ensures the flowcharts fits within a certian width
+				'line-length': 50,
+				'text-margin': 10,
+				'font-size': 14,
+				'font': 'normal',
+				'font-family': 'Helvetica',
+				'font-weight': 'normal',
+				'font-color': 'black',
+				'line-color': 'black',
+				'element-color': 'black',
+				'fill': 'white',
+				'yes-text': 'yes',
+				'no-text': 'no',
+				'arrow-end': 'block',
+				'scale': 1,
+		/*		'symbols': {
+					'start': {
+						'font-color': 'red',
+						'element-color': 'green',
+						'fill': 'yellow'
+					},
+					'end':{
+						'class': 'end-element'
+					}
+				}, */
+				'flowstate': flowState
+			});
+
+			jQuery('[id^=sub1]').click(function(){
+				alert('info here');
+			});
+
+	};
+
+	jQuery('#sel-list').change(function(){
+		var cd = String(jQuery(this).val());
+		if(cd) {
+			jQuery('#code').val(cd).prop('readonly', true);
+		} else {
+			cd = jQuery('#code').prop('readonly', false).val();
+		}
+		renderMyCodeFlow(cd);
+	}).trigger('change');
+
+});
+</script>
+</body>
+</html>

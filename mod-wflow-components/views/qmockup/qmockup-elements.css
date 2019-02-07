@@ -1,7 +1,15 @@
+
+/*
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+// modified by unixman:
+// 	* css3 fixes
+*/
+
 /*
  * QMockup Editor: CSS Widgets
- * LICENSE: MIT, (c) 2015 Jan Dittrich & Contributors,
- * (c) 2017-2019 unix-world.org
+ * LICENSE: MIT, (c) 2015 Jan Dittrich & Contributors
  */
 
 /* The Style for QMockup Elements */
@@ -557,19 +565,20 @@
 
 /*image placeholder*/
 .newMockElement.imageplaceholder, .mockElement.imageplaceholder {
-	color:darkgray;
-	background-color: lightgray;
+	color: #111111;
+	background-color: #DCDCDC;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	text-align: center;
-	height:5rem;
+	height: 5rem;
 }
 
 /*actual image*/
 .newMockElement.actualimage, .mockElement.actualimage {
-	height:5rem;
-	background: #ECECEC;
+	height: 5rem;
+	background: #FFFFFF;
+	border: 1px dashed #ECECEC;
 }
 
 .mockElement.actualimage>p {

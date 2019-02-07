@@ -24,35 +24,23 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$uuid = (string) $this->RequestVarGet('uuid', '', 'string');
 		$title = (string) $this->RequestVarGet('dbmodel_title', '', 'string');
 		$data = (string) $this->RequestVarGet('dbmodel_data', '', 'string');
-		$type = (string) $this->RequestVarGet('dbmodel_type', '', ['postgresql', 'mysql', 'sqlite']);
-		if($data) {
-			$data = (string) base64_decode((string)$data);
-		} //end if
 
-		if($type AND $data) {
-			$wr = (int) (new \SmartModDataModel\Agile\SqDbmodeler())->saveData(
+		if($data) {
+			$wr = (int) (new \SmartModDataModel\Agile\SqDbmodels())->saveData(
 				[
 					'uuid' 			=> (string) $uuid,
 					'title' 		=> (string) $title,
-					'saved_data' 	=> (string) SmartUtils::data_archive((string)Smart::json_encode(
-						[
-							'type' => (string) $type,
-							'data' => (string) $data
-						],
-						true,
-						true,
-						false
-					))
+					'saved_data' 	=> (string) (string) SmartUtils::data_archive((string)Smart::json_encode(Smart::json_decode($data, true), true, true, false))
 				],
 				(string) SmartAuth:: get_login_id()
 			);
 		} else {
-			$wr = -99; // empty XML data
+			$wr = -99; // empty data
 		} //end if else
 
 		$this->PageViewSetVar(
 			'main',
-			SmartComponents::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save DbModel', ($wr === 1) ? 'DbModel Saved Successfuly: '.$wr : 'Failed to save the DbModel: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.dbmodel-editor/uuid/'.Smart::escape_url($uuid) : '')
+			SmartComponents::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save DbModel', ($wr === 1) ? 'DbModel Saved Successfuly' : 'Failed to save the DbModel: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.dbmodel-editor/uuid/'.Smart::escape_url($uuid) : '')
 		);
 
 	} // END FUNCTION

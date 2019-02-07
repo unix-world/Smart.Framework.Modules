@@ -1,6 +1,11 @@
 
-// wwwsqldesigner: key.js
-// info: db index
+// wwwsqldesigner v.1.7: key.js (db index)
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 SQL.Key = function(owner, type, name) {
 	this.owner = owner;
@@ -76,4 +81,4 @@ SQL.Key.prototype.fromXML = function(node) {
 	}
 }
 
-//END
+// #END

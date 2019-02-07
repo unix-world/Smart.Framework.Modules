@@ -1,11 +1,15 @@
 
-// dhtmlxGantt - Marker Extension v.3.2.0.uxm.180221
+// dhtmlxGantt - Marker Extension v.3.2.1
 // (c) 2015 Dinamenta, UAB.
-// License: GPL v2
-// (c) 2015-2018 unix-world.org
+// License: GPLv2
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 /*
 modified by unixman:
 	- isolate in a function
+	- fix HTML escapings
 */
 
 function SmartGanttPluginMarkers(gantt) {
@@ -29,48 +33,42 @@ function SmartGanttPluginMarkers(gantt) {
 		gantt._markerRenderer = gantt._task_renderer("markers", render_marker, gantt.$marker_area, null);
 
 		function render_marker(marker){
-			if(!gantt.config.show_markers)
+			if(!gantt.config.show_markers) {
 				return false;
-
-			if(!marker.start_date)
+			}
+			if(!marker.start_date) {
 				return false;
-
+			}
 			var state = gantt.getState();
-			if(+marker.start_date > +state.max_date)
+			if(+marker.start_date > +state.max_date) {
 				return;
-			if(+marker.end_date && +marker.end_date < +state.min_date || +marker.start_date < +state.min_date)
+			}
+			if(+marker.end_date && +marker.end_date < +state.min_date || +marker.start_date < +state.min_date) {
 				return;
-
+			}
 			var div = document.createElement("div");
-
 			div.setAttribute("marker_id", marker.id);
-
 			var css = "gantt_marker";
-			if(gantt.templates.marker_class)
+			if(gantt.templates.marker_class) {
 				css += " " + gantt.templates.marker_class(marker);
-
-			if(marker.css){
+			}
+			if(marker.css) {
 				css += " " + marker.css;
 			}
-
-			if(marker.title){
+			if(marker.title) {
 				div.title = marker.title;
 			}
 			div.className = css;
-
 			var start = gantt.posFromDate(marker.start_date);
 			div.style.left = start + "px";
 			div.style.height = Math.max(gantt._y_from_ind(gantt._order.length), 0) + "px";
-			if(marker.end_date){
+			if(marker.end_date) {
 				var end = gantt.posFromDate(marker.end_date);
 				div.style.width = Math.max((end - start), 0) + "px";
-
 			}
-
 			if(marker.text){
-				div.innerHTML = "<div class='gantt_marker_content' >" + SmartJS_CoreUtils.escape_html(marker.text) + "</div>";
+				div.innerHTML = '<div class="gantt_marker_content">' + SmartJS_CoreUtils.escape_html(marker.text) + '</div>';
 			}
-
 			return div;
 		}
 	});
@@ -81,44 +79,44 @@ function SmartGanttPluginMarkers(gantt) {
 	});
 
 	gantt.getMarker = function(id){
-		if(!this._markers) return null;
-
+		if(!this._markers) {
+			return null;
+		}
 		return this._markers[id];
 	};
 
 	gantt.addMarker = function(marker){
 		marker.id = marker.id || dhtmlx.uid();
-
 		this._markers[marker.id] = marker;
-
 		return marker.id;
 	};
 
 	gantt.deleteMarker = function(id){
-		if(!this._markers || !this._markers[id])
+		if(!this._markers || !this._markers[id]) {
 			return false;
-
+		}
 		delete this._markers[id];
 		return true;
 	};
+
 	gantt.updateMarker = function(id){
-		if(this._markerRenderer)
+		if(this._markerRenderer) {
 			this._markerRenderer.render_item(id);
+		}
 	};
+
 	gantt.renderMarkers = function(){
-		if(!this._markers)
+		if(!this._markers) {
 			return false;
-
-		if(!this._markerRenderer)
+		}
+		if(!this._markerRenderer) {
 			return false;
-
+		}
 		var to_render = [];
-
-		for(var id in this._markers)
+		for(var id in this._markers) {
 			to_render.push(this._markers[id]);
-
+		}
 		this._markerRenderer.render_items(to_render);
-
 		return true;
 	};
 

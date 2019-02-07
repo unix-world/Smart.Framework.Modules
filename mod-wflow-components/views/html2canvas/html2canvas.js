@@ -1,3 +1,8 @@
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+
 /*
  * html2canvas 1.0.0-alpha.12 <https://github.com/niklasvh/html2canvas>
  * Copyright (c) 2018 Niklas von Hertzen <https://html2canvas.hertzen.com>

@@ -1,5 +1,11 @@
 
-// wwwsqldesigner: tablemanager.js
+// wwwsqldesigner v.1.7: tablemanager.js
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 SQL.TableManager = function(owner) {
 
@@ -25,7 +31,7 @@ SQL.TableManager = function(owner) {
 		var elm = OZ.$(id);
 		this.dom[id] = elm;
 		try {
-			elm.value = _(id);
+			elm.value = dbModelerLocalText(id);
 		} catch(err){}
 	}
 
@@ -33,7 +39,7 @@ SQL.TableManager = function(owner) {
 	for (var i=0;i<ids.length;i++) {
 		var id = ids[i];
 		var elm = OZ.$(id);
-		elm.innerHTML = _(id);
+		elm.innerHTML = dbModelerLocalText(id);
 	}
 
 	this.select(false);
@@ -54,7 +60,7 @@ SQL.TableManager = function(owner) {
 }
 
 SQL.TableManager.prototype.addRow = function(e) {
-	var newrow = this.selection[0].addRow(_("newrow"));
+	var newrow = this.selection[0].addRow(dbModelerLocalText("newrow"));
 	this.owner.rowManager.select(newrow);
 	newrow.expand();
 }
@@ -94,7 +100,7 @@ SQL.TableManager.prototype.processSelection = function() {
 			this.dom.tablekeys.disabled = false;
 		} catch(err){}
 		try {
-			this.dom.removetable.value = _("removetable");
+			this.dom.removetable.value = dbModelerLocalText("removetable");
 		} catch(err){}
 	} else {
 		try {
@@ -113,7 +119,7 @@ SQL.TableManager.prototype.processSelection = function() {
 		} catch(err){}
 		if(this.selection.length > 1) {
 			try {
-				this.dom.removetable.value = _("removetables");
+				this.dom.removetable.value = dbModelerLocalText("removetables");
 			} catch(err){}
 		}
 	} else {
@@ -121,7 +127,7 @@ SQL.TableManager.prototype.processSelection = function() {
 			this.dom.removetable.disabled = true;
 		} catch(err){}
 		try {
-			this.dom.removetable.value = _("removetable");
+			this.dom.removetable.value = dbModelerLocalText("removetable");
 		} catch(err){}
 	}
 	for(var i=0;i<this.selection.length;i++) {
@@ -159,7 +165,7 @@ SQL.TableManager.prototype.click = function(e) { /* finish adding new table */
 		var x = e.clientX + scroll[0];
 		var y = e.clientY + scroll[1];
 		var seconds = Math.round(new Date().getTime() / 1000);
-		newtable = this.owner.addTable(_("newtable")+'_'+seconds,x,y);
+		newtable = this.owner.addTable(dbModelerLocalText("newtable")+'_'+seconds,x,y);
 		var r = newtable.addRow("id",{ai:true});
 		var k = newtable.addKey("PRIMARY","");
 		k.addRow(r);
@@ -178,13 +184,13 @@ SQL.TableManager.prototype.preAdd = function(e) { /* click add new table */
 		this.adding = true;
 		OZ.DOM.addClass("area","adding");
 		this.oldvalue = this.dom.addtable.value;
-		this.dom.addtable.value = "["+_("addpending")+"]";
+		this.dom.addtable.value = "["+dbModelerLocalText("addpending")+"]";
 	}
 }
 
 SQL.TableManager.prototype.clear = function(e) { /* remove all tables */
 	if (!this.owner.tables.length) { return; }
-	var result = confirm(_("confirmall")+" ?");
+	var result = confirm(dbModelerLocalText("confirmall")+" ?");
 	if (!result) { return; }
 	this.owner.clearTables();
 }
@@ -192,14 +198,14 @@ SQL.TableManager.prototype.clear = function(e) { /* remove all tables */
 SQL.TableManager.prototype.remove = function(e) {
 	var titles = this.selection.slice(0);
 	for (var i=0;i<titles.length;i++) { titles[i] = "'"+titles[i].getTitle()+"'"; }
-	var result = confirm(_("confirmtable")+" "+titles.join(", ")+"?");
+	var result = confirm(dbModelerLocalText("confirmtable")+" "+titles.join(", ")+"?");
 	if (!result) { return; }
 	var sel = this.selection.slice(0);
 	for (var i=0;i<sel.length;i++) { this.owner.removeTable(sel[i]); }
 }
 
 SQL.TableManager.prototype.edit = function(e) {
-	this.owner.window.open(_("edittable"), this.dom.container, this.save);
+	this.owner.window.open(dbModelerLocalText("edittable"), this.dom.container, this.save);
 
 	var title = this.selection[0].getTitle();
 	this.dom.name.value = title;
@@ -243,4 +249,4 @@ SQL.TableManager.prototype.press = function(e) {
 	}
 }
 
-//END
+// #END

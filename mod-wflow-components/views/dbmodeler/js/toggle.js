@@ -1,6 +1,11 @@
 
-// wwwsqldesigner: toggle.js
-// info: minimize/restore (toggle) bar
+// wwwsqldesigner v.1.7: toggle.js (minimize/restore toggle bar)
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 SQL.Toggle = function(elm) {
 	this._state = null;
@@ -27,4 +32,4 @@ SQL.Toggle.prototype._switch = function(state) {
 	this._elm.className = (this._state ? "on" : "off");
 }
 
-//END
+// #END

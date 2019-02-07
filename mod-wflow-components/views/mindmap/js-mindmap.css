@@ -1,11 +1,12 @@
 /*
- js-mindmap
- (c) 2008-09-10 Kenneth Kufluk http://kenneth.kufluk.com/
- MIT License
+// js-mindmap
 
- (c) 2017-2019 unix-world.org
- v.uxm.20190121
- License: BSD
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+
+// (c) 2008 Kenneth Kufluk http://kenneth.kufluk.com/
+// License: MIT
 */
 
 .ui-draggable {
@@ -29,6 +30,7 @@
 	cursor: draggable;
 	z-index: 100;
 	list-style: none;
+/*	will-change: left, top; */
 }
 .js-mindmap-active a.node {
 	font-size: 1.25em;
@@ -38,11 +40,13 @@
 	text-align: center;
 	text-decoration: none;
 }
-.js-mindmap-active .node.active{
+.js-mindmap-active .node.root {
 	font-size: 1.5em;
 	color: #FFFFFF;
-	background: #003399;
+	background: #FF1919;
 	border: 2px solid #FFFFFF;
+	border-top-left-radius: 10px;
+	border-bottom-right-radius: 10px;
 }
 .js-mindmap-active .node.active  a {
 	color: #000000;
@@ -71,17 +75,17 @@
 
 .js-mindmap-active a.node {
 	color: #FFFFFF;
-	background: #FF1919;
+	background: #008000;;
 	border: 2px solid #FFFFFF;
-	border-top-left-radius: 20px;
-	border-bottom-right-radius: 20px;
+	border-top-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
 .js-mindmap-active a.xnode {
-	background: #FFCC00 !important;
+	background: #003399 !important;
 	border: 2px solid #FFFFFF !important;
-	color: #111111 !important;
-	border-top-left-radius: 20px !important;
-	border-bottom-right-radius: 20px !important;
+	color: #FFFFFF !important;
+	border-top-left-radius: 7px !important;
+	border-bottom-right-radius: 7px !important;
 }
 .js-mindmap-active a.node.active {
 	padding: 5px 10px !important;

@@ -1,4 +1,11 @@
-/* https://github.com/DiemenDesign/summernote-cleaner */
+
+// (c) 2019 unix-world.org
+// License: GPLv3
+// v.20190207
+
+// License: MIT
+// https://github.com/DiemenDesign/summernote-cleaner
+
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
 		define(['jquery'], factory);

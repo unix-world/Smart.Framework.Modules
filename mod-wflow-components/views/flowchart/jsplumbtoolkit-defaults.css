@@ -1,7 +1,13 @@
-/*
-	Default styles for jsPlumb Toolkit
 
-	Copyright 2017 https://jsplumbtoolkit.com
+/*
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+*/
+
+/*
+	Default styles for jsPlumb Toolkit v.2.9.0
+	Copyright 2018 https://jsplumbtoolkit.com
 */
 
 /* --------------------------------------------------------------------------------------------- */
@@ -46,6 +52,15 @@
 */
 .jtk-node.jtk-drag {
 	/*-webkit-backface-visibility: hidden;*/
+}
+
+/*
+	Suppresses the pointer events on an element that was created by Katavorio in response to a drag in which the element
+	should first be cloned. Having this clone ignore pointer events means there is less chance that any other
+	mouse activity (such as click) on the original element will not be consumed by katavorio.
+ */
+.katavorio-clone-drag {
+	pointer-events:none;
 }
 
 /*
@@ -591,6 +606,8 @@ Assigned to tile images in a tiled background
 	user-select: none;
 }
 
+/* fixes by unixman from prev versions ... */
+
 .jtk-bezier-handle {
 	width:15px;
 	height:15px;
@@ -621,3 +638,5 @@ Assigned to tile images in a tiled background
 .jtk-connection-edit path {
 	stroke-dasharray:2 2;
 }
+
+/* END */

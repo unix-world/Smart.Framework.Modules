@@ -40,7 +40,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		} elseif((string)$import == 'done') {
 
-			$flowchart_title = (string) $this->RequestVarGet('flowchart_title', '', 'string');
 			$flowchart_data = (string) $this->RequestVarGet('flowchart_data', '', 'string');
 
 		} //end if
@@ -48,21 +47,33 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$model = new \SmartModDataModel\Agile\SqFlowcharts();
 
 		if($flowchart_data) {
+			$flowchart_data = Smart::json_decode((string)$flowchart_data);
+			if(Smart::array_size($flowchart_data) <= 0) {
+				$flowchart_data = null;
+			} elseif(Smart::array_size($flowchart_data['data']) <= 0) {
+				$flowchart_data = null;
+			} //end if else
+		} else {
+			$flowchart_data = null;
+		} //end if
+
+		if(is_array($flowchart_data)) {
 			$sq_rd = array();
-			$new_data = (string) $flowchart_data;
-			if($flowchart_title) {
-				$sq_rd['title'] = (string) $flowchart_title;
+			$new_data = (string) Smart::json_encode((array)$flowchart_data);
+			if($flowchart_data['docTitle']) {
+				$sq_rd['title'] = (string) $flowchart_data['docTitle'];
 			} //end if
+			$flowchart_data = null;
 		} else {
 			$sq_rd = (array) $model->getOneByUuid($uuid);
-			$new_data = (string) Smart::json_encode([ 'numberOfElements' => 0, 'nodes' => [], 'connections' => [] ]);
+			$new_data = (string) Smart::json_encode([ 'data' => [ 'numberOfElements' => 0, 'nodes' => [], 'connections' => [] ]]);
 		} //end if else
 		$old_data = (string) SmartUtils::data_unarchive((string)$sq_rd['saved_data']);
 		if($old_data) {
 			$old_data = Smart::json_decode((string)$old_data); // mixed
 		} //end if
 		if(Smart::array_size($old_data) <= 0) {
-			$old_data = $new_data;
+			$old_data = (string) $new_data;
 		} else {
 			$old_data = (string) Smart::json_encode((array)$old_data);
 		} //end if

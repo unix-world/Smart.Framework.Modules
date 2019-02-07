@@ -1,6 +1,11 @@
-/* https://github.com/DiemenDesign/summernote-paper-size */
 
+// (c) 2019 unix-world.org
+// License: GPLv3
+// v.20190207
 // modified by unixman
+
+// License: MIT
+// https://github.com/DiemenDesign/summernote-paper-size
 
 function summertnotePaperSize_A0() {
 	$('.note-frame').addClass('note-document');

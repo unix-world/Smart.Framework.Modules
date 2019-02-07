@@ -1,4 +1,10 @@
-/* https://github.com/tylerecouture/summernote-lists  */
+
+// (c) 2019 unix-world.org
+// License: GPLv3
+// v.20190207
+
+// License: MIT
+// https://github.com/tylerecouture/summernote-lists
 
 (function(factory) {
 	/* global define */

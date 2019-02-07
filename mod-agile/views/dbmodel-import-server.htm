@@ -1,0 +1,60 @@
+<!-- dbmodel-import-server.htm v.20190117 -->
+[####HTML-JS-HIGHLIGHT####]
+<h1>Import DB-Model from a Database</h1>
+<br>
+<style>
+	label {
+		display: inline-block !important;
+		min-width: 125px !important;
+	}
+</style>
+<table width="99%"><tr valign="top">
+<td width="49%">
+	<form class="ux-form" name="db_import_server" id="db_import_server" method="post" action="#" autocomplete="off">
+		<legend><h1>Server Details (PostgreSQL / MySQL)</h1></legend><br>
+		<div class="ux-control-group">
+			<label>Server Type:</label>
+			<select name="frm[type]" class="ux-input-1-1">
+				<option value=""></option>
+				<option value="postgresql">PostgreSQL</option>
+				<option value="mysql">MySQL / MariaDB</option>
+			</select>
+		</div>
+		<div class="ux-control-group">
+			<label>Server Host:</label>
+			<input name="frm[host]" class="ux-input-1-1" type="text" value="" placeholder="Server Hostname or Server IP Address" autocomplete="off">
+		</div>
+		<div class="ux-control-group">
+			<label>Server Port:</label>
+			<input name="frm[port]" class="ux-input-1-1" type="text" value="" placeholder="Server Port: 5432 for PostgreSQL or 3306 for MySQL" autocomplete="off">
+		</div>
+		<div class="ux-control-group">
+			<label>User:</label>
+			<input name="frm[user]" class="ux-input-1-1" type="text" value="" placeholder="Server Auth UserName" autocomplete="off">
+		</div>
+		<div class="ux-control-group">
+			<label>Password:</label>
+			<input name="frm[pass]" class="ux-input-1-1" type="password" value="" placeholder="Server Auth Password" autocomplete="off">
+		</div>
+		<div class="ux-control-group">
+			<label>Database:</label>
+			<input name="frm[db]" class="ux-input-1-1" type="text" value="" placeholder="Server Database Name" autocomplete="off">
+		</div>
+		<div class="ux-control-group">
+			<label>Schema:</label>
+			<input name="frm[schema]" class="ux-input-1-1" type="text" value="" placeholder="Server Database Schema (*Optional* ; just for PostgreSQL)" autocomplete="off">
+		</div>
+		<br>
+		<div class="ux-controls">
+			<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="SmartJS_BrowserUtils.CloseDelayedModalPopUp();"> Cancel &nbsp; <i class="fa fa-times"></i></button>
+			<button type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="jQuery('#the-xml').empty().html(''); SmartJS_BrowserUtils.Submit_Form_By_Ajax('db_import_server', 'admin.php?page=agile.dbmodel-import-server&mode=import', 'yes'); return false;"> Import Model from Server &nbsp; <i class="fa fa-check"></i></button>
+		</div>
+	</form>
+</td>
+<td width="2%">
+	&nbsp;
+</td>
+<td width="49%">
+	<div style="border: 1px solid #ECECEC;  margin:0px; padding:0px;"><pre style="background:#FCFCFC; width:45vw; height:75vh; margin:0px; padding:0px;"><code id="the-xml" class="xml" style="width:45vw; height:80vh; overflow:auto;"></code></pre></div>
+</td>
+</tr></table>

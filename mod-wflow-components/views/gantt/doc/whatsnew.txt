@@ -1,3 +1,8 @@
+
+### 3.2.1.uxm
+- many changes, optimizations and fixes by unix-world
+- this is now a separate branch ...
+
 ### 3.2
 - Added ability to group tasks by custom properties
 - Added multiple selection

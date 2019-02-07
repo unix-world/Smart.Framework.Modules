@@ -1,6 +1,11 @@
 
-// wwwsqldesigner: table.js
-// info: db table
+// wwwsqldesigner v.1.7: table.js (db table)
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 SQL.Table = function(owner, name, x, y, z) {
 	this.owner = owner;
@@ -348,4 +353,4 @@ SQL.Table.prototype.destroy = function() {
 	this._ec.forEach(OZ.Event.remove, OZ.Event);
 }
 
-//END
+// #END

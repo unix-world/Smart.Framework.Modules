@@ -1,29 +1,36 @@
-License: BSD
-Copyright (c) 2009-2019, unix-world.org
+
+=========================================================================
+
+Software Project: Smart.Framework.Modules
+Public URL: https://github.com/unix-world/Smart.Framework.Modules
+Copyright (c) 2006-2019, unix-world.org
 Author: Radu Ovidiu Ilies
 All rights reserved.
+License (multi, any of): BSD or LGPLv3 or GPLv3
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+Smart.Framework.Modules is multi-licensed, as open source, under any of BSD license, LGPLv3 license or GPLv3 license
+(you choose which license to use depending on your use case)
+* BSD license: LICENSE-BSD # https://opensource.org/licenses/BSD-3-Clause
+OR
+* LGPLv3 license: LICENSE-LGPLv3 # https://opensource.org/licenses/lgpl-3.0.html
+OR
+* GPLv3 license: LICENSE-GPLv3 # https://opensource.org/licenses/GPL-3.0
 
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
+=========================================================================
 
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
+Choosing your license for Smart.Framework.Modules:
+* It is mandatory to keep this file: LICENSE, but you also have to keep one of the: LICENSE-BSD or LICENSE-LGPLv3 or LICENSE-GPLv3
+* if you choose the BSD License for using Smart.Framework.Modules keep the file LICENSE-BSD and remove the files LICENSE-LGPLv3 and LICENSE-GPLv3
+(in this case you can not use any of the LGPLv3 or GPLv3 licensed modules, which you have to remove from your project ; see the license for each module in it's own directory)
+* if you choose the LGPLv3 License for using Smart.Framework.Modules keep the file LICENSE-LGPLv3 and remove the files LICENSE-BSD and LICENSE-GPLv3
+(in this case you can not use any of the GPLv3 licensed modules, which you have to remove from your project ; see the license for each module in it's own directory)
+* if you choose the GPLv3 License for using Smart.Framework.Modules keep the file LICENSE-GPLv3 and remove the files LICENSE-BSD and LICENSE-LGPLv3
+(in this case you can use all the included modules in your project as the licenses are compatible ; see the license for each module in it's own directory)
 
-* Neither the name of Smart.Framework nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
+IMPORTANT:
+* this software project (Smart.Framework.Modules) is open source and contains portions of code released under many different compatible open source licenses such as: MIT, BSD, ...
+* if you choose GPLv3 license for Smart.Framework.Modules then you have to use the LGPLv3 for Smart.Framework to be compliant
+* if you are using portions of code from this project you have to keep any of the files LICENSE-BSD or LICENSE-LGPLv3 or LICENSE-GPLv3 but also the specific licenses available with the code (some directories contains extra license files that you must keep)
+* you have to preserve all the copyright notices for all the source code and must not alter the license files
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+=========================================================================

@@ -1,4 +1,8 @@
 
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+
 // showdown v.2017-08-05
 // (c) created by Tivie on 13-07-2015.
 // Markdown to HTML for Javascript

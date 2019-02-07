@@ -1,6 +1,9 @@
 
 # CHANGELOG / MIGRATION NOTES - SMART.FRAMEWORK.MODULES #
 
+February 07, 2019 :: Version 3.7.8 # rev.190207
+	* changed the license to multi-licensing (see LICENSE)
+
 January 03, 2019 :: Version 3.7.8
 	* new modules: NetteLatte, MapsCache, UI Bootstrap v4
 	* new app modules: Agile, SVN
@@ -69,4 +72,6 @@ June 5, 2015 :: Version 1.2
 
 March 07, 2015 :: Version 1.1
 
-#END#
+March 17, 2009 :: Version 0.1
+
+# END #

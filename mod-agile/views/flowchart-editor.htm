@@ -1,4 +1,5 @@
 [@@@@SUB-TEMPLATE:flowchart-init.inc.htm@@@@]
+<link rel="stylesheet" href="modules/mod-wflow-components/views/flowchart/editor/flowchart-editor-edit.css">
 <!-- flowchart-editor.htm v.20190117 -->
 <form class="ux-form" id="flowchart_form" name="flowchart_form" method="POST" action="#">
 	<input id="flowchart_uuid" name="uuid" type="hidden" value="[####UUID|html####]">
@@ -8,11 +9,19 @@
 <div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
 <br>
 <div style="text-align:center;">
-	<button class="ux-button" id="flowchartNewSBtn" onclick="" style="margin-left: 15px;" title="Start / Stop">New Start/Stop</button>
-	<button class="ux-button" id="flowchartNewCBtn" onclick="" style="margin-left: 15px;">New Display</button>
-	<button class="ux-button" id="flowchartNewBtn" onclick="" style="margin-left: 15px;">New Process</button>
-	<button class="ux-button" id="flowchartNewDBtn" onclick="" style="margin-left: 15px;">New Decision</button>
-	<button class="ux-button" id="flowchartNewIOBtn" onclick="" style="margin-left: 15px;">New Data</button>
+	<select class="ux-field ux-input-medium" style="width:300px;" autocomplete="off">
+		<option value="">--- Create a New FlowChart Element (select from below) ---</option>
+		<optgroup label="Active Elements">
+			<option value="terminal" id="flowchartNewSBtn">New Terminal (Start/Stop)</option>
+			<option value="display" id="flowchartNewCBtn">New Display</option>
+			<option value="process" id="flowchartNewBtn">New Process</option>
+			<option value="decision" id="flowchartNewDBtn">New Decision</option>
+			<option value="data" id="flowchartNewIOBtn">New Data (Structure)</option>
+		</optgroup>
+		<optgroup label="Passive Elements">
+			<option value="note" id="flowchartNewNtBtn">New Note</option>
+		</optgroup>
+	</select>
 	<button class="ux-button ux-button-regular" id="flowchartSaveBtn" onclick="" style="margin-left: 15px;">Save Flowchart</button>
 	[%%%%IF:OP-MODE:==create;%%%%]
 	<button class="ux-button ux-button-special" id="flowchartCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
@@ -21,13 +30,35 @@
 	[%%%%/IF:OP-MODE%%%%]
 </div>
 <br>
-<div class="jtk-demo-main">
-	<div class="jtk-demo-canvas canvas-wide flowchart-area jtk-surface jtk-surface-nopan" id="canvas" style="border: 1px solid #ECECEC;"></div>
+<div class="jtk-main">
+	<div class="canvas-wide flowchart-area jtk-surface jtk-surface-nopan" id="canvas" style="border: 1px solid #ECECEC;"></div>
 </div>
 <script>
 	var flowchartIsReadonly = false;
 	var flowchartAddDialogHelper = function(elemType, fxGenerateElement) {
-		SmartJS_BrowserUtils.confirm_Dialog('<h3>Add Element: ' + SmartJS_CoreUtils.escape_html(SmartJS_CoreUtils.ucfirst(elemType)) + '</h3><div>Select the Connector Type for Element: <select id="flowchart-add-element-type"><option value="DEFAULT">Default</option><option value="INVERTED">Inverted</option><option value="PERIMETER">Perimeter</option></select></div>', function(){ var theLabel = $("#flowchart-add-element-type").val(); fxGenerateElement(elemType, theLabel); }, 'Add New Flowchart Element', 550, 200);
+		if(elemType == 'note') {
+			SmartJS_BrowserUtils.confirm_Dialog('<h3>Create Element: ' + SmartJS_CoreUtils.escape_html(SmartJS_CoreUtils.ucfirst(elemType)) + '</h3><div class="flowchart-area"><div class="jtk-node ' + SmartJS_CoreUtils.escape_html(elemType) + '" style="position:absolute; top:82px; right:25px;"></div></div>', function(){ fxGenerateElement(elemType, null); }, 'New Flowchart Passive Element', 550, 200);
+		} else {
+			var extClass = '';
+			switch(elemType) {
+				case 'terminal':
+					extClass = ' circle';
+					break;
+				case 'display':
+					extClass = ' parallelogram';
+					break;
+				case 'decision':
+					extClass = ' diamond';
+					break;
+				case 'data':
+					extClass = ' oval';
+					break;
+				case 'process':
+				default:
+					extClass = '';
+			}
+			SmartJS_BrowserUtils.confirm_Dialog('<h3>Create Element: ' + SmartJS_CoreUtils.escape_html(SmartJS_CoreUtils.ucfirst(elemType)) + '</h3><div>Select the Connector Type for Element: <select id="flowchart-add-element-type" class="ux-field"><option value="DEFAULT">Default</option><option value="INVERTED">Inverted</option><option value="PERIMETER">Perimeter</option></select></div><div class="flowchart-area"><div class="jtk-node' + SmartJS_CoreUtils.escape_html(extClass) + '" style="position:absolute; top:57px; right:25px;"></div></div>', function(){ var theLabel = $("#flowchart-add-element-type").val(); fxGenerateElement(elemType, theLabel); }, 'New Flowchart Active Element', 550, 235);
+		}
 	}
 	var flowchartEditDialogHelper = function(labelType, txtElemLabel, objElemLabel, fxSetLabel) {
 		SmartJS_BrowserUtils.confirm_Dialog('<h3>' + SmartJS_CoreUtils.escape_html(labelType) + '</h3><div>Label:&nbsp; <input type="text" maxlength="50" value="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" id="flowchart-element-label" class="ux-field" style="width:425px;"></div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-label").val()); }, 'Modify Flowchart Element', 550, 200);

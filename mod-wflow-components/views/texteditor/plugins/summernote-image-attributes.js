@@ -1,4 +1,11 @@
-/* https://github.com/DiemenDesign/summernote-image-attributes */
+
+// (c) 2019 unix-world.org
+// License: GPLv3
+// v.20190207
+
+// License: MIT
+// https://github.com/DiemenDesign/summernote-image-attributes
+
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
 		define(['jquery'], factory);
@@ -365,3 +372,5 @@
 		}
 	});
 }));
+
+// #END

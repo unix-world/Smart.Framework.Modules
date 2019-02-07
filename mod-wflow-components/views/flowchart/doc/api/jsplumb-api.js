@@ -181,7 +181,13 @@
  * @return {Object} The object into which values were extended.
  */
 
- /**
+/**
+ * Removes a Connection, detaching it from its Endpoints.
+ * @method deleteConnection
+ * @param {Connection} Connection to delete
+ */
+
+/**
   * Gets all or a subset of connections currently managed by this jsPlumb instance.  If only one scope is passed in to this method,
   * the result will be a list of connections having that scope (passing in no scope at all will result in jsPlumb assuming you want the
   * default scope).
@@ -651,9 +657,11 @@
  */
 
 /**
-* Removes all endpoints and connections and clears the listener list. To keep listeners call {@link jsPlumbInstance#deleteEveryEndpoint}
-* instead of this.
+* Removes all endpoints and connections and clears the listener list.  By default, and in retrospect this may not be the most
+ * awesome, this method will unbind all listeners on the instance. From 2.6.6 onwards you can override this behaviour, by setting
+ * doNotUnbindInstanceEventListeners to true.
 * @method reset
+ * @param {Boolean} [doNotUnbindInstanceEventListeners] If true, event bindings on the instance will not be removed.
 */
 
  /**

@@ -1,17 +1,22 @@
 # Smart.Framework.Modules - a collection of modules for Smart.Framework
-(c) 2009 - 2019 unix-world.org
-License: BSD
+## Multi-licensed: under BSD license or LGPLv3 license or GPLv3 license
+### This software project is open source. You must choose which license to use depending on your use case and the modules you include in your project: BSD license or LGPLv3 license or GPLv3 license (see LICENSE file)
+<b>(c) 2009 - 2019 unix-world.org</b> / <i>support&#64;unix-world.org</i>
 
-## Extra Modules:
+This software framework is compatible, stable and actively tested with PHP 5.6 / 7.0 / 7.1 / 7.2 / 7.3 versions.
+Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
+
+## List of available Modules for Smart.Framework:
+
+### Extra Modules (BSD licensed):
 	* UI Fonts: Web fonts + Captcha fonts
 	* UI Bootstrap: CSS + Javascript UI Toolkit
 	* UI Uikit: CSS + Javascript UI Toolkit
 	* UI jQueryUI: CSS + Javascript UI Toolkit
 	* UI W3: CSS UI Toolkit
 	* JS Components: a collection of Javascript components and utils
-	* Workflow Components: another collection of Javascript components and utils
-	* Language Detect: NGrams Language Detection library
 	* Maps Cache: a caching API for Open Map types
+	* Language Detect: NGrams Language Detection library
 	* Nette Latte Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl-nette-latte into smart-framework/modules/
 	* Twig Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl-twig into smart-framework/modules/
 	* TYPO3Flow Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl-typo3-fluid into smart-framework/modules/
@@ -20,13 +25,16 @@ License: BSD
 	* SocialMedia Facebook: Js + PHP API
 	* SocialMedia Twitter: Js + PHP API
 
-## Extra App Modules:
+### Extra App Modules (LGPLv3 licensed ; can be used with Smart.Framework licensed under LGPLv3 license only):
+	* PageBuilder: a content management API for Smart.Framework
 	* SVN (manager): a SVN (subversion) web based manager
 	* Cloud (manager): an advanced Cloud Api: WebDAV, CalDAV / WebCal and CardDAV / WebAddressbook
-	* Agile (manager): an Agile project management API for Smart.Framework
-	* PageBuilder: a content management API for Smart.Framework
 
-## Extra Libs:
+### Extra App Widgets (GPLv3 licensed ; can be used with Smart.Framework licensed under LGPLv3 license only):
+	* Agile (manager): an Agile project management API for Smart.Framework
+	* Workflow Components: a collection of smart Javascript components and utilities
+
+### Extra Libs (BSD licensed):
 	* PostgreSQL Extended connector: make life easier for the Smart.Framework PostgreSQL connector by providing an advanced functionality class
 	* Solr: connector for Apache Solr 3.x / 4.x / 5.x / 6.x / 7.x (or later versions)
 	* CURL based HTTP Client Lib with proxy support
@@ -34,13 +42,16 @@ License: BSD
 	* Charting library for drawing charts with PHP
 	* TPL wrapper Lib for the includded TPL engines (this make life easier with existing TPL engines in Smart.Framework: MarkersTPL and Smart.Framework.Modules: netteLatte, Twig and typo3Fluid)
 
-## Vendor Libs:
+### Vendor Libs (BSD licensed):
 	* CSS and JS Minify vendor/MatthiasMullie
 	* PSR Cache: vendor/Psr
 
 ## Installation NOTES:
-	* install first the Smart.Framework
-	* after, copy the desired modules from Smart.Framework.Modules into the Smart.Framework modules folder: smart-framework/modules/
+	* install first the Smart.Framework and choose the license: BSD license or LGPLv3 license (see the file https://github.com/unix-world/Smart.Framework/LICENSE)
+	* after, copy the desired modules from Smart.Framework.Modules into the Smart.Framework modules folder: (example) smart-framework/modules/
+	* choose your license for the Smart.Framework.Modules, depending of the modules you will use (see the above notes and the file https://github.com/unix-world/Smart.Framework.Modules/LICENSE)
+
+## Installation HINTS:
 	* all libs in modules are auto-loaded via built-in Autoloader (except: smart-extra-libs, vendor)
 	* using the smart-extra-libs from Smart.Framework.Modules:
 		uncomment or add the following line into: modules/app/app-custom-bootstrap.php
@@ -48,4 +59,3 @@ License: BSD
 	* using the vendor from Smart.Framework.Modules:
 		uncomment or add the following line into: modules/app/app-custom-bootstrap.php
 			require_once('modules/vendor/autoload.php'); // autoload for Smart.Framework.Modules / Vendor Libs
-

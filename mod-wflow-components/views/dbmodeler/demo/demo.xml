@@ -1,59 +1,27 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- SQL XML created by WwwSqlDesigner -->
-<sql>
-<datatypes db="postgresql">
-	<group label="Numeric" color="rgb(238,238,170)">
-		<type label="INTEGER" length="0" sql="INTEGER" re="INT" quote=""/>
-		<type label="SMALLINT" length="0" sql="SMALLINT" quote=""/>
-		<type label="BIGINT" length="0" sql="BIGINT" quote=""/>
-		<type label="DECIMAL" length="1" sql="DECIMAL" re="NUMERIC" quote=""/>
-		<type label="SERIAL" length="0" sql="SERIAL" re="SERIAL4" fk="INTEGER" quote=""/>
-		<type label="BIGSERIAL" length="0" sql="BIGSERIAL" re="SERIAL8" fk="BIGINT" quote=""/>
-		<type label="FLOAT" length="0" sql="FLOAT" quote=""/>
-		<type label="DOUBLE" length="0" sql="DOUBLE" re="DOUBLE" quote=""/>
-	</group>
-
-	<group label="Character" color="rgb(255,200,200)">
-		<type label="CHAR" length="1" sql="CHAR" fk="CHAR" quote="'"/>
-		<type label="VARCHAR" length="1" sql="VARCHAR" re="CHARACTER VARYING" fk="VARCHAR" quote="'"/>
-		<type label="TEXT" length="0" sql="TEXT" quote="'"/>
-		<type label="BYTEA" length="1" sql="BYTEA" quote="'"/>
-		<type label="BOOLEAN" length="0" sql="BOOLEAN" fk="BOOLEAN" quote="'"/>
-	</group>
-
-	<group label="Date &amp; Time" color="rgb(200,255,200)">
-		<type label="DATE" length="0" sql="DATE" quote="'"/>
-		<type label="TIME" length="1" sql="TIME WITHOUT TIME ZONE" quote="'"/>
-		<type label="TIME.TZ" length="0" sql="TIME WITH TIME ZONE" quote="'"/>
-		<type label="TIMESTAMP" length="1" sql="TIMESTAMP WITHOUT TIME ZONE" quote="'"/>
-		<type label="TIMESTAMP.TZ" length="0" sql="TIMESTAMP WITH TIME ZONE" quote="'"/>
-		<type label="INTERVAL" length="1" sql="INTERVAL" quote="'"/>
-		<type label="DATERANGE" length="1" sql="DATERANGE" quote="'"/>
-	</group>
-
-	<group label="Miscellaneous" color="rgb(200,200,255)">
-		<type label="JSONB" length="0" sql="JSONB" quote="'"/>
-		<type label="XML" length="1" sql="XML" quote="'"/>
-		<type label="BIT" length="1" sql="BIT" quote="'"/>
-		<type label="BIT VARYING" length="1" sql="VARBIT" re="BIT VARYING" quote="'"/>
-		<type label="INET" length="0" sql="INET" quote="'"/>
-		<type label="CIDR" length="0" sql="CIDR" quote="'"/>
-		<type label="GEOMETRY" length="0" sql="GEOMETRY" quote="'"/>
-	</group>
-</datatypes><table x="468" y="138" name="table1">
-<row name="id" null="0" autoincrement="0">
-<datatype>VARCHAR(10)</datatype>
+<!-- SQL XML created by SmartFramework.Modules.WFlow.DbModeler -->
+<sql db="sqlite">
+<table x="302" y="99" name="table1">
+<row name="id" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+<comment>UUID</comment>
 </row>
-<key type="PRIMARY" name="">
+<row name="name" null="1" autoincrement="0">
+<datatype>TEXT</datatype>
+<default>NOT NULL</default></row>
+<key type="PRIMARY" name="id">
 <part>id</part>
 </key>
 </table>
-<table x="855" y="235" name="table2">
-<row name="id" null="0" autoincrement="0">
-<datatype>VARCHAR(10)</datatype>
+<table x="503" y="184" name="table2">
+<row name="id" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
 <relation table="table1" row="id" />
 </row>
-<key type="PRIMARY" name="">
+<row name="descr" null="1" autoincrement="0">
+<datatype>TEXT</datatype>
+<default>NOT NULL</default></row>
+<key type="PRIMARY" name="id">
 <part>id</part>
 </key>
 </table>

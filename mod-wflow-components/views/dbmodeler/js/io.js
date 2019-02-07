@@ -1,5 +1,11 @@
 
-// wwwsqldesigner: io.js
+// wwwsqldesigner v.1.7: io.js
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 SQL.IO = function(owner) {
 	this.owner = owner;
@@ -19,7 +25,7 @@ SQL.IO = function(owner) {
 
 	var ids = [ "saveload", "clientsql",
 				"clientsave", "clientload",
-				"serversave", "serverload" // "serverlist", "serverimport"
+			//	"serversave", "serverload" // "serverlist", "serverimport"
 	];
 
 	for (var i=0;i<ids.length;i++) {
@@ -27,7 +33,7 @@ SQL.IO = function(owner) {
 		var elm = OZ.$(id);
 		this.dom[id] = elm;
 		try {
-			elm.value = _(id);
+			elm.value = dbModelerLocalText(id);
 		} catch(err){}
 	}
 
@@ -36,7 +42,7 @@ SQL.IO = function(owner) {
 		var id = ids[i];
 		var elm = OZ.$(id);
 		try {
-			elm.innerHTML = _(id);
+			elm.innerHTML = dbModelerLocalText(id);
 		} catch(err){}
 	}
 
@@ -95,8 +101,8 @@ SQL.IO.prototype.build = function() {
 SQL.IO.prototype.click = function() { /* open io dialog */
 	this.build();
 	this.dom.ta.value = "";
-	this.dom.clientsql.value = _("clientsql") + " (" + window.DATATYPES.getAttribute("db") + ")";
-	this.owner.window.open(_("saveload"),this.dom.container);
+	this.dom.clientsql.value = dbModelerLocalText("clientsql") + " (" + window.DATATYPES.getAttribute("db") + ")";
+	this.owner.window.open(dbModelerLocalText("saveload"),this.dom.container);
 }
 
 SQL.IO.prototype.fromXMLText = function(xml) {
@@ -111,7 +117,7 @@ SQL.IO.prototype.fromXMLText = function(xml) {
 			throw new Error("No XML parser available.");
 		}
 	} catch(e) {
-		alert(_("xmlerror")+': '+e.message);
+		alert(dbModelerLocalText("xmlerror")+': '+e.message);
 		return;
 	}
 	this.fromXML(xmlDoc);
@@ -119,7 +125,7 @@ SQL.IO.prototype.fromXMLText = function(xml) {
 
 SQL.IO.prototype.fromXML = function(xmlDoc) {
 	if (!xmlDoc || !xmlDoc.documentElement) {
-		alert(_("xmlerror")+': Null document');
+		alert(dbModelerLocalText("xmlerror")+': Null document');
 		return false;
 	}
 	this.owner.fromXML(xmlDoc.documentElement);
@@ -133,13 +139,13 @@ SQL.IO.prototype.clientsave = function() {
 }
 
 SQL.IO.prototype.clientload = function() {
-	var result = confirm(_("unsavedlost"));
+	var result = confirm(dbModelerLocalText("unsavedlost"));
 	if(!result) {
 		return;
 	} //end if
 	var xml = this.dom.ta.value;
 	if(!xml) {
-		alert(_("empty"));
+		alert(dbModelerLocalText("empty"));
 		return;
 	}
 	this.fromXMLText(xml);
@@ -148,7 +154,7 @@ SQL.IO.prototype.clientload = function() {
 /*
 SQL.IO.prototype.promptName = function(title, suffix) {
 	var lastUsedName = this.owner.getOption("lastUsedName") || this.lastUsedName;
-	var name = prompt(_(title), lastUsedName);
+	var name = prompt(dbModelerLocalText(title), lastUsedName);
 	if (!name) { return null; }
 	if (suffix && name.endsWith(suffix)) {
 		// remove suffix from name
@@ -187,7 +193,7 @@ SQL.IO.prototype.finish = function(xslDoc) {
 			throw new Error("No XSLT processor available");
 		}
 	} catch(e) {
-		alert(_("xmlerror")+': '+e.message);
+		alert(dbModelerLocalText("xmlerror")+': '+e.message);
 		return;
 	}
 	this.dom.ta.value = sql.trim();
@@ -208,9 +214,26 @@ SQL.IO.prototype.serverload = function(e) {
 	} //end if
 }
 
+SQL.IO.prototype.exportdata = function(e) {
+	var xml = this.owner.toXML();
+	var dateobj = new Date();
+	var obj = {
+		docTitle: '', // to be updated later
+		docDate: String(dateobj.toISOString()),
+		docType: 'smartWorkFlow.DbModel',
+		docVersion: '1.0',
+		dataFormat: 'text/xml',
+		data: {
+			type: String(window.DATATYPES.getAttribute('db') || 'unknown'),
+			xml: String(xml)
+		}
+	};
+	return obj;
+}
+
 /*
 SQL.IO.prototype.serversave = function(e, keyword) {
-	var name = keyword || prompt(_("serversaveprompt"), this._name);
+	var name = keyword || prompt(dbModelerLocalText("serversaveprompt"), this._name);
 	if (!name) { return; }
 	this._name = name;
 	var xml = this.owner.toXML();
@@ -222,7 +245,7 @@ SQL.IO.prototype.serversave = function(e, keyword) {
 	OZ.Request(url, this.saveresponse, {xml:true, method:"post", data:xml, headers:h});
 }
 SQL.IO.prototype.serverload = function(e, keyword) {
-	var name = keyword || prompt(_("serverloadprompt"), this._name);
+	var name = keyword || prompt(dbModelerLocalText("serverloadprompt"), this._name);
 	if (!name) { return; }
 	this._name = name;
 	var bp = this.owner.getOption("xhrpath");
@@ -238,7 +261,7 @@ SQL.IO.prototype.serverlist = function(e) {
 	OZ.Request(url, this.listresponse);
 }
 SQL.IO.prototype.serverimport = function(e) {
-	var name = prompt(_("serverimportprompt"), "");
+	var name = prompt(dbModelerLocalText("serverimportprompt"), "");
 	if (!name) { return; }
 	var bp = this.owner.getOption("xhrpath");
 	var url = bp + "backend/"+this.dom.backend.value+"/?action=import&database="+name;
@@ -254,7 +277,7 @@ SQL.IO.prototype.check = function(code) {
 		case 501:
 		case 503:
 			var lang = "http"+code;
-			this.dom.ta.value = _("httpresponse")+": "+_(lang);
+			this.dom.ta.value = dbModelerLocalText("httpresponse")+": "+dbModelerLocalText(lang);
 			return false;
 		break;
 		default: return true;
@@ -301,4 +324,4 @@ SQL.IO.prototype.press = function(e) {
 */
 }
 
-// END
+// #END

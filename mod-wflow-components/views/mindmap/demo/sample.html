@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="../../../../../lib/js/jquery/ui-interractions/jquery.ui-interractions.css" type="text/css">
 <script type="text/javascript" src="../../../../../lib/js/jquery/ui-interractions/jquery.ui-interractions.js"></script>
 <script type="text/javascript" src="../../../../../lib/js/jquery/ui-interractions/jquery.ui-touch-punch.js"></script>
-<!-- SVG Library (snapsvg, raphael or fabricjs) -->
-<script type="text/javascript" src="../../snapsvg/snap.svg.js"></script>
+<!-- SVG Library (raphael, snapsvg or fabricjs) -->
+<script type="text/javascript" src="../../vector-svg/raphael.js"></script>
 <!-- Mindmap -->
 <link rel="stylesheet" type="text/css" href="../js-mindmap.css">
 <script type="text/javascript" src="../js-mindmap.js"></script>
@@ -18,8 +18,8 @@
 <script type="text/javascript">
 jQuery(document).ready(function() {
 	var mydiv = 'mymindmap';
-	jQuery('#' + mydiv).mindmap({
-		canvasRenderer: 'snapsvg', // raphael | fabricjs
+	jQuery('#' + mydiv).hide().mindmap({
+	//	canvasRenderer: 'raphael', // raphael | snapsvg | fabricjs
 		elemID: mydiv,
 		attract: 39,
 		repulse: 7,
@@ -33,16 +33,18 @@ jQuery(document).ready(function() {
 		showProgressive: true,
 		centreOffset: -50,
 		timer: 1,
+		lineColor: '#FFFFFF'
 	});
+	setTimeout(function(){ jQuery('#' + mydiv).show(); }, 100);
 });
 </script>
 </head>
-<body bgcolor="#008000">
-	<div id="mymindmap">
+<body bgcolor="#333333">
+	<div id="mymindmap" style="display:none;">
 		<ul>
 			<li><a href="#">Central Idea</a>
 				<ul>
-					<li><a href="#">Idea 1</a>
+					<li><a href="#" data-node="true">Idea 1</a>
 						<ul>
 							<li><a href="#">Idea 1.1</a></li>
 							<li><a href="#">Idea 1.2</a></li>
@@ -51,7 +53,7 @@ jQuery(document).ready(function() {
 							<li><a href="#">Idea 1.5</a></li>
 						</ul>
 					</li>
-					<li><a href="#">Idea 2</a>
+					<li><a href="#" data-node="true">Idea 2</a>
 						<ul>
 							<li><a href="#">Idea 2.1</a></li>
 							<li><a href="#">Idea 2.2</a></li>
@@ -59,7 +61,13 @@ jQuery(document).ready(function() {
 							<li><a href="#">Idea 2.4</a></li>
 							<li><a href="#">Idea 2.5</a></li>
 							<li><a href="#">Idea 2.6</a></li>
-							<li><a href="#">Idea 2.7</a></li>
+							<li><a href="#" data-node="true">Idea 2.7</a>
+								<ul>
+									<li><a href="#">Idea 2.7.1</a></li>
+									<li><a href="#">Idea 2.7.2</a></li>
+									<li><a href="#">Idea 2.7.3</a></li>
+								</ul>
+							</li>
 						</ul>
 					</li>
 				</ul>

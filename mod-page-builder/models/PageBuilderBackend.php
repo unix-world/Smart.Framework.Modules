@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderBackend {
 
 	// ::
-	// v.20190115
+	// v.20190207
 
 	private static $db = null;
 	private static function dbType() {
@@ -945,9 +945,9 @@ final class PageBuilderBackend {
 			switch((string)$y_xsrc) {
 				case 'id':
 					if((string)self::dbType() == 'pgsql') {
-						$where = 'WHERE (a."id" = \''.\SmartPgsqlDb::escape_str((string)$y_src).'\')';
+						$where = 'WHERE (a."id" LIKE \''.\SmartPgsqlDb::escape_str((string)$y_src).'\')';
 					} elseif((string)self::dbType() == 'sqlite') {
-						$where = 'WHERE (a.`id` = \''.self::$db->escape_str((string)$y_src).'\')';
+						$where = 'WHERE (a.`id` LIKE \''.self::$db->escape_str((string)$y_src).'\')';
 					} //end if else
 					break;
 				case 'id-ref':

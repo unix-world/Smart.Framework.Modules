@@ -1,6 +1,8 @@
 
 // [LIB - BC Math, compatible with PHP]
-// (c) 2006-2018 unix-world.org - all rights reserved
+// (c) 2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 // DEPENDS: -
 

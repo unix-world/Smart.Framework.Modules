@@ -9,14 +9,6 @@
 	[%%%%/IF:OP-MODE%%%%]
 	CONFIG.DEFAULT_DB = '[####DB-TYPE|js####]';
 	CONFIG.STATIC_PATH = 'modules/mod-wflow-components/views/dbmodeler/';
-	CONFIG.XHR_SAVE_FUNCTION = function(xml, e) {
-		if(xml) {
-			$('#dbmodel_type').val(CONFIG.DEFAULT_DB);
-			$('#dbmodel_data').val(SmartJS_Base64.encode(xml));
-			SmartJS_BrowserUtils.RefreshParent();
-			SmartJS_BrowserUtils.Submit_Form_By_Ajax('dbmodel_form', 'admin.php?page=agile.dbmodel-save', 'yes');
-		}
-	};
 </script>
 <script src="modules/mod-wflow-components/views/dbmodeler/js/oz.js"></script>
 <script src="modules/mod-wflow-components/views/dbmodeler/js/globals.js"></script>
@@ -40,13 +32,14 @@
 	<div id="bar">
 		<div id="toggle"></div>
 		[%%%%IF:OP-MODE:@=create|edit;(1)%%%%]
-		<input type="button" id="serversave" class="ux-button ux-button-regular" style="margin-left:-5px!important;" name="Save" title="Save">
+		<button class="ux-button ux-button-regular" onclick="saveModelData(); return false;">Save Model</button>
 			[%%%%IF:OP-MODE:==create;(2)%%%%]
 		<button class="ux-button ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;">Cancel Create</button>
 			[%%%%ELSE:OP-MODE(2)%%%%]
 		<button class="ux-button ux-button-special" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[####UUID|url|js####]'; return false;">Cancel Edit</button>
 			[%%%%/IF:OP-MODE(2)%%%%]
 		[%%%%ELSE:OP-MODE(1)%%%%]
+		<button class="ux-button ux-button-secondary" onclick="exportModelData();">Export as JSON</button>
 		<button class="ux-button ux-button-highlight" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[####UUID|url|js####]/edit/yes'; return false;">Edit DB-Model</button>
 		<button class="ux-button ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;">Close View</button>
 		[%%%%/IF:OP-MODE(1)%%%%]
@@ -139,10 +132,10 @@
 						<legend id="client"></legend>
 						<div id="singlerow">
 							<input type="button" id="clientsave">
-							<input type="button" id="clientload">
+							<input type="button" id="clientsql">
 						</div>
 						<hr>
-						<input type="button" id="clientsql">
+						<input type="button" id="clientload">
 					</fieldset>
 				</td>
 			</tr>
@@ -150,7 +143,7 @@
 				<td colspan="2">
 					<fieldset>
 						<legend id="output"></legend>
-						<textarea id="textarea" rows="1" cols="1"></textarea><!--modified by javascript later-->
+						<textarea id="textarea" rows="1" cols="1" spellcheck="false"></textarea><!--modified by javascript later-->
 					</fieldset>
 				</td>
 			</tr>
@@ -217,7 +210,7 @@
 					<label id="tablecommentlabel" for="tablecomment"></label>
 				</td>
 				<td>
-					<textarea rows="5" cols="40" id="tablecomment"></textarea>
+					<textarea rows="5" cols="40" id="tablecomment" spellcheck="false"></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -229,17 +222,36 @@
 	</table>
 </div><!-- # table edit -->
 <script type="text/javascript">
+var sqlDesigner = null;
 jQuery(function(){
-	var sqlDesigner = null;
-	var sqlDataXml = '[####XML-DATA|js####]';
-	if(sqlDataXml) {
-		sqlDataXml = SmartJS_Base64.decode(sqlDataXml);
-		if(!sqlDataXml) {
-			sqlDataXml = '';
-		} //end if
-	} //end if
-	sqlDesigner = new SQL.Designer(sqlDataXml);
-	sqlDataXml = null;
+	var sqlObjData = [####JSON-DATA|json####];
+	sqlDesigner = new SQL.Designer(sqlObjData);
+	sqlObjData = null;
 });
+</script>
+<script type="text/javascript">
+function exportModelData() {
+	var data = sqlDesigner.getOption('exportdata');
+	[%%%%IF:OP-MODE:@=create|edit;%%%%]
+	data.docTitle = String($('#dbmodel_title').val());
+	[%%%%ELSE:OP-MODE%%%%]
+	data.docTitle = String($('#dbmodel_title').text());
+	[%%%%/IF:OP-MODE%%%%]
+	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'dbmodel.json', 'application/json', 'UTF-8');
+}
+[%%%%IF:OP-MODE:@=create|edit;%%%%]
+function saveModelData() {
+	var data = sqlDesigner.getOption('exportdata');
+	if(data) {
+		$('#dbmodel_type').val(String(CONFIG.DEFAULT_DB));
+		data = JSON.stringify(data);
+		$('#dbmodel_data').val(data);
+		SmartJS_BrowserUtils.RefreshParent();
+		SmartJS_BrowserUtils.Submit_Form_By_Ajax('dbmodel_form', 'admin.php?page=agile.dbmodel-save', 'yes');
+	} else {
+		alert('ERROR: Empty DB-Model Data ...');
+	}
+}
+[%%%%/IF:OP-MODE%%%%]
 </script>
 <!-- # end init -->

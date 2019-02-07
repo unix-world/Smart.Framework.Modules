@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<!--
+// (c) 2019 unix-world.org
+// License: GPLv3
+// v.20190207
+-->
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Colors</title>
+<style>
+	#selected-color {
+		width: 300px;
+		height: 32px;
+		border: 1px dotted #DCDCDC;
+		margin-bottom: 10px;
+		font-size: 30px;
+		text-align: center;
+	}
+	.color-box {
+		width:  24px;
+		height: 24px;
+	}
+	.layout-row {
+		float:left;
+	}
+</style>
+<script>
+function rgb2hex(rgb) {
+	rgb = rgb ? String(rgb) : '';
+	rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+	function hex(x) {
+		return String(('0' + parseInt(x).toString(16)).slice(-2));
+	}
+	var color = String('#' + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]));
+	return color.toUpperCase();
+}
+function selectColor(bgColor, color) {
+	bgColor = rgb2hex(String(bgColor));
+	var elem = document.getElementById('selected-color');
+	elem.innerText = '';
+	elem.style.backgroundColor = String(bgColor);
+	elem.style.color = String(color);
+	elem.innerText = String(bgColor);
+}
+</script>
+</head>
+<body>
+<div id="selected-color"></div>
+<div class="layout-row">
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 235, 238);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 205, 210);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(239, 154, 154);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(229, 115, 115);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(239, 83, 80);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(244, 67, 54);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(229, 57, 53);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(211, 47, 47);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(198, 40, 40);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(183, 28, 28);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(252, 228, 236);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(248, 187, 208);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(244, 143, 177);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(240, 98, 146);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(236, 64, 122);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(233, 30, 99);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(216, 27, 96);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(194, 24, 91);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(173, 20, 87);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(136, 14, 79);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(243, 229, 245);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(225, 190, 231);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(206, 147, 216);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(186, 104, 200);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(171, 71, 188);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(156, 39, 176);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(142, 36, 170);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(123, 31, 162);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(106, 27, 154);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(74, 20, 140);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(237, 231, 246);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(209, 196, 233);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(179, 157, 219);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(149, 117, 205);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(126, 87, 194);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(103, 58, 183);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(94, 53, 177);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(81, 45, 168);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(69, 39, 160);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(49, 27, 146);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(232, 234, 246);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(197, 202, 233);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(159, 168, 218);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(121, 134, 203);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(92, 107, 192);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(63, 81, 181);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(57, 73, 171);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(48, 63, 159);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(40, 53, 147);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(26, 35, 126);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(227, 242, 253);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(187, 222, 251);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(144, 202, 249);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(100, 181, 246);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(66, 165, 245);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(33, 150, 243);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(30, 136, 229);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(25, 118, 210);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(21, 101, 192);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(13, 71, 161);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(225, 245, 254);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(179, 229, 252);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(129, 212, 250);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(79, 195, 247);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(41, 182, 246);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(3, 169, 244);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(3, 155, 229);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(2, 136, 209);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(2, 119, 189);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(1, 87, 155);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(224, 247, 250);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(178, 235, 242);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(128, 222, 234);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(77, 208, 225);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(38, 198, 218);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(0, 188, 212);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(0, 172, 193);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(0, 151, 167);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(0, 131, 143);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(0, 96, 100);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(224, 242, 241);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(178, 223, 219);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(128, 203, 196);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(77, 182, 172);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(38, 166, 154);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(0, 150, 136);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(0, 137, 123);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(0, 121, 107);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(0, 105, 92);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(0, 77, 64);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(232, 245, 233);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(200, 230, 201);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(165, 214, 167);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(129, 199, 132);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(102, 187, 106);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(76, 175, 80);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(67, 160, 71);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(56, 142, 60);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(46, 125, 50);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(27, 94, 32);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(241, 248, 233);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(220, 237, 200);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(197, 225, 165);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(174, 213, 129);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(156, 204, 101);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(139, 195, 74);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(124, 179, 66);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(104, 159, 56);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(85, 139, 47);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(51, 105, 30);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(249, 251, 231);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(240, 244, 195);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(230, 238, 156);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(220, 231, 117);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(212, 225, 87);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(205, 220, 57);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(192, 202, 51);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(175, 180, 43);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(158, 157, 36);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(130, 119, 23);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 253, 231);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 249, 196);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 245, 157);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 241, 118);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 238, 88);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 235, 59);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(253, 216, 53);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(251, 192, 45);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(249, 168, 37);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(245, 127, 23);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 248, 225);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 236, 179);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 224, 130);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 213, 79);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 202, 40);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 193, 7);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 179, 0);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 160, 0);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 143, 0);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 111, 0);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 243, 224);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 224, 178);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 204, 128);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 183, 77);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 167, 38);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 152, 0);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(251, 140, 0);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(245, 124, 0);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(239, 108, 0);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(230, 81, 0);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(251, 233, 231);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 204, 188);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 171, 145);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 138, 101);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(255, 112, 67);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(255, 87, 34);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(244, 81, 30);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(230, 74, 25);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(216, 67, 21);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(191, 54, 12);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(239, 235, 233);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(215, 204, 200);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(188, 170, 164);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(161, 136, 127);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(141, 110, 99);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(121, 85, 72);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(109, 76, 65);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(93, 64, 55);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(78, 52, 46);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(62, 39, 35);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(250, 250, 250);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(245, 245, 245);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(238, 238, 238);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(224, 224, 224);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(189, 189, 189);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(158, 158, 158);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(117, 117, 117);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(97, 97, 97);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(66, 66, 66);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(33, 33, 33);"></div>
+	</div>
+	<div class="layout-column">
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(236, 239, 241);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(207, 216, 220);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(176, 190, 197);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #000000; background-color: rgb(144, 164, 174);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(120, 144, 156);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(96, 125, 139);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(84, 110, 122);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(69, 90, 100);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(55, 71, 79);"></div>
+		<div class="color-box layout-row" onClick="selectColor(this.style.backgroundColor, this.style.color);" role="button" tabindex="0" style="color: #FFFFFF; background-color: rgb(38, 50, 56);"></div>
+	</div>
+</div>
+</body>
+</html>

@@ -1,6 +1,11 @@
 
-// wwwsqldesigner: row.js
-// info: table row ( = db column)
+// wwwsqldesigner v.1.7: row.js (table row = db column)
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 SQL.Row = function(owner, title, data) {
 	this.owner = owner;
@@ -172,7 +177,7 @@ SQL.Row.prototype.buildEdit = function() {
 
 	this.dom.commentbtn = OZ.DOM.elm("input");
 	this.dom.commentbtn.type = "button";
-	this.dom.commentbtn.value = _("comment");
+	this.dom.commentbtn.value = dbModelerLocalText("comment");
 	if(isModeReadOnly) {
 		this.dom.commentbtn.disabled = 'disabled';
 	} else {
@@ -184,7 +189,7 @@ SQL.Row.prototype.buildEdit = function() {
 		var tr = OZ.DOM.elm("tr");
 		var td1 = OZ.DOM.elm("td");
 		var td2 = OZ.DOM.elm("td");
-		var l = OZ.DOM.text(_(row[0])+": ");
+		var l = OZ.DOM.text(dbModelerLocalText(row[0])+": ");
 		OZ.DOM.append(
 			[tr, td1, td2],
 			[td1, l],
@@ -205,7 +210,7 @@ SQL.Row.prototype.buildEdit = function() {
 }
 
 SQL.Row.prototype.changeComment = function(e) {
-	var c = prompt(_("commenttext"),this.data.comment);
+	var c = prompt(dbModelerLocalText("commenttext"),this.data.comment);
 	if (c === null) { return; }
 	this.data.comment = c;
 	this.dom.comment.innerHTML = "";
@@ -490,4 +495,4 @@ SQL.Row.prototype.enter = function(e) {
 	}
 }
 
-//END
+// #END

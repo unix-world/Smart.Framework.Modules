@@ -1,9 +1,17 @@
-/*!
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+// unixman changes:
+// (#1) replaced jQuery deprecated $.isArray() with Array.isArray()
+
+/*
  * FullCalendar v3.8.2
  * Docs & License: https://fullcalendar.io/
  * (c) 2018 Adam Shaw
  * requires: moment.js
  */
+
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("moment"), require("jquery"));
@@ -460,7 +468,7 @@ function parseFieldSpecs(input) {
 	else if (typeof input === 'function') {
 		tokens = [input];
 	}
-	else if ($.isArray(input)) {
+	else if (Array.isArray(input)) {
 		tokens = input;
 	}
 	for (i = 0; i < tokens.length; i++) {
@@ -1134,7 +1142,7 @@ var EventSource = /** @class */ (function (_super) {
 			this.id = EventSource.normalizeId(rawProps.id);
 		}
 		// TODO: converge with EventDef
-		if ($.isArray(rawProps.className)) {
+		if (Array.isArray(rawProps.className)) {
 			this.className = rawProps.className;
 		}
 		else if (typeof rawProps.className === 'string') {
@@ -1331,7 +1339,7 @@ function makeMoment(args, parseAsUTC, parseZone) {
 				isAmbigZone = true;
 			}
 		}
-		else if ($.isArray(input)) {
+		else if (Array.isArray(input)) {
 			// arrays have no timezone information, so assume ambiguous zone
 			isAmbigZone = true;
 		}
@@ -2464,7 +2472,8 @@ var dpComputableOptions = {
 var momComputableOptions = {
 	// Produces format strings like "ddd M/D" -> "Fri 9/15"
 	dayOfMonthFormat: function (momOptions, fcOptions) {
-		var format = momOptions.longDateFormat('l'); // for the format like "M/D/YYYY"
+		return 'ddd DD MMM'; // fix by unixman
+	/*	var format = momOptions.longDateFormat('l'); // for the format like "M/D/YYYY"
 		// strip the year off the edge, as well as other misc non-whitespace chars
 		format = format.replace(/^Y+[^\w\s]*|[^\w\s]*Y+$/g, '');
 		if (fcOptions.isRTL) {
@@ -2473,7 +2482,7 @@ var momComputableOptions = {
 		else {
 			format = 'ddd ' + format; // for LTR, add day-of-week to beginning
 		}
-		return format;
+		return format; */
 	},
 	// Produces format strings like "h:mma" -> "6:00pm"
 	mediumTimeFormat: function (momOptions) {
@@ -2860,7 +2869,7 @@ var EventDef = /** @class */ (function () {
 			this.uid = EventDef.generateId();
 		}
 		// TODO: converge with EventSource
-		if ($.isArray(rawProps.className)) {
+		if (Array.isArray(rawProps.className)) {
 			this.className = rawProps.className;
 		}
 		if (typeof rawProps.className === 'string') {
@@ -5384,10 +5393,10 @@ var ArrayEventSource = /** @class */ (function (_super) {
 	ArrayEventSource.parse = function (rawInput, calendar) {
 		var rawProps;
 		// normalize raw input
-		if ($.isArray(rawInput.events)) {
+		if (Array.isArray(rawInput.events)) {
 			rawProps = rawInput;
 		}
-		else if ($.isArray(rawInput)) {
+		else if (Array.isArray(rawInput)) {
 			rawProps = { events: rawInput };
 		}
 		if (rawProps) {
@@ -8212,7 +8221,7 @@ var BusinessHourGenerator = /** @class */ (function () {
 		else if ($.isPlainObject(rawComplexDef)) {
 			rawDefs = [rawComplexDef];
 		}
-		else if ($.isArray(rawComplexDef)) {
+		else if (Array.isArray(rawComplexDef)) {
 			rawDefs = rawComplexDef;
 			requireDow = true; // every sub-definition NEEDS a day-of-week
 		}
@@ -8439,7 +8448,7 @@ var JsonFeedEventSource = /** @class */ (function (_super) {
 					_this.calendar.popLoading();
 					if (rawEventDefs) {
 						callbackRes = util_1.applyAll(onSuccess, _this, [rawEventDefs, status, xhr]); // redirect `this`
-						if ($.isArray(callbackRes)) {
+						if (Array.isArray(callbackRes)) {
 							rawEventDefs = callbackRes;
 						}
 						onResolve(_this.parseEventDefs(rawEventDefs));
@@ -9339,7 +9348,7 @@ var Calendar = /** @class */ (function () {
 			context = triggerInfo.context;
 			args = triggerInfo.args;
 		}
-		else if ($.isArray(triggerInfo)) {
+		else if (Array.isArray(triggerInfo)) {
 			args = triggerInfo;
 		}
 		if (context == null) {
@@ -11724,7 +11733,7 @@ var TimeGrid = /** @class */ (function (_super) {
 		// might be an array value (for TimelineView).
 		// if so, getting the most granular entry (the last one probably).
 		input = this.opt('slotLabelFormat');
-		if ($.isArray(input)) {
+		if (Array.isArray(input)) {
 			input = input[input.length - 1];
 		}
 		this.labelFormat = input ||
@@ -11802,7 +11811,8 @@ var TimeGrid = /** @class */ (function (_super) {
 				'<td class="fc-axis fc-time ' + theme.getClass('widgetContent') + '" ' + view.axisStyleAttr() + '>' +
 					(isLabeled ?
 						'<span>' + // for matchCellWidths
-							util_1.htmlEscape(slotDate.format(this.labelFormat)) +
+						//	util_1.htmlEscape(slotDate.format(this.labelFormat)) +
+							util_1.htmlEscape(slotDate.format(this.opt('timeFormat') ? this.opt('timeFormat') : this.labelFormat)) + // fix by unixman
 							'</span>' :
 						'') +
 					'</td>';
@@ -13067,7 +13077,7 @@ var EventManager = /** @class */ (function () {
 		if (!matchInputs) {
 			matchInputs = [];
 		}
-		else if (!$.isArray(matchInputs)) {
+		else if (!Array.isArray(matchInputs)) {
 			matchInputs = [matchInputs];
 		}
 		var matchingSources = [];
@@ -14913,6 +14923,7 @@ ViewRegistry_1.defineView('listDay', {
 	type: 'list',
 	duration: { days: 1 },
 	defaults: {
+		buttonText: 'dayList',
 		listDayFormat: 'dddd' // day-of-week is all we need. full date is probably in header
 	}
 });
@@ -14920,6 +14931,7 @@ ViewRegistry_1.defineView('listWeek', {
 	type: 'list',
 	duration: { weeks: 1 },
 	defaults: {
+		buttonText: 'weekList',
 		listDayFormat: 'dddd',
 		listDayAltFormat: 'LL'
 	}
@@ -14928,6 +14940,7 @@ ViewRegistry_1.defineView('listMonth', {
 	type: 'list',
 	duration: { month: 1 },
 	defaults: {
+		buttonText: 'monthList',
 		listDayAltFormat: 'dddd' // day-of-week is nice-to-have
 	}
 });
@@ -14935,6 +14948,7 @@ ViewRegistry_1.defineView('listYear', {
 	type: 'list',
 	duration: { year: 1 },
 	defaults: {
+		buttonText: 'yearList',
 		listDayAltFormat: 'dddd' // day-of-week is nice-to-have
 	}
 });

@@ -1,3 +1,8 @@
+
+// (c) 2019 unix-world.org
+// License: GPLv3
+// v.20190207
+
 /**
  * Super simple wysiwyg editor v0.8.11
  * https://summernote.org
@@ -8,7 +13,8 @@
  * Date: 2018-12-22T04:42Z
  *
  * (c) 2019 unix-world.org
- * contains fixes by unixman # r.20190119
+ * contains fixes by unixman # r.20190127
+ * minor fix: replaced jQuery deprecated $.isArray() with Array.isArray()
  *
  */
 
@@ -66,7 +72,7 @@
 			create: function (markup, callback) {
 					return function () {
 							var options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
-							var children = $$1.isArray(arguments[0]) ? arguments[0] : [];
+							var children = Array.isArray(arguments[0]) ? arguments[0] : [];
 							if (options && options.children) {
 									children = options.children;
 							}
@@ -298,7 +304,7 @@
 			}
 	});
 	var dropdown = renderer.create('<div class="note-dropdown-menu" role="list">', function ($node, options) {
-			var markup = $.isArray(options.items) ? options.items.map(function (item) {
+			var markup = Array.isArray(options.items) ? options.items.map(function (item) {
 					var value = (typeof item === 'string') ? item : (item.value || '');
 					var content = options.template ? options.template(item) : item;
 					var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '"></a>');
@@ -319,7 +325,7 @@
 			});
 	});
 	var dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check" role="list">', function ($node, options) {
-			var markup = $.isArray(options.items) ? options.items.map(function (item) {
+			var markup = Array.isArray(options.items) ? options.items.map(function (item) {
 					var value = (typeof item === 'string') ? item : (item.value || '');
 					var content = options.template ? options.template(item) : item;
 					var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '"></a>');
@@ -6847,8 +6853,8 @@
 			Buttons.prototype.build = function ($container, groups) {
 					for (var groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
 							var group = groups[groupIdx];
-							var groupName = $$1.isArray(group) ? group[0] : group;
-							var buttons = $$1.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
+							var groupName = Array.isArray(group) ? group[0] : group;
+							var buttons = Array.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
 							var $group = this.ui.buttonGroup({
 									className: 'note-' + groupName
 							}).render();
@@ -7889,7 +7895,7 @@
 					this.options = context.options;
 					this.hint = this.options.hint || [];
 					this.direction = this.options.hintDirection || 'bottom';
-					this.hints = $$1.isArray(this.hint) ? this.hint : [this.hint];
+					this.hints = Array.isArray(this.hint) ? this.hint : [this.hint];
 					this.events = {
 							'summernote.keyup': function (we, e) {
 									if (!e.isDefaultPrevented()) {

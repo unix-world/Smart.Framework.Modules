@@ -1,16 +1,15 @@
 /*
-dhtmlxGantt v.3.2.0 Stardard
+dhtmlxGantt Theme SkyBlue :: v.3.2.1
 This software is covered by GPL license.
 (c) Dinamenta, UAB.
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 */
 /* colors for items with inline styles assigned (task.color, link.color)*/
 .gridHoverStyle {
 	background-color: #ffe6b1 !important;
-	background-color: #ffebc1;
-	background-image: -webkit-linear-gradient(top, #ffe09d 0%, #ffeabb 100%);
-	background-image: -moz-linear-gradient(top, #ffe09d 0%, #ffeabb 100%);
-	background-image: -ms-linear-gradient(top, #ffe09d 0%, #ffeabb 100%);
-	background-image: linear-gradient(to top, #ffe09d 0%, #ffeabb 100%);
 	border-top-color: #ffc341;
 	border-bottom-color: #ffc341;
 }
@@ -20,11 +19,6 @@ This software is covered by GPL license.
 }
 .timelineSelection {
 	background-color: #ffe6b1 !important;
-	background-color: #ffebc1;
-	background-image: -webkit-linear-gradient(top, #ffe09d 0%, #ffeabb 100%);
-	background-image: -moz-linear-gradient(top, #ffe09d 0%, #ffeabb 100%);
-	background-image: -ms-linear-gradient(top, #ffe09d 0%, #ffeabb 100%);
-	background-image: linear-gradient(to top, #ffe09d 0%, #ffeabb 100%);
 	border-top-color: #ffc341;
 	border-bottom-color: #ffc341;
 }
@@ -83,26 +77,10 @@ This software is covered by GPL license.
 .gantt_grid_scale {
 	box-shadow: 0px 1px 1px #fff inset;
 	background-color: #dfedff;
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #e4f0ff), color-stop(50%, #dfedff), color-stop(100%, #d5e8ff));
-	/* old webkit */
-	background-image: -webkit-linear-gradient(top, #e4f0ff 0%, #dfedff 50%, #d5e8ff 100%);
-	background-image: -moz-linear-gradient(top, #e4f0ff 0%, #dfedff 60%, #d5e8ff 100%);
-	background-image: -ms-linear-gradient(top, #e4f0ff 0%, #dfedff 60%, #d5e8ff 100%);
-	background-image: -o-linear-gradient(top, #e4f0ff 0%, #dfedff 60%, #d5e8ff 100%);
-	background-position: 0px 1px;
-	background-repeat: repeat-x;
 }
 .gantt_task_scale {
 	box-shadow: 0px 1px 1px #fff inset;
 	background-color: #dfedff;
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #e4f0ff), color-stop(50%, #dfedff), color-stop(100%, #d5e8ff));
-	/* old webkit */
-	background-image: -webkit-linear-gradient(top, #e4f0ff 0%, #dfedff 50%, #d5e8ff 100%);
-	background-image: -moz-linear-gradient(top, #e4f0ff 0%, #dfedff 60%, #d5e8ff 100%);
-	background-image: -ms-linear-gradient(top, #e4f0ff 0%, #dfedff 60%, #d5e8ff 100%);
-	background-image: -o-linear-gradient(top, #e4f0ff 0%, #dfedff 60%, #d5e8ff 100%);
-	background-position: 0px 1px;
-	background-repeat: repeat-x;
 }
 .gantt_scale_line {
 	box-sizing: border-box;
@@ -165,11 +143,6 @@ This software is covered by GPL license.
 .gantt_grid_data .gantt_row:hover,
 .gantt_grid_data .gantt_row.odd:hover {
 	background-color: #ffe6b1 !important;
-	background-color: #ffebc1;
-	background-image: -webkit-linear-gradient(top, #ffe09d 0%, #ffeabb 100%);
-	background-image: -moz-linear-gradient(top, #ffe09d 0%, #ffeabb 100%);
-	background-image: -ms-linear-gradient(top, #ffe09d 0%, #ffeabb 100%);
-	background-image: linear-gradient(to top, #ffe09d 0%, #ffeabb 100%);
 	border-top-color: #ffc341;
 	border-bottom-color: #ffc341;
 }
@@ -437,10 +410,6 @@ This software is covered by GPL license.
 	margin: 0 5px;
 	border-radius: 4px;
 	background-color: #f8f8f8;
-	background-image: -webkit-linear-gradient(top, #e6e6e6 0%, #ffffff 100%);
-	background-image: -moz-linear-gradient(top, #e6e6e6 0%, #ffffff 100%);
-	background-image: -ms-linear-gradient(top, #e6e6e6 0%, #ffffff 100%);
-	background-image: linear-gradient(to top, #e6e6e6 0%, #ffffff 100%);
 }
 .dhtmlx-info,
 .dhtmlx_popup_button,
@@ -561,7 +530,8 @@ div.dhx_modal_cover {
 }
 .gantt_task_content {
 	font-size: 12px;
-	color: #1e2022;
+	color: #111111;
+	font-weight: bold;
 	width: 100%;
 	top: 0;
 	position: absolute;
@@ -573,10 +543,6 @@ div.dhx_modal_cover {
 	z-index: 0;
 	background: #5aa0d3;
 	background-color: #82b7de;
-	background-image: -webkit-linear-gradient(top, #abcee8 0%, #5aa0d3 36%, #bfdaee 100%);
-	background-image: -moz-linear-gradient(top, #abcee8 0%, #5aa0d3 36%, #bfdaee 100%);
-	background-image: -ms-linear-gradient(top, #abcee8 0%, #5aa0d3 36%, #bfdaee 100%);
-	background-image: linear-gradient(to top, #abcee8 0%, #5aa0d3 36%, #bfdaee 100%);
 }
 .gantt_task_line {
 	-webkit-border-radius: 0;
@@ -805,11 +771,6 @@ div.dhx_modal_cover {
 }
 .gantt_task_row.gantt_selected {
 	background-color: #ffe6b1 !important;
-	background-color: #ffebc1;
-	background-image: -webkit-linear-gradient(top, #ffe09d 0%, #ffeabb 100%);
-	background-image: -moz-linear-gradient(top, #ffe09d 0%, #ffeabb 100%);
-	background-image: -ms-linear-gradient(top, #ffe09d 0%, #ffeabb 100%);
-	background-image: linear-gradient(to top, #ffe09d 0%, #ffeabb 100%);
 	border-top-color: #ffc341;
 	border-bottom-color: #ffc341;
 }
@@ -985,10 +946,6 @@ div.dhx_modal_cover {
 	height: 26px;
 	color: #42464b;
 	background-color: #f8f8f8;
-	background-image: -webkit-linear-gradient(top, #e6e6e6 0%, #ffffff 100%);
-	background-image: -moz-linear-gradient(top, #e6e6e6 0%, #ffffff 100%);
-	background-image: -ms-linear-gradient(top, #e6e6e6 0%, #ffffff 100%);
-	background-image: linear-gradient(to top, #e6e6e6 0%, #ffffff 100%);
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
@@ -1170,10 +1127,6 @@ div.dhx_modal_cover {
 	padding: 1px;
 	padding-bottom: 3px;
 	background-color: #f8f8f8;
-	background-image: -webkit-linear-gradient(top, #e6e6e6 0%, #ffffff 100%);
-	background-image: -moz-linear-gradient(top, #e6e6e6 0%, #ffffff 100%);
-	background-image: -ms-linear-gradient(top, #e6e6e6 0%, #ffffff 100%);
-	background-image: linear-gradient(to top, #e6e6e6 0%, #ffffff 100%);
 }
 .gantt_duration .gantt_duration_dec {
 	-moz-border-top-left-radius: 4px;
@@ -1232,14 +1185,6 @@ div.dhx_modal_cover {
 	color: #1e2022;
 	box-shadow: 0px 1px 1px #fff inset;
 	background-color: #dfedff;
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #e4f0ff), color-stop(50%, #dfedff), color-stop(100%, #d5e8ff));
-	/* old webkit */
-	background-image: -webkit-linear-gradient(top, #e4f0ff 0%, #dfedff 50%, #d5e8ff 100%);
-	background-image: -moz-linear-gradient(top, #e4f0ff 0%, #dfedff 60%, #d5e8ff 100%);
-	background-image: -ms-linear-gradient(top, #e4f0ff 0%, #dfedff 60%, #d5e8ff 100%);
-	background-image: -o-linear-gradient(top, #e4f0ff 0%, #dfedff 60%, #d5e8ff 100%);
-	background-position: 0px 1px;
-	background-repeat: repeat-x;
 	border-bottom: 1px solid #a4bed4;
 }
 .gantt_cal_qi_tdate {
@@ -1254,6 +1199,7 @@ div.dhx_modal_cover {
 	font-size: 13px;
 	color: #1e2022;
 	overflow: hidden;
+	white-space: pre-wrap !important;
 }
 .gantt_cal_qi_controls {
 	-webkit-border-top-left-radius: 0;
@@ -1287,10 +1233,6 @@ div.dhx_modal_cover {
 	border-radius: 4px;
 	color: #42464b;
 	background-color: #f8f8f8;
-	background-image: -webkit-linear-gradient(top, #e6e6e6 0%, #ffffff 100%);
-	background-image: -moz-linear-gradient(top, #e6e6e6 0%, #ffffff 100%);
-	background-image: -ms-linear-gradient(top, #e6e6e6 0%, #ffffff 100%);
-	background-image: linear-gradient(to top, #e6e6e6 0%, #ffffff 100%);
 	margin: 5px 9px 8px 0px;
 	min-width: 60px;
 	line-height: 26px;
@@ -1377,3 +1319,5 @@ div.dhx_modal_cover {
 .gantt_task_row.gantt_transparent {
 	background-color: #e4f0ff;
 }
+
+/* END */

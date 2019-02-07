@@ -1,8 +1,8 @@
 
-// NetVision JS - JX Calculator
-// (c) 2006-2017 unix-world.org
-// v.2017.10.01
-
+// JX Calculator
+// (c) 2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 var JXCalculator = new function() { // START CLASS
 

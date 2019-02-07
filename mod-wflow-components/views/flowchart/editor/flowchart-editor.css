@@ -1,7 +1,9 @@
+
 /*
 // jsPlumb Flowchart Editor :: CSS
 // (c) 2017-2019 unix-world.org
-// v.20190117 (stable)
+// License: GPLv3
+// v.20190207
 */
 
 .flowchart-area * {
@@ -60,8 +62,8 @@
 	line-height: 1.25em;
 	color: #666666;
 	z-index: 22;
-	border: 1px dotted gray;
-	opacity: 0.8;
+	border: 1px dotted #CCCCCC;
+	opacity: 0.9;
 	cursor: cell;
 }
 
@@ -70,32 +72,36 @@
 	opacity: 1;
 }
 
-.window.jtk-connected {
+.flowchart-area .window.jtk-connected {
 	border: 3px solid #778899;
 }
 
-.jtk-drag {
+.flowchart-area .jtk-drag {
 	outline: 3px solid #FFCC00;
 }
 
-path, .jtk-endpoint {
+.flowchart-area path,
+.flowchart-area .jtk-endpoint {
 	cursor: pointer;
 }
 
-.jtk-overlay {
-	background-color: transparent;
+.flowchart-area .jtk-overlay {
+	color: #111111;
+	background-color: #FFFFFF;
+	opacity: 0.75;
 }
 
 /* extending */
 
-.jtk-node {
+.flowchart-area .jtk-node {
 	width: 100px !important;
 	height: 100px !important;
 	border: 3px solid #778899 !important;
 	cursor: move !important;
+	border-radius: 5px !important;
 }
 
-.jtk-node span {
+.flowchart-area .jtk-node span {
 	display: block !important;
 	overflow: hidden;
 	padding: 0 !important;
@@ -107,12 +113,11 @@ path, .jtk-endpoint {
 	top: 10px;
 	left: 35px;
 	color: #778899;
-	border: 1px dotted #CCCCCC;
 	opacity: 0.8;
 	cursor: context-menu;
 }
 
-.jtk-node p {
+.flowchart-area .jtk-node p {
 	display: block !important;
 	overflow: hidden;
 	text-align: center !important;
@@ -127,85 +132,115 @@ path, .jtk-endpoint {
 	line-height: 1.25em;
 }
 
-.circle {
+.flowchart-area .circle {
+	width: 105px !important;
+	height: 105px !important;
 	border: 3px solid #DC3C48 !important;
 	border-radius: 50% !important;
 }
 
-.circle span {
+.flowchart-area .circle span {
 	top: 7px;
-	left: 35px;
+	left: 38px;
 	color: #DC3C48;
 }
 
-.circle p {
+.flowchart-area .circle p {
 	top: 23px;
-	left: 9px;
+	left: 10px;
 }
 
-.oval {
-	width: 125px !important;
-	height: 85px !important;
-	border: 3px solid #8D9D56 !important;
+.flowchart-area .oval {
+	width: 130px !important;
+	height: 90px !important;
+	border: 3px solid #D8AC61 !important;
 	border-radius: 50% !important;
 }
 
-.oval span {
+.flowchart-area .oval span {
 	top: 5px;
-	left: 47px;
-	color: #8D9D56;
+	left: 50px;
+	color: #D8AC61;
 }
 
-.oval p {
+.flowchart-area .oval p {
 	top: 20px;
-	left: 20px;
+	left: 23px;
 }
 
-.parallelogram {
-	border: 3px solid #D8AC61 !important;
+.flowchart-area .parallelogram {
+	border: 3px solid #8D9D56 !important;
 	width: 120px !important;
 	height: 90px !important;
 	transform: skewX(-20deg);
 }
 
-.parallelogram span, .parallelogram p {
+.flowchart-area .parallelogram span,
+.flowchart-area .parallelogram p {
 	transform: skewX(20deg);
 }
 
-.parallelogram span {
+.flowchart-area .parallelogram span {
 	top: 7px;
-	left: 43px;
-	color: #D8AC61;
+	left: 37px;
+	color: #8D9D56;
 }
 
-.parallelogram p {
+.flowchart-area .parallelogram p {
 	top: 25px;
-	left: 23px;
+	left: 21px;
 }
 
-.diamond {
+.flowchart-area .diamond {
 	border: 3px solid #9F4D75 !important;
 	transform: rotate(45deg);
 }
 
-.diamond p, .diamond span {
+.flowchart-area .diamond p,
+.flowchart-area .diamond span {
 	transform: rotate(-45deg);
 }
 
-.diamond span {
+.flowchart-area .diamond span {
 	top: 11px;
 	left: 11px;
 	color: #9F4D75;
 }
 
-.diamond p {
+.flowchart-area .diamond p {
 	top: 17px;
 	left: 11px;
 }
 
-#canvas{
-	z-index: 1;
-	width: 96%;
+.flowchart-area .note {
+	border: 1px solid #FFCC00 !important;
+	background: #F7EE9E !important;
+	width: 250px !important;
+	height: 55px !important;
 }
+
+.flowchart-area .note p {
+	font-style: italic !important;
+	float: left !important;
+	top: -5px !important;
+	left: 43px !important;
+	width: 200px !important;
+	height: 42px !important;
+	text-align: left !important;
+	color: #333333 !important;
+}
+
+.flowchart-area .note span {
+	top: 10px !important;
+	left: 5px !important;
+	color: #333333 !important;
+}
+
+/* Edit mode only
+.flowchart-area .jtk-node p,
+.flowchart-area .jtk-node span {
+	border: 1px dotted #CCCCCC !important;
+}
+*/
 
 /* END */

@@ -1,3 +1,367 @@
+## 2.9.0
+
+January 28th 2019
+
+- update `ConnectParams` to include `connector?:ConnectorSpec` in typings file.
+
+## 2.8.8
+
+December 28th 2018
+
+- removed unused method, and its usage from tests
+
+## 2.8.7
+
+December 28th 2018
+
+- update types file to add overlays to ConnectParams
+
+## 2.8.6
+
+December 11th 2018
+
+- better decision making when determining if a connection is detachable or not.
+ 
+## 2.8.5
+
+December 7th 2018
+
+- added missing `findClosestPointOnPath` method to Bezier segment.
+- added support for finding the intersection of a line and a segment.
+
+## 2.8.4
+
+November 2nd 2018
+
+- do not merge `connector` declarations when merging connection types. The child value overwrites the parent now.
+- issue #794 - use `jsPlumb.addClass(div,...)`` instead of `div.className=` - this was causing an error when the custom overlay was an SVG element
+
+## 2.8.3
+
+October 28th 2018
+
+- fixed a repaint issue with Continuous anchors
+
+## 2.8.2
+
+October 18th 2018
+
+- remove animated paths from Flowchart demo, as IE does not support that CSS.
+
+## 2.8.1
+
+October 18th 2018
+
+- Upgrade to Katavorio 1.2.0
+
+## 2.8.0
+
+August 31st 2018
+
+- Upgrade to Mottle 1.0.0, which doesn't use document.createTouch/document.createTouchList, as these methods are not supported
+in latest Chrome and are becoming obsolete in all browsers. If you cannot upgrade to this version of jsPlumb and you're finding problems
+in Chrome on touch devices, there are shims available in the Mottle project on Github.
+
+## 2.7.19
+
+August 28th 2018
+
+- proper cleanup for arrow overlay
+
+## 2.7.18
+
+August 28th 2018
+
+- Fixed an issue with overlays not being removed from every cache during removeOverlay call on overlay component.
+
+## 2.7.17
+
+August 28th 2018
+
+- Minor change to the segment paint code, to allow for animation effects to be used.
+
+## 2.7.16
+
+August 20th 2018
+
+- Upgrade to Katavorio 1.0.0
+
+## 2.7.15
+
+August 11th 2018
+
+- Issue 582: ConnectionsDetachable does not allow dragging multiple connections from endpoints when false
+
+## 2.7.14
+
+August 10th 2018
+
+- Group's orphanAll method now returns a map of element positions for the previous child elements.
+- Group's removeAll method works without throwing an error now.
+
+## 2.7.13
+
+July 27th 2018
+
+- PR #769: refactor DragManager's `register` method to avoid computing parent offsets when unnecessary.
+
+## 2.7.12
+
+July 25th 2018
+
+- changed a method declaration whose format caused Angular's optimizer to fail (when running an Angular production build)
+
+## 2.7.11
+
+July 23rd 2018
+
+- remove unnecessary double firing of the group:addMember event.
+
+## 2.7.10
+
+July 22nd 2018
+
+- fix for setting class name of SVG element in IE11 - it doesnt expose `classList`. The reported error was not fatal but now
+we test if `classList` is null before accessing it.
+
+## 2.7.9
+
+June 24th 2018
+
+- moved Defaults off the jsPlumbInstance prototype and into the class itself. Prevents global variable effect.
+- update the internals of creating Connectors to make it easier to add a custom connector.
+
+## 2.7.8
+
+June 22nd 2018
+
+- additions to Typescript typings file
+- group:addMember and group:removeMember events optionally include the other group involved when the event was fired as the result of
+  a member changing groups.
+
+## 2.7.7
+
+June 21st 2018
+
+- ensure 'rank' is passed through to drop library when present
+- separate out unit tests for drag/drop and for groups.
+
+## 2.7.6
+
+June 20th 2018
+
+- replaced incorrect call to detachAllConnections in demo to deleteConnectionsForElement
+- fixed docs to change references from `detachAllConnections` to `deleteConnectionsForElement`
+
+## 2.7.5
+
+June 17th 2018
+
+- added toggleClass method to jsPlumb
+
+## 2.7.4
+
+June 14th 2018
+
+- fix for cssClass being ignored in `addEndpoint` method (PR 750)
+- minor updates to the Typescript typings file.
+
+## 2.7.3
+
+May 27th 2018
+
+- switched util back to an older method of declaring it on the window.
+- removed bower.json
+
+## 2.7.2
+
+May 25th 2018
+
+- browser util assumes 'window' as root
+
+## 2.7.1
+
+May 25th 2018
+
+- added Connector to the Defaults interface in the TS typings file (#744)
+
+## 2.7.0
+
+May 22nd 2018
+
+- jsPlumb.extend now copies the __proto__ chain too. 
+- Remove old site code. We manage the site in a different project now.
+ 
+## 2.6.12
+
+May 15th 2018
+
+- improvement to the calculation of corner radius when segments are short in a Flowchart connector
+- upgrade to Katavorio 0.28.0
+
+## 2.6.11
+
+- slight refactor of AnchorManager to put a commonly used method on the prototype.
+
+## 2.6.10
+
+- documentation updates
+
+## 2.6.9
+
+March 16th 2018
+
+- removal of unused 'editable' stubs. No functional change.
+ 
+## 2.6.8
+
+February 24th 2018
+
+- upgrade to Katavorio 0.26.0
+- added unbindDraggable and unbindDroppable methods
+
+## 2.6.7
+
+February 8th 2018
+
+- add the ability to lock a Continuous Anchor's current 'axis' (ie. it can choose left/right OR top/bottom).
+
+## 2.6.6
+
+February 8th 2018
+
+- add the ability to lock a Continuous Anchor's current face.
+- upgrade to Katavorio 0.25.0
+
+## 2.6.5
+
+February 2nd 2018
+
+- add support for `connectorOverlays` to `makeSource` method
+- upgrade to Katavorio 0.24.0
+
+## 2.6.4
+
+January 28th 2018
+
+- trivial formatting issue required by upstream collation mechanism in Toolkit 
+
+## 2.6.3
+
+January 26th 2018
+
+- Updates to Typescript typings files
+
+## 2.6.2
+
+January 24th 2018
+
+- `getInstance` method in index.d.ts returns `jsPlumbInstance` instead of `any` (issue 680)
+
+## 2.6.1
+
+January 24th 2018
+
+- comment out a block of code instead of using 'if false' to prevent its execution (issue 707)
+
+## 2.6.0
+
+January 20th 2018
+
+- switch from lazy loading of connector types to direct registration. In certain Webpack scenarios the lazy loading was causing connectors to not be found.
+
+## 2.5.14
+
+January 19th 2018
+
+- improvements to the .d.ts file.
+
+## 2.5.13
+
+January 14th 2018
+
+- minor internal refactoring of the flowchart connectors
+ 
+## 2.5.12
+
+January 4th 2018
+
+- refactor the method that chooses which connection is being dragged on some endpoint that has more than one connection. no functional change.
+- update to index.d.ts to fix compile error
+
+## 2.5.11
+
+December 23rd 2017
+
+- doc updates to include `deleteConnection` method on jsPlumbInstance.
+
+## 2.5.10
+
+- fix for connections lost when group collapsed (issue 694)
+
+## 2.5.9
+
+- dont default to false for 'directed' on a connection; allow it to be undefined if not set.
+
+## 2.5.8
+
+7th December 2017
+
+- minor updates to the way anchors and connectors are set to fix a couple of small bugs related to types.
+
+## 2.5.7
+
+22nd October 2017
+
+- update Katavorio to version 0.22.0
+
+## 2.5.6
+
+18th October 2017
+
+- fix for an issue seen in Chrome where setting the className of an SVG element does not result in the element's classList being updated.
+
+## 2.5.5
+
+8th October 2017
+
+- issue 675, connector not changed in setType/addType
+
+## 2.5.4
+
+7th October 2017
+
+- fix issue with drag containment in elements whose scroll height is larger than their client height.
+
+## 2.5.3
+
+5th October 2017
+
+- expose Connection to anchor at compute time.
+
+## 2.5.2
+
+4th October 2017
+
+- upgrade to Katavorio 0.20.0.  Fixes issue #618, in which constraining drag to a grid did not work for anything other than
+a grid of size [10,10]
+
+## 2.5.1
+
+28th August 2017
+
+- fix for the setType method: if the new type had a different connector, arrow overlays were not being transferred.
+
+## 2.5.0
+
+22nd August 2017
+
+- removed the old changelog.txt, which hadnt been used since 2.0.3 and was probably confusing matters.
+- fixed stale references to various detach methods which were renamed a few versions ago.
+- EventGenerator was updated to fire each event on a separate tick of the event loop. Previously, if an event was fired during
+the callback to a previous event, the second event handler was executed in its entirety before the original event handler. 
+Enqueuing events that are fired during the event loop and running them after each tick prevents this from happening.
+
 ## 2.4.3
 
 20th June 2017

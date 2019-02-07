@@ -106,7 +106,7 @@ $(function(){ // load sample data
 		dataType: 'json'
 	}).done(function(data) {
 		if(data) {
-			console.log(JSON.stringify(data, null, 2));
+			//console.log(JSON.stringify(data, null, 2));
 			qMockupEditor.loadDocumentData(data);
 			qMockupEditor.setupElements(); // make editable (comment out to make it readonly !!)
 		} //end if

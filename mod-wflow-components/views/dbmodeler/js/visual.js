@@ -1,6 +1,11 @@
 
-// wwwsqldesigner: visual.js
-// info: base visual elements
+// wwwsqldesigner v.1.7: visual.js (base visual elements)
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 SQL.Visual = function() {
 	this._init();
@@ -44,4 +49,4 @@ SQL.Visual.prototype.getTitle = function() {
 
 SQL.Visual.prototype.redraw = function() {}
 
-//END
+// #END

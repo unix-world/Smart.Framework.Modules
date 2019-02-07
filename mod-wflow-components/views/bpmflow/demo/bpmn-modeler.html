@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>BPMN Modeler</title>
+
+		<link rel="stylesheet" type="text/css" href="../../../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+		<style type="text/css">
+		* {
+			font-family: 'IBM Plex Sans',arial,sans-serif;
+		}
+		</style>
+		<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+
+		<!-- required modeler styles -->
+		<link rel="stylesheet" href="../modeler.css">
+		<link rel="stylesheet" href="../bpmn-font.css">
+		<!-- modeler distro -->
+		<script src="../bpmn-modeler.js"></script>
+
+		<!-- example styles -->
+		<style>
+			html, body, #canvas {
+				height: 100%;
+				padding: 0;
+				margin: 0;
+			}
+
+			.diagram-note {
+				background-color: rgba(66, 180, 21, 0.7);
+				color: White;
+				border-radius: 5px;
+				font-family: Arial;
+				font-size: 12px;
+				padding: 5px;
+				min-height: 16px;
+				width: 50px;
+				text-align: center;
+			}
+
+			.needs-discussion:not(.djs-connection) .djs-visual > :nth-child(1) {
+				stroke: rgba(66, 180, 21, 0.7) !important; /* color elements as red */
+			}
+
+			.highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
+				fill: yellow !important; /* color elements as green */
+			}
+
+			#save-button {
+				position: fixed;
+				top: 20px;
+				right: 20px;
+			}
+			#undo-button {
+				position: fixed;
+				top: 50px;
+				right: 75px;
+			}
+			#redo-button {
+				position: fixed;
+				top: 50px;
+				right: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div style="position:fixed; top:0px; left:0px; width:99%; text-align:center;">
+			<h1 style="display:inline;">BPMN Modeler (Editor)</h1>
+		</div>
+		<div id="canvas"></div>
+
+		<button id="save-button">print to console</button>
+		<button id="undo-button">undo</button>
+		<button id="redo-button">redo</button>
+
+		<script>
+
+			var diagramUrl = 'data/diagram.bpmn';
+
+			// modeler instance
+			var bpmnModeler = new BpmnJS({
+				container: '#canvas',
+				keyboard: {
+					bindTo: window
+				}
+			});
+
+			/**
+			 * Save diagram contents and print them to the console.
+			 */
+			function exportDiagram() {
+
+				//console.log(JSON.stringify(bpmnModeler.get('overlays')));
+
+				bpmnModeler.saveXML({ format: true }, function(err, xml) {
+
+					if (err) {
+						return console.error('could not save BPMN 2.0 diagram', err);
+					}
+
+					alert('Diagram exported. Check the developer tools!');
+
+					console.log('----- BPMN DIAGRAM -----\n', xml);
+				});
+			}
+
+
+			/**
+			 * Open diagram in our modeler instance.
+			 *
+			 * @param {String} bpmnXML diagram to display
+			 */
+			function openDiagram(bpmnXML) {
+
+				// import diagram
+				bpmnModeler.importXML(bpmnXML, function(err) {
+
+					if (err) {
+						return console.error('could not import BPMN 2.0 diagram', err);
+					}
+
+					// access modeler components
+					var canvas = bpmnModeler.get('canvas');
+					var overlays = bpmnModeler.get('overlays');
+
+
+					// zoom to fit full viewport
+					canvas.zoom('fit-viewport', true); // and center
+
+					// optional colors
+					canvas.addMarker('SCAN_OK', 'highlight');
+
+					// notes (unixman)
+					var notes = {
+						'SCAN_OK': 'A note ...',
+						'sid-52EB1772-F36E-433E-8F5B-D5DFD26E6F26': 'Another note ...'
+					};
+					var nids = {}; // private registry
+					for(var key in notes) {
+						if(key && notes[key]) {
+							var id = overlays.add(String(key), 'note', { // attach an overlay to a node
+								position: {
+									bottom: 0,
+									right: 0
+								},
+								html: '<div class="diagram-note">' + notes[key] + '</div>'
+							});
+							if(id) {
+								canvas.addMarker(String(key), 'needs-discussion'); // add marker
+								nids[String(key)] = String(id);
+							}
+						}
+					}
+
+					var eventBus = bpmnModeler.get('eventBus');
+					eventBus.on('element.click', function(e) { // 'element.hover', 'element.out', 'element.click', 'element.dblclick', 'element.mousedown', 'element.mouseup'
+						// e.element = the model element
+						// e.gfx = the graphical element
+						switch(e.element.type) {
+							case 'bpmn:StartEvent':
+							case 'bpmn:IntermediateThrowEvent':
+							case 'bpmn:EndEvent':
+							case 'bpmn:ExclusiveGateway':
+							case 'bpmn:ParallelGateway':
+								//console.log('click', e.element.id, JSON.stringify(e.element,null,2));
+								var note = prompt('Add a Note ?');
+								if(note !== null) {
+									if(note) {
+										var id = nids[String(e.element.id)];
+										if(!id) {
+											notes[String(e.element.id)] = String(note);
+											id = overlays.add(String(e.element.id), 'note', { // attach an overlay to a node
+												position: {
+													bottom: 0,
+													right: 0
+												},
+												html: '<div class="diagram-note">' + String(note) + '</div>'
+											});
+											if(id) {
+												canvas.addMarker(String(e.element.id), 'needs-discussion'); // add marker
+												nids[String(e.element.id)] = String(id);
+											}
+										}
+									} else {
+										var id = nids[String(e.element.id)];
+										if(id) {
+											nids[String(e.element.id)] = '';
+											notes[String(e.element.id)] = '';
+											canvas.removeMarker(String(e.element.id), 'needs-discussion');
+											overlays.remove(String(id));
+										}
+									}
+								}
+								break;
+							case 'bpmn:Collaboration': // area
+							case 'bpmn:Participant': // box
+							case 'bpmn:Lane': // sub-box
+								// do nothing
+								break;
+							default:
+								// do nothing
+							//	console.log('click', e.element.id, JSON.stringify(e.element,null,2));
+						}
+					});
+
+				});
+			}
+
+			// load external diagram file via AJAX and open it
+			$.get(diagramUrl, openDiagram, 'text');
+
+			// wire save button
+			$('#save-button').click(exportDiagram);
+			$('#undo-button').click(function(){
+				var editorActions = bpmnModeler.get('editorActions');
+				editorActions.trigger('undo');
+			});
+			$('#redo-button').click(function(){
+				var editorActions = bpmnModeler.get('editorActions');
+				editorActions.trigger('redo');
+			});
+		</script>
+	</body>
+</html>

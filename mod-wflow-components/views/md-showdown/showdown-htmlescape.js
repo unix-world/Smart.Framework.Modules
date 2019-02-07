@@ -1,4 +1,8 @@
 
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+
 // showdown-htmlescape 2017-07-17
 
 (function() {

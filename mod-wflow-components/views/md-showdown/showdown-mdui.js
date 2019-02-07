@@ -1,3 +1,8 @@
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+
 // LICENSE: © Jan Dittrich & Contributors, 2015, MIT License (See LICENSE.md)
 // This is a showdown extension which enables adding Checkboxes  – [ ] and [x] – and Radiobuttons – ( ) and (x) – to your markdown.
 //was helpful: https://jsfiddle.net/t6f9yz7y/

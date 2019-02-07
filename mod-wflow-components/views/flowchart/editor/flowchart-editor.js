@@ -1,7 +1,8 @@
 
 // jsPlumb Flowchart Editor :: JS
 // (c) 2017-2019 unix-world.org
-// v.20190120 (stable)
+// License: GPLv3
+// v.20190207
 
 function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxEditDialogHelper, fxDeleteDialogHelper, fxSaveDataHelper, fxExportDataHelper) {
 
@@ -75,7 +76,9 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 									fxEditDialogHelper('Connection Label', eLbl, tgtP, SetConnectionLabel);
 								} else {
 									label = prompt('Connection Label', eLbl);
-									SetConnectionLabel(tgtP, label);
+									if(label !== null) { // if not press cancel
+										SetConnectionLabel(tgtP, label);
+									} //end if
 								} //end if else
 							} //end if
 						} //end function
@@ -168,19 +171,24 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 
 		var _AddNodeElement = function(theID, posX, posY, clsName, usePerimeterAnchors, invertAnchors, textLabel, iconFA) {
 			var dataAttrPerimeter, dataAttrInvert, ep1, ep2;
-			if(usePerimeterAnchors) {
-				dataAttrPerimeter = 'perimeter';
+			if((invertAnchors === null) && (usePerimeterAnchors === null)) {
+				dataAttrPerimeter = 'skip';
+				dataAttrInvert = 'skip';
 			} else {
-				dataAttrPerimeter = '';
-			} //end if else
-			if(invertAnchors === true) {
-				dataAttrInvert = 'inverted';
-				ep1 = sourceEndpoint;
-				ep2 = targetEndpoint;
-			} else {
-				dataAttrInvert = '';
-				ep1 = targetEndpoint;
-				ep2 = sourceEndpoint;
+				if(usePerimeterAnchors) {
+					dataAttrPerimeter = 'perimeter';
+				} else {
+					dataAttrPerimeter = '';
+				} //end if else
+				if(invertAnchors === true) {
+					dataAttrInvert = 'inverted';
+					ep1 = sourceEndpoint;
+					ep2 = targetEndpoint;
+				} else {
+					dataAttrInvert = '';
+					ep1 = targetEndpoint;
+					ep2 = sourceEndpoint;
+				} //end if else
 			} //end if else
 			if(iconFA) {
 				theIcon = '<span class="'+SmartJS_CoreUtils.escape_html(iconFA)+'"></span>';
@@ -195,15 +203,17 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 				top: posY ? (posY + 'px') : '0px'
 			}).appendTo('#canvas');
 			if(flwcIsReadonly !== true) {
-				if(usePerimeterAnchors) {
-					instance.addEndpoint(Div, ep1, { anchor: ['Perimeter', sourceAnchorPerimeterProperties], uuid: theID, editable: false, detachable: false, reattach: false });
-					instance.addEndpoint(Div, ep2, { anchor: ['Perimeter', targetAnchorPerimeterProperties], uuid: theID, editable: false, detachable: false, reattach: false });
-				} else {
-					instance.addEndpoint(Div, ep1, { anchor: 'Left', uuid: theID, editable: false, detachable: false, reattach: false });
-					instance.addEndpoint(Div, ep1, { anchor: 'Right', uuid: theID, editable: false, detachable: false, reattach: false });
-					instance.addEndpoint(Div, ep2, { anchor: 'Top', uuid: theID, editable: false, detachable: false, reattach: false });
-					instance.addEndpoint(Div, ep2, { anchor: 'Bottom', uuid: theID, editable: false, detachable: false, reattach: false });
-				} //end if else
+				if(dataAttrInvert !== 'skip') {
+					if(usePerimeterAnchors) {
+						instance.addEndpoint(Div, ep1, { anchor: ['Perimeter', sourceAnchorPerimeterProperties], uuid: theID, editable: false, detachable: false, reattach: false });
+						instance.addEndpoint(Div, ep2, { anchor: ['Perimeter', targetAnchorPerimeterProperties], uuid: theID, editable: false, detachable: false, reattach: false });
+					} else {
+						instance.addEndpoint(Div, ep1, { anchor: 'Left', uuid: theID, editable: false, detachable: false, reattach: false });
+						instance.addEndpoint(Div, ep1, { anchor: 'Right', uuid: theID, editable: false, detachable: false, reattach: false });
+						instance.addEndpoint(Div, ep2, { anchor: 'Top', uuid: theID, editable: false, detachable: false, reattach: false });
+						instance.addEndpoint(Div, ep2, { anchor: 'Bottom', uuid: theID, editable: false, detachable: false, reattach: false });
+					} //end if else
+				} //end if
 			} //end if
 			if(flwcIsReadonly !== true) {
 				instance.draggable(Div);
@@ -223,15 +233,20 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 				var theIcon = jqElement.attr('data-fa-icon').toString();
 				var usePerimeterAnchors = jqElement.attr('data-conn-perimeter').toString();
 				var isInverted = jqElement.attr('data-conn-inv').toString();
-				if(usePerimeterAnchors == 'perimeter') {
-					usePerimeterAnchors = true;
+				if((usePerimeterAnchors == 'skip') && (isInverted == 'skip')) {
+					usePerimeterAnchors = null;
+					isInverted = null;
 				} else {
-					usePerimeterAnchors = false;
-				} //end if else
-				if(isInverted == 'inverted') {
-					isInverted = true;
-				} else {
-					isInverted = false;
+					if(usePerimeterAnchors == 'perimeter') {
+						usePerimeterAnchors = true;
+					} else {
+						usePerimeterAnchors = false;
+					} //end if else
+					if(isInverted == 'inverted') {
+						isInverted = true;
+					} else {
+						isInverted = false;
+					} //end if else
 				} //end if else
 				nodes.push({
 					elementId: jqElement.attr('id'),
@@ -260,8 +275,11 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 				});
 			});
 
+			var dateobj = new Date();
+
 			flowchartSave = {};
 			flowchartSave.docTitle = ''; // to be updated later
+			flowchartSave.docDate = String(dateobj.toISOString());
 			flowchartSave.docType = 'smartWorkFlow.FlowChart';
 			flowchartSave.docVersion = '1.0';
 			flowchartSave.dataFormat = 'data/structure';
@@ -400,7 +418,9 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 					fxEditDialogHelper('Box Label', tgtP.text(), tgtP, SetBoxLabel);
 				} else {
 					label = prompt('Box Label', tgtP.text());
-					SetBoxLabel(tgtP, label);
+					if(label !== null) { // if not press cancel
+						SetBoxLabel(tgtP, label);
+					} //end if
 				} //end if else
 			});
 
@@ -415,7 +435,9 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 					fxEditDialogHelper('Box Icon', eClass, tgtP, SetBoxIcon);
 				} else {
 					label = prompt('Box Icon', eClass);
-					SetBoxIcon(tgtP, label);
+					if(label !== null) { // if not press cancel
+						SetBoxIcon(tgtP, label);
+					} //end if
 				}
 			});
 
@@ -464,13 +486,16 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 					_AddNodeElement('flowchartElemTerminal_'+uuID, 0, 0, 'window jtk-node circle', anchorProperties.usePerimeterAnchors, anchorProperties.isInverted, 'Terminal', '');
 					break;
 				case 'display':
-					_AddNodeElement('flowchartElemDisplay_'+uuID, 0, 0, 'window jtk-node oval', anchorProperties.usePerimeterAnchors, anchorProperties.isInverted, 'Display', '');
+					_AddNodeElement('flowchartElemData_'+uuID, 0, 0, 'window jtk-node parallelogram', anchorProperties.usePerimeterAnchors, anchorProperties.isInverted, 'Display', '');
 					break;
 				case 'decision':
 					_AddNodeElement('flowchartElemDecision_'+uuID, 0, 0, 'window jtk-node diamond', anchorProperties.usePerimeterAnchors, !anchorProperties.isInverted, 'Decision', '');
 					break;
 				case 'data':
-					_AddNodeElement('flowchartElemData_'+uuID, 0, 0, 'window jtk-node parallelogram', anchorProperties.usePerimeterAnchors, anchorProperties.isInverted, 'Data', '');
+					_AddNodeElement('flowchartElemDisplay_'+uuID, 0, 0, 'window jtk-node oval', anchorProperties.usePerimeterAnchors, anchorProperties.isInverted, 'Data', '');
+					break;
+				case 'note':
+					_AddNodeElement('flowchartElemData_'+uuID, 0, 0, 'window jtk-node note', null, null, 'Note', '');
 					break;
 				default:
 					console.error('Flowcharts: Invalid Element Type to Add');
@@ -481,8 +506,15 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 			if(typeof fxAddDialogFunction == 'function') {
 				fxAddDialogFunction(elemType, generateFlowChartElement);
 			} else {
-				var label = prompt('Anchors Type: [DEFAULT, INVERTED, PERIMETER]', 'DEFAULT');
-				generateFlowChartElement(elemType, label);
+				var label = '';
+				if(elemType == 'note') {
+					label = confirm('Add Note ?');
+				} else {
+					label = prompt('Anchors Type: [DEFAULT, INVERTED, PERIMETER]', 'DEFAULT');
+				} //end if
+				if((label !== null) && (label !== false)) { // if not press cancel (on prompt or confirm)
+					generateFlowChartElement(elemType, label);
+				} //end if
 			} //end if else
 		} //END FUNCTION
 
@@ -510,6 +542,11 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 
 			document.getElementById('flowchartNewIOBtn').onclick = function() {
 				_addFlowchartElement('data', fxAddDialogHelper);
+				return false;
+			};
+
+			document.getElementById('flowchartNewNtBtn').onclick = function() {
+				_addFlowchartElement('note', fxAddDialogHelper);
 				return false;
 			};
 

@@ -1,293 +1,16 @@
 
-// dhtmlx Objects v.3.2.1.uxm.180221
-// License: GPL v2
+// dhtmlx Objects v.3.2.1
+// License: GPLv2
 // (c) 2015 Dinamenta, UAB.
-// (c) 2015-2018 unix-world.org
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 /*
 modified by unixman:
 	- separed the dhtmlx object and functions from gantt (init) object
+	- contains some functions ported from gantt that need to be re-exported
 */
-
-if(typeof(window.dhx4) == "undefined") {
-
-	window.dhx4 = {
-
-		version: "4.1.3",
-
-		skin: null, // allow to be set by user
-
-		skinDetect: function(comp) {
-			return {10:"dhx_skyblue",20:"dhx_web",30:"dhx_terrace"}[this.readFromCss(comp+"_skin_detect")]||null;
-		},
-
-		// read value from css
-		readFromCss: function(className, property) {
-			var t = document.createElement("DIV");
-			t.className = className;
-			if (document.body.firstChild != null) document.body.insertBefore(t, document.body.firstChild); else document.body.appendChild(t);
-			var w = t[property||"offsetWidth"];
-			t.parentNode.removeChild(t);
-			t = null;
-			return w;
-		},
-
-		// id manager
-		lastId: 1,
-		newId: function() {
-			return this.lastId++;
-		},
-
-		// z-index manager
-		zim: {
-			data: {},
-			step: 5,
-			first: function() {
-				return 100;
-			},
-			last: function() {
-				var t = this.first();
-				for (var a in this.data) t = Math.max(t, this.data[a]);
-				return t;
-			},
-			reserve: function(id) {
-				this.data[id] = this.last()+this.step;
-				return this.data[id];
-			},
-			clear: function(id) {
-				if (this.data[id] != null) {
-					this.data[id] = null;
-					delete this.data[id];
-				}
-			}
-		},
-
-		// string to boolean
-		s2b: function(r) {
-			if (typeof(r) == "string") r = r.toLowerCase();
-			return (r == true || r == 1 || r == "true" || r == "1" || r == "yes" || r == "y");
-		},
-
-		// string to json
-		s2j: function(s) {
-			var obj = null;
-			dhx4.temp = null;
-			try { eval("dhx4.temp="+s); } catch(e) { dhx4.temp = null; }
-			obj = dhx4.temp;
-			dhx4.temp = null;
-			return obj;
-		},
-
-		// absolute top/left position on screen
-		absLeft: function(obj) {
-			if (typeof(obj) == "string") obj = document.getElementById(obj);
-			return this.getOffset(obj).left;
-		},
-		absTop: function(obj) {
-			if (typeof(obj) == "string") obj = document.getElementById(obj);
-			return this.getOffset(obj).top;
-		},
-		_aOfs: function(elem) {
-			var top = 0, left = 0;
-			while (elem) {
-				top = top + parseInt(elem.offsetTop);
-				left = left + parseInt(elem.offsetLeft);
-				elem = elem.offsetParent;
-			}
-			return {top: top, left: left};
-		},
-		_aOfsRect: function(elem) {
-			var box = elem.getBoundingClientRect();
-			var body = document.body;
-			var docElem = document.documentElement;
-			var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
-			var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
-			var clientTop = docElem.clientTop || body.clientTop || 0;
-			var clientLeft = docElem.clientLeft || body.clientLeft || 0;
-			var top  = box.top +  scrollTop - clientTop;
-			var left = box.left + scrollLeft - clientLeft;
-			return { top: Math.round(top), left: Math.round(left) };
-		},
-		getOffset: function(elem) {
-			if (elem.getBoundingClientRect) {
-				return this._aOfsRect(elem);
-			} else {
-				return this._aOfs(elem);
-			}
-		},
-
-		// copy obj
-		_isObj: function(k) {
-			return (k != null && typeof(k) == "object" && typeof(k.length) == "undefined");
-		},
-		_copyObj: function(r) {
-			if (this._isObj(r)) {
-				var t = {};
-				for (var a in r) {
-					if (typeof(r[a]) == "object" && r[a] != null) t[a] = this._copyObj(r[a]); else t[a] = r[a];
-				}
-			} else {
-				var t = [];
-				for (var a=0; a<r.length; a++) {
-					if (typeof(r[a]) == "object" && r[a] != null) t[a] = this._copyObj(r[a]); else t[a] = r[a];
-				}
-			}
-			return t;
-		},
-
-		// screen dim
-		screenDim: function() {
-			var isIE = window.dhx4.isIE; // (navigator.userAgent.indexOf("MSIE") >= 0);
-			var dim = {};
-			dim.left = document.body.scrollLeft;
-			dim.right = dim.left+(window.innerWidth||document.body.clientWidth);
-			dim.top = Math.max((isIE?document.documentElement:document.getElementsByTagName("html")[0]).scrollTop, document.body.scrollTop);
-			dim.bottom = dim.top+(isIE?Math.max(document.documentElement.clientHeight||0,document.documentElement.offsetHeight||0):window.innerHeight);
-			return dim;
-		},
-
-		// input/textarea range selection
-		selectTextRange: function(inp, start, end) {
-
-			inp = (typeof(inp)=="string"?document.getElementById(inp):inp);
-
-			var len = inp.value.length;
-			start = Math.max(Math.min(start, len), 0);
-			end = Math.min(end, len);
-
-			if (inp.setSelectionRange) {
-				try {inp.setSelectionRange(start, end);} catch(e){}; // combo in grid under IE requires try/catch
-			} else if (inp.createTextRange) {
-				var range = inp.createTextRange();
-				range.moveStart("character", start);
-				range.moveEnd("character", end-len);
-				try {range.select();} catch(e){};
-			}
-		},
-		// transition
-		transData: null,
-		transDetect: function() {
-
-			if (this.transData == null) {
-
-				this.transData = {transProp: false, transEv: null};
-
-				// transition, MozTransition, WebkitTransition, msTransition, OTransition
-				var k = {
-					"MozTransition": "transitionend",
-					"WebkitTransition": "webkitTransitionEnd",
-					"OTransition": "oTransitionEnd",
-					"msTransition": "transitionend",
-					"transition": "transitionend"
-				};
-
-				for (var a in k) {
-					if (this.transData.transProp == false && document.documentElement.style[a] != null) {
-						this.transData.transProp = a;
-						this.transData.transEv = k[a];
-					}
-				}
-				k = null;
-			}
-
-			return this.transData;
-
-		},
-
-		// xml parser
-		_xmlNodeValue: function(node) {
-			var value = "";
-			for (var q=0; q<node.childNodes.length; q++) {
-				value += (node.childNodes[q].nodeValue!=null?node.childNodes[q].nodeValue.toString().replace(/^[\n\r\s]{0,}/,"").replace(/[\n\r\s]{0,}$/,""):"");
-			}
-			return value;
-		}
-
-	};
-
-	// browser
-	window.dhx4.isFF = (navigator.userAgent.indexOf("Firefox") >= 0);
-	window.dhx4.isIE = (navigator.userAgent.indexOf("MSIE") >= 0 || navigator.userAgent.indexOf("Trident") >= 0);
-	window.dhx4.isChrome = (navigator.userAgent.indexOf("Chrome") >= 0);
-	window.dhx4.isOpera = (navigator.userAgent.indexOf("Opera") >= 0);
-
-};
-
-if(typeof(window.dhx4._eventable) == "undefined") {
-
-	window.dhx4._eventable = function(obj, mode) {
-
-		if(mode == "clear") {
-			obj.detachAllEvents();
-			obj.dhxevs = null;
-			obj.attachEvent = null;
-			obj.detachEvent = null;
-			obj.checkEvent = null;
-			obj.callEvent = null;
-			obj.detachAllEvents = null;
-			obj = null;
-			return;
-		} //end if
-
-		obj.dhxevs = { data: {} };
-
-		obj.attachEvent = function(name, func) {
-			name = String(name).toLowerCase();
-			if (!this.dhxevs.data[name]) this.dhxevs.data[name] = {};
-			var eventId = window.dhx4.newId();
-			this.dhxevs.data[name][eventId] = func;
-			return eventId;
-		}
-
-		obj.detachEvent = function(eventId) {
-			for (var a in this.dhxevs.data) {
-				var k = 0;
-				for (var b in this.dhxevs.data[a]) {
-					if (b == eventId) {
-						this.dhxevs.data[a][b] = null;
-						delete this.dhxevs.data[a][b];
-					} else {
-						k++;
-					}
-				}
-				if (k == 0) {
-					this.dhxevs.data[a] = null;
-					delete this.dhxevs.data[a];
-				}
-			}
-		}
-
-		obj.checkEvent = function(name) {
-			name = String(name).toLowerCase();
-			return (this.dhxevs.data[name] != null);
-		}
-
-		obj.callEvent = function(name, params) {
-			name = String(name).toLowerCase();
-			if (this.dhxevs.data[name] == null) return true;
-			var r = true;
-			for (var a in this.dhxevs.data[name]) {
-				r = this.dhxevs.data[name][a].apply(this, params) && r;
-			}
-			return r;
-		}
-
-		obj.detachAllEvents = function() {
-			for (var a in this.dhxevs.data) {
-				for (var b in this.dhxevs.data[a]) {
-					this.dhxevs.data[a][b] = null;
-					delete this.dhxevs.data[a][b];
-				}
-				this.dhxevs.data[a] = null;
-				delete this.dhxevs.data[a];
-			}
-		}
-
-		obj = null;
-	};
-
-	dhx4._eventable(dhx4);
-
-};
 
 if(typeof(window.dhtmlx) == "undefined") {
 
@@ -669,7 +392,9 @@ if(!window.dhtmlx) {
 	};
 
 	t.seed = (new Date()).valueOf();
-	t.uid = function(){return t.seed++;};
+	t.uid = function(){
+		return t.seed++;
+	};
 	t.expire = 4000;
 	t.keyboard = true;
 	t.position = "top";
@@ -687,7 +412,7 @@ if(!window.dhtmlx) {
 				obj.parentNode.removeChild(obj);
 				obj = null;
 			},2000);
-			obj.className+=" hidden";
+			obj.className += " hidden";
 			if(t.timers[id]) {
 				window.clearTimeout(t.timers[id]);
 			}
@@ -829,7 +554,6 @@ dhtmlx.uid = function() {
 	return this._seed;
 };
 
-
 //creates function with specified "this" pointer
 dhtmlx.bind = function(functor, object){
 	if(functor.bind) {
@@ -838,5 +562,44 @@ dhtmlx.bind = function(functor, object){
 		return function(){ return functor.apply(object,arguments); };
 	}
 };
+
+//-- fixes by unixman: re-exported functions ...
+
+dhtmlx._browserFFox 	= (navigator.userAgent.indexOf('Firefox') >= 0);
+dhtmlx._browserIE 		= (navigator.userAgent.indexOf('MSIE') >= 0 || navigator.userAgent.indexOf('Trident') >= 0);
+dhtmlx._browserChrome 	= (navigator.userAgent.indexOf('Chrome') >= 0) || (navigator.userAgent.indexOf('Chromium') >= 0);
+dhtmlx._isOpera 		= (navigator.userAgent.indexOf('Opera') >= 0);
+
+dhtmlx.fix_DateNumbers = function(num) {
+	if(num < 10){
+		return '0' + num;
+	}
+	return num;
+};
+
+dhtmlx.get_ISOWeek = function(ndate) {
+	if(!ndate) {
+		return false;
+	}
+	var nday = ndate.getDay();
+	if(nday === 0) {
+		nday = 7;
+	}
+	var first_thursday = new Date(ndate.valueOf());
+	first_thursday.setDate(ndate.getDate() + (4 - nday));
+	var year_number = first_thursday.getFullYear(); // year of the first Thursday
+	var ordinal_date = Math.round((first_thursday.getTime() - new Date(year_number, 0, 1).getTime()) / 86400000); //ordinal date of the first Thursday - 1 (so not really ordinal date)
+	var week_number = 1 + Math.floor(ordinal_date / 7);
+	return week_number;
+};
+
+dhtmlx.date_Locales = {
+	month_full:['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+	month_short:['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+	day_full:['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+	day_short:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+};
+dhtmlx.date_Locales.month_full_hash = {}; // {{{SYNC-DT-MONTH-HASHES}}}
+dhtmlx.date_Locales.month_short_hash = {}; // {{{SYNC-DT-MONTH-HASHES}}}
 
 // #END

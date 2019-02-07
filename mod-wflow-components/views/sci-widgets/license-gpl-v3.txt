@@ -1,0 +1,10 @@
+
+###
+
+(c) 2006 - 2019 unix-world.org
+
+License: GPLv3 (GNU GENERAL PUBLIC LICENSE Version 3).
+https://www.gnu.org/licenses/gpl-3.0.en.html
+
+###
+

@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20190115
+	// v.20190207
 
 	private static $db = null;
 	private static function dbType() {

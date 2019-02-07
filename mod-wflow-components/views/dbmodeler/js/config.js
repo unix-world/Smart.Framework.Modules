@@ -1,12 +1,18 @@
 
-// wwwsqldesigner: config.js
+// wwwsqldesigner v.1.7: config.js
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 var CONFIG = {
 
 	IS_READONLY: false,
 
 	AVAILABLE_DBS: ['postgresql', 'sqlite', 'mysql'],
-	DEFAULT_DB: 'postgresql',
+	DEFAULT_DB: 'sqlite',
 
 	AVAILABLE_LOCALES: ['en'],
 	DEFAULT_LOCALE: 'en',
@@ -27,4 +33,4 @@ var CONFIG = {
 
 };
 
-// END
+// #END

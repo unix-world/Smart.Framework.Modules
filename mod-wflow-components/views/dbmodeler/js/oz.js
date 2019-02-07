@@ -1,7 +1,11 @@
 
-// wwwsqldesigner: oz.js
-// (c) 2007 - 2015 Ondrej Zara, v.1.7, https://github.com/ondras/wwwsqldesigner/
-// (c) 2016 - 2017 unixman, v.1.7.r3, https://demo.unix-world.org/smart-framework/modules/mod-wflow-components/views/dbmodeler/demo/demo.html
+// wwwsqldesigner v.1.7: oz.js
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 var OZ = {
 	$:function(x) { return typeof(x) == "string" ? document.getElementById(x) : x; },
@@ -345,4 +349,4 @@ if (!Array.filter) {
 	Array.filter = function(obj, cb, _this) { return Array.prototype.filter.call(obj, cb, _this); }
 }
 
-// END
+// #END

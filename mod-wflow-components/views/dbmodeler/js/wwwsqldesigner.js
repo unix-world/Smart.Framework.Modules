@@ -1,12 +1,34 @@
 
-// wwwsqldesigner: wwwsqldesigner.js
+// wwwsqldesigner v.1.7: wwwsqldesigner.js
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
 
-SQL.Designer = function(xmlData) {
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+
+SQL.Designer = function(objData) {
 
 	SQL.Designer = this;
 
-	this.xmlInitLoadData = xmlData;
-	xmlData = null; // clear
+	if(objData) {
+		if(typeof objData != 'object') {
+			throw 'ERROR: SQL Designer Expects JSON !'
+			return;
+		}
+		if(!(objData.hasOwnProperty('data'))) {
+			throw 'ERROR: SQL Designer Expects Object Data !'
+			return;
+		}
+		if(!(objData.data.hasOwnProperty('xml'))) {
+			throw 'ERROR: SQL Designer Expects Object Data XML !'
+			return;
+		}
+		this.xmlInitLoadData = String(objData.data.xml);
+	} else {
+		this.xmlInitLoadData = null;
+	}
+	objData = null; // clear
 
 	this.tables = [];
 	this.relations = [];
@@ -109,7 +131,7 @@ SQL.Designer.prototype.init2 = function() { /* secondary init, after locale & da
 	this.sync();
 
 	try {
-		OZ.$("docs").value = _("docs");
+		OZ.$("docs").value = dbModelerLocalText("docs");
 	} catch(err){}
 
 //	var url = window.location.href;
@@ -229,6 +251,9 @@ SQL.Designer.prototype.getOption = function(name) {
 		case "xhrloadfunction":
 			return CONFIG.XHR_LOAD_FUNCTION || null;
 			break;
+		case 'exportdata':
+			return this.io.exportdata() || '';
+			break;
 		case "snap":
 			return 0;
 			break;
@@ -325,7 +350,7 @@ SQL.Designer.prototype.toXML = function() {
 		} else if (window.DATATYPES.xml) {
 			xml += window.DATATYPES.xml;
 		} else {
-			alert(_("errorxml")+': '+e.message);
+			alert(dbModelerLocalText("errorxml")+': '+e.message);
 		}
 	} //end if
 
@@ -412,4 +437,4 @@ SQL.Designer.prototype.getFKTypeFor = function(typeIndex) {
 	return this.fkTypeFor[typeIndex];
 }
 
-// END
+// #END

@@ -1,10 +1,15 @@
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+// modified by unixman:
+// 	* save / load just canvas contents
+// 	* cleanup ui garbage: droppable / draggable / resizable
+
 /*
  * QMockup Editor: JS
- * LICENSE: MIT, (c) 2015 Jan Dittrich & Contributors,
- * (c) 2017-2019 unix-world.org
+ * LICENSE: MIT, (c) 2015 Jan Dittrich & Contributors
  */
-
-// modified by unixman: r.20190117
 
 var qMockupEditor = new function() { // START CLASS
 
@@ -93,12 +98,12 @@ var qMockupEditor = new function() { // START CLASS
 		html += '<li title="Spinner Element"><div class="newMockElement spinner" data-editable-content="10" data-editable-mode="plain"><span class="editableArea">10</span></div></li>';
 		html += '<li title="Slider Element"><div class="newMockElement slider"><span></span></div></li>';
 		html += '<li title="Progress Bar Element"><div class="newMockElement loadingIndicator"><div class="bar"></div>70%</div></li>';
-		html += '<li title="Headline 1"><div class="newMockElement headline" data-editable-content="Headline 1" data-editable-mode="plain"><h1 class="editableArea">Headline1</h1></div></li>';
-		html += '<li title="Headline 2"><div class="newMockElement headline" data-editable-content="Headline 2" data-editable-mode="plain"><h2 class="editableArea">Headline2</h2></div></li>';
-		html += '<li title="Headline 3"><div class="newMockElement headline" data-editable-content="Headline 3" data-editable-mode="plain"><h3 class="editableArea">Headline3</h3></div></li>';
-		html += '<li title="Headline 4"><div class="newMockElement headline" data-editable-content="Headline 4" data-editable-mode="plain"><h4 class="editableArea">Headline4</h4></div></li>';
-		html += '<li title="Headline 5"><div class="newMockElement headline" data-editable-content="Headline 5" data-editable-mode="plain"><h5 class="editableArea">Headline5</h5></div></li>';
-		html += '<li title="Headline 6"><div class="newMockElement headline" data-editable-content="Headline 6" data-editable-mode="plain"><h6 class="editableArea">Headline6</h6></div></li>';
+		html += '<li title="Headline 1"><div class="newMockElement headline" data-editable-content="Headline1" data-editable-mode="plain"><h1 class="editableArea">Headline1</h1></div></li>';
+		html += '<li title="Headline 2"><div class="newMockElement headline" data-editable-content="Headline2" data-editable-mode="plain"><h2 class="editableArea">Headline2</h2></div></li>';
+		html += '<li title="Headline 3"><div class="newMockElement headline" data-editable-content="Headline3" data-editable-mode="plain"><h3 class="editableArea">Headline3</h3></div></li>';
+		html += '<li title="Headline 4"><div class="newMockElement headline" data-editable-content="Headline4" data-editable-mode="plain"><h4 class="editableArea">Headline4</h4></div></li>';
+		html += '<li title="Headline 5"><div class="newMockElement headline" data-editable-content="Headline5" data-editable-mode="plain"><h5 class="editableArea">Headline5</h5></div></li>';
+		html += '<li title="Headline 6"><div class="newMockElement headline" data-editable-content="Headline6" data-editable-mode="plain"><h6 class="editableArea">Headline6</h6></div></li>';
 		html += '<li title="Paragraph (Markdown)"><div class="newMockElement paragraph" data-editable-content="' + '\nParagraph (Markdown **Supported** !)\n' + '"><div class="editableArea">Paragraph (Markdown<strong> Supported</strong>!)</div></div></li>';
 		html += '<li title="Table (Markdown)"><div class="newMockElement table" data-editable-content="' + '\n| h1    | h2      |      h3 |\n|:------|:-------:|--------:|\n| lorem | ipsum   | dolor   |\n| first | second  | third   |\n' + '"><div class="editableArea"><table><thead><tr><th style="text-align:left;">h1</th><th style="text-align:center;">h2</th><th style="text-align:right;">h3</th></tr></thead><tbody><tr><td style="text-align:left;">lorem</td><td style="text-align:center;">ipsum</td><td style="text-align:right;">dolor</td></tr><tr><td style="text-align:left;">first</td><td style="text-align:center;">second</td><td style="text-align:right;">third</td></tr></tbody></table></div></div></li>';
 		html += '<li title="Dialog or Alert"><div class="newMockElement dialogWindow" data-editable-content="Dialog" data-editable-mode="plain"><div class="dialogWindow-bar"><span class="editableArea">Dialog</span><span class="dialogWindow-closeButton">×</span></div></div></li>';
@@ -111,7 +116,7 @@ var qMockupEditor = new function() { // START CLASS
 		html += '<li title="Vertical Boxes List / Vertical ToolBar"><div class="newMockElement boxes-vertical" data-editable-content="Entry1;Entry2;*Entry3" data-editable-mode="uielements"><div class="editableArea"><ul><li>Entry1</li><li>Entry2</li><li class="item-highlighted">Entry3</li></ul></div></div></li>';
 		html += '<li title="Icons Toolbar"><div class="newMockElement boxes-horizontal boxes-iconbar-horizontal" data-editable-content="☰;⌂;⚑;⚙;✂;✐;✔;✘;↶;↷;◂;▸;▴;▾;©" data-editable-mode="uielements"><div class="editableArea"><ul><li>☰</li><li>⌂</li><li>⚑</li><li>⚙</li><li>✂</li><li>✐</li><li>✔</li><li>✘</li><li>↶</li><li>↷</li><li>◂</li><li>▸</li><li>▴</li><li>▾</li><li>©</li></ul></div></div></li>';
 		html += '<li title="Image Placeholder"><div class="newMockElement imageplaceholder" data-editable-content="Image" data-editable-mode="plain"><div class="editableArea">Image</div></div></li>';
-		html += '<li title="Image (Markdown)"><div class="newMockElement actualimage" data-editable-content="![]()<!-- add URL to image in the round brackets -->" data-editable-mode="markdown"><div class="editableArea">Image (double click to add Markdown link to an Image)</div></div></li>';
+		html += '<li title="Image (Markdown)"><div class="newMockElement actualimage" data-editable-content="![Image]()<!-- add URL to image in the round brackets -->" data-editable-mode="markdown"><div class="editableArea">Image (double click to add Markdown link to an Image)</div></div></li>';
 		html += '<li title="Sticky Note (Markdown)"><div class="newMockElement meta-element note" data-editable-content="Notes here!" data-editable-mode="markdown"><div class="editableArea"></div></div></li>';
 		html += '<li title="Sticky Arrow-Note"><div class="newMockElement meta-element arrownote" data-editable-content="Notes here!" data-editable-mode="plain"><div class="editableArea">note!</div></div></li>';
 		html += '</ul><!-- #end widgets -->';
@@ -192,14 +197,17 @@ var qMockupEditor = new function() { // START CLASS
 		htmlCode = $('#qmockup-editor___SaveDivHelper').html();
 		$('#qmockup-editor___SaveDivHelper').empty().html(''); // cleanup
 		//--
+		var dateobj = new Date();
+		//--
 		return {
 			docTitle: '', // to be updated later
+			docDate: String(dateobj.toISOString()),
 			docType: 'smartWorkFlow.MockUp',
 			docVersion: '1.0',
 			dataFormat: 'text/html',
 			data: {
-				canvasWidth: theWidth,
-				canvasHeight: theHeight,
+				canvasWidth: parseInt(theWidth),
+				canvasHeight: parseInt(theHeight),
 				canvasData: String(htmlCode)
 			}
 		};

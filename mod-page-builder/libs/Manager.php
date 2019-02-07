@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190115
+ * @version 	v.20190207
  * @package 	PageBuilder
  *
  */

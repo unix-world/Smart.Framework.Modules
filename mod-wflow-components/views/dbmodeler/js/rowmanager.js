@@ -1,5 +1,11 @@
 
-// wwwsqldesigner: rowmanager.js
+// wwwsqldesigner v.1.7: rowmanager.js
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 SQL.RowManager = function(owner) {
 	this.owner = owner;
@@ -14,7 +20,7 @@ SQL.RowManager = function(owner) {
 		var elm = OZ.$(id);
 		this.dom[id] = elm;
 		try {
-			elm.value = _(id);
+			elm.value = dbModelerLocalText(id);
 		} catch(err){}
 	}
 
@@ -79,7 +85,7 @@ SQL.RowManager.prototype.foreigncreate = function(e) { /* start creating fk */
 	} else {
 		this.creating = true;
 		try {
-			this.dom.foreigncreate.value = "["+_("foreignpending")+"]";
+			this.dom.foreigncreate.value = "["+dbModelerLocalText("foreignpending")+"]";
 		}catch(err){}
 	}
 }
@@ -90,7 +96,7 @@ SQL.RowManager.prototype.foreignconnect = function(e) { /* start drawing fk */
 		this.endConnect();
 	} else {
 		this.connecting = true;
-		this.dom.foreignconnect.value = "["+_("foreignconnectpending")+"]";
+		this.dom.foreignconnect.value = "["+dbModelerLocalText("foreignconnectpending")+"]";
 	}
 }
 
@@ -106,14 +112,14 @@ SQL.RowManager.prototype.foreigndisconnect = function(e) { /* remove connector *
 SQL.RowManager.prototype.endCreate = function() {
 	this.creating = false;
 	try {
-		this.dom.foreigncreate.value = _("foreigncreate");
+		this.dom.foreigncreate.value = dbModelerLocalText("foreigncreate");
 	} catch(err){}
 }
 
 SQL.RowManager.prototype.endConnect = function() {
 	this.connecting = false;
 	try {
-		this.dom.foreignconnect.value = _("foreignconnect");
+		this.dom.foreignconnect.value = dbModelerLocalText("foreignconnect");
 	} catch(err){}
 }
 
@@ -128,7 +134,7 @@ SQL.RowManager.prototype.down = function(e) {
 }
 
 SQL.RowManager.prototype.remove = function(e) {
-	var result = confirm(_("confirmrow")+" '"+this.selected.getTitle()+"' ?");
+	var result = confirm(dbModelerLocalText("confirmrow")+" '"+this.selected.getTitle()+"' ?");
 	if (!result) { return; }
 	var t = this.selected.owner;
 	this.selected.owner.removeRow(this.selected);
@@ -229,4 +235,4 @@ SQL.RowManager.prototype.edit = function(e) {
 	this.selected.expand();
 }
 
-//END
+// #END

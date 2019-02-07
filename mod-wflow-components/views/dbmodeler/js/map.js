@@ -1,6 +1,11 @@
 
-// wwwsqldesigner: map.js
-// info: minimap
+// wwwsqldesigner v.1.7: map.js (minimap)
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 SQL.Map = function(owner) {
 	this.owner = owner;
@@ -119,4 +124,4 @@ SQL.Map.prototype.redraw = function() {
 	this.dom.port.style.top = this.t+"px";
 }
 
-//END
+// #END

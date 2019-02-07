@@ -1,0 +1,175 @@
+
+/* DMN FONT CSS */
+
+/*
+(c) 2019 unix-world.org
+License: GPLv3
+Version: 20190207
+*/
+
+/*
+ * file: dmn-font.css + font-animation.css
+ * version: v6.2.0
+ * (c) 2014-2019, camunda Services GmbH @ see LICENSE
+ * https://github.com/bpmn-io/dmn-js # https://unpkg.com/dmn-js@6.2.0/dist/
+ */
+
+@font-face {
+	font-family: 'dmn';
+	src: url('fonts/dmn.woff?37326370') format('woff'),
+		 url('fonts/dmn.ttf?37326370') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="dmn-icon-"]:before, [class*=" dmn-icon-"]:before {
+	font-family: "dmn";
+	font-style: normal;
+	font-weight: normal;
+	speak: none;
+
+	display: inline-block;
+	text-decoration: inherit;
+	width: 1em;
+	text-align: center;
+	/* opacity: .8; */
+
+	/* For safety - reset parent styles, that can break glyph codes*/
+	font-variant: normal;
+	text-transform: none;
+
+	/* fix buttons height, for twitter bootstrap */
+	line-height: 1em;
+
+	/* you can be more comfortable with increased icons size */
+	/* font-size: 120%; */
+
+	/* Font smoothing. That was taken from TWBS */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	/* Uncomment for 3D effect */
+	/* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+
+.dmn-icon-up:before { content: '\e800'; } /* '' */
+.dmn-icon-down:before { content: '\e801'; } /* '' */
+.dmn-icon-clear:before { content: '\e802'; } /* '' */
+.dmn-icon-plus:before { content: '\e803'; } /* '' */
+.dmn-icon-minus:before { content: '\e804'; } /* '' */
+.dmn-icon-info:before { content: '\e805'; } /* '' */
+.dmn-icon-left:before { content: '\e806'; } /* '' */
+.dmn-icon-decision:before { content: '\e807'; } /* '' */
+.dmn-icon-right:before { content: '\e808'; } /* '' */
+.dmn-icon-input:before { content: '\e809'; } /* '' */
+.dmn-icon-output:before { content: '\e80a'; } /* '' */
+.dmn-icon-copy:before { content: '\e80b'; } /* '' */
+.dmn-icon-keyboard:before { content: '\e80c'; } /* '' */
+.dmn-icon-undo:before { content: '\e80d'; } /* '' */
+.dmn-icon-redo:before { content: '\e80e'; } /* '' */
+.dmn-icon-menu:before { content: '\e80f'; } /* '' */
+.dmn-icon-setting:before { content: '\e810'; } /* '' */
+.dmn-icon-wrench:before { content: '\e811'; } /* '' */
+.dmn-icon-eraser:before { content: '\e812'; } /* '' */
+.dmn-icon-attention:before { content: '\e813'; } /* '' */
+.dmn-icon-resize-big:before { content: '\e814'; } /* '' */
+.dmn-icon-resize-small:before { content: '\e815'; } /* '' */
+.dmn-icon-file-code:before { content: '\e816'; } /* '' */
+.dmn-icon-business-knowledge:before { content: '\e817'; } /* '' */
+.dmn-icon-knowledge-source:before { content: '\e818'; } /* '' */
+.dmn-icon-input-data:before { content: '\e819'; } /* '' */
+.dmn-icon-text-annotation:before { content: '\e81a'; } /* '' */
+.dmn-icon-connection:before { content: '\e81b'; } /* '' */
+.dmn-icon-connection-multi:before { content: '\e81c'; } /* '' */
+.dmn-icon-drag:before { content: '\e81d'; } /* '' */
+.dmn-icon-lasso-tool:before { content: '\e81e'; } /* '' */
+.dmn-icon-screw-wrench:before { content: '\e81f'; } /* '' */
+.dmn-icon-trash:before { content: '\e820'; } /* '' */
+.dmn-icon-bpmn-io:before { content: '\e821'; } /* '' */
+.dmn-icon-decision-table:before { content: '\e822'; } /* '' */
+.dmn-icon-literal-expression:before { content: '\e823'; } /* '' */
+.dmn-icon-edit:before { content: '\e824'; } /* '' */
+.dmn-icon-cut:before { content: '\e825'; } /* '' */
+.dmn-icon-paste:before { content: '\f0ea'; } /* '' */
+
+/* Animation, for spinners */
+
+.animate-spin {
+	-moz-animation: spin 2s infinite linear;
+	-o-animation: spin 2s infinite linear;
+	-webkit-animation: spin 2s infinite linear;
+	animation: spin 2s infinite linear;
+	display: inline-block;
+}
+@-moz-keyframes spin {
+	0% {
+		-moz-transform: rotate(0deg);
+		-o-transform: rotate(0deg);
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-moz-transform: rotate(359deg);
+		-o-transform: rotate(359deg);
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+@-webkit-keyframes spin {
+	0% {
+		-moz-transform: rotate(0deg);
+		-o-transform: rotate(0deg);
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-moz-transform: rotate(359deg);
+		-o-transform: rotate(359deg);
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+@-o-keyframes spin {
+	0% {
+		-moz-transform: rotate(0deg);
+		-o-transform: rotate(0deg);
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-moz-transform: rotate(359deg);
+		-o-transform: rotate(359deg);
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+@-ms-keyframes spin {
+	0% {
+		-moz-transform: rotate(0deg);
+		-o-transform: rotate(0deg);
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-moz-transform: rotate(359deg);
+		-o-transform: rotate(359deg);
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+@keyframes spin {
+	0% {
+		-moz-transform: rotate(0deg);
+		-o-transform: rotate(0deg);
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-moz-transform: rotate(359deg);
+		-o-transform: rotate(359deg);
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+
+/* END */

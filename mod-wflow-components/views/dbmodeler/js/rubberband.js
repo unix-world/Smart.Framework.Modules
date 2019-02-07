@@ -1,5 +1,11 @@
 
-// wwwsqldesigner: rubberband.js
+// wwwsqldesigner v.1.7: rubberband.js
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 SQL.Rubberband = function(owner) {
 	this.owner = owner;
@@ -48,4 +54,4 @@ SQL.Rubberband.prototype.redraw = function() {
 	this.dom.container.style.height = this.height+"px";
 }
 
-//END
+// #END

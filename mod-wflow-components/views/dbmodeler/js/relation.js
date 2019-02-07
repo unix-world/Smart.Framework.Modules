@@ -1,6 +1,11 @@
 
-// wwwsqldesigner: relation.js
-// info: relation (tabble connector)
+// wwwsqldesigner v.1.7: relation.js (relation / table connector)
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 SQL.Relation = function(owner, row1, row2) {
 	this.owner = owner;
@@ -159,4 +164,4 @@ SQL.Relation.prototype.destroy = function() {
 	}
 }
 
-//END
+// #END

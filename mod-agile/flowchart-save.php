@@ -25,18 +25,22 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$title = (string) $this->RequestVarGet('flowchart_title', '', 'string');
 		$data = (string) $this->RequestVarGet('flowchart_data', '', 'string');
 
-		$wr = (int) (new \SmartModDataModel\Agile\SqFlowcharts())->saveData(
-			[
-				'uuid' 			=> (string) $uuid,
-				'title' 		=> (string) $title,
-				'saved_data' 	=> (string) SmartUtils::data_archive((string)Smart::json_encode(Smart::json_decode($data, true), true, true, false))
-			],
-			(string) SmartAuth:: get_login_id()
-		);
+		if($data) {
+			$wr = (int) (new \SmartModDataModel\Agile\SqFlowcharts())->saveData(
+				[
+					'uuid' 			=> (string) $uuid,
+					'title' 		=> (string) $title,
+					'saved_data' 	=> (string) SmartUtils::data_archive((string)Smart::json_encode(Smart::json_decode($data, true), true, true, false))
+				],
+				(string) SmartAuth:: get_login_id()
+			);
+		} else {
+			$wr = -99; // empty data
+		} //end if else
 
 		$this->PageViewSetVar(
 			'main',
-			SmartComponents::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save Flowchart', ($wr === 1) ? 'Flowchart Saved Successfuly: '.$wr : 'Failed to save the Flowchart: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.flowchart-editor/uuid/'.Smart::escape_url($uuid) : '')
+			SmartComponents::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save Flowchart', ($wr === 1) ? 'Flowchart Saved Successfuly' : 'Failed to save the Flowchart: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.flowchart-editor/uuid/'.Smart::escape_url($uuid) : '')
 		);
 
 	} // END FUNCTION

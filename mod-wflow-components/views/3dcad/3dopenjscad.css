@@ -1,0 +1,123 @@
+/*
+ * 3dopenjscad.css
+ * (c) 2017-2019 unix-world.org
+ * License: GPLv3
+ *
+ */
+
+div#openscadContainer {
+	margin: 2px 7px 2px 2px; /* not inherited */
+	padding: 5px; /* not inherited */
+	color: #000000;
+	font-weight: bold;
+	border: thin solid #ECECEC;
+	width: 510px;
+}
+
+/* 3d Area */
+
+div#openscadAreaViewer3D {
+	margin: 5px;
+	border: thin solid #CCCCCC;
+	padding: 0px;
+	background: #FFFFFF;
+	width: 500px;
+	height: 300px;
+	top: 0px;
+	bottom: 0px;
+}
+
+div#openscadAreaViewer3D canvas {
+	margin: 0px; /* not inherited */
+	border: 0px none #CCCCCC; /* not inherited */
+	padding: 0px; /* not inherited */
+	width: 100%;
+	height: 100%;
+	cursor: move;
+}
+
+/* Params */
+
+div#openscadAreaParams {
+	margin: 5px; /* not inherited */
+	border: thin solid #ECECEC;
+	border-radius: 1em;
+	padding: 10px;
+	background: #FFFFFF;
+	opacity: 0.8;
+/*	display: none; */
+	width: calc(100% - 30px);
+}
+
+div#openscadAreaParams table { /* openscadTblParams */
+	margin-bottom: 5px;
+	text-align: left;
+	font-size: 0.85rem;
+	line-height: 1.25rem;
+	font-weight: normal;
+	width: 100%;
+}
+
+div#openscadAreaParams th {
+	margin:  0px; /* not inherited */
+	border:  0px; /* not inherited */
+	padding: 5px; /* not inherited */
+	font-weight: bold;
+}
+
+div#openscadAreaParams th.caption {
+	text-decoration: underline;
+}
+
+div#openscadAreaParams td.caption {
+	text-align: right;
+	font-weight: bold;
+}
+
+div#openscadAreaParams td {
+	margin:  0px; /* not inherited */
+	border:  0px none gray; /* not inherited */
+	padding: 2px; /* not inherited */
+}
+
+div#openscadAreaParams input,
+div#openscadAreaParams textarea,
+div#openscadAreaParams select {
+	font-size: 0.9em;
+	background: #ECECEC;
+	border: none;
+}
+
+/* Misc Elements */
+
+img#openscadImgBusy {
+	vertical-align: middle;
+}
+
+button#openscadButtonUpdate {
+}
+
+input#openscadChkBoxInstUpd {
+}
+label#openscadLblInstUpd {
+}
+
+div#openscadAreaHeader {
+	margin: 5px; /* not inherited */
+	margin-top: 10px;
+	height:32px;
+}
+
+div#openscadAreaFooter {
+	margin: 5px; /* not inherited */
+/*	display:none; */
+}
+
+div#openscadAreaError {
+	color: #FF5500;
+	word-wrap: break-word !important;
+	width: 500px;
+	overflow-x: auto;
+}
+
+/* END */

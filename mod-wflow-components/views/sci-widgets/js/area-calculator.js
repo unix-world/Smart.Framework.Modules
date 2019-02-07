@@ -1,7 +1,8 @@
 
 // Area Calculator
-// (c) 2006-2018 unix-world.org
-// v.2018.03.15
+// (c) 2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 // DEPENDS: bc-math.js
 

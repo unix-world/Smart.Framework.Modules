@@ -17,9 +17,16 @@
 	<link rel="stylesheet" href="../jsplumbtoolkit-demo.css">
 
 	<link rel="stylesheet" href="../../editor/flowchart-editor.css">
+	<link rel="stylesheet" href="../../editor/flowchart-editor-edit.css">
 	<script src="../../editor/flowchart-editor.js"></script>
 
 	<script src="../../jsplumb.js"></script>
+	<style>
+		#canvas {
+			z-index: 1;
+			width: 96%;
+		}
+	</style>
 </head>
 <body data-demo-id="flowchart-editor">
 		<div class="navbar navbar-top navbar-fixed-top" role="navigation">
@@ -40,8 +47,10 @@
 	<button class="btn btn-regular" id="flowchartNewBtn" onclick="" style="margin-left: 15px;">New Process</button>
 	<button class="btn btn-regular" id="flowchartNewDBtn" onclick="" style="margin-left: 15px;">New Decision</button>
 	<button class="btn btn-regular" id="flowchartNewIOBtn" onclick="" style="margin-left: 15px;">New Data</button>
+	<button class="btn btn-regular" id="flowchartNewNtBtn" onclick="" style="margin-left: 15px;">New Note</button>
+	<!-- optionals -->
 	<button class="btn btn-success" id="flowchartSaveBtn" onclick="" style="margin-left: 15px;">Save (dump to console)</button>
-	<!-- * optional* --><button class="btn btn-success" id="flowchartExportBtn" onclick="" style="margin-left: 15px;">Export (dump to console)</button>
+	<button class="btn btn-success" id="flowchartExportBtn" onclick="" style="margin-left: 15px;">Export (dump to console)</button>
 	<br><br>
 	<div class="jtk-demo-canvas canvas-wide flowchart-area jtk-surface jtk-surface-nopan" id="canvas"></div>
 </div>

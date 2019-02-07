@@ -1,7 +1,11 @@
 /*
-dhtmlxGantt v.3.2.0 Stardard
+dhtmlxGantt Theme Broadway :: v.3.2.1
 This software is covered by GPL license.
 (c) Dinamenta, UAB.
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 */
 /*lighten(@alterColor,7%)*/
 /* colors for items with inline styles assigned (task.color, link.color)*/
@@ -1387,6 +1391,7 @@ div.dhx_modal_cover {
 	font-size: 13px;
 	color: #494949;
 	overflow: hidden;
+	white-space: pre-wrap !important;
 }
 .gantt_cal_qi_controls {
 	-webkit-border-top-left-radius: 0;
@@ -1512,3 +1517,5 @@ div.dhx_modal_cover {
 	color: #fff;
 	font-weight: bold;
 }
+
+/* END */

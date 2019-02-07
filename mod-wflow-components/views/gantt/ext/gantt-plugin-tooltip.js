@@ -1,21 +1,26 @@
 
-// dhtmlxGantt - Tooltip Extension v.3.2.0.uxm.180221
+// dhtmlxGantt - Tooltip Extension v.3.2.1
 // (c) 2015 Dinamenta, UAB.
-// License: GPL v2
-// (c) 2015-2018 unix-world.org
+// License: GPLv2
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 /*
 modified by unixman:
 	- changed text: Title instead of Task
 	- isolate in a function
+	- fix HTML escapings
+	- fix max length of text
 */
 
 function SmartGanttPluginTooltip(gantt) {
 
 	gantt._tooltip = {};
 	gantt._tooltip_class = "gantt_tooltip";
-	gantt.config.tooltip_timeout = 30;//,
-	gantt.config.tooltip_offset_y = 20;
-	gantt.config.tooltip_offset_x = 10;//,
+	gantt.config.tooltip_timeout = 30;
+	gantt.config.tooltip_offset_y = -5;
+	gantt.config.tooltip_offset_x = 10;
 		// timeout_to_hide: 50,
 		// delta_x: 15,
 		// delta_y: -20
@@ -29,13 +34,20 @@ function SmartGanttPluginTooltip(gantt) {
 	};
 
 	gantt._is_cursor_under_tooltip = function(mouse_pos, tooltip) {
-		if(mouse_pos.x >= tooltip.pos.x && mouse_pos.x <= (tooltip.pos.x + tooltip.width)) return true;
-		if(mouse_pos.y >= tooltip.pos.y && mouse_pos.y <= (tooltip.pos.y + tooltip.height)) return true;
+		if(mouse_pos.x >= tooltip.pos.x && mouse_pos.x <= (tooltip.pos.x + tooltip.width)) {
+			return true;
+		}
+		if(mouse_pos.y >= tooltip.pos.y && mouse_pos.y <= (tooltip.pos.y + tooltip.height)) {
+			return true;
+		}
 		return false;
 	};
 
 	gantt._show_tooltip = function(text, pos) {
-		if (gantt.config.touch && !gantt.config.touch_tooltip) return;
+
+		if(gantt.config.touch && !gantt.config.touch_tooltip) {
+			return;
+		}
 
 		var tip = this._create_tooltip();
 
@@ -72,8 +84,9 @@ function SmartGanttPluginTooltip(gantt) {
 	};
 
 	gantt._hide_tooltip = function(){
-		if (this._tooltip_html && this._tooltip_html.parentNode)
+		if(this._tooltip_html && this._tooltip_html.parentNode) {
 			this._tooltip_html.parentNode.removeChild(this._tooltip_html);
+		}
 		this._tooltip_id = 0;
 	};
 
@@ -101,15 +114,14 @@ function SmartGanttPluginTooltip(gantt) {
 	};
 
 	gantt._tooltip_pos = function(ev) {
-		if (ev.pageX || ev.pageY)
+		if(ev.pageX || ev.pageY) {
 			var pos = {x:ev.pageX, y:ev.pageY};
-
+		}
 		var d = gantt._browserIE ? document.documentElement : document.body;
 		var pos = {
 			x:ev.clientX + d.scrollLeft - d.clientLeft,
 			y:ev.clientY + d.scrollTop - d.clientTop
 		};
-
 		var box = gantt._get_position(gantt.$task_data);
 		pos.x = pos.x - box.x;
 		pos.y = pos.y - box.y;
@@ -119,44 +131,48 @@ function SmartGanttPluginTooltip(gantt) {
 	gantt.attachEvent("onMouseMove", function(event_id, ev) { // (gantt event_id, browser event)
 		if(this.config.tooltip_timeout){
 			//making events survive timeout in ie
-			if(document.createEventObject && !document.createEvent)
+			if(document.createEventObject && !document.createEvent) {
 				ev = document.createEventObject(ev);
-
+			}
 			var delay = this.config.tooltip_timeout;
-
 			if(this._tooltip_id && !event_id){
 				if(!isNaN(this.config.tooltip_hide_timeout)){
 					delay = this.config.tooltip_hide_timeout;
 				}
 			}
-
 			clearTimeout(gantt._tooltip_ev_timer);
 			gantt._tooltip_ev_timer = setTimeout(function(){
 				gantt._init_tooltip(event_id, ev);
 			}, delay);
-
-		}else{
+		} else {
 			gantt._init_tooltip(event_id, ev);
 		}
 	});
+
 	gantt._init_tooltip = function(event_id, ev){
-		if (this._is_tooltip(ev)) return;
-		if (event_id == this._tooltip_id && !this._is_task_line(ev)) return;
-		if (!event_id)
+		if(this._is_tooltip(ev)) {
+			return;
+		}
+		if(event_id == this._tooltip_id && !this._is_task_line(ev)) {
+			return;
+		}
+		if(!event_id) {
 			return this._hide_tooltip();
-
+		}
 		this._tooltip_id = event_id;
-
 		var task = this.getTask(event_id);
 		var text = this.templates.tooltip_text(task.start_date, task.end_date, task);
-		if (!text){
+		if(!text){
 			this._hide_tooltip();
 			return;
 		}
 		this._show_tooltip(text, this._tooltip_pos(ev));
 	};
+
 	gantt.attachEvent("onMouseLeave", function(ev){
-		if (gantt._is_tooltip(ev)) return;
+		if(gantt._is_tooltip(ev)) {
+			return;
+		}
 		this._hide_tooltip();
 	});
 
@@ -175,11 +191,17 @@ function SmartGanttPluginTooltip(gantt) {
 	gantt.templates.tooltip_text = function(start, end, event) {
 		var endTxt = '';
 		if(event.type == 'flextask') {
-			endTxt = 'n/a';
+			endTxt = '*'; // {{{SYNC-FLEXTASK-END-TXT}}}
+		} else if(event.type == 'milestone') {
+			endTxt = '@'; // {{{SYNC-MILESTONE-END-TXT}}}
 		} else {
 			endTxt = gantt.templates.tooltip_date_format(end);
-		}
-		return "<b>Title:</b> " + SmartJS_CoreUtils.escape_html(event.text) + "<br/><b>Start date:</b> " + gantt.templates.tooltip_date_format(start) + "<br/><b>End date:</b> " + endTxt;
+		} //end if else
+		var txt = String(event.text || '');
+		if(txt.length > 50) {
+			txt = txt.substr(0, 50) + '...';
+		} //end if
+		return '<b>Title:</b> ' + SmartJS_CoreUtils.escape_html(txt) + '<br><b>Start date:</b> ' + SmartJS_CoreUtils.escape_html(gantt.templates.tooltip_date_format(start)) + '<br><b>End date:</b> ' + SmartJS_CoreUtils.escape_html(endTxt);
 	}; // fix by unixman
 
 	return gantt;

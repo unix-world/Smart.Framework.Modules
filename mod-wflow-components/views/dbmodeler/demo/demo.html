@@ -19,16 +19,24 @@
 		user-select: none;
 	}
 	</style>
+	<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../../../../lib/js/framework/smart-framework.js"></script>
+	<script>
+		$(function(){
+			SmartJS_BrowserUtils.PageAwayControl('Are you sure you want to navigate away this page ?'); // prevent navigating away by accident
+		});
+	</script>
 	<link rel="stylesheet" href="../css/style.css" media="all">
 	<link rel="stylesheet" href="../css/print.css" type="text/css" media="print">
 	<script src="../js/config.js"></script>
+	<script src="../js/globals.js"></script>
 	<script type="text/javascript">
 		CONFIG.STATIC_PATH = '../';
 		CONFIG.XHR_SAVE_FUNCTION = function(xml, e) {
 			console.log(xml);
 		};
 		CONFIG.XHR_LOAD_FUNCTION = function(xmlLoadFx, e) {
-			var result = confirm(_("unsavedlost"));
+			var result = confirm(dbModelerLocalText("unsavedlost"));
 			if(!result) {
 				return;
 			} //end if
@@ -44,7 +52,6 @@
 		};
 	</script>
 	<script src="../js/oz.js"></script>
-	<script src="../js/globals.js"></script>
 	<script src="../js/visual.js"></script>
 	<script src="../js/row.js"></script>
 	<script src="../js/table.js"></script>
@@ -60,15 +67,6 @@
 	<script src="../js/window.js"></script>
 	<script src="../js/options.js"></script>
 	<script src="../js/wwwsqldesigner.js"></script>
-
-	<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
-	<script type="text/javascript" src="../../../../../lib/js/framework/smart-framework.js"></script>
-	<script>
-		$(function(){
-			SmartJS_BrowserUtils.PageAwayControl('Are you sure you want to navigate away this page ?'); // prevent navigating away by accident
-		});
-	</script>
-
 </head>
 <body>
 	<div id="area"></div>
@@ -76,8 +74,8 @@
 	<div id="controls">
 		<div id="bar">
 			<div id="toggle"></div>
-			<input type="button" id="serverload">
-			<input type="button" id="serversave">
+	<!--	<input type="button" id="serverload">
+			<input type="button" id="serversave"> -->
 			<input type="button" id="saveload">
 			<hr>
 			<input type="button" id="addtable">
@@ -186,7 +184,7 @@
 					<td colspan="2">
 						<fieldset>
 							<legend id="output"></legend>
-							<textarea id="textarea" rows="1" cols="1"></textarea><!--modified by javascript later-->
+							<textarea id="textarea" rows="1" cols="1" spellcheck="false"></textarea><!--modified by javascript later-->
 						</fieldset>
 					</td>
 				</tr>
@@ -254,7 +252,7 @@
 						<label id="tablecommentlabel" for="tablecomment"></label>
 					</td>
 					<td>
-						<textarea rows="5" cols="40" id="tablecomment"></textarea>
+						<textarea rows="5" cols="40" id="tablecomment" spellcheck="false"></textarea>
 					</td>
 				</tr>
 			</tbody>
@@ -262,15 +260,19 @@
 	</div>
 
 	<script type="text/javascript">
-		var sqlDesigner = new SQL.Designer();
-		jQuery.ajax({
-			url: 'demo.xml',
-			dataType: 'text'
-		}).done(function(data) {
-			if(data) {
-				//console.log(data);
-				sqlDesigner.io.fromXMLText(data);
-			} //end if
+		$(function(){
+			var sqlDesigner = new SQL.Designer();
+			setTimeout(function(){
+				jQuery.ajax({
+					url: 'demo.xml',
+					dataType: 'text'
+				}).done(function(data) {
+					if(data) {
+						//console.log(data);
+						sqlDesigner.io.fromXMLText(data);
+					} //end if
+				});
+			}, 500);
 		});
 	</script>
 </body>

@@ -1,0 +1,53 @@
+[@@@@SUB-TEMPLATE:todo-init.inc.htm@@@@]
+<!-- todo-editor.htm v.20190128 -->
+<form class="ux-form" id="todo_form" name="todo_form" method="POST" action="#">
+	<input id="todo_uuid" name="uuid" type="hidden" value="[####UUID|html####]">
+	<input id="todo_title" name="todo_title" type="text" maxlength="255" value="[####TITLE|html####]" title="ToDo-List Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:28px!important; font-weight:bold; text-align:center;">
+	<input id="todo_data" name="todo_data" type="hidden" value="">
+</form>
+<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<script>
+var gChart = null;
+jQuery(document).ready(function() {
+	var ganttDataObj = [####JSON-DATA|json####];
+	gChart = SmartGanttManager.drawInstance(ganttDataObj, true, true, 'gantt-chart', null, null, null);
+	ganttDataObj = null; // clear
+	jQuery('#gantchangedate').val(SmartGanttManager.getDate(gChart));
+	jQuery('#date-entry-gantchangedate').val(SmartGanttManager.getDate(gChart));
+	jQuery('#gant-change-view').val(SmartGanttManager.getScale(gChart));
+	jQuery('#gant-change-view').change(function(){
+		SmartGanttManager.changeScale(gChart, this.value, null, null);
+	});
+	jQuery('#gant-save-data').click(function(){
+		var data = SmartGanttManager.getExportData(gChart);
+	//	data.docTitle = String($('#todo_title').val());
+		var theData = JSON.stringify(data);
+		jQuery('#todo_data').val(theData);
+		SmartJS_BrowserUtils.RefreshParent();
+		SmartJS_BrowserUtils.Submit_Form_By_Ajax('todo_form', 'admin.php?page=agile.todo-save', 'yes');
+	});
+});
+</script>
+<div style="text-align:center;">
+	<label for="date-entry-gantchangedate">Date</label>
+	[####DATE-FLD-HTML####]
+	<label for="gant-change-view">Scale</label>
+	<select class="ux-field ux-input-medium" id="gant-change-view" autocomplete="off">
+		<option value="day">Day</option>
+		<option value="week">Week</option>
+		<option value="month">Month</option>
+<!--	<option value="quarter">Quarter</option> -->
+		<option value="year">Year</option>
+	</select>
+	<button class="ux-button ux-button-regular" id="gant-save-data" style="margin-left: 15px;">Save ToDo-List</button>
+	[%%%%IF:OP-MODE:==create;%%%%]
+	<button class="ux-button ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
+	[%%%%ELSE:OP-MODE%%%%]
+	<button class="ux-button ux-button-special" onclick="self.location='admin.php?/page/agile.todo-editor/uuid/[####UUID|url|html####]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
+	[%%%%/IF:OP-MODE%%%%]
+</div>
+<br>
+<div id="gantt-chart"></div>
+<script>
+	SmartJS_BrowserUtils.PageAwayControl('Exit without Save ?');
+</script>

@@ -1,3 +1,14 @@
+
+/*
+// wwwsqldesigner v.1.7: print.css
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+*/
+
 #bar, #background, #minimap {
 	display: none;
 }
@@ -21,3 +32,4 @@
 	background-color:none;
 }
 
+/* END */

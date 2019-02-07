@@ -20,7 +20,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
-		$sq_rd = (array) (new \SmartModDataModel\Agile\SqDbmodeler())->getAllByUuid();
+		$sq_rd = (array) (new \SmartModDataModel\Agile\SqDbmodels())->getAllByUuid();
 		//--
 		$this->PageViewSetVars([
 			'title' 	=> 'Agile :: DbModeler / List',

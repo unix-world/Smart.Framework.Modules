@@ -1,3 +1,11 @@
+
+// (c) 2019 unix-world.org
+// License: GPLv3
+// v.20190207
+
+// Copyright 2013-2019 Alan Hong. and other contributors
+// License: MIT
+
 (function(factory) {
 	/* global define */
 	if (typeof define === 'function' && define.amd) {

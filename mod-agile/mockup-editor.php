@@ -40,7 +40,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		} elseif((string)$import == 'done') {
 
-			$mockup_title = (string) $this->RequestVarGet('mockup_title', '', 'string');
 			$mockup_data = (string) $this->RequestVarGet('mockup_data', '', 'string');
 
 		} //end if
@@ -48,21 +47,33 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$model = new \SmartModDataModel\Agile\SqMockups();
 
 		if($mockup_data) {
+			$mockup_data = Smart::json_decode((string)$mockup_data);
+			if(Smart::array_size($mockup_data) <= 0) {
+				$mockup_data = null;
+			} elseif(Smart::array_size($mockup_data['data']) <= 0) {
+				$mockup_data = null;
+			} //end if else
+		} else {
+			$mockup_data = null;
+		} //end if
+
+		if(is_array($mockup_data)) {
 			$sq_rd = array();
-			$new_data = (string) $mockup_data;
-			if($mockup_title) {
-				$sq_rd['title'] = (string) $mockup_title;
+			$new_data = (string) (string) Smart::json_encode((array)$mockup_data);
+			if($mockup_data['docTitle']) {
+				$sq_rd['title'] = (string) $mockup_data['docTitle'];
 			} //end if
+			$mockup_data = null;
 		} else {
 			$sq_rd = (array) $model->getOneByUuid($uuid);
-			$new_data = (string) Smart::json_encode([ 'canvasWidth' => 1000, 'canvasHeight' => 700, 'canvasData' => '' ]);
+			$new_data = (string) Smart::json_encode(['data' => [ 'canvasWidth' => 1000, 'canvasHeight' => 700, 'canvasData' => '' ]]);
 		} //end if else
 		$old_data = (string) SmartUtils::data_unarchive((string)$sq_rd['saved_data']);
 		if($old_data) {
 			$old_data = Smart::json_decode((string)$old_data); // mixed
 		} //end if
 		if(Smart::array_size($old_data) <= 0) {
-			$old_data = $new_data;
+			$old_data = (string) $new_data;
 		} else {
 			$old_data = (string) Smart::json_encode((array)$old_data);
 		} //end if

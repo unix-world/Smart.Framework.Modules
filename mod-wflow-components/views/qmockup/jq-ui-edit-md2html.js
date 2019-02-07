@@ -1,11 +1,14 @@
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+// modified by unixman:
+// 	* depends: SmartJS_CoreUtils.escape_html()
+
 /*
  * QMockup Editor: jqueryUI plugin for editing the HTML-element’s text
- * LICENSE: MIT, (c) 2015 Jan Dittrich & Contributors,
- * (c) 2017-2019 unix-world.org
+ * LICENSE: MIT, (c) 2015 Jan Dittrich & Contributors
  */
-
-// modified by unixman: r.20190117
-// depends: SmartJS_CoreUtils.escape_html()
 
 (function($){
 

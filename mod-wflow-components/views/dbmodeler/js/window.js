@@ -1,5 +1,11 @@
 
-// wwwsqldesigner: window.js
+// wwwsqldesigner v.1.7: window.js
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
 
 SQL.Window = function(owner) {
 	this.owner = owner;
@@ -12,9 +18,9 @@ SQL.Window = function(owner) {
 		content:OZ.$("windowcontent"),
 		throbber:OZ.$("throbber")
 	}
-	this.dom.ok.value = _("windowok");
-	this.dom.cancel.value = _("windowcancel");
-	this.dom.throbber.alt = this.dom.throbber.title = _("throbber");
+	this.dom.ok.value = dbModelerLocalText("windowok");
+	this.dom.cancel.value = dbModelerLocalText("windowcancel");
+	this.dom.throbber.alt = this.dom.throbber.title = dbModelerLocalText("throbber");
 	OZ.Event.add(this.dom.ok, "click", this.ok.bind(this));
 	OZ.Event.add(this.dom.cancel, "click", this.close.bind(this));
 	OZ.Event.add(document, "keydown", this.key.bind(this));
@@ -93,4 +99,4 @@ SQL.Window.prototype.sync = function() { /* adjust background position */
 	this.dom.background.style.top = scroll[1]+"px";
 }
 
-// END
+// #END
