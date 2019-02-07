@@ -3,34 +3,30 @@
 
 Software Project: Smart.Framework.Modules
 Public URL: https://github.com/unix-world/Smart.Framework.Modules
-Copyright (c) 2006-2019, unix-world.org
+Copyright (c) 2009-2019, unix-world.org
 Author: Radu Ovidiu Ilies
 All rights reserved.
-License (multi, any of): BSD or LGPLv3 or GPLv3
+License (dual, any of): BSD or GPLv3
 
-Smart.Framework.Modules is multi-licensed, as open source, under any of BSD license, LGPLv3 license or GPLv3 license
+Smart.Framework.Modules is dual-licensed, as open source, under any of BSD license or GPLv3 license
 (you choose which license to use depending on your use case)
 * BSD license: LICENSE-BSD # https://opensource.org/licenses/BSD-3-Clause
-OR
-* LGPLv3 license: LICENSE-LGPLv3 # https://opensource.org/licenses/lgpl-3.0.html
 OR
 * GPLv3 license: LICENSE-GPLv3 # https://opensource.org/licenses/GPL-3.0
 
 =========================================================================
 
 Choosing your license for Smart.Framework.Modules:
-* It is mandatory to keep this file: LICENSE, but you also have to keep one of the: LICENSE-BSD or LICENSE-LGPLv3 or LICENSE-GPLv3
-* if you choose the BSD License for using Smart.Framework.Modules keep the file LICENSE-BSD and remove the files LICENSE-LGPLv3 and LICENSE-GPLv3
-(in this case you can not use any of the LGPLv3 or GPLv3 licensed modules, which you have to remove from your project ; see the license for each module in it's own directory)
-* if you choose the LGPLv3 License for using Smart.Framework.Modules keep the file LICENSE-LGPLv3 and remove the files LICENSE-BSD and LICENSE-GPLv3
+* It is mandatory to keep this file: LICENSE, but you also have to keep one of the: LICENSE-BSD or LICENSE-GPLv3
+* if you choose the BSD License for using Smart.Framework.Modules keep the file LICENSE-BSD and remove the file LICENSE-GPLv3
 (in this case you can not use any of the GPLv3 licensed modules, which you have to remove from your project ; see the license for each module in it's own directory)
-* if you choose the GPLv3 License for using Smart.Framework.Modules keep the file LICENSE-GPLv3 and remove the files LICENSE-BSD and LICENSE-LGPLv3
+* if you choose the GPLv3 License for using Smart.Framework.Modules keep the file LICENSE-GPLv3 and remove the file LICENSE-BSD
 (in this case you can use all the included modules in your project as the licenses are compatible ; see the license for each module in it's own directory)
 
 IMPORTANT:
 * this software project (Smart.Framework.Modules) is open source and contains portions of code released under many different compatible open source licenses such as: MIT, BSD, ...
-* if you choose GPLv3 license for Smart.Framework.Modules then you have to use the LGPLv3 for Smart.Framework to be compliant
-* if you are using portions of code from this project you have to keep any of the files LICENSE-BSD or LICENSE-LGPLv3 or LICENSE-GPLv3 but also the specific licenses available with the code (some directories contains extra license files that you must keep)
+* if you choose the GPLv3 license for Smart.Framework.Modules then you have to use the GPLv3 license also for Smart.Framework to be compliant
+* if you are using portions of code from this project you have to keep any of the files LICENSE-BSD or LICENSE-GPLv3 but also the specific licenses available with the code (some directories contains extra license files that you must keep)
 * you have to preserve all the copyright notices for all the source code and must not alter the license files
 
 =========================================================================

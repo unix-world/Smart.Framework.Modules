@@ -1,6 +1,6 @@
 # Smart.Framework.Modules - a collection of modules for Smart.Framework
-## Multi-licensed: under BSD license or LGPLv3 license or GPLv3 license
-### This software project is open source. You must choose which license to use depending on your use case and the modules you include in your project: BSD license or LGPLv3 license or GPLv3 license (see LICENSE file)
+## Dual-licensed: under BSD license or GPLv3 license (at your choice)
+### This software project is open source. You must choose which license to use depending on your use case: BSD license or GPLv3 license (see LICENSE file)
 <b>(c) 2009 - 2019 unix-world.org</b> / <i>support&#64;unix-world.org</i>
 
 This software framework is compatible, stable and actively tested with PHP 5.6 / 7.0 / 7.1 / 7.2 / 7.3 versions.
@@ -24,14 +24,12 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 	* MediaGallery: a media gallery api for Smart.Framework
 	* SocialMedia Facebook: Js + PHP API
 	* SocialMedia Twitter: Js + PHP API
-
-### Extra App Modules (LGPLv3 licensed ; can be used with Smart.Framework licensed under LGPLv3 license only):
 	* PageBuilder: a content management API for Smart.Framework
-	* SVN (manager): a SVN (subversion) web based manager
-	* Cloud (manager): an advanced Cloud Api: WebDAV, CalDAV / WebCal and CardDAV / WebAddressbook
+	* SVN (manager): a web based SVN (subversion) manager
 
-### Extra App Widgets (GPLv3 licensed ; can be used with Smart.Framework licensed under LGPLv3 license only):
-	* Agile (manager): an Agile project management API for Smart.Framework
+### Extra App Modules (GPLv3 licensed ; can be used with Smart.Framework licensed under GPLv3 license only):
+	* Cloud App: an advanced Cloud Api and app module: WebDAV, CalDAV / WebCal and CardDAV / WebAddressbook
+	* Agile App: an document store API and app module for Smart.Framework
 	* Workflow Components: a collection of smart Javascript components and utilities
 
 ### Extra Libs (BSD licensed):
@@ -47,9 +45,9 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 	* PSR Cache: vendor/Psr
 
 ## Installation NOTES:
-	* install first the Smart.Framework and choose the license: BSD license or LGPLv3 license (see the file https://github.com/unix-world/Smart.Framework/LICENSE)
+	* install first the Smart.Framework and choose the license: BSD license or GPLv3 license (see the file https://github.com/unix-world/Smart.Framework/LICENSE)
 	* after, copy the desired modules from Smart.Framework.Modules into the Smart.Framework modules folder: (example) smart-framework/modules/
-	* choose your license for the Smart.Framework.Modules, depending of the modules you will use (see the above notes and the file https://github.com/unix-world/Smart.Framework.Modules/LICENSE)
+	* choose your license for the Smart.Framework.Modules (BSD license or GPLv3 license), depending of the modules you will use (see the above notes and the file https://github.com/unix-world/Smart.Framework.Modules/LICENSE)
 
 ## Installation HINTS:
 	* all libs in modules are auto-loaded via built-in Autoloader (except: smart-extra-libs, vendor)
