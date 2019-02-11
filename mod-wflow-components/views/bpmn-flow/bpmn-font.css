@@ -1,0 +1,212 @@
+
+/* BPMN FONT CSS */
+
+/*
+(c) 2019 unix-world.org
+License: GPLv3
+Version: 20190211
+*/
+
+/*
+ * file: bpmn-font.css
+ * version: v3.2.0
+ * (c) 2014-2019, camunda Services GmbH @ see LICENSE
+ * https://github.com/bpmn-io/bpmn-js # https://unpkg.com/bpmn-js@3.2.0/dist/
+ */
+
+@font-face {
+	font-family: 'bpmn';
+	src: url('fonts/bpmn.woff?70672887') format('woff'),
+		 url('fonts/bpmn.ttf?70672887') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="bpmn-icon-"]:before,
+[class*=" bpmn-icon-"]:before {
+	font-family: "bpmn";
+	font-style: normal;
+	font-weight: normal;
+	speak: none;
+
+	display: inline-block;
+	text-decoration: inherit;
+	width: 1em;
+	/* margin-right: .2em; */
+	text-align: center;
+	/* opacity: .8; */
+
+	/* For safety - reset parent styles, that can break glyph codes*/
+	font-variant: normal;
+	text-transform: none;
+
+	/* fix buttons height, for twitter bootstrap */
+	line-height: 1em;
+
+	/* Animation center compensation - margins should be symmetric */
+	/* remove if not needed */
+	/* margin-left: .2em; */
+
+	/* you can be more comfortable with increased icons size */
+	/* font-size: 120%; */
+
+	/* Font smoothing. That was taken from TWBS */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	/* Uncomment for 3D effect */
+	text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3);
+
+	color: #778899;
+}
+
+.bpmn-icon-screw-wrench:before { content: '\e800'; } /* '' */
+.bpmn-icon-trash:before { content: '\e801'; } /* '' */
+.bpmn-icon-conditional-flow:before { content: '\e802'; } /* '' */
+.bpmn-icon-default-flow:before { content: '\e803'; } /* '' */
+.bpmn-icon-gateway-parallel:before { content: '\e804'; } /* '' */
+.bpmn-icon-intermediate-event-catch-cancel:before { content: '\e805'; } /* '' */
+.bpmn-icon-intermediate-event-catch-non-interrupting-message:before { content: '\e806'; } /* '' */
+.bpmn-icon-start-event-compensation:before { content: '\e807'; } /* '' */
+.bpmn-icon-start-event-non-interrupting-parallel-multiple:before { content: '\e808'; } /* '' */
+.bpmn-icon-loop-marker:before { content: '\e809'; } /* '' */
+.bpmn-icon-parallel-mi-marker:before { content: '\e80a'; } /* '' */
+.bpmn-icon-start-event-non-interrupting-signal:before { content: '\e80b'; } /* '' */
+.bpmn-icon-intermediate-event-catch-non-interrupting-timer:before { content: '\e80c'; } /* '' */
+.bpmn-icon-intermediate-event-catch-parallel-multiple:before { content: '\e80d'; } /* '' */
+.bpmn-icon-intermediate-event-catch-compensation:before { content: '\e80e'; } /* '' */
+.bpmn-icon-gateway-xor:before { content: '\e80f'; } /* '' */
+.bpmn-icon-connection:before { content: '\e810'; } /* '' */
+.bpmn-icon-end-event-cancel:before { content: '\e811'; } /* '' */
+.bpmn-icon-intermediate-event-catch-condition:before { content: '\e812'; } /* '' */
+.bpmn-icon-intermediate-event-catch-non-interrupting-parallel-multiple:before { content: '\e813'; } /* '' */
+.bpmn-icon-start-event-condition:before { content: '\e814'; } /* '' */
+.bpmn-icon-start-event-non-interrupting-timer:before { content: '\e815'; } /* '' */
+.bpmn-icon-sequential-mi-marker:before { content: '\e816'; } /* '' */
+.bpmn-icon-user-task:before { content: '\e817'; } /* '' */
+.bpmn-icon-business-rule:before { content: '\e818'; } /* '' */
+.bpmn-icon-sub-process-marker:before { content: '\e819'; } /* '' */
+.bpmn-icon-start-event-parallel-multiple:before { content: '\e81a'; } /* '' */
+.bpmn-icon-start-event-error:before { content: '\e81b'; } /* '' */
+.bpmn-icon-intermediate-event-catch-signal:before { content: '\e81c'; } /* '' */
+.bpmn-icon-intermediate-event-catch-error:before { content: '\e81d'; } /* '' */
+.bpmn-icon-end-event-compensation:before { content: '\e81e'; } /* '' */
+.bpmn-icon-subprocess-collapsed:before { content: '\e81f'; } /* '' */
+.bpmn-icon-subprocess-expanded:before { content: '\e820'; } /* '' */
+.bpmn-icon-task:before { content: '\e821'; } /* '' */
+.bpmn-icon-end-event-error:before { content: '\e822'; } /* '' */
+.bpmn-icon-intermediate-event-catch-escalation:before { content: '\e823'; } /* '' */
+.bpmn-icon-intermediate-event-catch-timer:before { content: '\e824'; } /* '' */
+.bpmn-icon-start-event-escalation:before { content: '\e825'; } /* '' */
+.bpmn-icon-start-event-signal:before { content: '\e826'; } /* '' */
+.bpmn-icon-business-rule-task:before { content: '\e827'; } /* '' */
+.bpmn-icon-manual:before { content: '\e828'; } /* '' */
+.bpmn-icon-receive:before { content: '\e829'; } /* '' */
+.bpmn-icon-call-activity:before { content: '\e82a'; } /* '' */
+.bpmn-icon-start-event-timer:before { content: '\e82b'; } /* '' */
+.bpmn-icon-start-event-message:before { content: '\e82c'; } /* '' */
+.bpmn-icon-intermediate-event-none:before { content: '\e82d'; } /* '' */
+.bpmn-icon-intermediate-event-catch-link:before { content: '\e82e'; } /* '' */
+.bpmn-icon-end-event-escalation:before { content: '\e82f'; } /* '' */
+.bpmn-icon-text-annotation:before { content: '\e830'; } /* '' */
+.bpmn-icon-bpmn-io:before { content: '\e831'; } /* '' */
+.bpmn-icon-gateway-complex:before { content: '\e832'; } /* '' */
+.bpmn-icon-gateway-eventbased:before { content: '\e833'; } /* '' */
+.bpmn-icon-gateway-none:before { content: '\e834'; } /* '' */
+.bpmn-icon-gateway-or:before { content: '\e835'; } /* '' */
+.bpmn-icon-end-event-terminate:before { content: '\e836'; } /* '' */
+.bpmn-icon-end-event-signal:before { content: '\e837'; } /* '' */
+.bpmn-icon-end-event-none:before { content: '\e838'; } /* '' */
+.bpmn-icon-end-event-multiple:before { content: '\e839'; } /* '' */
+.bpmn-icon-end-event-message:before { content: '\e83a'; } /* '' */
+.bpmn-icon-end-event-link:before { content: '\e83b'; } /* '' */
+.bpmn-icon-intermediate-event-catch-message:before { content: '\e83c'; } /* '' */
+.bpmn-icon-intermediate-event-throw-compensation:before { content: '\e83d'; } /* '' */
+.bpmn-icon-start-event-multiple:before { content: '\e83e'; } /* '' */
+.bpmn-icon-script:before { content: '\e83f'; } /* '' */
+.bpmn-icon-manual-task:before { content: '\e840'; } /* '' */
+.bpmn-icon-send:before { content: '\e841'; } /* '' */
+.bpmn-icon-service:before { content: '\e842'; } /* '' */
+.bpmn-icon-receive-task:before { content: '\e843'; } /* '' */
+.bpmn-icon-user:before { content: '\e844'; } /* '' */
+.bpmn-icon-start-event-none:before { content: '\e845'; } /* '' */
+.bpmn-icon-intermediate-event-throw-escalation:before { content: '\e846'; } /* '' */
+.bpmn-icon-intermediate-event-catch-multiple:before { content: '\e847'; } /* '' */
+.bpmn-icon-intermediate-event-catch-non-interrupting-escalation:before { content: '\e848'; } /* '' */
+.bpmn-icon-intermediate-event-throw-link:before { content: '\e849'; } /* '' */
+.bpmn-icon-start-event-non-interrupting-condition:before { content: '\e84a'; } /* '' */
+.bpmn-icon-data-object:before { content: '\e84b'; } /* '' */
+.bpmn-icon-script-task:before { content: '\e84c'; } /* '' */
+.bpmn-icon-send-task:before { content: '\e84d'; } /* '' */
+.bpmn-icon-data-store:before { content: '\e84e'; } /* '' */
+.bpmn-icon-start-event-non-interrupting-escalation:before { content: '\e84f'; } /* '' */
+.bpmn-icon-intermediate-event-throw-message:before { content: '\e850'; } /* '' */
+.bpmn-icon-intermediate-event-catch-non-interrupting-multiple:before { content: '\e851'; } /* '' */
+.bpmn-icon-intermediate-event-catch-non-interrupting-signal:before { content: '\e852'; } /* '' */
+.bpmn-icon-intermediate-event-throw-multiple:before { content: '\e853'; } /* '' */
+.bpmn-icon-start-event-non-interrupting-message:before { content: '\e854'; } /* '' */
+.bpmn-icon-ad-hoc-marker:before { content: '\e855'; } /* '' */
+.bpmn-icon-service-task:before { content: '\e856'; } /* '' */
+.bpmn-icon-task-none:before { content: '\e857'; } /* '' */
+.bpmn-icon-compensation-marker:before { content: '\e858'; } /* '' */
+.bpmn-icon-start-event-non-interrupting-multiple:before { content: '\e859'; } /* '' */
+.bpmn-icon-intermediate-event-throw-signal:before { content: '\e85a'; } /* '' */
+.bpmn-icon-intermediate-event-catch-non-interrupting-condition:before { content: '\e85b'; } /* '' */
+.bpmn-icon-participant:before { content: '\e85c'; } /* '' */
+.bpmn-icon-event-subprocess-expanded:before { content: '\e85d'; } /* '' */
+.bpmn-icon-lane-insert-below:before { content: '\e85e'; } /* '' */
+.bpmn-icon-space-tool:before { content: '\e85f'; } /* '' */
+.bpmn-icon-connection-multi:before { content: '\e860'; } /* '' */
+.bpmn-icon-lane:before { content: '\e861'; } /* '' */
+.bpmn-icon-lasso-tool:before { content: '\e862'; } /* '' */
+.bpmn-icon-lane-insert-above:before { content: '\e863'; } /* '' */
+.bpmn-icon-lane-divide-three:before { content: '\e864'; } /* '' */
+.bpmn-icon-lane-divide-two:before { content: '\e865'; } /* '' */
+.bpmn-icon-data-input:before { content: '\e866'; } /* '' */
+.bpmn-icon-data-output:before { content: '\e867'; } /* '' */
+.bpmn-icon-hand-tool:before { content: '\e868'; } /* '' */
+.bpmn-icon-transaction:before { content: '\e8c4'; } /* '' */
+
+[class^="bpmn-xtra-icon-"]:before,
+[class*=" bpmn-xtra-icon-"]:before {
+	font-family: "monospace";
+	font-style: normal;
+	font-weight: normal;
+	speak: none;
+
+	display: inline-block;
+	text-decoration: inherit;
+	width: 1em;
+	/* margin-right: .2em; */
+	text-align: center;
+	/* opacity: .8; */
+
+	/* For safety - reset parent styles, that can break glyph codes*/
+	font-variant: normal;
+	text-transform: none;
+
+	/* fix buttons height, for twitter bootstrap */
+	line-height: 1em;
+
+	/* Animation center compensation - margins should be symmetric */
+	/* remove if not needed */
+	/* margin-left: .2em; */
+
+	/* you can be more comfortable with increased icons size */
+	/* font-size: 120%; */
+
+	/* Font smoothing. That was taken from TWBS */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	/* Uncomment for 3D effect */
+	text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3);
+
+	color: #778899;
+
+}
+
+.bpmn-xtra-icon-adnotate:before { content: '¶' }
+.bpmn-xtra-icon-changecolor:before { content: '♦' }
+
+/* END */

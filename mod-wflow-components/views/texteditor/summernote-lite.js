@@ -5916,9 +5916,13 @@
 					if (isImage) {
 							var $image = $$1(target);
 							var position = $image.position();
+							var scrollTop_7 = $image.parent().parent().parent().scrollTop() || 0; // fix by unixman with printable scrolled documents
+							if(scrollTop_7 < 0 || isNaN(scrollTop_7)) {
+								scrollTop_7 = 0;
+							}
 							var pos = {
 									left: position.left + parseInt($image.css('marginLeft'), 10),
-									top: position.top + parseInt($image.css('marginTop'), 10)
+									top: position.top + parseInt($image.css('marginTop'), 10) + scrollTop_7
 							};
 							// exclude margin
 							var imageSize = {

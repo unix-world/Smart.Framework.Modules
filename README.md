@@ -44,6 +44,10 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 	* CSS and JS Minify vendor/MatthiasMullie
 	* PSR Cache: vendor/Psr
 
+### Other App Modules:
+	* Xtra Bizz (Business Widgets) (GPLv3 licensed ; can be used with Smart.Framework licensed under GPLv3 license only)
+	* Vanilla Widgets (BSD licensed)
+
 ## Installation NOTES:
 	* install first the Smart.Framework and choose the license: BSD license or GPLv3 license (see the file https://github.com/unix-world/Smart.Framework/LICENSE)
 	* after, copy the desired modules from Smart.Framework.Modules into the Smart.Framework modules folder: (example) smart-framework/modules/

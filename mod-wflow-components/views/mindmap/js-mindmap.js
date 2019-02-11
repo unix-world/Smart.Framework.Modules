@@ -63,7 +63,7 @@
 
 		var thisnode = this;
 
-		this.el.draggable({
+		this.el.draggable({ // compatible with jQuery.draggable or jQueryUI.draggable
 			drag: function () {
 				obj.root.animateToStatic();
 			}
@@ -203,6 +203,7 @@
 		var forces, showx, showy;
 
 		if(this.el.hasClass("ui-draggable-dragging")) {
+			this.obj.movementStopped = false;
 			this.x = parseInt(this.el.css('left'), 10) + (this.el.width() / 2);
 			this.y = parseInt(this.el.css('top'), 10) + (this.el.height() / 2);
 			this.dx = 0;

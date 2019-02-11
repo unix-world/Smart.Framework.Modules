@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="JavaScript desktop environment built with jQuery.">
+<title>jQuery Desktop</title>
+
+<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+<script src="../../../../../../lib/js/jquery/jquery.draggable.js"></script>
+<script src="../../../../../../lib/js/jquery/jquery.resizable.js"></script>
+
+<link rel="stylesheet" href="../jquery.desktop.css">
+<script src="../jquery.desktop.js"></script>
+
+</head>
+<body>
+<div class="abs" id="wrapper">
+  <div class="abs" id="desktop">
+	<a class="abs icon" style="left:20px;top:20px;" href="#icon_dock_computer">
+	  <img src="data:image/png;base64,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">
+	  Computer
+	</a>
+	<a class="abs icon" style="left:20px;top:100px;" href="#icon_dock_drive">
+	  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAMAAADzapwJAAAA3lBMVEUAAABucGtucGtVV1NucGtVV1NucGtucGtucGtucGtucGtmaGRnaWRucGvIyMjLy8vg4ODn5+cAAABucGt3eXV/gX6DhYCOj42RkZGUlJSUlpGXl5eYmJibnZmjpKKlpaWpqamsrKywsLCxsbCysrK4uLi6urq7u7u8vLy9vbzAwMDBwcHExMTFxcXHx8fIyMjMzMvMzMzNzc3Ozs7Pz83Q0NDR0dHW1tbY2tjh4eHh4uHi4uHi4+Hj4+Pl5eXm5ubn5+fo6ejp6ejq6+rr6+vs7Ozt7e3x8fHz8/P29vZOIvfIAAAAEnRSTlMAGTA5RFZWZ3aDj5yxtf7+/v71HhZqAAAAsklEQVR42q3M1Q4CMRCF4bLA4paBxd3dZZFiLTDv/0K0SCgLNyR8c/dPcsivXGDhltUGaAEyOwyOTLFghiY3svyISl2ylC5yYLBhij1jE4/IsJVZxcW4FpXTKuQxjehxThFPr4iUx3XiqUYOO/F4onQVLnuJf3qhb1br89hHAL8AAub4bnQ3FEyZ+5jI5EqVeqM7a81v98jJdL5QrLU7ltxstIReT80h80MQiBO+sJN/uAKvZ0cjiONLlwAAAABJRU5ErkJggg==">
+	  Hard Drive
+	</a>
+	<a class="abs icon" style="left:20px;top:180px;" href="#icon_dock_disc">
+	  <img src="data:image/png;base64,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">
+	  Audio CD
+	</a>
+	<a class="abs icon" style="left:20px;top:260px;" href="#icon_dock_network">
+	  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAACUlJREFUWMPVl2uMnFUZx3/vdead2dnZmb1MO93ddnthobalUFoELMpFMQEVuQgYo18ANSaIMRI10WgkITExISBCMHyAikSIMXKLWO7bFmjZtkvbbbvb7m5ntrOX2d2Z2bm+73vec/ywWyy0KAS/eJIn75dz3uf3nOf/POcc+H8fmzbdaX2a9donmbxlyw9aDUO/1rLtW0GuD0TQLqUM6Ybu6oaRBw4KTzwVBPKF3bsfmv2fAWzdevdSpcl7RaB9u31Vt7jgwnPDsWQLQiqUruFYFppS5DITDA0cqU6dyIU0TfuToWs/7+u7f+JTAVx22V23o/Hg+ZdeYHz2ii3Wss4U/YfG2HtgFMPQ0TSN1SuW0Nm1BCECdA3KhRJ7XnnLywwOKzTu2rXjgUc/McDw8HDz/ff/42Es86bNV11sR2NNHM0UMC2b89Z08vIbe2htibI83U6qI4kXSGZLDXRNEQ9JutqiaEpxfHAkOHjg+HNHBl+46Zlnngk+FoBSKvqLXz7xaLyj5eaNF6+zEok4pZqgUK6TbE0SsjQOHhrh85vPwTY1pmbmSSWbaI/b5Is1duwfI1doUK/USCWiJG0ZZI5lnr3nx9+44T8CKKXCQPK++7Z9CzN07w23XGn1pJM0fMV7wzlEoOhd3YWpgaEp4o6OoYNSUKz57BvOc3BslgPHpyjOVzmRnaI5EmJJa5RwYdYfGxy545VXfvv46T6N05xrwJfffHNA7t5z7PGv3XJ1eN3KDixTxzZ1omELXdcwdI1I2CJsa9iLqzUNLEMnEbMxNcnkdJEjxycRgaTu+kgFnmkbxfHc1Su6Nj6SybzbOOVXPw2mB+h5+eX991x70xWOaepkp+cRgaRUbTCSK4LtMO9qNHywDRASpIKaJ5koevQNjDMyPsdlGzp56jc38rPvbOWc7lbyhSroBlq6KyxV6NdnTYFSauPc3PyN3/3+gz+59PorQ7qukW5rJpWM0hQNszTVhsDA0KE9AoUG6BroSDwhGTw2wcBwjnCshYEj4+TnSmxc1c5tX/wMmakSDz39Dq4nmN633w1Lr6uv78H8h3egdPLkzMUNJ8p0ocZorsiJySLZ6QrtHe0IDMImtIThRAmqHjQEVFxFuR4Q6CZKtxgam6K9PcG5vSuYrGr86Pev89q7ozz8069w5ZaVaIlWhFBfPeXUfH8rNG20v3/o/N71q0MTM/PUPIlE45LN6yi7ikQEojaMFha23dTBlwrPk9Qagr69o7wzMIIvAnRDJxpxCKSiUmvw/I4pdgyc4N7vXUXlmotCL/35hW8Cj30AAOCf2/eGr71qM68N5lm9ohNNSmpCI6EC4mGdsYKGVAtz/UBRrgvqDY9de4fYPTCClBKlFJ7nU6u7BIHCti2ciMNMscp9T+3hjmvOY3ey+YKziZDnXnwr2pFsYlPvMhq1KqnWCAlHY2WryZFJl3Ldw/UEDdenWveoNXzqnuDQ0SxSKaRSKKVQcqE0lVLU6i5hJ4xSkM1O8eb+MVYu74if0p9+2qkWV35gvDGQY+PyGBFd0BzSWZt2GJ/zECKg4fqUay6VurcI4FGpNijMV5BSLdjpIEqhlKReb2CHQpiWRbHiMjkxp2/adGfzBwD6+x+d1zQtiDghjk3VuP5zq7lwZRxQTEzPUS6VQAoqNXfB6i7VuocrJMmWZqSUZ0BItaCXSqVKIAMiEZtqucrJ3Kzs70+XP6wBpRlGwXfdtoYvCZSGvdiEwiaMZPNEmj0CI4SUIJVCCIkvAjauX02pXMO0TAKpmMoXkHIh+lNQQnjYLQ5NlgIowK/kGSJE0wdnp+YuT6fbEIuCUkBHS4RDSvHuwDDh5gTLlrYhpSIIFH4QECi46MK1uL6g4fmUSlXKfg1DXxCtEIpIJETvsjgzYxmAw2eUIYAS3pMjB4c2965f5TSFTd4ezCF8wdK2GJdt6ObIWJ7Xdx0gEY+xbm0PsaYIIpD4foDrC1xfIISka1krtXIIw9AQQlKtu6zsbsNWPvkTuaoM5JNnBTAM87nD+488cN2t11CseAyNlyiXy+wcyBCyTW64Yi2dHXFe3DXE5HQBzTAJggBfSDw/ABSxsEEsFceNmVimjggk8ahNIuaw771hvFLVtCzz72ccRgCZzNuVrp5Llp/T27VBdyL6oWyJ0ewMR0/k2X0ox0tvHyPdFuO2L62nc2kr04U687XF0vQEsbBBPGIRd0za4iHSbc2sTCdYviTORL7A/MS0V56r/OX113637awAAF3LNr6zZkXqh2U9bB7JlSl5GpmTeTxfIKVkKDPLzoFxVnSn2NCTIBUPU/N8fBHgWAaJphA9qRg3X3kem85Lk0o0MZabQ7oN5k/m/a9f/4U7n376sYmzNiKAXbsemW7U638ceXefb6kAQ1MYlkUQSISUmJZF25I23hqc4IntR3l1/zimBuu7E2zoaaWzLcrGNR2EbRMNSMQd2uNhzEZDrFnd8Vxrqxs63Z9+lgtRZM+ev/0B4e4Zen2HG9YVidiC2IJAYtohlG6+3wuy+TJ9B3O8uj/L3uEpavUG0dC/pSWERNYbsiliZVatat6XzWabgMhHpgCIHj58OJQ7OdLvu86aYmZiaWxph+GETHypEW5qQkiF5we4XoDrCYTvYWkBm9e0c/mGTkZPzuJ6PkIEjI3mVKk4PxuNiteKxcLUvn37TuzcuXMOqH8UQAhwCoW8OZnb359oTjlRaZxb8aTW05PWIo6NEoLA91C+hyYarO9OcPt1G4g7Jm+/d5xGrUFxek5Njk9Tq81nDKP2TrFYmJienj65bdu2o/l8vgi4ZzaihdFYtDpQO3jw2ae2bl0zY1qJ60YG9nb6li2bly0x13anWL2igy3rupkpVPjr82+Rz83QYmtBS8TRE0k735rUDjiOMen7/kylUsn09fUdHRwcLAKV/3Ytd4BWoAVoicVirXffffdFvb3rL0omU+datpMqFmv2seGcsWvXIWZmSkgVeELU50yjeriz0x5Np5PFZDLphUKhsu/7+R07dgxu3759DJgEgo/zMDGABBAHYot2SkAOENL1UNhxmmOeN1/zfdcDfMAzDKORTqf9lpYWt16vF7LZ7IzrupNAFVCf9GmmLzpsXoQIL5q1mMJTlSQXI/MW81sFikD5VL4/9eP0NCDzNOf6YlSnAMTiV32cn/0LihziVcN9AdsAAAAASUVORK5CYII=">
+	  Network
+	</a>
+	<!-- #START: Window Network -->
+	<div id="window_network" class="abs window">
+	  <div class="abs window_inner">
+		<div class="window_top">
+		  <span class="float_left">
+			<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAC3ElEQVR42q1TaUjTYRwu8FNfym9G4pU0BaGL7PhggXnsqFlYdHlMQcw8poaYlqWb8yjTGTaPhcwN51EuaTPFK52JVx6ZFGqylXltbjV1qXN7+m+IqUifeuHhhfd9f8/7Pr/neXf99+FAyThAonKEpItZakdqhtGJmml0oWepXanpdQ5kju0/ix3J6eFO1AyDF1OM4Jx3iCruRTSBsHw5aAnVINGzDSQKO23HYoI99PA17tqdAjkKZF/wZkCD7tF5fFPp8VH5E1zJEBiPm3Dkej7O3MzL3lKcK5K7O9My9XeLOzE1v4SxSQ2UGgMMRsBkAhSzC8iv6gE9oRK3MhtBvNLk5Mu22yCgRL6o8GaKTWxhNz5NqDGtM2JmEZhZALR6Ixr7lEgREHK4TYh73gazRBKZ1bxB4OqXrQzOaUViSQe6FXpM6YDhWeCzCng/psOVe9XwiRGBHC+Gx22BpT8u9OyFzZ1fYfL7wG8Yx/jcMroUy+j/sUbMK0gT9sI7qgznwktxOrQEHhFliC7pg9mhv92ncHQJpf34tbSC8UktpD3fIRvSorZfjaeSEfgyRThLELgzinA0gGchIC41bnagM/JZ29qkagFLv1dRJhtEJLcFhQ0T4ErHwKoaxg12HY4F8ggUWiQcpHBUmyWkUuPKl4StX5EhkCOE9RrJvGawKoaQJOxHTHEX4njtiM+rRzK/A76xYpOzL0u0JX2ENTpGTovJP1WGE0FFOB9TjvTKQaSVf8AjYR9etY9Bv2JATfsoLkQUzfnFChy2ZMHO62GEq38uzG7QEmtAT5HiUupb0B5IEZLTjNrOCUzPL2JgRLFaWlEv8fHxObQ9jPtsToWxHcjpG1EmmmUB40kLAu6LjSzuS22lpL6Hz+ezrays9u+UaJs9Nm6XnT2Z9SQaS0OQGc2w80zS2p4MlPtdDcpjMBgR1tbW9sTZ3Tv+ifWNvWZVBNwIHF+f7c3r2wv/ACC6yPOsQbntAAAAAElFTkSuQmCC">
+			Network
+		  </span>
+		  <span class="float_right">
+			<a href="#" class="window_min"></a>
+			<a href="#" class="window_resize"></a>
+			<a href="#icon_dock_network" class="window_close"></a>
+		  </span>
+		</div>
+		<div class="abs window_content">
+		  <div class="window_aside">
+			[ASIDE]
+		  </div>
+		  <div class="window_main">
+			<iframe class="window_ifrm" src="../LICENSE.txt"></iframe>
+		  </div>
+		</div>
+		<div class="abs window_bottom">
+		  [STATUS-BAR]
+		</div>
+	  </div>
+	  <span class="abs ui-resizable-handle ui-resizable-se"></span>
+	</div>
+	<!-- #END: Window Network -->
+  </div>
+  <div class="abs" id="bar_top">
+	<span class="float_right" id="clock"></span>
+	<ul>
+	  <li>
+		<a class="menu_trigger" href="#">jQuery Desktop</a>
+		<ul class="menu">
+		  <li>
+			<a href="css/jquery.desktop.css">jQuery Desktop CSS</a>
+		  </li>
+		  <li>
+			<a href="js/jquery.desktop.js">jQuery Desktop Js</a>
+		  </li>
+		</ul>
+	  </li>
+	  <li>
+		<a class="menu_trigger" href="#">About</a>
+		<ul class="menu">
+		  <li>
+			<a href="LICENSE.txt">License</a>
+		  </li>
+		  <li>
+			<a href="README.txt">Readme</a>
+		  </li>
+		</ul>
+	  </li>
+	</ul>
+  </div>
+  <div class="abs" id="bar_bottom">
+	<a class="float_left" href="#" id="show_desktop" title="Show Desktop">
+	  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAC+klEQVQ4y9VVW0hUQRj+9uzxkpVpaVSP3aCHeqmIshIhwZcKs7VIysrw9hCVDwa+9VxIgtaD4VP4UJR08UEqi0pJzSICQYpNXSxvedtd1z07Z5o5O7Nnzi5KPXbg3/nnn/m/+f7LzAL/2+eK011x6+Zf+Mf7UC6WcfehwoduXS9SV3s6H6xhQ4gJEZsd357cEzc0zV3nYGGS931vHuUxNaJzAwctKzsPf2DB2jDq+4H16d7Z5aiOz1GUl1/E1PQ8AsEQJsd/oq+3L4ctpTIJ6nLjQiiM6bkAfMPDGBrsRsOtmzYTShEJh5GckhLTeQg1dc0or6jCwLcRBBfCcnsyh9NVFhzU5/2EuloPxsa9dtKoCUJMFioXAsLEZPPLlfvRcPcOSs5esHzVusWAR4a+W6DXrx11VoIx5IAcPArMdD5ac4rqS3vR1NyCpLRsh5/GfyIR43F312vUXjmTkEsqAEwJJuZUsOf2vAOZ8M/4EPTPNstCW8D9b9tK1q76haysDGevSYZUYSrn8kA2am6KrNWj+Nrb0cjcDO6qCYxIAlPTDl0FoxZ7Yq1zGyWOTgwLLCqBSWJeqZIGIcRmSqgdgRqkEOhOK7UyJEOMghM7t7KAgjkRhytfDE+L3qKi1sn5TViRspKBixAtIKIwjjKkPA0y55TEGP/2b8D2XQcPy3azgDVNK/acKkXV1Xq7+qbKTmmxWJpoVGe2ns9zOO0pRsa6jY2CtUvmGEYkgvyCQtxueiEAqV1AFVAcQghjznLe1u5FdVUNBn3zEiqJAztyHDIM5OQeR33jU3iObYXbTWPFDC0ushhdCBth1vfRWr96N4FzpRXo+jgQfzdsYD97SGZm/Za+ecs2tLR+QXa6D0t9/lAGjuSfRLcAHZuYdqzr0YtABjran+1QF4L+wL0PnX33mTolWkhX+l3fua+g4snzl5Wqj2GE++XNk490GpNMMaq9HcLSbzI/KFWIW/EZ47wksEsAJjzoS9gQ5ycvh9xP4/+a/gUUy/jSP2XcLpazAcWzAAAAAElFTkSuQmCC">
+	</a>
+	<ul id="dock">
+	  <li id="icon_dock_network">
+		<a href="#window_network">
+		  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAE9ElEQVR42sWUfUyTVxTGUecfczHZR7ZlQ4E5Z8ycCbMadXOE8CGKSpgJmQarsrkpUHWCMrSoUywUGSAWoXxWCpQJ4gdSUakVUFqEKkiho6AWK1Wwtp3Q0u/32W3dHxJZiH/tSZ7cN/e995eTc+45HpNp+XLGVOLFASGJUWT1nOT4pLBpKyNSzvht5mgX/ZBlmxd2HHPWsrFgfYaTFpFhWhbxR9/C4EMBbwQNDmXS/OjZus/XpSH410rQ00SIyWvFnmIZ9vHuIJrTjLX7quH67xvOlpMgpk8KjT/IP7AmtpgK2VOJWO5tcIRKlFxRQtypgWLQCKVmBH8brWjvHcItxTBS+S2IYdXYwhiFn00IBPBeY2PnkqRs4Sj3Ygdq2wbRp9bhic4Mo5WCk4JbTvJhstjRIBvA1uRad/ShJPoF4cef/xc4KP2UUCHpUkM3YoHD6cTT5yYMjzgIGKCol3YQ8BgBP9Mb0TugRaZAgpiTTfCP4WPuqmNnXgNL23oP7T9Zby+/KodY9gDKxwYMGwGdCRizAS/MwKjFCc1zI2QkDRXifhQLu9Aqf4yu+0NgV9/DvDC21Sc0dc44MK+y6fr21FrszryCwtp7UOkdMBDY0CjwUA8MGACVzg5R5xNsZ9dhw8Fz2JEpwo6MBmw5cg4PNAYc5l53gTeNA9P3lQ4cr2xD+30DNHoLSYEdujEKimeAfBi4q3FA2KHDujgBVu7kw38HD99uK8Lyn4oQyCgDkytG4x2VMyCKw3o1v1OXRZ60lInvY0hvgs3uxIjZAY3BBqnKAslDC24ojcg6342QXWUIjDkNv+0lBFqIxVvy4ccoR/YZKQ7zWnDkVH3vq+AptI3ZVFXLI1isDlAUBcOoGVKlFvX39Kjr1OO8TIvcy/0IYpS+jPbnIiyNKsAieh6+3szFb7lixBdIKZ/VKdpx4K/Wp5szLyhgtTlARCpvw3WZCgVX+8BvHkTJDTXyrj5EYkkb4vIlWJtQTaLlwjcyF0l5IrD4txCT6wbrx+X4i9CUjuLLPdCPWqFQafEXeUqPh18g72wbduc0IuNiL1LP9uCQoBN7i9tBT7mCsHgBwvcKwCbQX9i17g4lxZOMA89ZdSwhtbjR3Nz9FDk1d8DiNSEi8U/0q3Wky56CfVaOBJ4Mu/NbEVfYiiP820grbUZVgxw14h7Ec65RpP1d4KPjwGTDu6Ba8izrXJfzx8xG+EWXYgWpekA0D8yim1CoDRB1DOIgv93tmpt9GDFZSE3s5C2r8XvFXWr+9+lOwpn7+kTblJ0VtLPMzuC2wp9RAd9NufAjHbUlXYwT57vQ1KVBt0qH7gEdzARI5C60RjtCZZTf0gdv41S66uUxgT6aG5qscPX+tswb1JKt+QiIq8Zq5iWE7K9FYMIFRKZchoykZtRkhcPhhJ14YFA7llPe0MFkMkMJ4+0JwTM+WRg0OyhJ4R9b5p5udJYQ4cwaRGfUI13QgnqJEvk1UpRfaqfa5I/sin61oU4k7TldUXXCy8vLlzCmTcB1b/oQL5v13a4617ylkwnGEsiQVN6BItED7C1px8ZkoWMNo1C3PjarN4GVf43D4Rym0WjfkHszPCbRu8RfzvRausE/8uil2YEH+rxDkk3eq1Mo1zorILHv4yVRlR/40KI8PT1XkLMfEk/xeAO9RfwO8fvEnxJ7E3v+C5pJPN3j/9A/JhuP+KBg4rQAAAAASUVORK5CYII=">
+		  Network
+		</a>
+	  </li>
+	</ul>
+  </div>
+</div>
+<script>
+jQuery(document).ready(function() {
+	JQD.go();
+});
+</script>
+</body>
+</html>

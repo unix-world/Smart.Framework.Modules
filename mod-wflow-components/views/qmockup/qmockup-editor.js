@@ -177,6 +177,7 @@ var qMockupEditor = new function() { // START CLASS
 			var h = parseInt($('#toolbar .change-canvasize-h').val());
 			if(w >= 300 && h >= 300) {
 				$container.width(w).height(h);
+				$('#widgetsArea').height(h-10);
 			}
 		});
 		//--
@@ -245,6 +246,7 @@ var qMockupEditor = new function() { // START CLASS
 				$('#canvas').width(w).height(h);
 				$('#toolbar .change-canvasize-w').val(w);
 				$('#toolbar .change-canvasize-h').val(h);
+				$('#widgetsArea').height(h-10);
 			} //end if
 		} //end if
 		$('#canvas').html(html); // unixman (load canvas contents ...)
