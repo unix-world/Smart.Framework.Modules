@@ -1,7 +1,7 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190213
 // modified by unixman:
 // 	* save / load just canvas contents
 // 	* cleanup ui garbage: droppable / draggable / resizable
@@ -90,8 +90,8 @@ var qMockupEditor = new function() { // START CLASS
 		var html = '<!-- widgets --><ul id="widgetCollection" title="*** Mockup: Widgets Collection ***">';
 		html += '<li title="Button"><div class="newMockElement button" data-editable-content="Button" data-editable-mode="plain"><span class="editableArea">Button</span></div></li>';
 		html += '<li title="Tabs"><div class="newMockElement tabs" data-editable-content="Tab1;*Tab2; Tab3" data-editable-mode="uielements"><div class="editableArea"><ul><li>Tab1</li><li class="item-highlighted">Tab2</li><li>Tab3</li></ul></div></div></li>';
-		html += '<li title="Short Text Label"><div class="newMockElement label" data-editable-content="label" data-editable-mode="plain"><div class="editableArea">Label</div></div></li>';
-		html += '<li title="A-Link"><div class="newMockElement link" data-editable-content="link" data-editable-mode="plain"><div class="editableArea">Link</div></div></li>';
+		html += '<li title="Short Text Label"><div class="newMockElement label" data-editable-content="Label" data-editable-mode="plain"><div class="editableArea">Label</div></div></li>';
+		html += '<li title="A-Link"><div class="newMockElement link" data-editable-content="Link" data-editable-mode="plain"><div class="editableArea">Link</div></div></li>';
 		html += '<li title="Checkbox List"><div class="newMockElement optionCheckbox" data-editable-content="option; *other option" data-editable-mode="uielements"><div class="editableArea"><ul><li>option</li><li class="item-highlighted">other option</li></ul></div></div></li>';
 		html += '<li title="Radio Button List"><div class="newMockElement optionRadiobutton" data-editable-content="option; *other option" data-editable-mode="uielements"><div class="editableArea"><ul><li>option</li><li class="item-highlighted">other option</li></ul></div></div></li>';
 		html += '<li title="Dropdown Element"><div class="newMockElement dropdownList" data-editable-content="DropdownTitle" data-editable-mode="plain"><span class="editableArea">Dropdown Title</span><span class="mockelement-dropdown-arrow">▾</span></div></li>';
@@ -115,10 +115,10 @@ var qMockupEditor = new function() { // START CLASS
 		html += '<li title="Horizontal Boxes List / Horizontal ToolBar"><div class="newMockElement boxes-horizontal" data-editable-content="Entry1;Entry2;*Entry3" data-editable-mode="uielements"><div class="editableArea"><ul><li>Entry1</li><li>Entry2</li><li class="item-highlighted">Entry3</li></ul></div></div></li>';
 		html += '<li title="Vertical Boxes List / Vertical ToolBar"><div class="newMockElement boxes-vertical" data-editable-content="Entry1;Entry2;*Entry3" data-editable-mode="uielements"><div class="editableArea"><ul><li>Entry1</li><li>Entry2</li><li class="item-highlighted">Entry3</li></ul></div></div></li>';
 		html += '<li title="Icons Toolbar"><div class="newMockElement boxes-horizontal boxes-iconbar-horizontal" data-editable-content="☰;⌂;⚑;⚙;✂;✐;✔;✘;↶;↷;◂;▸;▴;▾;©" data-editable-mode="uielements"><div class="editableArea"><ul><li>☰</li><li>⌂</li><li>⚑</li><li>⚙</li><li>✂</li><li>✐</li><li>✔</li><li>✘</li><li>↶</li><li>↷</li><li>◂</li><li>▸</li><li>▴</li><li>▾</li><li>©</li></ul></div></div></li>';
-		html += '<li title="Image Placeholder"><div class="newMockElement imageplaceholder" data-editable-content="Image" data-editable-mode="plain"><div class="editableArea">Image</div></div></li>';
-		html += '<li title="Image (Markdown)"><div class="newMockElement actualimage" data-editable-content="![Image]()<!-- add URL to image in the round brackets -->" data-editable-mode="markdown"><div class="editableArea">Image (double click to add Markdown link to an Image)</div></div></li>';
-		html += '<li title="Sticky Note (Markdown)"><div class="newMockElement meta-element note" data-editable-content="Notes here!" data-editable-mode="markdown"><div class="editableArea"></div></div></li>';
-		html += '<li title="Sticky Arrow-Note"><div class="newMockElement meta-element arrownote" data-editable-content="Notes here!" data-editable-mode="plain"><div class="editableArea">note!</div></div></li>';
+		html += '<li title="Image Placeholder"><div class="newMockElement imageplaceholder" data-editable-content="Image Placeholder" data-editable-mode="plain"><div class="editableArea">Image Placeholder</div></div></li>';
+		html += '<li title="Image Data/URL"><div class="newMockElement actualimage" data-editable-content="![Image]()" data-editable-mode="markdown-image"><div class="editableArea">Image Data/URL (double-click to open edit area then click again to add image)</div></div></li>';
+		html += '<li title="Sticky Note (Markdown)"><div class="newMockElement meta-element note" data-editable-content="Sticky Note!" data-editable-mode="markdown"><div class="editableArea">Sticky Note!</div></div></li>';
+		html += '<li title="Sticky Arrow-Note"><div class="newMockElement meta-element arrownote" data-editable-content="Arrow Note!" data-editable-mode="plain"><div class="editableArea">Arrow Note!</div></div></li>';
 		html += '</ul><!-- #end widgets -->';
 		//--
 		$('#' + divID).empty().css({ 'display':'block', 'width':'300px', 'height':'100%', 'padding':'5px' }).css('background', '#FFFFFF', 'important').html(html);
@@ -281,7 +281,7 @@ var qMockupEditor = new function() { // START CLASS
 			var oldId = $element.attr("id")||"";
 			//var oldIdNr = oldId.match(/^mockElement_(\d+)/)[1]; //[1] to get the first capture group, , the id number.
 			var oldIdNr = oldId.match(/^mockElement_([0-9a-f]+)/)[1]; //[1] to get the first capture group, , the id sha1.
-			console.log(oldIdNr);
+			//console.log(oldIdNr);
 			if(oldId.length >0){ //if it actually had an Id
 				//var newIdNr = parseInt(Math.random()*100000000000000);
 				var newIdNr = generateElemUuid();

@@ -1,7 +1,8 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190213
+// contains fixes by unixman
 
 // showdown v.2017-08-05
 // (c) created by Tivie on 13-07-2015.
@@ -2283,7 +2284,7 @@
 				.replace(showdown.helper.regexes.asteriskAndDash, showdown.helper.escapeCharactersCallback);
 			//url = showdown.helper.escapeCharacters(url, '*_', false);
 			url = url.replace(showdown.helper.regexes.asteriskAndDash, showdown.helper.escapeCharactersCallback);
-			var result = '<img src="' + url + '" alt="' + altText + '"';
+			var result = '<img src="' + url + '" alt="' + altText + '" title="' + altText + '"'; // fix by unixman: add title identical to alt
 
 			if (title) {
 				title = title

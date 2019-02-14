@@ -2,7 +2,7 @@
 /*
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190213
 // modified by unixman:
 // 	* css3 fixes
 */
@@ -20,18 +20,19 @@
 #toolbar {
 	z-index: 9999999;
 	padding: 5px;
-	background-color: #FFCC00;
-	border: 1px solid #CCCCCC;
+	background-color: #E3EDCE;
+	border: 1px dotted #455C30;
 	border-radius: 3px;
 	width: 500px;
 	text-align: center;
 	cursor: move;
 	opacity: 0.95;
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
 }
 
 #toolbar:hover {
-	background-color: #FFFFCC;
-	border: 1px solid #555555;
+	background-color: #CBDF89;
+	border: 1px solid #455C30;
 	opacity: 0.90;
 }
 
@@ -67,16 +68,17 @@
 }
 
 #canvas div {
-	padding: 0;
-	margin: 0;
+/*	padding: 0;
+	margin: 0; */
 }
 
 .newMockElement {
 }
 
-.mockElement input.plaintextinput { /*otherwise the input fields can be rather small*/
-	min-width:5rem;
+.mockElement input.plaintextinput, .mockElement input.uielementsinput { /*otherwise the input fields can be rather small*/
+	min-width: 10rem;
 	box-sizing: border-box;
+	font-size: 1rem;
 }
 
 #widgetCollection {
@@ -125,8 +127,9 @@
 	display: none; /*hide dialog markup*/
 }
 
-.mockElement textarea{
-	height:8rem;
+.mockElement textarea {
+	min-width: 250px !important;
+	min-height: 100px !important;
 }
 
 .drop-hover {

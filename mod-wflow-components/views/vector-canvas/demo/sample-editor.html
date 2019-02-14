@@ -179,71 +179,14 @@ $('#toolbox-scolor').on('change', function() {
 });
 
 //--
-$('#img_uploader_id').on('change', function() {
-	//--
-	var the_file = $(this)[0].files[0];
-	//--
-	var the_filter = /^(image\/svg\+xml|image\/jpeg|image\/png|image\/gif)$/i;
-	//-- check file type
-	if(!the_filter.test(the_file.type)) {
-		$(this).val('');
-		alert('Invalid File Type: Only SVG / PNG / JPEG or GIF Images are allowed: ' + the_file.type);
-		return;
-	} //end if
-	//-- check file size
-	if(the_file.size < 43) { // min JPEG size is 134 bytes ; min PNG size is unknown ; min GIF size is 43 bytes
-		$(this).val('');
-		alert('Invalid File Size: Image is empty or too small ...');
-		return;
-	} //end if
-	if(the_file.size > 2048 * 1024) { // max file is 2 MB
-		$(this).val('');
-		alert('Invalid File Size: Image is larger than 1 MB');
-		return;
-	} //end if
-	//--
-	$('#img_uploader_preview').html('<span class="fa fa-times-circle" title="Remove the Image" style="color:#FF9090; cursor:pointer;" onClick="$(\'#img_uploader_id\').val(\'\'); $(\'#img_uploader_preview\').html(\'\');"></span>');
-	//--
-	try {
-		var the_file_reader = new FileReader();
-		the_file_reader.onloadend = function() {
-			$('#img_uploader_preview').append('<br><img id="img_uploader_result_img" src="' + the_file_reader.result + '" style="max-width:' + canvasWidth + 'px; max-height:' + canvasHeight + 'px; width:auto !important; height:auto !important;">');
-			setTimeout(function(){
-					var img = $('#img_uploader_result_img');
-					var w = Math.round(img.width());
-					var h = Math.round(img.height());
-					var isSVG = the_file.type === 'image/svg+xml' ? true : false;
-					//console.log(w,h, isSVG);
-					if(isSVG) {
-						editor.addImage(the_file_reader.result, w, h, true);
-						$('#img_uploader_preview').empty().html('');
-					} else {
-						$('#img_uploader_result_img').remove();
-						$('#img_uploader_preview').append('<br><canvas id="img_uploader_result_canvas" width="' + w + '" height="' + h + '" style="border: 1px dotted #ECECEC;"></canvas>');
-						var cnv = $('#img_uploader_result_canvas')[0];
-						var ctx = cnv.getContext('2d');
-					//	ctx.fillStyle = '#FFFFFF'; // just for image/jpeg
-					//	ctx.fillRect(0, 0, w, h); // just for image/jpeg
-						var im = new Image();
-						im.width = w;
-						im.height = h;
-						im.onload = function(){
-							ctx.drawImage(this, 0, 0, w, h);
-							var imgResizedB64 = cnv.toDataURL(String(the_file.type), 0.8); // preserve file type ; if jpeg, quality to 0.8
-							console.log('Before' + the_file_reader.result.length, 'After: ' + imgResizedB64.length);
-							editor.addImage(imgResizedB64, w, h, false);
-							$('#img_uploader_preview').empty().html('');
-						};
-						im.src = String(the_file_reader.result);
-					}
-				},
-				250
-			);
-		} //end function
-		the_file_reader.readAsDataURL(the_file);
-	} catch(err){}
-	//--
-});
+SmartJS_BrowserUtils.VirtualImageUploadHandler('img_uploader_id', 'img_uploader_preview', 0.8, 0.15, canvasWidth, canvasHeight, function(imgDataURL, w, h, isSVG){
+	//console.log(imgDataURL);
+	if(isSVG) {
+		editor.addImage(imgDataURL, w, h, true);
+	} else {
+		editor.addImage(imgDataURL, w, h, false);
+	} //end if else
+}, true);
 //--
 
 // to svg

@@ -3,7 +3,7 @@
 // jsPlumb Flowchart Editor :: CSS
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190212
 */
 
 .flowchart-area * {
@@ -113,7 +113,7 @@
 	top: 10px;
 	left: 35px;
 	color: #778899;
-	opacity: 0.8;
+	opacity: 0.9;
 	cursor: context-menu;
 }
 
@@ -160,7 +160,7 @@
 .flowchart-area .oval span {
 	top: 5px;
 	left: 50px;
-	color: #D8AC61;
+	color: #C79B50;
 }
 
 .flowchart-area .oval p {

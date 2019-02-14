@@ -16,7 +16,7 @@
 			<option value="display" id="flowchartNewCBtn">New Display</option>
 			<option value="process" id="flowchartNewBtn">New Process</option>
 			<option value="decision" id="flowchartNewDBtn">New Decision</option>
-			<option value="data" id="flowchartNewIOBtn">New Data (Structure)</option>
+			<option value="data" id="flowchartNewIOBtn">New Data-Store</option>
 		</optgroup>
 		<optgroup label="Passive Elements">
 			<option value="note" id="flowchartNewNtBtn">New Note</option>
@@ -61,7 +61,19 @@
 		}
 	}
 	var flowchartEditDialogHelper = function(labelType, txtElemLabel, objElemLabel, fxSetLabel) {
-		SmartJS_BrowserUtils.confirm_Dialog('<h3>' + SmartJS_CoreUtils.escape_html(labelType) + '</h3><div>Label:&nbsp; <input type="text" maxlength="50" value="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" id="flowchart-element-label" class="ux-field" style="width:425px;"></div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-label").val()); }, 'Modify Flowchart Element', 550, 200);
+		labelType = String(labelType || '');
+		if(labelType.toLowerCase() === 'box icon') {
+			var theIcons = [####THE-ICONS|json####];
+			var theList = '<input type="hidden" id="flowchart-element-icon" value="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '">';
+			if(theIcons.length) {
+				for(var i=0; i<theIcons.length; i++) {
+					theList += '<div title="Click to select icon: ' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" style="float:left; margin-right:3px; margin-bottom:3px; cursor:pointer; color:#778899; font-size:1rem!important;" class="' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" onclick="var theIconClass = jQuery(this).attr(\'class\'); jQuery(\'#flowchart-element-icon\').val(theIconClass); jQuery(\'#flowchart-element-selected-icon\').attr(\'class\', theIconClass).attr(\'title\', \'Selected Icon: \' + theIconClass);"></div>';
+				}
+			}
+			SmartJS_BrowserUtils.confirm_Dialog('<h3>' + SmartJS_CoreUtils.escape_html(labelType) + ' &nbsp; <span title="Selected Icon: ' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" style="font-size:1.5rem!important; cursor:help;" id="flowchart-element-selected-icon" class="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" onClick="jQuery(\'#flowchart-element-icon\').val(\'\'); jQuery(this).attr(\'class\', \'\').attr(\'title\', \'\');"></span></h3><div style="width:100%; height:200px; overflow:auto;">' + theList + '</div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-icon").val()); }, 'Modify Flowchart Element', 550, 355);
+		} else {
+			SmartJS_BrowserUtils.confirm_Dialog('<h3>' + SmartJS_CoreUtils.escape_html(labelType) + '</h3><div>Label:&nbsp; <input type="text" maxlength="50" value="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" id="flowchart-element-label" class="ux-field" style="width:425px;"></div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-label").val()); }, 'Modify Flowchart Element', 550, 200);
+		}
 	}
 	var flowchartDeleteDialogHelper = function(objType, objElemSel, fxRemoveElem) {
 		SmartJS_BrowserUtils.confirm_Dialog('<h3>Delete this ' + SmartJS_CoreUtils.escape_html(objType) + ' ?</h3>', function(){ fxRemoveElem(objElemSel); }, 'Confirm remove Flowchart ' + SmartJS_CoreUtils.escape_html(objType), 550, 170);

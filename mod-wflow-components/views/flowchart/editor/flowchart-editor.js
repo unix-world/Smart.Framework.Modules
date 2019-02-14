@@ -2,7 +2,7 @@
 // jsPlumb Flowchart Editor :: JS
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190212
 
 function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxEditDialogHelper, fxDeleteDialogHelper, fxSaveDataHelper, fxExportDataHelper) {
 
@@ -492,7 +492,7 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 					_AddNodeElement('flowchartElemDecision_'+uuID, 0, 0, 'window jtk-node diamond', anchorProperties.usePerimeterAnchors, !anchorProperties.isInverted, 'Decision', '');
 					break;
 				case 'data':
-					_AddNodeElement('flowchartElemDisplay_'+uuID, 0, 0, 'window jtk-node oval', anchorProperties.usePerimeterAnchors, anchorProperties.isInverted, 'Data', '');
+					_AddNodeElement('flowchartElemDisplay_'+uuID, 0, 0, 'window jtk-node oval', anchorProperties.usePerimeterAnchors, anchorProperties.isInverted, 'Data-Store', '');
 					break;
 				case 'note':
 					_AddNodeElement('flowchartElemData_'+uuID, 0, 0, 'window jtk-node note', null, null, 'Note', '');

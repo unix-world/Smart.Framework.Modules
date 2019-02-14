@@ -88,6 +88,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			} //end if
 		} //end if
 
+		$fa_icons_arr = [];
 		if((string)$edit == 'yes') {
 			if($isnew) {
 				$opmode = 'create';
@@ -95,6 +96,18 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$opmode = 'edit';
 			} //end if else
 			$tpl = 'flowchart-editor.htm';
+			//--
+			$fa_icons_list = (string) SmartFileSystem::read('lib/core/plugins/fonts/icons/fontawesome.txt');
+			$fa_icons_list = (string) trim((string)str_replace(["\r\n", "\r"], "\n", (string)$fa_icons_list));
+			$fa_icons_list = (array)  explode("\n", (string)$fa_icons_list);
+			for($i=0; $i<Smart::array_size($fa_icons_list); $i++) {
+				$fa_icons_list[$i] = (string) trim((string)$fa_icons_list[$i]);
+				if((string)$fa_icons_list[$i] != '') {
+					$fa_icons_arr[] = 'fa '.$fa_icons_list[$i];
+				} //end if
+			} //end for
+			$fa_icons_list = null; // free mem
+			//--
 		} else {
 			$opmode = 'read';
 			$tpl = 'flowchart-reader.htm';
@@ -111,6 +124,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled Flowchart',
 					'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
 					'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-',
+					'THE-ICONS' 	=> (string) Smart::json_encode($fa_icons_arr)
 				]
 			)
 		]);

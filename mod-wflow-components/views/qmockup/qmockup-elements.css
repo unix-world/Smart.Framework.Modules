@@ -2,7 +2,7 @@
 /*
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190213
 // modified by unixman:
 // 	* css3 fixes
 */
@@ -22,8 +22,7 @@
 .newMockElement, .mockElement {
 	box-sizing: border-box;
 	position: relative;
-	background: #FFFFFF;
-	width:10rem;
+	width: 10rem;
 }
 .newMockElement > div.editableArea, .mockElement > div.editableArea {
 	box-sizing: border-box;
@@ -50,7 +49,6 @@
 	display: flex;
 	border:2px solid #777777;
 	border-radius:3px;
-	background:#FFFFFF;
 	width: 7rem;
 	height:2rem;
 	box-shadow: 1px 1px #CCCCCC;
@@ -68,54 +66,51 @@
 	background-color: #ECECEC;
 	border-bottom: 2px solid #555555;
 	border-radius: 3px;
-	padding:7px;
-	height:1.6rem;
+	padding: 5px;
+	height: 20px;
 }
 
 .newMockElement.dialogWindow > div > .dialogWindow-closeButton, .mockElement.dialogWindow > div > .dialogWindow-closeButton {
-	padding:4px;
-	font-size:1.5rem;
-	margin-top: -0.4rem;
-	float:right;
+	padding: 4px;
+	font-size: 20px;
+	margin-top: -8px;
+	float: right;
 }
 
 /*tabs*/
 .newMockElement.tabs, .mockElement.tabs {
-	background: #FFFFFF;
 	width:30rem;
 	border-bottom:1px solid rgba(0,0,0,0.3);
 }
 
-.newMockElement.tabs>.editableArea, .mockElement.tabs>.editableArea {
+.newMockElement.tabs > .editableArea, .mockElement.tabs > .editableArea {
 	border-bottom: 2px solid gray;
-	background: #FFFFFF;
 	box-sizing: border-box;
 	width:100%;
 	margin:0;
 }
 
-.newMockElement.tabs>.editableArea a, .mockElement.tabs>.editableArea a {
+.newMockElement.tabs > .editableArea a, .mockElement.tabs > .editableArea a {
 	pointer-events: none; /*prevent accidental navigation*/
 }
 
-.newMockElement.tabs>.editableArea>ul, .mockElement.tabs>.editableArea>ul {
+.newMockElement.tabs > .editableArea>ul, .mockElement.tabs > .editableArea>ul {
 	box-sizing: border-box;
 	width:100%;
 	margin:0;
 	padding:0;
 }
 
-.newMockElement.tabs>.editableArea>ul>li, .mockElement.tabs> .editableArea>ul>li {
+.newMockElement.tabs > .editableArea > ul > li, .mockElement.tabs > .editableArea>ul>li {
 	display: inline-block;
 	padding: 5px 16px;
 	border: 1px solid gray;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 	margin: 0 0 -2px 0.3rem;
-	background:#FFFFFF;
 }
 
-.mockElement.tabs>.editableArea>ul>li.item-highlighted, .newMockElement.tabs>.editableArea>ul>li.item-highlighted {
+.mockElement.tabs > .editableArea>ul>li.item-highlighted, .newMockElement.tabs > .editableArea>ul>li.item-highlighted {
 	background: #DDDDDD;
 }
 
@@ -131,17 +126,17 @@
 }
 
 /*headline*/
-.newMockElement.headline>h1, .mockElement.headline>h1,
-.newMockElement.headline>h2, .mockElement.headline>h2,
-.newMockElement.headline>h3, .mockElement.headline>h3,
-.newMockElement.headline>h4, .mockElement.headline>h4,
-.newMockElement.headline>h5, .mockElement.headline>h5,
-.newMockElement.headline>h6, .mockElement.headline>h6 {
+.newMockElement.headline > h1, .mockElement.headline > h1,
+.newMockElement.headline > h2, .mockElement.headline > h2,
+.newMockElement.headline > h3, .mockElement.headline > h3,
+.newMockElement.headline > h4, .mockElement.headline > h4,
+.newMockElement.headline > h5, .mockElement.headline > h5,
+.newMockElement.headline > h6, .mockElement.headline > h6 {
 	margin:0;
 	background-color: transparent;
 }
 /*paragraph*/
-.newMockElement.paragraph>p {
+.newMockElement.paragraph > p {
 	margin:0;
 }
 
@@ -166,7 +161,7 @@
 	border:2px solid #CCCCCC;
 	width:200px;
 	height:50px;
-	background-color: transparent;
+	background-color: #FFFFFF;
 }
 
 .newMockElement.grayrect , .mockElement.grayrect {
@@ -177,7 +172,7 @@
 }
 
 .newMockElement.invisiblerect, .mockElement.invisiblerect {
-	border:2px dashed #FFFFFF;
+	border:2px dashed #EDEDED;
 	width:200px;
 	height:50px;
 	background-color: transparent;
@@ -194,17 +189,16 @@
 	margin:0;
 }
 
-.newMockElement.whiterect , .mockElement.whiterect {
+.newMockElement.whiterect, .mockElement.whiterect {
 	border:2px solid rgba(150,150,150,0.05);
 	width:200px;
 	height:50px;
 	background-color: #FFFFFF;
 }
 
-
 /*optionlist*/
 
-.newMockElement.optionRadiobutton , .mockElement.optionRadiobutton {
+.newMockElement.optionRadiobutton, .mockElement.optionRadiobutton {
 	box-sizing: border-box;
 	background-color: transparent;
 }
@@ -222,7 +216,6 @@
 	/*implements a simulated radio button, since uiconde circles and the "fisheye" character were inconsisted in size*/
 	content: " ";
 	display: inline-block;
-	background: #FFFFFF;
 	width: 0.8rem;
 	height: 0.8rem;
 	position: relative;
@@ -269,7 +262,6 @@
 	border-radius: 3px;
 	padding: 0px 0 0px 0.4rem;
 	display: table;
-	background-color: #FFFFFF;
 }
 
 .dropdownList .editableArea {
@@ -304,7 +296,6 @@
 	justify-content: center;
 	align-items: center;
 	display: flex;
-	background-color: #FFFFFF;
 }
 
 .newMockElement.spinner::before, .mockElement.spinner::before {
@@ -348,7 +339,6 @@
 	content:" ";
 	height:0.5rem;
 	width:0.5rem;
-	background: #FFFFFF;
 	border: 3px solid #333;
 	border-radius: 10rem;
 	position: relative;
@@ -366,7 +356,6 @@
 .newMockElement.loadingIndicator, .mockElement.loadingIndicator {
 	border: 1px solid gray;
 	border-radius: 2px;
-	background-color: #FFFFFF;
 	padding: 0;
 	justify-content: center;
 	align-items: center;
@@ -388,12 +377,10 @@
 
 /*entries vertical*/
 .newMockElement.entries-horizontal, .mockElement.entries-horizontal {
-	background: #FFFFFF;
 	width:15rem;
 }
 
 .newMockElement.entries-horizontal .editableArea, .mockElement.entries-horizontal .editableArea {
-	background: #FFFFFF;
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
@@ -426,11 +413,9 @@
 
 /*entries horizontal*/
 .newMockElement.entries-vertical, .mockElement.entries-vertical {
-	background: #FFFFFF;
 }
 
 .newMockElement.entries-vertical .editableArea, .mockElement.entries-vertical .editableArea {
-	background:#FFFFFF;
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
@@ -467,12 +452,10 @@
 
 /*boxes vertical*/
 .newMockElement.boxes-horizontal, .mockElement.boxes-horizontal {
-	background: #FFFFFF;
 	width:15rem;
 }
 
 .newMockElement.boxes-horizontal .editableArea, .mockElement.boxes-horizontal .editableArea {
-	background: #FFFFFF;
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
@@ -505,11 +488,9 @@
 
 /*boxes vertical*/
 .newMockElement.boxes-vertical, .mockElement.boxes-vertical {
-	background: #FFFFFF;
 }
 
 .newMockElement.boxes-vertical .editableArea, .mockElement.boxes-vertical .editableArea {
-	background: #FFFFFF;
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
@@ -545,39 +526,39 @@
 
 /*iconbar*/
 
-.newMockElement.boxes-iconbar-horizontal ul>li, .mockElement.boxes-iconbar-horizontal ul>li {
+.newMockElement.boxes-iconbar-horizontal ul > li, .mockElement.boxes-iconbar-horizontal ul > li {
 	border: 2px solid #CCCCCC;
 	display: flex;
 	justify-content: center;
-	font-size: 1.7rem;
+	font-size: 1.5rem;
 	align-items: center;
 	border-radius: 3px;
 	color: #555555;
 	flex: 1 1 0%;
 	margin: 0.1rem;
 	padding: 0.1rem 0.1rem 0.2rem;
-	background: #FFFFFF;
-}
-
-.newMockElement.boxes-iconbar-horizontal ul>li {
-	min-width: 1rem;
+	min-width: 1.25rem !important;
+	min-height: 1.25rem !important;
 }
 
 /*image placeholder*/
 .newMockElement.imageplaceholder, .mockElement.imageplaceholder {
 	color: #111111;
 	background-color: #DCDCDC;
+	background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICBpZD0iZXJyb3IteHh4IiAgIHZlcnNpb249IjEuMSIgICB2aWV3Qm94PSIwIDAgMjcuNTE3Nzc3IDIxLjE3Nzc3NyIgICBoZWlnaHQ9IjgwIiAgIHdpZHRoPSIxMDQiPiAgPG1ldGFkYXRhICAgICBpZD0ibWV0YWRhdGExMiI+ICAgIDxyZGY6UkRGPiAgICAgIDxjYzpXb3JrICAgICAgICAgcmRmOmFib3V0PSIiPiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+ICAgICAgICA8ZGM6dHlwZSAgICAgICAgICAgcmRmOnJlc291cmNlPSJodHRwOi8vcHVybC5vcmcvZGMvZGNtaXR5cGUvU3RpbGxJbWFnZSIgLz4gICAgICAgIDxkYzp0aXRsZT48L2RjOnRpdGxlPiAgICAgIDwvY2M6V29yaz4gICAgPC9yZGY6UkRGPiAgPC9tZXRhZGF0YT4gIDxkZWZzICAgICBpZD0iZGVmczIiIC8+ICA8ZyAgICAgaWQ9Imc5MyIgICAgIHRyYW5zZm9ybT0ibWF0cml4KDAuOTk5OTk5OTksMCwwLDEuMDEyMzIwMywwLjI2MTMzMDY1LC0yOTMuNDIzODMpIj4gICAgPGcgICAgICAgaWQ9Imc5NjkiPiAgICAgIDxwYXRoICAgICAgICAgaWQ9InBhdGgxMzUiICAgICAgICAgZD0iTSAtMC41NDc0MDcwMywzMDAuMzEyNzcgViAyODkuNTc1MSBIIDEzLjQ5NzU1OCAyNy41NDI1MjMgdiAxMC43Mzc2NyAxMC43Mzc2OCBIIDEzLjQ5NzU1OCAtMC41NDc0MDcwMyBaIG0gNC44OTQwMzgwMyw0LjQzMDM0IGMgMS4zOTM0NzMsLTEuMTA2NzUgMi42MDE2MjQsLTIuMDEyNzQgMi42ODQ3NzksLTIuMDEzMzIgMC4wODMxNiwtNS42ZS00IDAuNzkxOTUxLDAuNTQyNTYgMS41NzUxMDMsMS4yMDY5NSAwLjc4MzE1MiwwLjY2NDM5IDEuNDg4MjM4LDEuMjA3OTkgMS41NjY4NTgsMS4yMDc5OSAwLjA3ODYyLDAgMS42NzkxNCwtMS4zNTkxIDMuNTU2NzExLC0zLjAyMDIyIDEuODc3NTcsLTEuNjYxMTEgMy42MjQ4NjQsLTMuMTg0NTcgMy44ODI4NzUsLTMuMzg1NDUgMC40MTkxMjYsLTAuMzI2MzMgMC44NDA0MjQsLTAuMDMzMSAzLjk1Mzk5NywyLjc1MTc3IDEuOTE2Njg4LDEuNzE0MzYgMy41NTkxMTksMy4xMTcwMSAzLjY0OTg0NiwzLjExNzAxIDAuMDkwNzMsMCAwLjE2NDk1OSwtMS41NTM2IDAuMTY0OTU5LC0zLjQ1MjQ1IHYgLTMuNDUyNDQgbCAtMS4wMjM3NSwwLjI3MTU4IGMgLTMuMjE1Mzc2LDAuODUyOTggLTYuMTI0ODg3LC0yLjAzODcyIC01LjI2NjY1NCwtNS4yMzQ0MSBsIDAuMjczMjU0LC0xLjAxNzQ5IEggMTAuNDg4OTgzIDEuNjEzMzU2IHYgNy41MTYzOCBjIDAsNC4xMzQgMC4wNDQ5Myw3LjUxNjM3IDAuMDk5ODQsNy41MTYzNyAwLjA1NDkxLDAgMS4yMzk5NTksLTAuOTA1NTIgMi42MzM0MzEsLTIuMDEyMjcgeiBtIDMuMjA4ODI2LC02Ljc3MSBjIC0xLjM2NDgyNiwtMC40ODk3MiAtMS44Njc3NDUsLTIuNDc5NzEgLTAuODU2NTQyLC0zLjM4OTIzIDAuNjk1NDg1LC0wLjYyNTU1IDIuMjc2MjUxLC0wLjU3MjkyIDIuODg1NDEzLDAuMDk2MSAxLjI3Mjg4OCwxLjM5NzkxIC0wLjI4MTEwNywzLjkyMDI4IC0yLjAyODg3MSwzLjI5MzE1IHogbSAxNS4wNDA0MTUsLTIuMjY5NjQgMC42MjUxMjMsLTAuNTgzNjggMC42ODE5MTEsMC42MzY3IDAuNjgxOTExLDAuNjM2NyAwLjU4Njg2OCwtMC41ODMyNyAwLjU4Njg2OCwtMC41ODMyOCAtMC42NDA2MjEsLTAuNjc3NzMgLTAuNjQwNjIyLC0wLjY3Nzc0IDAuNjQwNjIyLC0wLjY3Nzc0IDAuNjQwNjIxLC0wLjY3NzczIC0wLjU4Njg2OCwtMC41ODMyOCAtMC41ODY4NjgsLTAuNTgzMjcgLTAuNjgxOTExLDAuNjM2NyAtMC42ODE5MTEsMC42MzY3IC0wLjY4MTkxLC0wLjYzNjcgLTAuNjgxOTExLC0wLjYzNjcgLTAuNTg2ODY4LDAuNTgzMjcgLTAuNTg2ODY5LDAuNTgzMjggMC42NDA2MjIsMC42Nzc3MyAwLjY0MDYyMiwwLjY3Nzc0IC0wLjYzMTY5NSwwLjY2ODI5IGMgLTAuNjEzMjg5LDAuNjQ4ODIgLTAuNjE3Mzc2LDAuNjg0MDIgLTAuMTQwMjY4LDEuMjA3OTkgMC42MTA1OTksMC42NzA1NyAwLjYzODgwOCwwLjY2OTY5IDEuNDAzMTU0LC0wLjA0NCB6IiAgICAgICAgIHN0eWxlPSJmaWxsOiM5YjliOWI7c3Ryb2tlLXdpZHRoOjAuMjY5MjY3NDEiIC8+ICAgIDwvZz4gIDwvZz48L3N2Zz4=');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 100% 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	text-align: center;
-	height: 5rem;
+	height: 7rem;
 }
 
 /*actual image*/
 .newMockElement.actualimage, .mockElement.actualimage {
-	height: 5rem;
-	background: #FFFFFF;
+	height: 7rem;
 	border: 1px dashed #ECECEC;
 }
 
@@ -594,7 +575,7 @@
 /*meta: note*/
 .newMockElement.note, .mockElement.note {
 	background: #f7ee9e;
-	background: linear-gradient(to bottom, #f7ee9e 0%,#e0d68f 99%);
+	background: linear-gradient(to bottom, #f8df82 0%, #f6d854 99%);
 	border: 0px none;
 	box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.4);
 	transform: rotate(5deg);
@@ -614,12 +595,14 @@
 
 /*Meta: arrow note*/
 .newMockElement.arrownote, .mockElement.arrownote {
-	background: #f7ee9e;
+	color: #FFFFFF;
+	background: #a94040;
 	border: 0px none;
-	box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.4);
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
 	width:150px;
 	height:30px;
 	font-weight: bold;
+	border-radius: 1px;
 }
 
 .newMockElement.arrownote .editableArea, .mockElement.arrownote .editableArea {
@@ -634,7 +617,7 @@
 	margin-top:0px;
 	border-style: solid;
 	border-width: 15px 15px 15px 0;
-	border-color: transparent #eae193 transparent transparent;
+	border-color: transparent #f25c5c transparent transparent;
 	content:"";
 	position:absolute;
 }
