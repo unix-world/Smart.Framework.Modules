@@ -2,7 +2,7 @@
 /*
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190213
+// v.20190219
 // modified by unixman:
 // 	* css3 fixes
 */
@@ -19,159 +19,207 @@
 	cursor: grab;
 }
 
-.newMockElement, .mockElement {
+.newMockElement,
+.mockElement {
 	box-sizing: border-box;
 	position: relative;
 	width: 10rem;
 }
-.newMockElement > div.editableArea, .mockElement > div.editableArea {
+.newMockElement > div.editableArea,
+.mockElement > div.editableArea {
 	box-sizing: border-box;
 }
 
-.newMockElement a, .mockElement a {
+/* link */
+
+.newMockElement a,
+.mockElement a {
 	color: #0093ff;
 	pointer-events: none; /*otherwise, links in elements, markdown etc. can be clicked and lead away from the app.*/
 }
 
-.newMockElement a, .mockElement a:visited {
+.newMockElement a,
+.mockElement a:visited {
 	color: #0093ff; /*no visted state for mockup links*/
 }
 
-.editableArea>p {
+.editableArea > p {
 	margin: 0 0 0 0;
 	padding: 0 0 0 0;
 }
 
-/*buttons*/
-.newMockElement.button, .mockElement.button {
+/* buttons */
+
+.newMockElement.button,
+.mockElement.button {
 	justify-content: center;
 	align-items: center;
 	display: flex;
-	border:2px solid #777777;
+	border:2px solid #999999;
 	border-radius:3px;
 	width: 7rem;
 	height:2rem;
 	box-shadow: 1px 1px #CCCCCC;
 }
 
-/*Window*/
-.newMockElement.dialogWindow, .mockElement.dialogWindow {
-	border:2px solid gray;
+/* dialog */
+
+.newMockElement.dialogWindow,
+.mockElement.dialogWindow {
+	background-color: #FFFFFF;
+	border:2px solid #BFBFBF;
 	border-radius:3px;
 	width: 250px;
 	height:100px;
 }
 
-.newMockElement.dialogWindow > .dialogWindow-bar, .mockElement.dialogWindow > .dialogWindow-bar {
+.newMockElement.dialogWindow > .dialogWindow-bar,
+.mockElement.dialogWindow > .dialogWindow-bar {
 	background-color: #ECECEC;
-	border-bottom: 2px solid #555555;
+	border-bottom: 2px solid #BFBFBF;
 	border-radius: 3px;
 	padding: 5px;
 	height: 20px;
 }
 
-.newMockElement.dialogWindow > div > .dialogWindow-closeButton, .mockElement.dialogWindow > div > .dialogWindow-closeButton {
+.newMockElement.dialogWindow > div > .dialogWindow-closeButton,
+.mockElement.dialogWindow > div > .dialogWindow-closeButton {
 	padding: 4px;
 	font-size: 20px;
 	margin-top: -8px;
 	float: right;
 }
 
-/*tabs*/
-.newMockElement.tabs, .mockElement.tabs {
+/* tabs */
+
+.newMockElement.tabs,
+.mockElement.tabs {
 	width:30rem;
 	border-bottom:1px solid rgba(0,0,0,0.3);
 }
 
-.newMockElement.tabs > .editableArea, .mockElement.tabs > .editableArea {
-	border-bottom: 2px solid gray;
+.newMockElement.tabs > .editableArea,
+.mockElement.tabs > .editableArea {
+	border-bottom: 2px solid #BFBFBF;
 	box-sizing: border-box;
 	width:100%;
 	margin:0;
 }
 
-.newMockElement.tabs > .editableArea a, .mockElement.tabs > .editableArea a {
+.newMockElement.tabs > .editableArea a,
+.mockElement.tabs > .editableArea a {
 	pointer-events: none; /*prevent accidental navigation*/
 }
 
-.newMockElement.tabs > .editableArea>ul, .mockElement.tabs > .editableArea>ul {
+.newMockElement.tabs > .editableArea > ul,
+.mockElement.tabs > .editableArea > ul {
 	box-sizing: border-box;
 	width:100%;
 	margin:0;
 	padding:0;
 }
 
-.newMockElement.tabs > .editableArea > ul > li, .mockElement.tabs > .editableArea>ul>li {
+.newMockElement.tabs > .editableArea > ul > li,
+.mockElement.tabs > .editableArea > ul > li {
 	display: inline-block;
 	padding: 5px 16px;
-	border: 1px solid gray;
+	border: 1px solid #BFBFBF;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 	margin: 0 0 -2px 0.3rem;
+	background-color: #FFFFFF;
 }
 
-.mockElement.tabs > .editableArea>ul>li.item-highlighted, .newMockElement.tabs > .editableArea>ul>li.item-highlighted {
-	background: #DDDDDD;
+.newMockElement.tabs > .editableArea > ul > li.item-highlighted,
+.mockElement.tabs > .editableArea > ul > li.item-highlighted {
+	background-color: #DDDDDD;
 }
 
-.newMockElement.label .mockElement.label {
+/* label */
+
+.newMockElement.label
+.mockElement.label {
 	width:7rem;
 	background-color: transparent;
 }
 
-.newMockElement.link, .mockElement.link {
+/* link */
+
+.newMockElement.link,
+.mockElement.link {
 	width:7rem;
 	color:#0093ff;
 	text-decoration: underline;
 }
 
-/*headline*/
-.newMockElement.headline > h1, .mockElement.headline > h1,
-.newMockElement.headline > h2, .mockElement.headline > h2,
-.newMockElement.headline > h3, .mockElement.headline > h3,
-.newMockElement.headline > h4, .mockElement.headline > h4,
-.newMockElement.headline > h5, .mockElement.headline > h5,
-.newMockElement.headline > h6, .mockElement.headline > h6 {
+/* headlines */
+
+.newMockElement.headline > h1,
+.mockElement.headline > h1,
+.newMockElement.headline > h2,
+.mockElement.headline > h2,
+.newMockElement.headline > h3,
+.mockElement.headline > h3,
+.newMockElement.headline > h4,
+.mockElement.headline > h4,
+.newMockElement.headline > h5,
+.mockElement.headline > h5,
+.newMockElement.headline > h6,
+.mockElement.headline > h6 {
 	margin:0;
 	background-color: transparent;
 }
-/*paragraph*/
-.newMockElement.paragraph > p {
+
+/* paragraph */
+
+.newMockElement.paragraph > p,
+.mockElement.paragraph > p {
 	margin:0;
 }
 
-/*table*/
-.newMockElement.table, .mockElement.table {
+/* table */
+
+.newMockElement.table,
+.mockElement.table {
 	width:10rem;
 }
-.newMockElement.table table, .mockElement.table table {
+.newMockElement.table table,
+.mockElement.table table {
 	width: 100%;
 	border-collapse: collapse;
 }
-.newMockElement.table table td, .mockElement.table table td, .newMockElement.table table th, .mockElement.table table th {
+.newMockElement.table table td,
+.mockElement.table table td,
+.newMockElement.table table th,
+.mockElement.table table th {
 	border: 1px solid gray;
 }
 
-.newMockElement.table table th, .mockElement.table table th {
+.newMockElement.table table th,
+.mockElement.table table th {
 	border-bottom: 2px solid black;
 }
 
-/*just a rectangle*/
-.newMockElement.rect , .mockElement.rect {
+/* rectangles */
+
+.newMockElement.rect ,
+.mockElement.rect {
 	border:2px solid #CCCCCC;
 	width:200px;
 	height:50px;
 	background-color: #FFFFFF;
 }
 
-.newMockElement.grayrect , .mockElement.grayrect {
+.newMockElement.grayrect,
+.mockElement.grayrect {
 	border:2px solid #555555;
 	width:200px;
 	height:50px;
 	background-color: #AAAAAA;
 }
 
-.newMockElement.invisiblerect, .mockElement.invisiblerect {
+.newMockElement.invisiblerect,
+.mockElement.invisiblerect {
 	border:2px dashed #EDEDED;
 	width:200px;
 	height:50px;
@@ -184,36 +232,43 @@
 	display:none;
 }
 
-.newMockElement.invisiblerect, .mockElement.invisiblerect:hover, .mockElement.invisiblerect.custom-selected {
-	border:2px dashed #CCCCCC;
+.newMockElement.invisiblerect,
+.mockElement.invisiblerect:hover,
+.mockElement.invisiblerect.custom-selected {
+	border:2px dashed #BBBBBB;
 	margin:0;
 }
 
-.newMockElement.whiterect, .mockElement.whiterect {
+.newMockElement.whiterect,
+.mockElement.whiterect {
 	border:2px solid rgba(150,150,150,0.05);
 	width:200px;
 	height:50px;
 	background-color: #FFFFFF;
 }
 
-/*optionlist*/
+/* radio buttons */
 
-.newMockElement.optionRadiobutton, .mockElement.optionRadiobutton {
+.newMockElement.optionRadiobutton,
+.mockElement.optionRadiobutton {
 	box-sizing: border-box;
 	background-color: transparent;
 }
 
-.newMockElement.optionRadiobutton .editableArea li, .mockElement.optionRadiobutton .editableArea li {
+.newMockElement.optionRadiobutton .editableArea li,
+.mockElement.optionRadiobutton .editableArea li {
 	display: block;
 }
 
-.newMockElement.optionRadiobutton ul, .mockElement.optionRadiobutton ul {
+.newMockElement.optionRadiobutton ul,
+.mockElement.optionRadiobutton ul {
 	margin:0;
 	padding: 0;
 }
 
-.newMockElement.optionRadiobutton .editableArea li::before, .mockElement.optionRadiobutton .editableArea li::before {
-	/*implements a simulated radio button, since uiconde circles and the "fisheye" character were inconsisted in size*/
+.newMockElement.optionRadiobutton .editableArea li::before,
+.mockElement.optionRadiobutton .editableArea li::before {
+	/* implements a simulated radio button, since unicode circles and the "fisheye" character were inconsisted in size */
 	content: " ";
 	display: inline-block;
 	width: 0.8rem;
@@ -227,38 +282,46 @@
 	box-sizing: border-box;
 }
 
-.newMockElement.optionRadiobutton .editableArea li.item-highlighted::before, .mockElement.optionRadiobutton .editableArea li.item-highlighted::before {
+.newMockElement.optionRadiobutton .editableArea li.item-highlighted::before,
+.mockElement.optionRadiobutton .editableArea li.item-highlighted::before {
 	content: "";
 	background: black;
 	background-clip: content-box;
 	padding: 0.1rem;
 }
 
-/*Checkboxes*/
-.newMockElement.optionCheckbox , .mockElement.optionCheckbox {
+/* checkboxes */
+
+.newMockElement.optionCheckbox,
+.mockElement.optionCheckbox {
 	box-sizing: border-box;
 }
 
-.newMockElement.optionCheckbox .editableArea li, .mockElement.optionCheckbox .editableArea li {
+.newMockElement.optionCheckbox .editableArea li,
+.mockElement.optionCheckbox .editableArea li {
 	display: block;
 }
 
-.newMockElement.optionCheckbox ul, .mockElement.optionCheckbox ul {
+.newMockElement.optionCheckbox ul,
+.mockElement.optionCheckbox ul {
 	margin:0;
 	padding: 0;
 }
 
-.newMockElement.optionCheckbox .editableArea li::before, .mockElement.optionCheckbox .editableArea li::before {
+.newMockElement.optionCheckbox .editableArea li::before,
+.mockElement.optionCheckbox .editableArea li::before {
 	content:"☐ ";
 }
 
-.newMockElement.optionCheckbox .editableArea li.item-highlighted::before, .mockElement.optionCheckbox .editableArea li.item-highlighted::before {
+.newMockElement.optionCheckbox .editableArea li.item-highlighted::before,
+.mockElement.optionCheckbox .editableArea li.item-highlighted::before {
 	content:"☑ ";
 }
 
-/*Dropdown*/
+/* dropdown */
+
 .dropdownList {
-	border:2px solid gray;
+	border:2px solid #BFBFBF;
 	border-radius: 3px;
 	padding: 0px 0 0px 0.4rem;
 	display: table;
@@ -281,8 +344,10 @@
 	background: #EEE;
 }
 
-/*input Box*/
-.newMockElement.inputbox, .mockElement.inputbox {
+/* inputbox */
+
+.newMockElement.inputbox,
+.mockElement.inputbox {
 	border:2px solid darkgray;
 	align-items: center;
 	display: flex;
@@ -290,29 +355,34 @@
 	padding-left:0.4rem;
 }
 
-	/*spinner*/
-.newMockElement.spinner, .mockElement.spinner {
+/* spinner (number selector) */
+
+.newMockElement.spinner,
+.mockElement.spinner {
 	border:2px solid #CCCCCC;
 	justify-content: center;
 	align-items: center;
 	display: flex;
 }
 
-.newMockElement.spinner::before, .mockElement.spinner::before {
+.newMockElement.spinner::before,
+.mockElement.spinner::before {
 	content: "▴";
 	position: absolute;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	right: 0;
-	top: 0;
+	right: 0px;
+	top: 0px;
 	width: 1.5rem;
 	height: 50%;
 	background: lightgray;
-	font-size: 0.7rem;
+	font-size: 0.7rem !important;
+	box-sizing: border-box;
 }
 
-.newMockElement.spinner::after, .mockElement.spinner::after {
+.newMockElement.spinner::after,
+.mockElement.spinner::after {
 	content:"▾";
 	position: absolute;
 	display: flex;
@@ -323,19 +393,22 @@
 	width: 1.5rem;
 	height: 50%;
 	background: lightgray ;
-	font-size: 0.7rem;
+	font-size: 0.7rem !important;
 	box-sizing: border-box;
 	padding-bottom: 0.2rem;
 	border-top: 1px solid gray;
 }
 
-/*slider*/
-.newMockElement.slider, .mockElement.slider {
+/* slider */
+
+.newMockElement.slider,
+.mockElement.slider {
 	align-items: center;
 	display:flex;
 }
 
-.newMockElement.slider:before, .mockElement.slider::before {
+.newMockElement.slider:before,
+.mockElement.slider::before {
 	content:" ";
 	height:0.5rem;
 	width:0.5rem;
@@ -345,15 +418,18 @@
 	left:3rem;
 }
 
-.newMockElement.slider:after, .mockElement.slider::after {
+.newMockElement.slider:after,
+.mockElement.slider::after {
 	content:" ";
 	height: 2px;
 	background: #222;
 	width:100%;
 }
 
-/*loading indicator*/
-.newMockElement.loadingIndicator, .mockElement.loadingIndicator {
+/* loading indicator */
+
+.newMockElement.loadingIndicator,
+.mockElement.loadingIndicator {
 	border: 1px solid gray;
 	border-radius: 2px;
 	padding: 0;
@@ -363,7 +439,8 @@
 	position: relative;
 }
 
-.newMockElement.loadingIndicator .bar, .mockElement.loadingIndicator .bar {
+.newMockElement.loadingIndicator .bar,
+.mockElement.loadingIndicator .bar {
 	 margin: 0;
 	background-color: rgba(0, 0, 0, 0.21);
 	width: 70%;
@@ -375,19 +452,23 @@
 	text-align: center;
 }
 
-/*entries vertical*/
-.newMockElement.entries-horizontal, .mockElement.entries-horizontal {
+/* entries vertical */
+
+.newMockElement.entries-horizontal,
+.mockElement.entries-horizontal {
 	width:15rem;
 }
 
-.newMockElement.entries-horizontal .editableArea, .mockElement.entries-horizontal .editableArea {
+.newMockElement.entries-horizontal .editableArea,
+.mockElement.entries-horizontal .editableArea {
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
 	margin:0;
 }
 
-.newMockElement.entries-horizontal .editableArea ul, .mockElement.entries-horizontal .editableArea ul {
+.newMockElement.entries-horizontal .editableArea ul,
+.mockElement.entries-horizontal .editableArea ul {
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
@@ -397,7 +478,8 @@
 	border-collapse: collapse;
 }
 
-.newMockElement.entries-horizontal ul li, .mockElement.entries-horizontal ul li {
+.newMockElement.entries-horizontal ul li,
+.mockElement.entries-horizontal ul li {
 	display: table-cell;
 	padding: 0.2rem;
 	border: 1px solid gray;
@@ -411,18 +493,22 @@
 	background: #DDDDDD;
 }
 
-/*entries horizontal*/
-.newMockElement.entries-vertical, .mockElement.entries-vertical {
+/* entries horizontal */
+
+.newMockElement.entries-vertical,
+.mockElement.entries-vertical {
 }
 
-.newMockElement.entries-vertical .editableArea, .mockElement.entries-vertical .editableArea {
+.newMockElement.entries-vertical .editableArea,
+.mockElement.entries-vertical .editableArea {
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
 	margin:0;
 }
 
-.newMockElement.entries-vertical .editableArea ul, .mockElement.entries-vertical .editableArea ul {
+.newMockElement.entries-vertical .editableArea ul,
+.mockElement.entries-vertical .editableArea ul {
 	box-sizing: border-box;
 	width: 100%;
 	height: 100%;
@@ -432,7 +518,8 @@
 	flex-direction: column;
 }
 
-.newMockElement.entries-vertical ul li, .mockElement.entries-vertical ul li {
+.newMockElement.entries-vertical ul li,
+.mockElement.entries-vertical ul li {
 	margin: 0px;
 	width: 150px;
 	padding: 0.2rem;
@@ -450,19 +537,23 @@
 	background: #DDDDDD;
 }
 
-/*boxes vertical*/
-.newMockElement.boxes-horizontal, .mockElement.boxes-horizontal {
+/* boxes vertical */
+
+.newMockElement.boxes-horizontal,
+.mockElement.boxes-horizontal {
 	width:15rem;
 }
 
-.newMockElement.boxes-horizontal .editableArea, .mockElement.boxes-horizontal .editableArea {
+.newMockElement.boxes-horizontal .editableArea,
+.mockElement.boxes-horizontal .editableArea {
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
 	margin:0;
 }
 
-.newMockElement.boxes-horizontal .editableArea ul, .mockElement.boxes-horizontal .editableArea ul {
+.newMockElement.boxes-horizontal .editableArea ul,
+.mockElement.boxes-horizontal .editableArea ul {
 	box-sizing: border-box;
 	width: 100%;
 	height: 100%;
@@ -472,7 +563,8 @@
 	flex-direction: row;
 }
 
-.newMockElement.boxes-horizontal ul li, .mockElement.boxes-horizontal ul li {
+.newMockElement.boxes-horizontal ul li,
+.mockElement.boxes-horizontal ul li {
 	padding: 0.2rem;
 	border: 1px solid #CCCCCC;
 	margin: 0.2rem;
@@ -486,18 +578,22 @@
 	background: #DDDDDD;
 }
 
-/*boxes vertical*/
-.newMockElement.boxes-vertical, .mockElement.boxes-vertical {
+/* boxes vertical */
+
+.newMockElement.boxes-vertical,
+.mockElement.boxes-vertical {
 }
 
-.newMockElement.boxes-vertical .editableArea, .mockElement.boxes-vertical .editableArea {
+.newMockElement.boxes-vertical .editableArea,
+.mockElement.boxes-vertical .editableArea {
 	box-sizing: border-box;
 	width:100%;
 	height: 100%;
 	margin:0;
 }
 
-.newMockElement.boxes-vertical .editableArea ul, .mockElement.boxes-vertical .editableArea ul {
+.newMockElement.boxes-vertical .editableArea ul,
+.mockElement.boxes-vertical .editableArea ul {
 	box-sizing: border-box;
 	width: 100%;
 	height: 100%;
@@ -507,7 +603,8 @@
 	flex-direction: column;
 }
 
-.newMockElement.boxes-vertical ul li, .mockElement.boxes-vertical ul li {
+.newMockElement.boxes-vertical ul li,
+.mockElement.boxes-vertical ul li {
 	margin: 1.5% 0 0 0;
 	width: 99%;
 	padding: 0.2rem;
@@ -524,9 +621,10 @@
 	background: #DDDDDD;
 }
 
-/*iconbar*/
+/* icons bar */
 
-.newMockElement.boxes-iconbar-horizontal ul > li, .mockElement.boxes-iconbar-horizontal ul > li {
+.newMockElement.boxes-iconbar-horizontal ul > li,
+.mockElement.boxes-iconbar-horizontal ul > li {
 	border: 2px solid #CCCCCC;
 	display: flex;
 	justify-content: center;
@@ -541,8 +639,10 @@
 	min-height: 1.25rem !important;
 }
 
-/*image placeholder*/
-.newMockElement.imageplaceholder, .mockElement.imageplaceholder {
+/* image placeholder */
+
+.newMockElement.imageplaceholder,
+.mockElement.imageplaceholder {
 	color: #111111;
 	background-color: #DCDCDC;
 	background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICBpZD0iZXJyb3IteHh4IiAgIHZlcnNpb249IjEuMSIgICB2aWV3Qm94PSIwIDAgMjcuNTE3Nzc3IDIxLjE3Nzc3NyIgICBoZWlnaHQ9IjgwIiAgIHdpZHRoPSIxMDQiPiAgPG1ldGFkYXRhICAgICBpZD0ibWV0YWRhdGExMiI+ICAgIDxyZGY6UkRGPiAgICAgIDxjYzpXb3JrICAgICAgICAgcmRmOmFib3V0PSIiPiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+ICAgICAgICA8ZGM6dHlwZSAgICAgICAgICAgcmRmOnJlc291cmNlPSJodHRwOi8vcHVybC5vcmcvZGMvZGNtaXR5cGUvU3RpbGxJbWFnZSIgLz4gICAgICAgIDxkYzp0aXRsZT48L2RjOnRpdGxlPiAgICAgIDwvY2M6V29yaz4gICAgPC9yZGY6UkRGPiAgPC9tZXRhZGF0YT4gIDxkZWZzICAgICBpZD0iZGVmczIiIC8+ICA8ZyAgICAgaWQ9Imc5MyIgICAgIHRyYW5zZm9ybT0ibWF0cml4KDAuOTk5OTk5OTksMCwwLDEuMDEyMzIwMywwLjI2MTMzMDY1LC0yOTMuNDIzODMpIj4gICAgPGcgICAgICAgaWQ9Imc5NjkiPiAgICAgIDxwYXRoICAgICAgICAgaWQ9InBhdGgxMzUiICAgICAgICAgZD0iTSAtMC41NDc0MDcwMywzMDAuMzEyNzcgViAyODkuNTc1MSBIIDEzLjQ5NzU1OCAyNy41NDI1MjMgdiAxMC43Mzc2NyAxMC43Mzc2OCBIIDEzLjQ5NzU1OCAtMC41NDc0MDcwMyBaIG0gNC44OTQwMzgwMyw0LjQzMDM0IGMgMS4zOTM0NzMsLTEuMTA2NzUgMi42MDE2MjQsLTIuMDEyNzQgMi42ODQ3NzksLTIuMDEzMzIgMC4wODMxNiwtNS42ZS00IDAuNzkxOTUxLDAuNTQyNTYgMS41NzUxMDMsMS4yMDY5NSAwLjc4MzE1MiwwLjY2NDM5IDEuNDg4MjM4LDEuMjA3OTkgMS41NjY4NTgsMS4yMDc5OSAwLjA3ODYyLDAgMS42NzkxNCwtMS4zNTkxIDMuNTU2NzExLC0zLjAyMDIyIDEuODc3NTcsLTEuNjYxMTEgMy42MjQ4NjQsLTMuMTg0NTcgMy44ODI4NzUsLTMuMzg1NDUgMC40MTkxMjYsLTAuMzI2MzMgMC44NDA0MjQsLTAuMDMzMSAzLjk1Mzk5NywyLjc1MTc3IDEuOTE2Njg4LDEuNzE0MzYgMy41NTkxMTksMy4xMTcwMSAzLjY0OTg0NiwzLjExNzAxIDAuMDkwNzMsMCAwLjE2NDk1OSwtMS41NTM2IDAuMTY0OTU5LC0zLjQ1MjQ1IHYgLTMuNDUyNDQgbCAtMS4wMjM3NSwwLjI3MTU4IGMgLTMuMjE1Mzc2LDAuODUyOTggLTYuMTI0ODg3LC0yLjAzODcyIC01LjI2NjY1NCwtNS4yMzQ0MSBsIDAuMjczMjU0LC0xLjAxNzQ5IEggMTAuNDg4OTgzIDEuNjEzMzU2IHYgNy41MTYzOCBjIDAsNC4xMzQgMC4wNDQ5Myw3LjUxNjM3IDAuMDk5ODQsNy41MTYzNyAwLjA1NDkxLDAgMS4yMzk5NTksLTAuOTA1NTIgMi42MzM0MzEsLTIuMDEyMjcgeiBtIDMuMjA4ODI2LC02Ljc3MSBjIC0xLjM2NDgyNiwtMC40ODk3MiAtMS44Njc3NDUsLTIuNDc5NzEgLTAuODU2NTQyLC0zLjM4OTIzIDAuNjk1NDg1LC0wLjYyNTU1IDIuMjc2MjUxLC0wLjU3MjkyIDIuODg1NDEzLDAuMDk2MSAxLjI3Mjg4OCwxLjM5NzkxIC0wLjI4MTEwNywzLjkyMDI4IC0yLjAyODg3MSwzLjI5MzE1IHogbSAxNS4wNDA0MTUsLTIuMjY5NjQgMC42MjUxMjMsLTAuNTgzNjggMC42ODE5MTEsMC42MzY3IDAuNjgxOTExLDAuNjM2NyAwLjU4Njg2OCwtMC41ODMyNyAwLjU4Njg2OCwtMC41ODMyOCAtMC42NDA2MjEsLTAuNjc3NzMgLTAuNjQwNjIyLC0wLjY3Nzc0IDAuNjQwNjIyLC0wLjY3Nzc0IDAuNjQwNjIxLC0wLjY3NzczIC0wLjU4Njg2OCwtMC41ODMyOCAtMC41ODY4NjgsLTAuNTgzMjcgLTAuNjgxOTExLDAuNjM2NyAtMC42ODE5MTEsMC42MzY3IC0wLjY4MTkxLC0wLjYzNjcgLTAuNjgxOTExLC0wLjYzNjcgLTAuNTg2ODY4LDAuNTgzMjcgLTAuNTg2ODY5LDAuNTgzMjggMC42NDA2MjIsMC42Nzc3MyAwLjY0MDYyMiwwLjY3Nzc0IC0wLjYzMTY5NSwwLjY2ODI5IGMgLTAuNjEzMjg5LDAuNjQ4ODIgLTAuNjE3Mzc2LDAuNjg0MDIgLTAuMTQwMjY4LDEuMjA3OTkgMC42MTA1OTksMC42NzA1NyAwLjYzODgwOCwwLjY2OTY5IDEuNDAzMTU0LC0wLjA0NCB6IiAgICAgICAgIHN0eWxlPSJmaWxsOiM5YjliOWI7c3Ryb2tlLXdpZHRoOjAuMjY5MjY3NDEiIC8+ICAgIDwvZz4gIDwvZz48L3N2Zz4=');
@@ -556,13 +656,15 @@
 	height: 7rem;
 }
 
-/*actual image*/
-.newMockElement.actualimage, .mockElement.actualimage {
+/* actual image */
+
+.newMockElement.actualimage,
+.mockElement.actualimage {
 	height: 7rem;
 	border: 1px dashed #ECECEC;
 }
 
-.mockElement.actualimage>p {
+.mockElement.actualimage > p {
 	background: lightgray;
 	color:gray;
 }
@@ -572,8 +674,10 @@
 	height:100%;
 }
 
-/*meta: note*/
-.newMockElement.note, .mockElement.note {
+/* note */
+
+.newMockElement.note,
+.mockElement.note {
 	background: #f7ee9e;
 	background: linear-gradient(to bottom, #f8df82 0%, #f6d854 99%);
 	border: 0px none;
@@ -584,17 +688,21 @@
 }
 
 /*
-.newMockElement.note > *, .mockElement.note > * {
+.newMockElement.note > *,
+.mockElement.note > * {
 }
 */
 
-.newMockElement.note .editableArea, .mockElement.note .editableArea{
+.newMockElement.note .editableArea,
+.mockElement.note .editableArea {
 	padding: 0.25rem;
 	margin-left: 1rem;
 }
 
-/*Meta: arrow note*/
-.newMockElement.arrownote, .mockElement.arrownote {
+/* arrow note */
+
+.newMockElement.arrownote,
+.mockElement.arrownote {
 	color: #FFFFFF;
 	background: #a94040;
 	border: 0px none;
@@ -605,12 +713,14 @@
 	border-radius: 1px;
 }
 
-.newMockElement.arrownote .editableArea, .mockElement.arrownote .editableArea {
+.newMockElement.arrownote .editableArea,
+.mockElement.arrownote .editableArea {
 	padding:0.2rem;
 	padding-left: 0.5rem;
 }
 
-.newMockElement.arrownote::before, .mockElement.arrownote::before {
+.newMockElement.arrownote::before,
+.mockElement.arrownote::before {
 	width: 0;
 	height: 0;
 	margin-left:-15px;
@@ -622,7 +732,8 @@
 	position:absolute;
 }
 
-.newMockElement.note .editableArea, .mockElement.note .editableArea {
+.newMockElement.note .editableArea,
+.mockElement.note .editableArea {
 	padding:0.5rem;
 }
 

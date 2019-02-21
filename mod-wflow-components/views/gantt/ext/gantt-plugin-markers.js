@@ -5,11 +5,13 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190219 (stable)
 /*
 modified by unixman:
 	- isolate in a function
 	- fix HTML escapings
+	- changed marker.title as marker.name (as the below change w. title is mapped directly from task ...)
+	- changed task structure [ start = start_date ; end = end_date ; title = text ]
 */
 
 function SmartGanttPluginMarkers(gantt) {
@@ -36,14 +38,14 @@ function SmartGanttPluginMarkers(gantt) {
 			if(!gantt.config.show_markers) {
 				return false;
 			}
-			if(!marker.start_date) {
+			if(!marker.start) {
 				return false;
 			}
 			var state = gantt.getState();
-			if(+marker.start_date > +state.max_date) {
+			if(+marker.start > +state.max_date) {
 				return;
 			}
-			if(+marker.end_date && +marker.end_date < +state.min_date || +marker.start_date < +state.min_date) {
+			if(+marker.end && +marker.end < +state.min_date || +marker.start < +state.min_date) {
 				return;
 			}
 			var div = document.createElement("div");
@@ -55,19 +57,19 @@ function SmartGanttPluginMarkers(gantt) {
 			if(marker.css) {
 				css += " " + marker.css;
 			}
-			if(marker.title) {
-				div.title = marker.title;
+			if(marker.name) {
+				div.title = SmartJS_CoreUtils.escape_html(marker.name);
 			}
 			div.className = css;
-			var start = gantt.posFromDate(marker.start_date);
+			var start = gantt.posFromDate(marker.start);
 			div.style.left = start + "px";
 			div.style.height = Math.max(gantt._y_from_ind(gantt._order.length), 0) + "px";
-			if(marker.end_date) {
-				var end = gantt.posFromDate(marker.end_date);
+			if(marker.end) {
+				var end = gantt.posFromDate(marker.end);
 				div.style.width = Math.max((end - start), 0) + "px";
 			}
-			if(marker.text){
-				div.innerHTML = '<div class="gantt_marker_content">' + SmartJS_CoreUtils.escape_html(marker.text) + '</div>';
+			if(marker.title){
+				div.innerHTML = '<div class="gantt_marker_content">' + SmartJS_CoreUtils.escape_html(marker.title) + '</div>';
 			}
 			return div;
 		}

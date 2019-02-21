@@ -109,9 +109,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'JSON-DATA'		=> (string) $old_data,
 					'UUID' 			=> (string) $sq_rd['uuid'],
 					'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled ToDo-List',
+					'DATE-FLD-HTML' => (string) SmartComponents::html_js_date_field('gantchangedate', '', '', '', '', '', ['format'=>'yy-mm-dd'], 'SmartGanttManager.changeDate(gChart, date);'),
 					'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
-					'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-',
-					'DATE-FLD-HTML' => (string) SmartComponents::html_js_date_field('gantchangedate', '', '', '', '', '', ['format'=>'yy-mm-dd'], 'SmartGanttManager.changeDate(gChart, date);')
+					'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
+					'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-'
 				]
 			)
 		]);

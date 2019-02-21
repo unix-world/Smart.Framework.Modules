@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.181211
+var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20190218
 
 this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
@@ -40,6 +40,9 @@ this.ToolTip = function(selector) {
 	var dataTooltipOk = 'tooltip-ok';
 	//--
 	HtmlElement.tooltip().data(dataTooltipOk, '1');
+	HtmlElement.on('focus', function(){
+		HtmlElement.tooltip('close');
+	});
 	//--
 	jQuery('body').on('mousemove', selector, function(el) {
 		jQuery(selector).each(function(index) {
@@ -90,7 +93,7 @@ this.DialogAlert = function(y_message_html, evcode, y_title, y_width, y_height) 
 		title: y_title,
 		resizable: false,
 		width: y_width,
-		height: y_height,
+		height: y_height + 25, // fix: because of jQueryUI styles it requires a higher height than default with 25px
 		position: { my: 'center top+70', at: 'center top', of: window },
 		modal: true,
 		closeOnEscape: false,
@@ -166,7 +169,7 @@ this.DialogConfirm = function(y_question_html, evcode, y_title, y_width, y_heigh
 		title: y_title,
 		resizable: false,
 		width: y_width,
-		height: y_height,
+		height: y_height + 25, // fix: because of jQueryUI styles it requires a higher height than default with 25px
 		position: { my: 'center top+70', at: 'center top', of: window },
 		modal: true,
 		closeOnEscape: false,

@@ -21,7 +21,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class SqTodos extends \SmartModDataModel\Agile\SqAppTable {
 
 	// ->
-	// v.20190128
+	// v.20190217
 
 } //END CLASS
 

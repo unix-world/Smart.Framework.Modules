@@ -5,7 +5,7 @@ This software is covered by GPL license.
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190219
 // # fixes all to CSS3
 // # all images to SVG
 */
@@ -267,6 +267,7 @@ This software is covered by GPL license.
 .gantt_grid_head_cell,
 .gantt_scale_cell {
 	line-height: inherit;
+	font-size: 90%;
 }
 .gantt_grid_scale .gantt_grid_column_resize_wrap {
 	cursor: col-resize;

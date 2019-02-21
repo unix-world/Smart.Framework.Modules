@@ -6181,19 +6181,39 @@ fullcalendar_1.defineView('timeline', {
 });
 fullcalendar_1.defineView('timelineDay', {
 	type: 'timeline',
-	duration: { days: 1 }
+	duration: { days: 1 },
+	defaults: {
+		buttonText: 'dayTL'
+	}
+});
+fullcalendar_1.defineView('timelineHWeek', {
+	type: 'timeline',
+	duration: { weeks: 1 },
+	defaults: {
+		buttonText: 'h-weekTL'
+	}
 });
 fullcalendar_1.defineView('timelineWeek', {
 	type: 'timeline',
-	duration: { weeks: 1 }
+	duration: { weeks: 1 },
+	defaults: {
+		buttonText: 'weekTL',
+		slotDuration: '24:00:00'
+	}
 });
 fullcalendar_1.defineView('timelineMonth', {
 	type: 'timeline',
-	duration: { months: 1 }
+	duration: { months: 1 },
+	defaults: {
+		buttonText: 'monthTL'
+	}
 });
 fullcalendar_1.defineView('timelineYear', {
 	type: 'timeline',
-	duration: { years: 1 }
+	duration: { years: 1 },
+	defaults: {
+		buttonText: 'yearTL'
+	}
 });
 
 

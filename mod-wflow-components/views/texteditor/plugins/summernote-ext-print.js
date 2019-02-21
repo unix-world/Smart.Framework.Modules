@@ -50,8 +50,8 @@
 			var lang = options.langInfo;
 
 			var isFF = function () {
-				const userAgent = navigator.userAgent;
-				const isEdge = /Edge\/\d+/.test(userAgent);
+				var userAgent = navigator.userAgent;
+				var isEdge = /Edge\/\d+/.test(userAgent);
 				return !isEdge && /firefox/i.test(userAgent)
 			}
 

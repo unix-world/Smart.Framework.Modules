@@ -21,9 +21,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		$this->PageViewSetCfg('template-file', 'template-modal.htm');
 
+		$allowed_types = ['sqlite', 'postgresql', 'mysql'];
+
 		$uuid = (string) $this->RequestVarGet('uuid', '', 'string');
 		$edit = (string) $this->RequestVarGet('edit', '', 'string');
-		$type = (string) $this->RequestVarGet('type', '', ['sqlite', 'postgresql', 'mysql']);
+		$type = (string) $this->RequestVarGet('type', '', (array)$allowed_types);
 		$import = (string) $this->RequestVarGet('import', '', 'string');
 
 		if((string)$import == 'yes') {
@@ -47,12 +49,42 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		$model = new \SmartModDataModel\Agile\SqDbmodels();
 
+		$initial_data = ['data' => [ 'type' => $type ? (string) $type : 'sqlite', 'xml' => '' ]];
 		if($dbmodel_data) {
-			$dbmodel_data = Smart::json_decode((string)$dbmodel_data);
-			if(Smart::array_size($dbmodel_data) <= 0) {
-				$dbmodel_data = null;
-			} elseif(Smart::array_size($dbmodel_data['data']) <= 0) {
-				$dbmodel_data = null;
+			if(stripos((string)trim((string)$dbmodel_data), '<'.'?xml ') === 0) { // try xml
+				$xml = new SmartXmlParser('extended');
+				$dbmodel_data = (string) trim((string)$xml->format($dbmodel_data)); // validate xml
+				if((string)$dbmodel_data != '') {
+					$tmp_arr = (array) $xml->transform((string)$dbmodel_data);
+					$xml_db_type = ''; // sql|@attributes
+					if(Smart::array_size($tmp_arr) > 0) {
+						if(Smart::array_size($tmp_arr['sql|@attributes']) > 0) {
+							if(Smart::array_size($tmp_arr['sql|@attributes'][0]) > 0) {
+								$xml_db_type = (string) trim((string)strtolower((string)$tmp_arr['sql|@attributes'][0]['db']));
+							} //end if
+						} //end if
+					} //end if
+					if(in_array((string)$xml_db_type, (array)$allowed_types)) {
+						$tmp_data = (array) $initial_data;
+						$tmp_data['data']['type'] = (string) $xml_db_type;
+						$tmp_data['data']['xml'] = (string) $dbmodel_data;
+						$dbmodel_data = (array) $tmp_data;
+						$tmp_data = null;
+					} else { // invalid type
+						$dbmodel_data = null;
+					} //end if else
+					$tmp_arr = null;
+				} else {
+					$dbmodel_data = null;
+				} //end if else
+				$xml = null;
+			} else { // try json
+				$dbmodel_data = Smart::json_decode((string)$dbmodel_data);
+				if(Smart::array_size($dbmodel_data) <= 0) {
+					$dbmodel_data = null;
+				} elseif(Smart::array_size($dbmodel_data['data']) <= 0) {
+					$dbmodel_data = null;
+				} //end if else
 			} //end if else
 		} else {
 			$dbmodel_data = null;
@@ -67,7 +99,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$dbmodel_data = null;
 		} else {
 			$sq_rd = (array) $model->getOneByUuid($uuid);
-			$new_data = ['data' => [ 'type' => $type ? (string) $type : 'sqlite', 'xml' => '' ]];
+			$new_data = (array) $initial_data;
 		} //end if else
 		$old_data = (string) SmartUtils::data_unarchive((string)$sq_rd['saved_data']);
 		if($old_data) {
@@ -120,6 +152,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'UUID' 			=> (string) $sq_rd['uuid'],
 					'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled DB-Model',
 					'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
+					'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
 					'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-',
 				]
 			)

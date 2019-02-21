@@ -1,19 +1,21 @@
-<!-- mockup-reader.htm v.20190117 -->
+<!-- mockup-reader.htm v.20190217 -->
 <div style="text-align:center">
 	<h1 style="text-align:center;">Mockup: <span id="mockup_title">[####TITLE|html####]</span></h1>
 </div>
 <div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
 <div style="text-align:center;">
-	<button class="ux-button ux-button-secondary" onclick="doExportMockup();" style="margin-left: 15px;">Export as JSON</button>
-	<button class="ux-button ux-button-highlight" onclick="self.location='admin.php?/page/agile.mockup-editor/uuid/[####UUID|url|html####]/edit/yes'; return false;" style="margin-left: 15px;">Edit Mockup</button>
-	<button class="ux-button ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
+	<button class="ux-button ux-button-small ux-button-secondary" onclick="doExportMockup();" style="margin-left: 15px;">Export as JSON</button>
+	<button class="ux-button ux-button-small ux-button-highlight" onclick="self.location='admin.php?/page/agile.mockup-editor/uuid/[####UUID|url|html####]/edit/yes'; return false;" style="margin-left: 15px;">Edit Mockup</button>
+	<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
 </div>
 <br>
 <div title="Mockup HTML Safe SandBox / iFrame" style="position:relative;"><iframe name="MockupReaderSandBox" id="MockupReaderSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:[####DOC-W|int####]px; height:[####DOC-H|int####]px; height:max-content; border:1px solid #EFEFEF;" srcdoc="[####DOC-DATA|html####]" sandbox></iframe></div>
 <script>
 function doExportMockup() {
+	var exportDTime = '[####DTIME|js####]';
+	var exportAuthor = '[####AUTHOR|js####]';
 	var data = [####JSON-DATA|json####];
 	data.docTitle = String($('#mockup_title').text());
-	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'mockup.json', 'application/json', 'UTF-8');
+	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'mockup-' + exportDTime + '@' + exportAuthor + '.json', 'application/json', 'UTF-8');
 }
 </script>

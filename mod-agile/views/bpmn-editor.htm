@@ -1,0 +1,118 @@
+[@@@@SUB-TEMPLATE:bpmn-init.inc.htm@@@@]
+<!-- bpmn-editor.htm v.20190217 -->
+<link rel="stylesheet" href="modules/mod-wflow-components/views/bpmn-flow/modeler.css">
+<style>
+#undo-button {
+	position: fixed;
+	bottom: 50px;
+	left: 55px;
+	width: 95px;
+}
+#redo-button {
+	position: fixed;
+	bottom: 15px;
+	left: 55px;
+	width: 95px;
+}
+#canvas {
+	background: white url("[####VIEWS-PATH|html####]img/back.svg");
+	background-size: 250px 250px;
+	background-repeat: repeat;
+	border: 0px !important;
+	overflow: auto;
+}
+</style>
+<script src="modules/mod-wflow-components/views/bpmn-flow/bpmn-modeler.js"></script>
+<form class="ux-form" id="bpmn_form" name="bpmn_form" method="POST" action="#">
+	<input id="bpmn_uuid" name="uuid" type="hidden" value="[####UUID|html####]">
+	<input id="bpmn_title" name="bpmn_title" type="text" maxlength="255" value="[####TITLE|html####]" title="BPMN-Diagram Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:28px!important; font-weight:bold; text-align:center;">
+	<input id="bpmn_data" name="bpmn_data" type="hidden" value="">
+</form>
+<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<br>
+<div style="text-align:center;">
+	<button class="ux-button ux-button-small ux-button-regular" id="bpmnSaveBtn" onclick="doSaveBpmn();" style="margin-left: 15px;">Save BPMN-Diagram</button>
+	[%%%%IF:OP-MODE:==create;%%%%]
+	<button class="ux-button ux-button-small ux-button-special" id="bpmnCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
+	[%%%%ELSE:OP-MODE%%%%]
+	<button class="ux-button ux-button-small ux-button-special" id="bpmnCancelBtn" onclick="self.location='admin.php?/page/agile.bpmn-editor/uuid/[####UUID|url|html####]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
+	[%%%%/IF:OP-MODE%%%%]
+</div>
+<br>
+<div id="canvas"></div>
+<button id="undo-button" class="ux-button ux-button-small"><i class="fa fa-undo"></i> Undo</button>
+<button id="redo-button" class="ux-button ux-button-small"><i class="fa fa-repeat"></i> Redo</button>
+<script>
+var diagramModeler;
+</script>
+<script>
+(function(){
+
+	diagramModeler = new bpmnModeler({
+		container: '#canvas',
+		keyboard: {
+			bindTo: window
+		}
+	});
+
+	$('.bjs-powered-by').css({
+		opacity: 0.20
+	});
+	$('.bjs-uxm-powered-by').css({
+		opacity: 0.20
+	});
+
+	function openDiagram(bpmnData) {
+		if(!bpmnData) {
+			console.warn('WARNING: Empty BPMN Data ...');
+			return;
+		} else {
+			diagramModeler.importJSON(bpmnData, function(err){
+				if(err) {
+					$.alertable.alert('ERROR trying to import the BPMN Diagram').always(function(){});
+					console.error('BPMN Diagram Import ERROR', err);
+					return;
+				}
+				var canvas = diagramModeler.get('canvas');
+				canvas.zoom('fit-viewport', true);
+				var editorActions = diagramModeler.get('editorActions');
+				$('#undo-button').click(function(){
+					editorActions.trigger('undo');
+				});
+				$('#redo-button').click(function(){
+					editorActions.trigger('redo');
+				});
+			});
+		}
+	}
+
+	var bpmnDataObj = [####JSON-DATA|json####];
+	openDiagram(bpmnDataObj);
+	bpmnDataObj = null;
+
+})();
+</script>
+<script>
+function doSaveBpmn() {
+	if(!diagramModeler) {
+		$.alertable.alert('Cannot Save ... No Diagram Object !').always(function(){});
+		return false;
+	}
+	diagramModeler.saveJSON({ format: false }, function(err, json) {
+		if(err) {
+			$.alertable.alert('ERROR trying to save the BPMN Diagram').always(function(){});
+			console.error('BPMN Diagram Save ERROR', err);
+			return false;
+		}
+		var theData = JSON.stringify(json);
+		$('#bpmn_data').val(theData);
+		SmartJS_BrowserUtils.RefreshParent();
+		SmartJS_BrowserUtils.Submit_Form_By_Ajax('bpmn_form', 'admin.php?page=agile.bpmn-save', 'yes');
+		return false;
+	});
+	return false;
+}
+</script>
+<script>
+	SmartJS_BrowserUtils.PageAwayControl('Exit without Save ?');
+</script>

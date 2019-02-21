@@ -1,5 +1,5 @@
 [@@@@SUB-TEMPLATE:todo-init.inc.htm@@@@]
-<!-- todo-editor.htm v.20190128 -->
+<!-- todo-editor.htm v.20190217 -->
 <form class="ux-form" id="todo_form" name="todo_form" method="POST" action="#">
 	<input id="todo_uuid" name="uuid" type="hidden" value="[####UUID|html####]">
 	<input id="todo_title" name="todo_title" type="text" maxlength="255" value="[####TITLE|html####]" title="ToDo-List Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:28px!important; font-weight:bold; text-align:center;">
@@ -39,11 +39,11 @@ jQuery(document).ready(function() {
 <!--	<option value="quarter">Quarter</option> -->
 		<option value="year">Year</option>
 	</select>
-	<button class="ux-button ux-button-regular" id="gant-save-data" style="margin-left: 15px;">Save ToDo-List</button>
+	<button class="ux-button ux-button-small ux-button-regular" id="gant-save-data" style="margin-left: 15px;">Save ToDo-List</button>
 	[%%%%IF:OP-MODE:==create;%%%%]
-	<button class="ux-button ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
+	<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
 	[%%%%ELSE:OP-MODE%%%%]
-	<button class="ux-button ux-button-special" onclick="self.location='admin.php?/page/agile.todo-editor/uuid/[####UUID|url|html####]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
+	<button class="ux-button ux-button-small ux-button-special" onclick="self.location='admin.php?/page/agile.todo-editor/uuid/[####UUID|url|html####]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
 	[%%%%/IF:OP-MODE%%%%]
 </div>
 <br>

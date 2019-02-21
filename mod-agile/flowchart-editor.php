@@ -90,6 +90,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		$fa_icons_arr = [];
 		if((string)$edit == 'yes') {
+			//--
 			if($isnew) {
 				$opmode = 'create';
 			} else {
@@ -118,11 +119,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			'main' 		=> SmartMarkersTemplating::render_file_template(
 				$this->ControllerGetParam('module-view-path').$tpl, // the view
 				[
+					'VIEWS-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
 					'OP-MODE' 		=> (string) $opmode,
 					'JSON-DATA'		=> (string) $old_data,
 					'UUID' 			=> (string) $sq_rd['uuid'],
 					'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled Flowchart',
 					'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
+					'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
 					'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-',
 					'THE-ICONS' 	=> (string) Smart::json_encode($fa_icons_arr)
 				]

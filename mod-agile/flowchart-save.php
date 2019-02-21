@@ -40,7 +40,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		$this->PageViewSetVar(
 			'main',
-			SmartComponents::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save Flowchart', ($wr === 1) ? 'Flowchart Saved Successfuly' : 'Failed to save the Flowchart: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.flowchart-editor/uuid/'.Smart::escape_url($uuid) : '')
+			SmartComponents::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save FlowChart', ($wr === 1) ? 'FlowChart Saved Successfuly' : 'Failed to save the FlowChart: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.flowchart-editor/uuid/'.Smart::escape_url($uuid) : '')
 		);
 
 	} // END FUNCTION

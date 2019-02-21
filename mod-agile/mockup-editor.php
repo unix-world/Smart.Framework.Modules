@@ -115,23 +115,36 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		if((string)$edit == 'yes') {
 			$arr_markers = [
+				'VIEWS-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
 				'OP-MODE' 		=> (string) $opmode,
 				'JSON-DATA'		=> (string) $old_data,
 				'UUID' 			=> (string) $sq_rd['uuid'],
 				'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled Mockup',
 				'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
+				'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
 				'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-',
 			];
 		} else { // read
 			$arr_markers = [
+				'VIEWS-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
 				'OP-MODE' 		=> (string) $opmode,
-				'DOC-DATA' 		=> (string) '<!DOCTYPE html><html><head><meta charset="'.Smart::escape_html(SMART_FRAMEWORK_CHARSET).'"><title>Mockup Reader</title>'.SmartFileSystem::read('lib/core/templates/base-html-styles.inc.htm').'<style>'."\n".SmartFileSystem::read('modules/mod-wflow-components/views/qmockup/qmockup-elements.css')."\n".'</style></head><body><div id="canvas">'.$old_doc_data['canvasData'].'</div></body></html>',
+				'DOC-DATA' 		=> (string) SmartMarkersTemplating::render_file_template(
+												(string) $this->ControllerGetParam('module-view-path').'dbmodel-reader-ifrm.htm', // the view
+												[
+													'CHARSET' 						=> (string) $this->ControllerGetParam('charset'),
+													'TITLE' 						=> (string) 'Mockup :: '.$sq_rd['dtime'].' @ '.$sq_rd['user'].' / '.$sq_rd['uuid'],
+													'HTML-STYLES-BASE' 				=> (string) SmartFileSystem::read('lib/core/templates/base-html-styles.inc.htm'),
+													'HTML-STYLES-MOCKUP-ELEMENTS' 	=> (string) SmartFileSystem::read('modules/mod-wflow-components/views/qmockup/qmockup-elements.css'),
+													'HTML-MOCKUP-DATA' 				=> (string) $old_doc_data['canvasData']
+												]
+											),
 				'DOC-W' 		=> (int)    $old_doc_data['canvasWidth'],
 				'DOC-H' 		=> (int)    $old_doc_data['canvasHeight'],
 				'JSON-DATA'		=> (string) $old_data,
 				'UUID' 			=> (string) $sq_rd['uuid'],
 				'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled Mockup',
 				'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
+				'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
 				'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-',
 			];
 		} //end if else

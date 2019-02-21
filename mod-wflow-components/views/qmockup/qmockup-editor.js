@@ -1,7 +1,7 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190213
+// v.20190219
 // modified by unixman:
 // 	* save / load just canvas contents
 // 	* cleanup ui garbage: droppable / draggable / resizable
@@ -32,11 +32,13 @@ var qMockupEditor = new function() { // START CLASS
 		$(".newMockElement").draggable({
 			distance: 4,
 			disabled:false,
-			appendTo: "body",
+			appendTo: canvasSelector,
 			helper:"clone",
 			revert:"invalid",
 			zIndex:999
 		});
+		//--
+		$('#canvas').trigger('click');
 		//--
 	} //END FUNCTION
 
@@ -187,6 +189,7 @@ var qMockupEditor = new function() { // START CLASS
 	this.getCanvasData = function() {
 		//--
 		var $container = $("#canvas");
+		$container.trigger('click'); // unselect elem
 		var theWidth = $container.width();
 		var theHeight = $container.height();
 		var htmlCode = $container.html(); // unixman (save just canvas contents ...)
@@ -270,8 +273,8 @@ var qMockupEditor = new function() { // START CLASS
 
 
 	this.duplicateElement = function() {
-		var $canvas = $("body");
-		var $element2BDuplicated = $canvas.find(".custom-selected");
+		var $canvas = $(canvasSelector);
+		var $element2BDuplicated = $canvas.find(element2BDeletedSelector);
 		if($element2BDuplicated.length === 0){
 			return; //no element selected, duplication of selected element is futile.
 		} //end if
@@ -379,7 +382,7 @@ var qMockupEditor = new function() { // START CLASS
 	var makeSelectableElement = function(element,selectorCanvasParam){
 		var $element = $(element);
 
-		var selectorCanvas = selectorCanvasParam ? selectorCanvasParam : "body"; //if selectorCanvas is defined, set it to a standard value
+		var selectorCanvas = selectorCanvasParam ? selectorCanvasParam : canvasSelector; //if selectorCanvas is defined, set it to a standard value
 
 		var selectedClassParam = "custom-selected";
 		var elementSelector = ".mockElement";
@@ -399,10 +402,8 @@ var qMockupEditor = new function() { // START CLASS
 
 		$element.mousedown(function(event){
 			if($(event.target).closest(elementSelector)[0] === $element[0]){ //either it is the same element that was clicked, or the element is the clicked element’s the first parent that is a mock element.
-
 				$canvas.find("." + selectedClassParam).removeClass(selectedClassParam);
-
-				$element.addClass(selectedClassParam); /*custom selected, since there is a jQuery UI selected, that might be used later*/
+				$element.addClass(selectedClassParam); // custom selected, since there is a jQuery UI selected, that might be used later
 			}
 		});
 

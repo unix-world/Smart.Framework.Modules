@@ -28,29 +28,29 @@
 			[%%%%IF:COMPARR.TYPE:==file;%%%%]
 			<img width="16" height="16" style="cursor:help;" src="[####VIEWS-PATH|html####]img/file[####COMPARR.ICON-SUFFIX|html####].png" alt="Type: [####COMPARR.TYPE|html####] ; Text-Mods: [####COMPARR.TXTMOD|html####] ; Prop-Mods: [####COMPARR.PROPSMOD|html####]" title="Type: [####COMPARR.TYPE|html####] ; Text-Mods: [####COMPARR.TXTMOD|html####] ; Prop-Mods: [####COMPARR.PROPSMOD|html####]">
 			[%%%%ELSE:COMPARR.TYPE%%%%]
-			<img width="16" height="16" style="cursor:help;" src="[####VIEWS-PATH|html####]img/folder.png" alt="Type: [####COMPARR.TYPE|html####] ; Text-Mods: [####COMPARR.TXTMOD|html####] ; Prop-Mods: [####COMPARR.PROPSMOD|html####]" title="Type: [####COMPARR.TYPE|html####] ; Text-Mods: [####COMPARR.TXTMOD|html####] ; Prop-Mods: [####COMPARR.PROPSMOD|html####]">
+			<img width="16" height="16" style="cursor:help;" src="[####VIEWS-PATH|html####]img/folder.svg" alt="Type: [####COMPARR.TYPE|html####] ; Text-Mods: [####COMPARR.TXTMOD|html####] ; Prop-Mods: [####COMPARR.PROPSMOD|html####]" title="Type: [####COMPARR.TYPE|html####] ; Text-Mods: [####COMPARR.TXTMOD|html####] ; Prop-Mods: [####COMPARR.PROPSMOD|html####]">
 			[%%%%/IF:COMPARR.TYPE%%%%]
 			&nbsp;
 			[%%%%IF:COMPARR.ACTION:==M;(1)%%%%]
 				[%%%%IF:COMPARR.TXTMOD:==true;%%%%]
 					[%%%%IF:COMPARR.TYPE:==file;%%%%]
 			<a class="ux-link" style="text-decoration: none !important;" href="[####URL-FILE-DIFF|html####][####COMPARR.PATH|url|html####]&rev=[####REVISION|url|html####]">
-			<img width="16" height="16" src="[####VIEWS-PATH|html####]img/diff.png" alt="View Modifications / Diff: [[####COMPARR.ACTION|html####]]" title="View Modifications / Diff: [[####COMPARR.ACTION|html####]]">
+			<img width="16" height="16" src="[####VIEWS-PATH|html####]img/diff.svg" alt="View Modifications / Diff: [[####COMPARR.ACTION|html####]]" title="View Modifications / Diff: [[####COMPARR.ACTION|html####]]">
 					[%%%%/IF:COMPARR.TYPE%%%%]
 				[%%%%ELSE:COMPARR.TXTMOD%%%%]
-			<img width="16" height="16" src="[####VIEWS-PATH|html####]img/modified.png" alt="Modified: [[####COMPARR.ACTION|html####]]" title="Modified: [[####COMPARR.ACTION|html####]]">
+			<img width="16" height="16" src="[####VIEWS-PATH|html####]img/modified.svg" alt="Modified: [[####COMPARR.ACTION|html####]]" title="Modified: [[####COMPARR.ACTION|html####]]">
 				[%%%%/IF:COMPARR.TXTMOD%%%%]
 				[%%%%IF:COMPARR.TXTMOD:==true;%%%%]
 			</a>
 				[%%%%/IF:COMPARR.TXTMOD%%%%]
 			[%%%%ELSE:COMPARR.ACTION(1)%%%%]
 				[%%%%IF:COMPARR.ACTION:==A;(2)%%%%]
-			<img width="16" height="16" src="[####VIEWS-PATH|html####]img/added.png" alt="Added: [[####COMPARR.ACTION|html####]]" title="Added: [[####COMPARR.ACTION|html####]]">
+			<img width="16" height="16" src="[####VIEWS-PATH|html####]img/added.svg" alt="Added: [[####COMPARR.ACTION|html####]]" title="Added: [[####COMPARR.ACTION|html####]]">
 				[%%%%ELSE:COMPARR.ACTION(2)%%%%]
 					[%%%%IF:COMPARR.ACTION:==D;(3)%%%%]
-			<img width="16" height="16" src="[####VIEWS-PATH|html####]img/deleted.png" alt="Deleted: [[####COMPARR.ACTION|html####]]" title="Deleted: [[####COMPARR.ACTION|html####]]">
+			<img width="16" height="16" src="[####VIEWS-PATH|html####]img/deleted.svg" alt="Deleted: [[####COMPARR.ACTION|html####]]" title="Deleted: [[####COMPARR.ACTION|html####]]">
 					[%%%%ELSE:COMPARR.ACTION(3)%%%%]
-			<img width="16" height="16" src="[####VIEWS-PATH|html####]img/log.png" alt="Props Modified: [[####COMPARR.PROPSMOD|html####]] / Action: [[####COMPARR.ACTION|html####]]" title="Props Modified: [[####COMPARR.PROPSMOD|html####]] / Action: [[####COMPARR.ACTION|html####]]">
+			<img width="16" height="16" src="[####VIEWS-PATH|html####]img/log.svg" alt="Props Modified: [[####COMPARR.PROPSMOD|html####]] / Action: [[####COMPARR.ACTION|html####]]" title="Props Modified: [[####COMPARR.PROPSMOD|html####]] / Action: [[####COMPARR.ACTION|html####]]">
 					[%%%%/IF:COMPARR.ACTION(3)%%%%]
 				[%%%%/IF:COMPARR.ACTION(2)%%%%]
 			[%%%%/IF:COMPARR.ACTION(1)%%%%]
@@ -70,7 +70,7 @@
 		<div class="ux-grid-col s6" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
 			[%%%%IF:COMPARR.COPYFROMP:!=;%%%%]
 				&nbsp;
-				<span style="color:#003399;" title="Renamed from (Prev)"><b>R</b> &nbsp; [####COMPARR.COPYFROMP|html####] @ [####COMPARR.COPYFROMR|html####]</span>
+				<img width="16" height="16" alt="Renamed from (Prev)" title="Renamed from (Prev)" src="[####VIEWS-PATH|html####]img/renamed.svg"><span style="color:#003399;"> &nbsp; [####COMPARR.COPYFROMP|html####] @ [####COMPARR.COPYFROMR|html####]</span>
 			[%%%%ELSE:COMPARR.COPYFROMP%%%%]
 				&nbsp;
 			[%%%%/IF:COMPARR.COPYFROMP%%%%]

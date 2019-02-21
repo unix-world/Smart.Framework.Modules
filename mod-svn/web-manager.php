@@ -17,12 +17,12 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 class SmartAppAdminController extends SmartAbstractAppController {
 
 	/*
-	 * IDEA: list +50 / -50 from the current selected revision ; if returns EMPTY TRY/CATCH TEST, it means selected path was deleted
+	 * TODO/TEST: if returns EMPTY TRY/CATCH TEST, it means selected path was deleted
 	 * FOR DELETED Paths add TEST
 	 *
 	 */
 
-	// v.20190207
+	// v.20190215
 
 	public function Run() {
 
@@ -262,7 +262,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$diffpath = true;
 				} //end if else
 
-				$lstrevs = 100;
+				$lstrevs = 250;
 				$revs = (array) \SmartModExtLib\Svn\SvnWebManager::listRevs($repo, $path, $rev, (int)($lstrevs+1));
 				//print_r($revs); die();
 				if(\Smart::array_size($revs) > $lstrevs) {

@@ -2,7 +2,7 @@
 /*
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190213
+// v.20190219
 // modified by unixman:
 // 	* css3 fixes
 */
@@ -32,7 +32,6 @@
 
 #toolbar:hover {
 	background-color: #CBDF89;
-	border: 1px solid #455C30;
 	opacity: 0.90;
 }
 

@@ -1,4 +1,25 @@
 
+/*
+
+##### TODO: Export as XML
+
+<?xml version="1.0"?>
+<project name="" project-start="20190220T000000Z" mrproject-version="2" calendar="1">
+  <tasks>
+    <task id="1" name="t1" note="" work="94500" start="20190220T000000Z" end="20190225T101500Z" work-start="20190220T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+    <task id="2" name="t2" note="" work="222300" start="20190225T101500Z" end="20190306T170000Z" work-start="20190225T101500Z" percent-complete="13" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="1" type="FS"/>
+      </predecessors>
+    </task>
+  </tasks>
+  <resource-groups/>
+  <resources/>
+  <allocations/>
+</project>
+
+*/
+
 var demo_tasks = {
   "docTitle": "",
   "docDate": "2019-01-28T17:05:24.634Z",
@@ -12,247 +33,253 @@ var demo_tasks = {
     "todos": {
       "data": [
         {
+          "id": "not-visible-test",
+          "title": "Not Visible Test",
+          "start": "2017-03-16 00:00",
+          "end": "2017-04-17 00:00",
+        },
+        {
           "id": 1,
-          "text": "Project #1",
-          "start_date": "2017-05-02 00:00",
+          "title": "Project #1",
+          "start": "2017-05-02 00:00",
           "duration": 77,
           "progress": 0.4,
           "open": true,
           "type": "project",
           "meta1": "one",
-          "end_date": "2017-07-17 03:00",
+          "end": "2017-07-17 03:00",
           "parent": 0
         },
         {
           "id": 2,
-          "text": "Task <a> #1",
+          "title": "Task <a> #1",
           "details": "Some <b> details...",
-          "start_date": "2017-05-02 00:00",
+          "start": "2017-05-02 00:00",
           "parent": "1",
           "progress": 0.5,
           "open": true,
           "type": "flextask",
           "duration": 77,
-          "end_date": "2017-07-17 03:00"
+          "end": "2017-07-17 03:00"
         },
         {
           "id": 5,
-          "text": "Task #1.1",
-          "start_date": "2017-05-02 00:00",
+          "title": "Task #1.1",
+          "start": "2017-05-02 00:00",
           "duration": 7,
           "parent": "2",
           "progress": 0.6,
           "open": false,
-          "end_date": "2017-05-09 00:00"
+          "end": "2017-05-09 00:00"
         },
         {
           "id": 6,
-          "text": "Task #1.2",
-          "start_date": "2017-05-03 00:00",
+          "title": "Task #1.2",
+          "start": "2017-05-03 00:00",
           "duration": 7,
           "parent": "2",
           "progress": 0.6,
           "open": true,
-          "end_date": "2017-05-10 00:00"
+          "end": "2017-05-10 00:00"
         },
         {
           "id": 3,
-          "text": "Task #2",
-          "start_date": "2017-05-11 00:00",
+          "title": "Task #2",
+          "start": "2017-05-11 00:00",
           "duration": 8,
           "parent": "1",
           "progress": 0.6,
           "open": true,
-          "end_date": "2017-05-19 00:00"
+          "end": "2017-05-19 00:00"
         },
         {
           "id": 7,
-          "text": "Task #2.1",
-          "start_date": "2017-05-12 00:00",
+          "title": "Task #2.1",
+          "start": "2017-05-12 00:00",
           "duration": 8,
           "parent": "3",
           "progress": 0.6,
           "open": true,
           "color": "#778899",
-          "end_date": "2017-05-20 00:00"
+          "end": "2017-05-20 00:00"
         },
         {
           "id": 4,
-          "text": "Task #3",
-          "start_date": "2017-05-13 00:00",
+          "title": "Task #3",
+          "start": "2017-05-13 00:00",
           "duration": 6,
           "parent": "1",
           "progress": 0.5,
           "open": true,
           "color": "#003399",
-          "end_date": "2017-05-19 00:00"
+          "end": "2017-05-19 00:00"
         },
         {
           "id": 8,
-          "text": "Task #3.1",
-          "start_date": "2017-05-14 00:00",
+          "title": "Task #3.1",
+          "start": "2017-05-14 00:00",
           "duration": 5,
           "parent": "4",
           "progress": 0.5,
           "open": true,
-          "end_date": "2017-05-19 00:00"
+          "end": "2017-05-19 00:00"
         },
         {
           "id": 9,
-          "text": "Task #3.2",
-          "start_date": "2017-05-14 00:00",
+          "title": "Task #3.2",
+          "start": "2017-05-14 00:00",
           "duration": 4,
           "parent": "4",
           "progress": 0.5,
           "open": true,
-          "end_date": "2017-05-18 00:00"
+          "end": "2017-05-18 00:00"
         },
         {
           "id": 10,
-          "text": "Milestone #1 <i>",
-          "start_date": "2017-05-14 00:00",
+          "title": "Milestone #1 <i>",
+          "start": "2017-05-14 00:00",
           "parent": "4",
           "open": true,
           "type": "milestone",
-          "end_date": "2017-05-14 00:00",
+          "end": "2017-05-14 00:00",
           "duration": 0
         },
         {
           "id": 11,
-          "text": "Project #2",
-          "start_date": "2017-05-02 00:00",
+          "title": "Project #2",
+          "start": "2017-05-02 00:00",
           "duration": 12,
           "progress": 0.6,
           "open": true,
           "type": "project",
           "color": "#5C996B",
-          "end_date": "2017-05-14 00:00",
+          "end": "2017-05-14 00:00",
           "parent": 0
         },
         {
           "id": 12,
-          "text": "Task #1",
-          "start_date": "2017-05-03 00:00",
+          "title": "Task #1",
+          "start": "2017-05-03 00:00",
           "duration": 5,
           "parent": "11",
           "progress": 1,
           "open": true,
-          "end_date": "2017-05-08 00:00"
+          "end": "2017-05-08 00:00"
         },
         {
           "id": 13,
-          "text": "Task #2",
-          "start_date": "2017-05-02 00:00",
+          "title": "Task #2",
+          "start": "2017-05-02 00:00",
           "duration": 7,
           "parent": "11",
           "progress": 0.5,
           "open": true,
           "color": "#FF3300",
-          "end_date": "2017-05-09 00:00"
+          "end": "2017-05-09 00:00"
         },
         {
           "id": 17,
-          "text": "Task #2.1",
-          "start_date": "2017-05-03 00:00",
+          "title": "Task #2.1",
+          "start": "2017-05-03 00:00",
           "duration": 2,
           "parent": "13",
           "progress": 1,
           "open": true,
-          "end_date": "2017-05-05 00:00"
+          "end": "2017-05-05 00:00"
         },
         {
           "id": 18,
-          "text": "Task #2.2",
-          "start_date": "2017-05-06 00:00",
+          "title": "Task #2.2",
+          "start": "2017-05-06 00:00",
           "duration": 3,
           "parent": "13",
           "progress": 0.8,
           "open": true,
-          "end_date": "2017-05-09 00:00"
+          "end": "2017-05-09 00:00"
         },
         {
           "id": 19,
-          "text": "Task #2.3",
-          "start_date": "2017-05-10 00:00",
+          "title": "Task #2.3",
+          "start": "2017-05-10 00:00",
           "duration": 4,
           "parent": "13",
           "progress": 0.2,
           "open": true,
-          "end_date": "2017-05-14 00:00"
+          "end": "2017-05-14 00:00"
         },
         {
           "id": 20,
-          "text": "Task #2.4",
-          "start_date": "2017-05-10 00:00",
+          "title": "Task #2.4",
+          "start": "2017-05-10 00:00",
           "duration": 4,
           "parent": "13",
           "progress": 0,
           "open": true,
-          "end_date": "2017-05-14 00:00"
+          "end": "2017-05-14 00:00"
         },
         {
           "id": 14,
-          "text": "Task #3",
-          "start_date": "2017-05-02 00:00",
+          "title": "Task #3",
+          "start": "2017-05-02 00:00",
           "duration": 6,
           "parent": "11",
           "progress": 0.8,
           "open": true,
-          "end_date": "2017-05-08 00:00"
+          "end": "2017-05-08 00:00"
         },
         {
           "id": 15,
-          "text": "Task #4",
-          "start_date": "2017-05-02 00:00",
+          "title": "Task #4",
+          "start": "2017-05-02 00:00",
           "duration": 5,
           "parent": "11",
           "progress": 0.2,
           "open": true,
-          "end_date": "2017-05-07 00:00"
+          "end": "2017-05-07 00:00"
         },
         {
           "id": 21,
-          "text": "Task #4.1",
-          "start_date": "2017-05-03 00:00",
+          "title": "Task #4.1",
+          "start": "2017-05-03 00:00",
           "duration": 4,
           "parent": "15",
           "progress": 0.5,
           "open": true,
           "color": "#29487D",
-          "end_date": "2017-05-07 00:00"
+          "end": "2017-05-07 00:00"
         },
         {
           "id": 22,
-          "text": "Task #4.2",
-          "start_date": "2017-05-03 00:00",
+          "title": "Task #4.2",
+          "start": "2017-05-03 00:00",
           "duration": 4,
           "parent": "15",
           "progress": 0.1,
           "open": true,
           "color": "#666699",
-          "end_date": "2017-05-07 00:00"
+          "end": "2017-05-07 00:00"
         },
         {
           "id": "X23",
-          "text": "Task #4.3",
-          "start_date": "2017-05-03 00:00",
+          "title": "Task #4.3",
+          "start": "2017-05-03 00:00",
           "duration": 5,
           "parent": "15",
           "progress": 0,
           "open": true,
           "color": "#FFCC00",
           "textColor": "#111111",
-          "end_date": "2017-05-08 00:00"
+          "end": "2017-05-08 00:00"
         },
         {
           "id": 16,
-          "text": "Task #5",
-          "start_date": "2017-05-02 00:00",
+          "title": "Task #5",
+          "start": "2017-05-02 00:00",
           "duration": 7,
           "parent": "11",
           "progress": 0,
           "open": true,
-          "end_date": "2017-05-09 00:00"
+          "end": "2017-05-09 00:00"
         }
       ],
       "links": [

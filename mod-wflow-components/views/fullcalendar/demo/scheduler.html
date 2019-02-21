@@ -19,8 +19,8 @@
 		font-size: 14px;
 	}
 	#calendar {
-		max-width: 900px;
-		margin: 50px auto;
+		width: 90vw;
+		margin: 0 auto;
 	}
 </style>
 <script>
@@ -30,18 +30,22 @@
 		$('#calendar').fullCalendar({
 			now: '2019-02-07',
 			editable: true, // enable draggable events
-			aspectRatio: 1.8,
+			aspectRatio: 2.3,
 			scrollTime: '00:00', // undo default 6am scrollTime
 			header: {
 				left: 'today prev,next',
 				center: 'title',
-				right: 'timelineDay,timelineSeveralDays,timelineWeek,timelineMonth,agendaWeek,month,listWeek'
+				right: 'timelineDay,timelineSeveralDays,timelineWeek,timelineMonth,timelineYear,agendaWeek,month,listWeek'
 			},
 			defaultView: 'timelineDay',
 			views: {
 				timelineSeveralDays: {
 					type: 'timeline',
-					duration: { days: 3 }
+					duration: {
+						days: 3
+					},
+					slotDuration: '6:00:00',
+					buttonText: '3-daysTL'
 				}
 			},
 			resourceLabelText: 'Rooms',

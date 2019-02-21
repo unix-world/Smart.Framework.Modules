@@ -76,6 +76,7 @@
 				return ui.button({
 					contents: '♣',
 					tooltip: lang.specialChar.specialChar,
+					container: options.container, // tooltip fix by unixman
 					click: function() {
 						self.show();
 					},

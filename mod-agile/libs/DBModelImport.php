@@ -20,11 +20,185 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 class DBModelImport {
 
 	// ::
-	// v.181115
+	// v.20190217
+
+
+public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
+
+	// TODO: detect autoincrement !!
+
+	if(!class_exists('SQLite3')) {
+		throw new \Exception('ERROR: PHP SQLite3 Extension is missing ...');
+		return '';
+	} //end if
+
+	if(!$y_filepath) {
+		throw new \Exception('ERROR: No Database Path specified ...');
+		return '';
+	} //end if
+
+	if(!\SmartFileSysUtils::check_if_safe_path((string)$y_filepath, 'yes', 'yes')) {
+		throw new \Exception('ERROR: Database Path is Not Safe ...');
+		return '';
+	} //end if
+
+	if(!\SmartFileSystem::is_type_file((string)$y_filepath)) {
+		throw new \Exception('ERROR: Database Path does Not Exist ...');
+		return '';
+	} //end if
+
+	if(\SmartFileSystem::get_file_size((string)$y_filepath) <= 0) {
+		throw new \Exception('ERROR: Database File is Empty or Invalid ...');
+		return '';
+	} //end if
+
+	$db = null;
+	try {
+		$db = @new \SQLite3((string)$y_filepath, SQLITE3_OPEN_READONLY);
+		$db->busyTimeout(5000);
+	} catch (Exception $e) {
+		throw new \Exception('ERROR: Database Connection Failed: '.$e->getMessage());
+		return '';
+	} //end try catch
+
+	if(@$db->lastErrorCode() !== 0) {
+		throw new \Exception('ERROR: Database Connection Errors: '.@$db->lastErrorMsg());
+		return '';
+	} //end if
+
+	$xml = '';
+	$arr = array();
+
+	//@ $datatypes = file('dbmodel/sqlite/datatypes.xml');
+	//$arr[] = $datatypes[0];
+	$arr[] = '<sql db="sqlite">';
+	$arr[] = '<meta-info>';
+	$arr[] = '<db>'.\Smart::escape_html(\SmartFileSysUtils::get_file_name_from_path((string)$y_filepath)).'</db>';
+	$arr[] = '</meta-info>';
+
+	$tables = @$db->query("SELECT * FROM `sqlite_master` WHERE `type` = 'table' ORDER BY `tbl_name` ASC"); // type='index'
+	if(!$tables) {
+		throw new \Exception('ERROR: Get Tables Failed: '.@$db->lastErrorMsg());
+		return '';
+	} //end if
+	$x = 50;
+	$y = 25;
+	$tblsnum = 0;
+	$maxpercol = 3;
+	while($tbl = @$tables->fetchArray(SQLITE3_ASSOC)) {
+		if(is_array($tbl)) {
+			if($tbl['tbl_name'] AND (stripos((string)$tbl['tbl_name'], 'sqlite_') !== 0)) {
+				$tblsnum++;
+				$arr[] = '<table x="'.(int)$x.'" y="'.(int)$y.'" name="'.\Smart::escape_html((string)$tbl['tbl_name']).'">';
+				$columns = @$db->query("SELECT * FROM pragma_table_info('".@$db->escapeString((string)$tbl['tbl_name'])."')");
+				if(!$columns) {
+					throw new \Exception('ERROR: Get Columns for table \''.$tbl['tbl_name'].'\' Failed: '.@$db->lastErrorMsg());
+					return '';
+				} //end if
+				$num_cols = 0;
+				$pkeys = [];
+				while($col = @$columns->fetchArray(SQLITE3_ASSOC)) {
+					if($col['name']) {
+						if($col['pk']) {
+							$pkeys[] = [
+								'name' => (string) $col['name'],
+								'is_pk' => true
+							];
+						} //end if
+						$arr[] = '<row name="'.\Smart::escape_html((string)$col['name']).'" null="'.(int)($col['notnull'] ? 0 : 1).'" autoincrement="0">';
+						$arr[] = '<datatype>'.\Smart::escape_html((string)strtoupper((string)$col['type'])).'</datatype>';
+						if($col['dflt_value']) {
+							$arr[] = '<default>'.\Smart::escape_html((string)$col['dflt_value']).'</default>';
+						} //end if
+						$foreignkeys = @$db->query("SELECT * FROM pragma_foreign_key_list('".@$db->escapeString((string)$tbl['tbl_name'])."') WHERE `from` = '".@$db->escapeString((string)$col['name'])."'");
+						if(!$foreignkeys) {
+							throw new \Exception('ERROR: Get Foreign Keys for table \''.$tbl['tbl_name'].'\' column \''.$col['name'].'\' Failed: '.@$db->lastErrorMsg());
+							return '';
+						} //end if
+						while($fkey = @$foreignkeys->fetchArray(SQLITE3_ASSOC)) {
+							$arr[] = '<relation table="'.\Smart::escape_html((string)$fkey['table']).'" row="'.\Smart::escape_html((string)$fkey['to']).'" />';
+						} //end while
+						$arr[] = '</row>';
+						$num_cols++;
+					} //end if
+				} //end while
+				if(\Smart::array_size($pkeys) > 0) {
+					$arr[] = '<key type="PRIMARY" name="'.\Smart::escape_html((string)$tbl['tbl_name']).'__pkey">';
+					for($i=0; $i<\Smart::array_size($pkeys); $i++) {
+						$arr[] = '<part>'.\Smart::escape_html((string)$pkeys[$i]['name']).'</part>';
+					} //end for
+					$arr[] = '</key>';
+				} //end if
+				$indexes = @$db->query("SELECT * FROM pragma_index_list('".@$db->escapeString((string)$tbl['tbl_name'])."')");
+				if(!$indexes) {
+					throw new \Exception('ERROR: Get Indexes for table \''.$tbl['tbl_name'].'\' Failed: '.@$db->lastErrorMsg());
+					return '';
+				} //end if
+				$pkidx = [];
+				while($idx = @$indexes->fetchArray(SQLITE3_ASSOC)) {
+					if($idx['name'] AND ((string)$idx['origin'] == 'c')) { // not primary key: pk / fk (foreign key)
+						$idxinfo = @$db->query("SELECT * FROM pragma_index_info('".@$db->escapeString((string)$idx['name'])."')");
+						if(!$idxinfo) {
+							throw new \Exception('ERROR: Get IndexInfo for index \''.$idx['name'].'\' / table \''.$tbl['tbl_name'].'\' Failed: '.@$db->lastErrorMsg());
+							return '';
+						} //end if
+						$pkidx[(string)$idx['name']] = [];
+						while($iix = @$idxinfo->fetchArray(SQLITE3_ASSOC)) {
+							if($iix['name']) {
+								$pkidx[(string)$idx['name']]['keys'][] = (string) $iix['name'];
+							} //end if
+						} //end while
+						if(\Smart::array_size($pkidx[(string)$idx['name']]) > 0) {
+							$pkidx[(string)$idx['name']]['unique'] = ($idx['unique'] ? true : false);
+						} //end if
+					} //end if
+				} //end while
+				if(\Smart::array_size($pkidx) > 0) {
+					foreach($pkidx as $key => $val) {
+						if(\Smart::array_size($val) > 0) {
+							$tmp_unique = $val['unique'];
+							if($tmp_unique) {
+								$tmp_unique = 'UNIQUE';
+							} else {
+								$tmp_unique = 'INDEX';
+							} //end if else
+							if(\Smart::array_size($val['keys']) > 0) {
+								$arr[] = '<key type="'.\Smart::escape_html((string)$tmp_unique).'" name="'.\Smart::escape_html((string)$key).'">';
+								for($i=0; $i<\Smart::array_size($val['keys']); $i++) {
+									$arr[] = '<part>'.\Smart::escape_html((string)$val['keys'][$i]).'</part>';
+								} //end for
+								$arr[] = '</key>';
+							} //end if
+						} //end if
+					} //end foreach
+				} //end if
+				$arr[] = '</table>';
+				if($tblsnum >= $maxpercol) {
+					$x += 250;
+					$y = 25;
+				} else {
+					$y += ($num_cols * 24) + 48;
+				} //end if
+			} //end if
+		} //end if
+	} //end while
+
+	$arr[] = (string) $xml;
+	$arr[] = '</sql>';
+
+	return (string) implode("\n", (array)$arr);
+
+} //END FUNCTION
+
 
 public static function SmartDbModelerPgsqlExportToXml($y_host, $y_port, $y_dbname, $y_username, $y_pass, $y_schema='') {
 
-	$conn = pg_connect('host='.$y_host.' port='.(int)$y_port.' dbname='.$y_dbname.' user='.$y_username.' password='.$y_pass.' connect_timeout=30');
+	if(!function_exists('pg_connect')) {
+		throw new \Exception('ERROR: PHP PostgreSQL Extension is missing ...');
+		return '';
+	} //end if
+
+	$conn = @pg_connect('host='.$y_host.' port='.(int)$y_port.' dbname='.$y_dbname.' user='.$y_username.' password='.$y_pass.' connect_timeout=30');
 	if(!$conn){
 		throw new \Exception('ERROR: Failed to connect to: '.'host='.$y_host.' port='.(int)$y_port.' dbname='.$y_dbname.' user='.$y_username.' password=***** connect_timeout=30');
 		return '';
@@ -288,7 +462,7 @@ SQL;
 
 	} //end while
 
-	$arr[] = $xml;
+	$arr[] = (string) $xml;
 	$arr[] = '</sql>';
 
 	return (string) implode("\n", (array)$arr);
@@ -298,10 +472,14 @@ SQL;
 
 public static function SmartDbModelerMySQLExportToXml($y_host, $y_port, $y_dbname, $y_username, $y_pass) {
 
+	if(!function_exists('mysqli_init')) {
+		throw new \Exception('ERROR: PHP MySQLi Extension is missing ...');
+		return '';
+	} //end if
 
 	$conn = mysqli_init();
 	mysqli_options($conn, MYSQLI_OPT_LOCAL_INFILE, false);
-	if(!mysqli_real_connect($conn, (string)$y_host, (string)$y_username, (string)$y_pass, false, (int)$y_port)) {
+	if(!@mysqli_real_connect($conn, (string)$y_host, (string)$y_username, (string)$y_pass, false, (int)$y_port)) {
 		throw new \Exception('ERROR: Failed to connect to: '.'host='.$y_host.' port='.(int)$y_port.' dbname='.$y_dbname.' user='.$y_username.' password=*****');
 		return '';
 	} //end if
@@ -445,7 +623,7 @@ public static function SmartDbModelerMySQLExportToXml($y_host, $y_port, $y_dbnam
 		$xml .= "</table>";
 	} //end while
 
-	$arr[] = $xml;
+	$arr[] = (string) $xml;
 	$arr[] = '</sql>';
 
 	return (string) implode("\n", (array)$arr);

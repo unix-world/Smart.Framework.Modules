@@ -5,12 +5,13 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190219 (stable)
 /*
 modified by unixman:
 	- isolate in a function
 	- fix HTML escapings
 	- fix max length of text
+	- changed task structure [ start = start_date ; end = end_date ; title = text ]
 */
 
 function SmartGanttPluginQuickinfo(gantt) {
@@ -36,7 +37,7 @@ function SmartGanttPluginQuickinfo(gantt) {
 	})();
 
 	gantt.templates.quick_info_title = function(start, end, ev){
-		var txt = String(ev.text || '');
+		var txt = String(ev.title || '');
 		if(txt.length > 50) {
 			txt = txt.substr(0, 37) + '...';
 		} //end if
@@ -129,7 +130,7 @@ function SmartGanttPluginQuickinfo(gantt) {
 	gantt._prepare_quick_info_classname = function(id){
 		var task = gantt.getTask(id);
 		var css = "gantt_cal_quick_info",
-			template = this.templates.quick_info_class(task.start_date, task.end_date, task);
+			template = this.templates.quick_info_class(task.start, task.end, task);
 		if(template){
 			css += " " + template;
 		}
@@ -231,12 +232,12 @@ function SmartGanttPluginQuickinfo(gantt) {
 		gantt._quick_info_box_id = id;
 		//title content
 		var titleContent = qi.firstChild.firstChild;
-		titleContent.innerHTML = gantt.templates.quick_info_title(ev.start_date, ev.end_date, ev);
+		titleContent.innerHTML = gantt.templates.quick_info_title(ev.start, ev.end, ev);
 		var titleDate = titleContent.nextSibling;
-		titleDate.innerHTML = gantt.templates.quick_info_date(ev.start_date, ev.end_date, ev);
+		titleDate.innerHTML = gantt.templates.quick_info_date(ev.start, ev.end, ev);
 		//main content
 		var main = qi.firstChild.nextSibling;
-		main.innerHTML = gantt.templates.quick_info_content(ev.start_date, ev.end_date, ev);
+		main.innerHTML = gantt.templates.quick_info_content(ev.start, ev.end, ev);
 	};
 
 	return gantt;

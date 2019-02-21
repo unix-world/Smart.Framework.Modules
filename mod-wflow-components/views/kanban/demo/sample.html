@@ -5,6 +5,7 @@
 <title>Kanban Board - Demo</title>
 
 <script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+<script src="../../../../../lib/js/framework/smart-framework.js" type="text/javascript"></script>
 
 <!-- jQueryUI Interractions -->
 <link rel="stylesheet" href="../../../../../lib/js/jquery/ui-interractions/jquery.ui-interractions.css" type="text/css">
@@ -43,7 +44,7 @@ jQuery(function() {
 	JS_Kanban.initBoard('#333333');
 	jQuery('.jskanban_add_bttn').click(function() {
 		var txtNewItem = jQuery('.jskanban_add_field').val();
-		JS_Kanban.addTask('.jskanban_area', txtNewItem);
+		JS_Kanban.addTask('.jskanban_area', {title: txtNewItem});
 		jQuery('.jskanban_add_field').val('');
 	});
 	jQuery('.jskanban_save_bttn').click(function() {
@@ -59,36 +60,28 @@ jQuery(function() {
 <div align="center">
 	<h1>Kanban Board - Demo</h1>
 	<div class="jskanban_area">
-		<div class="jskanban_holder jskanban_holder_todo">
+		<div id="kanban-area-todo" class="jskanban_holder jskanban_holder_todo">
 			<h2>TODO</h2>
-			<ul class="jskanban_sorter jskanban_connect_sorter" id="todo">
-				<li class="jskanban_box" id="a1">Activity &lt;A1&gt; - a very long description goes here !</li>
-				<li class="jskanban_box" id="a2">Activity A2</li>
-				<li class="jskanban_box" id="a3">Activity A3</li>
+			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-todo" data-kanban-status="todo">
 			</ul>
 			<div>
 				<input type="text" class="jskanban_add_field" value="">
 				<button class="jskanban_add_bttn">Add</button>
 			</div>
 		</div>
-		<div class="jskanban_holder jskanban_holder_inprogress">
+		<div id="kanban-area-inprogress" class="jskanban_holder jskanban_holder_inprogress">
 			<h2>In Progress</h2>
-			<ul class="jskanban_sorter jskanban_connect_sorter" id="inprogress">
-				<li class="jskanban_box" id="b1">Activity B1</li>
-				<li class="jskanban_box" id="b2">Activity B2</li>
+			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-inprogress" data-kanban-status="inprogress">
 			</ul>
 		</div>
-		<div class="jskanban_holder jskanban_holder_check">
+		<div id="kanban-area-check" class="jskanban_holder jskanban_holder_check">
 			<h2>Verification</h2>
-			<ul class="jskanban_sorter jskanban_connect_sorter" id="check">
-				<li class="jskanban_box" id="c1">Activity C1</li>
-				<li class="jskanban_box" id="c2">Activity C2</li>
+			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-check" data-kanban-status="check">
 			</ul>
 		</div>
-		<div class="jskanban_holder jskanban_holder_done">
+		<div id="kanban-area-done" class="jskanban_holder jskanban_holder_done">
 			<h2>Done</h2>
-			<ul class="jskanban_sorter jskanban_connect_sorter" id="done">
-				<li class="jskanban_box" id="d1">Activity D1</li>
+			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-done" data-kanban-status="done">
 			</ul>
 			<div>
 				<button class="jskanban_save_bttn">Save</button>
@@ -96,4 +89,63 @@ jQuery(function() {
 		</div>
 	</div>
 </div>
+<script>
+(function(){
+
+var kdata = [
+  {
+    "meta1": "info1",
+    "meta2": "info2",
+    "id": "a1",
+    "title": "Activity <A1> - a very long description goes here !",
+    "kanbanStatus": "todo"
+  },
+  {
+    "id": "a2",
+    "title": "Activity A2",
+    "kanbanStatus": "todo"
+  },
+  {
+    "id": "a3",
+    "title": "Activity A3",
+    "kanbanStatus": "todo"
+  },
+  {
+    "id": "b1",
+    "title": "Activity B1",
+    "kanbanStatus": "inprogress"
+  },
+  {
+    "id": "b2",
+    "title": "Activity B2",
+    "kanbanStatus": "inprogress"
+  },
+  {
+    "id": "c1",
+    "title": "Activity C1",
+    "kanbanStatus": "check"
+  },
+  {
+    "id": "c2",
+    "title": "Activity C2",
+    "kanbanStatus": "check"
+  },
+  {
+    "id": "d1",
+    "title": "Activity D1",
+    "kanbanStatus": "done"
+  }
+];
+
+var obj = null;
+for(var i=0; i<kdata.length; i++) {
+	obj = kdata[i] || null;
+	if(obj && obj.id) {
+		JS_Kanban.addTask('.jskanban_area', obj);
+	}
+}
+obj = null;
+
+})();
+</script>
 </html>

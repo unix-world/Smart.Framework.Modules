@@ -22,7 +22,7 @@ abstract class SqAppTable {
 
 	// ->
 
-private $ver = 'r.20190117';
+private $ver = 'r.20190217';
 private $db = null;
 private $sqdb = '#db/';
 private $tblname = 'data_objects';
@@ -102,7 +102,7 @@ final public function getAllByUuid($limit=100) {
 	} //end if
 	//--
 	return (array) $this->db->read_adata(
-		'SELECT * FROM `'.$this->tblname.'` GROUP BY `uuid` ORDER BY `id` DESC LIMIT '.(int)$limit.' OFFSET 0'
+		'SELECT `uuid`, MAX(`dtime`) AS `dtime`, GROUP_CONCAT(DISTINCT `user`) AS `user`, `project`, `title`, `type` FROM `'.$this->tblname.'` GROUP BY `uuid` ORDER BY `id` DESC LIMIT '.(int)$limit.' OFFSET 0'
 	);
 	//--
 } //END FUNCTION
@@ -128,10 +128,8 @@ final public function saveData($data, $user) {
 	//--
 	$newdata['dtime'] = (string) date('Y-m-d H:i:s');
 	$newdata['user'] = (string) trim((string)$user);
-	$newdata['project'] = (string) trim((string)$newdata['project']);
-	if(!$newdata['project']) {
-		$newdata['project'] = 'Default Project';
-	} //end if
+	//--
+	$newdata['project'] = (string) trim((string)$data['project']);
 	//--
 	$newdata['title'] = (string) trim((string)$data['title']);
 	if((string)$newdata['title'] == '') {
@@ -140,20 +138,79 @@ final public function saveData($data, $user) {
 	//--
 	$newdata['saved_data'] = (string) trim((string)$data['saved_data']);
 	if((string)$newdata['saved_data'] == '') {
-		return -3; // invalid json
+		return -3; // invalid data
+	} //end if
+	//--
+	$test_data = \Smart::json_decode((string)\SmartUtils::data_unarchive((string)$newdata['saved_data']));
+	if(\Smart::array_size($test_data) <= 0) {
+		return -4; // invalid json
+	} //end if
+	if(\Smart::array_size($test_data['data']) <= 0) {
+		return -5; // invalid json data
+	} //end if
+	if((string)$test_data['dataFormat'] == '') {
+		return -6; // invalid json data format
+	} //end if
+	if((string)$test_data['docVersion'] == '') {
+		return -7; // invalid json doc version
+	} //end if
+	if((string)$test_data['docType'] == '') {
+		return -8; // invalid json doc type
+	} //end if
+	if((string)$test_data['docDate'] == '') {
+		return -9; // invalid json doc date
+	} //end if
+	if(!array_key_exists('docTitle', $test_data)) {
+		return -10; // json doc title key is missing
+	} //end if
+	//--
+	$newdata['type'] = (string) strtolower((string)trim((string)$test_data['docType']));
+	if((string)$newdata['type'] == '') {
+		return -11; // invalid (doc) type
 	} //end if
 	//--
 	$compare = (array) $this->getOneByUuid((string)$newdata['uuid']);
-	if(((string)$compare['uuid'] === (string)$newdata['uuid']) AND ((string)$compare['title'] === (string)$newdata['title']) AND ((string)$compare['saved_data'] === (string)$newdata['saved_data'])) {
-		return 1; // data not changed ...
+	if((string)$compare['saved_data'] != '') {
+		$comp_data = \Smart::json_decode((string)\SmartUtils::data_unarchive((string)$compare['saved_data']));
+	} //end if
+	if(!is_array($comp_data)) {
+		$comp_data = array();
+	} //end if
+	if((string)$compare['type'] != '') {
+		if((string)$compare['type'] !== (string)$newdata['type']) {
+			return -12; // type mismatch
+		} //end if
+	} //end if
+	if(((string)$compare['uuid'] === (string)$newdata['uuid']) AND ((string)$compare['title'] === (string)$newdata['title']) AND ((string)\Smart::seryalize($comp_data['data']) === (string)\Smart::seryalize($test_data['data']))) {
+		return 1; // not changed, simulate updated ...
 	} //end if
 	//--
+	$test_data = null; // free mem
+	$comp_data = null; // free mem
+	$compare = null; // free mem
+	//--
+	$this->db->write_data('BEGIN');
 	$wr = $this->db->write_data(
 		'INSERT INTO `'.$this->tblname.'` '.$this->db->prepare_statement(
 			(array) $newdata,
 			'insert'
 		)
 	);
+	if($wr[1] == 1) {
+		$this->db->write_data(
+			'UPDATE `'.$this->tblname.'` SET `project` = ?, `title` = ? WHERE (`uuid` = ?)',
+			[
+				(string) $newdata['project'],
+				(string) $newdata['title'] ,
+				(string) $newdata['uuid']
+			]
+		);
+	} //end if
+	$this->db->write_data('COMMIT');
+	//--
+	if(\Smart::random_number(0, 5000) == 2500) {
+		$this->db->write_data('VACUUM');
+	} //end if
 	//--
 	return (int) $wr[1];
 	//--
@@ -218,10 +275,6 @@ final private function initDBSchema() {
 		return 0; // if fail to create table, stop
 	} //end if
 	//--
-	if(\Smart::random_number(0, 5000) == 2500) {
-		$this->db->write_data('VACUUM');
-	} //end if
-	//--
 	return 1;
 	//--
 } //END FUNCTION
@@ -234,17 +287,20 @@ $table = (string) $table;
 $sql = <<<SQL
 CREATE TABLE '{$table}' (
 	'id' integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	'dtime' character varying(23) NOT NULL,
 	'uuid' character varying(32) NOT NULL,
+	'dtime' character varying(23) NOT NULL,
 	'user' character varying(96) NOT NULL,
 	'project' character varying(150) NOT NULL,
 	'title' character varying(255) NOT NULL,
+	'type' character varying(50) NOT NULL,
 	'saved_data' TEXT NOT NULL
 );
-CREATE INDEX '{$table}__idx_dtime' ON '{$table}' ('dtime');
 CREATE INDEX '{$table}__idx_uuid' ON '{$table}' ('uuid');
+CREATE INDEX '{$table}__idx_dtime' ON '{$table}' ('dtime');
 CREATE INDEX '{$table}__idx_user' ON '{$table}' ('user');
 CREATE INDEX '{$table}__idx_project' ON '{$table}' ('project');
+CREATE INDEX '{$table}__idx_title' ON '{$table}' ('title');
+CREATE INDEX '{$table}__idx_type' ON '{$table}' ('type');
 SQL;
 //--
 return (string) $sql;

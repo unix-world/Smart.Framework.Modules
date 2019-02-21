@@ -5,7 +5,7 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190219 (stable)
 /*
 modified by unixman:
 	- add types: project, milestone
@@ -16,6 +16,8 @@ modified by unixman:
 	- isolate in a function
 	- drop locales because some regex later binding functions need a reference to the object which is unknown ... in order to really support multi-instances of gantt without re-exporting the entire gantt object (too complex)
 	- slow lightbox fix
+	- changed task structure [ start = start_date ; end = end_date ; title = text ]
+	- add visible=true/false attribute instead of hiding the task (if visible is false will be like readonly until visible is true)
 */
 
 // TODO:
@@ -298,7 +300,7 @@ var SmartGanttInstance = function() { // START CLASS
 			if(id !== null) {
 				var task = this.getTask(id);
 				if(this.config.scroll_on_click)
-					this.showDate(task.start_date);
+					this.showDate(task.start);
 				this.callEvent("onTaskRowClick", [id, trg]);
 			}
 		}, this);
@@ -462,13 +464,13 @@ var SmartGanttInstance = function() { // START CLASS
 					value = this.templates.date_grid(value);
 				}
 				if(col.name == 'duration') {
-					if(item.type == gantt.config.types.flextask) {
+					if(item.type == this.config.types.flextask) {
 						value = '*'; // {{{SYNC-FLEXTASK-END-TXT}}}
-					} else if(item.type == gantt.config.types.milestone) {
+					} else if(item.type == this.config.types.milestone) {
 						value = '@'; // {{{SYNC-MILESTONE-END-TXT}}}
 					}
 				} else if(col.name == 'progress') {
-					if(item.type == gantt.config.types.milestone) {
+					if(item.type == this.config.types.milestone) {
 						value = '-';
 					} else {
 						value = value || 0;
@@ -508,7 +510,7 @@ var SmartGanttInstance = function() { // START CLASS
 		var css = item.$index % 2 === 0 ? '' : ' odd';
 		css += (item.$transparent) ? ' gantt_transparent' : '';
 		if(this.templates.grid_row_class) {
-			var css_template = this.templates.grid_row_class.call(this, item.start_date, item.end_date, item);
+			var css_template = this.templates.grid_row_class.call(this, item.start, item.end, item);
 			if(css_template) {
 				css += ' ' + css_template;
 			}
@@ -1117,21 +1119,21 @@ var SmartGanttInstance = function() { // START CLASS
 			var cfg = gantt.config;
 			var coords_x = this._drag_task_coords(ev, drag);
 			if(drag.left) {
-				ev.start_date = gantt.dateFromPos(coords_x.start + shift);
-				if(!ev.start_date) {
-					ev.start_date = new Date(gantt.getState().min_date);
+				ev.start = gantt.dateFromPos(coords_x.start + shift);
+				if(!ev.start) {
+					ev.start = new Date(gantt.getState().min_date);
 				}
 			} else {
-				ev.end_date =gantt.dateFromPos(coords_x.end + shift);
-				if(!ev.end_date) {
-					ev.end_date = new Date(gantt.getState().max_date);
+				ev.end =gantt.dateFromPos(coords_x.end + shift);
+				if(!ev.end) {
+					ev.end = new Date(gantt.getState().max_date);
 				}
 			}
-			if(ev.end_date - ev.start_date < cfg.min_duration) {
+			if(ev.end - ev.start < cfg.min_duration) {
 				if(drag.left) {
-					ev.start_date = gantt.calculateEndDate(ev.end_date, -1);
+					ev.start = gantt.calculateEndDate(ev.end, -1);
 				} else {
-					ev.end_date = gantt.calculateEndDate(ev.start_date, 1);
+					ev.end = gantt.calculateEndDate(ev.start, 1);
 				}
 			}
 			gantt._init_task_timing(ev);
@@ -1152,19 +1154,19 @@ var SmartGanttInstance = function() { // START CLASS
 			var new_start = gantt.dateFromPos(coords_x.start + shift),
 				new_end = gantt.dateFromPos(coords_x.end + shift);
 			if(!new_start) {
-				ev.start_date = new Date(gantt.getState().min_date);
-				ev.end_date = gantt.dateFromPos(gantt.posFromDate(ev.start_date) + (coords_x.end - coords_x.start));
+				ev.start = new Date(gantt.getState().min_date);
+				ev.end = gantt.dateFromPos(gantt.posFromDate(ev.start) + (coords_x.end - coords_x.start));
 			} else if(!new_end) {
-				ev.end_date = new Date(gantt.getState().max_date);
-				ev.start_date = gantt.dateFromPos(gantt.posFromDate(ev.end_date) - (coords_x.end - coords_x.start));
+				ev.end = new Date(gantt.getState().max_date);
+				ev.start = gantt.dateFromPos(gantt.posFromDate(ev.end) - (coords_x.end - coords_x.start));
 			} else {
-				ev.start_date = new_start;
-				ev.end_date = new_end;
+				ev.start = new_start;
+				ev.end = new_end;
 			}
 		},
 		_drag_task_coords : function(t, drag) {
-			var start = drag.obj_s_x = drag.obj_s_x || gantt.posFromDate(t.start_date);
-			var end = drag.obj_e_x = drag.obj_e_x || gantt.posFromDate(t.end_date);
+			var start = drag.obj_s_x = drag.obj_s_x || gantt.posFromDate(t.start);
+			var end = drag.obj_e_x = drag.obj_e_x || gantt.posFromDate(t.end);
 			return {
 				start : start,
 				end : end
@@ -1243,7 +1245,7 @@ var SmartGanttInstance = function() { // START CLASS
 				}
 			} else {
 				if(drag.mode && drag.mode != gantt.config.drag_mode.ignore && gantt.config["drag_" + drag.mode]) {
-					id =  gantt.locate(src);
+					id = gantt.locate(src);
 					task = dhtmlx.copy(gantt.getTask(id) || {});
 					if(gantt._is_readonly(task)) {
 						this.clear_drag_state();
@@ -1275,27 +1277,27 @@ var SmartGanttInstance = function() { // START CLASS
 				step = gantt.config.time_step;
 			}
 			function fixStart(task) {
-				if(!gantt.isWorkTime(task.start_date)) {
-					task.start_date = gantt.calculateEndDate(task.start_date, -1, gantt.config.duration_unit);
+				if(!gantt.isWorkTime(task.start)) {
+					task.start = gantt.calculateEndDate(task.start, -1, gantt.config.duration_unit);
 				}
 			}
 			function fixEnd(task) {
-				if(!gantt.isWorkTime(new Date(task.end_date - 1))) {
-					task.end_date = gantt.calculateEndDate(task.end_date, 1, gantt.config.duration_unit);
+				if(!gantt.isWorkTime(new Date(task.end - 1))) {
+					task.end = gantt.calculateEndDate(task.end, 1, gantt.config.duration_unit);
 				}
 			}
 			if(drag.mode == gantt.config.drag_mode.resize) {
 				if(drag.left) {
-					task.start_date = gantt.roundDate({date:task.start_date, unit:unit, step:step});
+					task.start = gantt.roundDate({date:task.start, unit:unit, step:step});
 					fixStart(task);
 				} else {
-					task.end_date = gantt.roundDate({date:task.end_date, unit:unit, step:step});
+					task.end = gantt.roundDate({date:task.end, unit:unit, step:step});
 					fixEnd(task);
 				}
 			} else if(drag.mode == gantt.config.drag_mode.move) {
-				task.start_date = gantt.roundDate({date:task.start_date, unit:unit, step:step});
+				task.start = gantt.roundDate({date:task.start, unit:unit, step:step});
 				fixStart(task);
-				task.end_date = gantt.calculateEndDate(task.start_date, task.duration, gantt.config.duration_unit);
+				task.end = gantt.calculateEndDate(task.start, task.duration, gantt.config.duration_unit);
 			}
 		},
 		_fix_working_times:function(task, drag) {
@@ -1303,9 +1305,9 @@ var SmartGanttInstance = function() { // START CLASS
 			if(gantt.config.work_time && gantt.config.correct_work_time) {
 				if(drag.mode == gantt.config.drag_mode.resize) {
 					if(drag.left) {
-						task.start_date = gantt.getClosestWorkTime({date:task.start_date, dir:'future'});
+						task.start = gantt.getClosestWorkTime({date:task.start, dir:'future'});
 					} else {
-						task.end_date = gantt.getClosestWorkTime({date:task.end_date, dir:'past'});
+						task.end = gantt.getClosestWorkTime({date:task.end, dir:'past'});
 					}
 				} else if(drag.mode == gantt.config.drag_mode.move) {
 					gantt.correctTaskWorkTime(task);
@@ -2158,8 +2160,11 @@ var SmartGanttInstance = function() { // START CLASS
 		if(this.config.start_date && this.config.end_date) {
 			min = this.config.start_date.valueOf();
 			max = this.config.end_date.valueOf();
-			if(+task.start_date > max || +task.end_date < +min) {
-				return false;
+			if(+task.start > max || +task.end < +min) {
+			//	return false;
+				task.visible = false; // fix by unixman: add visible attribute instead of hiding the task
+			} else {
+				task.visible = true; // fix by unixman: restore the visible attribute if task is visible
 			}
 		}
 		return true;
@@ -2291,8 +2296,8 @@ var SmartGanttInstance = function() { // START CLASS
 		//reset project timing
 		this._get_tasks_data();
 		var range = this.getSubtaskDates();
-		this._min_date = range.start_date;
-		this._max_date = range.end_date;
+		this._min_date = range.start;
+		this._max_date = range.end;
 	//	if(!(this._max_date && this._max_date)) {
 		if(!(this._max_date && this._min_date)) { // unixman: bug fix
 			this._min_date = new Date();
@@ -2406,15 +2411,15 @@ var SmartGanttInstance = function() { // START CLASS
 			}
 		}
 		var odd = item.$index%2 !== 0;
-		var cssTemplate = gantt.templates.task_row_class(item.start_date, item.end_date, item);
+		var cssTemplate = gantt.templates.task_row_class(item.start, item.end, item);
 		var css = "gantt_task_row" + (odd ? " odd" : '') + (cssTemplate ? ' ' + cssTemplate : '');
 		if(this.getState().selected_task == item.id) {
 			css += " gantt_selected";
 		}
 		//var row = "<div class='" + css + "' " + this.config.task_attribute + "='" + item.id + "'>" + cells.join('') + "</div>";
 		row.className = css;
-		row.style.height = (gantt.config.row_height) + 'px';
-		row.setAttribute(this.config.task_attribute, item.id);
+		row.style.height = (this.config.row_height) + 'px';
+		row.setAttribute(this.config.task_attribute, item.id); // aa
 		return row;
 	};
 
@@ -2536,10 +2541,10 @@ var SmartGanttInstance = function() { // START CLASS
 
 	gantt._render_pair = function(parent, css, task, content) {
 		var state = gantt.getState();
-		if(+task.end_date <= +state.max_date) {
+		if(+task.end <= +state.max_date) {
 			parent.appendChild(content(css+" task_right"));
 		}
-		if(+task.start_date >= +state.min_date) {
+		if(+task.start >= +state.min_date) {
 			parent.appendChild(content(css+" task_left"));
 		}
 	};
@@ -2566,8 +2571,8 @@ var SmartGanttInstance = function() { // START CLASS
 
 	// TODO: remove reduntant methods for task positioning
 	gantt.getTaskPosition = function(task, start_date, end_date) {
-		var x = this.posFromDate(start_date || task.start_date);
-		var x2 = this.posFromDate(end_date || task.end_date);
+		var x = this.posFromDate(start_date || task.start);
+		var x2 = this.posFromDate(end_date || task.end);
 		x2 = Math.max(x, x2);
 		var y = this.getTaskTop(task.id);
 		var height = this.config.task_height;
@@ -2590,7 +2595,8 @@ var SmartGanttInstance = function() { // START CLASS
 		if(item && item[this.config.editable_property]) {
 			return false;
 		} else {
-			return (item && item[this.config.readonly_property]);
+		//	return (item && (item[this.config.readonly_property]));
+			return (item && (item[this.config.readonly_property] || !item['visible'])); // fix by unixman: add visible attribute instead of hiding the task
 		}
 	};
 
@@ -2616,7 +2622,7 @@ var SmartGanttInstance = function() { // START CLASS
 			content.style.color = task.textColor;
 		}
 		div.appendChild(content);
-		var css = this._combine_item_class("gantt_task_line", this.templates.task_class(task.start_date, task.end_date, task), task.id);
+		var css = this._combine_item_class("gantt_task_line", this.templates.task_class(task.start, task.end, task), task.id);
 		if(task.color || task.progressColor || task.textColor) {
 			css += " gantt_task_inline_color";
 		}
@@ -2683,7 +2689,7 @@ var SmartGanttInstance = function() { // START CLASS
 		if(!template) {
 			return null;
 		}
-		var text = template(task.start_date, task.end_date, task);
+		var text = template(task.start, task.end, task);
 		if(!text) {
 			return null;
 		}
@@ -2746,7 +2752,7 @@ var SmartGanttInstance = function() { // START CLASS
 	gantt._render_task_content = function(task, width) {
 		var content = document.createElement("div");
 		if(this._get_safe_type(task.type) != this.config.types.milestone) {
-			content.innerHTML = this.templates.task_text(task.start_date, task.end_date, task);
+			content.innerHTML = this.templates.task_text(task.start, task.end, task);
 		}
 		content.className = "gantt_task_content";
 		//content.style.width = width + 'px';
@@ -2765,7 +2771,7 @@ var SmartGanttInstance = function() { // START CLASS
 		}
 		pr.style.width = width + 'px';
 		pr.className = "gantt_task_progress";
-		pr.innerHTML = this.templates.progress_text(task.start_date, task.end_date, task);
+		pr.innerHTML = this.templates.progress_text(task.start, task.end, task);
 		element.appendChild(pr);
 		if(this.config.drag_progress && !gantt._is_readonly(task)) {
 			var drag = document.createElement("div");
@@ -2891,7 +2897,7 @@ var SmartGanttInstance = function() { // START CLASS
 
 	gantt._get_x_pos = function(task, to_start) {
 		to_start = to_start !== false;
-		var x = gantt.posFromDate(to_start ? task.start_date : task.end_date);
+		var x = gantt.posFromDate(to_start ? task.start : task.end);
 	};
 
 	gantt.getTaskTop = function(task_id) {
@@ -2904,9 +2910,9 @@ var SmartGanttInstance = function() { // START CLASS
 		var isMilestone = (this._get_safe_type(task.type) == this.config.types.milestone);
 		var date = null;
 		if(to_start || isMilestone) {
-			date = (task.start_date || this._default_task_date(task));
+			date = (task.start || this._default_task_date(task));
 		} else {
-			date = (task.end_date || this.calculateEndDate(this._default_task_date(task)));
+			date = (task.end || this.calculateEndDate(this._default_task_date(task)));
 		}
 		var x = this.posFromDate(date),
 			y = this.getTaskTop(task.id);
@@ -3194,9 +3200,9 @@ var SmartGanttInstance = function() { // START CLASS
 	data:[
 		{
 			"id":"string",
-			"text":"...",
-			"start_date":"Date or string",
-			"end_date":"Date or string",
+			"title":"...",
+			"start":"Date or string",
+			"end":"Date or string",
 			"duration":"number",
 			"progress":"0..1",
 			"parent_id":"string",
@@ -3690,7 +3696,7 @@ var SmartGanttInstance = function() { // START CLASS
 			to = +to || Infinity;
 			for(var t in p) {
 				var task = p[t];
-				if(+task.start_date < to && +task.end_date > from) {
+				if(+task.start < to && +task.end > from) {
 					res.push(task);
 				}
 			}
@@ -3706,7 +3712,7 @@ var SmartGanttInstance = function() { // START CLASS
 		if(!this._pull[id]) {
 			return false;
 		}
-		if(!(+this._pull[id].start_date < +this._max_date && +this._pull[id].end_date > +this._min_date)) {
+		if(!(+this._pull[id].start < +this._max_date && +this._pull[id].end > +this._min_date)) {
 			return false;
 		}
 		for(var i= 0, count = this._order.length; i < count; i++) {
@@ -3820,34 +3826,34 @@ var SmartGanttInstance = function() { // START CLASS
 		var parent = (parent_id && parent_id != this.config.root_id) ? this.getTask(parent_id) : false,
 			startDate = '';
 		if(parent) {
-			startDate = parent.start_date;
+			startDate = parent.start;
 		} else {
 			var first = this._order[0];
-			//startDate = first ? this.getTask(first).start_date : this.getState().min_date; // old code from v.3.2.0
-			//startDate = first ? this.getTask(first).start_date : (this.config.start_date || this.getState().min_date); // fix from v.3.2.1
-			startDate = first ? this.getTask(first).start_date : (this.config.reference_date ? new Date(this.config.reference_date) : (this.config.start_date || this.getState().min_date)); // fix by unixman
+			//startDate = first ? this.getTask(first).start : this.getState().min_date; // old code from v.3.2.0
+			//startDate = first ? this.getTask(first).start : (this.config.start_date || this.getState().min_date); // fix from v.3.2.1
+			startDate = first ? this.getTask(first).start : (this.config.reference_date ? new Date(this.config.reference_date) : (this.config.start_date || this.getState().min_date)); // fix by unixman
 		}
 		return new Date(startDate);
 	};
 
 	gantt._set_default_task_timing = function(task) {
-		task.start_date = task.start_date || gantt._default_task_date(task, this.getParent(task));
+		task.start = task.start || gantt._default_task_date(task, this.getParent(task));
 		task.duration = task.duration || this.config.duration_step;
-		task.end_date = task.end_date || this.calculateEndDate(task.start_date, task.duration);
+		task.end = task.end || this.calculateEndDate(task.start, task.duration);
 	};
 
 	gantt.createTask = function(item, parent) {
 		item = item || {};
 		item.id = dhtmlx.uid();
 		item.open = true;
-		if(!item.start_date) {
-			item.start_date = gantt._default_task_date(item, parent);
+		if(!item.start) {
+			item.start = gantt._default_task_date(item, parent);
 		}
-		if(item.text === undefined) {
+		if(item.title === undefined) {
 			if(parent) {
-				item.text = gantt.locale.labels.new_task;
+				item.title = gantt.locale.labels.new_task;
 			} else {
-				item.text = gantt.locale.labels.new_proj;
+				item.title = gantt.locale.labels.new_proj;
 			}
 		}
 		if(item.duration === undefined) {
@@ -4089,11 +4095,11 @@ var SmartGanttInstance = function() { // START CLASS
 
 	gantt.correctTaskWorkTime = function(task) {
 		if(gantt.config.work_time && gantt.config.correct_work_time) {
-			if(!gantt.isWorkTime(task.start_date)) {
-				task.start_date = gantt.getClosestWorkTime({date:task.start_date, dir:'future'});
-				task.end_date = gantt.calculateEndDate(task.start_date, task.duration);
-			} else if(!gantt.isWorkTime(new Date(+task.end_date - 1))) {
-				task.end_date = gantt.calculateEndDate(task.start_date, task.duration);
+			if(!gantt.isWorkTime(task.start)) {
+				task.start = gantt.getClosestWorkTime({date:task.start, dir:'future'});
+				task.end = gantt.calculateEndDate(task.start, task.duration);
+			} else if(!gantt.isWorkTime(new Date(+task.end - 1))) {
+				task.end = gantt.calculateEndDate(task.start, task.duration);
 			}
 		}
 	};
@@ -4130,19 +4136,19 @@ var SmartGanttInstance = function() { // START CLASS
 		if(!dhtmlx.defined(task.id)) {
 			task.id = dhtmlx.uid();
 		}
-		if(task.start_date) {
-			task.start_date = gantt.date.parseDate(task.start_date, "xml_date");
+		if(task.start) {
+			task.start = gantt.date.parseDate(task.start, 'xml_date');
 		}
-		if(task.end_date) {
-			task.end_date = gantt.date.parseDate(task.end_date, "xml_date");
+		if(task.end) {
+			task.end = gantt.date.parseDate(task.end, 'xml_date');
 		}
-		if(task.start_date) {
-			if(!task.end_date && task.duration) {
-				task.end_date = this.calculateEndDate(task.start_date, task.duration);
+		if(task.start) {
+			if(!task.end && task.duration) {
+				task.end = this.calculateEndDate(task.start, task.duration);
 			}
 		}
 		gantt._init_task_timing(task);
-		if(task.start_date && task.end_date) {
+		if(task.start && task.end) {
 			gantt.correctTaskWorkTime(task);
 		}
 		task.$source = [];
@@ -4170,24 +4176,24 @@ var SmartGanttInstance = function() { // START CLASS
 				task.$no_end = task.$no_start = true;
 				this._set_default_task_timing(task);
 			} else if(task_type == this.config.types.flextask) {
-				//console.log(task.text);
+				//console.log(task.title);
 				task.$no_end = true;
-				task.$no_start = !task.start_date;
+				task.$no_start = !task.start;
 				this._set_default_task_timing(task);
 			} else {
 				//tasks can have fixed duration, children duration(as projects), or one date fixed, and other defined by nested items
-				task.$no_end = !(task.end_date || task.duration);
-				task.$no_start = !task.start_date;
+				task.$no_end = !(task.end || task.duration);
+				task.$no_start = !task.start;
 			}
 		}
 		if(task_type == this.config.types.milestone) {
-			task.end_date = task.start_date;
+			task.end = task.start;
 		}
-		if(task.start_date && task.end_date) {
-			task.duration = this.calculateDuration(task.start_date, task.end_date);
+		if(task.start && task.end) {
+			task.duration = this.calculateDuration(task.start, task.end);
 		}
 		task.duration = task.duration || 0;
-		//console.log(task.text + ': ' + task.duration + ' @ ' + task.type);
+		//console.log(task.title + ': ' + task.duration + ' @ ' + task.type);
 	};
 
 	gantt._is_flex_task = function(task) {
@@ -4200,23 +4206,23 @@ var SmartGanttInstance = function() { // START CLASS
 			var dates = this.getSubtaskDates(task.id);
 			if(task.type == this.config.types.flextask) {
 				if(this.config.end_date) {
-					dates.end_date = this.config.end_date;
+					dates.end = this.config.end_date;
 				} else {
-					dates.end_date = this.calculateEndDate(task.start_date, 367);
+					dates.end = this.calculateEndDate(task.start, 367);
 				}
 			} else if(task.type == this.config.types.project) {
-				if(dates.end_date === null) {
+				if(dates.end === null) {
 					if(this.config.end_date) {
-						dates.end_date = this.config.end_date;
+						dates.end = this.config.end_date;
 					} else {
-						dates.end_date = this.calculateEndDate(task.start_date, 367);
+						dates.end = this.calculateEndDate(task.start, 367);
 					}
 				}
 			}
-			if((dates.end_date === null) || (dates.end_date.getTime() <= task.start_date.getTime())) {
-				dates.end_date = this.calculateEndDate(task.start_date, 1);
+			if((dates.end === null) || (dates.end.getTime() <= task.start.getTime())) {
+				dates.end = this.calculateEndDate(task.start, 1);
 			}
-			this._assign_project_dates(task, dates.start_date, dates.end_date);
+			this._assign_project_dates(task, dates.start, dates.end);
 		} //end if
 	};
 
@@ -4228,39 +4234,39 @@ var SmartGanttInstance = function() { // START CLASS
 			if(this._get_safe_type(child.type) == gantt.config.types.project) {
 				return;
 			}
-			if((child.start_date && !child.$no_start) && (!min || min > child.start_date.valueOf())) {
-				min = child.start_date.valueOf();
+			if((child.start && !child.$no_start) && (!min || min > child.start.valueOf())) {
+				min = child.start.valueOf();
 			}
-			if((child.end_date && !child.$no_end) && (!max || max < child.end_date.valueOf())) {
-				max = child.end_date.valueOf();
+			if((child.end && !child.$no_end) && (!max || max < child.end.valueOf())) {
+				max = child.end.valueOf();
 			}
 			if(child.type == gantt.config.types.flextask) {
 				if(gantt.config.end_date) {
 					max = gantt.config.end_date;
 				} else {
-					max = gantt.calculateEndDate(child.start_date, 367);
+					max = gantt.calculateEndDate(child.start, 367);
 				}
 			}
 		}, root);
 		return {
-			start_date: min ? new Date(min) : null,
-			end_date: max ? new Date(max): null
+			start: min ? new Date(min) : null,
+			end: max ? new Date(max): null
 		};
 	};
 
 	gantt._assign_project_dates = function(task, from, to) {
 		if(task.$no_start) {
 			if(from && from != Infinity) {
-				task.start_date = new Date(from);
+				task.start = new Date(from);
 			} else {
-				task.start_date = this._default_task_date(task, this.getParent(task));
+				task.start = this._default_task_date(task, this.getParent(task));
 			}
 		}
 		if(task.$no_end) {
 			if(to && to != -Infinity) {
-				task.end_date = new Date(to);
+				task.end = new Date(to);
 			} else {
-				task.end_date = this.calculateEndDate(task.start_date, this.config.duration_step);
+				task.end = this.calculateEndDate(task.start, this.config.duration_step);
 			}
 		}
 		if(task.$no_start || task.$no_end) {
@@ -4553,11 +4559,11 @@ var SmartGanttInstance = function() { // START CLASS
 				}
 			}
 			if(task.$no_start) {
-				task.start_date = '';
+				task.start = '';
 				task.duration = '';
 			}
 			if(task.$no_end) {
-				task.end_date = '';
+				task.end = '';
 				task.duration = '';
 			}
 			data[dp.action_param] = this.getUserData(id, dp.action_param);
@@ -5039,9 +5045,15 @@ var SmartGanttInstance = function() { // START CLASS
 		var time_controls = {"time":true, "duration":true};
 		if(time_controls[section.type]) {
 			if(section.map_to == 'auto') {
-				mapping = {start_date: "start_date", end_date: "end_date", duration: "duration"};
+				mapping = {
+					start: "start",
+					end: "end",
+					duration: "duration"
+				};
 			} else if(typeof(section.map_to) === "string") {
-				mapping = {start_date: section.map_to};
+				mapping = {
+					start: section.map_to
+				};
 			}
 		}
 		return mapping;
@@ -5102,8 +5114,8 @@ var SmartGanttInstance = function() { // START CLASS
 	gantt._set_lightbox_values = function(data, box) {
 		var task = data;
 		var s = box.getElementsByTagName('span');
-		s[2].innerHTML = this.templates.task_time(task.start_date, task.end_date, task);
-		s[1].innerHTML = (this.templates.task_text(task.start_date, task.end_date, task, 50) || ''); // limit task title in lightbox header (unixman)
+		s[2].innerHTML = this.templates.task_time(task.start, task.end, task);
+		s[1].innerHTML = (this.templates.task_text(task.start, task.end, task, 50) || ''); // limit task title in lightbox header (unixman)
 		var sns = this._get_typed_lightbox_config(this.getLightboxType());
 		for(var i = 0; i < sns.length; i++) {
 			var section = sns[i];
@@ -5468,13 +5480,13 @@ var SmartGanttInstance = function() { // START CLASS
 			},
 			set_value:function(node,value,ev,config) {
 				var cfg = config;
-				var s=node.getElementsByTagName("select");
+				var s = node.getElementsByTagName("select");
 				var map = config._time_format_order;
 				var map_size = config._time_format_size;
 				if(cfg.auto_end_date) {
 					var _update_lightbox_select = function() {
-						start_date = new Date(s[map[2]].value,s[map[1]].value,s[map[0]].value,0,0);
-						end_date =  gantt.calculateEndDate(start_date, 1);
+						var start_date = new Date(s[map[2]].value,s[map[1]].value,s[map[0]].value,0,0); // unixman: added var, before was missing
+						var end_date =  gantt.calculateEndDate(start_date, 1); // unixman: added var, before was missing
 						this.form_blocks._fill_lightbox_select(s,map.size, end_date,map,cfg);
 					};
 					for(var i=0; i<4; i++) {
@@ -5483,10 +5495,12 @@ var SmartGanttInstance = function() { // START CLASS
 				}
 				var mapping = gantt._resolve_default_mapping(config);
 				if(typeof(mapping) === "string") {
-					mapping = {start_date: mapping};
+					mapping = {
+						start: mapping
+					};
 				}
-				var start_date = ev[mapping.start_date] || new Date();
-				var end_date = ev[mapping.end_date] || gantt.calculateEndDate(start_date, 1);
+				var start_date = ev[mapping.start] || new Date();
+				var end_date = ev[mapping.end] || gantt.calculateEndDate(start_date, 1);
 				this.form_blocks._fill_lightbox_select(s,0,start_date,map,cfg);
 				this.form_blocks._fill_lightbox_select(s,map.size,end_date,map,cfg);
 			},
@@ -5499,24 +5513,24 @@ var SmartGanttInstance = function() { // START CLASS
 					hours = Math.floor(time/60);
 					minutes = time%60;
 				}
-				var start_date=new Date(s[map[2]].value,s[map[1]].value,s[map[0]].value,hours,minutes);
+				var start_date = new Date(s[map[2]].value,s[map[1]].value,s[map[0]].value,hours,minutes);
 				hours = minutes = 0;
 				if(dhtmlx.defined(map[3])) {
 					var time = parseInt(s[map.size+map[3]].value, 10);
 					hours = Math.floor(time/60);
 					minutes = time%60;
 				}
-				var end_date=new Date(s[map[2]+map.size].value,s[map[1]+map.size].value,s[map[0]+map.size].value,hours,minutes);
+				var end_date = new Date(s[map[2]+map.size].value,s[map[1]+map.size].value,s[map[0]+map.size].value,hours,minutes);
 				if(end_date <= start_date) {
 					end_date = gantt.date.add(start_date, gantt._get_timepicker_step(),"minute");
 				}
 				var mapped_fields = gantt._resolve_default_mapping(config);
 				var res = {
-					start_date: new Date(start_date),
-					end_date: new Date(end_date)
+					start: new Date(start_date),
+					end: new Date(end_date)
 				};
 				if(typeof mapped_fields == "string") {
-					return res.start_date;
+					return res.start;
 				} else {
 					return res;
 				}
@@ -5605,10 +5619,12 @@ var SmartGanttInstance = function() { // START CLASS
 				duration.onchange = dhtmlx.bind(function(e) { _calc_date(); }, this);
 				var mapping = gantt._resolve_default_mapping(config);
 				if(typeof(mapping) === "string") {
-					mapping = {start_date: mapping};
+					mapping = {
+						start: mapping
+					};
 				}
-				var start_date = ev[mapping.start_date] || new Date();
-				var end_date = ev[mapping.end_date] || gantt.calculateEndDate(start_date, 1);
+				var start_date = ev[mapping.start] || new Date();
+				var end_date = ev[mapping.end] || gantt.calculateEndDate(start_date, 1);
 				var duration_val = Math.round(ev[mapping.duration]) || gantt.calculateDuration(start_date, end_date);
 				gantt.form_blocks._fill_lightbox_select(s, 0, start_date, map, cfg);
 				duration.value = duration_val;
@@ -5647,12 +5663,12 @@ var SmartGanttInstance = function() { // START CLASS
 				var end_date = gantt.calculateEndDate(start_date, duration);
 				var mapped_fields = gantt._resolve_default_mapping(config);
 				var res = {
-					start_date: new Date(start_date),
-					end_date: new Date(end_date),
+					start: new Date(start_date),
+					end: new Date(end_date),
 					duration: duration
 				};
 				if(typeof mapped_fields == "string") {
-					return res.start_date;
+					return res.start;
 				} else {
 					return res;
 				}
@@ -5690,7 +5706,7 @@ var SmartGanttInstance = function() { // START CLASS
 				}
 				var text = config.template || gantt.templates.task_text;
 				for(var i = 0; i < tasks.length; i++) {
-					var label = tasks[i].text;
+					var label = tasks[i].title;
 					if(!label) {
 						label = '';
 					} else if(label.length > 50) {
@@ -5794,7 +5810,7 @@ var SmartGanttInstance = function() { // START CLASS
 			focus : duration.focus,
 			set_value: function (node, value, task, section) {
 				var mapping = gantt._resolve_default_mapping(section);
-				if(!task[mapping.start_date]) {
+				if(!task[mapping.start]) {
 					optional_time.disable(node, section);
 					var val = {};
 					for(var i in mapping) {
@@ -5809,7 +5825,9 @@ var SmartGanttInstance = function() { // START CLASS
 			},
 			get_value: function (node, task, section) {
 				if(section.disabled) {
-					return {start_date: null};
+					return {
+						start: null
+					};
 				} else {
 					return duration.get_value.call(gantt, node, task, section);
 				}
@@ -6194,10 +6212,10 @@ var SmartGanttInstance = function() { // START CLASS
 						//console.log(JSON.stringify(dt, null, 2));
 						markerRendered = true;
 						var markerId = this.addMarker({
-							start_date: dt, // a Date object that sets the marker's date
+							start: dt, // a Date object that sets the marker's date
 							css: 'today', // a CSS class applied to the marker
-							text: this.locale.labels.now, // the marker title
-							title: this.locale.labels.today // the marker's tooltip
+							title: this.locale.labels.now, // the marker title
+							name: this.locale.labels.today // the marker's tooltip
 						});
 						this.getMarker(markerId);
 					}
@@ -6883,8 +6901,8 @@ var SmartGanttInstance = function() { // START CLASS
 			root_id: 0,
 			autofit: false, // grid column automatic fit grid_width config
 			columns: [
-				{name:'text', tree:true, width:'170', resize:true },
-				{name:'start_date', width:'80', align: 'center', resize:true },
+				{name:'title', tree:true, width:'170', resize:true },
+				{name:'start', width:'80', align: 'center', resize:true },
 				{name:'duration', width:'70', align: 'center' },
 				{name:'progress', align: 'center'},
 				{name:'add', width:'40' }
@@ -6917,7 +6935,7 @@ var SmartGanttInstance = function() { // START CLASS
 			],
 			lightbox: {
 				sections: [ // task
-					{name: 'description', map_to: 'text', type: 'inputarea', focus: true},
+					{name: 'description', map_to: 'title', type: 'inputarea', focus: true},
 					{name: 'time', type: 'duration', map_to: 'auto'},
 					{name: 'progress', type: 'taskprogress', map_to: 'progress'},
 					{name: 'details', height: 50, map_to: 'details', type: 'textarea'},
@@ -6927,7 +6945,7 @@ var SmartGanttInstance = function() { // START CLASS
 					{name: 'type', type: 'tasktype', map_to: 'type'},
 				],
 				flextask_sections: [
-					{name: 'description', map_to: 'text', type: 'inputarea', focus: true},
+					{name: 'description', map_to: 'title', type: 'inputarea', focus: true},
 					{name: 'time', type: 'duration', single_date:true, map_to: 'auto'},
 					{name: 'progress', type: 'taskprogress', map_to: 'progress'},
 					{name: 'details', height: 50, map_to: 'details', type: 'textarea'},
@@ -6937,7 +6955,7 @@ var SmartGanttInstance = function() { // START CLASS
 					{name: 'type', type: 'tasktype', map_to: 'type'},
 				],
 				milestone_sections: [
-					{name: 'description', map_to: 'text', type: 'inputarea', focus: true},
+					{name: 'description', map_to: 'title', type: 'inputarea', focus: true},
 					{name: 'time', type: 'duration', single_date:true, map_to: 'auto'},
 					{name: 'details', height: 50, map_to: 'details', type: 'textarea'},
 					{name: 'color', map_to: 'color', type: 'colorsel'},
@@ -6946,7 +6964,7 @@ var SmartGanttInstance = function() { // START CLASS
 					{name: 'type', type: 'tasktype', map_to: 'type'},
 				],
 				project_sections: [
-					{name: 'description', map_to: 'text', type: 'inputarea', focus: true},
+					{name: 'description', map_to: 'title', type: 'inputarea', focus: true},
 					{name: 'time', type: 'duration', readonly:true, map_to: 'auto'},
 					{name: 'details', height: 50, map_to: 'details', type: 'textarea'},
 					{name: 'color', map_to: 'color', type: 'colorsel'},
@@ -7013,7 +7031,7 @@ var SmartGanttInstance = function() { // START CLASS
 					return '';
 				},
 				task_text:function(start, end, task, limit) {
-					var txt = String(task.text || '');
+					var txt = String(task.title || '');
 					var isTextLonger = false;
 					if(limit && (limit > 0)) {
 						if(txt.length > limit) {
@@ -7069,15 +7087,15 @@ var SmartGanttInstance = function() { // START CLASS
 				link_description : function(link) {
 					var from = gantt.getTask(link.source),
 						to = gantt.getTask(link.target);
-					return '<b>' + SmartJS_CoreUtils.escape_html(from.text) + '</b> &ndash;  <b>' + SmartJS_CoreUtils.escape_html(to.text) + '</b>';
+					return '<b>' + SmartJS_CoreUtils.escape_html(from.title) + '</b> &ndash;  <b>' + SmartJS_CoreUtils.escape_html(to.title) + '</b>';
 				},
 				drag_link : function(from, from_start, to, to_start) {
 					from = gantt.getTask(from);
 					var labels = gantt.locale.labels;
-					var text = '<b>' + SmartJS_CoreUtils.escape_html(from.text) + '</b> ' + SmartJS_CoreUtils.escape_html(from_start ? labels.link_start : labels.link_end) + '<br>';
+					var text = '<b>' + SmartJS_CoreUtils.escape_html(from.title) + '</b> ' + SmartJS_CoreUtils.escape_html(from_start ? labels.link_start : labels.link_end) + '<br>';
 					if(to) {
 						to = gantt.getTask(to);
-						text += '<b> ' + SmartJS_CoreUtils.escape_html(to.text) + '</b> ' + SmartJS_CoreUtils.escape_html(to_start ? labels.link_start : labels.link_end) + '<br>';
+						text += '<b> ' + SmartJS_CoreUtils.escape_html(to.title) + '</b> ' + SmartJS_CoreUtils.escape_html(to_start ? labels.link_start : labels.link_end) + '<br>';
 					}
 					return text;
 				},
@@ -7140,7 +7158,7 @@ var SmartGanttInstance = function() { // START CLASS
 	gantt.locale = {
 		date: dhtmlx.date_Locales,
 		labels: {
-			new_proj: 'New Feature Project',
+			new_proj: 'New ProjectFeature',
 			new_task: 'New Task / FlexTask / Milestone',
 			icon_save: 'Update',
 			icon_cancel: 'Cancel',
@@ -7157,9 +7175,10 @@ var SmartGanttInstance = function() { // START CLASS
 			section_type: 'Type',
 			section_parent: 'Parent',
 			section_progress: 'Progress %',
-			// grid columns
-			column_text: 'Name',
-			column_start_date: 'Start',
+			// grid columns (automap)
+			column_title: 'Name',
+			column_start: 'Start',
+			column_end: 'End@',
 			column_duration: 'End',
 			column_parent: 'Parent',
 			column_progress: '%',
@@ -7180,7 +7199,7 @@ var SmartGanttInstance = function() { // START CLASS
 			// types
 			type_task: 'Task',
 			type_flextask: 'FlexTask',
-			type_project: 'Feature Project',
+			type_project: 'ProjectFeature',
 			type_milestone: 'Milestone',
 			sel_default: 'Default',
 			sel_invert: 'Invert'
@@ -7447,7 +7466,7 @@ var SmartGanttInstance = function() { // START CLASS
 		if(task.type != gantt.config.types.milestone){
 			return '';
 		}
-		var label = task.text;
+		var label = task.title;
 		if(!label) {
 			label = '';
 		} else if(label.length > 50) {

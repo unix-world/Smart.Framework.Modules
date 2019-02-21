@@ -1,7 +1,7 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190213
+// v.20190219
 // modified by unixman:
 // 	* depends: SmartJS_CoreUtils.escape_html()
 

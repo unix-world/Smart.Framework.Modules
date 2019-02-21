@@ -1,4 +1,4 @@
-<!-- dbmodel-init.inc.htm v.20190117 -->
+<!-- dbmodel-init.inc.htm v.20190217 -->
 <link rel="stylesheet" href="modules/mod-wflow-components/views/dbmodeler/css/style.css" media="all">
 <script src="modules/mod-wflow-components/views/dbmodeler/js/config.js"></script>
 <script type="text/javascript">
@@ -27,21 +27,21 @@
 <script src="modules/mod-wflow-components/views/dbmodeler/js/window.js"></script>
 <script src="modules/mod-wflow-components/views/dbmodeler/js/options.js"></script>
 <script src="modules/mod-wflow-components/views/dbmodeler/js/wwwsqldesigner.js"></script>
-<div id="area"></div><!-- # area -->
+<div id="area"[%%%%IF:OP-MODE:@=create|edit;%%%%] class="area-editable"[%%%%/IF:OP-MODE%%%%]></div><!-- # area -->
 <div id="controls">
 	<div id="bar">
 		<div id="toggle"></div>
 		[%%%%IF:OP-MODE:@=create|edit;(1)%%%%]
-		<button class="ux-button ux-button-regular" onclick="saveModelData(); return false;">Save Model</button>
+		<button class="ux-button ux-button-small ux-button-regular" onclick="saveModelData(); return false;">Save Model</button>
 			[%%%%IF:OP-MODE:==create;(2)%%%%]
-		<button class="ux-button ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;">Cancel Create</button>
+		<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;">Cancel Create</button>
 			[%%%%ELSE:OP-MODE(2)%%%%]
-		<button class="ux-button ux-button-special" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[####UUID|url|js####]'; return false;">Cancel Edit</button>
+		<button class="ux-button ux-button-small ux-button-special" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[####UUID|url|js####]'; return false;">Cancel Edit</button>
 			[%%%%/IF:OP-MODE(2)%%%%]
 		[%%%%ELSE:OP-MODE(1)%%%%]
-		<button class="ux-button ux-button-secondary" onclick="exportModelData();">Export as JSON</button>
-		<button class="ux-button ux-button-highlight" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[####UUID|url|js####]/edit/yes'; return false;">Edit DB-Model</button>
-		<button class="ux-button ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;">Close View</button>
+		<button class="ux-button ux-button-small ux-button-secondary" onclick="exportModelData();">Export as JSON</button>
+		<button class="ux-button ux-button-small ux-button-highlight" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[####UUID|url|js####]/edit/yes'; return false;">Edit DB-Model</button>
+		<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;">Close View</button>
 		[%%%%/IF:OP-MODE(1)%%%%]
 		<hr>
 		[%%%%IF:OP-MODE:@=create|edit;%%%%]
@@ -55,6 +55,7 @@
 		<input type="button" id="foreigndisconnect">
 		<input type="button" id="removerow">
 		<input type="button" id="removetable">
+		<input type="button" id="aligntables">
 		<input type="button" id="cleartables">
 		<hr>
 		<input type="button" id="saveload">
@@ -67,7 +68,7 @@
 	<div id="minimap"></div>
 	<div id="background"></div>
 	<div id="window">
-		<div id="windowtitle"><img id="throbber" src="modules/mod-wflow-components/views/dbmodeler/images/throbber.gif" alt="" title=""></div>
+		<div id="windowtitle"><img id="throbber" src="lib/framework/img/loading-spokes.svg" alt="" title=""></div>
 		<div id="windowcontent"></div>
 		<input type="button" id="windowok">
 		<input type="button" id="windowcancel">
@@ -134,8 +135,6 @@
 							<input type="button" id="clientsave">
 							<input type="button" id="clientsql">
 						</div>
-						<hr>
-						<input type="button" id="clientload">
 					</fieldset>
 				</td>
 			</tr>
@@ -231,13 +230,15 @@ jQuery(function(){
 </script>
 <script type="text/javascript">
 function exportModelData() {
+	var exportDTime = '[####DTIME|js####]';
+	var exportAuthor = '[####AUTHOR|js####]';
 	var data = sqlDesigner.getOption('exportdata');
 	[%%%%IF:OP-MODE:@=create|edit;%%%%]
 	data.docTitle = String($('#dbmodel_title').val());
 	[%%%%ELSE:OP-MODE%%%%]
 	data.docTitle = String($('#dbmodel_title').text());
 	[%%%%/IF:OP-MODE%%%%]
-	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'dbmodel.json', 'application/json', 'UTF-8');
+	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'dbmodel-' + exportDTime + '@' + exportAuthor + '.json', 'application/json', 'UTF-8');
 }
 [%%%%IF:OP-MODE:@=create|edit;%%%%]
 function saveModelData() {

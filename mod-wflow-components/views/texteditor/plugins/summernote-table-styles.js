@@ -22,17 +22,16 @@
 	$.extend(true, $.summernote.lang, {
 		"en-US": {
 			tableStyles: {
-				tooltip: "Table style",
-				stylesExclusive: ["Basic", "Bordered"],
-				stylesInclusive: ["Striped", "Condensed", "Hoverable"]
+				tooltip: 'Table style',
+				stylesExclusive: ['Default', 'Bordered'],
+				stylesInclusive: ['Striped']
 			}
 		}
 	});
 	$.extend($.summernote.options, {
-		tableStyles: {
-			// Must keep the same order as in lang.tableStyles.styles*
-			stylesExclusive: ["", "table-bordered"],
-			stylesInclusive: ["table-striped", "table-condensed", "table-hover"]
+		tableStyles: { // Must keep the same order as in lang.tableStyles.styles*
+			stylesExclusive: ['', 'table-bordered'],
+			stylesInclusive: ['table-striped']
 		}
 	});
 
@@ -56,6 +55,7 @@
 							options
 						),
 						tooltip: lang.tableStyles.tooltip,
+						container: options.container, // tooltip fix by unixman
 						data: {
 							toggle: "dropdown"
 						},
@@ -87,8 +87,8 @@
 			});
 
 			self.updateTableStyles = function(chosenItem) {
-				const rng = context.invoke("createRange", $editable);
-				const dom = $.summernote.dom;
+				var rng = context.invoke("createRange", $editable);
+				var dom = $.summernote.dom;
 				if (rng.isCollapsed() && rng.isOnCell()) {
 					context.invoke("beforeCommand");
 					var table = dom.ancestor(rng.commonAncestor(), dom.isTable);
@@ -102,8 +102,8 @@
 
 			/* Makes sure the check marks are on the currently applied styles */
 			self.updateTableMenuState = function($dropdownButton) {
-				const rng = context.invoke("createRange", $editable);
-				const dom = $.summernote.dom;
+				var rng = context.invoke("createRange", $editable);
+				var dom = $.summernote.dom;
 				if (rng.isCollapsed() && rng.isOnCell()) {
 					var $table = $(dom.ancestor(rng.commonAncestor(), dom.isTable));
 					var $listItems = $dropdownButton.next().find("a");
@@ -161,13 +161,13 @@
 				var index = 0;
 				var list = "";
 
-				for (const style of exclusiveStyles) {
+				for (var style of exclusiveStyles) {
 					list += self.getListItem(style, exclusiveLabels[index], true);
 					index++;
 				}
-				list += '<hr style="margin: 5px 0px">';
+				list += '<hr style="margin: 5px 0px; background-color: #CCCCCC; height: 1px; border: 0;">';
 				index = 0;
-				for (const style of inclusiveStyles) {
+				for (var style of inclusiveStyles) {
 					list += self.getListItem(style, inclusiveLabels[index], false);
 					index++;
 				}
@@ -179,19 +179,8 @@
 				label,
 				isExclusive,
 			) {
-				var item =
-					'<li><a href="#" class="' +
-					(isExclusive ? "exclusive-item" : "inclusive-item") +
-					'" ' +
-					'style="display: block;" data-value="' +
-					value +
-					'">' +
-					'<i class="note-icon-menu-check" ' +
-					(!isExclusive ? 'style="color:#00ffc0;" ' : "") +
-					"></i>" +
-					" " +
-					label +
-					"</a></li>";
+				var item = '<li><a href="#" class="note-dropdown-item ' + (isExclusive ? "exclusive-item" : "inclusive-item") + '" style="display: block;" data-value="' + value + '">' +
+					'<i class="note-icon-menu-check" ' + (!isExclusive ? 'style="color:#777777;" ' : 'style="color:#888888;" ') + '></i>' + ' ' + label + '</a></li>';
 				return item;
 			};
 		}

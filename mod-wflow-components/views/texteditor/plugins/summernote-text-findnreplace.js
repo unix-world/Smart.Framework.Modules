@@ -18,7 +18,7 @@
 	$.extend(true,$.summernote.lang, {
 		'en-US': { /* English */
 			findnreplace: {
-				tooltip:            'Find \'N Replace',
+				tooltip:            'Find and Replace',
 				findBtn:            'Find ',
 				findPlaceholder:    'Enter the text you want to find...',
 				findResult:         ' results found for ',
@@ -49,6 +49,7 @@
 				var button = ui.button({
 					contents: options.findnreplace.icon,
 					tooltip:  lang.findnreplace.tooltip,
+					container: options.container, // tooltip fix by unixman
 					click: function (e) {
 						e.preventDefault();
 						$editor.find('.note-findnreplace').contents().unwrap('u');

@@ -1,25 +1,27 @@
 
 // Business Process Model and Notation (BPMN) - Modeler (Editor)
+// depends on: SmartJS_CoreUtils
 
 /*
 (c) 2019 unix-world.org
 License: GPLv3
-Version: 20190211
+Version: 20190219
 IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BPMN.IO LOGO (see original bpmn.io LICENSE)
 */
 
 /*
  * file: bpmn-modeler.js
- * version: v3.2.0
+ * version: v3.2.1
  * (c) 2014-2019, camunda Services GmbH @ see LICENSE
- * https://github.com/bpmn-io/bpmn-js # https://unpkg.com/bpmn-js@3.2.0/dist/
+ * https://github.com/bpmn-io/bpmn-js # https://unpkg.com/bpmn-js@3.2.1/dist/
  */
 /*
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
 	(global.BpmnJS = factory());
-}(this, (function() { */
+}(this, (function() { 'use strict'; */
+//var BpmnJS = new function() {
 (function(module) {
 'use strict';
 
@@ -1330,6 +1332,81 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 		return element;
 	}
 
+
+	//-- unixman
+	var uxmExtraObjProps = {}; 		// example: { 'SOME-ID': { note: 'A note' }, ... };
+	var tmpExtraNoteOverlays = {}; 	// temporary store overlay ids for editing notes
+	//--
+	function deleteAnnotation($el, elId, canvas) {
+		//--
+		if(!$el || !elId) {
+			return false;
+		} //end if
+		//--
+		//console.log(JSON.stringify(tmpExtraNoteOverlays,null,2));
+		//console.log(JSON.stringify(uxmExtraObjProps,null,2));
+		//--
+		if(uxmExtraObjProps[String(elId)]) {
+			if(uxmExtraObjProps[String(elId)]['note']) {
+				uxmExtraObjProps[String(elId)]['note'] = '';
+				delete(uxmExtraObjProps[String(elId)]['note']);
+				if(!uxmExtraObjProps[String(elId)].length) {
+					delete(uxmExtraObjProps[String(elId)]);
+				} //end if
+			} //end if
+		} //end if
+		//--
+		tmpExtraNoteOverlays[String(elId)] = null;
+		delete(tmpExtraNoteOverlays[String(elId)]);
+		//--
+		canvas.removeMarker(String(elId), 'djs-xtra-annotation-note');
+		$el.remove();
+		//--
+		//console.log(JSON.stringify(uxmExtraObjProps,null,2));
+		//console.log(JSON.stringify(tmpExtraNoteOverlays,null,2));
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+	//--
+	function createAnnotation(elemId, note, canvas) { // {{{SYNC-BPMN-UXM-ANNOTATIONS}}}
+		//--
+		var overlayHtml = jQuery('<div class="djs-xtra-elem-note" data-elem-id="' + SmartJS_CoreUtils.escape_html(String(elemId)) + '" title="' + SmartJS_CoreUtils.escape_html(String(note)) + '">' + SmartJS_CoreUtils.escape_html(String(note)) + '</div>');
+		//--
+		overlayHtml.on('dblclick', function(e){
+			var $el = jQuery(this);
+			var elId = $el.attr('data-elem-id');
+			var question = 'Delete this Annotation ?';
+			if(elId) {
+				if(jQuery.alertable) {
+					jQuery.alertable.confirm(question).then(function() {
+						deleteAnnotation($el, elId, canvas);
+					});
+				} else {
+					var ok = confirm(question);
+					if(ok) {
+						deleteAnnotation($el, elId, canvas);
+					} //end if
+				} //end if else
+			} //end if
+		});
+		overlayHtml.contextmenu(function() {
+			var info = 'Annotation\n\nDoubleClick on Annotation to Delete it.\n\nModifying the Annotation:\nClick on the item that this Annotation belongs to and after Click on the ¶ Icon from the item\'s menu to change it.';
+			if(jQuery.alertable) {
+				jQuery.alertable.alert(info).always(function(){});
+			} else {
+				alert(info);
+			}
+		});
+		//--
+		return overlayHtml;
+		//--
+	} //END FUNCTION
+	//--
+
+
+	//----- # start SVG-Tiny 2.2.1 {{{SYNC-SVG-Tiny-JS}}}
+
 	/**
 	 * appendTo utility
 	 */
@@ -1830,25 +1907,35 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 		return object;
 	}
 
+	/**
+	 * Create matrix via args.
+	 *
+	 * @example
+	 *
+	 * createMatrix({ a: 1, b: 1 });
+	 * createMatrix();
+	 * createMatrix(1, 2, 0, 0, 30, 20);
+	 *
+	 * @return {SVGMatrix}
+	 */
 	function createMatrix(a, b, c, d, e, f) {
 		var matrix = node.createSVGMatrix();
 
 		switch (arguments.length) {
 		case 0:
 			return matrix;
+		case 1:
+			return extend(matrix, a);
 		case 6:
-			a = {
+			return extend(matrix, {
 				a: a,
 				b: b,
 				c: c,
 				d: d,
 				e: e,
 				f: f
-			};
-			break;
+			});
 		}
-
-		return extend(matrix, a);
 	}
 
 	function createTransform(matrix) {
@@ -1858,98 +1945,6 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 			return node.createSVGTransform();
 		}
 	}
-
-	//-- unixman
-	var uxmExtraObjProps = {}; // example: { 'SOME-ID': { note: 'A note' }, ... };
-	var tmpExtraNoteOverlays = {}; // temporary store overlay ids for editing notes
-	//--
-
-	//-- unixman
-	function htmlEscape(str) {
-		//-- format sting
-		if((typeof str == 'undefined') || (str == undefined) || (str == null)) {
-			str = '';
-		} else {
-			str = String(str); // force string
-		} //end if else
-		//-- replace basics
-		str = str.replace(/&/g, '&amp;');
-		str = str.replace(/</g, '&lt;');
-		str = str.replace(/>/g, '&gt;');
-		str = str.replace(/"/g, '&quot;');
-		//--
-		return String(str); // fix to return empty string instead of null
-		//--
-	} //END FUNCTION
-	//--
-
-	//-- unixman
-	function deleteAnnotation($el, elId, canvas) {
-		//--
-		if(!$el || !elId) {
-			return false;
-		} //end if
-		//--
-		//console.log(JSON.stringify(tmpExtraNoteOverlays,null,2));
-		//console.log(JSON.stringify(uxmExtraObjProps,null,2));
-		//--
-		if(uxmExtraObjProps[String(elId)]) {
-			if(uxmExtraObjProps[String(elId)]['note']) {
-				uxmExtraObjProps[String(elId)]['note'] = '';
-				delete(uxmExtraObjProps[String(elId)]['note']);
-				if(!uxmExtraObjProps[String(elId)].length) {
-					delete(uxmExtraObjProps[String(elId)]);
-				} //end if
-			} //end if
-		} //end if
-		//--
-		tmpExtraNoteOverlays[String(elId)] = null;
-		delete(tmpExtraNoteOverlays[String(elId)]);
-		//--
-		canvas.removeMarker(String(elId), 'djs-xtra-annotation-note');
-		$el.remove();
-		//--
-		//console.log(JSON.stringify(uxmExtraObjProps,null,2));
-		//console.log(JSON.stringify(tmpExtraNoteOverlays,null,2));
-		//--
-		return true;
-		//--
-	} //END FUNCTION
-	//--
-	function createAnnotation(elemId, note, canvas) { // {{{SYNC-BPMN-UXM-ANNOTATIONS}}}
-		//--
-		var overlayHtml = $('<div class="djs-xtra-elem-note" data-elem-id="' + htmlEscape(String(elemId)) + '" title="' + htmlEscape(String(note)) + '">' + htmlEscape(String(note)) + '</div>');
-		//--
-		overlayHtml.on('dblclick', function(e){
-			var $el = $(this);
-			var elId = $el.attr('data-elem-id');
-			var question = 'Delete this Annotation ?';
-			if(elId) {
-				if($.alertable) {
-					$.alertable.confirm(question).then(function() {
-						deleteAnnotation($el, elId, canvas);
-					});
-				} else {
-					var ok = confirm(question);
-					if(ok) {
-						deleteAnnotation($el, elId, canvas);
-					} //end if
-				} //end if else
-			} //end if
-		});
-		overlayHtml.contextmenu(function() {
-			var info = 'Annotation\n\nDoubleClick on Annotation to Delete it.\n\nModifying the Annotation:\nClick on the item that this Annotation belongs to and after Click on the ¶ Icon from the item\'s menu to change it.';
-			if($.alertable) {
-				$.alertable.alert(info).then(function(){});
-			} else {
-				alert(info);
-			}
-		});
-		//--
-		return overlayHtml;
-		//--
-	} //END FUNCTION
-	//--
 
 	/**
 	 * Serialization util
@@ -2102,9 +2097,8 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 	function wrapMatrix(transformList, transform) {
 		if (transform instanceof SVGMatrix) {
 			return transformList.createSVGTransformFromMatrix(transform);
-		} else {
-			return transform;
 		}
+		return transform;
 	}
 
 	function setTransforms(transformList, transforms) {
@@ -2115,23 +2109,32 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 		for (i = 0; (t = transforms[i]); i++) {
 			transformList.appendItem(wrapMatrix(transformList, t));
 		}
-
-		transformList.consolidate();
 	}
 
+	/**
+	 * Get or set the transforms on the given node.
+	 *
+	 * @param {SVGElement} node
+	 * @param  {SVGTransform|SVGMatrix|Array<SVGTransform|SVGMatrix>} [transforms]
+	 *
+	 * @return {SVGTransform} the consolidated transform
+	 */
 	function transform(node, transforms) {
 		var transformList = node.transform.baseVal;
 
-		if (arguments.length === 1) {
-			return transformList.consolidate();
-		} else {
-			if (transforms.length) {
-				setTransforms(transformList, transforms);
-			} else {
-				transformList.initialize(wrapMatrix(transformList, transforms));
+		if (transforms) {
+
+			if (!Array.isArray(transforms)) {
+				transforms = [ transforms ];
 			}
+
+			setTransforms(transformList, transforms);
 		}
+
+		return transformList.consolidate();
 	}
+
+	//----- # end SVG-Tiny
 
 	var CLASS_PATTERN = /^class /;
 
@@ -16208,14 +16211,11 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 				break;
 
 			case 'right':
-				x = ((fitBox ? maxLineWidth : maxWidth)
-					- padding.right - line.width);
+				x = ((fitBox ? maxLineWidth : maxWidth) - padding.right - line.width);
 				break;
 
-			default:
-				// aka center
-				x = Math.max((((fitBox ? maxLineWidth : maxWidth)
-					- line.width) / 2 + padding.left), 0);
+			default: // center
+				x = Math.max((((fitBox ? maxLineWidth : maxWidth) - line.width) / 2 + padding.left), 0);
 			}
 
 			var tspan = create('tspan');
@@ -16255,8 +16255,9 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 	function TextRenderer(config) {
 
 		var defaultStyle = assign({
-			fontFamily: 'Arial, sans-serif',
-			fontSize: DEFAULT_FONT_SIZE,
+		//	fontFamily: 'Arial, sans-serif',
+		//	fontSize: DEFAULT_FONT_SIZE,
+			fontSize: DEFAULT_FONT_SIZE + 'px', // fix by unixman
 			fontWeight: 'normal',
 			lineHeight: LINE_HEIGHT_RATIO
 		}, config && config.defaultStyle || {});
@@ -20472,7 +20473,8 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 				dataFormat: 'text/xml',
 				data: {
 					bpmnProps: uxmExtraObjProps,
-					bpmnXML: String(xml),
+					bpmnVersion: '2.0',
+					bpmnXML: String(xml)
 				}
 			};
 			done(err, json);
@@ -20568,8 +20570,8 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 
 			svg =
 				'<?xml version="1.0" encoding="utf-8"?>\n' +
-				'<!-- created with bpmn-js / http://bpmn.io -->\n' +
-				'<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n' +
+			//	'<!-- created with bpmn-js / http://bpmn.io -->\n' +
+			//	'<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n' +
 				'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
 						 'width="' + bbox.width + '" height="' + bbox.height + '" ' +
 						 'viewBox="' + bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height + '" version="1.1">' +
@@ -32905,9 +32907,9 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 					nText = String(uxmExtraObjProps[String(elemId)]['note']);
 				}
 			}
-			if($.alertable) {
+			if(jQuery.alertable) {
 				var note = null;
-				$.alertable.prompt('Annotation', {value:nText}).then(function(data) {
+				jQuery.alertable.prompt('Annotation', {value:nText}).then(function(data) {
 					if(data && data.value) {
 						note = String(data.value);
 						injectAnnotation(elemId, nId, note);
@@ -32963,9 +32965,9 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 		//--
 		function changeElementColor() {
 			var question = 'Element Color:\nred, pink,\nblue, green,\nyellow, brown,\ngrey, white (default)';
-			if($.alertable) {
+			if(jQuery.alertable) {
 				var color = '';
-				$.alertable.prompt(question).then(function(data) {
+				jQuery.alertable.prompt(question).then(function(data) {
 					if(data && data.value) {
 						color = String(data.value);
 						if(color) {

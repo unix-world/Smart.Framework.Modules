@@ -5,13 +5,14 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190219 (stable)
 /*
 modified by unixman:
 	- changed text: Title instead of Task
 	- isolate in a function
 	- fix HTML escapings
 	- fix max length of text
+	- changed task structure [ start = start_date ; end = end_date ; title = text ]
 */
 
 function SmartGanttPluginTooltip(gantt) {
@@ -161,7 +162,7 @@ function SmartGanttPluginTooltip(gantt) {
 		}
 		this._tooltip_id = event_id;
 		var task = this.getTask(event_id);
-		var text = this.templates.tooltip_text(task.start_date, task.end_date, task);
+		var text = this.templates.tooltip_text(task.start, task.end, task);
 		if(!text){
 			this._hide_tooltip();
 			return;
@@ -197,7 +198,7 @@ function SmartGanttPluginTooltip(gantt) {
 		} else {
 			endTxt = gantt.templates.tooltip_date_format(end);
 		} //end if else
-		var txt = String(event.text || '');
+		var txt = String(event.title || '');
 		if(txt.length > 50) {
 			txt = txt.substr(0, 50) + '...';
 		} //end if

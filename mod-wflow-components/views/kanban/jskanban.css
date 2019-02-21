@@ -17,12 +17,12 @@
 	float: left;
 	clear: right;
 	margin: 1%;
-	border: 1px solid #FFFFFF;
+	border: 3px solid #ECECEC;
 	border-radius: 5px;
 }
 
 .jskanban_holder_highlight {
-	border: 1px solid #333333;
+	border: 3px solid #333333;
 }
 
 .jskanban_holder_todo {

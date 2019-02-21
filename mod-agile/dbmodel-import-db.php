@@ -1,6 +1,6 @@
 <?php
-// Controller: Agile, DbModelImportServer
-// Route: admin.php?page=agile.dbmodel-import-server
+// Controller: Agile, DbModelImportDb
+// Route: admin.php?page=agile.dbmodel-import-db
 // (c) 2006-2019 unix-world.org - all rights reserved
 // v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
@@ -49,26 +49,33 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						(string) $frm['user'],
 						(string) $frm['pass']
 					);
+				} elseif((string)$frm['type'] == 'sqlite') {
+					$xml = (string) \SmartModExtLib\Agile\DBModelImport::SmartDbModelerSQLiteExportToXml(
+						(string) $frm['db']
+					);
+				} elseif((string)trim((string)$frm['type']) == '') {
+					$err = 'Empty DB Type';
 				} else {
-					$err = 'Invalid Server Type: '.$frm['type'];
+					$err = 'Invalid DB Type: '.$frm['type'];
 				} //end if else
-				if($xml) {
-					$xml = (string) (new SmartXmlParser())->format((string)$xml);
-				} //end if
 			} catch(Exception $e) {
 				$err = (string) $e->getMessage();
+			} //end if
+			//--
+			if($xml) {
+				$xml = (string) (new SmartXmlParser('domxml'))->format((string)$xml);
 			} //end if
 			//--
 			$this->PageViewSetVar(
 				'main',
 				SmartComponents::js_ajax_replyto_html_form(
 					(!$err) ? 'OK' : 'ERROR',
-					'Import DbModel',
+					'Import DbModel from DB',
 					(!$err) ? 'DbModel Imported Successfuly' : 'Cannot import the DbModel: '.$err,
 					'',
 					'the-xml',
 					(string) Smart::escape_html((string)$xml),
-					'SmartJS_Custom_Syntax_Highlight(\'div\');'
+					'var theHTML = \''.Smart::escape_js((string)$xml).'\'; if(theHTML) { jQuery(\'#dbmodel_data\').val(theHTML); jQuery(\'#btn-done\').show().prop(\'disabled\',false); SmartJS_Custom_Syntax_Highlight(\'div\'); }'
 				)
 			);
 			//--
@@ -79,7 +86,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$this->PageViewSetVars([
 			'title' 	=> 'Agile :: DbModeler / Import from DB',
 			'main' 			=> SmartMarkersTemplating::render_file_template(
-				$this->ControllerGetParam('module-path').'views/dbmodel-import-server.htm', // the view
+				$this->ControllerGetParam('module-path').'views/dbmodel-import-db.htm', // the view
 				[
 					'HTML-JS-HIGHLIGHT' => SmartComponents::js_code_highlightsyntax('', ['web'])
 				]

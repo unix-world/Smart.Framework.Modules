@@ -4,16 +4,14 @@
 /*
 (c) 2019 unix-world.org
 License: GPLv3
-Version: 20190211
+Version: 20190219
 */
 
 /*
  * file: diagram.css
- * bpmn v3.2.0
- * cmmn v0.17.0
+ * version: v3.2.1
  * (c) 2014-2019, camunda Services GmbH @ see LICENSE
- * https://github.com/bpmn-io/bpmn-js # https://unpkg.com/bpmn-js@3.2.0/dist/
- * https://github.com/bpmn-io/cmmn-js # https://unpkg.com/cmmn-js@0.17.0/dist/
+ * https://github.com/bpmn-io/bpmn-js # https://unpkg.com/bpmn-js@3.2.1/dist/
  */
 
 /* outline styles */
@@ -258,8 +256,8 @@ svg.new-parent {
 
 .djs-palette {
 	position: absolute;
-	left: 20px;
-	top: 20px;
+	left: 5px;
+	top: 5px;
 
 	box-sizing: border-box;
 	width: 48px;
@@ -417,7 +415,11 @@ svg.new-parent {
 
 .djs-popup .entry > span {
 	vertical-align: middle;
-	font-size: 14px;
+	font-size: 13px;
+}
+
+.djs-direct-editing-content {
+	font-size: 13px;
 }
 
 .djs-popup .entry:hover,

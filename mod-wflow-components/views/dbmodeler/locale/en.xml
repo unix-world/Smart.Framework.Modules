@@ -2,7 +2,7 @@
 <locale>
 	<!-- table management -->
 	<string name="addtable">Add table</string>
-	<string name="edittable">Edit table</string>
+	<string name="edittable">Table Properties</string>
 	<string name="removetable">Remove table</string>
 	<string name="removetables">Remove tables</string>
 	<string name="aligntables">Align tables</string>
@@ -69,7 +69,7 @@
 
 	<!-- io -->
 	<string name="unsavedlost">Are you sure ? All unsaved data will be lost !</string>
-	<string name="saveload">Dump / Load</string>
+	<string name="saveload">Export XML / SQL</string>
 	<string name="empty">Please paste XML data into the text area below and try again.</string>
 	<string name="client">Client (Browser)</string>
 	<string name="server">Server (Storage)</string>
