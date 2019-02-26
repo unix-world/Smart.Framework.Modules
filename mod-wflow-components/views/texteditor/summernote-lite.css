@@ -2,17 +2,18 @@
 /*
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190225
 */
 
 /**
  * Super simple wysiwyg editor v0.8.11
  * https://summernote.org
- *
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
- *
  * Date: 2018-12-22T04:42Z
+ *
+ * (c) 2019 unix-world.org
+ * contains fixes by unixman
  */
 
 @font-face{
@@ -42,6 +43,17 @@
 	text-decoration:inherit;
 }
 /* fix by unixman */
+.note-float-left {
+	margin-right: 20px;
+	margin-bottom: 10px;
+}
+.note-float-right {
+	margin-left: 20px;
+	margin-bottom: 10px;
+}
+.note-icon-rollback:before {
+	content:"§"
+}
 .note-icon-float-left:before{
 	content:"←"
 }
@@ -764,13 +776,35 @@ a.note-dropdown-item,a.note-dropdown-item:hover{
 .note-editor .note-editing-area .note-editable{
 	outline:0;
 }
+
+.note-editor .note-editing-area .note-editable blockquote {
+	background: #F9F9F9;
+	border: 1px solid #CCCCCC;
+	border-left: 10px solid #CCCCCC;
+	margin: 20px 10px;
+	padding: 15px 10px;
+	quotes: "\201C""\201D""\2018""\2019";
+}
+.note-editor .note-editing-area .note-editable blockquote:before {
+	color: #CCCCCC;
+	content: open-quote;
+	font-size: 4rem;
+	line-height: 0.1rem;
+	margin-right: 0.25rem;
+	vertical-align: -2rem;
+}
+.note-editor .note-editing-area .note-editable blockquote p {
+	display: inline;
+}
+
 .note-editor .note-editing-area .note-editable table{
 	width:100%;
 	border-collapse:collapse;
 }
-.note-editor .note-editing-area .note-editable table td,.note-editor .note-editing-area .note-editable table th{
+.note-editor .note-editing-area .note-editable table td,
+.note-editor .note-editing-area .note-editable table th{
 	padding:5px 3px;
-	border:1px solid #ececec;
+	border:1px dotted #dddddd;
 }
 .note-editor .note-editing-area .note-editable sup{
 	vertical-align:super;
@@ -785,7 +819,8 @@ a.note-dropdown-item,a.note-dropdown-item:hover{
 	text-decoration:inherit;
 	background-color:inherit;
 }
-.note-editor .note-editing-area .note-editable a:hover,.note-editor .note-editing-area .note-editable a:focus{
+.note-editor .note-editing-area .note-editable a:hover,
+.note-editor .note-editing-area .note-editable a:focus{
 	color:#23527c;
 	text-decoration:underline;
 	outline:0;
@@ -797,7 +832,7 @@ a.note-dropdown-item,a.note-dropdown-item:hover{
 /*	border:1px solid #a9a9a9; */
 }
 .note-editor.note-frame.codeview .note-editing-area .note-editable{
-	display:none;
+	display:none !important;
 }
 .note-editor.note-frame.codeview .note-editing-area .note-codable{
 	display:block;

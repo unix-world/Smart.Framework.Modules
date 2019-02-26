@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 class OpenMapsProxyCache {
 
 	// ::
-	// r.170917
+	// r.20190226
 
 
 //=========================================================================
@@ -39,7 +39,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 	//--
 
 	//--
-	$max_cache_zoom = (int) 0 + $max_cache_zoom;
+	$max_cache_zoom = (int) $max_cache_zoom;
 	if($max_cache_zoom < 0) {
 		$max_cache_zoom = 0;
 	} //end if
@@ -51,24 +51,24 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 	//--
 	$r = (string) $r; // map provider
 	//-- x
-	$x = (int) 0 + $x;
+	$x = (int) $x;
 	if($x < 0) {
 		$x = 0;
 	} //end if
 	//-- y
-	$y = (int) 0 + $y;
+	$y = (int) $y;
 	if($y < 0) {
 		$y = 0;
 	} //end if
 	//-- zoom
-	$z = (int) 0 + $z;
+	$z = (int) $z;
 	if($z < 0) {
 		$z = 0;
 	} //end if
 	//--
 
 	//--
-	$y_timeout = (int) 0 + $y_timeout;
+	$y_timeout = (int) $y_timeout;
 	if($y_timeout < 1) {
 		$y_timeout = 1;
 	} //end if

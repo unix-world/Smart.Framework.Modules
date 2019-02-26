@@ -1,16 +1,14 @@
 
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190221
+// v.20190225
 // contains fixes by unixman
 
 /**
  * Super simple wysiwyg editor v0.8.11
  * https://summernote.org
- *
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
- *
  * Date: 2018-12-22T04:42Z
  *
  * (c) 2019 unix-world.org
@@ -257,6 +255,9 @@
 		};
 		return ModalUI;
 	}());
+
+	// unixman: img upload container
+	var imgupldr = renderer.create('<div id="summernote-img-uploader-preview" style="position:fixed; bottom:-5000px; left:-5000px; background-color:#FFFFFF; border: 3px solid #FFFFFF;"></div>');
 
 	var editor = renderer.create('<div class="note-editor note-frame"/>');
 	var toolbar = renderer.create('<div class="note-toolbar" role="toolbar"/>');
@@ -655,13 +656,15 @@
 	var imageDialog = function (opt) {
 		var body = '<div class="note-form-group note-group-select-from-files">' +
 			'<label class="note-form-label">' + opt.lang.image.selectFromFiles + '</label>' +
-			'<input class="note-note-image-input note-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
+			'<input class="note-note-image-input note-input" type="file" name="files" accept="image/*" />' +
 			opt.imageLimitation +
-			'</div>' +
-			'<div class="note-form-group" style="overflow:auto;">' +
-			'<label class="note-form-label">' + opt.lang.image.url + '</label>' +
-			'<input class="note-image-url note-input" type="text" />' +
 			'</div>';
+		if(opt.allowImageURL) {
+			body += '<div class="note-form-group" style="overflow:auto;">' +
+					'<label class="note-form-label">' + opt.lang.image.url + '</label>' +
+					'<input class="note-image-url note-input" type="text" />' +
+					'</div>';
+		}
 		var footer = [
 			'<button href="#" type="button" class="note-btn note-btn-primary note-btn-large note-image-btn disabled" disabled>',
 			opt.lang.image.insert,
@@ -729,6 +732,7 @@
 		editor: editor,
 		toolbar: toolbar,
 		editingArea: editingArea,
+		imgupldr: imgupldr, // unixman
 		codable: codable,
 		editable: editable,
 		statusbar: statusbar,
@@ -803,10 +807,14 @@
 				ui.editingArea([
 					ui.codable(),
 					ui.editable(),
+					ui.imgupldr() // unixman
 				]),
 				ui.statusbar(),
 			])).render();
 			$editor.insertAfter($note);
+			if(options.codeViewReadonly) {
+				$editor.find('.note-codable').prop('readonly', true).attr('title','Read-Only');
+			}
 			return {
 				note: $note,
 				editor: $editor,
@@ -2503,9 +2511,8 @@
 			this.triggerEvent('disable', false);
 		};
 		Context.prototype.disable = function () {
-			// close codeview if codeview is opend
-			if (this.invoke('codeview.isActivated')) {
-					this.invoke('codeview.deactivate');
+			if(this.invoke('codeview.isActivated')) { // close codeview if codeview is opened
+				this.invoke('codeview.deactivate');
 			}
 			this.layoutInfo.editable.attr('contenteditable', false);
 			this.invoke('toolbar.deactivate', true);
@@ -3406,9 +3413,22 @@
 	 */
 	function readFileAsDataURL(file) {
 		return $$1.Deferred(function (deferred) {
+			//--# fix by unixman
+			var the_filter = /^(image\/svg\+xml|image\/jpeg|image\/png|image\/gif)$/i;
+			if(!the_filter.test(String(file.type))) {
+				console.log('SummerNote WARNING: Only Images and SVG are allowed ...');
+				return false;
+			}
+			//--# end.fix
 			$$1.extend(new FileReader(), {
 				onload: function (e) {
 					var dataURL = e.target.result;
+					//--# fix by unixman
+					if(dataURL.length > 1024 * 1024 * 16) { // 16MB
+						console.log('SummerNote WARNING: Image OverSized ...');
+						return;
+					}
+					//--# end.fix
 					deferred.resolve(dataURL);
 				},
 				onerror: function (err) {
@@ -4005,6 +4025,8 @@
 						// replace empty heading, pre or custom-made styleTag with P tag
 						if ((dom.isHeading(nextPara) || dom.isPre(nextPara) || dom.isCustomStyleTag(nextPara)) && dom.isEmpty(nextPara)) {
 							nextPara = dom.replace(nextPara, 'p');
+						} else {
+							//console.log('new paragraph, by unixman'); // TODO: inserting a new paragraph will contain tags from parent: ex: <p><em><br></em></p> instead of <p><br></p>
 						}
 					}
 				}
@@ -5142,8 +5164,63 @@
 				if (_this.options.maximumImageFileSize && _this.options.maximumImageFileSize < file.size) {
 					_this.context.triggerEvent('image.upload.error', _this.lang.image.maximumFileSizeError);
 				} else {
-					readFileAsDataURL(file).then(function (dataURL) {
-						return _this.insertImage(dataURL, filename);
+					readFileAsDataURL(file).then(function(dataURL) {
+					//-- # fix by unixman
+					(function(){
+						if(file.type === 'image/svg+xml') {
+							if(String(dataURL).length <= (1024 * 1024 * 0.15)) {
+								return _this.insertImage(dataURL, filename);
+							} else {
+								console.log('Summernote Image Uploader WARNING: SVG Size after resize is higher than allowed size: ' + String(dataURL).length + ' Bytes');
+								_this.context.triggerEvent('image.upload.error');
+							} //end if else
+						} //end if
+						var imgQuality = 0.7;
+						var the_type_of_file = String(file.type);
+						var $imgpw = $('#summernote-img-uploader-preview');
+						$imgpw.append('<img id="summernote-img-uploader-result-img" src="' + SmartJS_CoreUtils.escape_html(dataURL) + '" style="max-width:595px; max-height:595px; width:auto !important; height:auto !important;">');
+						setTimeout(function(){
+							var img = $('#summernote-img-uploader-result-img');
+							var w = Math.round(img.width()) || 1;
+							var h = Math.round(img.height()) || 1;
+							//console.log('Img WxH', w, h);
+							$('#summernote-img-uploader-result-img').remove();
+							$imgpw.append('<canvas id="summernote-img-uploader-result-cnvs" width="' + SmartJS_CoreUtils.escape_html(w) + '" height="' + SmartJS_CoreUtils.escape_html(h) + '" style="border: 1px dotted #ECECEC;"></canvas>');
+							var im = new Image();
+							im.width = w;
+							im.height = h;
+							im.onload = function(){
+								var cnv = jQuery('#summernote-img-uploader-result-cnvs')[0];
+								if(!cnv) {
+									console.error('Summernote Image Uploader ERROR: Failed to Get Resizable Container');
+									_this.context.triggerEvent('image.upload.error');
+									return;
+								} //end if
+								var ctx = cnv.getContext('2d');
+								if(!ctx) {
+									console.error('Summernote Image Uploader ERROR: Failed to Get Resizable Container Context');
+									_this.context.triggerEvent('image.upload.error');
+									return;
+								} //end if
+								//ctx.fillStyle = '#FFFFFF'; // make sense just for image/jpeg
+								//ctx.fillRect(0, 0, w, h); // make sense just for image/jpeg
+								ctx.drawImage(this, 0, 0, w, h);
+								var imgResizedB64 = cnv.toDataURL(String(the_type_of_file), imgQuality); // preserve file type ; set image quality ... just for jpeg right now ...
+								//console.log('Before' + dataURL.length, 'After: ' + imgResizedB64.length);
+								if(String(imgResizedB64).length <= (1024 * 1024 * 0.15)) {
+									$imgpw.empty().html('');
+									return _this.insertImage(imgResizedB64, filename);
+								} else {
+									console.log('Summernote Image Uploader WARNING: Image Size after resize is higher than allowed size: ' + String(imgResizedB64).length + ' Bytes');
+									_this.context.triggerEvent('image.upload.error');
+								} //end if else
+							};
+							im.src = String(dataURL);
+						},500);
+					})();
+					//--# end.fix
+				//	return _this.insertImage(dataURL, filename);
+				//--
 					}).fail(function () {
 						_this.context.triggerEvent('image.upload.error');
 					});
@@ -5312,6 +5389,16 @@
 					width: pos.x,
 					height: pos.y
 				};
+			}
+			if(imageSize.width < 16) {
+				imageSize.width = 16;
+			} else if(imageSize.width > 1024) {
+				imageSize.width = 1024;
+			}
+			if(imageSize.height < 16) {
+				imageSize.height = 16;
+			} else if(imageSize.height > 1024) {
+				imageSize.height = 1024;
 			}
 			$target.css(imageSize);
 		};
@@ -5819,9 +5906,15 @@
 					width: imageSize.w,
 					height: imageSize.h
 				}).data('target', $image); // save current image element.
+				var imgName = String($image.data('filename') || '');
 				var origImageObj = new Image();
 				origImageObj.src = $image.attr('src');
-				var sizingText = imageSize.w + 'x' + imageSize.h + ' (' + this.lang.image.original + ': ' + origImageObj.width + 'x' + origImageObj.height + ')';
+				var sizingText = imageSize.w + 'x' + imageSize.h +
+				' (' + this.lang.image.original + ': ' + origImageObj.width + 'x' + origImageObj.height + '); ' +
+				' Size: ' + Math.ceil(origImageObj.src.length / 1024) + 'KB'; // unixman: show filesize
+				if(imgName) {
+					sizingText += '; Name: ' + imgName; // unixman: show name
+				}
 				$selection.find('.note-control-selection-info').text(sizingText);
 				this.context.invoke('editor.saveTarget', target);
 			} else {
@@ -7196,19 +7289,17 @@
 				var readableSize = (this.options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 + ' ' + ' KMGTP'[unit] + 'B';
 				imageLimitation = "<small>" + (this.lang.image.maximumFileSize + ' : ' + readableSize) + "</small>";
 			}
-			var body = [
-				'<div class="form-group note-form-group note-group-select-from-files">',
-				'<label class="note-form-label">' + this.lang.image.selectFromFiles + '</label>',
-				'<input class="note-image-input form-control-file note-form-control note-input" ',
-				' type="file" name="files" accept="image/*" multiple="multiple" />',
-				imageLimitation,
-				'</div>',
-				'<div class="form-group note-group-image-url" style="overflow:auto;">',
-				'<label class="note-form-label">' + this.lang.image.url + '</label>',
-				'<input class="note-image-url form-control note-form-control note-input ',
-				' col-md-12" type="text" />',
-				'</div>',
-			].join('');
+			var body =  '<div class="form-group note-form-group note-group-select-from-files">' +
+						'<label class="note-form-label">' + this.lang.image.selectFromFiles + ' [svg / png / gif / jpg]</label>' +
+						'<input class="note-image-input form-control-file note-form-control note-input" type="file" name="files" accept="image/*" />' +
+						imageLimitation +
+						'</div>';
+			if(this.options.allowImageURL) {
+				body += '<div class="form-group note-group-image-url" style="overflow:auto;">' +
+						'<label class="note-form-label">' + this.lang.image.url + '</label>' +
+						'<input class="note-image-url form-control note-form-control note-input ' + ' col-md-12" type="text" />' +
+						'</div>';
+			}
 			var buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
 			var footer = "<input type=\"button\" href=\"#\" class=\"" + buttonClass + "\" value=\"" + this.lang.image.insert + "\" disabled>";
 			this.$dialog = this.ui.dialog({
@@ -7334,7 +7425,7 @@
 				this.$popover.css({
 					display: 'block',
 					left: pos.left, // this.options.popatmouse ? event.pageX - 20 : pos.left,
-					top: Math.min(pos.top, posEditor.top) // this.options.popatmouse ? event.pageY : Math.min(pos.top, posEditor.top)
+					top: Math.min(pos.top, posEditor.top) + 10 // this.options.popatmouse ? event.pageY : Math.min(pos.top, posEditor.top)
 				});
 			} else {
 				this.hide();
@@ -7985,7 +8076,7 @@
 				['view', ['fullscreen', 'codeview', 'help']],
 			],
 			// popover
-			popatmouse: true,
+			popatmouse: false,
 			popover: {
 				image: [
 					['resize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
@@ -8060,7 +8151,7 @@
 				backColor: '#FFFF00'
 			},
 			lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
-			tableClassName: 'table table-bordered',
+			tableClassName: 'table-default',
 			insertTableMaxSize: {
 				col: 10,
 				row: 10
@@ -8093,7 +8184,9 @@
 				htmlMode: true,
 				lineNumbers: true
 			},
-		//	codeviewFilter: false,
+			prettifyHtml: true,
+			allowImageURL: true, // by unixman
+			codeViewReadonly: false, // by unixman
 			codeviewFilter: true, // fix by unixman
 		//	codeviewFilterRegex: /<\/*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|ilayer|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|t(?:itle|extarea)|xml)[^>]*?>/gi,
 			codeviewFilterRegex: /<\/*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|ilayer|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|t(?:itle|extarea)|xml|form|input|select|option|label|basefont|dir|isindex|menu|command|keygen|noframes|noscript|param)[^>]*?>/gi, // fix by unixman

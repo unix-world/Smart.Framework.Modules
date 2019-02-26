@@ -1,7 +1,7 @@
 
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190225
 
 // Copyright 2013-2019 Alan Hong. and other contributors
 // License: MIT
@@ -56,7 +56,33 @@
 			}
 
 			var fillContentAndPrint = function($frame, content) {
-				$frame.contents().find('body').html(content);
+
+				var $head = $frame.contents().find('head');
+				$head.append('<meta charset="UTF-8"><title>Document</title>');
+				if(options.print && options.print.stylesheetUrl) {
+					var css = null;
+					for(var i=0; i<options.print.stylesheetUrl.length; i++) {
+						// Use dedicated styles
+						if(options.print.stylesheetUrl[i]) {
+							css = document.createElement('link');
+							css.href = String(options.print.stylesheetUrl[i]);
+							css.rel = 'stylesheet';
+							css.type = 'text/css';
+							css.media = 'print';
+							$head.append(css);
+						//	console.log(css.href);
+						}
+					}
+					css = null;
+				}
+			/*	else {
+					// Inherit styles from document
+					$('style, link[rel=stylesheet]', document).each(function () {
+						$head.append($(this).clone());
+					});
+				} */
+
+				$frame.contents().find('body').addClass('note-printable').append(content);
 
 				setTimeout(function () {
 					$frame[0].contentWindow.focus();
@@ -67,27 +93,8 @@
 			}
 
 			var getPrintframe = function ($container) {
-				var $frame = $(
-					'<iframe name="summernotePrintFrame"' +
-					'width="0" height="0" frameborder="0" src="about:blank" style="visibility:hidden">' +
-					'</iframe>');
+				var $frame = $('<iframe name="summernotePrintFrame" width="0" height="0" frameborder="0" src="about:blank" style="visibility:hidden"></iframe>');
 				$frame.appendTo($editor.parent());
-
-				var $head = $frame.contents().find('head');
-				if (options.print && options.print.stylesheetUrl) {
-					// Use dedicated styles
-					var css = document.createElement('link');
-					css.href = options.print.stylesheetUrl;
-					css.rel = 'stylesheet';
-					css.type = 'text/css';
-					$head.append(css);
-				} else {
-					// Inherit styles from document
-					$('style, link[rel=stylesheet]', document).each(function () {
-						$head.append($(this).clone());
-					});
-				}
-
 				return $frame;
 			};
 

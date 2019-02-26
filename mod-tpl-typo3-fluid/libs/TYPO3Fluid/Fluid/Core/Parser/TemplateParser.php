@@ -689,7 +689,8 @@ class TemplateParser
                     $arrayToBuild[$arrayKey] = new ObjectAccessorNode($singleMatch['VariableIdentifier']);
                 } elseif (array_key_exists('Number', $singleMatch) && (!empty($singleMatch['Number']) || $singleMatch['Number'] === '0')) {
                     // Note: this method of casting picks "int" when value is a natural number and "float" if any decimals are found. See also NumericNode.
-                    $arrayToBuild[$arrayKey] = $singleMatch['Number'] + 0;
+                //  $arrayToBuild[$arrayKey] = $singleMatch['Number'] + 0;
+                    $arrayToBuild[$arrayKey] = (is_numeric($singleMatch['Number']) ? $singleMatch['Number'] : 0) + 0; // fix by unixman: PHP7.1+ strict numbers
                 } elseif ((array_key_exists('QuotedString', $singleMatch) && !empty($singleMatch['QuotedString']))) {
                     $argumentString = $this->unquoteString($singleMatch['QuotedString']);
                     $arrayToBuild[$arrayKey] = $this->buildArgumentObjectTree($argumentString);

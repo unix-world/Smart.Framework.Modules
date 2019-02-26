@@ -425,7 +425,7 @@ class Filters
 		}
 		return strpos($format, '%') === false
 			? $time->format($format) // formats using date()
-			: strftime($format, $time->format('U') + 0); // formats according to locales
+			: strftime($format, ((int)$time->format('U') + 0)); // formats according to locales ; fix by unixman, PHP7.1+ strict numeric check
 	}
 
 

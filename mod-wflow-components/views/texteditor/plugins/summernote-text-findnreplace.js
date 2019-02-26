@@ -1,7 +1,7 @@
 
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190225
 
 // Copyright 2013-2019 Alan Hong. and other contributors
 // License: MIT
@@ -20,14 +20,14 @@
 			findnreplace: {
 				tooltip:            'Find and Replace',
 				findBtn:            'Find ',
-				findPlaceholder:    'Enter the text you want to find...',
+				findPlaceholder:    'Text to Find...',
 				findResult:         ' results found for ',
-				findError:          'Nothing entered to find...',
+				findError:          'Nothing entered to Find...',
 				replaceBtn:         'Replace',
-				replacePlaceholder: 'Enter the text to replace the text above or selected...',
+				replacePlaceholder: 'Text to Replace the text from Find or Selected...',
 				replaceResult:      ', replaced by ',
-				replaceError:       'Nothing entered to replace...',
-				noneSelected:       'Nothing selected to replace...'
+				replaceError:       'Nothing entered to Replace...',
+				noneSelected:       'Nothing selected to Replace...'
 			}
 		}
 	});
@@ -68,8 +68,8 @@
 					'<hr>' +
 					'<div class="form-group">' +
 						'<div style="width:49%; display:inline-block; text-align:left;">' +
-							'<input id="note-findnreplace-find" type="text" class="note-findnreplace-find form-control input-sm" value="" placeholder="' + lang.findnreplace.findPlaceholder + '">' +
 							'<button class="note-findnreplace-find-btn btn btn-sm btn-default" style="width: 100px;">' + lang.findnreplace.findBtn + '</button>' +
+							'<input id="note-findnreplace-find" type="text" class="note-findnreplace-find form-control input-sm" value="" placeholder="' + lang.findnreplace.findPlaceholder + '">' +
 						'</div>' +
 						'<div style="width:49%; display:inline-block; text-align:right;">' +
 							'<input id="note-findnreplace-replace" type="text" class="note-findnreplace-replace form-control input-sm" value="" placeholder="' + lang.findnreplace.replacePlaceholder + '">' +

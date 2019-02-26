@@ -44,7 +44,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: \SmartModExtLib\TplTwig\SmartTwigEnvironment, Twig
- * @version 	v.20190115
+ * @version 	v.20190226
  * @package 	Templating:Engines
  *
  */
@@ -70,13 +70,13 @@ final class Templating {
 		$this->twig = new \SmartModExtLib\TplTwig\SmartTwigEnvironment(
 			new \Twig_Loader_Filesystem(array($this->dir)),
 			[
-				'charset' => (string) SMART_FRAMEWORK_CHARSET,
-				'autoescape' => 'html', // default escaping strategy ; other escaping strategies: js
-				'optimizations' => -1,
-				'strict_variables' => false,
-				'debug' => false,
-				'cache' => false,
-				'auto_reload' => true
+				'charset' 			=> (string) SMART_FRAMEWORK_CHARSET,
+				'autoescape' 		=> 'html', // default escaping strategy ; other escaping strategies: js
+				'optimizations' 	=> -1,
+				'strict_variables' 	=> false,
+				'debug' 			=> false,
+				'cache' 			=> false,
+				'auto_reload' 		=> true
 			]
 		);
 		//--

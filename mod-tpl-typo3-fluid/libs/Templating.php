@@ -44,7 +44,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.181217
+ * @version 	v.20190226
  * @package 	Templating:Engines
  *
  */
@@ -52,7 +52,7 @@ final class Templating {
 
 	// ->
 
-	const FLUID_VERSION = 'master@20190117';
+	const FLUID_VERSION = 'master@20190226';
 
 	private $dir;
 	private $t3fluid;
@@ -168,7 +168,7 @@ final class Templating {
 		} //end if else
 		if(!\SmartFileSystem::is_type_dir((string)$the_t3fluid_cache_dir)) {
 			if(!\SmartFileSystem::dir_create((string)$the_t3fluid_cache_dir, true)) {
-				throw new \Exception('Typo3Fluid Templating / Initialize / Could not create the cache directory: '.$the_t3fluid_cache_dir);
+				throw new \Exception('Typo3Fluid Templating / Initialize / Could not create the Cache Directory: '.$the_t3fluid_cache_dir);
 				return '';
 			} //end if
 		} //end if

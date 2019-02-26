@@ -2,7 +2,7 @@
 /*
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190225
 
 // Copyright 2013-2019 Alan Hong. and other contributors
 // License: MIT
@@ -10,6 +10,12 @@
 
 .hidden {
 	display: none;
+}
+
+#findnreplaceToolbar hr {
+	border: none 0;
+	border-top: 1px solid #CCCCCC;
+	height: 1px;
 }
 
 /* END */

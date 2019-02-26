@@ -18,7 +18,7 @@ final class Engine {
 
 	use Strict;
 
-	const VERSION = '2.4.8-r.20190115.sfm';
+	const VERSION = '2.4.8-r.20190226.sfm';
 
 	/** Content types */
 	const CONTENT_HTML = 'html',

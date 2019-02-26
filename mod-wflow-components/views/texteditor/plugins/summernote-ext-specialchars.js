@@ -1,7 +1,7 @@
 
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190225
 
 // Copyright 2013-2019 Alan Hong. and other contributors
 // License: MIT
@@ -74,7 +74,7 @@
 
 			context.memo('button.specialchars', function() {
 				return ui.button({
-					contents: '♣',
+					contents: '<span style="font-size:20px; line-height:16px;">※</span>',
 					tooltip: lang.specialChar.specialChar,
 					container: options.container, // tooltip fix by unixman
 					click: function() {

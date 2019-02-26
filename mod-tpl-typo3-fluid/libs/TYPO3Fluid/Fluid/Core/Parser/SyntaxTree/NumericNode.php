@@ -32,7 +32,7 @@ class NumericNode extends AbstractNode
         if (!is_numeric($value)) {
             throw new Parser\Exception('Numeric node requires an argument of type number, "' . gettype($value) . '" given.');
         }
-        $this->value = $value + 0;
+        $this->value = $value + 0; // OK: PHP7.1+ strict numeric check
     }
 
     /**

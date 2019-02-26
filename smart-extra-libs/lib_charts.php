@@ -63,7 +63,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.160827
+ * @version 	v.20190226
  * @package 	Components:Misc
  *
  */
@@ -522,7 +522,7 @@ private function color_alocate($y_color) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.160827
+ * @version 	v.20190226
  * @package 	Components:Misc
  *
  */
@@ -677,10 +677,10 @@ public function generate($y_mode='raw') {
 	//--
 
 	//--
-	$this->legend_exists        = (preg_match("/(5|6)/", (string)$this->type)) ? true : false;
-	$this->biggest_graphic_name = (strlen($this->graphic_1) > strlen($this->graphic_2)) ? $this->graphic_1 : $this->graphic_2;
-	$this->height_title         = (!empty($this->title)) ? ($this->string_height($this->tsize) + 15) : 0;
-	$this->space_between_bars   = ($this->type == 1) ? 40 : 30;
+	$this->legend_exists        = (bool) (preg_match('/(5|6)/', (string)$this->type)) ? true : false;
+	$this->biggest_graphic_name = (string) (strlen($this->graphic_1) > strlen($this->graphic_2)) ? $this->graphic_1 : $this->graphic_2;
+	$this->height_title         = (int) (!empty($this->title)) ? ($this->string_height($this->tsize) + 15) : 0;
+	$this->space_between_bars   = (int) ($this->type == 1) ? 40 : 30;
 	$this->space_between_dots   = 40;
 	$this->higher_value         = 0;
 	$this->higher_strvalue      = 0;
@@ -698,7 +698,7 @@ public function generate($y_mode='raw') {
 	//--
 
 	//--
-	if(count($this->z) && (preg_match("/(1|2|3|4)/", (string)$this->type))) {
+	if(count($this->z) && (preg_match('/(1|2|3|4)/', (string)$this->type))) {
 		$this->exists_graph2 = true;
 	} //end if
 	//--

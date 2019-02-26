@@ -1,7 +1,7 @@
 
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190225
 
 // License: MIT
 // https://github.com/DiemenDesign/summernote-cleaner

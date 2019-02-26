@@ -1,7 +1,7 @@
 
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190225
 
 // License: MIT
 // https://github.com/tylerecouture/summernote-lists
@@ -23,15 +23,16 @@
 		"en-US": {
 			tableStyles: {
 				tooltip: 'Table style',
-				stylesExclusive: ['Default', 'Bordered'],
-				stylesInclusive: ['Striped']
+				stylesExclusive: ['Default', 'Bordered', 'Striped'],
+				stylesInclusive: []
 			}
 		}
 	});
 	$.extend($.summernote.options, {
 		tableStyles: { // Must keep the same order as in lang.tableStyles.styles*
-			stylesExclusive: ['', 'table-bordered'],
-			stylesInclusive: ['table-striped']
+			stylesExclusive: ['table-default', 'table-bordered', 'table-striped'],
+			stylesInclusive: [], // inclusive styles can be combined with exclusive styles
+		//	css: ''
 		}
 	});
 

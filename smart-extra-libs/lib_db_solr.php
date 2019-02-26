@@ -78,7 +78,7 @@ $configs['solr']['slowtime']	= 0.4500;									// 0.0500 .. 0.7500 slow query ti
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartComponents
- * @version 	v.181019
+ * @version 	v.20190226
  * @package 	Database:Solr
  *
  */
@@ -152,7 +152,7 @@ public function __construct($mode='json', $host='', $port='', $ssl='', $db='', $
 		$user = (string) $configs['solr']['username'];
 		$password = (string) base64_decode((string)$configs['solr']['password']);
 		$timeout = (int) $configs['solr']['timeout'];
-		$y_debug_exch_slowtime = 0 + $configs['solr']['slowtime'];
+		$y_debug_exch_slowtime = (float) $configs['solr']['slowtime'];
 	} //end if
 	//--
 	if((string)$mode != 'xml') { // need to be before raising any errors as it is used in error display

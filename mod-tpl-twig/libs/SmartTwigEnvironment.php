@@ -28,7 +28,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @internal
  *
  * @depends 	extensions: classes: Twig
- * @version 	v.20190115
+ * @version 	v.20190226
  * @package 	Templating:Engines
  *
  */
@@ -46,7 +46,7 @@ final class SmartTwigEnvironment extends \Twig_Environment {
 		} //end if else
 		if(!\SmartFileSystem::is_type_dir((string)$the_twig_cache_dir)) {
 			if(!\SmartFileSystem::dir_create((string)$the_twig_cache_dir, true)) {
-				throw new \Exception('Twig Templating / Initialize / Could not create the cache directory: '.$the_twig_cache_dir);
+				throw new \Exception('Twig Templating / Initialize / Could not create the Cache Directory: '.$the_twig_cache_dir);
 				return '';
 			} //end if
 		} //end if
