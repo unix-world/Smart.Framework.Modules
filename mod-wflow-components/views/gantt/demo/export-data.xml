@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<project name="" project-start="20190220T000000Z" mrproject-version="2" calendar="1">
+  <tasks>
+    <task id="1" name="t1" note="" work="94500" start="20190220T000000Z" end="20190225T101500Z" work-start="20190220T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+    <task id="2" name="t2" note="" work="222300" start="20190225T101500Z" end="20190306T170000Z" work-start="20190225T101500Z" percent-complete="13" priority="0" type="normal" scheduling="fixed-work">
+      <predecessors>
+        <predecessor id="1" predecessor-id="1" type="FS"/>
+      </predecessors>
+    </task>
+  </tasks>
+  <resource-groups/>
+  <resources/>
+  <allocations/>
+</project>

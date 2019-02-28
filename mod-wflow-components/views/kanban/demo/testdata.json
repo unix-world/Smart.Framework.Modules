@@ -1,0 +1,44 @@
+[
+  {
+    "meta1": "info1",
+    "meta2": "info2",
+    "id": "a1",
+    "title": "Activity <A1> - a very long description goes here !",
+    "kanbanStatus": "todo"
+  },
+  {
+    "id": "a2",
+    "title": "Activity A2",
+    "kanbanStatus": "todo"
+  },
+  {
+    "id": "a3",
+    "title": "Activity A3",
+    "kanbanStatus": "todo"
+  },
+  {
+    "id": "b1",
+    "title": "Activity B1",
+    "kanbanStatus": "inprogress"
+  },
+  {
+    "id": "b2",
+    "title": "Activity B2",
+    "kanbanStatus": "inprogress"
+  },
+  {
+    "id": "c1",
+    "title": "Activity C1",
+    "kanbanStatus": "check"
+  },
+  {
+    "id": "c2",
+    "title": "Activity C2",
+    "kanbanStatus": "check"
+  },
+  {
+    "id": "d1",
+    "title": "Activity D1",
+    "kanbanStatus": "done"
+  }
+]

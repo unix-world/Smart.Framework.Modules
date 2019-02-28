@@ -13,7 +13,6 @@
 	<script type="text/javascript" src="../ext/gantt-plugin-quickinfo.js"></script><!-- optional extension -->
 	<script type="text/javascript" src="../smart-gantt.js"></script>
 
-	<script type="text/javascript" src="testdata.js"></script>
 	<style type="text/css">
 		body {
 			margin-top: 10px;
@@ -44,7 +43,16 @@
 <div align="center">
 <div id="mygantt"></div>
 <script type="text/javascript">
-var gChart = SmartGanttManager.drawInstance(demo_tasks, true, true, 'mygantt', null, null, null);
+var gChart;
+(function(){
+
+	function renderGant(demo_tasks) {
+		gChart = SmartGanttManager.drawInstance(demo_tasks, true, true, 'mygantt', null, null, null);
+	}
+
+	$.get('testdata.json', renderGant, 'json');
+
+})();
 </script>
 </div>
 <select id="gantt-display-mode" onchange="SmartGanttManager.changeScale(gChart, this.value, null, null);" style="position:fixed; top:15px; left:55px;" autocomplete="off">

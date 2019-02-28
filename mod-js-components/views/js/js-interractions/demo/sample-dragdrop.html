@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Sample Pure Javascript Drag'n'Drop / Clone</title>
+	<link rel="stylesheet" href="../lmdd.css" type="text/css">
+	<script type="text/javascript" src="../lmdd.js"></script>
+	<style>
+	#features{
+		margin-bottom:15px;
+	}
+	.feature-grid {
+		display:flex;
+		padding:7px;
+		flex-flow: row wrap;
+		justify-content: space-between;
+		border: 1px dashed #999999;
+	}
+	.feature-item{
+		padding:5px;
+		margin:5px;
+		font-size:15px;
+		border: 3px solid white;
+		flex: 1 1 auto;
+		vertical-align: middle;
+		cursor:move;
+	}
+	.feature{
+		color: #FFFFFF;
+		text-align:center;
+		padding: 5px;
+		background: #778899;
+		border: 2px solid #555555;
+	}
+	.simple-grid{
+		display:flex;
+		padding:7px;
+		max-width: 350px;
+		flex-flow: row wrap;
+		justify-content:space-around;
+	}
+	.grid-item{
+		text-align: center;
+		vertical-align: middle;
+		line-height:78px;
+		margin:5px;
+		width:78px;
+		height:78px;
+		color:white;
+		font-size:15px;
+		border: 3px solid white;
+		cursor:move;
+	}
+
+	#handle-example {
+		display: flex;
+		justify-content: space-around;
+		border: 1px dashed #999999;
+	}
+
+	.handle-grid {
+		flex: 1 1 50%;
+		display: flex;
+		padding: 7px;
+		max-width: 350px;
+		flex-flow: column nowrap;
+	}
+
+	.handle-item {
+		padding: 3px;
+		margin: 5px;
+		color: white;
+		font-size: 15px;
+		background-color: grey;
+		border: 3px solid lightgoldenrodyellow;
+	}
+
+	.regular .handle-item {
+		background-color: #8bc34a;
+	}
+
+	.priority .handle-item {
+		background-color: #E57373;
+	}
+
+	.done .handle-item {
+		background-color: lightgrey;
+		color: gray;
+		text-decoration: line-through;
+	}
+
+	.handle {
+		cursor: move;
+	}
+
+	.task {
+		border: 1px dotted white;
+		padding: 5px;
+	}
+
+	.title {
+		text-align: center;
+		font-weight: bold;
+		padding: 10px;
+		margin: 5px;
+	}
+	</style>
+</head>
+<body>
+<div id="demo-area">
+	<div id="about" class="section scrollspy">
+		<p class="flow-text"><i>Lean & Mean Drag and Drop is a small script for dragging, dropping, sorting and reordering html structures</i></p>
+		<h5>Features</h5>
+		<div id="features">
+			<div class="feature-grid">
+				<div class="z-depth-3 black lmdd-block feature-item">
+					<div class="feature">Supports nested structures ('nestable sortables')</div>
+				</div>
+				<div class="z-depth-3 black lmdd-block feature-item">
+					<div class="feature">Smooth transitions</div>
+				</div>
+				<div class="z-depth-3 black lmdd-block feature-item">
+					<div class="feature">Auto scroll while dragging</div>
+				</div>
+				<div class="z-depth-3 black lmdd-block feature-item">
+					<div class="feature">Lightweight (~3.5kb gzipped)</div>
+				</div>
+				<div class="z-depth-3 black lmdd-block feature-item">
+					<div class="feature">No dependencies</div>
+				</div>
+				<div class="z-depth-3 black lmdd-block feature-item">
+					<div class="feature">Super easy to integrate with your own app</div>
+				</div>
+				<div class="z-depth-3 black lmdd-block feature-item">
+					<div class="feature">Supports touch events</div>
+				</div>
+				<div class="z-depth-3 black lmdd-block feature-item">
+					<div class="feature">Compatible with all modern browsers</div>
+				</div>
+				<div class="z-depth-3 black lmdd-block feature-item">
+					<div class="feature">Can work with any type of layout</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	(function(){
+		lmdd.set(document.getElementById('features'), {
+			containerClass: 'feature-grid',
+			draggableItemClass: 'feature-item'
+		});
+	})();
+	</script>
+	<div id="handle-example" class="example">
+		<div class="handle-grid regular" id="todo">
+			<div class="title z-depth-2">Tasks (ToDo)</div>
+			<div class="z-depth-3 handle-item" id="t1">
+				<div class="content lmdd-block"><span style="font-size:2rem; font-weight:bold;" class="handle">&equiv;</span>
+					<div class="task">Code refactoring &amp; optimizations</div>
+				</div>
+			</div>
+			<div class="z-depth-3 handle-item" id="t2">
+				<div class="content lmdd-block"><span style="font-size:2rem; font-weight:bold;" class="handle">&equiv;</span>
+					<div class="task">Cross browser testing</div>
+				</div>
+			</div>
+		</div>
+		<div class="handle-grid priority" id="in-progress">
+			<div class="title z-depth-2">In-Progress</div>
+			<div class="z-depth-3 handle-item" id="t3">
+				<div class="content lmdd-block"><span style="font-size:2rem; font-weight:bold;" class="handle">&equiv;</span>
+					<div class="task">Call mom</div>
+				</div>
+			</div>
+		</div>
+		<div class="handle-grid done" id="done">
+			<div class="title z-depth-2">Done</div>
+			<div class="z-depth-3 handle-item" id="t4">
+				<div class="content lmdd-block"><span style="font-size:2rem; font-weight:bold;" class="handle">&equiv;</span>
+					<div class="task">Basic Drag &amp; Drop script</div>
+				</div>
+			</div>
+			<div class="z-depth-3 handle-item" id="t5">
+				<div class="content lmdd-block"><span style="font-size:2rem; font-weight:bold;" class="handle">&equiv;</span>
+					<div class="task">Smooth transitions</div>
+				</div>
+			</div>
+			<div class="z-depth-3 handle-item" id="t6">
+				<div class="content lmdd-block"><span style="font-size:2rem; font-weight:bold;" class="handle">&equiv;</span>
+					<div class="task">Support nested structures</div>
+				</div>
+			</div>
+			<div class="z-depth-3 handle-item" id="t7">
+				<div class="content lmdd-block"><span style="font-size:2rem; font-weight:bold;" class="handle">&equiv;</span>
+					<div class="task">Scroll while dragging</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	(function(){
+		lmdd.set(document.getElementById('handle-example'), {
+			containerClass: 'handle-grid',
+			draggableItemClass: 'handle-item',
+			handleClass:'handle',
+			lmddend: function(objPositions, elRef, isCloned) {
+				var oldIndex = objPositions.originalContainer.id;
+				var newIndex = objPositions.currentContainer.id;
+				var id = elRef.id;
+				console.log(oldIndex, newIndex, id, isCloned);
+			}
+		});
+	})();
+	</script>
+</div>
+<br>
+<div id="hints">
+	<div class="table-indent">
+		<table class="white highlight bordered">
+			<thead>
+			<tr>
+				<th>Option</th>
+				<th>Description</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td>containerClass</td>
+				<td>Containers act as drop zones for draggable items</td>
+			</tr>
+			<tr>
+				<td>draggableItemClass</td>
+				<td>Draggable items can be moved inside and between containers</td>
+			</tr>
+			<tr>
+				<td>handleClass</td>
+				<td>Restricts drag start to a specific element which acts as a drag "handle"</td>
+			</tr>
+			<tr>
+				<td>dragstartTimeout</td>
+				<td>Delays the drag start for a short time to distinct it from other user intentions
+					(such as selecting text)
+				</td>
+			</tr>
+			<tr>
+				<td>calcInterval</td>
+				<td>Time interval in which LMDD evaluates the dragged element position, Short
+					interval means more responsive experience (and more CPU usage)
+				</td>
+			</tr>
+			<tr>
+				<td>revert</td>
+				<td>When set to true the draggable item will revert to its original position when
+					the cursor is out of the container bounds
+				</td>
+			</tr>
+			<tr>
+				<td>nativeScroll</td>
+				<td>LMDD uses its own auto-scroll function, you can eliminate it and use the native
+					browser scroll
+				</td>
+			</tr>
+			<tr>
+				<td>mirrorMinHeight,
+					mirrorMaxWidth
+				</td>
+				<td>Scale down the mirror size when it exceeds the maximum width set</td>
+			</tr>
+			<tr>
+				<td>positionDelay</td>
+				<td>When set to true - position will not be recalculated when the mouse stops moving
+					(Prevents flickering on deep nested structures)
+				</td>
+			</tr>
+			<tr>
+				<td>dataMode</td>
+				<td>When set to 'true' LMDD will undo all DOM mutations when the drag event ends,
+					This is useful for integrating LMDD with Angular/React/Vue etc.
+				</td>
+			</tr>
+			<tr>
+				<td>lmddend</td>
+				<td>NULL or Done Function: function(objPositions, elRef, isCloned){ ... } // feature added by unixman ;)
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<br>
+<br>
+</body>
+</html>

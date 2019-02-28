@@ -37,7 +37,7 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 	* Solr: connector for Apache Solr 3.x / 4.x / 5.x / 6.x / 7.x (or later versions)
 	* CURL based HTTP Client Lib with proxy support
 	* LangID.py client wrapper (a language detection utility based on external service)
-	* Charting library for drawing charts with PHP
+	* Charts library for PHP
 	* TPL wrapper Lib for the includded TPL engines (this make life easier with existing TPL engines in Smart.Framework: MarkersTPL and Smart.Framework.Modules: netteLatte, Twig and typo3Fluid)
 
 ### Vendor Libs (BSD licensed):
