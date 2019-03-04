@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190207
+ * @version 	v.20190303
  * @package 	PageBuilder
  *
  */
@@ -765,7 +765,7 @@ final class Manager {
 		//--
 		$translator_window = \SmartTextTranslations::getTranslator('@core', 'window');
 		//--
-		$query['data'] = (string) base64_decode($query['data']);
+		$query['data'] = (string) base64_decode((string)$query['data']);
 		//--
 		if((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-data-edit') === true) AND ((string)$query['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-data-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-manage') === true) AND ((string)$query['special'] == '1'))) {
 			//--
@@ -790,7 +790,35 @@ final class Manager {
 				//--
 			} else {
 				//-- CODE VIEW
+				$ymp = new \SmartYamlConverter(false); // do not log YAML errors
+				$yaml = (array) $ymp->parse((string)$query['data']);
+				$yerr = (string) $ymp->getError();
+				$ymp = null;
+				//--
 				$out = '';
+				if($yerr) {
+					$out .= (string) \SmartComponents::operation_error('YAML Parse ERROR: '.\Smart::escape_html($yerr), '815px');
+				} else {
+					if((string)$query['mode'] == 'settings') {
+						if(\Smart::array_size($yaml) <= 0) {
+							$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Empty definition for settings', '815px');
+						} elseif(\Smart::array_size($yaml['SETTINGS']) <= 0) {
+							$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Invalid `SETTINGS` definition', '815px');
+						} //end if else
+					} else {
+						if(\Smart::array_size($yaml) > 0) {
+							if((string)$query['mode'] == 'raw') {
+								if(\Smart::array_size($yaml['PROPS']) <= 0) {
+									$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Invalid `PROPS` definition', '815px');
+								} //end if
+							} else {
+								if(\Smart::array_size($yaml['RENDER']) <= 0) {
+									$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Invalid `RENDER` definition', '815px');
+								} //end if
+							} //end if else
+						} //end if
+					} //end if else
+				} //end if
 				$out .= '<div align="left" id="yaml-viewer"><font size="4"><b>&lt;yaml&gt;</b></font>';
 				$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 				$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-edit.svg'.'" alt="'.self::text('ttl_edtac').'" title="'.self::text('ttl_edtac').'" style="cursor:pointer;" onClick="'."SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#yaml-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-edit-tab-data&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');".'">';

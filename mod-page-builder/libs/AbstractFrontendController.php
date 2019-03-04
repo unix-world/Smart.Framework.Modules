@@ -25,7 +25,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.20190207
+ * @version 	v.20190303
  * @package 	PageBuilder
  *
  */
@@ -57,6 +57,13 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 	//=====
 	final public function renderBuilderPage($page_id, $tpl_path, $tpl_file, $markers) { // (OUTPUTS: HTML)
+
+		//--
+		if((string)$this->ControllerGetParam('module-area') != 'index') {
+			$this->PageViewSetErrorStatus(502, 'ERROR: Invalid Area for PageBuilde Abstract Controller ...');
+			return;
+		} //end if
+		//--
 
 		//--
 		$this->max_depth = $this->fixRenderMaxDepth($this->max_depth);
@@ -95,6 +102,19 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		$this->PageViewSetCfg('template-file', (string)$tpl_file);
 		//--
 		$this->page_markers = (array) $this->fixAllowedTemplateMarkers($markers);
+		for($i=0; $i<\Smart::array_size($this->page_markers); $i++) {
+			if(strpos((string)$this->page_markers[$i], 'TEMPLATE@') === 0) {
+				$tmp_marker = (string) substr((string)$this->page_markers[$i], strlen('TEMPLATE@'));
+				if((string)trim((string)$tmp_marker) != '') {
+					if(preg_match((string)$this->regex_marker, (string)$tmp_marker)) {
+						if($this->IfDebug()) {
+							$this->SetDebugData('Frontend PageBuilder Controller Initialize PageView Variable, No Overwrite', (string)$tmp_marker);
+						} //end if
+						$this->PageViewSetVar($tmp_marker, '', false); // initialize all page vars
+					} //end if
+				} //end if
+			} //end if
+		} //end foreach
 		//--
 
 		//--
@@ -186,6 +206,14 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 	final public function getRenderedBuilderSegmentCode($segment_id) { // (OUTPUTS: HTML)
 
 		// CHECK: $this->rendered_segments[]
+
+		//--
+		if((string)$this->ControllerGetParam('module-area') != 'index') {
+			$errmsg = 'ERROR: Invalid Area for PageBuilde Abstract Controller ...';
+			$this->PageViewSetErrorStatus(502, $errmsg);
+			return (string) \SmartComponents::operation_error($errmsg);
+		} //end if
+		//--
 
 		//--
 		$this->max_depth = $this->fixRenderMaxDepth($this->max_depth);
@@ -292,6 +320,15 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 	//===== !!! this feature have to be provided as separate since a segment cannot be rendered more than once per controller !!!
 	final public function renderSegmentMarkers($segment_code, $markers) { // (OUTPUTS: HTML)
+
+		//--
+		if((string)$this->ControllerGetParam('module-area') != 'index') {
+			$errmsg = 'ERROR: Invalid Area for PageBuilde Abstract Controller ...';
+			$this->PageViewSetErrorStatus(502, $errmsg);
+			return (string) \SmartComponents::operation_error($errmsg);
+		} //end if
+		//--
+
 		//--
 		if((\Smart::array_size($markers) > 0) AND (strpos((string)$segment_code, '{{=#') !== false)) { // if we provide express markers for replacing
 			//--
@@ -331,14 +368,21 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			//--
 		} //end if
 		//--
+
+		//--
 		return (string) $segment_code;
 		//--
+
 	} //END FUNCTION
 	//=====
 
 
 	//=====
 	final public function checkIfPageOrSegmentExist($y_id) {
+		//--
+		if((string)$this->ControllerGetParam('module-area') != 'index') {
+			return false;
+		} //end if
 		//--
 		return (bool) \SmartModDataModel\PageBuilder\PageBuilderFrontend::checkIfPageOrSegmentExist((string)$y_id);
 		//--
@@ -348,6 +392,10 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 	//=====
 	final public function getListOfSegmentsByArea($y_area) {
+		//--
+		if((string)$this->ControllerGetParam('module-area') != 'index') {
+			return array();
+		} //end if
 		//--
 		return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfSegmentsByArea((string)$y_area);
 		//--
@@ -406,7 +454,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		$markers = [];
 		//--
 		for($i=0; $i<\Smart::array_size($tmp_arr); $i++) {
-			$tmp_arr[$i] = (string) trim((string)$tmp_arr[$i]);
+			$tmp_arr[$i] = (string) strtoupper((string)trim((string)$tmp_arr[$i]));
 			if((string)$tmp_arr[$i] != '') {
 				if(preg_match((string)$this->regex_marker, (string)$tmp_arr[$i])) {
 					if(!in_array((string)$tmp_arr[$i], [ 'MAIN' ])) {
@@ -445,7 +493,14 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		$yaml = (string) base64_decode((string)$arr['data']);
 		//--
 		if((string)$yaml != '') {
-			$yaml = (array) (new \SmartYamlConverter())->parse((string)$yaml);
+			$ymp = new \SmartYamlConverter(false); // do not log YAML errors
+			$yaml = (array) $ymp->parse((string)$yaml);
+			$yerr = (string) $ymp->getError();
+			if($yerr) {
+				\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Settings Segment YAML Error: '.$id.' in Page: '.implode(';', $this->current_page).' # '.$yerr); // log warning, this is internal, by page settings
+				return array();
+			} //end if
+			$ymp = null;
 		} else {
 			$yaml = array();
 		} //end if
@@ -663,7 +718,18 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		$yaml = (string) base64_decode((string)$arr['data']);
 		//--
 		if((string)trim((string)$yaml) != '') {
-			$yaml = (array) (new \SmartYamlConverter())->parse((string)$yaml);
+			$ymp = new \SmartYamlConverter(false); // do not log YAML errors
+			$yaml = (array) $ymp->parse((string)$yaml);
+			$yerr = (string) $ymp->getError();
+			if($yerr) {
+				\Smart::raise_error(
+					'PageBuilder: Invalid Data Structure (YAML) detected on Page/Segment: ['.implode(';', $this->current_page).'/'.(string)$id.'] # '.$yerr,
+					'Invalid Data Structure detected for this Page'
+				);
+				die();
+				return array();
+			} //end if
+			$ymp = null;
 		} else {
 			$yaml = array();
 		} //end if
@@ -1333,21 +1399,21 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 
 		//-- manage meta from plugins
-		if(in_array('TITLE', (array)$this->page_markers)) {
+		if(in_array('TEMPLATE@TITLE', (array)$this->page_markers)) {
 			if((string)$data_arr['@meta-title'] != '') {
 				$data_arr['smart-markers']['TITLE'] = (string) $data_arr['@meta-title'];
 			} //end if
 		} //end if
 		unset($data_arr['@meta-title']);
 		//--
-		if(in_array('META-DESCRIPTION', (array)$this->page_markers)) {
+		if(in_array('TEMPLATE@META-DESCRIPTION', (array)$this->page_markers)) {
 			if((string)$data_arr['@meta-description'] != '') {
 				$data_arr['smart-markers']['META-DESCRIPTION'] = (string) $data_arr['@meta-description'];
 			} //end if
 		} //end if
 		unset($data_arr['@meta-description']);
 		//--
-		if(in_array('META-KEYWORDS', (array)$this->page_markers)) {
+		if(in_array('TEMPLATE@META-KEYWORDS', (array)$this->page_markers)) {
 			if((string)$data_arr['@meta-keywords'] != '') {
 				$data_arr['smart-markers']['META-KEYWORDS'] = (string) $data_arr['@meta-keywords'];
 			} //end if

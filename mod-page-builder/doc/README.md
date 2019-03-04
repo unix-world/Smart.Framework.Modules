@@ -32,3 +32,82 @@ index.php?/page/page-builder.test-frontend
 index.php?/page/page-builder.test-frontend-segment
 index.php?/page/page-builder.test-frontend-segment-with-markers
 
+# Sample YAML Data Definitions
+
+## Sample YAML Data for Page or Segment:
+```yaml
+RENDER:
+  TEST:
+    content:
+      type: segment
+      id: my-segment-2 # html segment
+  AREA-ONE:
+    content:
+      type: segment
+      id: my-segment-3 # html segment
+  AREA.TWO:
+    content-1:
+      type: plugin
+      id: page-builder/test1
+      config:
+        title: My Plugin
+        columns: 100
+#    content-2:
+#      type: plugin
+#      id: anouncements/main
+    content-4:
+      type: segment
+      id: my-segment-2
+    content-3:
+      type: segment
+      id: my-segment-3 # markdown segment
+  AREA-THREE:
+    content:
+      type: plugin
+      id: page-builder/test2
+      config: my-segment-5
+  AREA-FOUR:
+    content:
+      type: segment
+      id: my-segment-1
+  AREA-FIVE:
+    content-1:
+      type: plugin
+      id: page-builder/test3
+      config:
+        title: News
+        columns: 10
+    content-2:
+      type: segment
+      id: my-segment-2
+    content-3:
+      type: plugin
+      id: page-builder/test4
+  TEMPLATE@AREA.TOP:
+    content:
+      type: segment
+      id: website-menu
+  TEMPLATE@AREA.FOOTER:
+    content:
+      type: segment
+      id: website-footer
+  TEMPLATE@TITLE:
+    content:
+      type: value
+      id: This is the page <title>
+      config: text
+```
+
+## Sample YAML Data for Raw Page:
+```yaml
+PROPS:
+  FileName: test.txt
+  Disposition: inline
+```
+
+## Sample YAML Data for Settings Segment:
+```yaml
+SETTINGS:
+    a: 200
+    b: 'this is'
+```

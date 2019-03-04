@@ -1,0 +1,70 @@
+<?php
+// [@[#[!SF.DEV-ONLY!]#]@]
+// Controller: ZZZ Tests / Html2Markdown
+// Route: ?page=zzz-tests.test-html2markdown
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
+
+//----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
+if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+} //end if
+//-----------------------------------------------------
+
+define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
+
+/**
+ * Index Controller
+ *
+ * @ignore
+ *
+ */
+class SmartAppIndexController extends SmartAbstractAppController {
+
+	public function Run() {
+
+		//-- dissalow run this sample if not test mode enabled
+		if(SMART_FRAMEWORK_TEST_MODE !== true) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: Test mode is disabled ...');
+			return;
+		} //end if
+		//--
+
+		//--
+		if(!class_exists('\\League\\HTMLToMarkdown\\HtmlConverter')) {
+			require_once('modules/vendor/League/autoload.php');
+		} //end if
+		//--
+		$html = (string) SmartMarkersTemplating::render_file_template($this->ControllerGetParam('module-view-path').'test-html2markdown.mtpl.htm',[]);
+		$converter = new \League\HTMLToMarkdown\HtmlConverter([ 'strip_tags' => true ]);
+		$markdown = $converter->convert($html);
+		//--
+
+		//--
+		$this->PageViewSetVars([
+			'title' => 'ZZZ Tests: Html2Markdown',
+			'main' => '<h1 id="qunit-test-result">Converted Markdown</h1><pre>'.Smart::escape_html($markdown).'</pre><hr>'.'<h1>Original HTML</h1><pre>'.Smart::escape_html($html).'</pre><hr>'.'<br><br>'
+		]);
+		//--
+
+	} //END FUNCTION
+
+} //END CLASS
+
+
+/**
+ * Admin Controller
+ *
+ * @ignore
+ *
+ */
+class SmartAppAdminController extends SmartAppIndexController {
+
+	// this will clone the SmartAppIndexController to run exactly the same action in admin.php
+
+} //END CLASS
+
+
+//end of php code
+?>

@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderBackend {
 
 	// ::
-	// v.20190207
+	// v.20190303
 
 	private static $db = null;
 	private static function dbType() {
@@ -583,7 +583,14 @@ final class PageBuilderBackend {
 			//-- rebuild reference from YAML (if new YAML segments entered will be created automatically)
 			$tmp_yaml = (string) trim((string)base64_decode((string)$y_arr_data['data']));
 			if((string)$tmp_yaml != '') {
-				$tmp_yaml = (array) (new \SmartYamlConverter())->parse((string)$tmp_yaml);
+				$tmp_ymp = new \SmartYamlConverter(false); // do not log YAML parse errors
+				$tmp_yaml = (array) $tmp_ymp->parse((string)$tmp_yaml);
+				$tmp_yerr = (string) $tmp_ymp->getError();
+				if($tmp_yerr) {
+					self::commitTransaction();
+					return 1; // yaml have errors, prevent parse it
+				} //end if
+				$tmp_ymp = null;
 				if(\Smart::array_size($tmp_yaml) > 0) {
 					if(\Smart::array_size($tmp_yaml['RENDER']) > 0) {
 						foreach($tmp_yaml['RENDER'] as $key => $val) {

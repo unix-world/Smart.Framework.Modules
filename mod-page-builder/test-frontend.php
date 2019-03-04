@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AREA', 'INDEX');
  */
 final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\AbstractFrontendController {
 
-	// r.20190207
+	// r.20190303
 
 	public function Run() {
 
@@ -32,13 +32,14 @@ final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\Abstract
 			return;
 		} //end if
 		//--
-		if(!$this->checkIfPageOrSegmentExist('test-page')) {
-			$this->PageViewSetErrorStatus(404, 'PageBuilder SampleData Not Found ...');
-			return;
-		} //end if
-		//--
 
 		$section = $this->RequestVarGet('section', 'test-page', 'string');
+		if((string)$section == 'test-page') {
+			if(!$this->checkIfPageOrSegmentExist('test-page')) {
+				$this->PageViewSetErrorStatus(404, 'PageBuilder SampleData Not Found ...');
+				return;
+			} //end if
+		} //end if
 
 		$this->renderBuilderPage(
 			(string)$section,				// page ID
@@ -46,6 +47,7 @@ final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\Abstract
 			'template-test-frontend.htm', 	// TPL File
 			[ 'AREA.TOP', 'MAIN', 'AREA.FOOTER', 'TITLE', 'META-DESCRIPTION', 'META-KEYWORDS' ] // Allowed TPL Markers
 		);
+		$this->PageViewSetVar('title', 'Sample PageBuilder Frontend Page', false); // fallback title
 
 		$test_segments = (array) $this->getListOfSegmentsByArea('%'); // just for test ...
 	//	print_r($test_segments); die();
