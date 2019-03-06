@@ -22,6 +22,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$this->PageViewSetCfg('template-file', 'template-modal.htm');
 
 		$uuid = (string) $this->RequestVarGet('uuid', '', 'string');
+		$mode = (string) $this->RequestVarGet('mode', '', 'string');
 		$edit = (string) $this->RequestVarGet('edit', '', 'string');
 		$import = (string) $this->RequestVarGet('import', '', 'string');
 
@@ -94,10 +95,18 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			} else {
 				$opmode = 'edit';
 			} //end if else
-			$tpl = 'todo-editor.htm';
+			if((string)$mode == 'kanban') {
+				$tpl = 'todo-k-editor.htm';
+			} else {
+				$tpl = 'todo-editor.htm';
+			} //end if else
 		} else {
 			$opmode = 'read';
-			$tpl = 'todo-reader.htm';
+			if((string)$mode == 'kanban') {
+				$tpl = 'todo-k-reader.htm';
+			} else {
+				$tpl = 'todo-reader.htm';
+			} //end if else
 		} //end if else
 
 		$this->PageViewSetVars([

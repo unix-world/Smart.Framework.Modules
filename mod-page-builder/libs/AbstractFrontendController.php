@@ -25,7 +25,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.20190303
+ * @version 	v.20190306
  * @package 	PageBuilder
  *
  */
@@ -1170,7 +1170,15 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 										//--
 										if(is_subclass_of((string)$plugin_class, '\\SmartModExtLib\\PageBuilder\\AbstractFrontendPlugin')) {
 											//--
-											$plugin_obj = new $plugin_class('index', $this->ControllerGetParam('module-path'), $this->ControllerGetParam('url-script'), $this->ControllerGetParam('url-path'), $this->ControllerGetParam('url-addr'), $this->ControllerGetParam('url-page'), $this->ControllerGetParam('controller'));
+											$plugin_obj = new $plugin_class(
+												'index',
+												$this->ControllerGetParam('module-path'),
+												$this->ControllerGetParam('url-script'),
+												$this->ControllerGetParam('url-path'),
+												$this->ControllerGetParam('url-addr'),
+												$this->ControllerGetParam('url-page'),
+												$this->ControllerGetParam('controller')
+											);
 											$plugin_obj->initPlugin((array)$plugin_cfg); // initialize before run !
 											//--
 											$plugin_obj->Initialize(); // pre-run

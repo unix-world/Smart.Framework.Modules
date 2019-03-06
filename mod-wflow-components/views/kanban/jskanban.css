@@ -2,13 +2,14 @@
 // Js Kanban CSS
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190227
+// v.20190306
 */
 
 .jskanban_area {
 	width: 90%;
 	margin-left: auto;
 	margin-right: auto;
+	text-align: left;
 }
 
 .jskanban_holder {
@@ -109,6 +110,12 @@
 	font-size: 0.7rem;
 }
 
+.jskanban_box div.task-subrow div.task-timings {
+	display: inline-block;
+	font-size: 0.7rem;
+	font-weight: bold;
+}
+
 .jskanban_box div.task-row {
 	font-weight: bold;
 }
@@ -140,9 +147,14 @@
 	cursor: default;
 }
 
+.jskanban_passive_elements div span {
+	font-weight: normal;
+	font-size: 0.75rem;
+}
+
 .jskanban_passive_elements div.type-project {
 	border: 2px solid #556677;
-	background: #778899;
+	background: #334455;
 	color: #FFFFFF;
 	cursor: help;
 }

@@ -5,7 +5,7 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190219 (stable)
+// v.20190305 (stable)
 /*
 modified by unixman:
 	- add types: project, milestone
@@ -18,6 +18,7 @@ modified by unixman:
 	- slow lightbox fix
 	- changed task structure [ start = start_date ; end = end_date ; title = text ]
 	- add visible=true/false attribute instead of hiding the task (if visible is false will be like readonly until visible is true)
+	- add true B36 UUID for tasks and links
 */
 
 // TODO:
@@ -27,7 +28,7 @@ modified by unixman:
 var SmartGanttInstance = function() { // START CLASS
 
 	var gantt = {
-		version: '3.2.1.uxm.20190125',
+		version: '3.2.1.uxm.20190305',
 		plugins: []
 	};
 
@@ -69,14 +70,14 @@ var SmartGanttInstance = function() { // START CLASS
 		return width;
 	};
 
-/* Aparently not used at all in this context ...
+	/* Aparently not used at all in this context ...
 	if(window.dhtmlx) {
 		if(!dhtmlx.attaches) {
 			dhtmlx.attaches = {};
 		}
 		dhtmlx.attaches.attachGantt = function(start, end, gantt) {
 			var obj = document.createElement("DIV");
-			obj.id = "gantt_"+dhtmlx.uid();
+			obj.id = "gantt_" + dhtmlx.uid(); // unixman: ok numeric UUID
 			obj.style.width = "100%";
 			obj.style.height = "100%";
 			obj.cmp = "grid";
@@ -93,7 +94,7 @@ var SmartGanttInstance = function() { // START CLASS
 			return this.vs[this[method_name]()].grid;
 		};
 	}
-*/
+	*/
 
 	dhtmlxEventable(gantt);
 
@@ -3062,7 +3063,7 @@ var SmartGanttInstance = function() { // START CLASS
 			if(typeof config == "function") {
 				config = {renderer: config};
 			}
-			var id = config.id = dhtmlx.uid();
+			var id = config.id = dhtmlx.uid(); // unixman: ok numeric UUID
 			if(!config.container) {
 				config.container = document.createElement("div");
 			}
@@ -3844,7 +3845,8 @@ var SmartGanttInstance = function() { // START CLASS
 
 	gantt.createTask = function(item, parent) {
 		item = item || {};
-		item.id = dhtmlx.uid();
+	//	item.id = dhtmlx.uid();
+		item.id = String(SmartJS_CoreUtils.uuid()); // fix by unixman (uuid)
 		item.open = true;
 		if(!item.start) {
 			item.start = gantt._default_task_date(item, parent);
@@ -4134,7 +4136,8 @@ var SmartGanttInstance = function() { // START CLASS
 
 	gantt._init_task = function(task) {
 		if(!dhtmlx.defined(task.id)) {
-			task.id = dhtmlx.uid();
+		//	task.id = dhtmlx.uid();
+			task.id = String(SmartJS_CoreUtils.uuid()); // fix by unixman (uuid)
 		}
 		if(task.start) {
 			task.start = gantt.date.parseDate(task.start, 'xml_date');
@@ -4170,6 +4173,12 @@ var SmartGanttInstance = function() { // START CLASS
 			delete task.$no_start;
 			task.$rendered_type = task_type;
 		}
+		//--# fix by unixman (flextask become task on progress 100%)
+		if(task_type == this.config.types.flextask && task.progress >= 1) {
+			task.type = this.config.types.task;
+			task_type = task.type;
+		}
+		//--# end fix
 		if((task.$no_end === undefined || task.$no_start === undefined) && task_type != this.config.types.milestone) {
 			if(task_type == this.config.types.project) {
 				//project duration is always defined by children duration
@@ -4616,7 +4625,8 @@ var SmartGanttInstance = function() { // START CLASS
 
 	gantt._init_link = function(link) {
 		if(!dhtmlx.defined(link.id)) {
-			link.id = dhtmlx.uid();
+		//	link.id = dhtmlx.uid();
+			link.id = String(SmartJS_CoreUtils.uuid()); // fix by unixman (uuid)
 		}
 		return link;
 	};
@@ -4881,7 +4891,7 @@ var SmartGanttInstance = function() { // START CLASS
 			if(!block) {
 				continue; // ignore incorrect blocks
 			}
-			sns[i].id = 'area_' + dhtmlx.uid();
+			sns[i].id = 'area_' + dhtmlx.uid(); // unixman: ok numeric UUID
 			var display = sns[i].hidden ? ' style="display:none"' : '';
 			var button = '';
 			if(sns[i].button) {

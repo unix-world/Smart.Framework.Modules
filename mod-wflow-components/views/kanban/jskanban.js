@@ -2,15 +2,27 @@
 // Js Kanban CSS
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190227
+// v.20190306
 
-var JS_Kanban = new function() { // START CLASS
+var JsKanban = function() { // START CLASS
 
+	// -> OBJECT
+
+	var _class = this; // self referencing
+
+	var kArea = '';
+	var kObj = {};
 	var kData = [];
-	var projects = {};
+	var kTtls = {};
 	var enableSortingInTheSameContainer = true;
 
-	this.initBoard = function(isReadOnly, sortInSameContainer) {
+
+	this.initBoard = function(jqSelector, isReadOnly, sortInSameContainer) {
+		//--
+		if((typeof jqSelector == 'undefined') || (jqSelector == null) || (jqSelector == '')) {
+			return;
+		} //end if
+		kArea = String(jqSelector);
 		//--
 		if(isReadOnly === true) {
 			return;
@@ -41,8 +53,10 @@ var JS_Kanban = new function() { // START CLASS
 					if(!updated) {
 						alert('Failed to update status for this task ...');
 						return;
-					}
+					} //end if
 					ui.item.attr('data-kanban-item-status', status);
+					setItemSparklineData(id);
+					renderItemSparklineChart(id);
 					jQuery(this).parent().addClass('jskanban_holder_highlight');
 				},
 				deactivate: function(event, ui) {
@@ -64,7 +78,51 @@ var JS_Kanban = new function() { // START CLASS
 		//--
 	} //END FUNCTION
 
-	this.addTask = function(area, obj) {
+
+	this.importData = function(dataJson) {
+		//--
+		if(dataJson.docType != 'smartWorkFlow.TodoList') {
+			return false;
+		} //end if
+		if(!dataJson.data) {
+			return false;
+		} //end if
+		if(!dataJson.data.todos) {
+			return false;
+		} //end if
+		if(!dataJson.data.todos.data) {
+			return false;
+		} //end if
+		//--
+		var kdata = dataJson.data.todos.data;
+		var obj = null;
+		for(var i=0; i<kdata.length; i++) {
+			obj = kdata[i] || null;
+			if(obj && obj.id) {
+				_class.addTask(obj);
+			} //end if
+		} //end for
+		obj = null;
+		//--
+		addDoc(dataJson);
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
+	var addDoc = function(dataJson) {
+		//--
+		dataJson.data.todos.data = []; // reset
+		//--
+		kObj = dataJson;
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
+	this.addTask = function(obj) {
 		//--
 		if(!obj) {
 			return;
@@ -72,16 +130,9 @@ var JS_Kanban = new function() { // START CLASS
 		//--
 		var id = String(obj.id || '');
 		if(!id) {
-			id = SmartJS_CryptoHash.sha1('KanBan UUID #' + randNum + ' :: ' + seconds + '.' + milliseconds);
-			var date = new Date();
-			var seconds = date.getTime();
-			var milliseconds = date.getMilliseconds();
-			var randNum = Math.random().toString(36);
+			id = String(SmartJS_CoreUtils.uuid());
 			obj.id = id;
-			var d = new Date();
-			var dz  = SmartJS_DateUtils.standardizeDate(d);
-			var iso = SmartJS_DateUtils.getIsoDate(dz);
-			obj.start = String(iso);
+			obj.start = String(getIsoDate());
 			obj.type = 'flextask';
 		} //end if
 		//--
@@ -101,39 +152,21 @@ var JS_Kanban = new function() { // START CLASS
 		var ttl = String(obj.title || 'Untitled');
 		obj.title = ttl;
 		//--
-		var extraClass = '';
-		var display = 2;
-		var t_start = String(obj.start || '');
-		var t_end = String(obj.end || '');
-		switch(String(obj.type)) {
-			case 'project':
-				display = 0;
-				t_end = '-';
-				if(id) {
-					projects['proj__id__' + String(id)] = String(ttl);
-				} //end if
-				break;
-			case 'milestone':
-				display = 1;
-				t_end = '@';
-				break;
-			case 'flextask':
-				display = 3;
-				extraClass = ' taskTypeFlex';
-				t_end = '*';
-				break;
-			default:
-				// nothing
-		} //end switch
+		var theObjProps = getItemProperties(obj);
+		var extraClass 	= theObjProps.extraClass;
+		var display 	= theObjProps.display;
+		var t_start 	= theObjProps.t_start;
+		var t_end 		= theObjProps.t_end;
+		var showEnd 	= theObjProps.showEnd;
+		var timings 	= theObjProps.timings;
+		theObjProps 	= null;
 		//--
-		var timings = String(t_start.split(' ')[0]);
-		if(t_end) {
-			timings += ' - ' + String(t_end.split(' ')[0]);
-		}
-		//--
+		if(id) {
+			kTtls['__id__' + String(id)] = String(ttl);
+		} //end if
 		var parentTtl = '';
 		if(obj.parent) {
-			parentTtl = projects['proj__id__' + String(obj.parent)];
+			parentTtl = kTtls['__id__' + String(obj.parent)];
 		} //end if
 		//--
 		var t_progress = parseFloat(obj.progress);
@@ -146,36 +179,75 @@ var JS_Kanban = new function() { // START CLASS
 		//--
 		kData.push(obj);
 		if(display >= 2) {
-			jQuery(area).find('div.jskanban_holder').find('ul#kanban-' + String(status)).append('<li title="Task ID: ' + SmartJS_CoreUtils.escape_html(id) + (parentTtl ? '\n' + 'Project: ' + SmartJS_CoreUtils.escape_html(parentTtl) : '') + '" id="kanban-task--' + SmartJS_CoreUtils.escape_html(id) + '" data-kanban-item-status="" data-id="' + SmartJS_CoreUtils.escape_html(id) + '" class="jskanban_box' + SmartJS_CoreUtils.escape_html(extraClass) + '"><div class="task-text"><div class="task-row">' + SmartJS_CoreUtils.escape_html(ttl) + '</div><div class="task-subrow">' + SmartJS_CoreUtils.escape_html(timings) + '</div></div><div title="Progress: ' + SmartJS_CoreUtils.escape_html(p_progress) + '%" class="sparkline" data-chart="' + SmartJS_CoreUtils.escape_html(t_progress + ',' + (1-t_progress)) + '"></div></li>');
+			jQuery(String(kArea)).find('div.jskanban_holder').find('ul#kanban-' + String(status)).append('<li title="Task: ' + SmartJS_CoreUtils.escape_html(id) + '" id="kanban-task--' + SmartJS_CoreUtils.escape_html(id) + '" data-kanban-item-status="" data-id="' + SmartJS_CoreUtils.escape_html(id) + '" class="jskanban_box' + SmartJS_CoreUtils.escape_html(extraClass) + '"><div class="task-text"><div class="task-row">' + SmartJS_CoreUtils.escape_html(ttl) + '</div><div class="task-subrow"><div class="task-timings">' + SmartJS_CoreUtils.escape_html(timings) + '</div>' + (parentTtl ? ' &nbsp; ' + SmartJS_CoreUtils.escape_html(parentTtl) : '') + '</div></div><div title="Progress: ' + SmartJS_CoreUtils.escape_html(p_progress) + '%" class="sparkline" data-chart="' + SmartJS_CoreUtils.escape_html(t_progress + ',' + (1-t_progress)) + '"></div></li>');
 		} else if(display === 0) {
-			jQuery('body').find('div.jskanban_passive_elements').append('<div class="type-project" title="Project">' + SmartJS_CoreUtils.escape_html(ttl) + '</div>');
+			jQuery('body').find('div.jskanban_passive_elements').append('<div class="type-project" title="Project Feature: ' + SmartJS_CoreUtils.escape_html(id) + '">' + SmartJS_CoreUtils.escape_html(ttl) + '<br><span>' + SmartJS_CoreUtils.escape_html(timings) + '&nbsp;' + SmartJS_CoreUtils.escape_html('>') + '</span></div>');
 		} else if(display === 1) {
-			jQuery('body').find('div.jskanban_passive_elements').append('<div class="type-milestone" title="Milestone">' + SmartJS_CoreUtils.escape_html(ttl) + '</div>');
+			jQuery('body').find('div.jskanban_passive_elements').append('<div class="type-milestone" title="Milestone: ' + SmartJS_CoreUtils.escape_html(id) + '">' + SmartJS_CoreUtils.escape_html(ttl) + '<br><span>' + SmartJS_CoreUtils.escape_html(timings) + '&nbsp;' + SmartJS_CoreUtils.escape_html('^') + (parentTtl ? ' &nbsp; ' + SmartJS_CoreUtils.escape_html(parentTtl) : '') + '</span></div>');
 		} //end if else
 		//--
-		if(jQuery.fn.sparkline) {
-			jQuery('#kanban-task--' + SmartJS_CoreUtils.escape_html(id) + ' > div.sparkline').sparkline('html', {
-				type: 'pie',
-				enableTagOptions: true,
-				tagOptionsPrefix: '',
-				tagValuesAttribute: 'data-chart',
-				disableTooltips: true,
-				disableInteraction: true,
-				sliceColors: ['#758C33', '#DDDDDD']
-			});
-		} //end if
+		renderItemSparklineChart(id);
 		//--
 	} //END FUNCTION
 
 
-	this.saveBoard = function(area, evcode) {
+	this.saveBoard = function(evcode) {
 		//-- IMPORTANT: Do Not Change Order on save as it would not correctly display parents (projects, ...)
 		if((typeof evcode === 'function') && (evcode != null)) {
-			evcode(kData);
+			evcode(kData, kObj);
 		} //end if
 		//--
 	} //END FUNCTION
 
+
+	var getItemProperties = function(obj) {
+		//--
+		if(!obj) {
+			return null;
+		} //end if
+		//--
+		var display = 2;
+		var t_start = String(obj.start || '');
+		var t_end = String(obj.end || '');
+		var showEnd = true;
+		var extraClass = '';
+		switch(String(obj.type)) {
+			case 'project':
+				display = 0;
+				t_end = '-';
+				showEnd = false;
+				break;
+			case 'milestone':
+				display = 1;
+				t_end = '@';
+				showEnd = false;
+				break;
+			case 'flextask':
+				display = 3;
+				extraClass = ' taskTypeFlex';
+				if(obj.progress < 1) {
+					t_end = '*';
+				} //end if
+				break;
+			default:
+				// nothing
+		} //end switch
+		//--
+		var timings = String(t_start.split(' ')[0]);
+		if(t_end && showEnd) {
+			timings += ' - ' + String(t_end.split(' ')[0]);
+		} //end if
+		//--
+		return {
+			display: display,
+			t_start: t_start,
+			t_end: t_end,
+			showEnd: showEnd,
+			timings: timings,
+			extraClass: extraClass
+		};
+		//--
+	} //END FUNCTION
 
 	var getValidStatus = function(status) {
 		//--
@@ -194,6 +266,43 @@ var JS_Kanban = new function() { // START CLASS
 	} //END FUNCTION
 
 
+	var getIsoDate = function(oldDate, daysOffset) {
+		//--
+		var d = new Date();
+		var dz  = SmartJS_DateUtils.standardizeDate(d);
+		var iso = SmartJS_DateUtils.getIsoDate(dz);
+		if(oldDate && daysOffset) {
+			daysOffset = Math.floor(daysOffset);
+			if(daysOffset > 0) {
+				d = new Date(String(oldDate));
+				dz  = SmartJS_DateUtils.standardizeDate(d);
+				dz = SmartJS_DateUtils.addDays(dz, daysOffset);
+				iso = SmartJS_DateUtils.getIsoDate(dz);
+			} //end if
+		} //end if
+		//--
+		return String(iso);
+		//--
+	} //END FUNCTION
+
+
+	var updateObjTimingsDisplay = function(obj) {
+		//--
+		var id 			= obj.id;
+		var theObjProps = getItemProperties(obj);
+		var extraClass 	= theObjProps.extraClass;
+		var display 	= theObjProps.display;
+		var t_start 	= theObjProps.t_start;
+		var t_end 		= theObjProps.t_end;
+		var showEnd 	= theObjProps.showEnd;
+		var timings 	= theObjProps.timings;
+		theObjProps 	= null;
+		//--
+		jQuery(String(kArea)).find('div.jskanban_holder').find('ul[id^=kanban-]').find('li#kanban-task--' + SmartJS_CoreUtils.escape_html(id) + ' > div.task-text > div.task-subrow > div.task-timings').empty().html(SmartJS_CoreUtils.escape_html(timings));
+		//--
+	} //END FUNCTION
+
+
 	var updateObjKStatus = function(id, status) {
 		//--
 		if(!id) {
@@ -205,14 +314,106 @@ var JS_Kanban = new function() { // START CLASS
 			obj = kData[i];
 			if(obj && obj.id) {
 				if(String(id) === String(obj.id)) {
+					if(obj.kanbanStatus === 'done') { // restore only if moved back from done
+						if(obj.duration) {
+							obj.end = String(getIsoDate(obj.start, obj.duration));
+						} else {
+							delete(obj.end);
+						} //end if else
+					} //end if
 					obj.kanbanStatus = getValidStatus(status);
+					switch(String(obj.kanbanStatus)) {
+						case 'todo':
+							obj.progress = 0;
+							break;
+						case 'inprogress':
+							obj.progress = 0.50;
+							break;
+						case 'check':
+							obj.progress = 0.90;
+							break;
+						case 'done':
+							obj.progress = 1;
+							obj.end = String(getIsoDate());
+							break;
+						default:
+							// keep
+					} //end switch
+					updateObjTimingsDisplay(obj);
+					return true;
 				} //end if
 			} //end if
 		} //end for
+		obj = null;
+		//--
+		return false;
+		//--
+	} //END FUNCTION
+
+
+	var getItemSparklineDiv = function(id) {
+		//--
+		if(!id) {
+			return null;
+		} //end if
+		//--
+		return jQuery(String(kArea)).find('div.jskanban_holder').find('ul[id^=kanban-]').find('li#kanban-task--' + SmartJS_CoreUtils.escape_html(id) + ' > div.sparkline');
+		//--
+	} //END FUNCTION
+
+
+	var setItemSparklineData = function(id) {
+		//--
+		var item = getItemSparklineDiv(id);
+		if(!item) {
+			return false;
+		} //end if
+		//--
+		var obj;
+		for(var i=0; i<kData.length; i++) {
+			obj = kData[i];
+			if(obj && obj.id) {
+				if(String(id) === String(obj.id)) {
+					var t_progress = Number(obj.progress);
+					var p_progress = Math.floor(t_progress * 100);
+					item.attr('data-chart', String(Number(t_progress) + ',' + Number(1-t_progress))).attr('title', String('Progress: ' + SmartJS_CoreUtils.escape_html(p_progress) + '%'));
+					return true;
+				} //end if
+			} //end if
+		} //end for
+		obj = null;
+		//--
+		return false;
+		//--
+	} //END FUNCTION
+
+
+	var renderItemSparklineChart = function(id) {
+		//--
+		if(!jQuery.fn.sparkline) {
+			return false;
+		} //end if
+		//--
+		var item = getItemSparklineDiv(id);
+		if(!item) {
+			return false;
+		} //end if
+		//--
+		item.empty().off().sparkline('html', {
+			type: 'pie',
+			enableTagOptions: true,
+			tagOptionsPrefix: '',
+			tagValuesAttribute: 'data-chart',
+			disableTooltips: true,
+			disableInteraction: true,
+			sliceColors: ['#758C33', '#DDDDDD'],
+			width: '22px',
+			height: '22px'
+		});
 		//--
 		return true;
 		//--
-	} //END FUNCTION
+	} //end if
 
 
 } //END CLASS

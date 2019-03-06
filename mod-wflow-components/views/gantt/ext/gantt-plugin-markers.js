@@ -5,7 +5,7 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190219 (stable)
+// v.20190305 (stable)
 /*
 modified by unixman:
 	- isolate in a function
@@ -88,7 +88,7 @@ function SmartGanttPluginMarkers(gantt) {
 	};
 
 	gantt.addMarker = function(marker){
-		marker.id = marker.id || dhtmlx.uid();
+		marker.id = marker.id || dhtmlx.uid(); // unixman: ok numeric UUID
 		this._markers[marker.id] = marker;
 		return marker.id;
 	};

@@ -1,0 +1,50 @@
+<!-- todo-k-board.inc.htm v.20190305 -->
+[%%%%IF:OP-MODE:@=create|edit;%%%%]
+<style>
+.jskanban_add_area {
+	margin-left: 10px;
+}
+</style>
+[%%%%/IF:OP-MODE%%%%]
+<div>
+	<div class="jskanban_passive_elements"></div>
+	<div class="jskanban_area" id="jskanban_area">
+		<div id="kanban-area-todo" class="jskanban_holder jskanban_holder_todo">
+			<h2 class="box-title" title="Not Started">1.To-Do</h2>
+			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-todo" data-kanban-status="todo">
+			</ul>
+			[%%%%IF:OP-MODE:@=create|edit;%%%%]
+			<div class="jskanban_add_area">
+				<input id="jskanban_add_field" type="text" class="ux-field" value="">
+				<button id="jskanban_add_bttn" class="ux-button ux-button-small">Add New Task</button>
+			</div>
+			[%%%%/IF:OP-MODE%%%%]
+		</div>
+		<div id="kanban-area-inprogress" class="jskanban_holder jskanban_holder_inprogress">
+			<h2 class="box-title" title="Started, Not Completed">2.In-Progress</h2>
+			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-inprogress" data-kanban-status="inprogress">
+			</ul>
+		</div>
+		<div id="kanban-area-check" class="jskanban_holder jskanban_holder_check">
+			<h2 class="box-title" title="Completed, Not Closed">3.Verification</h2>
+			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-check" data-kanban-status="check">
+			</ul>
+		</div>
+		<div id="kanban-area-done" class="jskanban_holder jskanban_holder_done">
+			<h2 class="box-title" title="Closed">4.Done</h2>
+			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-done" data-kanban-status="done">
+			</ul>
+		</div>
+	</div>
+</div>
+[%%%%IF:OP-MODE:@=create|edit;%%%%]
+<script>
+jQuery('#jskanban_add_bttn').click(function() {
+	var txtNewItem = jQuery('#jskanban_add_field').val();
+	if((typeof txtNewItem != 'undefined') && (txtNewItem !== null) && (txtNewItem != '')) {
+		kanbanBoard.addTask({id:null, title: txtNewItem});
+	}
+	jQuery('#jskanban_add_field').val('');
+});
+</script>
+[%%%%/IF:OP-MODE%%%%]

@@ -22,6 +22,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$this->PageViewSetCfg('rawpage', true);
 
 		$uuid = (string) $this->RequestVarGet('uuid', '', 'string');
+		$mode = (string) $this->RequestVarGet('mode', '', 'string');
 		$title = (string) $this->RequestVarGet('todo_title', '', 'string');
 		$data = (string) $this->RequestVarGet('todo_data', '', 'string');
 
@@ -38,9 +39,14 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$wr = -99; // empty data
 		} //end if else
 
+		$url_mode = '';
+		if((string)$mode == 'kanban') {
+			$url_mode = 'mode/kanban/';
+		} //end if
+
 		$this->PageViewSetVar(
 			'main',
-			SmartComponents::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save ToDo-List', ($wr === 1) ? 'ToDo-List Saved Successfuly' : 'Failed to save the ToDo-List: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.todo-editor/uuid/'.Smart::escape_url($uuid) : '')
+			SmartComponents::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save ToDo-List', ($wr === 1) ? 'ToDo-List Saved Successfuly' : 'Failed to save the ToDo-List: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.todo-editor/'.$url_mode.'uuid/'.Smart::escape_url($uuid) : '')
 		);
 
 	} // END FUNCTION
