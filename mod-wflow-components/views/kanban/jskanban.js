@@ -2,7 +2,7 @@
 // Js Kanban CSS
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190306
+// v.20190307
 
 var JsKanban = function() { // START CLASS
 
@@ -139,11 +139,15 @@ var JsKanban = function() { // START CLASS
 		var status = String(obj.kanbanStatus || '');
 		if(status === '') {
 			if(obj.progress) {
-				if(obj.progress < 1) {
+				if(obj.progress <= 0.5) {
 					status = 'inprogress';
-				} else if(obj.progress >= 1) {
+				} else if((obj.progress > 0.5) && (obj.progress < 1)) {
 					status = 'check';
 				} //end if else
+			} //end if
+		} else if(status === 'done') {
+			if(obj.progress < 1) {
+				status = 'check';
 			} //end if
 		} //end if
 		status = getValidStatus(status);

@@ -5,7 +5,7 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190305 (stable)
+// v.20190307 (stable)
 /*
 modified by unixman:
 	- changed text: Title instead of Task
@@ -191,7 +191,7 @@ function SmartGanttPluginTooltip(gantt) {
 	gantt.templates.tooltip_date_format = gantt.date.date_to_str("%Y-%m-%d");
 	gantt.templates.tooltip_text = function(start, end, event) {
 		var endTxt = '';
-		if(event.type == 'flextask') {
+		if(event.type == 'flextask' && event.progress < 1) {
 			endTxt = '*'; // {{{SYNC-FLEXTASK-END-TXT}}}
 		} else if(event.type == 'milestone') {
 			endTxt = '@'; // {{{SYNC-MILESTONE-END-TXT}}}

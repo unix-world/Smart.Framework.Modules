@@ -5,7 +5,7 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190305 (stable)
+// v.20190307 (stable)
 /*
 modified by unixman:
 	- add types: project, milestone
@@ -465,7 +465,7 @@ var SmartGanttInstance = function() { // START CLASS
 					value = this.templates.date_grid(value);
 				}
 				if(col.name == 'duration') {
-					if(item.type == this.config.types.flextask) {
+					if(item.type == this.config.types.flextask && item.progress < 1) {
 						value = '*'; // {{{SYNC-FLEXTASK-END-TXT}}}
 					} else if(item.type == this.config.types.milestone) {
 						value = '@'; // {{{SYNC-MILESTONE-END-TXT}}}
@@ -2593,11 +2593,13 @@ var SmartGanttInstance = function() { // START CLASS
 		if(this.config.readonly) {
 			return true;
 		}
+		//console.log('ID:'+item['id'] + '@' + item['type']);
+	//	if(item && (item[this.config.editable_property] || (item['type'] == '0') || (item['type'] == '1') || (item['type'] == '2'))) { // fix by unixman: type 0,1,2 are links
 		if(item && item[this.config.editable_property]) {
 			return false;
 		} else {
 		//	return (item && (item[this.config.readonly_property]));
-			return (item && (item[this.config.readonly_property] || !item['visible'])); // fix by unixman: add visible attribute instead of hiding the task
+			return (item && (item[this.config.readonly_property] || (item['visible'] === false))); // fix by unixman: add visible attribute instead of hiding the task
 		}
 	};
 
@@ -4173,18 +4175,12 @@ var SmartGanttInstance = function() { // START CLASS
 			delete task.$no_start;
 			task.$rendered_type = task_type;
 		}
-		//--# fix by unixman (flextask become task on progress 100%)
-		if(task_type == this.config.types.flextask && task.progress >= 1) {
-			task.type = this.config.types.task;
-			task_type = task.type;
-		}
-		//--# end fix
 		if((task.$no_end === undefined || task.$no_start === undefined) && task_type != this.config.types.milestone) {
 			if(task_type == this.config.types.project) {
 				//project duration is always defined by children duration
 				task.$no_end = task.$no_start = true;
 				this._set_default_task_timing(task);
-			} else if(task_type == this.config.types.flextask) {
+			} else if(task_type == this.config.types.flextask && task.progress < 1) {
 				//console.log(task.title);
 				task.$no_end = true;
 				task.$no_start = !task.start;
@@ -4213,7 +4209,7 @@ var SmartGanttInstance = function() { // START CLASS
 	gantt.resetProjectDates = function(task) {
 		if(task.$no_end || task.$no_start) {
 			var dates = this.getSubtaskDates(task.id);
-			if(task.type == this.config.types.flextask) {
+			if(task.type == this.config.types.flextask && task.progress < 1) {
 				if(this.config.end_date) {
 					dates.end = this.config.end_date;
 				} else {
@@ -4249,7 +4245,7 @@ var SmartGanttInstance = function() { // START CLASS
 			if((child.end && !child.$no_end) && (!max || max < child.end.valueOf())) {
 				max = child.end.valueOf();
 			}
-			if(child.type == gantt.config.types.flextask) {
+			if(child.type == gantt.config.types.flextask && child.progress < 1) {
 				if(gantt.config.end_date) {
 					max = gantt.config.end_date;
 				} else {
@@ -6956,7 +6952,7 @@ var SmartGanttInstance = function() { // START CLASS
 				],
 				flextask_sections: [
 					{name: 'description', map_to: 'title', type: 'inputarea', focus: true},
-					{name: 'time', type: 'duration', single_date:true, map_to: 'auto'},
+					{name: 'time', type: 'duration', map_to: 'auto'},
 					{name: 'progress', type: 'taskprogress', map_to: 'progress'},
 					{name: 'details', height: 50, map_to: 'details', type: 'textarea'},
 					{name: 'color', map_to: 'color', type: 'colorsel'},
@@ -7081,7 +7077,7 @@ var SmartGanttInstance = function() { // START CLASS
 				},
 				task_time:function(start,end,ev) {
 					var endTxt = '';
-					if(ev.type == 'flextask') {
+					if(ev.type == gantt.config.types.flextask && ev.progress < 1) {
 						endTxt = '*'; // {{{SYNC-FLEXTASK-END-TXT}}}
 					} else if(ev.type == 'milestone') {
 						endTxt = '@'; // {{{SYNC-MILESTONE-END-TXT}}}
