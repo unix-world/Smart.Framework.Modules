@@ -40,11 +40,17 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		$expr = '(((((1 + 2 * ((3 + 4) * 5 + 6)) - 2) / 9) ^ 2) / 3 / 3) / 2 + 0.5';
 		$answer = $math->evaluate((string)$expr); // int(5)
 		//--
+		if($answer == 5) {
+			$test_answer = 'OK';
+		} else {
+			$test_answer = 'FAIL';
+		} //end if else
+		//--
 
 		//--
 		$this->PageViewSetVars([
 			'title' => 'ZZZ Tests: Math Parser',
-			'main' => '<h1 id="qunit-test-result">Math Expression</h1><pre>'.Smart::escape_html($expr).'</pre><hr>'.'<h1>Evaluated Result</h1><pre>'.Smart::escape_html($answer).'</pre><hr>'.'<br><br>'
+			'main' => '<h1 id="qunit-test-result">Math Expression: '.$test_answer.'</h1><pre>'.Smart::escape_html($expr).'</pre><hr>'.'<h1>Evaluated Result</h1><pre>'.Smart::escape_html($answer).'</pre><hr>'.'<br><br>'
 		]);
 		//--
 

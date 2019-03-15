@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AREA', 'INDEX');
  */
 final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\AbstractFrontendController {
 
-	// r.20190303
+	// r.20190315
 
 	public function Run() {
 
@@ -49,8 +49,9 @@ final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\Abstract
 		);
 		$this->PageViewSetVar('title', 'Sample PageBuilder Frontend Page', false); // fallback title
 
-		$test_segments = (array) $this->getListOfSegmentsByArea('%'); // just for test ...
-	//	print_r($test_segments); die();
+		$test_segments = (array) $this->getListOfSegmentsByArea('%', 'name', 'DESC', 2, 2); // just for test ...
+		//print_r($test_segments); die();
+		$this->PageViewAppendVar('main', 'List of segments By Area %: '.SmartUtils::pretty_print_var($test_segments));
 
 		//-- INTERNAL DEBUG
 		/*

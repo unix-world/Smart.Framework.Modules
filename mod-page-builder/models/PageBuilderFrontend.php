@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20190207
+	// v.20190315
 
 	private static $db = null;
 	private static function dbType() {
@@ -243,11 +243,42 @@ final class PageBuilderFrontend {
 	} //END FUNCTION
 
 
-	public static function getListOfSegmentsByArea($y_area) {
+	public static function getListOfSegmentsByArea($y_area, $y_orderby='id', $y_orderdir='ASC', $y_limit=0, $y_ofs=0) {
+		//--
+		switch((string)$y_orderby) {
+			case 'modified':
+				$y_orderby = 'modified';
+				break;
+			case 'published':
+				$y_orderby = 'published';
+				break;
+			case 'name':
+				$y_orderby = 'name';
+				break;
+			case 'id':
+			default:
+				$y_orderby = 'id';
+		} //end switch
+		//--
+		switch((string)$y_orderdir) {
+			case 'DESC':
+				$y_orderdir = 'DESC';
+				break;
+			case 'ASC':
+			default:
+				$y_orderdir = 'ASC';
+		} //end switch
+		//--
+		$y_limit = (int) $y_limit;
+		$y_ofs = (int) $y_ofs;
+		$qry_limit = '';
+		if(($y_limit > 0) AND ($y_ofs >= 0)) {
+			$qry_limit = ' LIMIT '.(int)$y_limit.' OFFSET '.(int)$y_ofs;
+		} //end if
 		//--
 		if((string)self::dbType() == 'pgsql') {
 			$arr = (array) \SmartPgsqlDb::read_adata(
-				'SELECT "id" FROM "web"."page_builder" WHERE (("layout" LIKE $1) AND (SUBSTR("id",1,1) = $2)) ORDER BY "id" ASC',
+				'SELECT "id" FROM "web"."page_builder" WHERE (("layout" LIKE $1) AND (SUBSTR("id",1,1) = $2)) ORDER BY "'.$y_orderby.'" '.$y_orderdir.$qry_limit,
 				[
 					(string) $y_area,
 					(string) '#'
@@ -255,7 +286,7 @@ final class PageBuilderFrontend {
 			);
 		} elseif((string)self::dbType() == 'sqlite') {
 			$arr = (array) self::$db->read_adata(
-				'SELECT `id` FROM `page_builder` WHERE ((`layout` LIKE ?) AND (substr(`id`,1,1) = ?)) ORDER BY `id` ASC',
+				'SELECT `id` FROM `page_builder` WHERE ((`layout` LIKE ?) AND (substr(`id`,1,1) = ?)) ORDER BY `'.$y_orderby.'` '.$y_orderdir.$qry_limit,
 				[
 					(string) $y_area,
 					(string) '#'

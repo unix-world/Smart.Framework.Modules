@@ -25,7 +25,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.20190306
+ * @version 	v.20190315
  * @package 	PageBuilder
  *
  */
@@ -391,13 +391,13 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 
 	//=====
-	final public function getListOfSegmentsByArea($y_area) {
+	final public function getListOfSegmentsByArea($y_area, $y_orderby='id', $y_orderdir='ASC', $y_limit=0, $y_ofs=0) {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return array();
 		} //end if
 		//--
-		return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfSegmentsByArea((string)$y_area);
+		return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfSegmentsByArea((string)$y_area, (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
 		//--
 	} //END FUNCTION
 	//=====
