@@ -44,7 +44,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: \SmartModExtLib\TplTwig\SmartTwigEnvironment, Twig
- * @version 	v.20190226
+ * @version 	v.20190320
  * @package 	Templating:Engines
  *
  */
@@ -54,11 +54,12 @@ final class Templating {
 
 	private $dir;
 	private $twig;
+	private $twprof;
 
 
 	public static function getVersion() {
 		//--
-		return (string) \Twig_Environment::VERSION;
+		return (string) \Twig\Environment::VERSION;
 		//--
 	} //END FUNCTION
 
@@ -68,7 +69,7 @@ final class Templating {
 		$this->dir = './';
 		//--
 		$this->twig = new \SmartModExtLib\TplTwig\SmartTwigEnvironment(
-			new \Twig_Loader_Filesystem(array($this->dir)),
+			new \Twig\Loader\FilesystemLoader(array($this->dir)),
 			[
 				'charset' 			=> (string) SMART_FRAMEWORK_CHARSET,
 				'autoescape' 		=> 'html', // default escaping strategy ; other escaping strategies: js
@@ -84,7 +85,10 @@ final class Templating {
 		//--
 		if(\SmartFrameworkRuntime::ifDebug()) {
 			//--
-			$this->twig->addExtension(new \Twig_Extension_Debug());
+			$this->twprof = new \Twig\Profiler\Profile('main', \Twig\Profiler\Profile::ROOT, 'Twig-TPL.View');
+			$this->twig->addExtension(new \Twig\Extension\ProfilerExtension($this->twprof));
+			//--
+			$this->twig->addExtension(new \Twig\Extension\DebugExtension());
 			$this->twig->enableDebug(); // advanced debugging
 			//--
 		} else {
@@ -251,6 +255,14 @@ final class Templating {
 					} //end if
 				} //end foreach
 			} //end if
+			if(is_object($this->twprof)) {
+				$tbl_subs .= '<tr><td align="left">';
+				$dumper = new \Twig\Profiler\Dumper\TextDumper();
+				$tbl_subs .= '<hr><pre>'.\Smart::escape_html((string)$dumper->dump($this->twprof)).'</pre><hr>';
+				$tbl_subs .= 'Compile&nbsp;Time:&nbsp;'.\Smart::escape_html((string)$this->twprof->getDuration()).'&nbsp;seconds<br>';
+				$tbl_subs .= 'Memory&nbsp;Usage:&nbsp;'.\Smart::escape_html((string)$this->twprof->getPeakMemoryUsage()).'&nbsp;bytes<br>';
+				$tbl_subs .= '</td></tr>';
+			} //end if
 			$tbl_subs .= '</table>';
 			//-- inits
 			$content = '<!-- START: Twig-TPL Debug Analysis @ '.\Smart::escape_html((string)$dbg_tpl['dbg-file-name']).' # -->'."\n";
@@ -343,14 +355,24 @@ function autoload__TwigTemplating_SFM($classname) {
 	$classname = (string) $classname;
 	//--
 	if(strpos((string)$classname, '\\') !== false) { // if have no namespace
-		return;
+//		return;
 	} //end if
 	//--
-	if((string)substr((string)$classname, 0, 4) !== 'Twig') { // if class name is not starting with Twig
-		return;
+	$path = '';
+	//--
+	if((string)substr((string)$classname, 0, 5) === 'Twig_') { // if class name is not starting with Twig_
+		//--
+		$path = 'modules/mod-tpl-twig/libs/Twig/-lib/'.str_replace(array('\\', "\0", '_'), array('', '', '/'), (string)$classname);
+		//--
+	} elseif((string)substr((string)$classname, 0, 5) === 'Twig\\') { // if class name is not starting with Twig\\
+		//--
+		$path = 'modules/mod-tpl-twig/libs/'.str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
+		//--
 	} //end if
 	//--
-	$path = 'modules/mod-tpl-twig/libs/'.str_replace(array('\\', "\0", '_'), array('', '', '/'), (string)$classname);
+	if(!$path) {
+		return;
+	} //end if
 	//--
 	if(!preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
 		return; // invalid path characters in path

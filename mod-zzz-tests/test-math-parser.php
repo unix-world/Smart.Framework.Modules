@@ -33,6 +33,10 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 		//--
 		if(!class_exists('\\PHPMathParser\\Math')) {
+			if(!is_file('modules/vendor/PHPMathParser/autoload.php')) {
+				$this->PageViewSetErrorStatus(500, 'ERROR: Cannot Load PHPMathParser/Math ...');
+				return;
+			} //end if
 			require_once('modules/vendor/PHPMathParser/autoload.php');
 		} //end if
 		//--

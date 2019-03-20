@@ -33,6 +33,10 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 		//--
 		if(!class_exists('\\League\\HTMLToMarkdown\\HtmlConverter')) {
+			if(!is_file('modules/vendor/League/autoload.php')) {
+				$this->PageViewSetErrorStatus(500, 'ERROR: Cannot Load League/HTMLToMarkdown/HtmlConverter ...');
+				return;
+			} //end if
 			require_once('modules/vendor/League/autoload.php');
 		} //end if
 		//--

@@ -28,11 +28,11 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @internal
  *
  * @depends 	extensions: classes: Twig
- * @version 	v.20190226
+ * @version 	v.20190320
  * @package 	Templating:Engines
  *
  */
-final class SmartTwigEnvironment extends \Twig_Environment {
+final class SmartTwigEnvironment extends \Twig\Environment {
 
 	// ->
 
@@ -85,7 +85,7 @@ final class SmartTwigEnvironment extends \Twig_Environment {
 			if($key) {
 				if(is_object($val)) {
 					//--
-					$hash_key = \SmartHashCrypto::sha256((string)$key); // hash('sha256',$key) :: sync with Twig_Environment->getTemplateClass()
+					$hash_key = (string) \SmartHashCrypto::sha256((string)$key); // hash('sha256',$key) :: sync with Twig_Environment->getTemplateClass()
 					$real_cache_file = (string) $the_twig_cache_dir.\SmartFileSysUtils::add_dir_last_slash(substr($hash_key, 0, 2)).$hash_key.'.php';
 					//--
 					$tpl_path = (string) $val->getTemplateName();
@@ -148,7 +148,7 @@ final class SmartTwigEnvironment extends \Twig_Environment {
 		//--
 		$source = $this->getLoader()->getSourceContext((string)$tplName);
 		$tokens = $this->tokenize($source);
-		$parsed = (new \Twig_Parser($this))->parse($tokens);
+		$parsed = (new \Twig\Parser($this))->parse($tokens);
 		$collected = [];
 		$this->smartCollectNodes($parsed, $collected);
 		//--
@@ -163,7 +163,7 @@ final class SmartTwigEnvironment extends \Twig_Environment {
 			$childNodes = $node->getIterator()->getArrayCopy();
 			if(!empty($childNodes)) {
 				$this->smartCollectNodes($childNodes, $collected); // recursion
-			} elseif($node instanceof \Twig_Node_Expression_Name) {
+			} elseif($node instanceof \Twig\Node\Expression\NameExpression) {
 				$name = $node->getAttribute('name');
 				$collected[$name] = $node; // ensure unique values
 			} //end if else
