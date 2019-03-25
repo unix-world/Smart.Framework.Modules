@@ -16,8 +16,7 @@ Version: 20190207
 
 @font-face {
 	font-family: 'dmn';
-	src: url('fonts/dmn.woff?37326370') format('woff'),
-		 url('fonts/dmn.ttf?37326370') format('truetype');
+	src: url('fonts/dmn.woff2?37326370') format('woff2'), url('fonts/dmn.ttf?37326370') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }

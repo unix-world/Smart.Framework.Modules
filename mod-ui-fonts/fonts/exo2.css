@@ -5,7 +5,7 @@
 	font-style: normal;
 	font-weight: 400;
 	src: local('Exo 2'), local('Exo2-Regular'),
-		 url('exo2-regular.woff') format('woff'),
+		 url('exo2-regular.woff2') format('woff2'),
 		 url('exo2-regular.ttf') format('truetype');
 }
 
@@ -14,7 +14,7 @@
 	font-style: italic;
 	font-weight: 400;
 	src: local('Exo 2 Italic'), local('Exo2-Italic'),
-		 url('exo2-italic.woff') format('woff'),
+		 url('exo2-italic.woff2') format('woff2'),
 		 url('exo2-italic.ttf') format('truetype');
 }
 
@@ -23,7 +23,7 @@
 	font-style: normal;
 	font-weight: 700;
 	src: local('Exo 2 Bold'), local('Exo2-Bold'),
-		 url('exo2-bold.woff') format('woff'),
+		 url('exo2-bold.woff2') format('woff2'),
 		 url('exo2-bold.ttf') format('truetype');
 }
 
@@ -32,7 +32,7 @@
 	font-style: italic;
 	font-weight: 700;
 	src: local('Exo 2 Bold Italic'), local('Exo2-BoldItalic'),
-		 url('exo2-bold-italic.woff') format('woff'),
+		 url('exo2-bold-italic.woff2') format('woff2'),
 		 url('exo2-bold-italic.ttf') format('truetype');
 }
 

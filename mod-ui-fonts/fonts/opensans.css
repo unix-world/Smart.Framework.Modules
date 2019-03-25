@@ -5,7 +5,7 @@
 	font-style: normal;
 	font-weight: 400;
 	src: local('Open Sans'), local('OpenSans'),
-		 url('opensans-regular.woff') format('woff'),
+		 url('opensans-regular.woff2') format('woff2'),
 		 url('opensans-regular.ttf') format('truetype');
 }
 
@@ -14,7 +14,7 @@
 	font-style: normal;
 	font-weight: 700;
 	src: local('Open Sans Bold'), local('OpenSans-Bold'),
-		 url('opensans-bold.woff') format('woff'),
+		 url('opensans-bold.woff2') format('woff2'),
 		 url('opensans-bold.ttf') format('truetype');
 }
 
@@ -23,7 +23,7 @@
 	font-style: italic;
 	font-weight: 400;
 	src: local('Open Sans Italic'), local('OpenSans-Italic'),
-		 url('opensans-italic.woff') format('woff'),
+		 url('opensans-italic.woff2') format('woff2'),
 		 url('opensans-italic.ttf') format('truetype');
 }
 
@@ -32,7 +32,7 @@
 	font-style: italic;
 	font-weight: 700;
 	src: local('Open Sans Bold Italic'), local('OpenSans-BoldItalic'),
-		 url('opensans-bold-italic.woff') format('woff'),
+		 url('opensans-bold-italic.woff2') format('woff2'),
 		 url('opensans-bold-italic.ttf') format('truetype');
 }
 

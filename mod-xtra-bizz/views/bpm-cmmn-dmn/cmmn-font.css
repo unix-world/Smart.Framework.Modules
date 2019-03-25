@@ -16,8 +16,7 @@ Version: 20190207
 
 @font-face {
 	font-family: 'cmmn';
-	src: url('fonts/cmmn.woff?90105622') format('woff'),
-		url('fonts/cmmn.ttf?90105622') format('truetype');
+	src: url('fonts/cmmn.woff2?90105622') format('woff2'), url('fonts/cmmn.ttf?90105622') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }

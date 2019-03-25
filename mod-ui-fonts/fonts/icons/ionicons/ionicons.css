@@ -15,7 +15,7 @@
 
 @font-face {
 	font-family: 'Ionicons';
-	src: url("ionicons.ttf?v=2.0.1") format("truetype"), url("ionicons.woff?v=2.0.1") format("woff");
+	src: url("ionicons.woff2?v=2.0.1") format("woff2"), url("ionicons.ttf?v=2.0.1") format("truetype");
 	font-weight: normal;
 	font-style: normal;
 }

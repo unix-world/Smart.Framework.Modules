@@ -9,7 +9,7 @@ Applies to all other files: css, html
 
 @font-face {
   font-family: 'octicons';
-  src: url('octicons.woff?v=3.5.0') format('woff'), url('octicons.ttf?v=3.5.0') format('truetype');
+  src: url('octicons.woff2?v=3.5.0') format('woff2'), url('octicons.ttf?v=3.5.0') format('truetype');
   font-weight: normal;
   font-style: normal;
 }

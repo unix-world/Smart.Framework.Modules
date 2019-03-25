@@ -16,8 +16,7 @@ Version: 20190219
 
 @font-face {
 	font-family: 'bpmn';
-	src: url('fonts/bpmn.woff?70672887') format('woff'),
-		 url('fonts/bpmn.ttf?70672887') format('truetype');
+	src: url('fonts/bpmn.woff2?70672887') format('woff2'), url('fonts/bpmn.ttf?70672887') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
