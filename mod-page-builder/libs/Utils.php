@@ -26,7 +26,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @access 		private
  * @internal
  *
- * @version 	v.20190207
+ * @version 	v.20190323
  * @package 	PageBuilder
  *
  */
@@ -77,9 +77,10 @@ final class Utils {
 		$layouts[''] = 'DEFAULT';
 		//--
 		$available_layouts = \Smart::get_from_config('pagebuilder.layouts');
-		if(\Smart::array_size($available_layouts) > 0) {
+		$cnt_available_layouts = (int) \Smart::array_size($available_layouts);
+		if($cnt_available_layouts > 0) {
 			if(\Smart::array_type_test($available_layouts) == 1) { // non-associative
-				for($i=0; $i<\Smart::array_size($available_layouts); $i++) {
+				for($i=0; $i<$cnt_available_layouts; $i++) {
 					$available_layouts[$i] = (string) trim((string)$available_layouts[$i]);
 					if((string)$available_layouts[$i] != '') {
 						if(\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$available_layouts[$i])) {
@@ -205,7 +206,9 @@ final class Utils {
 		$hdr_arr = array();
 		$data_arr = array();
 		//--
-		for($l=0; $l<\Smart::array_size($csv_arr); $l++) {
+		$cnt_csv_arr = (int) \Smart::array_size($csv_arr);
+		//--
+		for($l=0; $l<$cnt_csv_arr; $l++) {
 			//--
 			$val = $csv_arr[$l]['table:table-cell'];
 			//--

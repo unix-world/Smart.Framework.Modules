@@ -24,9 +24,12 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderBackend {
 
 	// ::
-	// v.20190303
+	// v.20190323
+
 
 	private static $db = null;
+
+
 	private static function dbType() {
 		//--
 		if((string)\SmartModExtLib\PageBuilder\Utils::getDbType() == 'sqlite') {

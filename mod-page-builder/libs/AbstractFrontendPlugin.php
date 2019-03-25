@@ -25,7 +25,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.20190207
+ * @version 	v.20190323
  * @package 	PageBuilder
  *
  */
@@ -33,7 +33,9 @@ abstract class AbstractFrontendPlugin extends \SmartAbstractAppController {
 
 
 	private $plugin_initialized = false;
+	private $plugin_name = 'ERROR-NO-PLUGIN-NAME';
 	private $plugin_config = array();
+	private $plugin_caller_module_path = 'modules/app/';
 
 
 	//=====
@@ -44,17 +46,37 @@ abstract class AbstractFrontendPlugin extends \SmartAbstractAppController {
 	 * @internal
 	 *
 	 */
-	final public function initPlugin($plugin_config) {
+	final public function initPlugin($plugin_name, $plugin_config, $plugin_caller_module_path) {
 		//--
 		if($this->plugin_initialized === true) {
 			return;
 		} //end if
 		//--
+		if(\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$plugin_name)) {
+			$this->plugin_name = (string) $plugin_name;
+		} //end if
+		//--
 		if(is_array($plugin_config)) {
-			$this->plugin_config = (array) array_change_key_case((array)$plugin_config, CASE_LOWER); // plugin config ; all keys lower case
+			$this->plugin_config = (array) array_change_key_case((array)$plugin_config, CASE_LOWER); // plugin config ; force all keys lower case
+		} //end if
+		//--
+		if(\SmartFileSysUtils::check_if_safe_path((string)$plugin_caller_module_path)) {
+			$this->plugin_caller_module_path = (string) $plugin_caller_module_path;
 		} //end if
 		//--
 		$this->plugin_initialized = true;
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	/**
+	 * Get Plugin Name
+	 */
+	final public function getPluginName() {
+		//--
+		return (string) $this->plugin_name;
 		//--
 	} //END FUNCTION
 	//=====
@@ -67,6 +89,18 @@ abstract class AbstractFrontendPlugin extends \SmartAbstractAppController {
 	final public function getPluginConfig() {
 		//--
 		return (array) $this->plugin_config;
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	/**
+	 * Get Plugin Caller Module Path
+	 */
+	final public function getPluginCallerModulePath() {
+		//--
+		return (string) $this->plugin_caller_module_path;
 		//--
 	} //END FUNCTION
 	//=====

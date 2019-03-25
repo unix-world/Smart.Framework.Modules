@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// r.20190207
+	// r.20190323
 
 	public function Run() {
 
@@ -162,6 +162,14 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$this->PageViewSetVar(
 					'main',
 					\SmartModExtLib\PageBuilder\Manager::ViewFormYamlData($id, 'view')
+				);
+				break;
+			case 'record-preview-tab-data': // HTML
+				$id = $this->RequestVarGet('id', '', 'string');
+				$this->PageViewSetCfg('rawpage', 'yes');
+				$this->PageViewSetVar(
+					'main',
+					\SmartModExtLib\PageBuilder\Manager::ViewFormYamlData($id, 'preview')
 				);
 				break;
 			case 'record-edit-tab-data': // HTML

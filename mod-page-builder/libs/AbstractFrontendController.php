@@ -25,14 +25,14 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.20190315
+ * @version 	v.20190323
  * @package 	PageBuilder
  *
  */
 abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 
-	protected $max_depth 		= 2; 						// 0=page, 1=segment, 2=sub-segment
+	protected $max_depth 		= 2; 						// 0=page, 1=segment, 2=sub-segment (max allow depth)
 	protected $cache_time 		= 3600; 					// cache time in seconds
 
 	private $crr_lang 			= '';						// current language
@@ -102,7 +102,8 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		$this->PageViewSetCfg('template-file', (string)$tpl_file);
 		//--
 		$this->page_markers = (array) $this->fixAllowedTemplateMarkers($markers);
-		for($i=0; $i<\Smart::array_size($this->page_markers); $i++) {
+		$cnt_page_markers = (int) \Smart::array_size($this->page_markers);
+		for($i=0; $i<$cnt_page_markers; $i++) {
 			if(strpos((string)$this->page_markers[$i], 'TEMPLATE@') === 0) {
 				$tmp_marker = (string) substr((string)$this->page_markers[$i], strlen('TEMPLATE@'));
 				if((string)trim((string)$tmp_marker) != '') {
@@ -453,7 +454,8 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		$tmp_arr = (array) $markers;
 		$markers = [];
 		//--
-		for($i=0; $i<\Smart::array_size($tmp_arr); $i++) {
+		$cnt_tmp_arr = (int) \Smart::array_size($tmp_arr);
+		for($i=0; $i<$cnt_tmp_arr; $i++) {
 			$tmp_arr[$i] = (string) strtoupper((string)trim((string)$tmp_arr[$i]));
 			if((string)$tmp_arr[$i] != '') {
 				if(preg_match((string)$this->regex_marker, (string)$tmp_arr[$i])) {
@@ -852,7 +854,9 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			//--
 			if(((string)$key != '') AND (\Smart::array_type_test($val) == 1)) {
 				//--
-				for($i=0; $i<\Smart::array_size($val); $i++) {
+				$cnt_val = (int) \Smart::array_size($val);
+				//--
+				for($i=0; $i<$cnt_val; $i++) {
 					//--
 					if(is_array($val[$i])) {
 						//--
@@ -1136,7 +1140,9 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			//--
 			if(\Smart::array_type_test($val) == 1) {
 				//--
-				for($i=0; $i<\Smart::array_size($val); $i++) {
+				$cnt_val = (int) \Smart::array_size($val);
+				//--
+				for($i=0; $i<$cnt_val; $i++) {
 					//--
 					$plugin_obj 			= null; // reset each cycle
 					$plugin_raw_heads 		= null; // reset each cycle
@@ -1159,10 +1165,12 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 							//--
 							if(((string)$plugin_part_d != '') AND ((string)$plugin_part_f != '')) {
 								//--
-								$plugin_path 	= (string) \Smart::safe_pathname((string)'modules/mod-'.$plugin_part_d.'/plugins/'.$plugin_part_f.'.php');
+								$plugin_modpath = (string) \Smart::safe_pathname((string)'modules/mod-'.$plugin_part_d.'/');
+								$plugin_fname   = (string) \Smart::safe_filename((string)$plugin_part_f);
+								$plugin_path 	= (string) \Smart::safe_pathname((string)$plugin_modpath.'plugins/'.$plugin_fname.'.php');
 								$plugin_class 	= (string) 'PageBuilderFrontendPlugin'.\SmartModExtLib\PageBuilder\Utils::composePluginClassName($plugin_part_d).\SmartModExtLib\PageBuilder\Utils::composePluginClassName($plugin_part_f);
 								//--
-								if(((string)$plugin_path != '') AND (\SmartFileSysUtils::check_if_safe_path((string)$plugin_path)) AND (\SmartFileSystem::is_type_file((string)$plugin_path))) {
+								if(((string)$plugin_path != '') AND (\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$plugin_fname)) AND (\SmartFileSysUtils::check_if_safe_path((string)$plugin_modpath)) AND (\SmartFileSysUtils::check_if_safe_path((string)$plugin_path)) AND (\SmartFileSystem::is_type_file((string)$plugin_path))) {
 									//--
 									require_once((string)$plugin_path);
 									//--
@@ -1172,14 +1180,14 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 											//--
 											$plugin_obj = new $plugin_class(
 												'index',
-												$this->ControllerGetParam('module-path'),
-												$this->ControllerGetParam('url-script'),
-												$this->ControllerGetParam('url-path'),
-												$this->ControllerGetParam('url-addr'),
-												$this->ControllerGetParam('url-page'),
-												$this->ControllerGetParam('controller')
+												(string) $plugin_modpath, // this should be the module path to plugin's module
+												(string) $this->ControllerGetParam('url-script'),
+												(string) $this->ControllerGetParam('url-path'),
+												(string) $this->ControllerGetParam('url-addr'),
+												(string) $this->ControllerGetParam('url-page'),
+												(string) $this->ControllerGetParam('controller') // this is the controller path where plugin runs into (it can be used to re-build the path to the current module)
 											);
-											$plugin_obj->initPlugin((array)$plugin_cfg); // initialize before run !
+											$plugin_obj->initPlugin((string)$plugin_fname, (array)$plugin_cfg, (string)$this->ControllerGetParam('module-path')); // initialize before run !
 											//--
 											$plugin_obj->Initialize(); // pre-run
 											$plugin_status = (int) $plugin_obj->Run(); // run

@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190303
+ * @version 	v.20190323
  * @package 	PageBuilder
  *
  */
@@ -97,6 +97,7 @@ final class Manager {
 		$text['record_data'] 		= 'YAML';
 		$text['record_syntax'] 		= 'Syntax';
 		$text['record_code'] 		= 'Code';
+		$text['record_json_data'] 	= 'Parsed Data';
 		$text['record_sytx_html'] 	= 'HTML';
 		$text['record_sytx_mkdw'] 	= 'MARKDOWN';
 		$text['record_sytx_text'] 	= 'TEXT';
@@ -281,6 +282,8 @@ final class Manager {
 		//--
 		$out = '';
 	//	$out .= \SmartComponents::html_jsload_htmlarea(''); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
+		$out .= '<link href="lib/js/jquery/jsonview/jquery.json-viewer.css" type="text/css" rel="stylesheet">';
+		$out .= '<script src="lib/js/jquery/jsonview/jquery.json-viewer.js"></script>';
 		$out .= \SmartComponents::html_jsload_editarea();
 		$out .= '<script>'.\SmartComponents::js_code_init_away_page('The changes will be lost !').'</script>';
 		$out .= \SmartMarkersTemplating::render_file_template(
@@ -318,9 +321,9 @@ final class Manager {
 		} //end if
 		//--
 		if(self::testIsSegmentPage($query['id'])) {
-			$arr_pmodes = array('html' => 'HTML Code', 'markdown' => 'Markdown Code', 'text' => 'Text / Plain', 'settings' => 'Settings');
+			$arr_pmodes = array('html' => 'HTML Code', 'markdown' => 'Markdown Code', 'text' => 'Text / Plain', 'settings' => 'Data / Settings');
 		} else {
-			$arr_pmodes = array('html' => 'HTML Code', 'markdown' => 'Markdown Code', 'text' => 'Text / Plain', 'raw' => 'Raw Output');
+			$arr_pmodes = array('html' => 'HTML Code', 'markdown' => 'Markdown Code', 'text' => 'Text / Plain', 'raw' => 'Raw Code');
 		} //end if else
 		//--
 		$arr_refs = array();
@@ -582,7 +585,7 @@ final class Manager {
 				//--
 				if((string)$query['mode'] == 'settings') {
 					//--
-					$out .= '<div align="center" title="'.\Smart::escape_html($query['code']).'"><img src="'.self::$ModulePath.'libs/views/manager/img/syntax-settings.svg" width="256" height="256" alt="Settings Page" title="Settings Page" style="opacity:0.7"></div>';
+					$out .= '<div align="center" title="'.\Smart::escape_html($query['code']).'"><img src="'.self::$ModulePath.'libs/views/manager/img/syntax-settings.svg" width="256" height="256" alt="Data / Settings Segment" title="Data / Settings Segment" style="opacity:0.7"></div>';
 					//--
 				} else {
 					//-- EDITOR
@@ -645,7 +648,7 @@ final class Manager {
 				//--
 				if((string)$query['mode'] == 'settings') {
 					//--
-					$out .= '<div align="center" title="'.\Smart::escape_html($query['code']).'"><img src="'.self::$ModulePath.'libs/views/manager/img/syntax-settings.svg" width="256" height="256" alt="Settings Page" title="Settings Page" style="opacity:0.7"></div>';
+					$out .= '<div align="center" title="'.\Smart::escape_html($query['code']).'"><img src="'.self::$ModulePath.'libs/views/manager/img/syntax-settings.svg" width="256" height="256" alt="Data / Settings Segment" title="Data / Settings Segment" style="opacity:0.7"></div>';
 					//--
 				} else {
 					//--
@@ -822,8 +825,18 @@ final class Manager {
 				$out .= '<div align="left" id="yaml-viewer"><font size="4"><b>&lt;yaml&gt;</b></font>';
 				$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 				$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-edit.svg'.'" alt="'.self::text('ttl_edtac').'" title="'.self::text('ttl_edtac').'" style="cursor:pointer;" onClick="'."SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#yaml-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-edit-tab-data&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');".'">';
+				$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+				if((string)$y_mode == 'preview') {
+					$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/syntax-data.svg'.'" alt="'.self::text('record_runtime').'" title="'.self::text('record_runtime').'" style="cursor:pointer;" onClick="'."SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#yaml-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-data&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');".'">';
+				} else {
+					$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-preview.svg'.'" alt="'.self::text('record_json_data').'" title="'.self::text('record_json_data').'" style="cursor:pointer;" onClick="'."SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#yaml-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-preview-tab-data&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');".'">';
+				} //end if else
 				$out .= '</div>'."\n";
-				$out .= \SmartComponents::html_js_editarea('record_sytx_yaml', '', $query['data'], 'yaml', false, '885px', '70vh'); // OK.new
+				if((string)$y_mode == 'preview') {
+					$out .= '<div id="yaml-json-renderer" style="width:835px; height: 70vh; border: 1px solid #ECECEC; padding: 0.5em 1.5em; overflow:auto;"></div><script>(function(){ var yamlData = \''.\Smart::escape_js(\Smart::json_encode($yaml, false, false, true)).'\'; var yamlJsonData = null; try { yamlJsonData = JSON.parse(yamlData); } catch(err){ jQuery(\'#yaml-json-renderer\').html(\'<div id="operation_error">\' + \'ERROR Parsing YAML to JSON Data: \' + err + \'</div>\'); return; } jQuery(\'#yaml-json-renderer\').css({\'white-space\':\'pre\'}).jsonViewer(yamlJsonData, {collapsed:false, withQuotes:false}); })();</script>';
+				} else { // view
+					$out .= \SmartComponents::html_js_editarea('record_sytx_yaml', '', $query['data'], 'yaml', false, '885px', '70vh'); // OK.new
+				} //end if else
 				$out .= '<div align="left"><font size="4"><b>&lt;/yaml&gt;</b></font></div>'."\n";
 				$out .= '<script>SmartJS_BrowserUtils_PageAway = true; SmartJS_BrowserUIUtils.Tabs_Activate("tabs", true);</script>';
 				//--
@@ -889,14 +902,14 @@ final class Manager {
 				'html-segment' 		=> 'Segment Page - HTML Syntax',
 				'markdown-segment' 	=> 'Segment Page - Markdown Syntax',
 				'text-segment' 		=> 'Segment Page - Text Syntax',
-				'settings-segment' 	=> 'Segment Page - Settings'
+				'settings-segment' 	=> 'Segment Page - Data / Settings'
 		];
 		$arr_objects_pages = [
 			'#OPTGROUP#Pages' => 'Pages',
 				'html-page' 		=> 'Page - HTML Syntax',
 				'markdown-page' 	=> 'Page - Markdown Syntax',
 				'text-page' 		=> 'Page - Text Syntax',
-				'raw-page' 			=> 'Page - Raw'
+				'raw-page' 			=> 'Page - Raw Code'
 		];
 		if(\SmartModExtLib\PageBuilder\Utils::allowPages() === true) {
 			$arr_objects = (array) array_merge((array)$arr_objects_pages, (array)$arr_objects_segments);
