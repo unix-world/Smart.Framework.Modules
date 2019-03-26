@@ -6,15 +6,15 @@
 	<td style="width:1px;">
 		<select name="srcby" id="filter-srcby" class="ux-input-def ux-input-1-4">
 			<option value="" title="[####HINT-0|html####]">* [####TXT-SEARCH-BY|html####] *:</option>
-			<option value="id">[####TXT-COL-ID|html####]</option>
+			<option value="id" title="[####HINT-5|html####]">[####TXT-COL-ID|html####]</option>
 			<option value="id-ref" title="[####HINT-1|html####]">[####TXT-COL-REFID|html####]</option>
-			<option value="name">[####TXT-COL-NAME|html####]</option>
-			<option value="ctrl">[####TXT-COL-CTRL|html####]</option>
+			<option value="name" title="[####HINT-5|html####]">[####TXT-COL-NAME|html####]</option>
+			<option value="ctrl" title="[####HINT-5|html####]">[####TXT-COL-CTRL|html####]</option>
 			[%%%%IF:ALLOW-PAGES:==yes;%%%%]
-			<option value="template">[####TXT-COL-TEMPLATE|html####]</option>
+			<option value="template" title="[####HINT-5|html####]">[####TXT-COL-TEMPLATE|html####]</option>
 			[%%%%/IF:ALLOW-PAGES%%%%]
-			<option value="area">[####TXT-COL-AREA|html####]</option>
-			<option value="code" title="[####HINT-1|html####]">[####TXT-COL-CODE|html####]</option>
+			<option value="area" title="[####HINT-5|html####]">[####TXT-COL-AREA|html####]</option>
+			<option value="code" title="[####HINT-4|html####]">[####TXT-COL-CODE|html####]</option>
 			<option value="data" title="[####HINT-1|html####]">[####TXT-COL-RUNTIME|html####]</option>
 			[%%%%IF:SHOW-TRANSLATIONS:==yes;%%%%]
 			<option value="translations" title="[####HINT-2|html####]">[####TXT-COL-TRANSL|html####]</option>
@@ -25,11 +25,11 @@
 		<span style="display:inline-block;"><input type="text" id="filter-src" name="src" placeholder="[####TXT-SEARCH-BY|html####] ..." value="" class="ux-input-def ux-input-1-4" title="[####HINT-3|html####]" autocomplete="off"></span>
 	</td>
 	<td style="width:1px;">&nbsp;</td>
-	<td style="width:1px;"><button type="button" class="ux-button ux-button-primary" onClick="try { pageBuilderFormBtnFilter(); } catch(err) { console.log(err); } return false;">[####TXT-FILTER|html####] &nbsp; <i class="fa fa-filter"></i></button></td>
-	<td style="width:1px;"><button type="button" class="ux-button ux-button-secondary" onClick="try { pageBuilderFormBtnResetFilter(); } catch(err) { console.log(err); } return false;">[####TXT-RESET|html####] &nbsp; <i class="fa fa-times"></i></button></td>
+	<td style="width:1px;"><button type="button" class="ux-button ux-button-primary" onClick="try { pageBuilderFormBtnFilter(); } catch(err) { console.log(err); } return false;">[####TXT-FILTER|html####] &nbsp; <i class="sfi sfi-search"></i></button></td>
+	<td style="width:1px;"><button type="button" class="ux-button ux-button-secondary" onClick="try { pageBuilderFormBtnResetFilter(); } catch(err) { console.log(err); } return false;">[####TXT-RESET|html####] &nbsp; <i class="sfi sfi-history"></i></button></td>
 	<td style="width:1px;">
 	[%%%%IF:LIST-NEW-URL:!=;%%%%]
-	<a class="ux-button ux-button-special" href="[####LIST-NEW-URL|html####]" data-smart="open.modal">[####TXT-ADD-NEW|html####] &nbsp; <i class="fa fa-plus"></i></a>
+	<a class="ux-button ux-button-special" href="[####LIST-NEW-URL|html####]" data-smart="open.modal">[####TXT-ADD-NEW|html####] &nbsp; <i class="sfi sfi-plus"></i></a>
 	[%%%%ELSE:LIST-NEW-URL%%%%]
 	&nbsp;
 	[%%%%/IF:LIST-NEW-URL%%%%]
@@ -38,13 +38,13 @@
 		&nbsp;
 	</td>
 	<td style="width:32px;">
-		<div style="color:#ECECEC; cursor:pointer;" title="[####TXT-ALT-LINK|html####]" onclick="var ckVal = ''; [%%%%IF:LIST-ALT-COOKIE:!=;%%%%]try{ ckVal = SmartJS_BrowserUtils.getCookie('[####LIST-ALT-COOKIE|js|html####]'); if(!ckVal){ ckVal = ''; } if(ckVal){ ckVal = ((ckVal.indexOf('?') == 0) || (ckVal.indexOf('&') == 0)) ? ckVal : '&' + ckVal; } } catch(err){} [%%%%/IF:LIST-ALT-COOKIE%%%%]self.location='[####LIST-ALT-LINK|js|html####]'+String(ckVal);"><i class="fa fa-sitemap fa-3x"></i></div>
+		<div style="color:#ECECEC; cursor:pointer;" title="[####TXT-ALT-LINK|html####]" onclick="var ckVal = ''; [%%%%IF:LIST-ALT-COOKIE:!=;%%%%]try{ ckVal = SmartJS_BrowserUtils.getCookie('[####LIST-ALT-COOKIE|js|html####]'); if(!ckVal){ ckVal = ''; } if(ckVal){ ckVal = ((ckVal.indexOf('?') == 0) || (ckVal.indexOf('&') == 0)) ? ckVal : '&' + ckVal; } } catch(err){} [%%%%/IF:LIST-ALT-COOKIE%%%%]self.location='[####LIST-ALT-LINK|js|html####]'+String(ckVal);"><i class="sfi sfi-tree sfi-3x"></i></div>
 	</td>
 	<td style="width:16px;">
 		&nbsp;
 	</td>
 	<td style="width:32px;">
-		<div style="color:#ECECEC; cursor:pointer;" title="[####TXT-RESET-COUNTER|html####]" onclick="SmartJS_BrowserUtils.Submit_Form_By_Ajax(false, 'admin.php?page=page-builder.manage&op=reset-counter&back=[####LIST-CRR-LINK|url|js####]', 'yes'); return false;"><i class="fa fa-bar-chart fa-3x"></i></div>
+		<div style="color:#ECECEC; cursor:pointer;" title="[####TXT-RESET-COUNTER|html####]" onclick="SmartJS_BrowserUtils.Submit_Form_By_Ajax(false, 'admin.php?page=page-builder.manage&op=reset-counter&back=[####LIST-CRR-LINK|url|js####]', 'yes'); return false;"><i class="sfi sfi-menu2 sfi-3x"></i></div>
 	</td>
 	<td style="text-align:center;">
 		<span style="color:#333333; line-height:24px; font-size:24px; font-weight:bold;">[####LIST-TTL|html####]</span>
@@ -67,6 +67,21 @@ jQuery(function() {
 		if(e.keyCode == 13) {
 			e.preventDefault();
 		}
+	});
+	var fixFilterTitle = function() {
+		var elem = jQuery('#filter-srcby').find('option:selected');
+		if(!elem) {
+			return;
+		}
+		var title = elem.attr('title');
+		if(!title) {
+			return;
+		}
+		jQuery('#filter-src').attr('title', String(title));
+	}
+	fixFilterTitle();
+	jQuery('#filter-srcby').change(function(){
+		fixFilterTitle();
 	});
 });
 </script>

@@ -53,7 +53,7 @@ function pageBuilderFormBtnResetFilter() {
 	[%%%%LOOP:DATA%%%%]
 	<!-- start CTRL: [####DATA._-KEY-_|html####] -->
 	<li data-simpletree="[####FILTER-COLLAPSE|html####]">
-		<span class="simpletree-ctrl">[%%%%IF:DATA._-KEY-_:!=;%%%%][####DATA._-KEY-_|html####][%%%%ELSE:DATA._-KEY-_%%%%]<i class="fa fa-cubes" title="*** (UNASSIGNED) ***"></i> <span style="color:#778899;">UNASSIGNED</span>[%%%%/IF:DATA._-KEY-_%%%%]</span>
+		<span class="simpletree-ctrl">[%%%%IF:DATA._-KEY-_:!=;%%%%][####DATA._-KEY-_|html####][%%%%ELSE:DATA._-KEY-_%%%%]<i class="sfi sfi-opt" title="*** (UNASSIGNED) ***"></i> <span style="color:#778899;">UNASSIGNED</span>[%%%%/IF:DATA._-KEY-_%%%%]</span>
 		[%%%%LOOP:DATA._-VAL-_%%%%]
 		<ul>
 			<li title="[####DATA._-VAL-_.ID|html####]" class="simpletree-item" id="item-[####DATA._-VAL-_.HASH-ID|htmid####]" data-simpletree="[####COLLAPSE|html####]">
@@ -110,8 +110,8 @@ function pageBuilderFormBtnResetFilter() {
 <script>
 	jQuery('ul.pagebuilder-tree').simpletree({
 		useAnimation: false,
-		signCollapsed: '<i class="fa fa-plus-square-o" style="color:#778899;"></i>',
-		signExpanded: '<i class="fa fa-minus-square-o" style="color:#778899;"></i>'
+		signCollapsed: '<i class="sfi sfi-eye-plus" style="color:#778899;"></i>',
+		signExpanded: '<i class="sfi sfi-eye-minus" style="color:#778899;"></i>'
 	});
 </script>
 <!-- #END -->

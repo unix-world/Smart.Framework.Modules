@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190323
+ * @version 	v.20190326
  * @package 	PageBuilder
  *
  */
@@ -169,6 +169,8 @@ final class Manager {
 		$text['hint_1'] 			= 'Hints: `[]` for Empty ; `![]` for Non-Empty ; `expr` for containing expression';
 		$text['hint_2'] 			= 'Hints: `ro` for records having this language code Translation ; `!ro` for records NOT having this language code Translation ; `!` for NON-Translatable records ; `"` for Translatable records';
 		$text['hint_3'] 			= 'Fill the filtering expression';
+		$text['hint_4'] 			= 'Hints: `[]` for Empty ; `![]` for Non-Empty ; `expr` for containing expression ; `</> expr` for strip-tags containing expression';
+		$text['hint_5'] 			= 'Hints: `expr` for containing expression';
 		//--
 
 		//--
@@ -930,7 +932,7 @@ final class Manager {
 				'LABELS-ID'			=> (string) self::text('id'),
 				'LABELS-NAME'		=> (string) self::text('name'),
 				'LABELS-CTRL' 		=> (string) self::text('ctrl'),
-				'BUTTONS-SUBMIT' 	=> (string) '<button class="ux-button ux-button-highlight" type="button" onClick="'.\SmartComponents::js_ajax_submit_html_form('page_form_add', self::composeUrl('op=record-add-do')).' return false;">'.' &nbsp; '.'<i class="fa fa-floppy-o"></i>'.' &nbsp; '.self::text('save').'</button>'
+				'BUTTONS-SUBMIT' 	=> (string) '<button class="ux-button ux-button-highlight" type="button" onClick="'.\SmartComponents::js_ajax_submit_html_form('page_form_add', self::composeUrl('op=record-add-do')).' return false;">'.' &nbsp; '.'<i class="sfi sfi-floppy-disk"></i>'.' &nbsp; '.self::text('save').'</button>'
 			],
 			'no'
 		);
@@ -1830,6 +1832,8 @@ final class Manager {
 				'HINT-1' 			=> (string) self::text('hint_1', false),
 				'HINT-2' 			=> (string) self::text('hint_2', false),
 				'HINT-3' 			=> (string) self::text('hint_3', false),
+				'HINT-4' 			=> (string) self::text('hint_4', false),
+				'HINT-5' 			=> (string) self::text('hint_5', false),
 				'FMT-LIST' 			=> (string) \Smart::array_size($filter).' / '.\Smart::array_size($total),
 				'DB-TYPE' 			=> (string) \SmartModExtLib\PageBuilder\Utils::getDbType()
 			]
@@ -1909,6 +1913,8 @@ final class Manager {
 				'HINT-1' 			=> (string) self::text('hint_1', false),
 				'HINT-2' 			=> (string) self::text('hint_2', false),
 				'HINT-3' 			=> (string) self::text('hint_3', false),
+				'HINT-4' 			=> (string) self::text('hint_4', false),
+				'HINT-5' 			=> (string) self::text('hint_5', false),
 				'FMT-LIST' 			=> '# / # @',
 				'DB-TYPE' 			=> (string) \SmartModExtLib\PageBuilder\Utils::getDbType()
 			]

@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderBackend {
 
 	// ::
-	// v.20190323
+	// v.20190326
 
 
 	private static $db = null;
@@ -1023,10 +1023,19 @@ final class PageBuilderBackend {
 							$where = 'WHERE (a.`code` != \'\')';
 						} //end if else
 					} else {
-						if((string)self::dbType() == 'pgsql') {
-							$where = 'WHERE (smart_str_striptags(convert_from(decode(a."code", \'base64\'), \'UTF8\')) ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\')';
-						} elseif((string)self::dbType() == 'sqlite') {
-							$where = 'WHERE (smart_strip_tags(smart_base64_decode(a.`code`)) LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\')';
+						if(strpos((string)$y_src, '</>') === 0) { // strip tags
+							$y_src = (string) trim((string)substr((string)$y_src, 3));
+							if((string)self::dbType() == 'pgsql') {
+								$where = 'WHERE (smart_str_striptags(convert_from(decode(a."code", \'base64\'), \'UTF8\')) ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\')';
+							} elseif((string)self::dbType() == 'sqlite') {
+								$where = 'WHERE (smart_strip_tags(smart_base64_decode(a.`code`)) LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\')';
+							} //end if else
+						} else { // default search
+							if((string)self::dbType() == 'pgsql') {
+								$where = 'WHERE (convert_from(decode(a."code", \'base64\'), \'UTF8\') ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\')';
+							} elseif((string)self::dbType() == 'sqlite') {
+								$where = 'WHERE (smart_base64_decode(a.`code`) LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\')';
+							} //end if else
 						} //end if else
 					} //end if
 					break;
