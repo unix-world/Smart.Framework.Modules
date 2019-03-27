@@ -1,7 +1,7 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20190327
 // modified by unixman: add svg marker instead of png
 
 // file: Leaflet.Icon.Glyph.js
@@ -26,8 +26,8 @@ L.Icon.Glyph = L.Icon.extend({
 		prefix: '',
 		glyph: 'home',
 		glyphColor: 'white',
-		glyphSize: '11px',	// in CSS units
-		glyphAnchor: [0, -7]	// In pixels, counting from the center of the image.
+		glyphSize: '16px', // in CSS units
+		glyphAnchor: [0, -7] // In pixels, counting from the center of the image.
 	},
 
 	createIcon: function () {
@@ -56,7 +56,8 @@ L.Icon.Glyph = L.Icon.extend({
 			glyphClass = options.prefix + "-" + options.glyph;
 		}
 
-		var span = L.DomUtil.create('span', options.prefix + ' ' + glyphClass);
+	//	var span = L.DomUtil.create('span', options.prefix + ' ' + glyphClass);
+		var span = L.DomUtil.create('div', options.prefix + ' ' + glyphClass); // fix by unixman
 		span.style.fontSize = options.glyphSize;
 		span.style.color = options.glyphColor;
 		span.style.width = options.iconSize[0] + 'px';

@@ -71,7 +71,7 @@
 	if (iniframe) {
 		document.writeln('<link id="data-uikit-theme" rel="stylesheet" href="'+base+'../../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">');
 		document.writeln('<style type="text/css">* { font-family: \'IBM Plex Sans\',arial,sans-serif; }</style>');
-		document.writeln('<link id="data-uikit-theme" rel="stylesheet" href="'+base+'../../../../lib/core/plugins/fonts/icons/fontawesome.css">');
+		document.writeln('<link id="data-uikit-theme" rel="stylesheet" href="'+base+'../../../mod-ui-fonts/fonts/icons/fontawesome/fontawesome.css">');
 		document.writeln('<style data-compiled-css>@import url("'+base+'css/themes/default/uikit.css"); </style>');
 	}
 

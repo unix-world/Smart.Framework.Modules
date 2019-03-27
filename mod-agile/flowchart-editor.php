@@ -16,6 +16,7 @@ define('SMART_APP_MODULE_AUTH', true);
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
+	// v.20190327
 
 	public function Run() {
 
@@ -88,7 +89,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			} //end if
 		} //end if
 
-		$fa_icons_arr = [];
+		$arr_icns = [];
+		$arr_fa_icns = [];
+		if(SmartAppInfo::TestIfModuleExists('mod-ui-fonts')) {
+			$load_fontawesome = 'yes';
+		} else {
+			$load_fontawesome = 'no';
+		} //end if
 		if((string)$edit == 'yes') {
 			//--
 			if($isnew) {
@@ -98,16 +105,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			} //end if else
 			$tpl = 'flowchart-editor.htm';
 			//--
-			$fa_icons_list = (string) SmartFileSystem::read('lib/core/plugins/fonts/icons/fontawesome.txt');
-			$fa_icons_list = (string) trim((string)str_replace(["\r\n", "\r"], "\n", (string)$fa_icons_list));
-			$fa_icons_list = (array)  explode("\n", (string)$fa_icons_list);
-			for($i=0; $i<Smart::array_size($fa_icons_list); $i++) {
-				$fa_icons_list[$i] = (string) trim((string)$fa_icons_list[$i]);
-				if((string)$fa_icons_list[$i] != '') {
-					$fa_icons_arr[] = 'fa '.$fa_icons_list[$i];
-				} //end if
-			} //end for
-			$fa_icons_list = null; // free mem
+			$arr_icns = (array) $this->getListIcons('lib/css/toolkit/sf-icons.txt');
+			if((string)$load_fontawesome == 'yes') {
+				$arr_fa_icns = (array) $this->getListIcons('modules/mod-ui-fonts/fonts/icons/fontawesome/fontawesome.txt');
+			} //end if
 			//--
 		} else {
 			$opmode = 'read';
@@ -127,12 +128,41 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
 					'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
 					'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-',
-					'THE-ICONS' 	=> (string) Smart::json_encode($fa_icons_arr)
+					'THE-ICONS' 	=> (string) Smart::json_encode($arr_icns),
+					'FA-ICONS' 		=> (string) Smart::json_encode($arr_fa_icns),
+					'LOAD-FA' 		=> (string) $load_fontawesome
 				]
 			)
 		]);
 
 	} // END FUNCTION
+
+
+	private function getListIcons($y_icons_list_file) {
+		//--
+		if((!SmartFileSysUtils::check_if_safe_path((string)$y_icons_list_file)) OR (!SmartFileSystem::is_type_file((string)$y_icons_list_file))) {
+			return array();
+		} //end if
+		//--
+		$the_icns_list = (string) SmartFileSystem::read((string)$y_icons_list_file);
+		$the_icns_list = (string) trim((string)str_replace(["\r\n", "\r"], "\n", (string)$the_icns_list));
+		if((string)$the_icns_list == '') {
+			return array();
+		} //end if
+		//--
+		$the_icns_list = (array)  explode("\n", (string)$the_icns_list);
+		$the_icns_arr = [];
+		for($i=0; $i<Smart::array_size($the_icns_list); $i++) {
+			$the_icns_list[$i] = (string) trim((string)$the_icns_list[$i]);
+			if((string)$the_icns_list[$i] != '') {
+				$the_icns_arr[] = (string) $the_icns_list[$i];
+			} //end if
+		} //end for
+		$the_icns_list = null; // free mem
+		//--
+		return (array) $the_icns_arr;
+		//--
+	} //END FUNCTION
 
 
 } // END CLASS

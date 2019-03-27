@@ -2,7 +2,7 @@
 // jsPlumb Flowchart Editor :: JS
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190212
+// v.20190327
 
 function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxEditDialogHelper, fxDeleteDialogHelper, fxSaveDataHelper, fxExportDataHelper) {
 

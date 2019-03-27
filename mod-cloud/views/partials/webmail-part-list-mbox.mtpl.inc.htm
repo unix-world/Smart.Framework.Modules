@@ -33,10 +33,10 @@
 				<input type="text" id="filter-src" name="src" placeholder="Search Value" value="" class="ux-input-def" style="width:99%;">
 			</td>
 			<td>
-				<button type="button" class="ux-button ux-button-primary" onClick="TheGrid.loadGridData(0);" title="Filter Results">Filter &nbsp; <i class="fa fa-filter"></i></button>
+				<button type="button" class="ux-button ux-button-primary" onClick="TheGrid.loadGridData(0);" title="Filter Results">Filter &nbsp; <i class="sfi sfi-search"></i></button>
 			</td>
 			<td>
-				<button type="button" class="ux-button ux-button-secondary" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);" title="Remove Filter (display all results)">Reset &nbsp; <i class="fa fa-times"></i></button>
+				<button type="button" class="ux-button ux-button-secondary" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);" title="Remove Filter (display all results)">Reset &nbsp; <i class="sfi sfi-history"></i></button>
 			</td>
 			<td>
 				<div style="width:32px;">&nbsp;</div>
@@ -60,7 +60,7 @@ jQuery(function() {
 		if(dataContext['stat_read'] <= 0) {
 			color = '#FF5500';
 		} //end if else
-		return '<button title="Display Message" style="margin:0px; margin-top:-2px;" class="ux-button ux-button-xsmall" onClick="jQuery(this).children().first().css({\'color\':\'' + SmartJS_CoreUtils.escape_js(rcolor) + '\'}); SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(value) +'\', \'webmail_view_msg\'); return false;"><i class="fa fa-envelope-square" style="color:' + SmartJS_CoreUtils.escape_html(color) + ';"></i></button>';
+		return '<button title="Display Message" style="margin:0px; margin-top:-2px;" class="ux-button ux-button-xsmall" onClick="jQuery(this).children().first().css({\'color\':\'' + SmartJS_CoreUtils.escape_js(rcolor) + '\'}); SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(value) +'\', \'webmail_view_msg\'); return false;"><i class="sfi sfi-envelop" style="color:' + SmartJS_CoreUtils.escape_html(color) + ';"></i></button>';
 	}
 	function formatter_Atts(row, cell, value, columnDef, dataContext) {
 		value = value || '0';

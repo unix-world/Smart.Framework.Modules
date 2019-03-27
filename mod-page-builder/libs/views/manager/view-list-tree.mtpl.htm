@@ -3,7 +3,7 @@
 <style>
 .simpletree-toggle, .simpletree-notoggle {
 	display: inline-block;
-	width: 15px;
+	width: 25px;
 }
 .simpletree-tree .simpletree-button {
 	cursor: pointer;
@@ -31,7 +31,8 @@ span.simpletree-item-inactive {
 	color: #BBBBBB;
 }
 span.simpletree-ctrl {
-	font-size: 1.2rem;
+	font-size: 1.125rem;
+	line-height: 1.25;
 	font-weight: bold;
 	color: #333333;
 }
@@ -53,7 +54,7 @@ function pageBuilderFormBtnResetFilter() {
 	[%%%%LOOP:DATA%%%%]
 	<!-- start CTRL: [####DATA._-KEY-_|html####] -->
 	<li data-simpletree="[####FILTER-COLLAPSE|html####]">
-		<span class="simpletree-ctrl">[%%%%IF:DATA._-KEY-_:!=;%%%%][####DATA._-KEY-_|html####][%%%%ELSE:DATA._-KEY-_%%%%]<i class="sfi sfi-opt" title="*** (UNASSIGNED) ***"></i> <span style="color:#778899;">UNASSIGNED</span>[%%%%/IF:DATA._-KEY-_%%%%]</span>
+		<span class="simpletree-ctrl">[%%%%IF:DATA._-KEY-_:!=;%%%%][####DATA._-KEY-_|html####][%%%%ELSE:DATA._-KEY-_%%%%]<i class="sfi sfi-question" title="*** (UNASSIGNED) ***"></i> <span style="color:#778899;">UNASSIGNED</span>[%%%%/IF:DATA._-KEY-_%%%%]</span>
 		[%%%%LOOP:DATA._-VAL-_%%%%]
 		<ul>
 			<li title="[####DATA._-VAL-_.ID|html####]" class="simpletree-item" id="item-[####DATA._-VAL-_.HASH-ID|htmid####]" data-simpletree="[####COLLAPSE|html####]">
@@ -110,8 +111,8 @@ function pageBuilderFormBtnResetFilter() {
 <script>
 	jQuery('ul.pagebuilder-tree').simpletree({
 		useAnimation: false,
-		signCollapsed: '<i class="sfi sfi-eye-plus" style="color:#778899;"></i>',
-		signExpanded: '<i class="sfi sfi-eye-minus" style="color:#778899;"></i>'
+		signCollapsed: '<i class="sfi sfi-folder-plus sfi-lg" style="color:#555555;"></i>',
+		signExpanded: '<i class="sfi sfi-folder-open sfi-lg" style="color:#555555;"></i>'
 	});
 </script>
 <!-- #END -->

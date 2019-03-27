@@ -8,13 +8,14 @@
 	</div>
 	<f:format.raw>{hello__world}</f:format.raw>
 	<div align="center">
-		<a href="?/page/tpl-typo3-fluid.test" class="ux-button ux-button-small ux-button-info"><i class="fa fa-refresh"></i> &nbsp; Reload TPL Render Test</a>
+		<a href="?/page/tpl-typo3-fluid.test" class="ux-button ux-button-small ux-button-info"><i class="sfi sfi-loop2"></i> &nbsp; Reload TPL Render Test</a>
 		&nbsp;&nbsp;
-		<a href="?/page/tpl-typo3-fluid.test/op/viewsource" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-primary"><i class="fa fa-code"></i> &nbsp; View TPL Source</a>
+		<a href="?/page/tpl-typo3-fluid.test/op/viewsource" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-primary"><i class="sfi sfi-embed"></i> &nbsp; View TPL Source</a>
 		&nbsp;&nbsp;
-		<a href="?/page/tpl-typo3-fluid.test/op/viewpartialsource" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="fa fa-code"></i> &nbsp; View Sub-TPL Source</a>
+		<a href="?/page/tpl-typo3-fluid.test/op/viewpartialsource" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="sfi sfi-embed2"></i> &nbsp; View Sub-TPL Source</a>
 	</div>
 	<br>
+	<div style="color:#777777;">{date_time}</div>
 	<f:render partial="sample-partial.t3fluid.inc.htm" arguments="{_all}" /> <!-- or can be controlled in a list which vars to pass to the subtemplate: {tcount:tcount, tbl:tbl, navigation:navigation, a:a, b:b} -->
 </div>
 <!-- end Typo3Fluid template --></f:section>

@@ -14,9 +14,7 @@
 		[ "sourcesAndTargets", "Sources and Targets" ],
 		[ "dynamicAnchors", "Dynamic Anchors" ],
 		[ "animation", "Animation" ],
-		[ "groups", "Groups" ],
-		[ "designer", "Workflow Board" ],
-		[ "fastConnectivity", "Fast Connectivity" ],
+		[ "groups", "Groups" ]
 	];
 
 	jsPlumb.bind("ready", function () {
@@ -47,9 +45,9 @@
 
 			// next/previous links
 			var d = _d("div", "demo-links", document.body),
-				dp = _d("div", "", d, "<a href='../" + list[prev][0] + "/demo.html'>" + list[prev][1] + "<i class='fa fa-arrow-left'></i></a>"),
+				dp = _d("div", "", d, "<a href='../" + list[prev][0] + "/demo.html'>" + list[prev][1] + "&laquo;</a>"),
 				dc = _d("div", "current-library", d, list[idx][1]),
-				dn = _d("div", "", d, "<a href='../" + list[next][0] + "/demo.html'><i class='fa fa-arrow-right'></i>" + list[next][1] + "</a>");
+				dn = _d("div", "", d, "<a href='../" + list[next][0] + "/demo.html'>&raquo;" + list[next][1] + "</a>");
 
 			// make a drop down.
 			var m = document.querySelectorAll(".menu")[0],

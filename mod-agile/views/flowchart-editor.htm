@@ -1,5 +1,5 @@
 [@@@@SUB-TEMPLATE:flowchart-init.inc.htm@@@@]
-<!-- flowchart-editor.htm v.20190217 -->
+<!-- flowchart-editor.htm v.20190327 -->
 <link rel="stylesheet" href="modules/mod-wflow-components/views/flowchart/editor/flowchart-editor-edit.css">
 <style>
 #area-editable {
@@ -71,13 +71,25 @@
 	var flowchartEditDialogHelper = function(labelType, txtElemLabel, objElemLabel, fxSetLabel) {
 		labelType = String(labelType || '');
 		if(labelType.toLowerCase() === 'box icon') {
+			var theList = '';
 			var theIcons = [####THE-ICONS|json####];
-			var theList = '<input type="hidden" id="flowchart-element-icon" value="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '">';
+			theList += '<h5 style="color:#555555;">SF.Icons</h5>';
+			theList += '<input type="hidden" id="flowchart-element-icon" value="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '">';
 			if(theIcons.length) {
 				for(var i=0; i<theIcons.length; i++) {
-					theList += '<div title="Click to select icon: ' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" style="float:left; margin-right:3px; margin-bottom:3px; cursor:pointer; color:#778899; font-size:1rem!important;" class="' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" onclick="var theIconClass = jQuery(this).attr(\'class\'); jQuery(\'#flowchart-element-icon\').val(theIconClass); jQuery(\'#flowchart-element-selected-icon\').attr(\'class\', theIconClass).attr(\'title\', \'Selected Icon: \' + theIconClass);"></div>';
+					theList += '<div title="Click to select SF.Icon: ' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" style="float:left; margin-right:3px; margin-bottom:3px; cursor:pointer; color:#778899; font-size:1rem!important;" class="' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" onclick="var theIconClass = jQuery(this).attr(\'class\'); jQuery(\'#flowchart-element-icon\').val(theIconClass); jQuery(\'#flowchart-element-selected-icon\').attr(\'class\', theIconClass).attr(\'title\', \'Selected Icon: \' + theIconClass);"></div>';
 				}
 			}
+			[%%%%IF:LOAD-FA:==yes;%%%%]
+			theIcons = [####FA-ICONS|json####];
+			if(theIcons.length) {
+				theList += '<div style="clear:both;"></div><br>';
+				theList += '<h5 style="color:#555555;">Font Awesome</h5>';
+				for(var i=0; i<theIcons.length; i++) {
+					theList += '<div title="Click to select FontAwesome Icon: ' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" style="float:left; margin-right:3px; margin-bottom:3px; cursor:pointer; color:#778899; font-size:1rem!important;" class="' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" onclick="var theIconClass = jQuery(this).attr(\'class\'); jQuery(\'#flowchart-element-icon\').val(theIconClass); jQuery(\'#flowchart-element-selected-icon\').attr(\'class\', theIconClass).attr(\'title\', \'Selected Icon: \' + theIconClass);"></div>';
+				}
+			}
+			[%%%%/IF:LOAD-FA%%%%]
 			SmartJS_BrowserUtils.confirm_Dialog('<h3>' + SmartJS_CoreUtils.escape_html(labelType) + ' &nbsp; <span title="Selected Icon: ' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" style="font-size:1.5rem!important; cursor:help;" id="flowchart-element-selected-icon" class="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" onClick="jQuery(\'#flowchart-element-icon\').val(\'\'); jQuery(this).attr(\'class\', \'\').attr(\'title\', \'\');"></span></h3><div style="width:100%; height:200px; overflow:auto;">' + theList + '</div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-icon").val()); }, 'Modify Flowchart Element', 550, 355);
 		} else {
 			SmartJS_BrowserUtils.confirm_Dialog('<h3>' + SmartJS_CoreUtils.escape_html(labelType) + '</h3><div>Label:&nbsp; <input type="text" maxlength="50" value="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" id="flowchart-element-label" class="ux-field" style="width:425px;"></div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-label").val()); }, 'Modify Flowchart Element', 550, 200);

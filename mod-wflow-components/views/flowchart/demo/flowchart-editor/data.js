@@ -16,7 +16,7 @@ var flowchartDataObj = {
         "usePerimeterAnchors": false,
         "isInverted": false,
         "label": "Process #1",
-        "icon": "fa fa-xl fa-cogs"
+        "icon": "sfi sfi-cogs"
       },
       {
         "elementId": "flowchartWindow2",
@@ -26,7 +26,7 @@ var flowchartDataObj = {
         "usePerimeterAnchors": false,
         "isInverted": true,
         "label": "Decision #2",
-        "icon": "fa fa-xl fa-cloud"
+        "icon": "sfi sfi-cloud"
       },
       {
         "elementId": "flowchartWindow3",
@@ -66,7 +66,7 @@ var flowchartDataObj = {
         "usePerimeterAnchors": false,
         "isInverted": false,
         "label": "Stop",
-        "icon": "fa fa-stop"
+        "icon": "sfi sfi-stop2"
       },
       {
         "elementId": "flowchartElemTerminal_26cb302894481b03df591da39406518d2ee1dd56",
@@ -76,7 +76,7 @@ var flowchartDataObj = {
         "usePerimeterAnchors": false,
         "isInverted": false,
         "label": "Start",
-        "icon": "fa fa-xl fa-play"
+        "icon": "sfi sfi-play2"
       },
       {
         "elementId": "flowchartElemData_addd9d66360b025362aa565590cd2bfe7c2c029d",
@@ -86,7 +86,7 @@ var flowchartDataObj = {
         "usePerimeterAnchors": null,
         "isInverted": null,
         "label": "IMPORTANT: This is only a sample Note from FlowChart Demo",
-        "icon": "fa fa-check"
+        "icon": "sfi sfi-checkmark2"
       },
       {
         "elementId": "flowchartElemData_53c2b85ce3b851db170d1cb06cf392f006d8a831",
@@ -96,7 +96,7 @@ var flowchartDataObj = {
         "usePerimeterAnchors": true,
         "isInverted": false,
         "label": "Display",
-        "icon": "fa fa-chrome"
+        "icon": "sfi sfi-chrome"
       },
       {
         "elementId": "flowchartElemData_a269df5eb1ac38bfb940401c49a66f2ac7b16e04",
@@ -106,7 +106,7 @@ var flowchartDataObj = {
         "usePerimeterAnchors": false,
         "isInverted": false,
         "label": "Display",
-        "icon": "fa fa-firefox"
+        "icon": "sfi sfi-firefox"
       },
       {
         "elementId": "flowchartElemDisplay_726c38be52c41e890297e519a0b3598236d788cb",
@@ -116,7 +116,7 @@ var flowchartDataObj = {
         "usePerimeterAnchors": false,
         "isInverted": false,
         "label": "Database",
-        "icon": "fa fa-database"
+        "icon": "sfi sfi-database"
       }
     ],
     "connections": [

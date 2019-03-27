@@ -47,7 +47,7 @@
 
 	<script type="text/javascript" src="../leaflet.pattern.js"></script>
 
-	<link rel="stylesheet" href="../../../../../lib/core/plugins/fonts/icons/fontawesome.css" type="text/css">
+	<link rel="stylesheet" href="../../../../../lib/css/toolkit/sf-icons.css" type="text/css">
 
 </head>
 <body>
@@ -95,9 +95,10 @@ marker4.addTo(myMap).bindPopup('A SVG marker (monument)');
 
 var marker5 = L.marker([51.50739542821378, -0.12708985026245333], {
 	icon: L.icon.glyph({
-		prefix: 'fa',
-		glyph: 'bicycle',
-		glyphAnchor: [0, -7]
+		prefix: 'sfi',
+		glyph: 'compass2',
+		glyphAnchor: [0, -7],
+		glyphSize: '16px'
 	})
 });
 marker5.addTo(myMap).bindPopup('A SVG marker (glyph)');

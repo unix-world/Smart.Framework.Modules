@@ -66,6 +66,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				[ 'href' => '#link2', 'caption' => 'Sample Link <2>' ],
 				[ 'href' => '#link3', 'caption' => 'Sample Link <3>' ]
 			],
+			'date_time' => (string) date('Y-m-d H:i:s O'),
 			'tbl' => [
 				['a1' => '1.1', 'a2' => '1.2', 'a3' => '1.3'],
 				['a1' => '2.1', 'a2' => '2.2', 'a3' => '2.3'],
