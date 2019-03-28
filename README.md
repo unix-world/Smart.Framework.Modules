@@ -9,7 +9,7 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 ## List of available Modules for Smart.Framework:
 
 ### Extra Modules (BSD licensed):
-	* UI Fonts: Web fonts + Captcha fonts
+	* UI Fonts: Web fonts + Icon fonts + Captcha fonts
 	* UI Bootstrap: CSS + Javascript UI Toolkit
 	* UI Uikit: CSS + Javascript UI Toolkit
 	* UI jQueryUI: CSS + Javascript UI Toolkit

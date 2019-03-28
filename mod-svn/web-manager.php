@@ -370,7 +370,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$this->ControllerGetParam('module-view-path').'web-manager-info-repos.inc.htm',
 					[
 						'VIEWS-PATH' 		=> (string) $this->ControllerGetParam('module-view-path'),
-						'HOME-URL' 			=> (string) 'admin.php?page='.$this->ControllerGetParam('controller'),
+						'HOME-URL' 			=> (string) 'admin.php', // ?page='.$this->ControllerGetParam('controller')
 						'SELECT-URLBASE' 	=> 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&path=&repo=',
 						'REPOS' 			=> (array) $repos
 					]
