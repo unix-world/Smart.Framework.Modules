@@ -277,7 +277,7 @@ $html_content = (string) SmartMarkersTemplating::render_file_template(
 				$this->PageViewSetCfg('rawpage', true);
 				$this->PageViewSetCfg('rawmime', SmartPdfExport::pdf_mime_header());
 				$this->PageViewSetCfg('rawdisp', SmartPdfExport::pdf_disposition_header('message-'.time().'.pdf', 'inline')); // TODO: since the msg file name is encrypted we need a way to get it
-				$main = SmartPdfExport::generate((string)$main, 'normal', SmartUtils::get_server_current_script(), SmartUtils::get_server_current_url(), SMART_FRAMEWORK_ADMIN_AREA);
+				$main = SmartPdfExport::generate((string)$main, 'normal', 'auto');
 			} else {
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 			} //end if else
