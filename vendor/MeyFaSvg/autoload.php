@@ -28,7 +28,7 @@ function autoload__VendorMeyFaSvg($classname) {
 		return;
 	} //end if
 	//--
-	$dir = 'modules/vendor/MeyFaSvg/SVG/';
+	$dir = 'modules/vendor/MeyFaSvg/';
 	//--
 	for($i=1; $i<$max; $i++) {
 		$dir .= (string) $parts[$i].'/';
