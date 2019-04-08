@@ -1,7 +1,7 @@
 
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190225
+// v.20190405
 
 // License: MIT
 // https://github.com/tylerecouture/summernote-lists
@@ -166,11 +166,13 @@
 					list += self.getListItem(style, exclusiveLabels[index], true);
 					index++;
 				}
-				list += '<hr style="margin: 5px 0px; background-color: #CCCCCC; height: 1px; border: 0;">';
-				index = 0;
-				for (var style of inclusiveStyles) {
-					list += self.getListItem(style, inclusiveLabels[index], false);
-					index++;
+				if(inclusiveStyles.length) {
+					list += '<hr style="margin: 5px 0px; background-color: #CCCCCC; height: 1px; border: 0;">';
+					index = 0;
+					for (var style of inclusiveStyles) {
+						list += self.getListItem(style, inclusiveLabels[index], false);
+						index++;
+					}
 				}
 				return list;
 			};
@@ -180,8 +182,8 @@
 				label,
 				isExclusive,
 			) {
-				var item = '<li><a href="#" class="note-dropdown-item ' + (isExclusive ? "exclusive-item" : "inclusive-item") + '" style="display: block;" data-value="' + value + '">' +
-					'<i class="note-icon-menu-check" ' + (!isExclusive ? 'style="color:#777777;" ' : 'style="color:#888888;" ') + '></i>' + ' ' + label + '</a></li>';
+				var item = '<li style="list-style-type:none;"><a href="#" class="note-dropdown-item ' + (isExclusive ? "exclusive-item" : "inclusive-item") + '" style="display: block;" data-value="' + value + '">' +
+					'<i class="sfi sfi-checkmark" ' + (!isExclusive ? 'style="color:#777777;" ' : 'style="color:#888888;" ') + '></i>' + ' ' + label + '</a></li>';
 				return item;
 			};
 		}

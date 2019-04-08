@@ -1,7 +1,7 @@
 
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190225
+// v.20190405
 // contains fixes by unixman
 
 // License: MIT
@@ -35,7 +35,7 @@
 			context.memo('button.tableHeaders', function () {
 				return ui.buttonGroup([
 					ui.button({
-						contents: '<b>H<b>', //ui.icon(options.icons.bold),
+						contents: '<i class="sfi sfi-move-up"></i>',
 						tooltip:  'Toggle Table Header',
 						container: options.container, // tooltip fix by unixman
 						click:function (e) {

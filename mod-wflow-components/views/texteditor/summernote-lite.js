@@ -1,7 +1,7 @@
 
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190225
+// v.20190405
 // contains fixes by unixman
 
 /**
@@ -349,7 +349,7 @@
 		return buttonGroup([
 			button({
 				className: 'dropdown-toggle',
-				contents: opt.title + ' ' + icon('note-icon-caret'),
+				contents: opt.title + ' ' + icon('note-icn-caret'),
 				tooltip: opt.tooltip,
 				data: {
 					toggle: 'dropdown'
@@ -367,7 +367,7 @@
 		return buttonGroup([
 			button({
 				className: 'dropdown-toggle',
-				contents: opt.title + ' ' + icon('note-icon-caret'),
+				contents: opt.title + ' ' + icon('note-icn-caret'),
 				tooltip: opt.tooltip,
 				data: {
 					toggle: 'dropdown'
@@ -386,7 +386,7 @@
 		return buttonGroup([
 			button({
 				className: 'dropdown-toggle',
-				contents: opt.title + ' ' + icon('note-icon-caret'),
+				contents: opt.title + ' ' + icon('note-icn-caret'),
 				tooltip: opt.tooltip,
 				data: {
 					toggle: 'dropdown'
@@ -445,7 +445,7 @@
 		return buttonGroup([
 			button({
 				className: 'dropdown-toggle',
-				contents: opt.title + ' ' + icon('note-icon-caret'),
+				contents: opt.title + ' ' + icon('note-icn-caret'),
 				tooltip: opt.tooltip,
 				data: {
 					toggle: 'dropdown'
@@ -522,7 +522,7 @@
 					}),
 					button({
 						className: 'dropdown-toggle',
-						contents: icon('note-icon-caret'),
+						contents: icon('note-icn-caret'),
 						tooltip: opt.lang.color.more,
 						data: {
 							toggle: 'dropdown'
@@ -624,7 +624,7 @@
 		$node.html([
 			'  <div class="note-modal-content">',
 			(options.title ? '    <div class="note-modal-header">' +
-				'      <button type="button" class="close" aria-label="Close" aria-hidden="true"><i class="note-icon-close"></i></button>' +
+				'      <button type="button" class="close" aria-label="Close" aria-hidden="true"><i class="sfi sfi-cross"></i></button>' +
 				'      <h4 class="note-modal-title">' + options.title + '</h4>' +
 				'    </div>' : ''),
 				'    <div class="note-modal-body">' + options.body + '</div>',
@@ -4908,7 +4908,8 @@
 					this.$editor.outerWidth(this.options.width);
 				}
 				if (this.options.height) {
-					this.$editable.outerHeight(this.options.height);
+				//	this.$editable.outerHeight(this.options.height);
+					this.$editor.css('height', this.options.height); // fix by unixman
 				}
 				if (this.options.maxHeight) {
 					this.$editable.css('max-height', this.options.maxHeight);
@@ -5654,7 +5655,10 @@
 		CodeView.prototype.activate = function () {
 			var _this = this;
 			this.$codable.val(dom.html(this.$editable, this.options.prettifyHtml));
-			this.$codable.height(this.$editable.height());
+			//--fix: by unixman
+		//	this.$codable.height(this.$editable.height());
+			this.$codable.height(this.options.height ? this.options.height : this.$editable.height());
+			//--#fix
 			this.context.invoke('toolbar.updateCodeview', true);
 			this.$editor.addClass('codeview');
 			this.$codable.focus();
@@ -8264,54 +8268,54 @@
 				}
 			},
 			icons: {
-				'align': 'note-icon-align',
-				'alignCenter': 'note-icon-align-center',
-				'alignJustify': 'note-icon-align-justify',
-				'alignLeft': 'note-icon-align-left',
-				'alignRight': 'note-icon-align-right',
-				'rowBelow': 'note-icon-row-below',
-				'colBefore': 'note-icon-col-before',
-				'colAfter': 'note-icon-col-after',
-				'rowAbove': 'note-icon-row-above',
-				'rowRemove': 'note-icon-row-remove',
-				'colRemove': 'note-icon-col-remove',
-				'indent': 'note-icon-align-indent',
-				'outdent': 'note-icon-align-outdent',
-				'arrowsAlt': 'note-icon-arrows-alt',
-				'bold': 'note-icon-bold',
-				'caret': 'note-icon-caret',
-				'circle': 'note-icon-circle',
-				'close': 'note-icon-close',
-				'code': 'note-icon-code',
-				'eraser': 'note-icon-eraser',
-				'floatLeft': 'note-icon-float-left',
-				'floatRight': 'note-icon-float-right',
-				'floatNone': 'note-icon-float-none', // fix by unixman
-				'font': 'note-icon-font',
-				'frame': 'note-icon-frame',
-				'italic': 'note-icon-italic',
-				'link': 'note-icon-link',
-				'unlink': 'note-icon-chain-broken',
-				'magic': 'note-icon-magic',
-				'menuCheck': 'note-icon-menu-check',
-				'minus': 'note-icon-minus',
-				'orderedlist': 'note-icon-orderedlist',
-				'pencil': 'note-icon-pencil',
-				'picture': 'note-icon-picture',
-				'question': 'note-icon-question',
-				'redo': 'note-icon-redo',
-				'rollback': 'note-icon-rollback',
-				'square': 'note-icon-square',
-				'strikethrough': 'note-icon-strikethrough',
-				'subscript': 'note-icon-subscript',
-				'superscript': 'note-icon-superscript',
-				'table': 'note-icon-table',
-				'textHeight': 'note-icon-text-height',
-				'trash': 'note-icon-trash',
-				'underline': 'note-icon-underline',
-				'undo': 'note-icon-undo',
-				'unorderedlist': 'note-icon-unorderedlist',
-				'video': 'note-icon-video'
+				'align': 'sfi sfi-fa-doc',
+				'alignCenter': 'sfi sfi-paragraph-center',
+				'alignJustify': 'sfi sfi-paragraph-justify',
+				'alignLeft': 'sfi sfi-paragraph-left',
+				'alignRight': 'sfi sfi-paragraph-right',
+				'colBefore': 'sfi sfi-sn-col-before',
+				'colAfter': 'sfi sfi-sn-col-after',
+				'colRemove': 'sfi sfi-sn-col-remove',
+				'rowBelow': 'sfi sfi-sn-row-below',
+				'rowAbove': 'sfi sfi-sn-row-above',
+				'rowRemove': 'sfi sfi-sn-row-remove',
+				'indent': 'sfi sfi-indent-increase',
+				'outdent': 'sfi sfi-indent-decrease',
+				'arrowsAlt': 'sfi sfi-enlarge',
+				'bold': 'sfi sfi-bold',
+				'caret': 'note-icn-caret', // this is special, not use SFI
+				'circle': 'sfi sfi-spinner10',
+				'close': 'sfi sfi-cancel-circle',
+				'code': 'sfi sfi-embed2',
+				'eraser': 'sfi sfi-clear-formatting',
+				'floatLeft': 'sfi sfi-arrow-left',
+				'floatRight': 'sfi sfi-arrow-right',
+				'floatNone': 'sfi sfi-infinite', // fix by unixman
+				'font': 'sfi sfi-font',
+				'frame': 'sfi sfi-display',
+				'italic': 'sfi sfi-italic',
+				'link': 'sfi sfi-link',
+				'unlink': 'sfi sfi-fa-unlink',
+				'magic': 'sfi sfi-magic-wand',
+				'menuCheck': 'sfi sfi-checkmark2',
+				'minus': 'sfi sfi-minus',
+				'orderedlist': 'sfi sfi-list-numbered',
+				'pencil': 'sfi sfi-fa-editor',
+				'picture': 'sfi sfi-image',
+				'question': 'sfi sfi-question',
+				'redo': 'sfi sfi-redo2',
+				'rollback': 'sfi sfi-history',
+				'square': 'sfi sfi-stop2',
+				'strikethrough': 'sfi sfi-strikethrough',
+				'subscript': 'sfi sfi-subscript2',
+				'superscript': 'sfi sfi-superscript2',
+				'table': 'sfi sfi-table2',
+				'textHeight': 'sfi sfi-text-height',
+				'trash': 'sfi sfi-bin2',
+				'underline': 'sfi sfi-underline',
+				'undo': 'sfi sfi-undo2',
+				'unorderedlist': 'sfi sfi-list2',
+				'video': 'sfi sfi-film'
 			}
 		}
 	});

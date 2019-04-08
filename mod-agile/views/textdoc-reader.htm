@@ -1,0 +1,21 @@
+<!-- textdoc-reader.htm v.20190405 -->
+<div style="text-align:center; font-size:1rem!important; font-weight:bold; background:#445566; color:#FFFFFF; border-radius:1px;">
+	<span id="textdoc_title">[####TITLE|html####]</span>
+</div>
+<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<div style="text-align:center;">
+	<button class="ux-button ux-button-small ux-button-secondary" onclick="doExportTextdoc();" style="margin-left: 15px;">Export as JSON</button>
+	<button class="ux-button ux-button-small ux-button-highlight" onclick="self.location='admin.php?/page/agile.textdoc-editor/uuid/[####UUID|url|html####]/edit/yes'; return false;" style="margin-left: 15px;">Edit TextDoc</button>
+	<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
+</div>
+<br>
+<div title="TextDoc HTML Safe SandBox / iFrame" style="position:relative;"><iframe name="TextdocReaderSandBox" id="TextdocReaderSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:[####DOC-W|html####]; height:calc(100vh - 150px); height:max-content; border:1px solid #EFEFEF;" srcdoc="[####DOC-DATA|html####]" sandbox></iframe></div>
+<script>
+function doExportTextdoc() {
+	var exportDTime = '[####DTIME|js####]';
+	var exportAuthor = '[####AUTHOR|js####]';
+	var data = [####JSON-DATA|json####];
+	data.docTitle = String($('#textdoc_title').text());
+	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'textdoc-' + exportDTime + '@' + exportAuthor + '.json', 'application/json', 'UTF-8');
+}
+</script>

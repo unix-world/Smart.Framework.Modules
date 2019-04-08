@@ -1,7 +1,10 @@
 [@@@@SUB-TEMPLATE:bpmn-init.inc.htm@@@@]
-<!-- bpmn-editor.htm v.20190217 -->
+<!-- bpmn-editor.htm v.20190405 -->
 <link rel="stylesheet" href="modules/mod-wflow-components/views/bpmn-flow/modeler.css">
 <style>
+#canvas {
+	height: calc(100vh - 150px) !important;
+}
 #undo-button {
 	position: fixed;
 	bottom: 50px;
@@ -25,7 +28,7 @@
 <script src="modules/mod-wflow-components/views/bpmn-flow/bpmn-modeler.js"></script>
 <form class="ux-form" id="bpmn_form" name="bpmn_form" method="POST" action="#">
 	<input id="bpmn_uuid" name="uuid" type="hidden" value="[####UUID|html####]">
-	<input id="bpmn_title" name="bpmn_title" type="text" maxlength="255" value="[####TITLE|html####]" title="BPMN-Diagram Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:28px!important; font-weight:bold; text-align:center;">
+	<input id="bpmn_title" name="bpmn_title" type="text" maxlength="255" value="[####TITLE|html####]" title="BPMN-Diagram Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:1rem!important; font-weight:bold; text-align:center;">
 	<input id="bpmn_data" name="bpmn_data" type="hidden" value="">
 </form>
 <div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>

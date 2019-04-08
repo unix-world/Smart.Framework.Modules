@@ -1,5 +1,5 @@
 <?php
-// Class: \SmartModDataModel\Agile\SqBpmndiagrams
+// Class: \SmartModDataModel\Agile\SqTextdocs
 // (c) 2006-2019 unix-world.org - all rights reserved
 // v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
@@ -18,7 +18,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //=====================================================================================
 
 
-final class SqBpmndiagrams extends \SmartModDataModel\Agile\SqAppTable {
+final class SqTextdocs extends \SmartModDataModel\Agile\SqAppTable {
 
 	// ->
 	// v.20190405

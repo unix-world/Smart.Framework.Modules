@@ -9,6 +9,7 @@
 	font-family: 'IBM Plex Sans',Arial,sans-serif;
 }
 </style>
+<link rel="stylesheet" type="text/css" href="../../../../../lib/css/toolkit/sf-icons.css">
 <script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
 <script type="text/javascript" src="../../../../../lib/js/framework/smart-framework.js"></script>
 <link href="../summernote-lite.css" rel="stylesheet">
@@ -31,7 +32,7 @@
 </style>
 </head>
 <body>
-<textarea id="summernote" spellcheck="false">
+<textarea id="summernote" spellcheck="false" style="position:fixed; right:-1000px; bottom:-1000px;">
 &lt;h1 align=&quot;center&quot;&gt;&lt;span style=&quot;color: rgb(8, 82, 148);&quot;&gt;Recognition of Achievement&lt;/span&gt;&lt;/h1&gt;
 
 	&lt;p style=&quot;text-align:justify&quot;&gt;This letter acknowledges the invaluable input &lt;strong&gt;you&lt;/strong&gt;, as a member
@@ -110,7 +111,7 @@ $.extend($.summernote.plugins, {
 		codeviewFilter: true,
 		placeholder: '',
 		tabsize: 2,
-		height: '85vh',
+		height: 'calc(100vh - 50px)',
 		toolbar:[
 			['paperSize',['paperSize']],
 			['print', ['print', 'pagebreak']],
@@ -162,6 +163,6 @@ $.extend($.summernote.plugins, {
 	}); */
 	// var myText = $('#myField').summernote('isEmpty')? '' : $('#myField').summernote('code');
 </script>
-<button onClick="(function(){ var paperSize = $('.note-editing-area').attr('data-papersize'); var textareaValue = $('#summernote').summernote('code'); console.log('PaperSize: ' + paperSize + '\n' + 'Code:' + '\n' + textareaValue); })();" style="position:fixed; top:5px; right:5px;">Save (to console)<button>
+<button onClick="(function(){ var paperSize = $('.note-editing-area').attr('data-papersize'); var textareaValue = $('#summernote').summernote('code'); console.log('PaperSize: ' + paperSize + '\n' + 'Code:' + '\n' + textareaValue); })();" style="position:fixed; bottom:5px; right:5px;">Save (to console)</button>
 </body>
 </html>

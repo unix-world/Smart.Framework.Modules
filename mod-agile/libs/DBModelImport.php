@@ -20,7 +20,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 class DBModelImport {
 
 	// ::
-	// v.20190217
+	// v.20190405
 
 
 public static function SmartDbModelerSQLiteExportToXml($y_filepath) {

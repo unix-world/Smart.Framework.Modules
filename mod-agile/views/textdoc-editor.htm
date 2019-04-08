@@ -1,0 +1,152 @@
+<!-- textdoc-editor.htm v.20190405 -->
+<form class="ux-form" id="textdoc_form" name="textdoc_form" method="POST" action="#">
+	<input id="textdoc_uuid" name="uuid" type="hidden" value="[####UUID|html####]">
+	<input id="textdoc_title" name="textdoc_title" type="text" maxlength="255" value="[####TITLE|html####]" title="TextDocument Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:1rem!important; font-weight:bold; text-align:center;">
+	<input id="textdoc_data" name="textdoc_data" type="hidden" value="">
+</form>
+<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<div style="text-align:center;">
+	<button class="ux-button ux-button-small ux-button-regular" id="textdocSaveBtn" onclick="doSaveTextdoc();" style="margin-left: 15px;">Save TextDocument</button>
+	[%%%%IF:OP-MODE:==create;%%%%]
+	<button class="ux-button ux-button-small ux-button-special" id="textdocCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
+	[%%%%ELSE:OP-MODE%%%%]
+	<button class="ux-button ux-button-small ux-button-special" id="textdocCancelBtn" onclick="self.location='admin.php?/page/agile.textdoc-editor/uuid/[####UUID|url|html####]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
+	[%%%%/IF:OP-MODE%%%%]
+</div>
+<!-- SummerNote -->
+<link href="modules/mod-wflow-components/views/texteditor/summernote-lite.css" rel="stylesheet">
+<script src="modules/mod-wflow-components/views/texteditor/summernote-lite.js"></script>
+<script src="modules/mod-wflow-components/views/texteditor/plugins/summernote-paper-size.js"></script>
+<script src="modules/mod-wflow-components/views/texteditor/plugins/summernote-ext-print.js"></script>
+<link href="modules/mod-wflow-components/views/texteditor/plugins/summernote-pagebreak.css" rel="stylesheet">
+<script src="modules/mod-wflow-components/views/texteditor/plugins/summernote-pagebreak.js"></script>
+<script src="modules/mod-wflow-components/views/texteditor/plugins/summernote-table-headers.js"></script>
+<link href="modules/mod-wflow-components/views/texteditor/plugins/summernote-table-styles.css" rel="stylesheet">
+<script src="modules/mod-wflow-components/views/texteditor/plugins/summernote-table-styles.js"></script>
+<script src="modules/mod-wflow-components/views/texteditor/plugins/summernote-text-findnreplace.js"></script>
+<link href="modules/mod-wflow-components/views/texteditor/plugins/summernote-text-findnreplace.css" rel="stylesheet">
+<script src="modules/mod-wflow-components/views/texteditor/plugins/summernote-ext-specialchars.js"></script>
+<style>
+.hidden {
+	display: none;
+}
+</style>
+<textarea id="summernote" spellcheck="false" style="position:fixed; right:-1000px; bottom:-1000px;"></textarea>
+<script>
+var docPaperSize = 'A4';
+(function(){
+	var textdocDataObj = [####JSON-DATA|json####];
+	if(!textdocDataObj) {
+		textdocDataObj = {};
+	}
+	if(!textdocDataObj.data) {
+		textdocDataObj.data = {};
+	}
+	if(!textdocDataObj.data.paperSize) {
+		textdocDataObj.data.paperSize = '';
+	}
+	if(!textdocDataObj.data.textDoc) {
+		textdocDataObj.data.textDoc = '';
+	}
+	var paperSize = String(textdocDataObj.data.paperSize || '');
+	if(paperSize) {
+		docPaperSize = String(docPaperSize);
+	}
+	$('#summernote').val(String(textdocDataObj.data.textDoc || ''));
+	textdocDataObj = null; // clear
+})();
+</script>
+<script>
+$(function(){
+	$('#summernote').summernote({
+		prettifyHtml: true,
+		allowImageURL: false,
+		codeViewReadonly: true,
+		codeviewFilter: true,
+		placeholder: '',
+		tabsize: 2,
+		height: 'calc(100vh - 125px)',
+		toolbar:[
+			['paperSize',['paperSize']],
+			['print', ['print', 'pagebreak']],
+			['cleaner',['cleaner']],
+			//--
+			['style',['clear','style']],
+			['font',['bold','italic','underline']],
+			['fontstyleextra', ['strikethrough', 'underline', 'superscript', 'subscript']],
+			['color',['color']],
+			['para',['ul','ol','paragraph']],
+			['height',['height']],
+			['table',['table']],
+			['insert',['media','link','hr','picture','specialchars']],
+			['misc', ['findnreplace','undo', 'redo']],
+			['view',['codeview']],
+			['help',['help']]
+		],
+		popover: {
+			table: [
+				['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+				['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
+				['custom', ['tableHeaders', 'tableStyles']]
+			],
+			link: [
+				['link', ['linkDialogShow', 'unlink']]
+			],
+			image: [
+				['resize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+				['float', ['floatLeft', 'floatRight', 'floatNone']],
+				['remove', ['removeMedia']]
+			],
+		},
+		print: {
+			'stylesheetUrl': [
+				'modules/mod-wflow-components/views/texteditor/plugins/summernote-print-styles.css',
+				'modules/mod-wflow-components/views/texteditor/plugins/summernote-table-styles.css',
+				'modules/mod-wflow-components/views/texteditor/plugins/summernote-pagebreak.css'
+			]
+		},
+		callbacks: {
+			onInit: function(){
+				switch(docPaperSize){
+					case 'Screen':
+						summertnotePaperSize_Screen();
+						break;
+					case 'A4 Landscape':
+						summertnotePaperSize_A4L();
+						break;
+					case 'A4':
+					default:
+						summertnotePaperSize_A4();
+				}
+			}
+		}
+	});
+});
+</script>
+<script>
+	SmartJS_BrowserUtils.PageAwayControl('Exit without Save ?');
+</script>
+<script>
+function doSaveTextdoc() {
+	var paperSize = $('.note-editing-area').attr('data-papersize');
+	var textareaValue = $('#summernote').summernote('code');
+	var dateobj = new Date();
+	var expDoc = {
+		docTitle: '', // to be updated later
+		docDate: String(dateobj.toISOString()),
+		docType: 'smartWorkFlow.TextDoc',
+		docVersion: '1.0',
+		dataFormat: 'text/html',
+		data: {
+			paperSize: String(paperSize || ''),
+			textDoc: String(textareaValue || '')
+		}
+	};
+//	expDoc.docTitle = String($('#textdoc_title').val());
+	expDoc = JSON.stringify(expDoc);
+	//console.log(expDoc);
+	$('#textdoc_data').val(expDoc);
+	SmartJS_BrowserUtils.RefreshParent();
+	SmartJS_BrowserUtils.Submit_Form_By_Ajax('textdoc_form', 'admin.php?page=agile.textdoc-save', 'yes');
+}
+</script>

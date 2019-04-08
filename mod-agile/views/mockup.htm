@@ -1,4 +1,4 @@
-<!-- mockup.htm v.20190217 -->
+<!-- mockup.htm v.20190405 -->
 <h1>Create Mockup</h1>
 <br>
 <a class="ux-button ux-button-primary" href="admin.php?/page/agile.mockup-editor/edit/yes" data-smart="open.modal">New Mockup</a>
@@ -8,8 +8,4 @@
 <br>
 <h1>Saved Mockups</h1>
 <br>
-[%%%%LOOP:MOCKUPS%%%%]
-	<br>
-	<a class="ux-button" href="admin.php?/page/agile.mockup-editor/uuid/[####MOCKUPS.UUID|url|html####]" data-smart="open.modal" title="UUID: [####MOCKUPS.UUID|html####]">Mockup: [####MOCKUPS.TITLE|html####] @ [####MOCKUPS.USER|html####] - [####MOCKUPS.DTIME|html####]</a>
-	<br>
-[%%%%/LOOP:MOCKUPS%%%%]
+[@@@@SUB-TEMPLATE:partials/list-docs.inc.htm@@@@]

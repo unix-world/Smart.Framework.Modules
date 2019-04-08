@@ -22,7 +22,7 @@ abstract class SqAppTable {
 
 	// ->
 
-private $ver = 'r.20190217';
+private $ver = 'r.20190405';
 private $db = null;
 private $sqdb = '#db/';
 private $tblname = 'data_objects';

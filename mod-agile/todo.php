@@ -16,6 +16,7 @@ define('SMART_APP_MODULE_AUTH', true);
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
+	// v.20190405
 
 	public function Run() {
 
@@ -27,7 +28,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			'main' 			=> SmartMarkersTemplating::render_file_template(
 				$this->ControllerGetParam('module-path').'views/todo.htm', // the view
 				[
-					'TODOS' => (array) $sq_rd
+					'LINK' => 'admin.php?/page/agile.todo-editor/uuid/',
+					'DOCS' => (array) $sq_rd
 				]
 			)
 		]);

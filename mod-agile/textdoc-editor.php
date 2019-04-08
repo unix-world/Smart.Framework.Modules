@@ -1,6 +1,6 @@
 <?php
-// Controller: Agile, MockupEditor
-// Route: admin.php?page=agile.mockup-editor
+// Controller: Agile, TextDocEditor
+// Route: admin.php?page=agile.textdoc-editor
 // (c) 2006-2019 unix-world.org - all rights reserved
 // v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
@@ -29,9 +29,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if((string)$import == 'yes') {
 
 			$this->PageViewSetVars([
-				'title' 	=> 'Agile :: Mockups / Import',
+				'title' 	=> 'Agile :: TextDocuments / Import',
 				'main' 		=> SmartMarkersTemplating::render_file_template(
-					$this->ControllerGetParam('module-view-path').'mockup-import.htm', // the view
+					$this->ControllerGetParam('module-view-path').'textdoc-import.htm', // the view
 					[
 					]
 				)
@@ -41,33 +41,33 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		} elseif((string)$import == 'done') {
 
-			$mockup_data = (string) $this->RequestVarGet('mockup_data', '', 'string');
+			$textdoc_data = (string) $this->RequestVarGet('textdoc_data', '', 'string');
 
 		} //end if
 
-		$model = new \SmartModDataModel\Agile\SqMockups();
+		$model = new \SmartModDataModel\Agile\SqTextdocs();
 
-		if($mockup_data) {
-			$mockup_data = Smart::json_decode((string)$mockup_data);
-			if(Smart::array_size($mockup_data) <= 0) {
-				$mockup_data = null;
-			} elseif(Smart::array_size($mockup_data['data']) <= 0) {
-				$mockup_data = null;
+		if($textdoc_data) {
+			$textdoc_data = Smart::json_decode((string)$textdoc_data);
+			if(Smart::array_size($textdoc_data) <= 0) {
+				$textdoc_data = null;
+			} elseif(Smart::array_size($textdoc_data['data']) <= 0) {
+				$textdoc_data = null;
 			} //end if else
 		} else {
-			$mockup_data = null;
+			$textdoc_data = null;
 		} //end if
 
-		if(is_array($mockup_data)) {
+		if(is_array($textdoc_data)) {
 			$sq_rd = array();
-			$new_data = (string) (string) Smart::json_encode((array)$mockup_data);
-			if($mockup_data['docTitle']) {
-				$sq_rd['title'] = (string) $mockup_data['docTitle'];
+			$new_data = (string) Smart::json_encode((array)$textdoc_data);
+			if($textdoc_data['docTitle']) {
+				$sq_rd['title'] = (string) $textdoc_data['docTitle'];
 			} //end if
-			$mockup_data = null;
+			$textdoc_data = null;
 		} else {
 			$sq_rd = (array) $model->getOneByUuid($uuid);
-			$new_data = (string) Smart::json_encode(['data' => [ 'canvasWidth' => 1000, 'canvasHeight' => 700, 'canvasData' => '' ]]);
+			$new_data = (string) Smart::json_encode([ 'data' => [ 'paperSize' => 'A4', 'textDoc' => '' ]]);
 		} //end if else
 		$old_data = (string) SmartUtils::data_unarchive((string)$sq_rd['saved_data']);
 		if($old_data) {
@@ -95,24 +95,32 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			} else {
 				$opmode = 'edit';
 			} //end if else
-			$tpl = 'mockup-editor.htm';
+			$tpl = 'textdoc-editor.htm';
 		} else {
 			$opmode = 'read';
-			$tpl = 'mockup-reader.htm';
+			$tpl = 'textdoc-reader.htm';
 		} //end if else
 
 		$old_doc = (array) Smart::json_decode((string)$old_data);
 		$old_doc_data = (array) $old_doc['data'];
 		$old_doc = array();
-		$old_doc_data['canvasData'] = (string) $old_doc_data['canvasData'];
-		$old_doc_data['canvasWidth'] = (int) $old_doc_data['canvasWidth'];
-		if($old_doc_data['canvasWidth'] < 500) {
-			$old_doc_data['canvasWidth'] = 500;
-		} //end if
-		$old_doc_data['canvasHeight'] = (int) $old_doc_data['canvasHeight'];
-		if($old_doc_data['canvasHeight'] < 500) {
-			$old_doc_data['canvasHeight'] = 500;
-		} //end if
+		$old_doc_data['paperSize'] = (string) $old_doc_data['paperSize'];
+		$rd_width = 'auto';
+		$rd_extstyles = '';
+		switch((string)$old_doc_data['paperSize']) {
+			case 'A4':
+				$rd_extstyles = 'body { margin: 0 !important; padding: 15mm !important; }'."\n\n";
+				$rd_width = '210mm';
+				break;
+			case 'A4 Landscape':
+				$rd_extstyles = 'body { margin: 0 !important; padding: 15mm !important; }'."\n\n";
+				$rd_width = '297mm';
+				break;
+			case 'Screen':
+			default:
+				$rd_width = '96vw';
+				$rd_extstyles = '';
+		} //end switch
 
 		if((string)$edit == 'yes') {
 			$arr_markers = [
@@ -120,42 +128,43 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				'OP-MODE' 		=> (string) $opmode,
 				'JSON-DATA'		=> (string) $old_data,
 				'UUID' 			=> (string) $sq_rd['uuid'],
-				'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled Mockup',
+				'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled TextDocument',
 				'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
 				'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
-				'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-',
+				'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-'
 			];
 		} else { // read
 			$arr_markers = [
 				'VIEWS-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
 				'OP-MODE' 		=> (string) $opmode,
+
 				'DOC-DATA' 		=> (string) SmartMarkersTemplating::render_file_template(
 												(string) $this->ControllerGetParam('module-view-path').'partials/reader-ifrm.htm', // the view
 												[
 													'CHARSET' 					=> (string) $this->ControllerGetParam('charset'),
-													'TITLE' 					=> (string) 'Mockup :: '.$sq_rd['dtime'].' @ '.$sq_rd['user'].' / '.$sq_rd['uuid'],
+													'TITLE' 					=> (string) 'Textdoc :: '.$sq_rd['dtime'].' @ '.$sq_rd['user'].' / '.$sq_rd['uuid'],
 													'HTML-STYLES-BASE' 			=> (string) SmartFileSystem::read('lib/core/templates/base-html-styles.inc.htm'),
-													'HTML-STYLES-DOC-ELEMENTS' 	=> (string) SmartFileSystem::read('modules/mod-wflow-components/views/qmockup/qmockup-elements.css'),
-													'HTML-STYLE-CLASS' 			=> (string) 'mockup-printable',
-													'HTML-DOC-DATA' 			=> (string) $old_doc_data['canvasData']
+													'HTML-STYLES-DOC-ELEMENTS' 	=> (string) $rd_extstyles.SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-print-styles.css')."\n\n".SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-table-styles.css')."\n\n".SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-pagebreak.css'),
+													'HTML-STYLE-CLASS' 			=> (string) 'note-printable',
+													'HTML-DOC-DATA' 			=> (string) $old_doc_data['textDoc']
 												]
 											),
-				'DOC-W' 		=> (int)    $old_doc_data['canvasWidth'],
-				'DOC-H' 		=> (int)    $old_doc_data['canvasHeight'],
+				'DOC-W' 		=> (string) $rd_width,
+
 				'JSON-DATA'		=> (string) $old_data,
 				'UUID' 			=> (string) $sq_rd['uuid'],
-				'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled Mockup',
+				'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled TextDocument',
 				'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
 				'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
-				'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-',
+				'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-'
 			];
 		} //end if else
 
 		$this->PageViewSetVars([
-			'title' 	=> 'Agile :: Mockups / Editor',
+			'title' 	=> 'Agile :: TextDocuments / Editor',
 			'main' 		=> SmartMarkersTemplating::render_file_template(
-				(string) $this->ControllerGetParam('module-view-path').$tpl, // the view
-				(array)  $arr_markers
+				$this->ControllerGetParam('module-view-path').$tpl, // the view
+				(array) $arr_markers
 			)
 		]);
 

@@ -1,6 +1,6 @@
 <?php
-// Controller: Agile, ToDoSave
-// Route: admin.php?page=agile.todo-save
+// Controller: Agile, TextDocSave
+// Route: admin.php?page=agile.textdoc-save
 // (c) 2006-2019 unix-world.org - all rights reserved
 // v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
@@ -23,12 +23,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$this->PageViewSetCfg('rawpage', true);
 
 		$uuid = (string) $this->RequestVarGet('uuid', '', 'string');
-		$mode = (string) $this->RequestVarGet('mode', '', 'string');
-		$title = (string) $this->RequestVarGet('todo_title', '', 'string');
-		$data = (string) $this->RequestVarGet('todo_data', '', 'string');
+		$title = (string) $this->RequestVarGet('textdoc_title', '', 'string');
+		$data = (string) $this->RequestVarGet('textdoc_data', '', 'string');
 
 		if($data) {
-			$wr = (int) (new \SmartModDataModel\Agile\SqTodos())->saveData(
+			$wr = (int) (new \SmartModDataModel\Agile\SqTextdocs())->saveData(
 				[
 					'uuid' 			=> (string) $uuid,
 					'title' 		=> (string) $title,
@@ -40,14 +39,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$wr = -99; // empty data
 		} //end if else
 
-		$url_mode = '';
-		if((string)$mode == 'kanban') {
-			$url_mode = 'mode/kanban/';
-		} //end if
-
 		$this->PageViewSetVar(
 			'main',
-			SmartComponents::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save ToDo-List', ($wr === 1) ? 'ToDo-List Saved Successfuly' : 'Failed to save the ToDo-List: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.todo-editor/'.$url_mode.'uuid/'.Smart::escape_url($uuid) : '')
+			SmartComponents::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save TextDoc', ($wr === 1) ? 'TextDoc Saved Successfuly' : 'Failed to save the TextDoc: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.textdoc-editor/uuid/'.Smart::escape_url($uuid) : '')
 		);
 
 	} // END FUNCTION

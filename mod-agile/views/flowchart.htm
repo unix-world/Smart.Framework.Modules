@@ -1,4 +1,4 @@
-<!-- flowchart.htm v.20190217 -->
+<!-- flowchart.htm v.20190405 -->
 <h1>Create FlowChart</h1>
 <br>
 <a class="ux-button ux-button-primary" href="admin.php?/page/agile.flowchart-editor/edit/yes" data-smart="open.modal">New FlowChart</a>
@@ -8,8 +8,4 @@
 <br>
 <h1>Saved FlowCharts</h1>
 <br>
-[%%%%LOOP:FLOW-CHARTS%%%%]
-	<br>
-	<a class="ux-button" href="admin.php?/page/agile.flowchart-editor/uuid/[####FLOW-CHARTS.UUID|url|html####]" data-smart="open.modal" title="UUID: [####FLOW-CHARTS.UUID|html####]">FlowChart: [####FLOW-CHARTS.TITLE|html####] @ [####FLOW-CHARTS.USER|html####] - [####FLOW-CHARTS.DTIME|html####]</a>
-	<br>
-[%%%%/LOOP:FLOW-CHARTS%%%%]
+[@@@@SUB-TEMPLATE:partials/list-docs.inc.htm@@@@]

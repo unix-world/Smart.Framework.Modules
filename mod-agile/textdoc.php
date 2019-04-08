@@ -1,6 +1,6 @@
 <?php
-// Controller: Agile, Mockup
-// Route: admin.php?page=agile.mockup
+// Controller: Agile, TextDoc
+// Route: admin.php?page=agile.textdoc
 // (c) 2006-2019 unix-world.org - all rights reserved
 // v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
@@ -21,14 +21,14 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
-		$sq_rd = (array) (new \SmartModDataModel\Agile\SqMockups())->getAllByUuid();
+		$sq_rd = (array) (new \SmartModDataModel\Agile\SqTextdocs())->getAllByUuid();
 		//--
 		$this->PageViewSetVars([
-			'title' 	=> 'Agile :: Mockups / List',
+			'title' 	=> 'Agile :: TextDoc / List',
 			'main' 			=> SmartMarkersTemplating::render_file_template(
-				$this->ControllerGetParam('module-path').'views/mockup.htm', // the view
+				$this->ControllerGetParam('module-path').'views/textdoc.htm', // the view
 				[
-					'LINK' => 'admin.php?/page/agile.mockup-editor/uuid/',
+					'LINK' => 'admin.php?/page/agile.textdoc-editor/uuid/',
 					'DOCS' => (array) $sq_rd
 				]
 			)
