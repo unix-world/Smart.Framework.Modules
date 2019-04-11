@@ -34,7 +34,7 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 
 ### Extra Libs (BSD licensed):
 	* PostgreSQL Extended connector: make life easier for the Smart.Framework PostgreSQL connector by providing an advanced functionality class
-	* Solr: connector for Apache Solr 3.x / 4.x / 5.x / 6.x / 7.x (or later versions)
+	* Solr: connector for Apache Solr 3.x / 4.x / 5.x / 6.x / 7.x / 8.x (or later versions)
 	* CURL based HTTP Client Lib with proxy support
 	* LangID.py client wrapper (a language detection utility based on external service)
 	* Charts library for PHP
