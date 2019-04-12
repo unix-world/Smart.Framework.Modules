@@ -54,7 +54,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$this->PageViewSetVars([
 			'title' => 'ZZZ Tests: Math Parser',
-			'main' => '<h1 id="qunit-test-result">Math Expression: '.$test_answer.'</h1><pre>'.Smart::escape_html($expr).'</pre><hr>'.'<h1>Evaluated Result</h1><pre>'.Smart::escape_html($answer).'</pre><hr>'.'<br><br>'
+			'main' => '<h1 id="qunit-test-result">Math Expression Parser Test: '.Smart::escape_html($test_answer).'</h1><h2 id="qunit-test-result">Math Expression:</h2><pre>'.Smart::escape_html($expr).'</pre><hr>'.'<h2>Evaluated Result</h2><pre>'.Smart::escape_html($answer).'</pre><hr>'.'<br><br>'
 		]);
 		//--
 

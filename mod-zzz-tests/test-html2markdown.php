@@ -48,7 +48,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$this->PageViewSetVars([
 			'title' => 'ZZZ Tests: Html2Markdown',
-			'main' => '<h1 id="qunit-test-result">Converted Markdown</h1><pre>'.Smart::escape_html($markdown).'</pre><hr>'.'<h1>Original HTML</h1><pre>'.Smart::escape_html($html).'</pre><hr>'.'<br><br>'
+			'main' => '<h1 id="qunit-test-result">HTML2Markdown Test: OK</h1><h2>Converted Markdown</h2><pre>'.Smart::escape_html($markdown).'</pre><hr>'.'<h2>Original HTML</h2><pre>'.Smart::escape_html($html).'</pre><hr>'.'<br><br>'
 		]);
 		//--
 

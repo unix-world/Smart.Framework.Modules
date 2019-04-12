@@ -65,7 +65,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$this->PageViewSetVars([
 			'title' => 'ZZZ Tests: SVG Draw',
-			'main' => '<h1 id="qunit-test-result">SVG Source Code</h1><pre>'.Smart::escape_html(str_replace('><', '>'."\n".'<', (string)$image)).'</pre><hr>'.'<h1>SVG Vector Image</h1><img src="data:image/svg+xml;base64,'.base64_encode((string)$image).'"><hr>'.'<h1>SVG Raster (PNG + GreyScale Filter)</h1><img src="data:image/png;base64,'.base64_encode((string)$png).'"><hr>'.'<br><br>'
+			'main' => '<h1 id="qunit-test-result">SVG Test Result: OK</h1><pre><h2>SVG Source Code</h2><pre>'.Smart::escape_html(str_replace('><', '>'."\n".'<', (string)$image)).'</pre><hr>'.'<h2>SVG Vector Image</h2><img src="data:image/svg+xml;base64,'.base64_encode((string)$image).'"><hr>'.'<h2>SVG Raster (PNG + GreyScale Filter)</h2><img src="data:image/png;base64,'.base64_encode((string)$png).'"><hr>'.'<br><br>'
 		]);
 		//--
 
