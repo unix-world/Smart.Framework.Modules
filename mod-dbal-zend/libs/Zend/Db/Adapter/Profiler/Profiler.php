@@ -5,9 +5,6 @@
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
  * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- *
- * fixed by unixman
- *
  */
 
 namespace Zend\Db\Adapter\Profiler;
@@ -32,8 +29,7 @@ class Profiler implements ProfilerInterface
      * @return self Provides a fluent interface
      * @throws \Zend\Db\Adapter\Exception\InvalidArgumentException
      */
-//  public function profilerStart($target)
-    public function profilerStart($target, $params=array()) // unixman
+    public function profilerStart($target)
     {
         $profileInformation = [
             'sql' => '',
@@ -47,7 +43,6 @@ class Profiler implements ProfilerInterface
             $profileInformation['parameters'] = clone $target->getParameterContainer();
         } elseif (is_string($target)) {
             $profileInformation['sql'] = $target;
-            $profileInformation['parameters'] = (array) $params; // unixman
         } else {
             throw new Exception\InvalidArgumentException(
                 __FUNCTION__ . ' takes either a StatementContainer or a string'
