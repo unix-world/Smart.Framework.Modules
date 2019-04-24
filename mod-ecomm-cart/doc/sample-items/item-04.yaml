@@ -1,0 +1,21 @@
+### START
+item:
+    version: 'Sample: No Atts, No Price v.20190423.1059'
+    id: SAMPLE-04 # SKU
+    type: p # s = Service | p = Product
+    name: 'Sample: No Atts, No Price'
+    currency: US$
+    price: 0.00
+    tax: 0 # Sales Tax %, 0..99.99
+    pak:
+        um: unit # unit of measure
+        umtype: int # U.M. Type: dec = decimal ; int = integer
+        umerg: 0 # U.M. Fractio: Ergonomic Order Qty.
+        ummin: 0 # Minimum Order Qty.
+    attributes:
+        test-att:
+            name: 'Test Attribute'
+            type: free
+#           minlen: 5
+#           maxlen: 10
+###END

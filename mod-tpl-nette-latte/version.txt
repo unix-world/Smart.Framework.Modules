@@ -1,5 +1,6 @@
 
 # Smart.Framework.Modules: TplNetteLatte v.github#v.2.4.8 r.20190326 #
+## This is a custom patched version of NetteLatte to integrate with Smart.Framework ##
 
 // v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 

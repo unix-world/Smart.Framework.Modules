@@ -1,0 +1,15 @@
+### START
+item:
+    version: 'Sample: No Atts v.20190312.1603'
+    id: SAMPLE-03 # SKU
+    type: s # s = Service | p = Product
+    name: 'Sample: No Atts'
+    currency: US$
+    price: 100.00
+    tax: 0 # Sales Tax %, 0..99.99
+    pak:
+        um: unit # unit of measure
+        umtype: int # U.M. Type: dec = decimal ; int = integer
+        umerg: 5 # U.M. Fractio: Ergonomic Order Qty.
+        ummin: 0 # Minimum Order Qty.
+###END
