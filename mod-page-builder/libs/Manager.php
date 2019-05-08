@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190326
+ * @version 	v.20190508
  * @package 	PageBuilder
  *
  */
@@ -125,7 +125,7 @@ final class Manager {
 		$text['err_5'] 				= 'An error occured. Please try again !';
 		$text['err_6'] 				= 'Invalid Name for Object';
 		$text['err_7'] 				= 'Some Edit Fields are not allowed here !';
-		$text['err_8']				= 'Required Objects cannot be deleted !';
+		$text['err_8']				= 'Special Objects cannot be deleted !';
 		$text['err_9'] 				= 'Invalid Object Syntax Type';
 		//-- messages
 		$text['msg_confirm_del'] 	= 'Please confirm you want to delete this object';
@@ -975,7 +975,7 @@ final class Manager {
 						//--
 						$data['id'] = (string) $y_frm['id'];
 						$data['id'] = (string) \Smart::safe_validname($data['id'], ''); // allow: [a-z0-9] _ - . @
-						$data['id'] = (string) str_replace(array('.', '@'), array('-', '-'), (string)$data['id']); // dissalow: . @ [@ is for special pages ; . will conflict with SmartFramework style pages like module.page when using Semantic URL Rules ; @ is reserved for special pages ]
+						$data['id'] = (string) str_replace(array('.', '@'), array('-', '-'), (string)$data['id']); // dissalow: . @ [ @ is used to replace # with @ on segments folders ; . will conflict with SmartFramework style pages like module.page when using Semantic URL Rules ]
 						//--
 						switch((string)$y_frm['ptype']) {
 							case 'settings-segment':
@@ -1346,7 +1346,7 @@ final class Manager {
 
 	//==================================================================
 	/**
-	 * Delete a page
+	 * Delete an Object
 	 *
 	 * @param string $y_id
 	 * @param string $y_delete
@@ -1362,8 +1362,8 @@ final class Manager {
 		} //end if
 		//--
 
-		//-- very special page override
-		if((substr((string)$tmp_rd_arr['id'], 0, 1) == '@') OR (substr((string)$tmp_rd_arr['id'], 0, 2) == '#@')) {
+		//-- special objects override deletion
+		if((string)$tmp_rd_arr['special'] == '1') {
 			$tmp_allow_deletion = false;
 		} else {
 			$tmp_allow_deletion = true;
@@ -1403,7 +1403,7 @@ final class Manager {
 					//--
 					$out .= '<br>'.\SmartComponents::operation_error(self::text('msg_no_priv_del'));
 					$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_refresh_parent().'</script>';
-				$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_close_modal_popup(1500).'</script>'; // ok
+					$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_close_modal_popup(1500).'</script>'; // ok
 					//--
 				} //end if else
 				//--
