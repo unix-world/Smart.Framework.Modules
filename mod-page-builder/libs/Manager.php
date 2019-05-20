@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190508
+ * @version 	v.20190520
  * @package 	PageBuilder
  *
  */
@@ -2066,7 +2066,15 @@ final class Manager {
 		if(\Smart::array_size($input_str) <= 0) {
 			return \SmartComponents::operation_error('Invalid FODS/Xml File Format to Import');
 		} //end if
-		$hdr_arr = (array) $input_str['header'];
+		if(\Smart::array_size($input_str['header']) < 2) {
+			return \SmartComponents::operation_error('Invalid FODS/Xml Table Format to Import');
+		} //end if
+		$hdr_arr = array();
+		for($i=0; $i<\Smart::array_size($input_str['header']); $i++) {
+			if($i < 2) { // get only first 2 columns !!
+				$hdr_arr[] = (string) $input_str['header'][$i];
+			} //end if
+		} //end for
 		$data_arr = (array) $input_str['data'];
 		//print_r($data_arr); die();
 		$input_str = null; // free mem
