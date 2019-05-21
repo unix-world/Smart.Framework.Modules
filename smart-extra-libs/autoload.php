@@ -39,27 +39,36 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 		case 'SmartTwigTemplating':
 		case 'SmartNetteLatteTemplating':
 		case 'SmartTemplating':
-			require_once('modules/smart-extra-libs/lib_templating_ext.php'); 	// extended templating
+			require_once('modules/smart-extra-libs/lib_templating_ext.php'); 		// extended templating
 			break;
 		//--
 		case 'SmartCurlHttpFtpClient':
-			require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); // curl http/ftp connector
+			require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); 	// curl http/ftp connector
 			break;
 		//--
 		case 'SmartAbstractPgsqlExtDb':
-			require_once('modules/smart-extra-libs/lib_db_ext_pgsql.php'); 		// pgsql extended db connector
+			require_once('modules/smart-extra-libs/lib_db_ext_pgsql.php'); 			// pgsql extended db connector
 			break;
 		case 'SmartSolrDb':
-			require_once('modules/smart-extra-libs/lib_db_solr.php'); 			// solr db connector
+			require_once('modules/smart-extra-libs/lib_db_solr.php'); 				// solr db connector
+			break;
+		//-- zip archive
+		case 'SmartZipArchive':
+			require_once('modules/smart-extra-libs/lib_export_zip.php');			// zip archive
+			break;
+		//-- ooffice export
+		case 'SmartExportToOpenOffice':
+		case 'SmartImportFromOpenOffice':
+			require_once('modules/smart-extra-libs/lib_export_import_ooffice.php'); // ooffice export / import
 			break;
 		//--
 		case 'SmartImgBizCharts':
 		case 'SmartImgGfxCharts':
-			require_once('modules/smart-extra-libs/lib_charts.php'); 			// gd charts
+			require_once('modules/smart-extra-libs/lib_charts.php'); 				// gd charts
 			break;
 		//--
 		case 'SmartLangIdClient':
-			require_once('modules/smart-extra-libs/lib_langid_cli.php'); 		// langid client
+			require_once('modules/smart-extra-libs/lib_langid_cli.php'); 			// langid client
 			break;
 		//--
 		default:
@@ -69,7 +78,7 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 	//--
 } //END FUNCTION
 //--
-spl_autoload_register('autoload__SmartFrameworkModulesExtraLibs', true, false); // throw / append
+spl_autoload_register('autoload__SmartFrameworkModulesExtraLibs', true, false); 	// throw / append
 //--
 
 

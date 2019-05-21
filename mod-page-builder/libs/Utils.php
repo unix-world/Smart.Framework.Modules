@@ -26,7 +26,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @access 		private
  * @internal
  *
- * @version 	v.20190323
+ * @version 	v.20190521
  * @package 	PageBuilder
  *
  */
@@ -138,127 +138,6 @@ final class Utils {
 		} //end for
 		//--
 		return (string) $class;
-		//--
-	} //END FUNCTION
-
-
-	public static function parseFodsXmlSpreadSheetToArray($input_str) {
-		//--
-		$input_str = (string) trim((string)$input_str);
-		if((string)$input_str == '') {
-			return array();
-		} //end if
-		//--
-		if(stripos($input_str, '<?xml ') !== 0) {
-			return array();
-		} //end if
-		//-- FIX: Line Break
-		$input_str = (string) str_ireplace(['<text:line-break/>'], "\n", $input_str);
-		//-- FIX: Many Spaces
-		$regex = '\<text\:s text\:c\="([0-9]+)"\/\>';
-		$input_str = (string) preg_replace_callback(
-			(string) '/'.$regex.'/i',
-			function($matches) use ($val) {
-				$matches[1] = (int) $matches[1];
-				if($matches[1] < 0) {
-					$matches[1] = 0;
-				} elseif($matches[1]>1000) {
-					$matches[1] = 1000;
-				} //end if
-				$spaces = '';
-				if($matches[1] > 0) {
-					for($i=0; $i<$matches[1]; $i++) {
-						$spaces .= ' ';
-					} //end for
-				} //end if
-				return (string) $spaces;
-			}, //end function
-			$input_str
-		);
-		//-- #END FIX
-		$csv_arr = (new \SmartXmlParser('domxml'))->transform($input_str);
-		$input_str = ''; // free mem
-		//print_r($csv_arr); die();
-		if(\Smart::array_size($csv_arr) <= 0) {
-			return array();
-		} //end if
-		if(\Smart::array_size($csv_arr['office:body']) <= 0) {
-			return array();
-		} //end if
-		$csv_arr = (array) $csv_arr['office:body'];
-		if(\Smart::array_size($csv_arr['office:spreadsheet']) <= 0) {
-			return array();
-		} //end if
-		$csv_arr = (array) $csv_arr['office:spreadsheet'];
-		if(\Smart::array_size($csv_arr['table:table']) <= 0) {
-			return array();
-		} //end if
-		$csv_arr = (array) $csv_arr['table:table'];
-		if(\Smart::array_size($csv_arr['table:table-row']) <= 0) {
-			return array();
-		} //end if
-		$csv_arr = (array) $csv_arr['table:table-row'];
-		//print_r($csv_arr); die();
-		if(\Smart::array_size($csv_arr) <= 0) {
-			return array();
-		} //end if
-		//--
-		$hdr_arr = array();
-		$data_arr = array();
-		//--
-		$cnt_csv_arr = (int) \Smart::array_size($csv_arr);
-		//--
-		for($l=0; $l<$cnt_csv_arr; $l++) {
-			//--
-			$val = $csv_arr[$l]['table:table-cell'];
-			//--
-			if(\Smart::array_type_test($val) == 1) {
-				//--
-				for($i=0; $i<\Smart::array_size($val); $i++) {
-					if(is_array($val[$i]['text:p'])) {
-						for($p=0; $p<\Smart::array_size($val[$i]['text:p']); $p++) {
-							if(is_array($val[$i]['text:p'][$p])) {
-								$val[$i]['text:p'][$p] = '';
-							} //end if
-						} //end for
-						$val[$i]['text:p'] = (string) implode("\n", $val[$i]['text:p']);
-					} //end if
-					if($l > 0) {
-						$data_arr[(string)$hdr_arr[$i]][] = (string) $val[$i]['text:p'];
-					} else {
-						$hdr_arr[] = (string) substr((string)$val[$i]['text:p'], 6, 2);
-					} //end if else
-				} //end for
-				//--
-			} elseif(\Smart::array_size($hdr_arr) > 0) {
-				//--
-				if(is_array($val['text:p'])) {
-					for($p=0; $p<\Smart::array_size($val['text:p']); $p++) {
-						if(is_array($val['text:p'][$p])) {
-							$val['text:p'][$p] = '';
-						} //end if
-					} //end for
-					$val['text:p'] = (string) implode("\n", $val['text:p']);
-				} //end if
-				//--
-				$data_arr[(string)$hdr_arr[0]][] = (string) $val['text:p'];
-				//--
-				if(is_array($val['@attributes'])) {
-					if((int)$val['@attributes']['number-columns-repeated'] > 1) {
-						for($i=1; $i<$val['@attributes']['number-columns-repeated']; $i++) {
-							$data_arr[(string)$hdr_arr[$i]][] = (string) $val['text:p'];
-						} //end for
-					} //end if
-				} //end if
-				//--
-			} //end if else
-			//--
-		} //end for
-		//--
-		return array(
-			'header' 	=> (array) $hdr_arr,
-			'data' 		=> (array) $data_arr
-		);
 		//--
 	} //END FUNCTION
 

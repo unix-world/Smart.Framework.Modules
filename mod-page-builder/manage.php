@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// r.20190323
+	// r.20190521
 
 	public function Run() {
 
@@ -246,7 +246,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					\SmartModExtLib\PageBuilder\Manager::ViewDisplayExportData($tpl)
 				);
 				break;
-			case 'export-translations-ods': // ODS
+			case 'export-translations-spreadsheet': // SpreadSheet
 				$exportlang = $this->RequestVarGet('exportlang', '', 'string');
 				if(\SmartTextTranslations::validateLanguage($exportlang) !== true) {
 					$this->PageViewSetErrorStatus(400, 'ERROR: Invalid PageBuilder Export Language: '.$exportlang);
@@ -258,8 +258,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					return;
 				} //end if
 				$this->PageViewSetCfg('rawpage', true);
-				$oo = new SmartExportToOpenOffice();
-				$this->PageViewSetCfg('rawmime', (string)$oo->ODS_Mime_Header());
+				$spreadsheet = new SmartSpreadSheetExport(500, 50);
+				$this->PageViewSetCfg('rawmime', (string)$spreadsheet->getMimeType());
 				if((string)$exportlang == (string)\SmartTextTranslations::getDefaultLanguage()) {
 					$extralang = '@';
 					$arrsheets = [
@@ -272,16 +272,16 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						'[lang_'.$exportlang.']'
 					];
 				} //end if else
-				$this->PageViewSetCfg('rawdisp', (string)$oo->ODS_Disposition_Header('translations-pgbld-'.SmartTextTranslations::getDefaultLanguage().'_'.$extralang.'-'.substr((string)$mode,0,3).'-'.date('Ymd_His').'.ods', 'attachment'));
+				$this->PageViewSetCfg('rawdisp', (string)$spreadsheet->getDispositionHeader('translations-pgbld-'.SmartTextTranslations::getDefaultLanguage().'_'.$extralang.'-'.substr((string)$mode,0,3).'-'.date('Ymd_His').'.xl03.xml', 'attachment'));
 				$this->PageViewSetVar(
 					'main',
-					(string) $oo->ODS_SpreadSheet(
+					(string) $spreadsheet->getFileContents(
 						'PageBuilder Transl. - '.$mode,
-						$arrsheets,
-						(array) \SmartModExtLib\PageBuilder\Manager::ViewDisplayExportOdsData((string)$mode, (string)$exportlang)
+						(array) $arrsheets,
+						(array) \SmartModExtLib\PageBuilder\Manager::ViewDisplayExportSpreadsheetData((string)$mode, (string)$exportlang, 'associative')
 					)
 				);
-				$oo = null;
+				$spreadsheet = null;
 				break;
 			case 'import-translations': // HTML
 				$tpl = $this->RequestVarGet('tpl', '', 'string');

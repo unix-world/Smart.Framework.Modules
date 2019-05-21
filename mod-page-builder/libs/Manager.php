@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190520
+ * @version 	v.20190521
  * @package 	PageBuilder
  *
  */
@@ -1996,7 +1996,7 @@ final class Manager {
 		return (string) \SmartMarkersTemplating::render_file_template(
 			(string) self::$ModulePath.'libs/views/manager/view-export.mtpl.htm',
 			[
-				'URL-FORM-ACTION' 	=> (string) self::composeUrl('op=export-translations-ods'),
+				'URL-FORM-ACTION' 	=> (string) self::composeUrl('op=export-translations-spreadsheet'),
 				'LANGUAGE-DEFAULT' 	=> (string) \SmartTextTranslations::getDefaultLanguage(),
 				'LANGUAGES-ARR' 	=> (array)  \SmartTextTranslations::getListOfLanguages()
 			]
@@ -2007,7 +2007,7 @@ final class Manager {
 
 
 	//==================================================================
-	public static function ViewDisplayExportOdsData($mode, $lang) {
+	public static function ViewDisplayExportSpreadsheetData($mode, $lang, $arrmode) {
 		//--
 		if(((string)$mode != 'all') AND ((string)$mode != 'missing')) {
 			return array();
@@ -2016,7 +2016,7 @@ final class Manager {
 			return array();
 		} //end if
 		//--
-		return (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::exportTranslationsByLang((string)$lang, (string)$mode);
+		return (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::exportTranslationsByLang((string)$lang, (string)$mode, (string)$arrmode);
 		//--
 	} //END FUNCTION
 	//==================================================================
@@ -2054,30 +2054,43 @@ final class Manager {
 		$y_modelclass = (string) $y_modelclass;
 		//--
 		if(!$_FILES['import_file']['tmp_name']) {
-			return (string) \SmartComponents::operation_notice('No File to Import (.fods)');
+			return (string) \SmartComponents::operation_notice('NO File to Import (.xl03.xml)');
 		} //end if
-		if(substr((string)$_FILES['import_file']['name'], -5, 5) != '.fods') {
-			return (string) \SmartComponents::operation_warn('Invalid File to Import (.fods)');
+		if(substr((string)$_FILES['import_file']['name'], -9, 9) != '.xl03.xml') {
+			return (string) \SmartComponents::operation_warn('Invalid File to Import (.xl03.xml)');
 		} //end if
 		//--
 		$input_str = (string) \SmartFileSystem::read_uploaded((string)$_FILES['import_file']['tmp_name']);
 		//--
-		$input_str = (array) \SmartModExtLib\PageBuilder\Utils::parseFodsXmlSpreadSheetToArray($input_str);
+		$input_str = (array) \SmartSpreadSheetImport::readFileContentsToArray($input_str);
 		if(\Smart::array_size($input_str) <= 0) {
-			return \SmartComponents::operation_error('Invalid FODS/Xml File Format to Import');
+			return \SmartComponents::operation_error('Invalid XL03/Xml File Format to Import');
 		} //end if
 		if(\Smart::array_size($input_str['header']) < 2) {
-			return \SmartComponents::operation_error('Invalid FODS/Xml Table Format to Import');
+			return \SmartComponents::operation_error('Invalid XL03/Xml Table Format to Import');
 		} //end if
 		$hdr_arr = array();
 		for($i=0; $i<\Smart::array_size($input_str['header']); $i++) {
-			if($i < 2) { // get only first 2 columns !!
-				$hdr_arr[] = (string) $input_str['header'][$i];
+			$tmp_head_val_orig = (string) trim((string)$input_str['header'][$i]);
+			$tmp_head_val_lang = (string) substr((string)$tmp_head_val_orig, 6, 2);
+			if((strlen((string)$tmp_head_val_lang) == 2) AND ((string)$tmp_head_val_orig == '[lang_'.$tmp_head_val_lang.']')) {
+				$hdr_arr[] = (string) $tmp_head_val_lang;
 			} //end if
 		} //end for
-		$data_arr = (array) $input_str['data'];
-		//print_r($data_arr); die();
+		if(\Smart::array_size($hdr_arr) != 2) {
+			return \SmartComponents::operation_error('Invalid XL03/Xml Table Header to Import');
+		} //end if
+		$data_arr = array();
+		for($i=0; $i<\Smart::array_size($input_str['data']); $i++) {
+			$data_arr[(string)$hdr_arr[$i % 2]][] = (string) $input_str['data'][$i];
+			$data_arr[(string)$hdr_arr[($i+1) % 2]][] = (string) $input_str['data'][$i+1];
+			$i+=1;
+		} //end for
 		$input_str = null; // free mem
+		if(\Smart::array_size($data_arr[(string)$hdr_arr[0]]) != \Smart::array_size($data_arr[(string)$hdr_arr[1]])) {
+			return \SmartComponents::operation_error('Invalid XL03/Xml Table Data to Import');
+		} //end if
+	//	print_r($hdr_arr); print_r($data_arr); die();
 		//--
 		$def_lang = (string) \SmartTextTranslations::getDefaultLanguage();
 		//--
