@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// r.20190521
+	// r.20190524
 
 	public function Run() {
 
@@ -186,6 +186,42 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$this->PageViewSetVar(
 					'main',
 					\SmartModExtLib\PageBuilder\Manager::ViewFormInfo($id, 'view')
+				);
+				break;
+			case 'record-view-tab-media': // HTML
+				$id = $this->RequestVarGet('id', '', 'string');
+				$this->PageViewSetCfg('rawpage', 'yes');
+				$this->PageViewSetVar(
+					'main',
+					\SmartModExtLib\PageBuilder\Manager::ViewFormMedia($id, 'view')
+				);
+				break;
+			case 'record-edit-tab-media': // HTML
+				$id = $this->RequestVarGet('id', '', 'string');
+				$this->PageViewSetCfg('rawpage', 'yes');
+				$this->PageViewSetVar(
+					'main',
+					\SmartModExtLib\PageBuilder\Manager::ViewFormMedia($id, 'form')
+				);
+				break;
+			case 'record-upload-media': // JSON
+				$id = $this->RequestVarGet('id', '', 'string');
+				$type = $this->RequestVarGet('type', '', 'string');
+				$content = $this->RequestVarGet('content', '', 'string');
+				$cksum = $this->RequestVarGet('cksum', '', 'string');
+				$this->PageViewSetCfg('rawpage', 'yes');
+				$this->PageViewSetVar(
+					'main',
+					\SmartModExtLib\PageBuilder\Manager::UploadMedia($id, $type, $content, $cksum)
+				);
+				break;
+			case 'record-delete-media': // JSON
+				$id = $this->RequestVarGet('id', '', 'string');
+				$fname = $this->RequestVarGet('fname', '', 'string');
+				$this->PageViewSetCfg('rawpage', 'yes');
+				$this->PageViewSetVar(
+					'main',
+					\SmartModExtLib\PageBuilder\Manager::DeleteMedia($id, $fname)
 				);
 				break;
 			case 'record-view-highlight-code': // HTML: preview code

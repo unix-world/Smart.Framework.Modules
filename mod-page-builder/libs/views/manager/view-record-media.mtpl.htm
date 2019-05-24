@@ -1,0 +1,151 @@
+<!-- Pagebuilder / Manage @ View Record / Media :: v.20190524 -->
+<script>
+var pageBuilderMediaImgDataURL = '';
+var pageBuilderMediaType = '';
+function pageBuilder_MediaUploadHandle(imgDataURL, imgType) {
+	if(imgDataURL) {
+		$('#img_uploader_btn').prop('disabled', true);
+		SmartJS_BrowserUtils.Overlay_Show();
+		var saveURL = 'admin.php?page=page-builder.manage&op=record-upload-media&id=[####RECORD-ID|url|js####]';
+		var errFx = function(title, message) {
+			SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(title), SmartJS_CoreUtils.escape_html(message), null, parseInt(SmartJS_BrowserUtils_Time_Notification_ERR), false, 'gritter-red');
+			setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, parseInt(SmartJS_BrowserUtils_Time_Notification_ERR)); // $('#img_uploader_btn').prop('disabled', false);
+		}
+		var okFx = function(title, message) {
+			SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(title), SmartJS_CoreUtils.escape_html(message), null, parseInt(SmartJS_BrowserUtils_Time_Notification_OK), false, 'gritter-green');
+			setTimeout(function(){ self.location = 'admin.php?page=page-builder.manage&op=record-view&id=[####RECORD-ID|url|js####]&sop=media'; }, parseInt(SmartJS_BrowserUtils_Time_Notification_OK));
+		}
+		var ajax = SmartJS_BrowserUtils.Ajax_XHR_Request_From_URL(saveURL, 'POST', 'json', '&type=' + SmartJS_CoreUtils.escape_url(imgType) + '&content=' + SmartJS_CoreUtils.escape_url(imgDataURL) + '&cksum=' + SmartJS_CoreUtils.escape_url(SmartJS_CryptoHash.sha1(imgDataURL)));
+		ajax.done(function(data, textStatus, jqXHR){
+			var isOK = -1;
+			if(data) {
+				if(data.status) {
+					if(data.title) {
+						if(data.message) {
+							isOK = 0;
+							if(data.status === 'OK') {
+								isOK = 1;
+							} //end if
+						} //end if
+					} //end if
+				} //end if
+			} //end if
+			if(isOK === 1) {
+				okFx(String(data.status) + ': ' + String(data.title), String(data.message));
+			} else if(isOK === 0) {
+				errFx('Uploading Media FAILED: ' + String(data.title), String(data.message));
+			} else {
+				errFx('FAILED to Upload Media', 'Invalid Answer Format');
+			} //end if else
+		}).fail(function(jqXHR, textStatus, errorThrown){
+			errFx('ERROR Uploading Media', textStatus + '\n' + errorThrown);
+		});
+	} //end if
+}
+function pageBuilder_MediaDeleteHandle(imgFile) {
+	SmartJS_BrowserUtils.Overlay_Show();
+	var deleteURL = 'admin.php?page=page-builder.manage&op=record-delete-media&id=[####RECORD-ID|url|js####]';
+	var errFx = function(title, message) {
+		SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(title), SmartJS_CoreUtils.escape_html(message), null, parseInt(SmartJS_BrowserUtils_Time_Notification_ERR), false, 'gritter-red');
+		setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, parseInt(SmartJS_BrowserUtils_Time_Notification_ERR));
+	}
+	var okFx = function(title, message) {
+		SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(title), SmartJS_CoreUtils.escape_html(message), null, parseInt(SmartJS_BrowserUtils_Time_Notification_OK), false, 'gritter-green');
+		setTimeout(function(){ self.location = 'admin.php?page=page-builder.manage&op=record-view&id=[####RECORD-ID|url|js####]&sop=media'; }, parseInt(SmartJS_BrowserUtils_Time_Notification_OK));
+	}
+	var ajax = SmartJS_BrowserUtils.Ajax_XHR_Request_From_URL(deleteURL, 'POST', 'json', '&fname=' + SmartJS_CoreUtils.escape_url(imgFile));
+	ajax.done(function(data, textStatus, jqXHR){
+		var isOK = -1;
+		if(data) {
+			if(data.status) {
+				if(data.title) {
+					if(data.message) {
+						isOK = 0;
+						if(data.status === 'OK') {
+							isOK = 1;
+						} //end if
+					} //end if
+				} //end if
+			} //end if
+		} //end if
+		if(isOK === 1) {
+			okFx(String(data.status) + ': ' + String(data.title), String(data.message));
+		} else if(isOK === 0) {
+			errFx('Deleting Media FAILED: ' + String(data.title), String(data.message));
+		} else {
+			errFx('FAILED to Delete Media', 'Invalid Answer Format');
+		} //end if else
+	}).fail(function(jqXHR, textStatus, errorThrown){
+		errFx('ERROR Deleting Media', textStatus + '\n' + errorThrown);
+	});
+}
+function pageBuilder_MediaDeleteDialog(imgFile, imgPath, imgType, imgSize, isUsed) {
+	if(!isUsed) {
+		SmartJS_BrowserUtils.confirm_Dialog('<i class="sfi sfi-bin2" style="color:#FF5500!important;"></i> &nbsp; Delete this Image: <span style="color:#FF5500; font-size:0.9em;">' + SmartJS_CoreUtils.escape_html(imgFile + ' @ ' + imgType + ' # ' + imgSize) + '</span> ?<br><br><div align="center"><img src="' + SmartJS_CoreUtils.escape_html(imgPath) + '" style="max-width:100px; max-height:100px; width:auto !important; height:auto !important;"></div>', function(){ pageBuilder_MediaDeleteHandle(imgFile); }, 'Delete Media Image Confirmation', 550, 275);
+	} else {
+		SmartJS_BrowserUtils.alert_Dialog('<i class="sfi sfi-bin2" style="color:#003399!important;"></i> &nbsp; Cannot Delete used Image: <span style="color:#003399; font-size:0.9em;">' + SmartJS_CoreUtils.escape_html(imgFile + ' @ ' + imgType + ' # ' + imgSize) + '</span> !<br><br><div align="center"><img src="' + SmartJS_CoreUtils.escape_html(imgPath) + '" style="max-width:100px; max-height:100px; width:auto !important; height:auto !important;"></div>', null, 'Delete Media Image: Used in [#' + isUsed + '] Object(s)', 550, 275);
+	} //end if else
+}
+function pageBuilder_MediaInfoAlert(imgFile, imgPath, imgType, imgSize, isUsed) {
+	SmartJS_BrowserUtils.alert_Dialog('<i class="sfi sfi-info"></i> &nbsp; Image: <span style="color:#778899; font-size:0.9em;">' + SmartJS_CoreUtils.escape_html(imgFile + ' @ ' + imgType + ' # ' + imgSize) + '</span> .<br><div style="text-align:center; color:#111111; font-weight:bold; font-size:0.9em;">' + SmartJS_CoreUtils.escape_html(imgPath) + '</div><br><div align="center"><img src="' + SmartJS_CoreUtils.escape_html(imgPath) + '" style="max-width:100px; max-height:100px; width:auto !important; height:auto !important;"></div>', null, 'Media Image Info: Used in [#' + isUsed + '] Object(s)', 550, 285);
+}
+</script>
+<table width="100%" border="0">
+	<tr valign="top">
+		<td width="1%">
+			[%%%%IF:PRIV-EDIT:==yes;%%%%]
+			<img src="[####MODULE-PATH|html####]libs/views/manager/img/op-add.svg" style="cursor:pointer;" title="Preload Image: SVG / PNG / JPG / GIF" alt="Preload Image: SVG / PNG / JPG / GIF" onClick="jQuery('#img_uploader_id').trigger('click'); return false;">
+			[%%%%ELSE:PRIV-EDIT%%%%]
+			&nbsp;
+			[%%%%/IF:PRIV-EDIT%%%%]
+		</td>
+		<td align="center" width="85%">
+			[%%%%IF:PRIV-EDIT:==yes;%%%%]
+			<span style="color:#778899; font-size:0.75rem">All Uploaded Media Images (except SVG / GIF) will be resized and optimized to max: [####MAX-WIDTH-MEDIA|int####]x[####MAX-HEIGHT-MEDIA|int####] pixels.</span>
+			[%%%%ELSE:PRIV-EDIT%%%%]
+			&nbsp;
+			[%%%%/IF:PRIV-EDIT%%%%]
+		</td>
+		<td align="right">
+			<font size="1"><b>Media&nbsp;Files:&nbsp;#[####CNT-MEDIA-FILES|int####]</b></font>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+			<input id="img_uploader_id" name="img_attach" type="file" size="1" style="width: 5px !important; height: 5px !important; opacity: 0 !important;">
+			<div id="img_uploader_preview" style="max-width:900px; max-height:900px; overflow:auto;"></div>
+			<hr>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+			[%%%%LOOP:ARR-MEDIA-IMGS%%%%]
+				<div style="padding:0; float:left; width:120px; height:132px; margin-right:20px; margin-bottom:20px;" title="[####ARR-MEDIA-IMGS.IMG|html####] @ [####ARR-MEDIA-IMGS.USED|int####]">
+					<div style="padding:0; width:120px; height:12px; border:0;">
+						<span style="font-weight:bold; font-size:10px !important; line-height:1 !important; color:#555555; vertical-align:top;">
+							[%%%%IF:PRIV-DELETE:==yes;%%%%]<i class="sfi sfi-bin2" style="font-size:9px !important; vertical-align:top; cursor:pointer;" title="Delete" onclick="pageBuilder_MediaDeleteDialog('[####ARR-MEDIA-IMGS.FILE|js####]', '[####ARR-MEDIA-IMGS.IMG|js####]', '[####ARR-MEDIA-IMGS.TYPE|upper|js####]', '[####ARR-MEDIA-IMGS.SIZE|js####]', [####ARR-MEDIA-IMGS.USED|int####]); return false;"></i>&nbsp;&nbsp;[%%%%/IF:PRIV-DELETE%%%%]<i class="sfi sfi-info" style="font-size:9px !important; vertical-align:top; cursor:pointer; color:[%%%%IF:ARR-MEDIA-IMGS.USED:>0;%%%%]#CCCCCC[%%%%ELSE:ARR-MEDIA-IMGS.USED%%%%]#FF3300[%%%%/IF:ARR-MEDIA-IMGS.USED%%%%];" title="Info" onclick="pageBuilder_MediaInfoAlert('[####ARR-MEDIA-IMGS.FILE|js####]', '[####ARR-MEDIA-IMGS.IMG|js####]', '[####ARR-MEDIA-IMGS.TYPE|upper|js####]', '[####ARR-MEDIA-IMGS.SIZE|js####]', [####ARR-MEDIA-IMGS.USED|int####]); return false;"></i>
+							&nbsp; [####ARR-MEDIA-IMGS.TYPE|upper|html####] / [####ARR-MEDIA-IMGS.SIZE|html####]
+						</span>
+					</div>
+					<div style="padding:0; width:120px; height:120px; border:1px solid #ECECEC; position:relative;">
+						<a data-slimbox="slimbox" href="[####ARR-MEDIA-IMGS.IMG|html####]" title="[####ARR-MEDIA-IMGS.-_INDEX_-|html####]. [####ARR-MEDIA-IMGS.FILE|html####]">
+							<img src="[####ARR-MEDIA-IMGS.IMG|html####]" style="max-width:120px; max-height:120px; width:auto !important; height:auto !important; position:absolute; left:0; right:0; top:0; bottom:0; margin:auto;">
+						</a>
+					</div>
+				</div>
+			[%%%%/LOOP:ARR-MEDIA-IMGS%%%%]
+		</td>
+	</tr>
+</table>
+<script>
+SmartJS_BrowserUtils.VirtualImageUploadHandler('img_uploader_id', 'img_uploader_preview', [####JPEG-QUALITY|dec2####], [####MAX-SIZE-B64-MEDIA|num####], [####MAX-WIDTH-MEDIA|int####], [####MAX-HEIGHT-MEDIA|int####], function(imgDataURL, w, h, isSVG, imgType){
+	if(imgDataURL) {
+		pageBuilderMediaImgDataURL = String(imgDataURL);
+		pageBuilderMediaType = String(imgType);
+		setTimeout(function(){
+			$('#img_uploader_preview').append('<br><button id="img_uploader_btn" class="ux-button ux-button-small ux-button-primary" onClick="pageBuilder_MediaUploadHandle(pageBuilderMediaImgDataURL, pageBuilderMediaType); return false;">Upload Image <i class="sfi sfi-cloud-upload"></i></button>');
+		}, 500);
+	} //end if
+}, false, 160, 160, true);
+</script>
+<!-- #END -->

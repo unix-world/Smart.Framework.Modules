@@ -49,15 +49,19 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190522
+ * @version 	v.20190524
  * @package 	PageBuilder
  *
  */
-final class Manager {
+final class Manager { // TODO: On Delete Object Check if is not related and dissalow deletion ; also check if object's images are not used in other objects !
 
 	// ::
 
 	private static $MaxStrCodeSize = 16777216; // 16 MB
+	private static $MaxSizeMediaImgMB = 0.5; // 0.5 MB
+	private static $MaxQualityMediaImgJpg = 0.9; // 90%
+	private static $MaxWidthMediaImg = 1920;
+	private static $MaxHeightMediaImg = 1080;
 
 	private static $ModulePath = 'modules/mod-page-builder/';
 	private static $ModuleScript = 'admin.php';
@@ -107,6 +111,7 @@ final class Manager {
 		$text['tab_code'] 			= 'Code';
 		$text['tab_data'] 			= 'Data';
 		$text['tab_info'] 			= 'Info';
+		$text['tab_media'] 			= 'Media';
 		//-- list data
 		$text['records'] 			= 'Records';
 		$text['cnp']				= 'Create A New Object';
@@ -269,6 +274,9 @@ final class Manager {
 			case 'info':
 				$selected_tab = '3';
 				break;
+			case 'media':
+				$selected_tab = '4';
+				break;
 			case 'props':
 			default:
 				$selected_tab = '0';
@@ -293,6 +301,7 @@ final class Manager {
 			[
 				'RECORD-ID'			=> (string) \Smart::escape_html($query['id']),
 				'RECORD-NAME' 		=> (string) $draw_name,
+				'RECORD-TYPE' 		=> (string) $query['mode'],
 				'BUTTONS-CLOSE' 	=> (string) '<input type="button" value="'.\Smart::escape_html($translator_window->text('button_close')).'" class="ux-button" onClick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;">',
 				'TAB-TXT-PROPS'		=> (string) '<img height="16" src="'.self::$ModulePath.'libs/views/manager/img/props.svg'.'" alt="'.self::text('tab_props').'" title="'.self::text('tab_props').'">'.'&nbsp;'.self::text('tab_props'),
 				'TAB-LNK-PROPS'		=> (string) self::composeUrl('op=record-view-tab-props&id='.\Smart::escape_url($query['id'])),
@@ -302,6 +311,8 @@ final class Manager {
 				'TAB-LNK-DATA'		=> (string) self::composeUrl('op=record-view-tab-data&id='.\Smart::escape_url($query['id'])),
 				'TAB-TXT-INFO'		=> (string) '<img height="16" src="'.self::$ModulePath.'libs/views/manager/img/info.svg'.'" alt="'.self::text('tab_info').'" title="'.self::text('tab_info').'">'.'&nbsp;'.self::text('tab_info'),
 				'TAB-LNK-INFO'		=> (string) self::composeUrl('op=record-view-tab-info&id='.\Smart::escape_url($query['id'])),
+				'TAB-TXT-MEDIA'		=> (string) '<img height="16" src="'.self::$ModulePath.'libs/views/manager/img/media.svg'.'" alt="'.self::text('tab_media').'" title="'.self::text('tab_media').'">'.'&nbsp;'.self::text('tab_media'),
+				'TAB-LNK-MEDIA'		=> (string) self::composeUrl('op=record-view-tab-media&id='.\Smart::escape_url($query['id'])),
 				'JS-TABS'			=> (string) '<script type="text/javascript">SmartJS_BrowserUIUtils.Tabs_Init(\'tabs\', '.(int)$selected_tab.', false);</script>'
 			]
 		);
@@ -893,6 +904,281 @@ final class Manager {
 
 
 	//==================================================================
+	// view or display form entry for MEDIA
+	// $y_mode :: 'list' | 'form'
+	public static function ViewFormMedia($y_id, $y_mode) {
+		//--
+		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordInfById($y_id);
+		if((string)$query['id'] == '') {
+			return \SmartComponents::operation_error('FormView Media // Invalid ID');
+		} //end if
+		//--
+		if((string)$query['mode'] == 'raw') {
+			return '<br><div align="center">'.'<img src="'.self::$ModulePath.'libs/views/manager/img/syntax-raw.svg" width="256" height="256" alt="N/A" title="N/A" style="opacity:0.2">'.'</div>';
+		} //end if
+		//--
+		$the_template = self::$ModulePath.'libs/views/manager/view-record-media.mtpl.htm';
+		$fdir = (string) self::getMediaFolderById((string)$query['id']);
+		$arr_imgs = array();
+		if(\SmartFileSystem::is_type_dir($fdir)) {
+			$files_n_dirs = (array) (new \SmartGetFileSystem(true))->get_storage($fdir, false, false);
+			if(\Smart::array_size($files_n_dirs['list-files']) > 0) {
+				for($i=0; $i<\Smart::array_size($files_n_dirs['list-files']); $i++) {
+					$tmp_ext = (string) substr((string)$files_n_dirs['list-files'][$i], -4, 4);
+					switch((string)$tmp_ext) {
+						case '.svg':
+						case '.gif':
+						case '.png':
+						case '.jpg':
+							$arr_imgs[] = [
+								'img' 	=> (string) $fdir.$files_n_dirs['list-files'][$i],
+								'file' 	=> (string) $files_n_dirs['list-files'][$i],
+								'type' 	=> (string) substr((string)$tmp_ext, 1),
+								'size' 	=> (string) \SmartUtils::pretty_print_bytes(\SmartFileSystem::get_file_size($fdir.$files_n_dirs['list-files'][$i]), 1, ''),
+								'used' 	=> (int)    (\SmartModDataModel\PageBuilder\PageBuilderBackend::listCountRecords('code', $fdir.$files_n_dirs['list-files'][$i]) + \SmartModDataModel\PageBuilder\PageBuilderBackend::listCountRecords('data', $fdir.$files_n_dirs['list-files'][$i]))
+							];
+							break;
+						default:
+							// skip
+					} //end switch
+				} //end if
+			} //end if
+		} //end if
+		//--
+		$priv_edit = ((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-manage') === true)) ? 'yes' : 'no';
+		$priv_delete = ((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-delete') === true)) ? 'yes' : 'no';
+		//--
+		return (string) \SmartMarkersTemplating::render_file_template(
+			(string) $the_template,
+			[
+				'MODULE-PATH' 			=> (string) self::$ModulePath,
+				'PRIV-EDIT' 			=> (string) $priv_edit,
+				'PRIV-DELETE' 			=> (string) $priv_delete,
+				'RECORD-ID'				=> (string) \Smart::escape_html($query['id']),
+				'JPEG-QUALITY' 			=> (string) \Smart::format_number_dec(self::$MaxQualityMediaImgJpg, 2),
+				'MAX-SIZE-B64-MEDIA' 	=> (string) \Smart::format_number_dec(self::$MaxSizeMediaImgMB * 3, 2),
+				'MAX-WIDTH-MEDIA' 		=> (string) \Smart::format_number_int(self::$MaxWidthMediaImg, '+'),
+				'MAX-HEIGHT-MEDIA' 		=> (string) \Smart::format_number_int(self::$MaxHeightMediaImg, '+'),
+				'CNT-MEDIA-FILES' 		=> (int)    \Smart::array_size($arr_imgs),
+				'ARR-MEDIA-IMGS' 		=> (array)  $arr_imgs
+			]
+		);
+		//--
+	} //END FUNCTION
+	//==================================================================
+
+
+	//==================================================================
+	public static function UploadMedia($y_id, $y_type, $y_content, $y_cksum) {
+		//--
+		$err = '';
+		//--
+		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordInfById($y_id);
+		if((string)$query['id'] == '') {
+			$err = 'Invalid ID';
+		} //end if
+		//--
+		if(!$err) {
+			$priv_edit = ((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-manage') === true)) ? 'yes' : 'no';
+			if((string)$priv_edit != 'yes') {
+				$err = 'Not Enough Privileges';
+			} //end if
+		} //end if
+		//--
+		if(!$err) {
+			$y_content = (string) trim((string)$y_content);
+			if((string)$y_content == '') {
+				$err = 'Empty Content';
+			} //end if
+		} //end if
+		if(!$err) {
+			if((string)sha1((string)$y_content) != (string)$y_cksum) {
+				$err = 'Invalid Content Checksum';
+			} //end if
+		} //end if
+		if(!$err) {
+			if(((string)strtolower((string)substr((string)$y_content, 0, 11)) != 'data:image/') OR (stripos((string)$y_content, ';base64,') === false)) {
+				$err = 'Invalid Content Format';
+			} //end if
+		} //end if
+		if(!$err) {
+			$y_content = (array) explode(';base64,', (string)$y_content);
+			$y_content = (string) @base64_decode((string)trim((string)$y_content[1]));
+			if((string)$y_content == '') {
+				$err = 'Invalid SVG Content';
+			} //end if
+		} //end if
+		//--
+		$img_ext = '';
+		//--
+		if(!$err) {
+			switch((string)$y_type) {
+				case 'image/svg+xml':
+					$y_content = (new \SmartXmlParser())->format((string)$y_content); // avoid injection of other content than XML
+					if((string)$y_content == '') {
+						$err = 'Invalid SVG Content';
+					} else {
+						$img_ext = 'svg';
+					} //end if
+					break;
+				case 'image/gif':
+				case 'image/png':
+				case 'image/jpeg':
+					$imgd = new \SmartImageGdProcess((string)$y_content);
+					$img_ext = (string) $imgd->getImageType();
+					$resize = $imgd->resizeImage(1600, 1280, false, 2, [255, 255, 255]); // create resample with: preserve if lower + relative dimensions
+					if(!$resize) {
+						$err = 'Invalid Image Content: '.$imgd->getLastMessage();
+					} //end if
+					if(!$err) {
+						if($imgd->getStatusOk() === true) {
+							// NOTICE: the images (except GIF comes already resized from browser via canvas ; in the case of PNG browser does a better job !!!) ; we obly validate here if there is a real image to avoid injection of other content
+							if(((string)$img_ext != 'gif') AND ((string)$img_ext != 'png')) { // do not use for GIF (keep animation if any ; do not use for PNG to preserve transparency and files are smaller)
+								$y_content = (string) $imgd->getImageData('', (self::$MaxQualityMediaImgJpg * 100), 9);
+							} //end if
+						} else {
+							$y_content = '';
+						} //end if
+					} else {
+						$y_content = '';
+					} //end if else
+					if(!$err) {
+						if((string)$y_content == '') {
+							$err = 'Invalid Image Content';
+						} elseif(strlen($y_content) > 1024 * 1024 * self::$MaxSizeMediaImgMB) {
+							$err = 'Oversized Image Content';
+						} //end if
+					} //end if
+					break;
+				default:
+					$err = 'Invalid Type: '.$y_type;
+					$y_type = 'unknown';
+			} //end switch
+		} //end if
+		//--
+		if(!$err) {
+			$fdir = (string) self::getMediaFolderById((string)$query['id']);
+			if(!\SmartFileSystem::is_type_dir($fdir)) {
+				\SmartFileSystem::dir_create($fdir, true);
+				if(!\SmartFileSystem::is_type_dir($fdir)) {
+					$err = 'Failed to Create Storage Folder';
+				} //end if
+			} //end if
+		} //end if
+		if(!$err) {
+			if(!\SmartFileSystem::is_type_file($fdir.'index.html')) {
+				\SmartFileSystem::write($fdir.'index.html', '');
+			} //end if
+		} //end if
+		if(!$err) {
+			$file = (string) \Smart::safe_filename('file-'.time().'.'.$img_ext);
+			if(!\SmartFileSystem::write((string)$fdir.$file, (string)$y_content)) {
+				$err = 'Failed to Create Storage File';
+			} //end if
+		} //end if
+		//--
+		if(!$err) {
+			$status = 'OK';
+			$message = 'Operation Completed: '.$img_ext;
+		} else {
+			$status = 'ERROR';
+			$message = (string) $err;
+		} //end if else
+		//--
+		$title = 'Upload Media: '.$y_type;
+		//--
+		return (string) \SmartComponents::js_ajax_replyto_html_form(
+			(string) $status,
+			(string) $title,
+			(string) $message
+		);
+		//--
+	} //END FUNCTION
+	//==================================================================
+
+
+	//==================================================================
+	public static function DeleteMedia($y_id, $y_filename) {
+		//--
+		$err = '';
+		//--
+		$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordInfById($y_id);
+		if((string)$query['id'] == '') {
+			$err = 'Invalid ID';
+		} //end if
+		//--
+		if(!$err) {
+			$y_filename = (string) trim((string)$y_filename);
+			if((string)$y_filename == '') {
+				$err = 'Empty File Name';
+			} else {
+				switch((string)substr((string)$y_filename, -4, 4)) {
+					case '.svg':
+					case '.gif':
+					case '.png':
+					case '.jpg':
+						break;
+					default:
+						$err = 'Invalid File Type';
+				} //end switch
+			} //end if
+		} //end if
+		//--
+		if(!$err) {
+			$priv_delete = ((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-delete') === true)) ? 'yes' : 'no';
+			if((string)$priv_delete != 'yes') {
+				$err = 'Not Enough Privileges';
+			} //end if
+		} //end if
+		//--
+		if(!$err) {
+			$fdir = (string) self::getMediaFolderById((string)$query['id']);
+			if(!\SmartFileSystem::is_type_dir($fdir)) {
+				$err = 'Invalid Media Container';
+			} else {
+				$is_used = (int) (\SmartModDataModel\PageBuilder\PageBuilderBackend::listCountRecords('code', $fdir.$y_filename) + \SmartModDataModel\PageBuilder\PageBuilderBackend::listCountRecords('data', $fdir.$y_filename));
+				if($is_used > 0) {
+					$err = 'File is Used in [#'.$is_used.'] Objects';
+				} //end if
+			} //end if
+		} //end if
+		if(!$err) {
+			if(!\SmartFileSystem::is_type_file($fdir.$y_filename)) {
+				$err = 'Invalid File Name';
+			} //end if
+		} //end if
+		if(!$err) {
+			if(!\SmartFileSystem::delete($fdir.$y_filename)) {
+				$err = 'ERROR Deleting the File';
+			} //end if
+		} //end if
+		if(!$err) {
+			if(\SmartFileSystem::is_type_file($fdir.$y_filename)) {
+				$err = 'FAILED to Delete the File';
+			} //end if
+		} //end if
+		//--
+		if(!$err) {
+			$status = 'OK';
+			$message = 'Operation Completed';
+		} else {
+			$status = 'ERROR';
+			$message = (string) $err;
+		} //end if else
+		//--
+		$title = 'Delete Media: '.$y_filename;
+		//--
+		return (string) \SmartComponents::js_ajax_replyto_html_form(
+			(string) $status,
+			(string) $title,
+			(string) $message
+		);
+		//--
+	} //END FUNCTION
+	//==================================================================
+
+
+	//==================================================================
 	public static function ViewFormAdd() {
 		//--
 		$translator_window = \SmartTextTranslations::getTranslator('@core', 'window');
@@ -1386,6 +1672,13 @@ final class Manager {
 					$chk_del = (int) \SmartModDataModel\PageBuilder\PageBuilderBackend::deleteRecordById($tmp_rd_arr['id']);
 					//--
 					if($chk_del == 1) {
+						$fdir = (string) self::getMediaFolderById((string)$tmp_rd_arr['id']);
+						if(\SmartFileSystem::is_type_dir($fdir)) {
+							\SmartFileSystem::dir_delete($fdir, true);
+							if(\SmartFileSystem::is_type_dir($fdir)) {
+								\Smart::log_warning(__METHOD__.' # Failed to Remove the Media Folder for ObjectID: '.$tmp_rd_arr['id']);
+							} //end if
+						} //end if
 						$out .= '<br>'.\SmartComponents::operation_ok(self::text('op_compl'));
 						$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_close_modal_popup().'</script>'; // ok
 					} elseif($chk_del == -1) {
@@ -1456,6 +1749,15 @@ final class Manager {
 		} //endd if
 		//--
 		return (int) $out;
+		//--
+	} //END FUNCTION
+	//==================================================================
+
+
+	//==================================================================
+	private static function getMediaFolderById($y_id) {
+		//--
+		return (string) \Smart::safe_pathname('wpub/media-pbld/'.\Smart::safe_filename(str_replace('#', '@', (string)$y_id)).'/');
 		//--
 	} //END FUNCTION
 	//==================================================================
