@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190524
+ * @version 	v.20190527
  * @package 	PageBuilder
  *
  */
@@ -85,8 +85,8 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		$text['ttl_edtc'] 			= 'Edit Object Code';
 		$text['ttl_edtac'] 			= 'Edit Object Data';
 		$text['ttl_del'] 			= 'Delete this Object';
-		$text['ttl_ch_list'] 		= 'List Mode Change';
-		$text['ttl_reset_hits'] 	= 'Reset Hits Counter on All Records';
+		$text['ttl_ch_list'] 		= 'Change List Mode';
+		$text['ttl_reset_hits'] 	= 'Reset Hit Counter on All PageBuilder Objects';
 		//-- buttons
 		$text['search']				= 'Filter';
 		$text['reset']				= 'Reset';
@@ -166,7 +166,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		$text['translatable'] 		= 'Translatable';
 		$text['translations'] 		= 'Translations';
 		$text['warn_translations'] 	= 'WARNING: Not Translatable but some Translations are present';
-		$text['counter'] 			= 'Hits Counter';
+		$text['counter'] 			= 'Hit Counter';
 		$text['pw_code'] 			= 'Code Preview';
 		$text['pw_data'] 			= 'Data Preview';
 		//--
@@ -913,34 +913,20 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			return \SmartComponents::operation_error('FormView Media // Invalid ID');
 		} //end if
 		//--
-		if((string)$query['mode'] == 'raw') {
-			return '<br><div align="center">'.'<img src="'.self::$ModulePath.'libs/views/manager/img/syntax-raw.svg" width="256" height="256" alt="N/A" title="N/A" style="opacity:0.2">'.'</div>';
-		} //end if
+	//	if((string)$query['mode'] == 'raw') {
+	//		return '<br><div align="center">'.'<img src="'.self::$ModulePath.'libs/views/manager/img/syntax-raw.svg" width="256" height="256" alt="N/A" title="N/A" style="opacity:0.2">'.'</div>';
+	//	} //end if
 		//--
 		$the_template = self::$ModulePath.'libs/views/manager/view-record-media.mtpl.htm';
-		$fdir = (string) self::getMediaFolderById((string)$query['id']);
+		$fdir = (string) \SmartModExtLib\PageBuilder\Utils::getMediaFolderByObjectId((string)$query['id']);
 		$arr_imgs = array();
 		if(\SmartFileSystem::is_type_dir($fdir)) {
-			$files_n_dirs = (array) (new \SmartGetFileSystem(true))->get_storage($fdir, false, false);
-			if(\Smart::array_size($files_n_dirs['list-files']) > 0) {
-				for($i=0; $i<\Smart::array_size($files_n_dirs['list-files']); $i++) {
-					$tmp_ext = (string) substr((string)$files_n_dirs['list-files'][$i], -4, 4);
-					switch((string)$tmp_ext) {
-						case '.svg':
-						case '.gif':
-						case '.png':
-						case '.jpg':
-							$arr_imgs[] = [
-								'img' 	=> (string) $fdir.$files_n_dirs['list-files'][$i],
-								'file' 	=> (string) $files_n_dirs['list-files'][$i],
-								'type' 	=> (string) substr((string)$tmp_ext, 1),
-								'size' 	=> (string) \SmartUtils::pretty_print_bytes(\SmartFileSystem::get_file_size($fdir.$files_n_dirs['list-files'][$i]), 1, ''),
-								'used' 	=> (int)    (\SmartModDataModel\PageBuilder\PageBuilderBackend::listCountRecords('code', $fdir.$files_n_dirs['list-files'][$i]) + \SmartModDataModel\PageBuilder\PageBuilderBackend::listCountRecords('data', $fdir.$files_n_dirs['list-files'][$i]))
-							];
-							break;
-						default:
-							// skip
-					} //end switch
+			$arr_imgs = (array) \SmartModExtLib\PageBuilder\Utils::getMediaFolderContent($fdir);
+			if(\Smart::array_size($arr_imgs) > 0) {
+				for($i=0; $i<\Smart::array_size($arr_imgs); $i++) {
+					$tmp_is_used = (int) \SmartModDataModel\PageBuilder\PageBuilderBackend::getExprContextUsageCount($fdir.$arr_imgs[$i]['file']); // {{{SYNC-PAGEBUILDER-MEDIA-USAGE-CHECK}}}
+					$arr_imgs[$i]['used'] = (int) $tmp_is_used;
+					$tmp_is_used = null;
 				} //end if
 			} //end if
 		} //end if
@@ -1057,7 +1043,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		} //end if
 		//--
 		if(!$err) {
-			$fdir = (string) self::getMediaFolderById((string)$query['id']);
+			$fdir = (string) \SmartModExtLib\PageBuilder\Utils::getMediaFolderByObjectId((string)$query['id']);
 			if(!\SmartFileSystem::is_type_dir($fdir)) {
 				\SmartFileSystem::dir_create($fdir, true);
 				if(!\SmartFileSystem::is_type_dir($fdir)) {
@@ -1071,7 +1057,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			} //end if
 		} //end if
 		if(!$err) {
-			$file = (string) \Smart::safe_filename('file-'.time().'.'.$img_ext);
+			$file = (string) \Smart::safe_filename('img-'.strtolower(\Smart::uuid_10_seq()).'.'.$img_ext);
 			if(!\SmartFileSystem::write((string)$fdir.$file, (string)$y_content)) {
 				$err = 'Failed to Create Storage File';
 			} //end if
@@ -1132,11 +1118,11 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		} //end if
 		//--
 		if(!$err) {
-			$fdir = (string) self::getMediaFolderById((string)$query['id']);
+			$fdir = (string) \SmartModExtLib\PageBuilder\Utils::getMediaFolderByObjectId((string)$query['id']);
 			if(!\SmartFileSystem::is_type_dir($fdir)) {
 				$err = 'Invalid Media Container';
 			} else {
-				$is_used = (int) (\SmartModDataModel\PageBuilder\PageBuilderBackend::listCountRecords('code', $fdir.$y_filename) + \SmartModDataModel\PageBuilder\PageBuilderBackend::listCountRecords('data', $fdir.$y_filename));
+				$is_used = (int) \SmartModDataModel\PageBuilder\PageBuilderBackend::getExprContextUsageCount($fdir.$y_filename); // {{{SYNC-PAGEBUILDER-MEDIA-USAGE-CHECK}}}
 				if($is_used > 0) {
 					$err = 'File is Used in [#'.$is_used.'] Objects';
 				} //end if
@@ -1665,31 +1651,53 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				//--
 				if((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder-delete') === true) AND ((string)$tmp_rd_arr['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder-delete') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-manage') === true) AND ((string)$tmp_rd_arr['special'] == '1'))) {
 					//--
-					$rdw = '<script type="text/javascript">'.\SmartComponents::js_code_wnd_redirect(self::composeUrl('op=record-view&id='.\Smart::escape_url($tmp_rd_arr['id'])), 3000).'</script>';
+					$rdw = '<script type="text/javascript">'.\SmartComponents::js_code_wnd_redirect(self::composeUrl('op=record-view&id='.\Smart::escape_url($tmp_rd_arr['id'])), 3500).'</script>';
 					//--
 					$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_refresh_parent().'</script>';
 					//--
-					$chk_del = (int) \SmartModDataModel\PageBuilder\PageBuilderBackend::deleteRecordById($tmp_rd_arr['id']);
-					//--
-					if($chk_del == 1) {
-						$fdir = (string) self::getMediaFolderById((string)$tmp_rd_arr['id']);
-						if(\SmartFileSystem::is_type_dir($fdir)) {
-							\SmartFileSystem::dir_delete($fdir, true);
-							if(\SmartFileSystem::is_type_dir($fdir)) {
-								\Smart::log_warning(__METHOD__.' # Failed to Remove the Media Folder for ObjectID: '.$tmp_rd_arr['id']);
+					$chk_is_used = 0;
+					$fdir = (string) \SmartModExtLib\PageBuilder\Utils::getMediaFolderByObjectId((string)$tmp_rd_arr['id']);
+					if(\SmartFileSystem::is_type_dir($fdir)) {
+						$arr_imgs = (array) \SmartModExtLib\PageBuilder\Utils::getMediaFolderContent($fdir);
+						if(\Smart::array_size($arr_imgs) > 0) {
+							for($i=0; $i<\Smart::array_size($arr_imgs); $i++) {
+								$chk_is_used += (int) \SmartModDataModel\PageBuilder\PageBuilderBackend::getExprContextUsageCount($fdir.$arr_imgs[$i]['file']); // {{{SYNC-PAGEBUILDER-MEDIA-USAGE-CHECK}}}
+								if($chk_is_used > 0) {
+									break;
+								} //end if
 							} //end if
 						} //end if
-						$out .= '<br>'.\SmartComponents::operation_ok(self::text('op_compl'));
-						$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_close_modal_popup().'</script>'; // ok
-					} elseif($chk_del == -1) {
-						$out .= '<br>'.\SmartComponents::operation_warn('Delete Failed: Empty ID');
+					} //end if
+					//--
+					if($chk_is_used > 0) {
+						//--
+						$out .= '<br>'.\SmartComponents::operation_notice('Delete Canceled: The selected Object have attached Media Files which are in use by this Object or other Objects. Media Files usage must be cleared first !');
 						$out .= $rdw;
-					} elseif($chk_del == -2) {
-						$out .= '<br>'.\SmartComponents::operation_notice('Delete Canceled: The selected segment is in use in other pages or segments. Relations must be cleared first !');
-						$out .= $rdw;
+						//--
 					} else {
-						$out .= '<br>'.\SmartComponents::operation_error('Something goes really wrong ... Delete returned an invalid number rows: '.$chk_del);
-						$out .= $rdw;
+						//--
+						$chk_del = (int) \SmartModDataModel\PageBuilder\PageBuilderBackend::deleteRecordById($tmp_rd_arr['id']);
+						//--
+						if($chk_del == 1) {
+							if(\SmartFileSystem::is_type_dir($fdir)) {
+								\SmartFileSystem::dir_delete($fdir, true);
+								if(\SmartFileSystem::path_exists($fdir)) {
+									\Smart::log_warning(__METHOD__.' # Failed to Remove the Media Folder for ObjectID: '.$tmp_rd_arr['id']);
+								} //end if
+							} //end if
+							$out .= '<br>'.\SmartComponents::operation_ok(self::text('op_compl'));
+							$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_close_modal_popup().'</script>'; // ok
+						} elseif($chk_del == -1) {
+							$out .= '<br>'.\SmartComponents::operation_warn('Delete Failed: Empty ID');
+							$out .= $rdw;
+						} elseif($chk_del == -2) {
+							$out .= '<br>'.\SmartComponents::operation_notice('Delete Canceled: The selected Object is in use in other Objects. Relations must be cleared first !');
+							$out .= $rdw;
+						} else {
+							$out .= '<br>'.\SmartComponents::operation_error('Something goes really wrong ... Delete returned an invalid number rows: '.$chk_del);
+							$out .= $rdw;
+						} //end if else
+						//--
 					} //end if else
 					//--
 				} else {
@@ -1717,7 +1725,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		//--
 
 		//--
-		return $out;
+		return (string) $out;
 		//--
 
 	} // END FUNCTION
@@ -1749,15 +1757,6 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		} //endd if
 		//--
 		return (int) $out;
-		//--
-	} //END FUNCTION
-	//==================================================================
-
-
-	//==================================================================
-	private static function getMediaFolderById($y_id) {
-		//--
-		return (string) \Smart::safe_pathname('wpub/media-pbld/'.\Smart::safe_filename(str_replace('#', '@', (string)$y_id)).'/');
 		//--
 	} //END FUNCTION
 	//==================================================================
@@ -2083,6 +2082,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		return (string) \SmartMarkersTemplating::render_file_template(
 			self::$ModulePath.'libs/views/manager/view-list-tree.mtpl.htm',
 			[
+				'IS-DEV-MODE' 		=> (string) ((defined('SMART_ERROR_HANDLER') && SMART_ERROR_HANDLER === 'dev') ? 'yes' : 'no'),
 				'SHOW-FILTER-TYPE' 	=> 'no',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
 				'ALLOW-PAGES' 		=> (string) $allow_pages,
@@ -2174,6 +2174,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		return (string) \SmartMarkersTemplating::render_file_template(
 			(string) self::$ModulePath.'libs/views/manager/view-list.mtpl.htm',
 			[
+				'IS-DEV-MODE' 		=> (string) ((defined('SMART_ERROR_HANDLER') && SMART_ERROR_HANDLER === 'dev') ? 'yes' : 'no'),
 				'SHOW-FILTER-TYPE' 	=> 'yes',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
 				'ALLOW-PAGES' 		=> (string) $allow_pages,
@@ -2273,15 +2274,15 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		$wr = \SmartModDataModel\PageBuilder\PageBuilderBackend::resetCounterOnAllRecords();
 		if($wr[1] >= 0) { // there can be no records, thus can be also zero
 			$status = 'OK';
-			$message = 'Hit Counter was reset on all records';
+			$message = 'Hit Counter was reset on all PageBuilder Objects';
 		} else {
 			$status = 'ERROR';
-			$message = 'There was an error trying to reset the Hit Counter on all records';
+			$message = 'There was an error trying to reset the Hit Counter on all PageBuilder Objects';
 		} //end if else
 		//--
 		return (string) \SmartComponents:: js_ajax_replyto_html_form(
 			(string) $status,
-			'Reset Hit Counter on All Records',
+			'Reset Hit Counter on All PageBuilder Objects',
 			(string) $message,
 			(string) $y_redir_url
 		);
@@ -2356,10 +2357,10 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		$y_modelclass = (string) $y_modelclass;
 		//--
 		if(!$_FILES['import_file']['tmp_name']) {
-			return (string) \SmartComponents::operation_notice('NO File to Import (.xl03.xml)');
+			return (string) \SmartComponents::operation_notice('NO File to Import (.xml)');
 		} //end if
-		if(substr((string)$_FILES['import_file']['name'], -9, 9) != '.xl03.xml') {
-			return (string) \SmartComponents::operation_warn('Invalid File to Import (.xl03.xml)');
+		if(substr((string)$_FILES['import_file']['name'], -4, 4) != '.xml') {
+			return (string) \SmartComponents::operation_warn('Invalid File to Import (.xml)');
 		} //end if
 		//--
 		$input_str = (string) \SmartFileSystem::read_uploaded((string)$_FILES['import_file']['tmp_name']);

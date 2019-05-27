@@ -156,6 +156,13 @@ final class PageBuilderBackend {
 	} //END FUNCTION
 
 
+	public static function getExprContextUsageCount($expr) {
+		//--
+		return (int) (self::listCountRecords('code', (string)$expr) + self::listCountRecords('data', (string)$expr));
+		//--
+	} //END FUNCTION
+
+
 	public static function getRecordsUniqueControllers() {
 		//--
 		if((string)self::dbType() == 'pgsql') {

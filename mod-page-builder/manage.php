@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// r.20190524
+	// r.20190527
 
 	public function Run() {
 
@@ -308,7 +308,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						'[lang_'.$exportlang.']'
 					];
 				} //end if else
-				$this->PageViewSetCfg('rawdisp', (string)$spreadsheet->getDispositionHeader('translations-pgbld-'.SmartTextTranslations::getDefaultLanguage().'_'.$extralang.'-'.substr((string)$mode,0,3).'-'.date('Ymd_His').'.xl03.xml', 'attachment'));
+				$this->PageViewSetCfg('rawdisp', (string)$spreadsheet->getDispositionHeader('translations-pgbld-'.SmartTextTranslations::getDefaultLanguage().'_'.$extralang.'-'.substr((string)$mode,0,3).'-'.date('Ymd_His').'.xml', 'attachment'));
 				$this->PageViewSetVar(
 					'main',
 					(string) $spreadsheet->getFileContents(

@@ -26,7 +26,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @access 		private
  * @internal
  *
- * @version 	v.20190521
+ * @version 	v.20190525
  * @package 	PageBuilder
  *
  */
@@ -92,6 +92,48 @@ final class Utils {
 		} //end if
 		//--
 		return (array) $layouts;
+		//--
+	} //END FUNCTION
+
+
+	public static function getMediaFolderByObjectId($y_id) {
+		//--
+		return (string) \Smart::safe_pathname('wpub/media-pbld/'.\Smart::safe_filename(str_replace('#', '@', (string)$y_id)).'/');
+		//--
+	} //END FUNCTION
+
+
+	public static function getMediaFolderContent($y_media_dir) {
+		//--
+		$arr_imgs = array();
+		//--
+		if(\SmartFileSysUtils::check_if_safe_path($y_media_dir)) {
+			if(\SmartFileSystem::is_type_dir($y_media_dir)) {
+				$files_n_dirs = (array) (new \SmartGetFileSystem(true))->get_storage($y_media_dir, false, false);
+				if(\Smart::array_size($files_n_dirs['list-files']) > 0) {
+					for($i=0; $i<\Smart::array_size($files_n_dirs['list-files']); $i++) {
+						$tmp_ext = (string) substr((string)$files_n_dirs['list-files'][$i], -4, 4);
+						switch((string)$tmp_ext) {
+							case '.svg':
+							case '.gif':
+							case '.png':
+							case '.jpg':
+								$arr_imgs[] = [
+									'img' 	=> (string) $y_media_dir.$files_n_dirs['list-files'][$i],
+									'file' 	=> (string) $files_n_dirs['list-files'][$i],
+									'type' 	=> (string) substr((string)$tmp_ext, 1),
+									'size' 	=> (string) \SmartUtils::pretty_print_bytes(\SmartFileSystem::get_file_size($y_media_dir.$files_n_dirs['list-files'][$i]), 1, '')
+								];
+								break;
+							default:
+								// skip
+						} //end switch
+					} //end if
+				} //end if
+			} //end if
+		} //end if
+		//--
+		return (array) $arr_imgs;
 		//--
 	} //END FUNCTION
 
