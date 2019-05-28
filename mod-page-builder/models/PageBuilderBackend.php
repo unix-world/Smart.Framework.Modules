@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderBackend {
 
 	// ::
-	// v.20190326
+	// v.20190328
 
 
 	private static $db = null;
@@ -379,6 +379,33 @@ final class PageBuilderBackend {
 		} else {
 			return array();
 		} //end if else
+		//--
+	} //END FUNCTION
+
+
+	public static function resetRecordTranslationsById($y_id) {
+		//--
+		if((string)self::dbType() == 'pgsql') {
+			\SmartPgsqlDb::write_data(
+				'DELETE FROM "web"."page_translations" WHERE ("id" = $1)',
+				[
+					(string) $y_id
+				]
+			);
+			$out = true;
+		} elseif((string)self::dbType() == 'sqlite') {
+			self::$db->write_data(
+				'DELETE FROM `page_translations` WHERE (`id` = ?)',
+				[
+					(string) $y_id
+				]
+			);
+			$out = true;
+		} else {
+			$out = false;
+		} //end if else
+		//--
+		return (bool) $out;
 		//--
 	} //END FUNCTION
 
@@ -1220,14 +1247,14 @@ final class PageBuilderBackend {
 		//--
 		if((string)self::dbType() == 'pgsql') {
 			$arr = (array) \SmartPgsqlDb::read_adata(
-				'SELECT "id", "code" FROM "web"."page_builder" WHERE ("code" = $1)',
+				'SELECT "id", "code" FROM "web"."page_builder" WHERE (("code" = $1) AND ("translations" = 1))',
 				[
 					(string) base64_encode((string)$text_deflang)
 				]
 			);
 		} elseif((string)self::dbType() == 'sqlite') {
 			$arr = (array) self::$db->read_adata(
-				'SELECT `id`, `code` FROM `page_builder` WHERE (`code` = ?)',
+				'SELECT `id`, `code` FROM `page_builder` WHERE ((`code` = ?) AND (`translations` = 1))',
 				[
 					(string) base64_encode((string)$text_deflang)
 				]

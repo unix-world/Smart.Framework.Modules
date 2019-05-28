@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190527
+ * @version 	v.20190528
  * @package 	PageBuilder
  *
  */
@@ -139,6 +139,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		$text['msg_no_priv_read'] 	= 'WARNING: You have not enough privileges to READ this Object !';
 		$text['msg_no_priv_edit'] 	= 'WARNING: You have not enough privileges to EDIT this Object !';
 		$text['msg_no_priv_del']  	= 'WARNING: You have not enough privileges to DELETE this Object !';
+		$text['msg_specprivs_req'] 	= 'WARNING: Special Privileges are required to operate this change.';
 		$text['msg_invalid_cksum'] 	= 'NOTICE: Invalid Object CHECKSUM ! Edit and Save again the Object Code or Object Data to (Re)Validate it !';
 		//--
 		$text['id'] 				= 'ID';
@@ -165,7 +166,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		$text['auth'] 				= 'Auth';
 		$text['translatable'] 		= 'Translatable';
 		$text['translations'] 		= 'Translations';
-		$text['warn_translations'] 	= 'WARNING: Not Translatable but some Translations are present';
+		$text['warn_translations'] 	= 'WARNING: This PageBuilder Object is marked as Not Translatable but some Translations are detected';
 		$text['counter'] 			= 'Hit Counter';
 		$text['pw_code'] 			= 'Code Preview';
 		$text['pw_data'] 			= 'Data Preview';
@@ -377,6 +378,8 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		//--
 		if((string)$y_mode == 'form') {
 			//--
+			$chk_reset_transl = '<input type="checkbox" name="frm[reset-translations]" value="all" onchange="if(jQuery(this).is(\':checked\')) { SmartJS_BrowserUtils.alert_Dialog(\'<span style=&quot;font-weight:bold; color:#FF5500;&quot;>If this checkbox is checked will reset (erase) all the PageBuilder Translations for this Object when you save it. Cannot be Undone.</span>\', function(){ jQuery(\'#warn-lang-reset\').empty().text(\'NOTICE: All Translations for this PageBuilder Object will be erased on Save.\'); }, \'Reset All Translations for this PageBuilder Object\', 550, 175); } else { jQuery(\'#warn-lang-reset\').empty(); }">';
+			//--
 			$bttns .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-save.svg'.'" alt="'.self::text('save').'" title="'.self::text('save').'" style="cursor:pointer;" onClick="'.\SmartComponents::js_ajax_submit_html_form('page_form_props', self::composeUrl('op=record-edit-do&id='.\Smart::escape_url($query['id']))).'">';
 			$bttns .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 			$bttns .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-back.svg'.'" alt="'.self::text('cancel').'" title="'.self::text('cancel').'" style="cursor:pointer;" onClick="'.\SmartComponents::js_code_ui_confirm_dialog('<h3>'.self::text('msg_unsaved').'</h3>'.'<br>'.'<b>'.\Smart::escape_html($translator_window->text('confirm_action')).'</b>', "SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#adm-page-props').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-props&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');").'">';
@@ -415,6 +418,8 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			$extra_scripts .= '<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>';
 			//--
 		} else {
+			//--
+			$chk_reset_transl = '';
 			//--
 			if(!defined('SMART_PAGEBUILDER_DISABLE_DELETE')) {
 				$bttns .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-delete.svg'.'" alt="'.self::text('ttl_del').'" title="'.self::text('ttl_del').'" style="cursor:pointer;" onClick="self.location=\''.\Smart::escape_js(self::composeUrl('op=record-delete&id='.\Smart::escape_url($query['id']))).'\';">';
@@ -512,6 +517,8 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				'COUNT-TRANSLATIONS' 		=> (int)    $transl_cnt,
 				'ARR-TRANSLATIONS' 			=> (array)  $transl_arr,
 				'IS-TRANSLATABLE' 			=> (int)    $query['translations'],
+				'TEXT-RESET-TRANSL' 		=> (string) self::text('reset'),
+				'FIELD-RESET-TRANSL' 		=> (string) $chk_reset_transl,
 				'WARN-TRANSLATABLE' 		=> (string) self::text('warn_translations'),
 				'TEXT-TEMPLATE'				=> (string) self::text('template'),
 				'FIELD-TEMPLATE'			=> (string) $fld_template,
@@ -1438,6 +1445,16 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 								$data['layout'] = ''; // force for settings segments
 							} //end if
 							//--
+						} //end if
+						//--
+						if((string)$y_frm['reset-translations'] == 'all') {
+							if((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-manage') === true)) {
+								if((string)$error == '') {
+									\SmartModDataModel\PageBuilder\PageBuilderBackend::resetRecordTranslationsById($query['id']);
+								} //end if
+							} else {
+								$error = self::text('msg_specprivs_req')."\n";
+							} //end if
 						} //end if
 						//--
 						$proc_write_ok = true;
