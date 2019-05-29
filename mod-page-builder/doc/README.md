@@ -34,7 +34,7 @@ index.php?/page/page-builder.test-frontend-segment-with-markers
 
 # Sample YAML Data Definitions
 
-## Sample YAML Data for Page or Segment:
+## Sample YAML Data for a Page or Segment ( {{:TEST:}}, {{:AREA-ONE:}} ... {{:AREA-SEVEN:}}, TEMPLATE@* ):
 ```yaml
 RENDER:
   TEST:
@@ -65,7 +65,7 @@ RENDER:
     content:
       type: plugin
       id: page-builder/test2
-      config: my-segment-5
+      config: my-segment-5 # settings segment
   AREA-FOUR:
     content:
       type: segment
@@ -83,6 +83,19 @@ RENDER:
     content-3:
       type: plugin
       id: page-builder/test4
+  AREA-SIX:
+    content:
+      type: value
+      id: 'Some <b>Bold Text</b>'
+      config:
+        syntax: html # can be also text or markdown
+#       escape: js
+  AREA-SEVEN:
+    content:
+      type: translation
+      id: mod-samples.samples.this-is # area.subarea.key
+#     config:
+#       escape: js
   TEMPLATE@AREA.TOP:
     content:
       type: segment
@@ -95,7 +108,8 @@ RENDER:
     content:
       type: value
       id: This is the page <title>
-      config: text
+      config:
+        syntax: text
 ```
 
 ## Sample YAML Data for Raw Page:
@@ -111,3 +125,4 @@ SETTINGS:
     a: 200
     b: 'this is'
 ```
+

@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderBackend {
 
 	// ::
-	// v.20190328
+	// v.20190529
 
 
 	private static $db = null;
@@ -716,7 +716,7 @@ final class PageBuilderBackend {
 		if(\Smart::array_size($y_arr_data) <= 0) {
 			return -2; // empty data
 		} //end if
-		if(((string)$y_lang == '') OR (strlen($y_lang) != 2) OR (\SmartTextTranslations::validateLanguage($y_lang) !== true)) {
+		if(((string)$y_lang == '') OR (strlen((string)$y_lang) != 2) OR (\SmartTextTranslations::validateLanguage((string)$y_lang) !== true)) {
 			return -3; // invalid language
 		} //end if
 		if((string)$y_arr_data['id'] != '') {

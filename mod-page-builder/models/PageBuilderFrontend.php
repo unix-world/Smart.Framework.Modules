@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20190323
+	// v.20190529
 
 
 	private static $db = null;
@@ -314,6 +314,10 @@ final class PageBuilderFrontend {
 
 
 	private static function getTranslation($y_id, $y_lang) {
+		//--
+		if(((string)$y_lang == '') OR (strlen((string)$y_lang) != 2) OR (\SmartTextTranslations::validateLanguage((string)$y_lang) !== true)) {
+			return array();
+		} //end if
 		//--
 		if((string)self::dbType() == 'pgsql') {
 			return (array) \SmartPgsqlDb::read_asdata(

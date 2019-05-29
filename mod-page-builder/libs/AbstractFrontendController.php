@@ -25,7 +25,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.20190323
+ * @version 	v.20190529
  * @package 	PageBuilder
  *
  */
@@ -51,6 +51,8 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 	private $render_done 		= false; 					// internal flag to avoid re-render
 	private $rendered_segments 	= []; 						// register rendered segments
+
+	private $translators 		= []; 						// registers the text translators
 
 	private $debug 				= false; 					// internal debug
 
@@ -532,11 +534,97 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 
 	//=====
-	// load a text value from YAML Data
-	private function loadValue($id, $syntax, $arr) {
+	// load a text translation key mapped from YAML Data
+	private function loadTranslation($id, $arr_cfg, $arr, $lang) {
 
 		//--
-		$uid = (string) 'val@'.\Smart::uuid_10_num().'-'.sha1((string)print_r($arr,1));
+		if(!is_array($arr_cfg)) {
+			$arr_cfg = array();
+		} //end if
+		//--
+		if(((string)$lang == '') OR (strlen((string)$lang) != 2) OR (\SmartTextTranslations::validateLanguage((string)$lang) !== true)) {
+			$lang = (string) \SmartTextTranslations::getDefaultLanguage(); // fix
+		} //end if
+		//--
+		$escape = (string) $arr_cfg['escape'];
+		//--
+		switch((string)$escape) {
+			case 'js':
+				break;
+			default:
+				$escape = '';
+		} //end if
+		//--
+		$arr['id'] = (string) trim((string)$arr['id']);
+		//--
+		$uid = (string) 'transl.'.$lang.'.'.\Smart::uuid_10_num().'-'.sha1((string)print_r($arr,1)).'-'.$escape;
+		//--
+		$translated_text = (string) '['.$lang.']'.$arr['id'];
+		//--
+		$arr_parse_transl_key = (array) explode('.', (string)$arr['id']);
+		if(\Smart::array_size($arr_parse_transl_key) != 3) {
+			\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Translation Key '.$arr['id'].' (1) in PageBuilder Object: '.$id.' in Page: '.implode(';', $this->current_page)); // log warning, this is internal, by page settings
+			return array();
+		} //end if
+		for($i=0; $i<\Smart::array_size($arr_parse_transl_key); $i++) {
+			$arr_parse_transl_key[$i] = (string) trim((string)$arr_parse_transl_key[$i]);
+			if((string)$arr_parse_transl_key[$i] == '') {
+				\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Translation Key '.$arr['id'].' (2) in PageBuilder Object: '.$id.' in Page: '.implode(';', $this->current_page)); // log warning, this is internal, by page settings
+				return array();
+			} //end if
+		} //end for
+		$realm = (string) $arr_parse_transl_key[0].$arr_parse_transl_key[1];
+		if(!is_object($this->translators[(string)$realm.'@'.$lang])) {
+			$this->translators[(string)$realm.'@'.$lang] = \SmartTextTranslations::getTranslator((string)$arr_parse_transl_key[0], (string)$arr_parse_transl_key[1], (string)$lang);
+		} //end if
+		if(is_object($this->translators[(string)$realm.'@'.$lang])) {
+			$translated_text = $this->translators[(string)$realm.'@'.$lang]->text((string)$arr_parse_transl_key[2]);
+		} //end if
+		//--
+		$translated_text = (string) \Smart::escape_html((string)$translated_text);
+		//--
+		if((string)$escape == 'js') {
+			$translated_text = (string) \Smart::escape_js((string)$translated_text);
+		} //end if else
+		//--
+		$out_arr = [
+			'id' 	=> (string) $uid.'.'.$id,
+			'type' 	=> 'translation', // preserve type
+			'auth' 	=> 0, // n/a
+			'mode' 	=> (string) 'translation:'.$lang.':rendered'.($escape ? ':'.$escape : ''),
+			'name' 	=> (string) $id.' :: '.strtoupper((string)$arr['id']).' @ '.$lang.' :: '.$uid,
+			'code' 	=> (string) $translated_text
+		];
+		//--
+
+		//--
+		return (array) $out_arr;
+		//--
+
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	// load a text value from YAML Data
+	private function loadValue($id, $arr_cfg, $arr) {
+
+		//--
+		if(!is_array($arr_cfg)) {
+			$arr_cfg = array();
+		} //end if
+		//--
+		$syntax = (string) $arr_cfg['syntax'];
+		$escape = (string) $arr_cfg['escape'];
+		//--
+		switch((string)$escape) {
+			case 'js':
+				break;
+			default:
+				$escape = '';
+		} //end if
+		//--
+		$uid = (string) 'val.'.\Smart::uuid_10_num().'-'.sha1((string)print_r($arr,1)).'-'.$escape;
 		//--
 		if((string)$syntax == 'html') {
 			$syntax = 'html';
@@ -561,11 +649,15 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			} //end if
 		} //end if else
 		//--
+		if((string)$escape == 'js') {
+			$arr['id'] = (string) \Smart::escape_js((string)$arr['id']);
+		} //end if
+		//--
 		$out_arr = [
-			'id' 	=> (string) $uid,
+			'id' 	=> (string) $uid.'.'.$id,
 			'type' 	=> 'value', // preserve type
 			'auth' 	=> 0, // n/a
-			'mode' 	=> (string) $arr['mode'],
+			'mode' 	=> (string) $arr['mode'].($escape ? ':'.$escape : ''),
 			'name' 	=> (string) $id.' :: '.strtoupper((string)$syntax).' :: '.$uid,
 			'code' 	=> (string) $arr['id']
 		];
@@ -753,7 +845,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 					foreach((array)$val as $k => $v) {
 						$k = (string) trim((string)$k);
 						if((strpos((string)$k, 'content') === 0) AND (\Smart::array_size($v) > 0)) {
-							if(((string)$v['type'] === 'value') OR ((string)$v['type'] === 'segment') OR ((string)$v['type'] === 'plugin')) {
+							if(((string)$v['type'] === 'value') OR ((string)$v['type'] === 'translation') OR ((string)$v['type'] === 'segment') OR ((string)$v['type'] === 'plugin')) {
 								$preparse_arr[(string)$key][] = [(string)$k => $v];
 							} else {
 								\Smart::raise_error(
@@ -875,7 +967,11 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 									//--
 									if((string)$v['type'] == 'value') {
 										//--
-										$arr_tmp_item = (array) $this->loadValue((string)$id, (string)$v['config'], (array)$arr_tmp_item);
+										$arr_tmp_item = (array) $this->loadValue((string)$id, (array)$v['config'], (array)$arr_tmp_item);
+										//--
+									} elseif((string)$v['type'] == 'translation') {
+										//--
+										$arr_tmp_item = (array) $this->loadTranslation((string)$id, (array)$v['config'], (array)$arr_tmp_item, (string)$this->crr_lang);
 										//--
 									} elseif((string)$v['type'] == 'segment') {
 										//--

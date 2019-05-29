@@ -23,7 +23,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  */
 final class PageBuilderFrontendPluginPageBuilderTest1 extends \SmartModExtLib\PageBuilder\AbstractFrontendPlugin {
 
-	// r.20190323
+	// r.20190529
 
 	public function Run() {
 
@@ -31,11 +31,14 @@ final class PageBuilderFrontendPluginPageBuilderTest1 extends \SmartModExtLib\Pa
 		//$this->PageViewSetCfg('rawpage', true);
 		//--
 		$this->PageViewSetVars([
-			'meta-title' 		=> 'Title (override) comes from Plugin1',
 			'meta-description' 	=> 'Meta desc. comes from Plugin1',
 			'meta-keywords' 	=> 'meta, keywords, come, from, plugin1',
 			'content' 			=> '<div>this is Plugin1 Test</div>',
 		]);
+		//--
+		if(rand(0,10) >= 5) {
+			$this->PageViewSetVar('meta-title', 'Title (override) comes from Plugin1');
+		} //end if
 		//--
 
 		//$this->PageViewSetErrorStatus(503, 'Test Err');
