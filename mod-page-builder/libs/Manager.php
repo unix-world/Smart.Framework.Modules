@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190529
+ * @version 	v.20190731
  * @package 	PageBuilder
  *
  */
@@ -2536,6 +2536,33 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 							$x_iterator++;
 							//--
 							$out_total++;
+							//--
+						} //end if
+						//--
+					} //end for
+					//--
+				} //end if
+				//--
+			} else { // INVALID LANGUAGE CASE
+				//--
+				if(is_array($val)) {
+					//--
+					for($i=0; $i<\Smart::array_size($val); $i++) {
+						//--
+						if(((string)trim((string)$data_arr[(string)$def_lang][$i]) != '') AND ((string)trim((string)$val[$i]) != '')) { // skip all empty records
+							//--
+							if(!is_array($arr_xdata[(int)$x_iterator])) {
+								$arr_xdata[(int)$x_iterator] = [];
+							} //end if
+							//--
+							$arr_xdata[(int)$x_iterator]['is_transl_empty'] = 'no';
+							$arr_xdata[(int)$x_iterator]['is_base_empty'] = 'no';
+							$arr_xdata[(int)$x_iterator]['is_base_diff_transl'] = 'yes';
+							$arr_xdata[(int)$x_iterator]['is_imported'] = 'no';
+							$arr_xdata[(int)$x_iterator]['status'] = 'warn-crit';
+							$arr_xdata[(int)$x_iterator]['diffs'] = '! INVALID LANGUAGE !';
+							$arr_xdata[(int)$x_iterator]['translate'] = (string) $val[$i];
+							$x_iterator++;
 							//--
 						} //end if
 						//--
