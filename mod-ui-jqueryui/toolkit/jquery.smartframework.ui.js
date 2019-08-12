@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20190218
+var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20190808
 
 this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
@@ -74,7 +74,7 @@ this.DialogAlert = function(y_message_html, evcode, y_title, y_width, y_height) 
 		y_width = 550;
 	} //end if
 	y_width = parseInt(y_width);
-	if(isNaN(y_width) || (y_width < 100) || (y_width > 920)) {
+	if(isNaN(y_width) || (y_width < 100) || (y_width > 1920)) {
 		y_width = 550;
 	} //end if
 	//--
@@ -82,7 +82,7 @@ this.DialogAlert = function(y_message_html, evcode, y_title, y_width, y_height) 
 		y_height = 225;
 	} //end if
 	y_height = parseInt(y_height);
-	if(isNaN(y_height) || (y_height < 50) || (y_height > 700)) {
+	if(isNaN(y_height) || (y_height < 50) || (y_height > 1080)) {
 		y_height = 225;
 	} //end if
 	//--
@@ -150,7 +150,7 @@ this.DialogConfirm = function(y_question_html, evcode, y_title, y_width, y_heigh
 		y_width = 550;
 	} //end if
 	y_width = parseInt(y_width);
-	if(isNaN(y_width) || (y_width < 100) || (y_width > 920)) {
+	if(isNaN(y_width) || (y_width < 100) || (y_width > 1920)) {
 		y_width = 550;
 	} //end if
 	//--
@@ -158,7 +158,7 @@ this.DialogConfirm = function(y_question_html, evcode, y_title, y_width, y_heigh
 		y_height = 225;
 	} //end if
 	y_height = parseInt(y_height);
-	if(isNaN(y_height) || (y_height < 50) || (y_height > 700)) {
+	if(isNaN(y_height) || (y_height < 50) || (y_height > 1080)) {
 		y_height = 225;
 	} //end if
 	//--
