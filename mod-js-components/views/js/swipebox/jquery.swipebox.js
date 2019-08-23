@@ -3,11 +3,11 @@
 // (c) Constantin Saguin csag.co @ github.com/brutaldesign/swipebox
 
 /*
- * Fixes by unixman:
+ * Fixes by unixman: #r.20190822
  * 		* replaced deprecated jQuery $.isArray() with Array.isArray()
  * 		* replaced deprecated jQuery bind() / unbind() with jQuery on() / off()
  * 		* patch fixes for jQuery 3.0 from: https://github.com/brutaldesign/swipebox/pull/298/commits/56840634b5887b88cb60f90949d34ec13b0936ab
- * 		* added
+ * 		* added alt/title to image
  */
 
 ;( function ( window, document, $, undefined ) {
@@ -693,11 +693,16 @@
 			 */
 			openMedia : function ( index ) {
 				var $this = this,
-					src,
+					src, alt,
 					slide;
 
 				if ( elements[ index ] !== undefined ) {
 					src = elements[ index ].href;
+					try {
+						alt = elements[ index ].title;
+					} catch(err) {
+						alt = '';
+					}
 				}
 
 				if ( index < 0 || index >= elements.length ) {
@@ -708,7 +713,7 @@
 
 				if ( ! $this.isVideo( src ) ) {
 					slide.addClass( 'slide-loading' );
-					$this.loadMedia( src, function() {
+					$this.loadMedia( src, alt, function() {
 						slide.removeClass( 'slide-loading' );
 						slide.html( this );
 
@@ -834,7 +839,7 @@
 			/**
 			 * Load image
 			 */
-			loadMedia : function ( src, callback ) {
+			loadMedia : function ( src, alt, callback ) {
 				// Inline content
 				if ( src.trim().indexOf('#') === 0 ) {
 					callback.call(
@@ -854,8 +859,11 @@
 						var img = $( '<img>' ).on( 'load', function() {
 							callback.call( img );
 						} );
-
 						img.attr( 'src', src );
+						if(typeof alt != 'undefined') {
+							img.attr( 'alt', alt );
+							img.attr( 'title', alt );
+						}
 					}
 				}
 			},
