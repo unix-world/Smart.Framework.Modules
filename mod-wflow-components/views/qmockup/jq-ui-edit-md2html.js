@@ -1,7 +1,7 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190219
+// v.20190917
 // modified by unixman:
 // 	* depends: SmartJS_CoreUtils.escape_html()
 
@@ -46,7 +46,7 @@ $(function(){ // jpeg quality: 0.7 ; max image size: 100k
 			//if the editable element has a markdown area, render it to the element
 			var editableContent = this.element.attr('data-editable-content');
 
-			this.$editableElement.html(this.toHTML(editableContent));
+		//	this.$editableElement.html(this.toHTML(editableContent)); // fix by unixman (avoid double encode)
 
 		},
 
