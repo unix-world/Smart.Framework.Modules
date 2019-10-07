@@ -5,15 +5,15 @@
 
 namespace SmartModExtLib\Cloud;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 //namespace om;
@@ -24,14 +24,14 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * Copyright (c) 2004-2015 Roman Ožana (http://www.omdesign.cz)
  * @author Roman Ožana <ozana@omdesign.cz>
  *
- * Modified and adapted by unixman (c) 2018
+ * Modified and adapted by unixman (c) 2018-2019
  * @author unix-world.org
  *
  */
 
 class IcalParser {
 
-	// r.180207
+	// r.20191007
 
 	/** @var \DateTimeZone */
 	public $timezone;
@@ -164,7 +164,7 @@ class IcalParser {
 
 		$string = (string) $string;
 
-		if(!preg_match('/BEGIN:VCALENDAR/', $string)) {
+		if(!\preg_match('/BEGIN:VCALENDAR/', $string)) {
 		//	throw new \InvalidArgumentException('Invalid ICAL data format');
 			return false;
 		} //end if
@@ -173,12 +173,14 @@ class IcalParser {
 		$section = 'VCALENDAR';
 
 		// Replace \r\n with \n
-		$string = str_replace("\r\n", "\n", $string);
+		$string = \str_replace("\r\n", "\n", $string);
 
 		// Unfold multi-line strings
-		$string = str_replace("\n ", '', $string);
+		$string = \str_replace("\n ", '', $string);
 
-		foreach(explode("\n", $string) as $kk => $row) {
+		$arr_lines = (array) \explode("\n", (string)$string);
+
+		foreach($arr_lines as $kk => $row) {
 
 			switch ($row) {
 				case 'BEGIN:DAYLIGHT':
@@ -189,12 +191,12 @@ class IcalParser {
 				case 'BEGIN:STANDARD':
 				case 'BEGIN:VTODO':
 				case 'BEGIN:VEVENT':
-					$section = substr($row, 6);
+					$section = \substr($row, 6);
 					$counters[$section] = isset($counters[$section]) ? $counters[$section] + 1 : 0;
 					continue 2; // while
 					break;
 				case 'END:VEVENT':
-					$section = substr($row, 4);
+					$section = \substr($row, 4);
 					$currCounter = $counters[$section];
 					$event = $this->data[$section][$currCounter];
 					if (!empty($event['RRULE']) || !empty($event['RDATE'])) {
@@ -251,7 +253,7 @@ class IcalParser {
 	 */
 	private function parseRow($row) {
 
-		preg_match('#^([\w-]+);?(.*?):(.*)$#i', (string)$row, $matches);
+		\preg_match('#^([\w-]+);?(.*?):(.*)$#i', (string)$row, $matches);
 
 		$key = false;
 		$middle = null;
@@ -266,7 +268,7 @@ class IcalParser {
 			$timezone = null;
 
 			if((string)$key === 'X-WR-TIMEZONE' || (string)$key === 'TZID') {
-				if(preg_match('#(\w+/\w+)$#i', $value, $matches)) {
+				if(\preg_match('#(\w+/\w+)$#i', $value, $matches)) {
 					$value = $matches[1];
 				}
 				if (isset($this->windows_timezones[$value])) {
@@ -276,7 +278,7 @@ class IcalParser {
 			}
 
 			// have some middle part ?
-			if ($middle && preg_match_all('#(?<key>[^=;]+)=(?<value>[^;]+)#', $middle, $matches, PREG_SET_ORDER)) {
+			if ($middle && \preg_match_all('#(?<key>[^=;]+)=(?<value>[^;]+)#', $middle, $matches, \PREG_SET_ORDER)) {
 				$middle = [];
 				foreach($matches as $kk => $match) {
 					if ($match['key'] === 'TZID') {
@@ -290,7 +292,7 @@ class IcalParser {
 						}
 					} else if ($match['key'] === 'ENCODING') {
 						if ($match['value'] === 'QUOTED-PRINTABLE') {
-							$value = quoted_printable_decode($value);
+							$value = \quoted_printable_decode($value);
 						}
 					}
 				}
@@ -298,7 +300,7 @@ class IcalParser {
 		}
 
 		// process simple dates with timezone
-		if (in_array($key, ['DTSTAMP', 'LAST-MODIFIED', 'CREATED', 'DTSTART', 'DTEND'], true)) {
+		if (\in_array($key, ['DTSTAMP', 'LAST-MODIFIED', 'CREATED', 'DTSTART', 'DTEND'], true)) {
 			try {
 				$value = new \DateTime($value, ($timezone ?: $this->timezone));
 			} catch (\Exception $e) {
@@ -314,27 +316,27 @@ class IcalParser {
 				}
 			} //end if
 			//--# fix
-		} else if (in_array($key, ['EXDATE', 'RDATE'])) {
+		} else if (\in_array($key, ['EXDATE', 'RDATE'])) {
 			$values = [];
-			foreach(explode(',', $value) as $kk => $singleValue) {
+			foreach(\explode(',', $value) as $kk => $singleValue) {
 				try {
 					$values[] = new \DateTime($singleValue, ($timezone ?: $this->timezone));
 				} catch (\Exception $e) {
 					// pass
 				}
 			}
-			if (count($values) === 1) {
+			if (\count($values) === 1) {
 				$value = $values[0];
 			} else {
 				$value = $values;
 			}
 		}
 
-		if ($key === 'RRULE' && preg_match_all('#(?<key>[^=;]+)=(?<value>[^;]+)#', $value, $matches, PREG_SET_ORDER)) {
+		if ($key === 'RRULE' && \preg_match_all('#(?<key>[^=;]+)=(?<value>[^;]+)#', $value, $matches, \PREG_SET_ORDER)) {
 			$middle = null;
 			$value = [];
 			foreach($matches as $kk => $match) {
-				if (in_array($match['key'], ['UNTIL'])) {
+				if (\in_array($match['key'], ['UNTIL'])) {
 					try {
 						$value[$match['key']] = new \DateTime($match['value'], ($timezone ?: $this->timezone));
 					} catch (\Exception $e) {
@@ -348,7 +350,7 @@ class IcalParser {
 
 		//split by comma, escape \,
 		if ($key === 'CATEGORIES') {
-			$value = preg_split('/(?<![^\\\\]\\\\),/', $value);
+			$value = \preg_split('/(?<![^\\\\]\\\\),/', $value);
 		}
 
 		//implement 4.3.11 Text ESCAPED-CHAR
@@ -357,13 +359,13 @@ class IcalParser {
 			, 'LOCATION', 'RESOURCES', 'STATUS', 'SUMMARY', 'TRANSP', 'TZID', 'TZNAME', 'CONTACT', 'RELATED-TO', 'UID'
 			, 'ACTION', 'REQUEST-STATUS'
 		];
-		if(in_array($key, $text_properties) || strpos($key, 'X-') === 0) {
-			if(is_array($value)) {
+		if(\in_array($key, $text_properties) || \strpos($key, 'X-') === 0) {
+			if(\is_array($value)) {
 				foreach($value as $kk => $var) {
-					$value[$kk] = strtr($var, ['\\\\' => '\\', '\\N' => "\n", '\\n' => "\n", '\\;' => ';', '\\,' => ',']);
+					$value[$kk] = \strtr($var, ['\\\\' => '\\', '\\N' => "\n", '\\n' => "\n", '\\;' => ';', '\\,' => ',']);
 				}
 			} else {
-				$value = strtr($value, ['\\\\' => '\\', '\\N' => "\n", '\\n' => "\n", '\\;' => ';', '\\,' => ',']);
+				$value = \strtr($value, ['\\\\' => '\\', '\\N' => "\n", '\\n' => "\n", '\\;' => ';', '\\,' => ',']);
 			}
 		}
 
@@ -386,7 +388,7 @@ class IcalParser {
 
 		if (!empty($event['EXDATES'])) {
 			foreach($event['EXDATES'] as $kk => $exDate) {
-				if (is_array($exDate)) {
+				if (\is_array($exDate)) {
 					foreach($exDate as $kxk => $singleExDate) {
 						$exclusions[] = $singleExDate->getTimestamp();
 					}
@@ -398,7 +400,7 @@ class IcalParser {
 
 		if (!empty($event['RDATES'])) {
 			foreach ($event['RDATES'] as $kk => $rDate) {
-				if (is_array($rDate)) {
+				if (\is_array($rDate)) {
 					foreach ($rDate as $kxk => $singleRDate) {
 						$additions[] = $singleRDate->getTimestamp();
 					}
@@ -417,7 +419,8 @@ class IcalParser {
 			$until = $recurring->getUntil();
 		}
 
-		date_default_timezone_set($event['DTSTART']->getTimezone()->getName());
+		$original_tz = \date_default_timezone_get(); // mixed
+		\date_default_timezone_set($event['DTSTART']->getTimezone()->getName());
 		$frequency = new \SmartModExtLib\Cloud\IcalParseFreq($recurring->rrule, $event['DTSTART']->getTimestamp(), $exclusions, $additions);
 		$recurrenceTimestamps = $frequency->getAllOccurrences();
 		$recurrences = [];
@@ -426,6 +429,9 @@ class IcalParser {
 			$tmp->setTimestamp($recurrenceTimestamp);
 			$recurrences[] = $tmp;
 		}
+		if($original_tz) {
+			\date_default_timezone_set($original_tz); // fix by unixman: restore original TZ
+		} //end if
 
 		return $recurrences;
 
@@ -494,7 +500,7 @@ class IcalParser {
 	 */
 	public function getSortedEvents() {
 		if($events = $this->getEvents()) {
-			usort(
+			\usort(
 				$events, function ($a, $b) {
 				return $a['DTSTART'] > $b['DTSTART'];
 			}
@@ -510,7 +516,7 @@ class IcalParser {
 	 */
 	public function getReverseSortedEvents() {
 		if($events = $this->getEvents()) {
-			usort(
+			\usort(
 				$events, function ($a, $b) {
 				return $a['DTSTART'] < $b['DTSTART'];
 			}

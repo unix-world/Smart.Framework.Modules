@@ -5,16 +5,16 @@
 
 namespace SmartModExtLib\PageBuilder;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 /**
@@ -25,7 +25,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.20190529
+ * @version 	v.20191002
  * @package 	PageBuilder
  *
  */
@@ -56,8 +56,8 @@ abstract class AbstractFrontendPlugin extends \SmartAbstractAppController {
 			$this->plugin_name = (string) $plugin_name;
 		} //end if
 		//--
-		if(is_array($plugin_config)) {
-			$this->plugin_config = (array) array_change_key_case((array)$plugin_config, CASE_LOWER); // plugin config ; force all keys lower case
+		if(\is_array($plugin_config)) {
+			$this->plugin_config = (array) \array_change_key_case((array)$plugin_config, \CASE_LOWER); // plugin config ; force all keys lower case
 		} //end if
 		//--
 		if(\SmartFileSysUtils::check_if_safe_path((string)$plugin_caller_module_path)) {

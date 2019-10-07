@@ -8,16 +8,16 @@
 
 namespace SmartModExtLib\TplTwig;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 
@@ -44,7 +44,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: \SmartModExtLib\TplTwig\SmartTwigEnvironment, Twig
- * @version 	v.20190320
+ * @version 	v.20191007
  * @package 	Templating:Engines
  *
  */
@@ -71,7 +71,7 @@ final class Templating {
 		$this->twig = new \SmartModExtLib\TplTwig\SmartTwigEnvironment(
 			new \Twig\Loader\FilesystemLoader(array($this->dir)),
 			[
-				'charset' 			=> (string) SMART_FRAMEWORK_CHARSET,
+				'charset' 			=> (string) \SMART_FRAMEWORK_CHARSET,
 				'autoescape' 		=> 'html', // default escaping strategy ; other escaping strategies: js
 				'optimizations' 	=> -1,
 				'strict_variables' 	=> false,
@@ -112,13 +112,13 @@ final class Templating {
 			$onlydebug = false;
 		} //end if
 		//--
-		if(!is_array($arr_vars)) {
+		if(!\is_array($arr_vars)) {
 			$arr_vars = array();
 		} //end if
 		// allow camelCase keys ; variables are case sensitive in Twig
 		$arr_vars = (array) self::fix_array_keys($arr_vars, true); // make keys compatible with PHP variable names, LOWER and UPPER (only 1st level, not nested)
 		//--
-		if((string)trim((string)$file) == '') {
+		if((string)\trim((string)$file) == '') {
 			throw new \Exception('Twig Templating / Render File / The file name is Empty');
 			return;
 		} //end if
@@ -153,16 +153,16 @@ final class Templating {
 			return;
 		} //end if
 		//--
-		if(!is_file($file)) {
+		if(!\is_file($file)) {
 			throw new \Exception('Twig Templating / The Template file to render does not exists: '.$file);
 			return;
 		} //end if
 		//--
 		if(\SmartFrameworkRuntime::ifDebug()) {
-			$bench = microtime(true);
+			$bench = \microtime(true);
 			$tpl = (object) $this->twig->load((string)$file);
 			$out = (string) $tpl->render((array)$arr_vars);
-			$bench = \Smart::format_number_dec((float)(microtime(true) - (float)$bench), 9, '.', '');
+			$bench = \Smart::format_number_dec((float)(\microtime(true) - (float)$bench), 9, '.', '');
 			if($onlydebug) {
 				return (array) $this->twig->smartDebugGetLoadedTemplates('get');
 			} else {
@@ -192,7 +192,7 @@ final class Templating {
 			return '';
 		} //end if
 		//--
-		if((string)trim((string)$tpl) == '') {
+		if((string)\trim((string)$tpl) == '') {
 			return '';
 		} //end if
 		//--
@@ -202,7 +202,7 @@ final class Templating {
 		//--
 		if((string)$dbg_tpl['dbg-file-contents'] != '') {
 			//-- the hash
-			$hash = sha1((string)$dbg_tpl['dbg-file-name']);
+			$hash = \sha1((string)$dbg_tpl['dbg-file-name']);
 			//-- get arr dbg data
 			$dbgarr = (array) $this->render_file_template((string)$dbg_tpl['dbg-file-name'], [], true); // need to render before get dbg
 			//-- pre-render vars
@@ -210,7 +210,7 @@ final class Templating {
 			$tbl_vars .= '<tr align="center"><th>{{ Twig TPL variables }}</th><th>#</th></tr>';
 			if(\Smart::array_size($dbgarr['tpl-vars']) > 0) {
 				foreach((array)$dbgarr['tpl-vars'] as $key => $val) {
-					if(substr((string)$key, 0, 1) != '_') {
+					if((string)\substr((string)$key, 0, 1) != '_') {
 						$tbl_vars .= '<tr><td align="left">';
 						$tbl_vars .= (string) \Smart::escape_html((string)$key);
 						$tbl_vars .= '</td>';
@@ -220,7 +220,7 @@ final class Templating {
 					} //end if
 				} //end foreach
 				foreach((array)$dbgarr['tpl-vars'] as $key => $val) {
-					if(substr((string)$key, 0, 1) == '_') {
+					if((string)\substr((string)$key, 0, 1) == '_') {
 						$tbl_vars .= '<tr><td align="left">';
 						$tbl_vars .= '<span style="color:#778899!important;">';
 						$tbl_vars .= (string) \Smart::escape_html((string)$key);
@@ -241,7 +241,7 @@ final class Templating {
 			$tbl_subs .= '<tr align="center"><th>{% SUB-TEMPLATES:INCLUDE %}<br><small>*** All Loaded Sub-Templates are listed below ***</small></th></tr>';
 			if(\Smart::array_size($dbgarr['sub-tpls']) > 0) {
 				foreach((array)$dbgarr['sub-tpls'] as $key => $val) {
-					if(is_array($val)) {
+					if(\is_array($val)) {
 						if((string)$val['tpl'] != (string)$dbg_tpl['dbg-file-name']) {
 							$tbl_subs .= '<tr><td align="left">';
 							$tbl_subs .= '<span style="font-size:1.15em!important;"><b><i>Twig-SubTPL Source File:</i> '.\Smart::escape_html((string)$val['tpl']).'</b></span><br>';
@@ -255,7 +255,7 @@ final class Templating {
 					} //end if
 				} //end foreach
 			} //end if
-			if(is_object($this->twprof)) {
+			if(\is_object($this->twprof)) {
 				$tbl_subs .= '<tr><td align="left">';
 				$dumper = new \Twig\Profiler\Dumper\TextDumper();
 				$tbl_subs .= '<hr><pre>'.\Smart::escape_html((string)$dumper->dump($this->twprof)).'</pre><hr>';
@@ -290,11 +290,11 @@ final class Templating {
 			//--
 			//$content .= '<hr><pre>'.\Smart::escape_html(print_r((array)$dbgarr,1)).'</pre><hr>';
 			//-- source highlight
-			$content .= (string) \SmartComponents::js_code_highlightsyntax('div#tpl-twig-display-for-highlight',['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'</div><h2 style="display:inline;background:#003366;color:#FFFFFF;padding:3px;">Twig-TPL Source</h2><div id="tpl-twig-display-for-highlight"><pre id="'.'__twig__template__debug-tpl_'.\Smart::escape_html(sha1((string)$dbg_tpl['dbg-file-name'])).'"><code class="twig">'.\Smart::escape_html($dbg_tpl['dbg-file-contents']).'</code></pre></div><hr>'."\n";
+			$content .= (string) \SmartComponents::js_code_highlightsyntax('div#tpl-twig-display-for-highlight',['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'</div><h2 style="display:inline;background:#003366;color:#FFFFFF;padding:3px;">Twig-TPL Source</h2><div id="tpl-twig-display-for-highlight"><pre id="'.'__twig__template__debug-tpl_'.\Smart::escape_html(\sha1((string)$dbg_tpl['dbg-file-name'])).'"><code class="twig">'.\Smart::escape_html($dbg_tpl['dbg-file-contents']).'</code></pre></div><hr>'."\n";
 			//-- ending
 			$content .= '<!-- #END: Twig-TPL Debug Analysis @ '.\Smart::escape_html((string)$dbg_tpl['dbg-file-name']).' -->';
 			//--
-		} elseif((string)trim((string)$dbg_tpl['dbg-file-name']) == '') {
+		} elseif((string)\trim((string)$dbg_tpl['dbg-file-name']) == '') {
 			//--
 			$content = '<h1>WARNING: Empty Twig-TPL Template to Debug</h1>';
 			//--
@@ -313,16 +313,16 @@ final class Templating {
 
 	private static function fix_array_keys($y_arr, $y_allow_upper_camelcase) { // v.191217 :: fix array keys to be compliant with variable names, but only at level 1 ; level 2..n must not be fixed as tkey are accessible in loops
 		//--
-		if(!is_array($y_arr)) { // fix bug if empty array / max nested level
+		if(!\is_array($y_arr)) { // fix bug if empty array / max nested level
 			return $y_arr; // mixed
 		} //end if
 		//--
 		$new_arr = [];
 		//--
 		foreach($y_arr as $key => $val) {
-			$key = (string) rtrim((string)preg_replace('/[^0-9a-zA-Z_]/', '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; make safe variable name for PHP
+			$key = (string) \rtrim((string)\preg_replace('/[^0-9a-zA-Z_]/', '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; make safe variable name for PHP
 			if(\SmartFrameworkSecurity::ValidateVariableName((string)$key, (bool)$y_allow_upper_camelcase)) {
-				if(is_array($val)) {
+				if(\is_array($val)) {
 					$new_arr[(string)$key] = (array) $val; // do not go recursive as = self::fix_array_keys((array)$val);
 				} else {
 					$new_arr[(string)$key] = $val; // mixed
@@ -354,19 +354,19 @@ function autoload__TwigTemplating_SFM($classname) {
 	//--
 	$classname = (string) $classname;
 	//--
-	if(strpos((string)$classname, '\\') !== false) { // if have no namespace
+	if(\strpos((string)$classname, '\\') !== false) { // if have no namespace
 //		return;
 	} //end if
 	//--
 	$path = '';
 	//--
-	if((string)substr((string)$classname, 0, 5) === 'Twig_') { // if class name is not starting with Twig_
+	if((string)\substr((string)$classname, 0, 5) === 'Twig_') { // if class name is not starting with Twig_
 		//--
-		$path = 'modules/mod-tpl-twig/libs/Twig/-lib/'.str_replace(array('\\', "\0", '_'), array('', '', '/'), (string)$classname);
+		$path = 'modules/mod-tpl-twig/libs/Twig/-lib/'.\str_replace(array('\\', "\0", '_'), array('', '', '/'), (string)$classname);
 		//--
-	} elseif((string)substr((string)$classname, 0, 5) === 'Twig\\') { // if class name is not starting with Twig\\
+	} elseif((string)\substr((string)$classname, 0, 5) === 'Twig\\') { // if class name is not starting with Twig\\
 		//--
-		$path = 'modules/mod-tpl-twig/libs/'.str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
+		$path = 'modules/mod-tpl-twig/libs/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
 		//--
 	} //end if
 	//--
@@ -374,11 +374,11 @@ function autoload__TwigTemplating_SFM($classname) {
 		return;
 	} //end if
 	//--
-	if(!preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
+	if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
 		return; // invalid path characters in path
 	} //end if
 	//--
-	if(!is_file($path.'.php')) {
+	if(!\is_file($path.'.php')) {
 		return; // file does not exists
 	} //end if
 	//--
@@ -386,7 +386,7 @@ function autoload__TwigTemplating_SFM($classname) {
 	//--
 } //END FUNCTION
 //--
-spl_autoload_register('\\SmartModExtLib\\TplTwig\\autoload__TwigTemplating_SFM', true, false); // throw / append
+\spl_autoload_register('\\SmartModExtLib\\TplTwig\\autoload__TwigTemplating_SFM', true, false); // throw / append
 //--
 
 

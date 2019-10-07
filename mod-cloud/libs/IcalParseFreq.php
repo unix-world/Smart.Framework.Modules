@@ -5,15 +5,15 @@
 
 namespace SmartModExtLib\Cloud;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 //namespace om;
@@ -44,10 +44,14 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @author Morten Fangel (C) 2008
  * @author Michael Kahn (C) 2013
  * @license http://creativecommons.org/licenses/by-sa/2.5/dk/deed.en_GB CC-BY-SA-DK
+ *
+ * Modified and adapted by unixman (c) 2018-2019
+ * @author unix-world.org
+ *
  */
 final class IcalParseFreq {
 
-	// r.180207
+	// r.20191007
 
 	private $weekdays = [
 		'MO' => 'monday', 'TU' => 'tuesday', 'WE' => 'wednesday', 'TH' => 'thursday', 'FR' => 'friday', 'SA' => 'saturday',
@@ -85,15 +89,15 @@ final class IcalParseFreq {
 
 		$rules = [];
 		foreach($rule as $k => $v) {
-			$this->rules[strtolower($k)] = $v;
+			$this->rules[\strtolower($k)] = $v;
 		}
 
-		if (isset($this->rules['until']) && is_string($this->rules['until'])) {
-			$this->rules['until'] = strtotime($this->rules['until']);
+		if (isset($this->rules['until']) && \is_string($this->rules['until'])) {
+			$this->rules['until'] = \strtotime($this->rules['until']);
 		} else if ($this->rules['until'] instanceof \DateTime) {
 			$this->rules['until'] = $this->rules['until']->getTimestamp();
 		}
-		$this->freq = strtolower($this->rules['freq']);
+		$this->freq = \strtolower($this->rules['freq']);
 
 		foreach($this->knownRules as $kk => $rule) {
 			if (isset($this->rules['by' . $rule])) {
@@ -105,7 +109,7 @@ final class IcalParseFreq {
 
 		if (!$this->simpleMode) {
 			if (!(isset($this->rules['byday']) || isset($this->rules['bymonthday']) || isset($this->rules['byyearday']))) {
-				$this->rules['bymonthday'] = date('d', $this->start);
+				$this->rules['bymonthday'] = \date('d', $this->start);
 			}
 		}
 
@@ -127,11 +131,11 @@ final class IcalParseFreq {
 			}
 			//RDATE
 			if (!empty($added)) {
-				$cache = array_unique(array_merge(array_values($cache), $added));
-				asort($cache);
+				$cache = \array_unique(\array_merge(\array_values($cache), $added));
+				\asort($cache);
 			}
 
-			$this->cache = array_values($cache);
+			$this->cache = \array_values($cache);
 		}
 
 		$this->excluded = $excluded;
@@ -155,8 +159,8 @@ final class IcalParseFreq {
 				$next = $this->findNext($next);
 			}
 			if (!empty($this->added)) {
-				$cache = array_unique(array_merge($cache, $this->added));
-				asort($cache);
+				$cache = \array_unique(\array_merge($cache, $this->added));
+				\asort($cache);
 			}
 			$this->cache = $cache;
 		}
@@ -215,7 +219,7 @@ final class IcalParseFreq {
 	 */
 	public function firstOccurrence() {
 		$t = $this->start;
-		if(in_array($t, $this->excluded)) {
+		if(\in_array($t, $this->excluded)) {
 			$t = $this->findNext($t);
 		}
 		return $t;
@@ -232,7 +236,7 @@ final class IcalParseFreq {
 		//build cache if not done
 		$this->getAllOccurrences();
 		//return last timestamp in cache
-		return end($this->cache);
+		return \end($this->cache);
 	} //END FUNCTION
 
 
@@ -271,8 +275,7 @@ final class IcalParseFreq {
 
 		//make sure the offset is valid
 		if ($offset === false || (isset($this->rules['until']) && $offset > $this->rules['until'])) {
-			if ($debug) echo 'STOP: ' . date('r', $offset) . "\n";
-
+			if ($debug) echo 'STOP: '.\date('r', $offset)."\n";
 			return false;
 		}
 
@@ -280,20 +283,16 @@ final class IcalParseFreq {
 
 		//set the timestamp of the offset (ignoring hours and minutes unless we want them to be
 		//part of the calculations.
-		if ($debug) echo 'O: ' . date('r', $offset) . "\n";
-		$hour = (in_array($this->freq, ['hourly', 'minutely']) && $offset > $this->start) ? date('H', $offset) : date(
-			'H', $this->start
-		);
-		$minute = (($this->freq === 'minutely' || isset($this->rules['byminute'])) && $offset > $this->start) ? date(
-			'i', $offset
-		) : date('i', $this->start);
-		$t = mktime($hour, $minute, date('s', $this->start), date('m', $offset), date('d', $offset), date('Y', $offset));
-		if ($debug) echo 'START: ' . date('r', $t) . "\n";
+		if ($debug) echo 'O: '.\date('r', $offset)."\n";
+		$hour = (\in_array($this->freq, ['hourly', 'minutely']) && $offset > $this->start) ? \date('H', $offset) : \date('H', $this->start);
+		$minute = (($this->freq === 'minutely' || isset($this->rules['byminute'])) && $offset > $this->start) ? \date('i', $offset) : \date('i', $this->start);
+		$t = \mktime($hour, $minute, \date('s', $this->start), \date('m', $offset), \date('d', $offset), \date('Y', $offset));
+		if ($debug) echo 'START: '.\date('r', $t)."\n";
 
 		if ($this->simpleMode) {
 			if ($offset < $t) {
 				$ts = $t;
-				if ($ts && in_array($ts, $this->excluded))
+				if ($ts && \in_array($ts, $this->excluded))
 					$ts = $this->findNext($ts);
 			} else {
 				$ts = $this->findStartingPoint($t, $this->rules['interval'], false);
@@ -306,22 +305,20 @@ final class IcalParseFreq {
 		}
 
 		$eop = $this->findEndOfPeriod($offset);
-		if ($debug) echo 'EOP: ' . date('r', $eop) . "\n";
+		if ($debug) echo 'EOP: '.\date('r', $eop)."\n";
 
 		foreach ($this->knownRules as $kk => $rule) {
 			if ($found && isset($this->rules['by' . $rule])) {
 				if ($this->isPrerule($rule, $this->freq)) {
-					$subrules = explode(',', $this->rules['by' . $rule]);
+					$subrules = \explode(',', $this->rules['by' . $rule]);
 					$_t = null;
-					foreach ($subrules as $kxk => $subrule) {
-						//$imm = call_user_func_array([$this, 'ruleBy' . $rule], [$subrule, $t]);
+					foreach($subrules as $kxk => $subrule) {
+						//$imm = \call_user_func_array([$this, 'ruleBy' . $rule], [$subrule, $t]);
 						$imm = $this->{'ruleBy'.$rule}($subrule, $t);
 						if ($imm === false) {
 							break;
 						}
-						if ($debug) echo strtoupper($rule) . ': ' . date(
-								'r', $imm
-							) . ' A: ' . ((int)($imm > $offset && $imm < $eop)) . "\n";
+						if ($debug) echo \strtoupper($rule).': '.\date('r', $imm).' A: '.((int)($imm > $offset && $imm < $eop))."\n";
 						if ($imm > $offset && $imm <= $eop && ($_t == null || $imm < $_t)) {
 							$_t = $imm;
 						}
@@ -339,17 +336,17 @@ final class IcalParseFreq {
 			$ts = $this->start;
 		} elseif ($found && ($t != $offset)) {
 			if ($this->validDate($t)) {
-				if ($debug) echo 'OK' . "\n";
+				if ($debug) echo 'OK'."\n";
 				$ts = $t;
 			} else {
-				if ($debug) echo 'Invalid' . "\n";
+				if ($debug) echo 'Invalid'."\n";
 				$ts = $this->findNext($t);
 			}
 		} else {
-			if ($debug) echo 'Not found' . "\n";
+			if ($debug) echo 'Not found'."\n";
 			$ts = $this->findNext($this->findStartingPoint($offset, $this->rules['interval']));
 		}
-		if ($ts && in_array($ts, $this->excluded))
+		if ($ts && \in_array($ts, $this->excluded))
 			return $this->findNext($ts);
 
 		return $ts;
@@ -367,15 +364,15 @@ final class IcalParseFreq {
 	 */
 	private function findStartingPoint($offset, $interval, $truncate = true) {
 		$_freq = ($this->freq === 'daily') ? 'day__' : $this->freq;
-		$t = '+' . $interval . ' ' . substr($_freq, 0, -2) . 's';
+		$t = '+'.$interval.' '.\substr($_freq, 0, -2).'s';
 		if ($_freq === 'monthly' && $truncate) {
 			if ($interval > 1) {
-				$offset = strtotime('+' . ($interval - 1) . ' months ', $offset);
+				$offset = \strtotime('+'.($interval - 1).' months ', $offset);
 			}
-			$t = '+' . (date('t', $offset) - date('d', $offset) + 1) . ' days';
+			$t = '+'.(\date('t', $offset) - \date('d', $offset) + 1).' days';
 		}
 
-		$sp = strtotime($t, $offset);
+		$sp = \strtotime($t, $offset);
 
 		if ($truncate) {
 			$sp = $this->truncateToPeriod($sp, $this->freq);
@@ -407,7 +404,7 @@ final class IcalParseFreq {
 	 * @return int
 	 */
 	private function truncateToPeriod($time, $freq) {
-		$date = getdate($time);
+		$date = \getdate($time);
 		switch ($freq) {
 			case 'yearly':
 				$date['mon'] = 1;
@@ -421,17 +418,16 @@ final class IcalParseFreq {
 				$date['seconds'] = 0;
 				break;
 			case 'weekly':
-				if (date('N', $time) == 1) {
+				if(\date('N', $time) == 1) {
 					$date['hours'] = 0;
 					$date['minutes'] = 0;
 					$date['seconds'] = 0;
 				} else {
-					$date = getdate(strtotime('last monday 0:00', $time));
+					$date = \getdate(\strtotime('last monday 0:00', $time));
 				}
 				break;
 		}
-		$d = mktime($date['hours'], $date['minutes'], $date['seconds'], $date['mon'], $date['mday'], $date['year']);
-
+		$d = \mktime($date['hours'], $date['minutes'], $date['seconds'], $date['mon'], $date['mday'], $date['year']);
 		return $d;
 	} //END FUNCTION
 
@@ -446,23 +442,18 @@ final class IcalParseFreq {
 	private function ruleByday($rule, $t) {
 		$dir = ($rule{0} == '-') ? -1 : 1;
 		$dir_t = ($dir == 1) ? 'next' : 'last';
-
-		$d = $this->weekdays[substr($rule, -2)];
-		$s = $dir_t . ' ' . $d . ' ' . date('H:i:s', $t);
-
-		if ($rule == substr($rule, -2)) {
-			if (date('l', $t) == ucfirst($d)) {
-				$s = 'today ' . date('H:i:s', $t);
+		$d = $this->weekdays[\substr($rule, -2)];
+		$s = $dir_t.' '.$d.' '.\date('H:i:s', $t);
+		if ($rule == \substr($rule, -2)) {
+			if(\date('l', $t) == \ucfirst($d)) {
+				$s = 'today '.\date('H:i:s', $t);
 			}
-
-			$_t = strtotime($s, $t);
-
-			if ($_t == $t && in_array($this->freq, ['monthly', 'yearly'])) {
+			$_t = \strtotime($s, $t);
+			if ($_t == $t && \in_array($this->freq, ['monthly', 'yearly'])) {
 				// Yes. This is not a great idea.. but hey, it works.. for now
-				$s = 'next ' . $d . ' ' . date('H:i:s', $t);
-				$_t = strtotime($s, $_t);
+				$s = 'next '.$d.' '.\date('H:i:s', $t);
+				$_t = \strtotime($s, $_t);
 			}
-
 			return $_t;
 		} else {
 			$_f = $this->freq;
@@ -475,26 +466,23 @@ final class IcalParseFreq {
 				$_t = $this->truncateToPeriod($t, $this->freq);
 			}
 			$this->freq = $_f;
-
-			$c = preg_replace('/[^0-9]/', '', $rule);
+			$c = \preg_replace('/[^0-9]/', '', $rule);
 			$c = ($c == '') ? 1 : $c;
-
 			$n = $_t;
 			while ($c > 0) {
-				if ($dir == 1 && $c == 1 && date('l', $t) == ucfirst($d)) {
-					$s = 'today ' . date('H:i:s', $t);
+				if ($dir == 1 && $c == 1 && \date('l', $t) == \ucfirst($d)) {
+					$s = 'today '.\date('H:i:s', $t);
 				}
-				$n = strtotime($s, $n);
+				$n = \strtotime($s, $n);
 				$c--;
 			}
-
 			return $n;
 		}
 	} //END FUNCTION
 
 
 	private function ruleBymonth($rule, $t) {
-		$_t = mktime(date('H', $t), date('i', $t), date('s', $t), $rule, date('d', $t), date('Y', $t));
+		$_t = \mktime(\date('H', $t), \date('i', $t), \date('s', $t), $rule, \date('d', $t), \date('Y', $t));
 		if ($t == $_t && isset($this->rules['byday'])) {
 			// TODO: this should check if one of the by*day's exists, and have a multi-day value
 			return false;
@@ -506,10 +494,9 @@ final class IcalParseFreq {
 
 	private function ruleBymonthday($rule, $t) {
 		if ($rule < 0) {
-			$rule = date('t', $t) + $rule + 1;
+			$rule = \date('t', $t) + $rule + 1;
 		}
-
-		return mktime(date('H', $t), date('i', $t), date('s', $t), date('m', $t), $rule, date('Y', $t));
+		return \mktime(\date('H', $t), \date('i', $t), \date('s', $t), \date('m', $t), $rule, \date('Y', $t));
 	} //END FUNCTION
 
 
@@ -521,9 +508,8 @@ final class IcalParseFreq {
 			$_t = $this->truncateToPeriod($t, $this->freq);
 			$d = '+';
 		}
-		$s = $d . abs($rule - 1) . ' days ' . date('H:i:s', $t);
-
-		return strtotime($s, $_t);
+		$s = $d.\abs($rule - 1).' days '.\date('H:i:s', $t);
+		return \strtotime($s, $_t);
 	} //END FUNCTION
 
 
@@ -535,23 +521,21 @@ final class IcalParseFreq {
 			$_t = $this->truncateToPeriod($t, $this->freq);
 			$d = '+';
 		}
-
-		$sub = (date('W', $_t) == 1) ? 2 : 1;
-		$s = $d . abs($rule - $sub) . ' weeks ' . date('H:i:s', $t);
-		$_t = strtotime($s, $_t);
-
+		$sub = (\date('W', $_t) == 1) ? 2 : 1;
+		$s = $d.\abs($rule - $sub).' weeks '.\date('H:i:s', $t);
+		$_t = \strtotime($s, $_t);
 		return $_t;
 	} //END FUNCTION
 
 
 	private function ruleByhour($rule, $t) {
-		$_t = mktime($rule, date('i', $t), date('s', $t), date('m', $t), date('d', $t), date('Y', $t));
+		$_t = \mktime($rule, \date('i', $t), \date('s', $t), \date('m', $t), \date('d', $t), \date('Y', $t));
 		return $_t;
 	} //END FUNCTION
 
 
 	private function ruleByminute($rule, $t) {
-		$_t = mktime(date('h', $t), $rule, date('s', $t), date('m', $t), date('d', $t), date('Y', $t));
+		$_t = \mktime(\date('h', $t), $rule, \date('s', $t), \date('m', $t), \date('d', $t), \date('Y', $t));
 		return $_t;
 	} //END FUNCTION
 
@@ -560,81 +544,69 @@ final class IcalParseFreq {
 		if (isset($this->rules['until']) && $t > $this->rules['until']) {
 			return false;
 		}
-
-		if (in_array($t, $this->excluded)) {
+		if (\in_array($t, $this->excluded)) {
 			return false;
 		}
-
 		if (isset($this->rules['bymonth'])) {
-			$months = explode(',', $this->rules['bymonth']);
-			if (!in_array(date('m', $t), $months)) {
+			$months = \explode(',', $this->rules['bymonth']);
+			if (!\in_array(\date('m', $t), $months)) {
 				return false;
 			}
 		}
 		if (isset($this->rules['byday'])) {
-			$days = explode(',', $this->rules['byday']);
+			$days = \explode(',', $this->rules['byday']);
 			foreach($days as $i => $k) {
-				$days[$i] = $this->weekdays[preg_replace('/[^A-Z]/', '', $k)];
+				$days[$i] = $this->weekdays[\preg_replace('/[^A-Z]/', '', $k)];
 			}
-			if (!in_array(strtolower(date('l', $t)), $days)) {
+			if (!\in_array(\strtolower(\date('l', $t)), $days)) {
 				return false;
 			}
 		}
 		if (isset($this->rules['byweekno'])) {
-			$weeks = explode(',', $this->rules['byweekno']);
-			if (!in_array(date('W', $t), $weeks)) {
+			$weeks = \explode(',', $this->rules['byweekno']);
+			if (!\in_array(\date('W', $t), $weeks)) {
 				return false;
 			}
 		}
 		if (isset($this->rules['bymonthday'])) {
-			$weekdays = explode(',', $this->rules['bymonthday']);
+			$weekdays = \explode(',', $this->rules['bymonthday']);
 			foreach($weekdays as $i => $k) {
 				if ($k < 0) {
-					$weekdays[$i] = date('t', $t) + $k + 1;
+					$weekdays[$i] = \date('t', $t) + $k + 1;
 				}
 			}
-			if (!in_array(date('d', $t), $weekdays)) {
+			if (!\in_array(\date('d', $t), $weekdays)) {
 				return false;
 			}
 		}
 		if (isset($this->rules['byhour'])) {
-			$hours = explode(',', $this->rules['byhour']);
-			if (!in_array(date('H', $t), $hours)) {
+			$hours = \explode(',', $this->rules['byhour']);
+			if (!\in_array(\date('H', $t), $hours)) {
 				return false;
 			}
 		}
-
 		return true;
 	} //END FUNCTION
 
 
 	private function isPrerule($rule, $freq) {
 		if ($rule === 'year')
-
 			return false;
 		if ($rule === 'month' && $freq === 'yearly')
-
 			return true;
-		if ($rule === 'monthday' && in_array($freq, ['yearly', 'monthly']) && !isset($this->rules['byday']))
-
+		if ($rule === 'monthday' && \in_array($freq, ['yearly', 'monthly']) && !isset($this->rules['byday']))
 			return true;
 		// TODO: is it faster to do monthday first, and ignore day if monthday exists? - prolly by a factor of 4..
 		if ($rule === 'yearday' && $freq === 'yearly')
-
 			return true;
 		if ($rule === 'weekno' && $freq === 'yearly')
-
 			return true;
-		if ($rule === 'day' && in_array($freq, ['yearly', 'monthly', 'weekly']))
-
+		if ($rule === 'day' && \in_array($freq, ['yearly', 'monthly', 'weekly']))
 			return true;
-		if ($rule === 'hour' && in_array($freq, ['yearly', 'monthly', 'weekly', 'daily']))
-
+		if ($rule === 'hour' && \in_array($freq, ['yearly', 'monthly', 'weekly', 'daily']))
 			return true;
 		if ($rule === 'minute')
-
 			return true;
-
 		return false;
 	} //END FUNCTION
 

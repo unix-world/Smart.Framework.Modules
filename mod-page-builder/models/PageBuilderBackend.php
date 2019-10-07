@@ -5,16 +5,16 @@
 
 namespace SmartModDataModel\PageBuilder;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 /**
@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderBackend {
 
 	// ::
-	// v.20190529
+	// v.20191002
 
 
 	private static $db = null;
@@ -115,7 +115,7 @@ final class PageBuilderBackend {
 			//--
 		} else {
 			//--
-			http_response_code(500);
+			@\http_response_code(500);
 			die(\SmartComponents::http_error_message('500 Internal Server Error / PageBuilder is Unavailable', 'DB Type not set in configs: SMART_PAGEBUILDER_DB_TYPE ! ...'));
 			//--
 		} //end if else
@@ -483,11 +483,11 @@ final class PageBuilderBackend {
 		//--
 		$y_arr_data = (array) $y_arr_data;
 		//--
-		$y_arr_data['id'] = (string) trim((string)$y_arr_data['id']);
-		if(strlen((string)$y_arr_data['id']) < 2) {
+		$y_arr_data['id'] = (string) \trim((string)$y_arr_data['id']);
+		if(\strlen((string)$y_arr_data['id']) < 2) {
 			return -1; // data must contain the ID and must be non-empty, at least 2 chars (constraint)
 		} //end if
-		if(strlen((string)$y_arr_data['id']) > 63) {
+		if(\strlen((string)$y_arr_data['id']) > 63) {
 			return -2; // max 63 chars (constraint, in case it is used with wildcard subdomains)
 		} //end if
 		//--
@@ -558,7 +558,7 @@ final class PageBuilderBackend {
 
 	public static function updateRecordById($y_id, $y_arr_data, $y_upd_checksum) {
 		//--
-		$y_id = (string) trim((string)$y_id);
+		$y_id = (string) \trim((string)$y_id);
 		$y_arr_data = (array) $y_arr_data;
 		$y_upd_checksum = (bool) $y_upd_checksum;
 		//--
@@ -614,11 +614,11 @@ final class PageBuilderBackend {
 			} //end if
 		} //end if
 		//--
-		if(array_key_exists('data', $y_arr_data)) { // DO THIS JUST JUST ON UPDATES THAT CONTAIN THE 'data' KEY
+		if(\array_key_exists('data', $y_arr_data)) { // DO THIS JUST JUST ON UPDATES THAT CONTAIN THE 'data' KEY
 			//-- delete ref from all objects
 			self::clearRecordRefsById($y_id);
 			//-- rebuild reference from YAML (if new YAML segments entered will be created automatically)
-			$tmp_yaml = (string) trim((string)base64_decode((string)$y_arr_data['data']));
+			$tmp_yaml = (string) \trim((string)\base64_decode((string)$y_arr_data['data']));
 			if((string)$tmp_yaml != '') {
 				$tmp_ymp = new \SmartYamlConverter(false); // do not log YAML parse errors
 				$tmp_yaml = (array) $tmp_ymp->parse((string)$tmp_yaml);
@@ -631,17 +631,17 @@ final class PageBuilderBackend {
 				if(\Smart::array_size($tmp_yaml) > 0) {
 					if(\Smart::array_size($tmp_yaml['RENDER']) > 0) {
 						foreach($tmp_yaml['RENDER'] as $key => $val) {
-							$key = (string) trim((string)$key);
+							$key = (string) \trim((string)$key);
 							if((string)$key != '') {
 								if(\Smart::array_size($val) > 0) {
 									foreach($val as $k => $v) {
-										if(((string)trim((string)$k) != '') AND (\Smart::array_size($val[(string)$k]) > 0) AND (\Smart::array_size($v) > 0) AND ((string)$v['type'] == 'segment')) {
-											$v['id'] = (string) trim((string)$v['id']);
-											if((strlen((string)$v['id']) >= 2) AND (strlen((string)$v['id']) <= 63)) {
+										if(((string)\trim((string)$k) != '') AND (\Smart::array_size($val[(string)$k]) > 0) AND (\Smart::array_size($v) > 0) AND ((string)$v['type'] == 'segment')) {
+											$v['id'] = (string) \trim((string)$v['id']);
+											if((\strlen((string)$v['id']) >= 2) AND (\strlen((string)$v['id']) <= 63)) {
 												$v['id'] = (string) \Smart::safe_validname($v['id'], ''); // allow: [a-z0-9] _ - . @
 												if((string)$v['id'] != '') {
 													$v['id'] = (string) '#'.$v['id']; // ensure is segment
-													if((strlen((string)$v['id']) >= 2) AND (strlen((string)$v['id']) <= 63)) { // db id constraint
+													if((\strlen((string)$v['id']) >= 2) AND (\strlen((string)$v['id']) <= 63)) { // db id constraint
 														$test_exists = (array) self::getRecordIdsById((string)$v['id']);
 														$tmp_arr_refs = [ (string)$y_id ];
 														if((string)$test_exists['id'] == '') { // segment does not exists
@@ -706,8 +706,8 @@ final class PageBuilderBackend {
 
 	public static function updateTranslationById($y_id, $y_lang, $y_arr_data) {
 		//--
-		$y_id = (string) trim((string)$y_id);
-		$y_lang = (string) trim((string)$y_lang);
+		$y_id = (string) \trim((string)$y_id);
+		$y_lang = (string) \trim((string)$y_lang);
 		$y_arr_data = (array) $y_arr_data;
 		//--
 		if((string)$y_id == '') {
@@ -716,7 +716,7 @@ final class PageBuilderBackend {
 		if(\Smart::array_size($y_arr_data) <= 0) {
 			return -2; // empty data
 		} //end if
-		if(((string)$y_lang == '') OR (strlen((string)$y_lang) != 2) OR (\SmartTextTranslations::validateLanguage((string)$y_lang) !== true)) {
+		if(((string)$y_lang == '') OR (\strlen((string)$y_lang) != 2) OR (\SmartTextTranslations::validateLanguage((string)$y_lang) !== true)) {
 			return -3; // invalid language
 		} //end if
 		if((string)$y_arr_data['id'] != '') {
@@ -746,7 +746,7 @@ final class PageBuilderBackend {
 			);
 		} //end if else
 		//--
-		if((string)trim((string)$y_arr_data['code']) != '') { // avoid to insert empty translation
+		if((string)\trim((string)$y_arr_data['code']) != '') { // avoid to insert empty translation
 			//--
 			if((string)self::dbType() == 'pgsql') {
 				$wr = (array) \SmartPgsqlDb::write_data(
@@ -778,7 +778,7 @@ final class PageBuilderBackend {
 
 	public static function deleteRecordById($y_id) {
 		//--
-		$y_id = (string) trim((string)$y_id);
+		$y_id = (string) \trim((string)$y_id);
 		//--
 		if((string)$y_id == '') {
 			return -1; // empty ID
@@ -797,7 +797,7 @@ final class PageBuilderBackend {
 				if(\Smart::array_size($tmp_arr_refs) > 0) {
 					if(\Smart::array_type_test($tmp_arr_refs) == 1) { // non-associative
 						for($j=0; $j<\Smart::array_size($tmp_arr_refs); $j++) {
-							$tmp_arr_refs[$j] = (string) trim((string)$tmp_arr_refs[$j]);
+							$tmp_arr_refs[$j] = (string) \trim((string)$tmp_arr_refs[$j]);
 							if((string)$tmp_arr_refs[$j] != '') {
 								$tmp_arr_chk = (array) self::getRecordDetailsById((string)$tmp_arr_refs[$j]);
 								if(\Smart::array_size($tmp_arr_chk) > 0) {
@@ -885,10 +885,10 @@ final class PageBuilderBackend {
 		//--
 		$y_ofs = \Smart::format_number_int($y_ofs, '+');
 		if($y_ofs > 0) {
-			$y_ofs = (int) (floor($y_ofs / $y_limit) * $y_limit); // fix offset to be multiple of limit
+			$y_ofs = (int) (\floor($y_ofs / $y_limit) * $y_limit); // fix offset to be multiple of limit
 		} //end if
 		//--
-		switch((string)strtoupper((string)$y_xsort)){
+		switch((string)\strtoupper((string)$y_xsort)){
 			case 'DESC':
 				$xsort = 'ASC';
 				break;
@@ -896,7 +896,7 @@ final class PageBuilderBackend {
 				$xsort = 'DESC';
 		} //end switch
 		//--
-		switch((string)strtolower((string)$y_sort)) {
+		switch((string)\strtolower((string)$y_sort)) {
 			case 'id':
 			case 'ref':
 			case 'name':
@@ -982,7 +982,7 @@ final class PageBuilderBackend {
 
 	private static function buildListWhereCondition($y_xsrc, $y_src) {
 		//--
-		$y_src = (string) trim((string)$y_src);
+		$y_src = (string) \trim((string)$y_src);
 		//--
 		$where = '';
 		if((string)$y_src != '') {
@@ -1057,8 +1057,8 @@ final class PageBuilderBackend {
 							$where = 'WHERE (a.`code` != \'\')';
 						} //end if else
 					} else {
-						if(strpos((string)$y_src, '</>') === 0) { // strip tags
-							$y_src = (string) trim((string)substr((string)$y_src, 3));
+						if(\strpos((string)$y_src, '</>') === 0) { // strip tags
+							$y_src = (string) \trim((string)\substr((string)$y_src, 3));
 							if((string)self::dbType() == 'pgsql') {
 								$where = 'WHERE (smart_str_striptags(convert_from(decode(a."code", \'base64\'), \'UTF8\')) ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\')';
 							} elseif((string)self::dbType() == 'sqlite') {
@@ -1096,16 +1096,16 @@ final class PageBuilderBackend {
 					break;
 				case 'translations':
 					$is_positive = false;
-					if(strpos((string)$y_src, '!') === 0) { // negation search: !ro
-						$y_src = (string) ltrim((string)$y_src, '!');
+					if(\strpos((string)$y_src, '!') === 0) { // negation search: !ro
+						$y_src = (string) \ltrim((string)$y_src, '!');
 						$is_negative = true;
 					} else { // positive search: ro
 						$is_negative = false;
-						if(strpos((string)$y_src, '"') === 0) {
+						if(\strpos((string)$y_src, '"') === 0) {
 							$is_positive = true;
 						} //end if
 					} //end if else
-					if((strlen((string)$y_src) == 2) AND (preg_match('/^[a-z]+$/', (string)$y_src))) {
+					if((\strlen((string)$y_src) == 2) AND (\preg_match('/^[a-z]+$/', (string)$y_src))) {
 						$arr_raw_langs = (array) \SmartTextTranslations::getListOfLanguages();
 						$flang = '';
 						foreach($arr_raw_langs as $key => $val) {
@@ -1194,7 +1194,7 @@ final class PageBuilderBackend {
 		//--
 		$arr_upd = [];
 		foreach($y_refs_arr as $key => $val) {
-			if((strlen((string)$val) < 2) OR (strlen((string)$val) > 63) OR (((string)$val != (string)\Smart::safe_validname((string)$val, '')) AND ((string)$val != (string)'#'.\Smart::safe_validname((string)$val, '')))) { // allow: [a-z0-9] _ - . @
+			if((\strlen((string)$val) < 2) OR (\strlen((string)$val) > 63) OR (((string)$val != (string)\Smart::safe_validname((string)$val, '')) AND ((string)$val != (string)'#'.\Smart::safe_validname((string)$val, '')))) { // allow: [a-z0-9] _ - . @
 				return -3;
 			} //end if
 			$arr_upd[] = (string) $val;
@@ -1232,14 +1232,14 @@ final class PageBuilderBackend {
 
 	public static function updateTranslationByText($text_deflang, $lang, $text_lang, $admin) {
 		//--
-		if((string)trim((string)$text_lang) == '') {
+		if((string)\trim((string)$text_lang) == '') {
 			return -1;
 		} //end if
 		//--
-		if((string)trim((string)$text_deflang) == '') {
+		if((string)\trim((string)$text_deflang) == '') {
 			return -2;
 		} //end if
-		if(((string)$lang == (string)\SmartTextTranslations::getDefaultLanguage()) OR ((string)$lang == '') OR (strlen($lang) != 2) OR (\SmartTextTranslations::validateLanguage($lang) !== true)) {
+		if(((string)$lang == (string)\SmartTextTranslations::getDefaultLanguage()) OR ((string)$lang == '') OR (\strlen($lang) != 2) OR (\SmartTextTranslations::validateLanguage($lang) !== true)) {
 			return -3;
 		} //end if
 		//--
@@ -1249,14 +1249,14 @@ final class PageBuilderBackend {
 			$arr = (array) \SmartPgsqlDb::read_adata(
 				'SELECT "id", "code" FROM "web"."page_builder" WHERE (("code" = $1) AND ("translations" = 1))',
 				[
-					(string) base64_encode((string)$text_deflang)
+					(string) \base64_encode((string)$text_deflang)
 				]
 			);
 		} elseif((string)self::dbType() == 'sqlite') {
 			$arr = (array) self::$db->read_adata(
 				'SELECT `id`, `code` FROM `page_builder` WHERE ((`code` = ?) AND (`translations` = 1))',
 				[
-					(string) base64_encode((string)$text_deflang)
+					(string) \base64_encode((string)$text_deflang)
 				]
 			);
 		} else {
@@ -1297,9 +1297,9 @@ final class PageBuilderBackend {
 							[
 								'id' 		=> (string) $arr[$i]['id'],
 								'lang' 		=> (string) $lang,
-								'code' 		=> (string) base64_encode((string)$text_lang),
+								'code' 		=> (string) \base64_encode((string)$text_lang),
 								'admin' 	=> (string) $admin,
-								'modified' 	=> (string) date('Y-m-d H:i:s')
+								'modified' 	=> (string) \date('Y-m-d H:i:s')
 							],
 							'insert'
 						)
@@ -1310,9 +1310,9 @@ final class PageBuilderBackend {
 							[
 								'id' 		=> (string) $arr[$i]['id'],
 								'lang' 		=> (string) $lang,
-								'code' 		=> (string) base64_encode((string)$text_lang),
+								'code' 		=> (string) \base64_encode((string)$text_lang),
 								'admin' 	=> (string) $admin,
-								'modified' 	=> (string) date('Y-m-d H:i:s')
+								'modified' 	=> (string) \date('Y-m-d H:i:s')
 							],
 							'insert'
 						)
@@ -1336,9 +1336,9 @@ final class PageBuilderBackend {
 
 	public static function exportTranslationsByLang($lang, $mode='all', $arrmode='non-associative') {
 		//--
-		$lang = (string) trim((string)$lang);
+		$lang = (string) \trim((string)$lang);
 		//--
-		if(((string)$lang == '') OR (strlen($lang) != 2) OR (\SmartTextTranslations::validateLanguage($lang) !== true)) {
+		if(((string)$lang == '') OR (\strlen($lang) != 2) OR (\SmartTextTranslations::validateLanguage($lang) !== true)) {
 			return array(); // invalid language
 		} //end if
 		//--

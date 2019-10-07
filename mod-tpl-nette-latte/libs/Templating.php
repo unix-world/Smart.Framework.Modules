@@ -8,16 +8,16 @@
 
 namespace SmartModExtLib\TplNetteLatte;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 
@@ -44,7 +44,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: NetteLatte
- * @version 	v.20190226
+ * @version 	v.20191007
  * @package 	Templating:Engines
  *
  */
@@ -85,13 +85,13 @@ final class Templating {
 			$onlydebug = false;
 		} //end if
 		//--
-		if(!is_array($arr_vars)) {
+		if(!\is_array($arr_vars)) {
 			$arr_vars = array();
 		} //end if
-		$arr_vars = (array) array_change_key_case((array)$arr_vars, CASE_LOWER); // make all keys lower (only 1st level, not nested)
+		$arr_vars = (array) \array_change_key_case((array)$arr_vars, \CASE_LOWER); // make all keys lower (only 1st level, not nested)
 		$arr_vars = (array) self::fix_array_keys($arr_vars, false); // make keys compatible with PHP variable names, LOWER only (only 1st level, not nested)
 		//--
-		if((string)trim((string)$file) == '') {
+		if((string)\trim((string)$file) == '') {
 			throw new \Exception('NetteLatte Templating / Render File / The file name is Empty');
 			return;
 		} //end if
@@ -126,7 +126,7 @@ final class Templating {
 			return;
 		} //end if
 		//--
-		if(!is_file($file)) {
+		if(!\is_file($file)) {
 			throw new \Exception('NetteLatte Templating / The Template file to render does not exists: '.$file);
 			return;
 		} //end if
@@ -138,7 +138,7 @@ final class Templating {
 
 	private function smartSetupCacheDir() {
 		//--
-		if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+		if(\SMART_FRAMEWORK_ADMIN_AREA === true) {
 			$the_latte_cache_dir = 'tmp/cache/nlatte#adm';
 		} else {
 			$the_latte_cache_dir = 'tmp/cache/nlatte#idx';
@@ -157,16 +157,16 @@ final class Templating {
 
 	private static function fix_array_keys($y_arr, $y_allow_upper_camelcase) { // v.191217 :: fix array keys to be compliant with variable names, but only at level 1 ; level 2..n must not be fixed as tkey are accessible in loops
 		//--
-		if(!is_array($y_arr)) { // fix bug if empty array / max nested level
+		if(!\is_array($y_arr)) { // fix bug if empty array / max nested level
 			return $y_arr; // mixed
 		} //end if
 		//--
 		$new_arr = [];
 		//--
 		foreach($y_arr as $key => $val) {
-			$key = (string) rtrim((string)preg_replace('/[^0-9a-zA-Z_]/', '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; make safe variable name for PHP
+			$key = (string) \rtrim((string)\preg_replace('/[^0-9a-zA-Z_]/', '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; make safe variable name for PHP
 			if(\SmartFrameworkSecurity::ValidateVariableName((string)$key, (bool)$y_allow_upper_camelcase)) {
-				if(is_array($val)) {
+				if(\is_array($val)) {
 					$new_arr[(string)$key] = (array) $val; // do not go recursive as = self::fix_array_keys((array)$val);
 				} else {
 					$new_arr[(string)$key] = $val; // mixed
@@ -198,11 +198,11 @@ function autoload__NetteLatteTemplating_SFM($classname) {
 	//--
 	$classname = (string) $classname;
 	//--
-	if(strpos((string)$classname, '\\') === false) { // if have namespace
+	if(\strpos((string)$classname, '\\') === false) { // if have namespace
 		return;
 	} //end if
 	//--
-	if((string)substr((string)$classname, 0, 6) !== 'Latte\\') { // if class name is not starting with Latte
+	if((string)\substr((string)$classname, 0, 6) !== 'Latte\\') { // if class name is not starting with Latte
 		return;
 	} //end if
 	//--
@@ -242,12 +242,15 @@ function autoload__NetteLatteTemplating_SFM($classname) {
 	];
 	//--
 	if((string)$class_map[(string)$classname] != '') {
+		if(!\is_file('modules/mod-tpl-nette-latte/libs/Latte/'.$class_map[(string)$classname].'.php')) {
+			return; // file does not exists
+		} //end if
 		require_once('modules/mod-tpl-nette-latte/libs/Latte/'.$class_map[(string)$classname].'.php');
 	} //end if
 	//--
 } //END FUNCTION
 //--
-spl_autoload_register('\\SmartModExtLib\\TplNetteLatte\\autoload__NetteLatteTemplating_SFM', true, false); // throw / append
+\spl_autoload_register('\\SmartModExtLib\\TplNetteLatte\\autoload__NetteLatteTemplating_SFM', true, false); // throw / append
 //--
 
 

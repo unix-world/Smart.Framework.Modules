@@ -5,16 +5,16 @@
 
 namespace SmartModExtLib\PageBuilder;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 /**
@@ -25,7 +25,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  *
- * @version 	v.20190529
+ * @version 	v.20191002
  * @package 	PageBuilder
  *
  */
@@ -79,9 +79,9 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 
 		//--
-		$page_id = (string) trim((string)$page_id);
+		$page_id = (string) \trim((string)$page_id);
 		//--
-		if(((string)$page_id == '') OR (substr((string)$page_id, 0, 1) == '#')) {
+		if(((string)$page_id == '') OR (\substr((string)$page_id, 0, 1) == '#')) {
 			$this->PageViewSetErrorStatus(404, 'NOTICE: Empty / Invalid PageBuilder Page ID to Render ...');
 			return;
 		} //end if
@@ -106,10 +106,10 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		$this->page_markers = (array) $this->fixAllowedTemplateMarkers($markers);
 		$cnt_page_markers = (int) \Smart::array_size($this->page_markers);
 		for($i=0; $i<$cnt_page_markers; $i++) {
-			if(strpos((string)$this->page_markers[$i], 'TEMPLATE@') === 0) {
-				$tmp_marker = (string) substr((string)$this->page_markers[$i], strlen('TEMPLATE@'));
-				if((string)trim((string)$tmp_marker) != '') {
-					if(preg_match((string)$this->regex_marker, (string)$tmp_marker)) {
+			if(\strpos((string)$this->page_markers[$i], 'TEMPLATE@') === 0) {
+				$tmp_marker = (string) \substr((string)$this->page_markers[$i], \strlen('TEMPLATE@'));
+				if((string)\trim((string)$tmp_marker) != '') {
+					if(\preg_match((string)$this->regex_marker, (string)$tmp_marker)) {
 						if($this->IfDebug()) {
 							$this->SetDebugData('Frontend PageBuilder Controller Initialize PageView Variable, No Overwrite', (string)$tmp_marker);
 						} //end if
@@ -123,7 +123,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 		$arr = array();
 		//--
-		$the_pcache_key = (string) $page_id.'@'.\SmartTextTranslations::getLanguage(); // .'__d'.(int)$this->max_depth.'__m-'.sha1((string)implode(';', $this->page_markers))
+		$the_pcache_key = (string) $page_id.'@'.\SmartTextTranslations::getLanguage(); // .'__d'.(int)$this->max_depth.'__m-'.\sha1((string)\implode(';', $this->page_markers))
 		//--
 		if($this->PageCacheisActive()) {
 			//$arr = (array) $this->PageGetFromCache(
@@ -131,14 +131,14 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 				'smart-pg-builder',
 				$this->PageCacheSafeKey((string)$the_pcache_key)
 			); // get arr vars structure from pcache
-			//print_r($pcache_arr); die();
+			// \print_r($pcache_arr); die();
 			if(\Smart::array_size($pcache_arr) > 0) {
-				if((is_array($pcache_arr['headers'])) && (is_array($pcache_arr['configs'])) && (is_array($pcache_arr['vars']))) { // if valid cache (test ... there must be the 3 sub-arrays as exported previous in pcache)
+				if((\is_array($pcache_arr['headers'])) && (\is_array($pcache_arr['configs'])) && (\is_array($pcache_arr['vars']))) { // if valid cache (test ... there must be the 3 sub-arrays as exported previous in pcache)
 				//	$this->PageViewResetRawHeaders();
 					$this->PageViewSetRawHeaders((array)$pcache_arr['headers']);
 					$this->PageViewSetCfgs((array)$pcache_arr['configs']);
 					$arr = (array) $pcache_arr['vars'];
-					//print_r($arr);
+					// \print_r($arr);
 					$this->page_is_cached = true;
 				} //end if
 			} //end if
@@ -151,7 +151,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			$arr = (array) $this->loadSegmentOrPage((string)$page_id, 'page'); // get arr vars structure from db
 		} //end if
 		if((int)$this->PageViewGetStatusCode() >= 400) {
-			if(in_array((int)$this->PageViewGetStatusCode(), (array)\SmartFrameworkRuntime::getHttpStatusCodesERR())) {
+			if(\in_array((int)$this->PageViewGetStatusCode(), (array)\SmartFrameworkRuntime::getHttpStatusCodesERR())) {
 				$is_ok = false;
 			} //end if
 		} //end if
@@ -230,9 +230,9 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 
 		//--
-		$segment_id = (string) trim((string)$segment_id);
+		$segment_id = (string) \trim((string)$segment_id);
 		//--
-		if(((string)$segment_id == '') OR (substr((string)$segment_id, 0, 1) != '#')) {
+		if(((string)$segment_id == '') OR (\substr((string)$segment_id, 0, 1) != '#')) {
 			$this->PageViewSetErrorStatus(500, 'WARNING: Empty / Invalid PageBuilder Segment ID to Render ...');
 			return '';
 		} //end if
@@ -261,11 +261,11 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 				'smart-pg-builder',
 				$this->PageCacheSafeKey((string)$the_pcache_key)
 			); // get arr vars structure from pcache
-			//print_r($pcache_arr); die();
+			// \print_r($pcache_arr); die();
 			if(\Smart::array_size($pcache_arr) > 0) {
-				if(is_array($pcache_arr['vars'])) { // if valid cache (test ... there must be the 3 sub-arrays as exported previous in pcache)
+				if(\is_array($pcache_arr['vars'])) { // if valid cache (test ... there must be the 3 sub-arrays as exported previous in pcache)
 					$arr = (array) $pcache_arr['vars'];
-					//print_r($arr);
+					// \print_r($arr);
 					$this->segments_cached[(string)$segment_id]++;
 				} //end if
 			} //end if
@@ -285,7 +285,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 				'smart-pg-builder',
 				$this->PageCacheSafeKey((string)$the_pcache_key),
 				[
-					'vars' 		=> (array) $arr
+					'vars' => (array) $arr
 				], // this will het the full array with all page vars and configs
 				(int) $this->fixPCacheTime($this->cache_time)
 			); // save arr vars structure to pcache
@@ -301,15 +301,15 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		} //end if
 		//-- chk err
 		if((int)$this->PageViewGetStatusCode() >= 400) {
-			if(in_array((int)$this->PageViewGetStatusCode(), (array)\SmartFrameworkRuntime::getHttpStatusCodesERR())) {
+			if(\in_array((int)$this->PageViewGetStatusCode(), (array)\SmartFrameworkRuntime::getHttpStatusCodesERR())) {
 				return '';
 			} //end if
 		} //end if
 		//-- render the page
 		$arr = (array) $this->doRenderSegment($segment_id, $arr);
-		//print_r($arr); die();
+		// \print_r($arr); die();
 		//--
-	/*	if((string)trim((string)$arr['code']) == '') {
+	/*	if((string)\trim((string)$arr['code']) == '') {
 			$this->PageViewSetErrorStatus(500, 'WARNING: Empty PageBuilder Segment Code to Render ...');
 			return '';
 		} //end if */
@@ -333,9 +333,9 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 
 		//--
-		if((\Smart::array_size($markers) > 0) AND (strpos((string)$segment_code, '{{=#') !== false)) { // if we provide express markers for replacing
+		if((\Smart::array_size($markers) > 0) AND (\strpos((string)$segment_code, '{{=#') !== false)) { // if we provide express markers for replacing
 			//--
-			$segment_code = (string) str_replace( // Safe Fix: comment out any of: [####*####] [%%%%*%%%%] [@@@@*@@@@]
+			$segment_code = (string) \str_replace( // Safe Fix: comment out any of: [####*####] [%%%%*%%%%] [@@@@*@@@@]
 				[
 					'[####',
 					'####]',
@@ -355,7 +355,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 				(string) $segment_code
 			);
 			//--
-			$segment_code = (string) str_replace( // Pre-Render: replace {{=#MARKER|escapings#=}} with [####MARKER|escapings####]
+			$segment_code = (string) \str_replace( // Pre-Render: replace {{=#MARKER|escapings#=}} with [####MARKER|escapings####]
 				[
 					'{{=#',
 					'#=}}'
@@ -445,7 +445,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 	//=====
 	private function fixAllowedTemplateMarkers($markers) {
 		//--
-		if(!is_array($markers)) {
+		if(!\is_array($markers)) {
 			$markers = array();
 		} //end if
 		//--
@@ -458,10 +458,10 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 		$cnt_tmp_arr = (int) \Smart::array_size($tmp_arr);
 		for($i=0; $i<$cnt_tmp_arr; $i++) {
-			$tmp_arr[$i] = (string) strtoupper((string)trim((string)$tmp_arr[$i]));
+			$tmp_arr[$i] = (string) \strtoupper((string)\trim((string)$tmp_arr[$i]));
 			if((string)$tmp_arr[$i] != '') {
-				if(preg_match((string)$this->regex_marker, (string)$tmp_arr[$i])) {
-					if(!in_array((string)$tmp_arr[$i], [ 'MAIN' ])) {
+				if(\preg_match((string)$this->regex_marker, (string)$tmp_arr[$i])) {
+					if(!\in_array((string)$tmp_arr[$i], [ 'MAIN' ])) {
 						$markers[] = 'TEMPLATE@'.$tmp_arr[$i];
 					} //end if
 				} //end if
@@ -481,27 +481,27 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 	private function loadSegmentSettingsOnly($id) {
 
 		//--
-		$id = (string) trim((string)$id);
+		$id = (string) \trim((string)$id);
 		//--
 
 		//--
 		$arr = (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getSegment((string)$id, (string)$this->crr_lang);
 		//--
 		if((string)$arr['id'] == '') {
-			\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Settings Segment: '.$id.' in Page: '.implode(';', $this->current_page)); // log warning, this is internal, by page settings
+			\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Settings Segment: '.$id.' in Page: '.\implode(';', $this->current_page)); // log warning, this is internal, by page settings
 			return array();
 		} //end if
 		//--
 
 		//--
-		$yaml = (string) base64_decode((string)$arr['data']);
+		$yaml = (string) \base64_decode((string)$arr['data']);
 		//--
 		if((string)$yaml != '') {
 			$ymp = new \SmartYamlConverter(false); // do not log YAML errors
 			$yaml = (array) $ymp->parse((string)$yaml);
 			$yerr = (string) $ymp->getError();
 			if($yerr) {
-				\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Settings Segment YAML Error: '.$id.' in Page: '.implode(';', $this->current_page).' # '.$yerr); // log warning, this is internal, by page settings
+				\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Settings Segment YAML Error: '.$id.' in Page: '.\implode(';', $this->current_page).' # '.$yerr); // log warning, this is internal, by page settings
 				return array();
 			} //end if
 			$ymp = null;
@@ -517,10 +517,10 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 
 		//-- fixes
-		if(!is_array($yaml)) {
+		if(!\is_array($yaml)) {
 			$yaml = array();
 		} //end if
-		if(!is_array($yaml['SETTINGS'])) {
+		if(!\is_array($yaml['SETTINGS'])) {
 			$yaml['SETTINGS'] = array();
 		} //end if
 		//--
@@ -538,11 +538,11 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 	private function loadTranslation($id, $arr_cfg, $arr, $lang) {
 
 		//--
-		if(!is_array($arr_cfg)) {
+		if(!\is_array($arr_cfg)) {
 			$arr_cfg = array();
 		} //end if
 		//--
-		if(((string)$lang == '') OR (strlen((string)$lang) != 2) OR (\SmartTextTranslations::validateLanguage((string)$lang) !== true)) {
+		if(((string)$lang == '') OR (\strlen((string)$lang) != 2) OR (\SmartTextTranslations::validateLanguage((string)$lang) !== true)) {
 			$lang = (string) \SmartTextTranslations::getDefaultLanguage(); // fix
 		} //end if
 		//--
@@ -555,29 +555,29 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 				$escape = '';
 		} //end if
 		//--
-		$arr['id'] = (string) trim((string)$arr['id']);
+		$arr['id'] = (string) \trim((string)$arr['id']);
 		//--
-		$uid = (string) 'transl.'.$lang.'.'.\Smart::uuid_10_num().'-'.sha1((string)print_r($arr,1)).'-'.$escape;
+		$uid = (string) 'transl.'.$lang.'.'.\Smart::uuid_10_num().'-'.\sha1((string)\print_r($arr,1)).'-'.$escape;
 		//--
 		$translated_text = (string) '['.$lang.']'.$arr['id'];
 		//--
-		$arr_parse_transl_key = (array) explode('.', (string)$arr['id']);
+		$arr_parse_transl_key = (array) \explode('.', (string)$arr['id']);
 		if(\Smart::array_size($arr_parse_transl_key) != 3) {
-			\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Translation Key '.$arr['id'].' (1) in PageBuilder Object: '.$id.' in Page: '.implode(';', $this->current_page)); // log warning, this is internal, by page settings
+			\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Translation Key '.$arr['id'].' (1) in PageBuilder Object: '.$id.' in Page: '.\implode(';', $this->current_page)); // log warning, this is internal, by page settings
 			return array();
 		} //end if
 		for($i=0; $i<\Smart::array_size($arr_parse_transl_key); $i++) {
-			$arr_parse_transl_key[$i] = (string) trim((string)$arr_parse_transl_key[$i]);
+			$arr_parse_transl_key[$i] = (string) \trim((string)$arr_parse_transl_key[$i]);
 			if((string)$arr_parse_transl_key[$i] == '') {
-				\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Translation Key '.$arr['id'].' (2) in PageBuilder Object: '.$id.' in Page: '.implode(';', $this->current_page)); // log warning, this is internal, by page settings
+				\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Translation Key '.$arr['id'].' (2) in PageBuilder Object: '.$id.' in Page: '.\implode(';', $this->current_page)); // log warning, this is internal, by page settings
 				return array();
 			} //end if
 		} //end for
 		$realm = (string) $arr_parse_transl_key[0].$arr_parse_transl_key[1];
-		if(!is_object($this->translators[(string)$realm.'@'.$lang])) {
+		if(!\is_object($this->translators[(string)$realm.'@'.$lang])) {
 			$this->translators[(string)$realm.'@'.$lang] = \SmartTextTranslations::getTranslator((string)$arr_parse_transl_key[0], (string)$arr_parse_transl_key[1], (string)$lang);
 		} //end if
-		if(is_object($this->translators[(string)$realm.'@'.$lang])) {
+		if(\is_object($this->translators[(string)$realm.'@'.$lang])) {
 			$translated_text = $this->translators[(string)$realm.'@'.$lang]->text((string)$arr_parse_transl_key[2]);
 		} //end if
 		//--
@@ -592,7 +592,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			'type' 	=> 'translation', // preserve type
 			'auth' 	=> 0, // n/a
 			'mode' 	=> (string) 'translation:'.$lang.':rendered'.($escape ? ':'.$escape : ''),
-			'name' 	=> (string) $id.' :: '.strtoupper((string)$arr['id']).' @ '.$lang.' :: '.$uid,
+			'name' 	=> (string) $id.' :: '.\strtoupper((string)$arr['id']).' @ '.$lang.' :: '.$uid,
 			'code' 	=> (string) $translated_text
 		];
 		//--
@@ -610,7 +610,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 	private function loadValue($id, $arr_cfg, $arr) {
 
 		//--
-		if(!is_array($arr_cfg)) {
+		if(!\is_array($arr_cfg)) {
 			$arr_cfg = array();
 		} //end if
 		//--
@@ -624,26 +624,26 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 				$escape = '';
 		} //end if
 		//--
-		$uid = (string) 'val.'.\Smart::uuid_10_num().'-'.sha1((string)print_r($arr,1)).'-'.$escape;
+		$uid = (string) 'val.'.\Smart::uuid_10_num().'-'.\sha1((string)\print_r($arr,1)).'-'.$escape;
 		//--
 		if((string)$syntax == 'html') {
 			$syntax = 'html';
 			$arr['mode'] = 'html';
-			$arr['id'] = (string) trim((string)$arr['id']); // trim
+			$arr['id'] = (string) \trim((string)$arr['id']); // trim
 			if((string)$arr['id'] != '') {
 				$arr['id'] = (string) \SmartModExtLib\PageBuilder\Utils::fixSafeCode((string)$arr['id']); // {{{SYNC-PAGEBUILDER-HTML-SAFETY}}} avoid PHP code + cleanup XHTML tag style
 			} //end if
 		} elseif((string)$syntax == 'markdown') {
 			$syntax = 'markdown';
 			$arr['mode'] = 'markdown:rendered';
-			$arr['id'] = (string) trim((string)$arr['id']); // trim
+			$arr['id'] = (string) \trim((string)$arr['id']); // trim
 			if((string)$arr['id'] != '') {
 				$arr['id'] = (string) \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$arr['id']); // render as markdown
 			} //end if
 		} else {
 			$syntax = 'text';
 			$arr['mode'] = 'text:rendered';
-			$arr['id'] = (string) trim((string)$arr['id']); // trim
+			$arr['id'] = (string) \trim((string)$arr['id']); // trim
 			if((string)$arr['id'] != '') {
 				$arr['id'] = (string) \Smart::escape_html((string)$arr['id']); // escape text to HTML
 			} //end if
@@ -658,7 +658,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			'type' 	=> 'value', // preserve type
 			'auth' 	=> 0, // n/a
 			'mode' 	=> (string) $arr['mode'].($escape ? ':'.$escape : ''),
-			'name' 	=> (string) $id.' :: '.strtoupper((string)$syntax).' :: '.$uid,
+			'name' 	=> (string) $id.' :: '.\strtoupper((string)$syntax).' :: '.$uid,
 			'code' 	=> (string) $arr['id']
 		];
 		//--
@@ -677,11 +677,11 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 	private function loadSegmentOrPage($id, $type, $level=-1) {
 
 		//--
-		$this->recursion_control = (int) max($this->recursion_control, $level);
+		$this->recursion_control = (int) \max($this->recursion_control, $level);
 		//--
 		if((int)$level >= (int)$this->max_depth) { // fix: needs >= instead of > to comply with page/sub/sub
 			\Smart::raise_error(
-				'PageBuilder: The maximum Page Recursion Level overflow on Page/Segment: ['.implode(';', $this->current_page).'/'.(string)$id.'] # Level: '.(int)$level.' of max '.(int)$this->max_depth,
+				'PageBuilder: The maximum Page Recursion Level overflow on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] # Level: '.(int)$level.' of max '.(int)$this->max_depth,
 				'Too much recursion detected for this Page'
 			);
 			die();
@@ -692,7 +692,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 
 		//--
-		$id = (string) trim((string)$id);
+		$id = (string) \trim((string)$id);
 		//--
 
 		//--
@@ -729,7 +729,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			//--
 			if((string)$arr['id'] == '') {
 				$this->PageViewSetErrorStatus(500, 'Invalid PageBuilder Page Segment');
-				\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Segment: '.$id.' in Page: '.implode(';', $this->current_page)); // log warning, this is internal, by page settings
+				\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Segment: '.$id.' in Page: '.\implode(';', $this->current_page)); // log warning, this is internal, by page settings
 				return (array) $data_arr;
 			} //end if
 			//--
@@ -773,9 +773,9 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 				$data_arr['layout'] = (string) $arr['layout']; // no html escape on this as it is a file
 			} //end if else
 			//--
-			$data_arr['code'] = (string) base64_decode((string)$arr['code']);
+			$data_arr['code'] = (string) \base64_decode((string)$arr['code']);
 			if((string)$data_arr['mode'] == 'raw') { // FIX: RAW Pages might have the code empty if need to output from a plugin and to avoid inject spaces ...
-				if((string)trim((string)$data_arr['code']) == '') {
+				if((string)\trim((string)$data_arr['code']) == '') {
 					if((string)$type == 'segment') {
 						$data_arr['code'] = '';
 					} else { // a raw page cannot be blank at all
@@ -789,18 +789,18 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			} elseif((string)$data_arr['mode'] == 'text') {
 				//Smart::log_warning('rendering text on ID='.$arr['id']);
 				$data_arr['mode'] = 'text:rendered';
-				if((string)trim((string)$data_arr['code']) != '') {
+				if((string)\trim((string)$data_arr['code']) != '') {
 					$data_arr['code'] = (string) \Smart::escape_html((string)$data_arr['code']);
 				} //end if
 			} elseif((string)$data_arr['mode'] == 'markdown') {
 				//Smart::log_warning('rendering markdown on ID='.$arr['id']);
 				$data_arr['mode'] = 'markdown:rendered';
-				if((string)trim((string)$data_arr['code']) != '') {
+				if((string)\trim((string)$data_arr['code']) != '') {
 					$data_arr['code'] = (string) \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$data_arr['code']);
 				} //end if
 			} elseif((string)$data_arr['mode'] == 'html') {
 				$data_arr['mode'] = 'html:safe';
-				if((string)trim((string)$data_arr['code']) != '') {
+				if((string)\trim((string)$data_arr['code']) != '') {
 					$data_arr['code'] = (string) \SmartModExtLib\PageBuilder\Utils::fixSafeCode((string)$data_arr['code']); // {{{SYNC-PAGEBUILDER-HTML-SAFETY}}} avoid PHP code + cleanup XHTML tag style
 				} //end if
 			} //end if
@@ -809,15 +809,15 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 
 		//--
-		$yaml = (string) base64_decode((string)$arr['data']);
+		$yaml = (string) \base64_decode((string)$arr['data']);
 		//--
-		if((string)trim((string)$yaml) != '') {
+		if((string)\trim((string)$yaml) != '') {
 			$ymp = new \SmartYamlConverter(false); // do not log YAML errors
 			$yaml = (array) $ymp->parse((string)$yaml);
 			$yerr = (string) $ymp->getError();
 			if($yerr) {
 				\Smart::raise_error(
-					'PageBuilder: Invalid Data Structure (YAML) detected on Page/Segment: ['.implode(';', $this->current_page).'/'.(string)$id.'] # '.$yerr,
+					'PageBuilder: Invalid Data Structure (YAML) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] # '.$yerr,
 					'Invalid Data Structure detected for this Page'
 				);
 				die();
@@ -837,19 +837,19 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 
 		//-- pre-parse
 		$preparse_arr = [];
-		if(is_array($yaml['RENDER'])) {
+		if(\is_array($yaml['RENDER'])) {
 			foreach((array)$yaml['RENDER'] as $key => $val) {
-				$key = (string) strtoupper((string)trim((string)$key));
+				$key = (string) \strtoupper((string)\trim((string)$key));
 				if(((string)$key != '') AND (\Smart::array_size($val) > 0)) {
 					$preparse_arr[(string)$key] = [];
 					foreach((array)$val as $k => $v) {
-						$k = (string) trim((string)$k);
-						if((strpos((string)$k, 'content') === 0) AND (\Smart::array_size($v) > 0)) {
+						$k = (string) \trim((string)$k);
+						if((\strpos((string)$k, 'content') === 0) AND (\Smart::array_size($v) > 0)) {
 							if(((string)$v['type'] === 'value') OR ((string)$v['type'] === 'translation') OR ((string)$v['type'] === 'segment') OR ((string)$v['type'] === 'plugin')) {
 								$preparse_arr[(string)$key][] = [(string)$k => $v];
 							} else {
 								\Smart::raise_error(
-									'PageBuilder: Invalid Data Structure (1.2) detected on Page/Segment: ['.implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key.'/'.(string)$k,
+									'PageBuilder: Invalid Data Structure (1.2) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key.'/'.(string)$k,
 									'Invalid Data Structure detected for this Page'
 								);
 								die();
@@ -857,7 +857,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 							} //end if
 						} else {
 							\Smart::raise_error(
-								'PageBuilder: Invalid Data Structure (1.1) detected on Page/Segment: ['.implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key.'/'.(string)$k,
+								'PageBuilder: Invalid Data Structure (1.1) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key.'/'.(string)$k,
 								'Invalid Data Structure detected for this Page'
 							);
 							die();
@@ -866,7 +866,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 					} //end foreach
 				} else {
 					\Smart::raise_error(
-						'PageBuilder: Invalid Data Structure (1.0) detected on Page/Segment: ['.implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key,
+						'PageBuilder: Invalid Data Structure (1.0) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key,
 						'Invalid Data Structure detected for this Page'
 					);
 					die();
@@ -887,9 +887,9 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			$props_arr['rawmime'] = ''; // default to: text/html (protected against PHP code injection)
 			$props_arr['rawdisp'] = ''; // default to: inline
 			//--
-			if(is_array($yaml['PROPS'])) { // PROPS [ FileName, Disposition ]
+			if(\is_array($yaml['PROPS'])) { // PROPS [ FileName, Disposition ]
 				//--
-				$tmp_arr_props = (array) array_change_key_case((array)$yaml['PROPS'], CASE_LOWER);
+				$tmp_arr_props = (array) \array_change_key_case((array)$yaml['PROPS'], \CASE_LOWER);
 				//--
 				if((string)$tmp_arr_props['filename'] != '') {
 					//--
@@ -942,7 +942,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			//--
 			$arr_item = [];
 			//--
-			$key = (string) trim((string)$key);
+			$key = (string) \trim((string)$key);
 			//--
 			if(((string)$key != '') AND (\Smart::array_type_test($val) == 1)) {
 				//--
@@ -950,13 +950,13 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 				//--
 				for($i=0; $i<$cnt_val; $i++) {
 					//--
-					if(is_array($val[$i])) {
+					if(\is_array($val[$i])) {
 						//--
 						foreach($val[$i] as $k => $v) {
 							//--
 							if(\Smart::array_size($v) > 0) {
 								//--
-								$v['id'] = (string) trim((string)$v['id']);
+								$v['id'] = (string) \trim((string)$v['id']);
 								//--
 								if((string)$v['id'] != '') { // must have a valid ID, the type[plugin/segment] is tested in pre-parse phase
 									//--
@@ -975,11 +975,11 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 										//--
 									} elseif((string)$v['type'] == 'segment') {
 										//--
-										$arr_tmp_item['id'] = '#'.$arr_tmp_item['id'];
+										$arr_tmp_item['id'] = (string) '#'.$arr_tmp_item['id'];
 										//--
 										if((string)$arr_tmp_item['id'] == (string)$id) {
 											\Smart::raise_error(
-												'PageBuilder: Page Self Circular Reference detected on Page/Segment: ['.implode(';', $this->current_page).'/'.(string)$id.'] for referenced segment: '.$arr_tmp_item['id'],
+												'PageBuilder: Page Self Circular Reference detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for referenced segment: '.$arr_tmp_item['id'],
 												'Circular self reference detected for this Page'
 											);
 											die();
@@ -990,10 +990,10 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 										//--
 									} elseif((string)$v['type'] == 'plugin') {
 										//-- config is available just for plugin
-										if(is_array($v['config'])) {
+										if(\is_array($v['config'])) {
 											$arr_tmp_item['config'] = (array) $v['config'];
 										} elseif((string)$v['config'] != '') {
-											$arr_tmp_item['config:settings-segment'] = (string)'#'.$v['config'];
+											$arr_tmp_item['config:settings-segment'] = (string) '#'.$v['config'];
 											$arr_tmp_item['config'] = (array) $this->loadSegmentSettingsOnly((string)'#'.$v['config']);
 										} else {
 											$arr_tmp_item['config'] = array();
@@ -1002,7 +1002,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 									} else {
 										//--
 										\Smart::raise_error(
-											'PageBuilder: Unknown Data Type ('.(string)$v['type'].') in Runtime detected on Page/Segment: ['.implode(';', $this->current_page).'/'.(string)$id.']',
+											'PageBuilder: Unknown Data Type ('.(string)$v['type'].') in Runtime detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.']',
 											'Unknown Data Type in Runtime detected for this Page'
 										);
 										die();
@@ -1017,7 +1017,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 								} else {
 									//--
 									\Smart::raise_error(
-										'PageBuilder: Invalid Data Structure (2.3) detected on Page/Segment: ['.implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key.'/'.(string)$k,
+										'PageBuilder: Invalid Data Structure (2.3) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key.'/'.(string)$k,
 										'Invalid Data Structure detected for this Page'
 									);
 									die();
@@ -1028,7 +1028,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 							} else {
 								//--
 								\Smart::raise_error(
-									'PageBuilder: Invalid Data Structure (2.2) detected on Page/Segment: ['.implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key.'/'.(string)$k,
+									'PageBuilder: Invalid Data Structure (2.2) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key.'/'.(string)$k,
 									'Invalid Data Structure detected for this Page'
 								);
 								die();
@@ -1041,7 +1041,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 					} else {
 						//--
 						\Smart::raise_error(
-							'PageBuilder: Invalid Data Structure (2.1) detected on Page/Segment: ['.implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key,
+							'PageBuilder: Invalid Data Structure (2.1) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key,
 							'Invalid Data Structure detected for this Page'
 						);
 						die();
@@ -1054,7 +1054,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			} else {
 				//--
 				\Smart::raise_error(
-					'PageBuilder: Invalid Data Structure (2.0) detected on Page/Segment: ['.implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key,
+					'PageBuilder: Invalid Data Structure (2.0) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key,
 					'Invalid Data Structure detected for this Page'
 				);
 				die();
@@ -1139,13 +1139,13 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 
 		//--
-		if(!is_array($data_arr)) {
+		if(!\is_array($data_arr)) {
 			$this->PageViewSetErrorStatus(500, 'PageBuilder: Empty Page Data Format on Page/Segment');
 			\Smart::log_warning('PageBuilder: Empty Page Data Format on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
 			return array();
 		} //end if
 		//--
-		if(!is_array($data_arr['render'])) {
+		if(!\is_array($data_arr['render'])) {
 			$this->PageViewSetErrorStatus(500, 'Invalid Page Render Data on Page/Segment');
 			\Smart::log_warning('PageBuilder: Invalid Page Render Data on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
 			return array();
@@ -1205,7 +1205,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 					'MAIN' 				=> ''
 				];
 			} else {
-				if((string)trim((string)$data_arr['layout']) != '') {
+				if((string)\trim((string)$data_arr['layout']) != '') {
 					$this->PageViewSetCfg('template-file', (string)$data_arr['layout']);
 				} //end if
 				$data_arr['smart-markers'] = [
@@ -1218,7 +1218,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 			//--
 		} else {
 			//--
-			if(substr((string)$data_arr['id'], 0, 1) != '#') { // on levels 1+ allow just segments !!!
+			if(\substr((string)$data_arr['id'], 0, 1) != '#') { // on levels 1+ allow just segments !!!
 				$this->PageViewSetErrorStatus(500, 'Invalid Segment to Render on Level: '.(int)$level);
 				\Smart::log_warning('PageBuilder: Invalid Segment to Render on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
 				return array();
@@ -1227,7 +1227,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		} //end if
 		//--
 
-	//	print_r($data_arr); die(); // aaa
+	//	\print_r($data_arr); die(); // aaa
 
 		//--
 		$arr_replacements = [];
@@ -1246,15 +1246,15 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 					$plugin_exec 			= null; // reset each cycle
 					$plugin_status 			= null; // reset each cycle
 					//--
-					if(((string)$key != '') AND (preg_match((string)$this->regex_tpl_marker, (string)$key))) {
+					if(((string)$key != '') AND (\preg_match((string)$this->regex_tpl_marker, (string)$key))) {
 						//--
 						if((string)$val[$i]['type'] == 'plugin') { // INFO: each template must provide it's content (already cached or not) and the pcache key suffixes
 							//--
 							$plugin_id 		= (string) $val[$i]['id'];
 							$plugin_cfg 	= (array)  $val[$i]['config'];
 							//--
-							$plugin_part_d = (string) trim((string)\Smart::safe_filename((string)\Smart::dir_name((string)$plugin_id)));
-							$plugin_part_f = (string) trim((string)\Smart::safe_filename((string)\Smart::base_name((string)$plugin_id)));
+							$plugin_part_d = (string) \trim((string)\Smart::safe_filename((string)\Smart::dir_name((string)$plugin_id)));
+							$plugin_part_f = (string) \trim((string)\Smart::safe_filename((string)\Smart::base_name((string)$plugin_id)));
 							//--
 							$plugin_path = '';
 							$plugin_class = '';
@@ -1270,9 +1270,9 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 									//--
 									require_once((string)$plugin_path);
 									//--
-									if(((string)$plugin_class != 'PageBuilderFrontendPlugin') AND (class_exists((string)$plugin_class))) {
+									if(((string)$plugin_class != 'PageBuilderFrontendPlugin') AND (\class_exists((string)$plugin_class))) {
 										//--
-										if(is_subclass_of((string)$plugin_class, '\\SmartModExtLib\\PageBuilder\\AbstractFrontendPlugin')) {
+										if(\is_subclass_of((string)$plugin_class, '\\SmartModExtLib\\PageBuilder\\AbstractFrontendPlugin')) {
 											//--
 											$plugin_obj = new $plugin_class(
 												'index',
@@ -1297,18 +1297,18 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 											$plugin_page_settings = (array) $plugin_obj->PageViewGetCfgs();
 											//--
 											$plugin_exec = (array) $plugin_obj->PageViewGetVars();
-											//Smart::log_notice(print_r($plugin_exec,1));
+											// \Smart::log_notice(\print_r($plugin_exec,1));
 											//--
-											if(array_key_exists('status-code', $plugin_page_settings)) {
+											if(\array_key_exists('status-code', $plugin_page_settings)) {
 												$plugin_page_settings['status-code'] = (int) $plugin_page_settings['status-code']; // this rewrites what the Run() function returns, which is very OK as this is authoritative !
-												if(!in_array((int)$plugin_page_settings['status-code'], (array)\SmartFrameworkRuntime::getHttpStatusCodesALL())) {
+												if(!\in_array((int)$plugin_page_settings['status-code'], (array)\SmartFrameworkRuntime::getHttpStatusCodesALL())) {
 													\Smart::log_notice('PageBuilder: Render Template ERROR: Wrong HTTP Status Code (Set='.(int)$plugin_page_settings['status-code'].') in: ['.(string)$key.'] @ '.(string)$data_arr['id'].'/'.(string)$val[$i]['id'].' ('.(string)$val[$i]['type'].'/'.'PLUGIN'.') on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
 													$plugin_page_settings['status-code'] = 200;
 												} //end if
 											} else {
 												$plugin_page_settings['status-code'] = 200;
 												if((int)$plugin_status > 0) {
-													if(!in_array((int)$plugin_status, (array)\SmartFrameworkRuntime::getHttpStatusCodesALL())) {
+													if(!\in_array((int)$plugin_status, (array)\SmartFrameworkRuntime::getHttpStatusCodesALL())) {
 														\Smart::log_notice('PageBuilder: Render Template ERROR: Wrong HTTP Status Code (Return='.(int)$plugin_status.') in: ['.(string)$key.'] @ '.(string)$data_arr['id'].'/'.(string)$val[$i]['id'].' ('.(string)$val[$i]['type'].'/'.'PLUGIN'.') on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
 													} else {
 														$plugin_page_settings['status-code'] = (int) $plugin_status;
@@ -1345,7 +1345,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 											} //end if
 											//-- rawpage, rawmime, rawdisp
 											if(isset($plugin_page_settings['rawpage'])) {
-												$plugin_page_settings['rawpage'] = (string) strtolower((string)$plugin_page_settings['rawpage']);
+												$plugin_page_settings['rawpage'] = (string) \strtolower((string)$plugin_page_settings['rawpage']);
 												if((string)$plugin_page_settings['rawpage'] == 'yes') {
 													$this->PageViewSetCfg('rawpage', true);
 												} //end if
@@ -1355,7 +1355,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 											} //end if
 											if((string)$plugin_page_settings['rawpage'] == 'yes') {
 												if(isset($plugin_page_settings['rawmime'])) {
-													$plugin_page_settings['rawmime'] = (string) trim((string)$plugin_page_settings['rawmime']);
+													$plugin_page_settings['rawmime'] = (string) \trim((string)$plugin_page_settings['rawmime']);
 													if((string)$plugin_page_settings['rawmime'] != '') {
 														$this->PageViewSetCfg('rawmime', (string)$plugin_page_settings['rawmime']);
 													} //end if
@@ -1363,7 +1363,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 											} //end if
 											if((string)$plugin_page_settings['rawpage'] == 'yes') {
 												if(isset($plugin_page_settings['rawdisp'])) {
-													$plugin_page_settings['rawdisp'] = (string) trim((string)$plugin_page_settings['rawdisp']);
+													$plugin_page_settings['rawdisp'] = (string) \trim((string)$plugin_page_settings['rawdisp']);
 													if((string)$plugin_page_settings['rawdisp'] != '') {
 														$this->PageViewSetCfg('rawdisp', (string)$plugin_page_settings['rawdisp']);
 													} //end if
@@ -1385,13 +1385,13 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 												$data_arr['@meta-keywords'] = (string) $plugin_exec['meta-keywords'];
 											} //end if
 											//--
-											if(($level === 0) AND (strpos((string)$key, 'TEMPLATE@') === 0) AND (in_array((string)$key, (array)$this->page_markers))) { // ((string)$key != 'TEMPLATE@MAIN')) { // allow TEMPLATE@*(!MAIN) just on main page (level=0)
+											if(($level === 0) AND (\strpos((string)$key, 'TEMPLATE@') === 0) AND (\in_array((string)$key, (array)$this->page_markers))) { // ((string)$key != 'TEMPLATE@MAIN')) { // allow TEMPLATE@*(!MAIN) just on main page (level=0)
 												//-- don't replace these markers, they are template markers
-												$data_arr['smart-markers'][(string)substr((string)$key, strlen('TEMPLATE@'))] .= (string) $plugin_exec['content']; // append is mandatory here else will not render correctly more than one sub-segment/plugin
+												$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] .= (string) $plugin_exec['content']; // append is mandatory here else will not render correctly more than one sub-segment/plugin
 												//--
-											} elseif(preg_match((string)$this->regex_marker, (string)$key)) {
+											} elseif(\preg_match((string)$this->regex_marker, (string)$key)) {
 												//--
-												if(strpos((string)$data_arr['code'], '{{:'.(string)$key) !== false) {
+												if(\strpos((string)$data_arr['code'], '{{:'.(string)$key) !== false) {
 													//-- replace these markers, they are page markers
 													$arr_replacements['{{:'.(string)$key.':}}'] .= (string) $plugin_exec['content']; // OK: always append
 													//--
@@ -1435,7 +1435,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 							//--
 						} else { // page / segment
 							//--
-							if(is_array($val[$i]['render'])) {
+							if(\is_array($val[$i]['render'])) {
 								$val[$i] = (array) $this->doRenderObject($id, $val[$i], $level);
 							} //end if
 							//--
@@ -1446,17 +1446,17 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 								//--
 							} else {
 								//--
-								if(($level === 0) AND (strpos((string)$key, 'TEMPLATE@') === 0) AND (in_array((string)$key, (array)$this->page_markers))) { // ((string)$key != 'TEMPLATE@MAIN')) { // allow TEMPLATE@*(!MAIN) just on main page (level=0)
+								if(($level === 0) AND (\strpos((string)$key, 'TEMPLATE@') === 0) AND (\in_array((string)$key, (array)$this->page_markers))) { // ((string)$key != 'TEMPLATE@MAIN')) { // allow TEMPLATE@*(!MAIN) just on main page (level=0)
 									//-- don't replace these markers, they are template markers
-									$data_arr['smart-markers'][(string)substr((string)$key, strlen('TEMPLATE@'))] .= (string) $val[$i]['code']; // append is mandatory here else will not render correctly more than one sub-segment/plugin
+									$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] .= (string) $val[$i]['code']; // append is mandatory here else will not render correctly more than one sub-segment/plugin
 									//--
-								} elseif(preg_match((string)$this->regex_marker, (string)$key)) {
+								} elseif(\preg_match((string)$this->regex_marker, (string)$key)) {
 									//--
-									if(strpos((string)$data_arr['code'], '{{:'.(string)$key) !== false) {
+									if(\strpos((string)$data_arr['code'], '{{:'.(string)$key) !== false) {
 										//-- replace these markers, they are page markers
-										//$arr_replacements['{{:'.(string)$key.':}}'] .= '<!-- Segment['.(int)$i.']: '.Smart::escape_html((string)$key).' -->';
+										//$arr_replacements['{{:'.(string)$key.':}}'] .= '<!-- Segment['.(int)$i.']: '.\Smart::escape_html((string)$key).' -->';
 										$arr_replacements['{{:'.(string)$key.':}}'] .= (string) $val[$i]['code']; // OK: always append
-										//$arr_replacements['{{:'.(string)$key.':}}'] .= '<!-- /Segment['.(int)$i.']: '.Smart::escape_html((string)$key).' -->';
+										//$arr_replacements['{{:'.(string)$key.':}}'] .= '<!-- /Segment['.(int)$i.']: '.\Smart::escape_html((string)$key).' -->';
 										//--
 									} else {
 										//--
@@ -1494,7 +1494,7 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		} //end foreach
 		//--
 		if(\Smart::array_size($arr_replacements) > 0) {
-			$data_arr['code'] = (string) strtr((string)$data_arr['code'], (array)$arr_replacements); // since strtr treats strings as a sequence of bytes, and since UTF-8 and other multibyte encodings use - by definition - more than one byte for at least some characters, the unicode strings is likely to have problems. Fix: use the associative array as 2nd param to specify the mapping instead of using it with 3 params ; using strtr() for str replace with no recursion instead of str_replace() which goes with recursion over already replaced parts and is not safe in this context
+			$data_arr['code'] = (string) \strtr((string)$data_arr['code'], (array)$arr_replacements); // since strtr treats strings as a sequence of bytes, and since UTF-8 and other multibyte encodings use - by definition - more than one byte for at least some characters, the unicode strings is likely to have problems. Fix: use the associative array as 2nd param to specify the mapping instead of using it with 3 params ; using strtr() for str replace with no recursion instead of str_replace() which goes with recursion over already replaced parts and is not safe in this context
 		} //end if
 		//--
 
@@ -1511,21 +1511,21 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 		//--
 
 		//-- manage meta from plugins
-		if(in_array('TEMPLATE@TITLE', (array)$this->page_markers)) {
+		if(\in_array('TEMPLATE@TITLE', (array)$this->page_markers)) {
 			if((string)$data_arr['@meta-title'] != '') {
 				$data_arr['smart-markers']['TITLE'] = (string) $data_arr['@meta-title'];
 			} //end if
 		} //end if
 		unset($data_arr['@meta-title']);
 		//--
-		if(in_array('TEMPLATE@META-DESCRIPTION', (array)$this->page_markers)) {
+		if(\in_array('TEMPLATE@META-DESCRIPTION', (array)$this->page_markers)) {
 			if((string)$data_arr['@meta-description'] != '') {
 				$data_arr['smart-markers']['META-DESCRIPTION'] = (string) $data_arr['@meta-description'];
 			} //end if
 		} //end if
 		unset($data_arr['@meta-description']);
 		//--
-		if(in_array('TEMPLATE@META-KEYWORDS', (array)$this->page_markers)) {
+		if(\in_array('TEMPLATE@META-KEYWORDS', (array)$this->page_markers)) {
 			if((string)$data_arr['@meta-keywords'] != '') {
 				$data_arr['smart-markers']['META-KEYWORDS'] = (string) $data_arr['@meta-keywords'];
 			} //end if

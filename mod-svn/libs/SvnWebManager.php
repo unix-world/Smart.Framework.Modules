@@ -8,23 +8,23 @@
 
 namespace SmartModExtLib\Svn;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 
 final class SvnWebManager {
 
 	// ::
-	// v.20190215
+	// v.20191006
 
 	private static $svn_cache_dir = 'tmp/cache/svn/'; 		// must have trailing slash :: the svn proc jail root
 
@@ -41,22 +41,22 @@ final class SvnWebManager {
 		//--
 		foreach($repos as $key => $val) {
 			//--
-			if(((string)trim((string)$key) != '') AND (self::validateCfgRepoEntry($val))) {
+			if(((string)\trim((string)$key) != '') AND (self::validateCfgRepoEntry($val))) {
 				//--
 				$tmp_arr = (array) self::execSvnCmd('info', (string)$val['url'], '', $val['user'], $val['pass'], 'xml-arr'); // OK
-				//print_r($tmp_arr); die();
+				// \print_r($tmp_arr); die();
 				//--
 				if(\Smart::array_size($tmp_arr) > 0) {
 					if(\Smart::array_size($tmp_arr['info']) > 0) {
 						if(\Smart::array_size($tmp_arr['info'][0]) > 0) {
 							//--
 							$arr[] = [
-								'repo-name' 		=> (string) trim((string)$key),
+								'repo-name' 		=> (string) \trim((string)$key),
 								'last-rev-num' 		=> (string) \Smart::array_get_by_key_path((array)$tmp_arr, 'info.0.entry.0.commit|@attributes.0.revision', '.'),
 								'last-rev-author' 	=> (string) \Smart::array_get_by_key_path((array)$tmp_arr, 'info.0.entry.0.commit.0.author.0', '.'),
-								'last-rev-date' 	=> (string) date('D, d M Y H:i:s', strtotime((string)\Smart::array_get_by_key_path((array)$tmp_arr, 'info.0.entry.0.commit.0.date.0', '.')))
+								'last-rev-date' 	=> (string) \date('D, d M Y H:i:s', \strtotime((string)\Smart::array_get_by_key_path((array)$tmp_arr, 'info.0.entry.0.commit.0.date.0', '.')))
 							];
-							//print_r($arr); die();
+							// \print_r($arr); die();
 							//--
 						} //end if
 					} //end if
@@ -77,17 +77,17 @@ final class SvnWebManager {
 	//============================================================ OK
 	public static function listRepo($repo, $path, $rev) {
 		//--
-		$repo = (string) trim((string)$repo);
+		$repo = (string) \trim((string)$repo);
 		$repos = (array) \Smart::get_from_config('svn.repos');
-		$rdata = (array) $repos[(string)trim((string)$repo)];
-		if(((string)trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		$rdata = (array) $repos[(string)\trim((string)$repo)];
+		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
 			return array();
 		} //end if
 		//--
 		$arr = array();
 		//--
 		$tmp_arr = (array) self::execSvnCmd('list', (string)$rdata['url'], (string)$path, $rdata['user'], $rdata['pass'], 'xml-arr', [ 'rev' => (string)$rev ]); // OK
-		//print_r($tmp_arr); die();
+		// \print_r($tmp_arr); die();
 		if(\Smart::array_size($tmp_arr) <= 0) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN List: Invalid XML (1): ['.$path.']',
@@ -116,7 +116,7 @@ final class SvnWebManager {
 		} //end if
 		//--
 		$tmp_arr = (array) $tmp_arr['lists'][0];
-		//print_r($tmp_arr); die();
+		// \print_r($tmp_arr); die();
 		//--
 		if((\Smart::array_size($tmp_arr['list']) <= 0) OR (\Smart::array_size($tmp_arr['list|@attributes']) <= 0)) {
 			\Smart::raise_error(
@@ -135,7 +135,7 @@ final class SvnWebManager {
 			//var_dump((array)$tmp_entries); die((string)phpversion());
 			return array(); // Fix: no entries found
 		} //end if
-		//print_r($tmp_entries); die();
+		// \print_r($tmp_entries); die();
 		if(\Smart::array_size($tmp_entratt) <= 0) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN List: Invalid XML (5): ['.$path.']',
@@ -148,12 +148,12 @@ final class SvnWebManager {
 		for($i=0; $i<\Smart::array_size($tmp_entries); $i++) {
 			//--
 			$val = (array) $tmp_entries[$i];
-			//print_r($val); die();
+			// \print_r($val); die();
 			//-- proc
 			if(\Smart::array_size($val) > 0) {
 				//--
 				$size = '-';
-				if(array_key_exists('size', (array)$val)) {
+				if(\array_key_exists('size', (array)$val)) {
 					$size = (string) \SmartUtils::pretty_print_bytes((int)\Smart::array_get_by_key_path((array)$val, 'size.0', '.'), 1, ' ');
 				} //end if
 				//--
@@ -176,16 +176,16 @@ final class SvnWebManager {
 					'size' => (string) $size,
 					'last-rev-num' => (string) \Smart::array_get_by_key_path((array)$val, 'commit|@attributes.0.revision', '.'),
 					'last-rev-author' => (string) \Smart::array_get_by_key_path((array)$val, 'commit.0.author.0', '.'),
-					'last-rev-date' => (string) date('D, d M Y H:i:s', strtotime((string)\Smart::array_get_by_key_path((array)$val, 'commit.0.date.0', '.'))),
+					'last-rev-date' => (string) \date('D, d M Y H:i:s', \strtotime((string)\Smart::array_get_by_key_path((array)$val, 'commit.0.date.0', '.'))),
 				];
 				//--
-				//print_r($arr); die();
+				// \print_r($arr); die();
 				//--
 			} //end if
 			//--
 		} //end for
 		//--
-		//print_r($arr); die();
+		// \print_r($arr); die();
 		//--
 		return (array) $arr;
 		//--
@@ -196,24 +196,24 @@ final class SvnWebManager {
 	//============================================================ OK
 	public static function getHeadRevision($repo) {
 		//--
-		$repo = (string) trim((string)$repo);
+		$repo = (string) \trim((string)$repo);
 		$repos = (array) \Smart::get_from_config('svn.repos');
-		$rdata = (array) $repos[(string)trim((string)$repo)];
-		if(((string)trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		$rdata = (array) $repos[(string)\trim((string)$repo)];
+		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
 			return -1;
 		} //end if
 		//--
 		$tmp_arr = (array) self::execSvnCmd('get-revs', (string)$rdata['url'], '', $rdata['user'], $rdata['pass'], 'xml-arr', [ 'start-rev' => 'HEAD', 'num-revs' => 1 ]); // get latest revision
-		//print_r($tmp_arr); die();
+		// \print_r($tmp_arr); die();
 		$entry_zero = (array) \Smart::array_get_by_key_path((array)$tmp_arr, 'log.0.logentry|@attributes.0', '.');
-		if((\Smart::array_size($entry_zero) <= 0) OR (!array_key_exists('revision', (array)$entry_zero))) {
+		if((\Smart::array_size($entry_zero) <= 0) OR (!\array_key_exists('revision', (array)$entry_zero))) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN Export: Failed to get SVN Export Head Revision ...',
 				'ERR: Failed to get SVN Export Head Revision' // msg to display
 			);
 			die(''); // just in case
 		} //end if
-		//print_r($entry_zero); die();
+		// \print_r($entry_zero); die();
 		//--
 		return (string) ($entry_zero['revision'] ? (int)$entry_zero['revision'] : '');
 		//--
@@ -224,15 +224,15 @@ final class SvnWebManager {
 	//============================================================ OK
 	public static function getCompare($repo, $path, $rev) {
 		//--
-		$repo = (string) trim((string)$repo);
+		$repo = (string) \trim((string)$repo);
 		$repos = (array) \Smart::get_from_config('svn.repos');
-		$rdata = (array) $repos[(string)trim((string)$repo)];
-		if(((string)trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		$rdata = (array) $repos[(string)\trim((string)$repo)];
+		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
 			return array();
 		} //end if
 		//-- get compare just for root and later filter by path
 		$tmp_arr = self::execSvnCmd('compare', (string)$rdata['url'], '/', $rdata['user'], $rdata['pass'], 'xml-arr', [ 'rev' => (string)$rev ]); // OK
-		//print_r($tmp_arr); die();
+		// \print_r($tmp_arr); die();
 		//--
 		if(\Smart::array_size($tmp_arr['log']) <= 0) {
 			\Smart::raise_error(
@@ -279,12 +279,12 @@ final class SvnWebManager {
 		$arr['metainfo'] = [
 			'rev' 		=> (string) $tmp_rev,
 			'author' 	=> (string) $tmp_author,
-			'date' 		=> (string) date('D, d M Y H:i:s', strtotime((string)$tmp_date)),
+			'date' 		=> (string) \date('D, d M Y H:i:s', \strtotime((string)$tmp_date)),
 			'msg' 		=> (string) $tmp_msg
 		];
 		$arr['changes'] = [];
 		for($i=0; $i<\Smart::array_size($tmp_arr['path']); $i++) {
-			if(((string)$path == '') OR ((string)$path == '/') OR (strpos($tmp_arr['path'][$i], $path) === 0)) {
+			if(((string)$path == '') OR ((string)$path == '/') OR (\strpos($tmp_arr['path'][$i], $path) === 0)) {
 				$tmp_atts = (array) $tmp_arr['path|@attributes'][$i];
 				$the_item_icon_suffix = '';
 				if((string)$tmp_atts['kind'] == 'file') {
@@ -306,7 +306,7 @@ final class SvnWebManager {
 			} //end if
 		} //end for
 		//--
-		//print_r($arr); die();
+		// \print_r($arr); die();
 		return (array) $arr;
 		//--
 	} //END FUNCTION
@@ -316,10 +316,10 @@ final class SvnWebManager {
 	//============================================================ OK
 	public static function getFile($repo, $path, $rev) {
 		//--
-		$repo = (string) trim((string)$repo);
+		$repo = (string) \trim((string)$repo);
 		$repos = (array) \Smart::get_from_config('svn.repos');
-		$rdata = (array) $repos[(string)trim((string)$repo)];
-		if(((string)trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		$rdata = (array) $repos[(string)\trim((string)$repo)];
+		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
 			return '';
 		} //end if
 		//--
@@ -332,18 +332,18 @@ final class SvnWebManager {
 	//============================================================ aaa
 	public static function getRealPathFromPrevRevision($repo, $path, $revx, $revy) {
 		//--
-		$repo = (string) trim((string)$repo);
+		$repo = (string) \trim((string)$repo);
 		$repos = (array) \Smart::get_from_config('svn.repos');
-		$rdata = (array) $repos[(string)trim((string)$repo)];
-		if(((string)trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		$rdata = (array) $repos[(string)\trim((string)$repo)];
+		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
 			return '';
 		} //end if
 		//--
 		$tmp_arr = (array) self::execSvnCmd('prev-info', (string)$rdata['url'], (string)$path, $rdata['user'], $rdata['pass'], 'xml-arr', [ 'rev-old' => (string)$revx, 'rev-new' => (string)$revy ]); // OK
-		//print_r($tmp_arr); die();
+		// \print_r($tmp_arr); die();
 		$path = (string) \Smart::array_get_by_key_path((array)$tmp_arr, 'info.0.entry.0.relative-url.0', '.');
-		$rpath = (string) trim((string)substr((string)$path, 1));
-		if((substr((string)$path, 0, 1) != '^') OR ((string)$rpath == '')) {
+		$rpath = (string) \trim((string)\substr((string)$path, 1));
+		if((\substr((string)$path, 0, 1) != '^') OR ((string)$rpath == '')) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN Revision Path: Invalid Real Path for: ['.$path.'] @ ['.$path.']',
 				'ERR: Invalid SVN Revision Path' // msg to display
@@ -361,10 +361,10 @@ final class SvnWebManager {
 	//============================================================ OK
 	public static function getDiffFile($repo, $path, $revx, $revy) {
 		//--
-		$repo = (string) trim((string)$repo);
+		$repo = (string) \trim((string)$repo);
 		$repos = (array) \Smart::get_from_config('svn.repos');
-		$rdata = (array) $repos[(string)trim((string)$repo)];
-		if(((string)trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		$rdata = (array) $repos[(string)\trim((string)$repo)];
+		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
 			return '';
 		} //end if
 		//--
@@ -391,18 +391,18 @@ final class SvnWebManager {
 				return array();
 		} //end switch
 		//--
-		$repo  = (string) trim((string)$repo);
+		$repo  = (string) \trim((string)$repo);
 		$repos = (array) \Smart::get_from_config('svn.repos');
-		$rdata = (array) $repos[(string)trim((string)$repo)];
-		if(((string)trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		$rdata = (array) $repos[(string)\trim((string)$repo)];
+		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
 			return array();
 		} //end if
 		//--
-		$path = (string) trim((string)$path);
+		$path = (string) \trim((string)$path);
 		if(((string)$path == '') OR ((string)$path == '/')) {
 			$finpath = '';
 		} else {
-			$finpath = (string) '_'.trim((string)\Smart::safe_filename((string)$path, '-'), '-');
+			$finpath = (string) '_'.\trim((string)\Smart::safe_filename((string)$path, '-'), '-');
 		} //end if
 		$expname = (string) \Smart::safe_filename((string)$repo.'.r'.$rev.$finpath);
 		$expdir = (string) 'svn-exp/'.\Smart::uuid_10_seq().'-'.\Smart::uuid_10_str().'-'.\Smart::uuid_10_num();
@@ -439,15 +439,15 @@ final class SvnWebManager {
 	//============================================================ OK
 	public static function listRevs($repo, $path, $start, $num) {
 		//--
-		$repo = (string) trim((string)$repo);
+		$repo = (string) \trim((string)$repo);
 		$repos = (array) \Smart::get_from_config('svn.repos');
-		$rdata = (array) $repos[(string)trim((string)$repo)];
-		if(((string)trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		$rdata = (array) $repos[(string)\trim((string)$repo)];
+		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
 			return array();
 		} //end if
 		//--
 		$tmp_arr = (array) self::execSvnCmd('get-revs', (string)$rdata['url'], (string)$path, $rdata['user'], $rdata['pass'], 'xml-arr', [ 'start-rev' => (string)$start, 'num-revs' => (int)$num, 'rev' => (string)$start ]);
-		//print_r($tmp_arr); die();
+		// \print_r($tmp_arr); die();
 		//--
 		if(\Smart::array_size($tmp_arr['log']) <= 0) {
 			\Smart::raise_error(
@@ -469,19 +469,19 @@ final class SvnWebManager {
 		$entries = (array) $tmp_arr['log'][0];
 		$tmp_arr = array();
 		$arr = [];
-		//print_r($entries); die();
+		// \print_r($entries); die();
 		for($i=0; $i<\Smart::array_size($entries['logentry']); $i++) {
 			//--
 			$arr[] = [
 				'revision' => (string) \Smart::array_get_by_key_path((array)$entries['logentry|@attributes'], $i.'.revision', '.'),
 				'author' => (string) \Smart::array_get_by_key_path((array)$entries['logentry'], $i.'.author.0', '.'),
-				'date' => (string) date('D, d M Y H:i:s', strtotime((string)\Smart::array_get_by_key_path((array)$entries['logentry'], $i.'.date.0', '.'))),
+				'date' => (string) \date('D, d M Y H:i:s', \strtotime((string)\Smart::array_get_by_key_path((array)$entries['logentry'], $i.'.date.0', '.'))),
 				'msg' => (string) \Smart::array_get_by_key_path((array)$entries['logentry'], $i.'.msg.0', '.')
 			];
-			//print_r($arr); die();
+			// \print_r($arr); die();
 			//--
 		} //end for
-		//print_r($arr); die();
+		// \print_r($arr); die();
 		//--
 		return (array) $arr;
 		//--
@@ -492,7 +492,7 @@ final class SvnWebManager {
 	//============================================================
 	public static function isTextFileByMimeType($mimetype) {
 		//--
-		if(in_array((string)$mimetype, [
+		if(\in_array((string)$mimetype, [
 			'application/x-php',
 			'application/javascript',
 			'application/json',
@@ -523,13 +523,13 @@ final class SvnWebManager {
 		//--
 		$file = (string) \SmartFileSysUtils::get_file_name_from_path($path);
 		//--
-		if(in_array((string)strtolower((string)$file), [
+		if(\in_array((string)\strtolower((string)$file), [
 			'makefile'
 		])) {
 			return 'shell';
 		} //end if
 		//--
-		if(in_array((string)strtolower((string)$file), [
+		if(\in_array((string)\strtolower((string)$file), [
 			'license',
 			'readme'
 		])) {
@@ -539,7 +539,7 @@ final class SvnWebManager {
 		$ext = (string) \SmartFileSysUtils::get_file_extension_from_path($path);
 		$type = '';
 		// TODO: make this based on \SmartFileSysUtils::mime_eval()
-		switch((string)strtolower((string)$ext)) {
+		switch((string)\strtolower((string)$ext)) {
 			case 'cs': // C#
 			case 'c': // C
 			case 'y': // Yacc source code file
@@ -636,18 +636,18 @@ final class SvnWebManager {
 			return false;
 		} //end if
 		//--
-		if((string)trim((string)$repo_entry['url']) == '') {
+		if((string)\trim((string)$repo_entry['url']) == '') {
 			return false;
 		} //end if
 		//--
 		if($repo_entry['user'] !== null) {
-			if((string)trim((string)$repo_entry['user']) == '') {
+			if((string)\trim((string)$repo_entry['user']) == '') {
 				return false;
 			} //end if
 		} //end if
 		//--
 		if($repo_entry['pass'] !== null) {
-			if((string)trim((string)$repo_entry['pass']) == '') {
+			if((string)\trim((string)$repo_entry['pass']) == '') {
 				return false;
 			} //end if
 		} //end if
@@ -674,7 +674,7 @@ final class SvnWebManager {
 			);
 			die(''); // just in case
 		} //end if
-		$out = (string) trim((string)$exearr['stdout']);
+		$out = (string) \trim((string)$exearr['stdout']);
 		$exearr = array(); // free mem
 		//--
 		switch((string)$format) {
@@ -719,22 +719,22 @@ final class SvnWebManager {
 	//============================================================ OK
 	private static function buildSvnCmd($what, $repo, $path, $auth_user, $auh_pass, $options) {
 		//--
-		$repo = (string) trim((string)$repo);
-		if(strpos((string)$repo, '://') === false) {
+		$repo = (string) \trim((string)$repo);
+		if(\strpos((string)$repo, '://') === false) {
 			$repo = 'file:///INVALID-REPOSITORY/--invalid-repo-name-err-svn--';
 		} //end if
-		if(substr((string)$repo, -1, 1) == '/') {
-			$repo = (string) substr((string)$repo, 0, -1);
+		if((string)\substr((string)$repo, -1, 1) == '/') {
+			$repo = (string) \substr((string)$repo, 0, -1);
 		} //end if
 		//--
-		$path = (string) trim((string)$path);
-		if(substr((string)$path, 0, 1) != '/') {
+		$path = (string) \trim((string)$path);
+		if((string)\substr((string)$path, 0, 1) != '/') {
 			$path = (string) '/'.$path;
 		} //end if
 		//--
 		//die($repo.$path);
 		//--
-		$cmdsvn = (string) trim((string)\Smart::get_from_config('svn.cmd'));
+		$cmdsvn = (string) \trim((string)\Smart::get_from_config('svn.cmd'));
 		if((string)$cmdsvn == '') {
 			return '';
 		} //end if
@@ -757,7 +757,7 @@ final class SvnWebManager {
 				$cmd = (string) $base_cmd.' --xml info --revision '.self::escapeCmdArg((string)$options['rev-old']).' '.self::escapeCmdArg((string)$repo.$path.'@'.(string)$options['rev-new']);
 				break;
 			case 'list':
-				if((string)trim((string)$options['rev']) != '') {
+				if((string)\trim((string)$options['rev']) != '') {
 					$rev = (string) $options['rev'];
 				} else {
 					$rev = 'HEAD';
@@ -765,7 +765,7 @@ final class SvnWebManager {
 				$cmd = (string) $base_cmd.' --xml ls --revision '.self::escapeCmdArg((string)$rev).' '.self::escapeCmdArg((string)$repo.$path.'@'.(string)$rev);
 				break;
 			case 'cat':
-				if((string)trim((string)$options['rev']) != '') {
+				if((string)\trim((string)$options['rev']) != '') {
 					$rev = (string) $options['rev'];
 				} else {
 					$rev = 'HEAD';
@@ -773,7 +773,7 @@ final class SvnWebManager {
 				$cmd = (string) $base_cmd.' cat --revision '.self::escapeCmdArg((string)$rev).' '.self::escapeCmdArg((string)$repo.$path.'@'.(string)$rev);
 				break;
 			case 'compare': // compare changes between revisions
-				if((string)trim((string)$options['rev']) != '') {
+				if((string)\trim((string)$options['rev']) != '') {
 					$rev = (string) $options['rev'];
 				} else {
 					$rev = 'HEAD';
@@ -792,7 +792,7 @@ final class SvnWebManager {
 					);
 					die(''); // just in case
 				} //end if
-				if((string)trim((string)$options['rev']) != '') {
+				if((string)\trim((string)$options['rev']) != '') {
 					$rev = (string) $options['rev'];
 				} else {
 					$rev = 'HEAD';
@@ -802,7 +802,7 @@ final class SvnWebManager {
 			case 'get-revs':
 				$start_rev = (string) $options['start-rev'];
 				$num_revs = (int) $options['num-revs'];
-				if((string)trim((string)$options['rev']) != '') {
+				if((string)\trim((string)$options['rev']) != '') {
 					$rev = (string) $options['rev'];
 				} else { // $rev is required for removed or changed paths
 					$rev = 'HEAD';
@@ -838,7 +838,7 @@ final class SvnWebManager {
 		$fpatharch = (string) \Smart::safe_pathname((string)self::$svn_cache_dir.$dir.$arch_file);
 		\SmartFileSysUtils::raise_error_if_unsafe_path($fpatharch);
 		//--
-		$cmd7za = (string) trim((string)\Smart::get_from_config('svn.7za'));
+		$cmd7za = (string) \trim((string)\Smart::get_from_config('svn.7za'));
 		if((string)$cmd7za == '') {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# Empty Archive Command: 7za',
@@ -856,16 +856,16 @@ final class SvnWebManager {
 			);
 			die(''); // just in case
 		} //end if
-		//die(trim((string)$exearr['stdout'])); // not needed for archiving
+		//die(\trim((string)$exearr['stdout'])); // not needed for archiving
 		$exearr = array(); // free mem
 		//--
 		if(\SmartFileSystem::is_type_file((string)$fpatharch)) {
-			if(filesize((string)$fpatharch) > 0) {
+			if(\filesize((string)$fpatharch) > 0) {
 				//--
 				$cmd = (string) self::escapeCmdExe((string)$cmd7za).' t '.self::escapeCmdArg((string)$arch_file);
 				$exearr = (array) \SmartUtils::run_proc_cmd((string)$cmd, null, (string)self::$svn_cache_dir.$dir);
-				//die(trim((string)$exearr['stdout'])); // not needed for archiving
-				if(($exearr['exitcode'] !== 0) OR ((string)$exearr['stderr'] != '') OR (stripos((string)$exearr['stdout'], "\n".'Everything is Ok'."\n") === false)) {
+				//die(\trim((string)$exearr['stdout'])); // not needed for archiving
+				if(($exearr['exitcode'] !== 0) OR ((string)$exearr['stderr'] != '') OR (\stripos((string)$exearr['stdout'], "\n".'Everything is Ok'."\n") === false)) {
 					\Smart::raise_error(
 						__METHOD__.' #ERR# Archive Test Command:['.$cmd.'] Returned Some Errors ; ExitCode=['.$exearr['exitcode'].'] ; ErrorMsg: '.$exearr['stderr'].' ; StdOut: '.$exearr['stdout'],
 						'ERR: Errors when running archive test command' // msg to display
@@ -888,9 +888,9 @@ final class SvnWebManager {
 	//============================================================ OK
 	private static function escapeCmdExe($cmd) {
 		//--
-		$cmd = (string) trim((string)\Smart::normalize_spaces((string)$cmd));
+		$cmd = (string) \trim((string)\Smart::normalize_spaces((string)$cmd));
 		//--
-		return (string) escapeshellcmd((string)$cmd);
+		return (string) \escapeshellcmd((string)$cmd);
 		//--
 	} //END FUNCTION
 	//============================================================
@@ -899,9 +899,9 @@ final class SvnWebManager {
 	//============================================================ OK
 	private static function escapeCmdArg($arg) {
 		//--
-		$arg = (string) trim((string)\Smart::normalize_spaces((string)$arg));
+		$arg = (string) \trim((string)\Smart::normalize_spaces((string)$arg));
 		//--
-		return (string) escapeshellarg((string)$arg);
+		return (string) \escapeshellarg((string)$arg);
 		//--
 	} //END FUNCTION
 	//============================================================
@@ -910,17 +910,17 @@ final class SvnWebManager {
 	//============================================================ OK
 	private static function rmDirRecursive($dir_name) {
 		//--
-		$dir_name = (string) rtrim((string)$dir_name, '/'); // remove any trailing slashes
+		$dir_name = (string) \rtrim((string)$dir_name, '/'); // remove any trailing slashes
 		//--
 		if(!\SmartFileSysUtils::check_if_safe_path($dir_name)) {
 			\Smart::log_warning(__METHOD__.'() // FAILED to delete a directory with unsafe path (1): '.$dir_name);
 			return false;
 		} //end if
 		//--
-		clearstatcache(true, (string)$dir_name);
+		\clearstatcache(true, (string)$dir_name);
 		//--
-		if(is_link((string)$dir_name)) {
-			return (bool) @unlink((string)$dir_name);
+		if(\is_link((string)$dir_name)) {
+			return (bool) @\unlink((string)$dir_name);
 		} //end if
 		//--
 		$dir_name = (string) $dir_name.'/'; // add trailing slash (previous trailing slashes were removed above)
@@ -930,7 +930,7 @@ final class SvnWebManager {
 			return false;
 		} //end if
 		//--
-		$files = (array) @scandir((string)$dir_name);
+		$files = (array) @\scandir((string)$dir_name);
 		//--
 		foreach($files as $k => $file) {
 			//--
@@ -939,28 +939,28 @@ final class SvnWebManager {
 				$path = (string) $dir_name.$file;
 				//-- minimal test: valid, backward, absolute
 				if(
-					(strpos((string)$path, '://') !== false) OR // valid
-					((strpos((string)$path, '/../') !== false) OR (strpos((string)$path, '/./') !== false) OR (strpos((string)$path, '/..') !== false) OR (strpos((string)$path, '../') !== false)) OR // backward
-					((string)substr((string)trim((string)$path), 0, 1) == '/') // absolute
+					(\strpos((string)$path, '://') !== false) OR // valid
+					((\strpos((string)$path, '/../') !== false) OR (\strpos((string)$path, '/./') !== false) OR (\strpos((string)$path, '/..') !== false) OR (\strpos((string)$path, '../') !== false)) OR // backward
+					((string)\substr((string)\trim((string)$path), 0, 1) == '/') // absolute
 				) {
 					\Smart::log_warning(__METHOD__.'() // FAILED to delete an unsafe path: '.$path);
 					return false;
 				} //end if
 				//--
-				clearstatcache(true, (string)$path);
-				if((is_dir((string)$path)) AND !is_link($path)) {
+				\clearstatcache(true, (string)$path);
+				if((\is_dir((string)$path)) AND !\is_link($path)) {
 					self::rmDirRecursive((string)$path); // if dir but not link
 				} else {
-					@unlink((string)$path); // if file or link
+					@\unlink((string)$path); // if file or link
 				} //end if else
 				//--
 			} //end if
 			//--
 		} //end foreach
 		//--
-		clearstatcache(true, (string)$dir_name);
-		if(rmdir((string)$dir_name)) {
-			if((file_exists((string)$dir_name)) OR (is_link((string)$dir_name))) { // {{{SYNC-SF-PATH-EXISTS}}}
+		\clearstatcache(true, (string)$dir_name);
+		if(\rmdir((string)$dir_name)) {
+			if((\file_exists((string)$dir_name)) OR (\is_link((string)$dir_name))) { // {{{SYNC-SF-PATH-EXISTS}}}
 				\Smart::log_warning(__METHOD__.'() // FAILED to delete a directory: '.$dir_name);
 				return false; // dir still exists after deletion ... why !?
 			} else {

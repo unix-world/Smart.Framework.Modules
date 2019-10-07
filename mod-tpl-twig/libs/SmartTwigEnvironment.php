@@ -6,10 +6,10 @@
 
 namespace SmartModExtLib\TplTwig;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
@@ -28,7 +28,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @internal
  *
  * @depends 	extensions: classes: Twig
- * @version 	v.20190320
+ * @version 	v.20191007
  * @package 	Templating:Engines
  *
  */
@@ -39,7 +39,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 
 	public function smartSetupCacheDir() {
 		//--
-		if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+		if(\SMART_FRAMEWORK_ADMIN_AREA === true) {
 			$the_twig_cache_dir = 'tmp/cache/twig#adm';
 		} else {
 			$the_twig_cache_dir = 'tmp/cache/twig#idx';
@@ -83,10 +83,10 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 		$optim_msg = [];
 		foreach($arr as $key => $val) {
 			if($key) {
-				if(is_object($val)) {
+				if(\is_object($val)) {
 					//--
 					$hash_key = (string) \SmartHashCrypto::sha256((string)$key); // hash('sha256',$key) :: sync with Twig_Environment->getTemplateClass()
-					$real_cache_file = (string) $the_twig_cache_dir.\SmartFileSysUtils::add_dir_last_slash(substr($hash_key, 0, 2)).$hash_key.'.php';
+					$real_cache_file = (string) $the_twig_cache_dir.\SmartFileSysUtils::add_dir_last_slash(\substr($hash_key, 0, 2)).$hash_key.'.php';
 					//--
 					$tpl_path = (string) $val->getTemplateName();
 					$tpl_vars = (array) $this->smartGetRequiredKeys((string)$tpl_path);
@@ -94,7 +94,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 						'tpl' 		=> (string) $tpl_path,
 						'cache' 	=> (string) $real_cache_file
 					];
-					$dbg_arr['tpl-vars'] = (array) array_merge($dbg_arr['tpl-vars'], (array)$tpl_vars);
+					$dbg_arr['tpl-vars'] = (array) \array_merge($dbg_arr['tpl-vars'], (array)$tpl_vars);
 					//--
 					if((string)$mode != 'get') {
 						if(!\SmartFileSystem::is_type_file($real_cache_file)) {
@@ -125,12 +125,12 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 		$tmp_vars = (array) $dbg_arr['tpl-vars'];
 		$dbg_arr['tpl-vars'] = array();
 		foreach($tmp_vars as $key => $val) {
-			if((string)trim((string)$val) != '') {
+			if((string)\trim((string)$val) != '') {
 				$dbg_arr['tpl-vars'][(string)$val] += 1;
 			} //end if
 		} //end foreach
 		$tmp_vars = array();
-		ksort($dbg_arr['tpl-vars']);
+		\ksort($dbg_arr['tpl-vars']);
 		//--
 		if((string)$mode != 'get') {
 			\SmartFrameworkRegistry::setDebugMsg('optimizations', '*TWIG-CLASSES:OPTIMIZATION-HINTS*', [
@@ -152,7 +152,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 		$collected = [];
 		$this->smartCollectNodes($parsed, $collected);
 		//--
-		return (array) array_keys($collected);
+		return (array) \array_keys($collected);
 		//--
 	} //END FUNCTION
 
@@ -175,10 +175,10 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 	private function smartGetdebugTplLength() {
 		//--
 		$len = 255;
-		if(defined('SMART_SOFTWARE_MKTPL_DEBUG_LEN')) {
-			if((int)SMART_SOFTWARE_MKTPL_DEBUG_LEN >= 255) {
-				if((int)SMART_SOFTWARE_MKTPL_DEBUG_LEN <= 524280) {
-					$len = (int) SMART_SOFTWARE_MKTPL_DEBUG_LEN;
+		if(\defined('\\SMART_SOFTWARE_MKTPL_DEBUG_LEN')) {
+			if((int)\SMART_SOFTWARE_MKTPL_DEBUG_LEN >= 255) {
+				if((int)\SMART_SOFTWARE_MKTPL_DEBUG_LEN <= 524280) {
+					$len = (int) \SMART_SOFTWARE_MKTPL_DEBUG_LEN;
 				} //end if
 			} //end if
 		} //end if

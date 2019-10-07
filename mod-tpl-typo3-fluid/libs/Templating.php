@@ -8,16 +8,16 @@
 
 namespace SmartModExtLib\TplTypo3Fluid;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 
@@ -44,7 +44,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.20190226
+ * @version 	v.20191007
  * @package 	Templating:Engines
  *
  */
@@ -88,13 +88,13 @@ final class Templating {
 			$onlydebug = false;
 		} //end if
 		//--
-		if(!is_array($arr_vars)) {
+		if(!\is_array($arr_vars)) {
 			$arr_vars = array();
 		} //end if
 		// allow camelCase keys
 		$arr_vars = (array) self::fix_array_keys($arr_vars, true); // make keys compatible with PHP variable names, LOWER and UPPER (only 1st level, not nested)
 		//--
-		if((string)trim((string)$file) == '') {
+		if((string)\trim((string)$file) == '') {
 			throw new \Exception('Typo3Fluid Templating / Render File / The file name is Empty');
 			return;
 		} //end if
@@ -139,7 +139,7 @@ final class Templating {
 			return;
 		} //end if
 		//--
-		if(!is_file($file)) {
+		if(!\is_file($file)) {
 			throw new \Exception('Typo3Fluid Templating / The Template file to render does not exists: '.$file);
 			return;
 		} //end if
@@ -161,7 +161,7 @@ final class Templating {
 
 	private function smartSetupCacheDir() {
 		//--
-		if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+		if(\SMART_FRAMEWORK_ADMIN_AREA === true) {
 			$the_t3fluid_cache_dir = 'tmp/cache/typo3fluid#adm';
 		} else {
 			$the_t3fluid_cache_dir = 'tmp/cache/typo3fluid#idx';
@@ -180,16 +180,16 @@ final class Templating {
 
 	private static function fix_array_keys($y_arr, $y_allow_upper_camelcase) { // v.191217 :: fix array keys to be compliant with variable names, but only at level 1 ; level 2..n must not be fixed as tkey are accessible in loops
 		//--
-		if(!is_array($y_arr)) { // fix bug if empty array / max nested level
+		if(!\is_array($y_arr)) { // fix bug if empty array / max nested level
 			return $y_arr; // mixed
 		} //end if
 		//--
 		$new_arr = [];
 		//--
 		foreach($y_arr as $key => $val) {
-			$key = (string) rtrim((string)preg_replace('/[^0-9a-zA-Z_]/', '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; make safe variable name for PHP
+			$key = (string) \rtrim((string)\preg_replace('/[^0-9a-zA-Z_]/', '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; make safe variable name for PHP
 			if(\SmartFrameworkSecurity::ValidateVariableName((string)$key, (bool)$y_allow_upper_camelcase)) {
-				if(is_array($val)) {
+				if(\is_array($val)) {
 					$new_arr[(string)$key] = (array) $val; // do not go recursive as = self::fix_array_keys((array)$val);
 				} else {
 					$new_arr[(string)$key] = $val; // mixed
@@ -221,21 +221,21 @@ function autoload__TYPO3FluidTemplating_SFM($classname) {
 	//--
 	$classname = (string) $classname;
 	//--
-	if(strpos((string)$classname, '\\') === false) { // if have namespace
+	if(\strpos((string)$classname, '\\') === false) { // if have namespace
 		return;
 	} //end if
 	//--
-	if((string)substr((string)$classname, 0, 17) !== 'TYPO3Fluid\\Fluid\\') { // if class name is not starting with Typo3Fluid
+	if((string)\substr((string)$classname, 0, 17) !== 'TYPO3Fluid\\Fluid\\') { // if class name is not starting with Typo3Fluid
 		return;
 	} //end if
 	//--
-	$path = 'modules/mod-tpl-typo3-fluid/libs/'.str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
+	$path = 'modules/mod-tpl-typo3-fluid/libs/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
 	//--
-	if(!preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
+	if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
 		return; // invalid path characters in path
 	} //end if
 	//--
-	if(!is_file($path.'.php')) {
+	if(!\is_file($path.'.php')) {
 		return; // file does not exists
 	} //end if
 	//--
@@ -243,7 +243,7 @@ function autoload__TYPO3FluidTemplating_SFM($classname) {
 	//--
 } //END FUNCTION
 //--
-spl_autoload_register('\\SmartModExtLib\\TplTypo3Fluid\\autoload__TYPO3FluidTemplating_SFM', true, false); // throw / append
+\spl_autoload_register('\\SmartModExtLib\\TplTypo3Fluid\\autoload__TYPO3FluidTemplating_SFM', true, false); // throw / append
 //--
 
 

@@ -5,10 +5,10 @@
 
 namespace SmartModExtLib\PageBuilder;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
@@ -37,7 +37,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
 //define('SMART_PAGEBUILDER_DISABLE_DELETE', true); // this can be set in etc/config-admin.php to disable page deletions in PageBuilder Manager (optional)
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 
@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20190731
+ * @version 	v.20191002
  * @package 	PageBuilder
  *
  */
@@ -182,7 +182,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		//--
 		$outText = (string) $text[(string)$ykey];
 		//--
-		if((string)trim((string)$outText) == '') {
+		if((string)\trim((string)$outText) == '') {
 			$outText = '[MISSING-TEXT@'.__CLASS__.']:'.(string)$ykey;
 			\Smart::log_warning('Invalid Text Key: ['.$ykey.'] in: '.__METHOD__.'()');
 		} //end if else
@@ -217,7 +217,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		$out .= \SmartComponents::js_code_highlightsyntax('body');
 		$out .= '<div style="text-align:left;">';
 		$out .= '<h3>Code Preview: '.\Smart::escape_html($query['name']).' :: '.\Smart::escape_html($query['id']).'</h3>';
-		$out .= '<pre style="background:#ebe9e9;"><code class="'.\Smart::escape_html($type).'" id="code-view-area">'.\Smart::escape_html(base64_decode((string)$query['code'])).'</code></pre>';
+		$out .= '<pre style="background:#ebe9e9;"><code class="'.\Smart::escape_html($type).'" id="code-view-area">'.\Smart::escape_html((string)\base64_decode((string)$query['code'])).'</code></pre>';
 		$out .= '</div>';
 		//--
 		return (string) $out;
@@ -241,7 +241,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		$out .= \SmartComponents::js_code_highlightsyntax('body');
 		$out .= '<div style="text-align:left;">';
 		$out .= '<h3>Data Preview: '.\Smart::escape_html($query['name']).' :: '.\Smart::escape_html($query['id']).'</h3>';
-		$out .= '<pre style="background:#ebe9e9;"><code class="'.\Smart::escape_html($type).'" id="data-view-area">'.\Smart::escape_html(base64_decode((string)$query['data'])).'</code></pre>';
+		$out .= '<pre style="background:#ebe9e9;"><code class="'.\Smart::escape_html($type).'" id="data-view-area">'.\Smart::escape_html((string)\base64_decode((string)$query['data'])).'</code></pre>';
 		$out .= '</div>';
 		//--
 		return (string) $out;
@@ -342,13 +342,13 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		//--
 		$arr_refs = array();
 		$q_refs = \Smart::json_decode((string)$query['ref']);
-		if(!is_array($q_refs)) {
+		if(!\is_array($q_refs)) {
 			$q_refs = array();
 		} //end if
 		foreach($q_refs as $key => $val) {
-			if(!is_array($val)) {
+			if(!\is_array($val)) {
 				if((string)$val != '') {
-					if(!in_array((string)$val, $arr_refs)) {
+					if(!\in_array((string)$val, $arr_refs)) {
 						$arr_refs[] = (string) $val;
 					} //end if
 				} //end if
@@ -365,7 +365,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		$q_refs = \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByRef($y_id);
 		for($i=0; $i<\Smart::array_size($q_refs); $i++) {
 			if((string)$q_refs[$i]['id'] != '') {
-				if(!in_array((string)$q_refs[$i]['id'], $arr_refs)) {
+				if(!\in_array((string)$q_refs[$i]['id'], $arr_refs)) {
 					$arr_refs[] = (string) $q_refs[$i]['id'];
 				} //end if
 			} //end if
@@ -421,7 +421,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			//--
 			$chk_reset_transl = '';
 			//--
-			if(!defined('SMART_PAGEBUILDER_DISABLE_DELETE')) {
+			if(!\defined('\\SMART_PAGEBUILDER_DISABLE_DELETE')) {
 				$bttns .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-delete.svg'.'" alt="'.self::text('ttl_del').'" title="'.self::text('ttl_del').'" style="cursor:pointer;" onClick="self.location=\''.\Smart::escape_js(self::composeUrl('op=record-delete&id='.\Smart::escape_url($query['id']))).'\';">';
 				$bttns .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 			} //end if
@@ -464,7 +464,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			$codetype[] = self::text('record_runtime').'&nbsp;['.\Smart::escape_html(\SmartUtils::pretty_print_bytes((int)$query['len_data'],2)).']';
 		} //end if
 		if(\Smart::array_size($codetype) > 0) {
-			$codetype = (string) str_replace(' ', '&nbsp;', (string)implode('&nbsp;&nbsp;/&nbsp;&nbsp;', (array)$codetype));
+			$codetype = (string) \str_replace(' ', '&nbsp;', (string)\implode('&nbsp;&nbsp;/&nbsp;&nbsp;', (array)$codetype));
 		} else {
 			$codetype = '';
 		} //end if
@@ -477,7 +477,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			$transl_arr = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsTranslationsById($y_id);
 		} //end if
 		if(\Smart::array_size($transl_arr) > 0) {
-			for($i=0; $i<count($transl_arr); $i++) {
+			for($i=0; $i<\Smart::array_size($transl_arr); $i++) {
 				$transl_arr[$i] = (string) \SmartComponents::html_select_list_single('', (string)$transl_arr[$i], 'list', (array)$arr_raw_langs);
 			} //end if
 		} //end if
@@ -531,7 +531,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			]
 		);
 		//--
-		return '<div id="adm-page-props" align="left">'.$extra_form_start.$out.$extra_form_end.'</div>'.$extra_scripts;
+		return (string) '<div id="adm-page-props" align="left">'.$extra_form_start.$out.$extra_form_end.'</div>'.$extra_scripts;
 		//--
 	} //END FUNCTION
 	//==================================================================
@@ -542,7 +542,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 	// $y_mode :: 'list' | 'form'
 	public static function ViewFormMarkupCode($y_id, $y_mode, $y_lang='') {
 		//--
-		if(((string)$y_lang == '') OR (strlen($y_lang) != 2) OR \SmartTextTranslations::validateLanguage($y_lang) !== true) {
+		if(((string)$y_lang == '') OR (\strlen($y_lang) != 2) OR (\SmartTextTranslations::validateLanguage($y_lang) !== true)) {
 			$y_lang = '';
 		} //end if
 		//--
@@ -591,7 +591,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			$tselect = ''; // not translatable page
 		} //end if
 		//--
-		$query['code'] = (string) base64_decode($query['code']);
+		$query['code'] = (string) \base64_decode($query['code']);
 		//--
 		$translator_window = \SmartTextTranslations::getTranslator('@core', 'window');
 		//--
@@ -788,7 +788,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		//--
 		$translator_window = \SmartTextTranslations::getTranslator('@core', 'window');
 		//--
-		$query['data'] = (string) base64_decode((string)$query['data']);
+		$query['data'] = (string) \base64_decode((string)$query['data']);
 		//--
 		if((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-data-edit') === true) AND ((string)$query['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-data-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-manage') === true) AND ((string)$query['special'] == '1'))) {
 			//--
@@ -900,7 +900,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				'TEXT-ADMIN'			=> (string) self::text('admin'),
 				'FIELD-ADMIN' 			=> (string) \Smart::escape_html($query['admin']),
 				'TEXT-PUBLISHED'		=> (string) self::text('published'),
-				'FIELD-PUBLISHED' 		=> (string) \Smart::escape_html(date('Y-m-d H:i:s', $query['published'])),
+				'FIELD-PUBLISHED' 		=> (string) \Smart::escape_html(\date('Y-m-d H:i:s', $query['published'])),
 				'TEXT-COUNTER'			=> (string) self::text('counter'),
 				'FIELD-COUNTER' 		=> (string) \Smart::escape_html($query['counter'])
 			]
@@ -979,24 +979,24 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		} //end if
 		//--
 		if(!$err) {
-			$y_content = (string) trim((string)$y_content);
+			$y_content = (string) \trim((string)$y_content);
 			if((string)$y_content == '') {
 				$err = 'Empty Content';
 			} //end if
 		} //end if
 		if(!$err) {
-			if((string)sha1((string)$y_content) != (string)$y_cksum) {
+			if((string)\sha1((string)$y_content) != (string)$y_cksum) {
 				$err = 'Invalid Content Checksum';
 			} //end if
 		} //end if
 		if(!$err) {
-			if(((string)strtolower((string)substr((string)$y_content, 0, 11)) != 'data:image/') OR (stripos((string)$y_content, ';base64,') === false)) {
+			if(((string)\strtolower((string)\substr((string)$y_content, 0, 11)) != 'data:image/') OR (\stripos((string)$y_content, ';base64,') === false)) {
 				$err = 'Invalid Content Format';
 			} //end if
 		} //end if
 		if(!$err) {
-			$y_content = (array) explode(';base64,', (string)$y_content);
-			$y_content = (string) @base64_decode((string)trim((string)$y_content[1]));
+			$y_content = (array) \explode(';base64,', (string)$y_content);
+			$y_content = (string) @\base64_decode((string)\trim((string)$y_content[1]));
 			if((string)$y_content == '') {
 				$err = 'Invalid SVG Content';
 			} //end if
@@ -1038,7 +1038,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 					if(!$err) {
 						if((string)$y_content == '') {
 							$err = 'Invalid Image Content';
-						} elseif(strlen($y_content) > 1024 * 1024 * self::$MaxSizeMediaImgMB) {
+						} elseif(\strlen($y_content) > 1024 * 1024 * self::$MaxSizeMediaImgMB) {
 							$err = 'Oversized Image Content';
 						} //end if
 					} //end if
@@ -1064,7 +1064,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			} //end if
 		} //end if
 		if(!$err) {
-			$file = (string) \Smart::safe_filename('img-'.strtolower(\Smart::uuid_10_seq()).'.'.$img_ext);
+			$file = (string) \Smart::safe_filename('img-'.\strtolower(\Smart::uuid_10_seq()).'.'.$img_ext);
 			if(!\SmartFileSystem::write((string)$fdir.$file, (string)$y_content)) {
 				$err = 'Failed to Create Storage File';
 			} //end if
@@ -1101,11 +1101,11 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		} //end if
 		//--
 		if(!$err) {
-			$y_filename = (string) trim((string)$y_filename);
+			$y_filename = (string) \trim((string)$y_filename);
 			if((string)$y_filename == '') {
 				$err = 'Empty File Name';
 			} else {
-				switch((string)substr((string)$y_filename, -4, 4)) {
+				switch((string)\substr((string)$y_filename, -4, 4)) {
 					case '.svg':
 					case '.gif':
 					case '.png':
@@ -1193,7 +1193,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				'raw-page' 			=> 'Page - Raw Code'
 		];
 		if(\SmartModExtLib\PageBuilder\Utils::allowPages() === true) {
-			$arr_objects = (array) array_merge((array)$arr_objects_pages, (array)$arr_objects_segments);
+			$arr_objects = (array) \array_merge((array)$arr_objects_pages, (array)$arr_objects_segments);
 		} else {
 			$arr_objects = (array) $arr_objects_segments;
 		} //end if else
@@ -1226,7 +1226,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 	public static function ViewFormsSubmit($y_mode, $y_frm, $y_id='', $y_redir=true) {
 		//--
 		$y_frm = (array) $y_frm;
-		$y_id = (string) trim((string)$y_id);
+		$y_id = (string) \trim((string)$y_id);
 		//--
 		$data = array();
 		$error = '';
@@ -1246,15 +1246,15 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				//--
 				if((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-create') === true)) {
 					//--
-					$y_frm['id'] = (string) trim((string)$y_frm['id']);
+					$y_frm['id'] = (string) \trim((string)$y_frm['id']);
 					//--
-					if(strlen($y_frm['id']) >= 2) { // in DB we have a constraint to be minimum 2 characters
+					if(\strlen($y_frm['id']) >= 2) { // in DB we have a constraint to be minimum 2 characters
 						//--
 						$data = array();
 						//--
 						$data['id'] = (string) $y_frm['id'];
 						$data['id'] = (string) \Smart::safe_validname($data['id'], ''); // allow: [a-z0-9] _ - . @
-						$data['id'] = (string) str_replace(array('.', '@'), array('-', '-'), (string)$data['id']); // dissalow: . @ [ @ is used to replace # with @ on segments folders ; . will conflict with SmartFramework style pages like module.page when using Semantic URL Rules ]
+						$data['id'] = (string) \str_replace(array('.', '@'), array('-', '-'), (string)$data['id']); // dissalow: . @ [ @ is used to replace # with @ on segments folders ; . will conflict with SmartFramework style pages like module.page when using Semantic URL Rules ]
 						//--
 						switch((string)$y_frm['ptype']) {
 							case 'settings-segment':
@@ -1292,10 +1292,10 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 						$redirect = self::composeUrl('op=record-view&id='.\Smart::escape_url($data['id']));
 						//--
 						$data['ref'] = '[]'; // reference parent, by default is empty json array []
-						$data['name'] = (string) trim((string)$y_frm['name']);
+						$data['name'] = (string) \trim((string)$y_frm['name']);
 						$data['active'] = '0'; // the page will be inactive at creation time
-						$data['ctrl'] = (string) \SmartUnicode::sub_str((string)trim((string)$y_frm['ctrl']), 0, 128);
-						$data['published'] = time();
+						$data['ctrl'] = (string) \SmartUnicode::sub_str((string)\trim((string)$y_frm['ctrl']), 0, 128);
+						$data['published'] = (string) \time();
 						//--
 						if((string)$error == '') {
 							if(((string)$data['id'] == '') OR ((string)$data['id'] == '#')) {
@@ -1304,7 +1304,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 						} //end if
 						if((string)$error == '') {
 							$chk_id = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordIdsById($data['id']);
-							if(strlen($chk_id['id']) > 0) {
+							if(\strlen($chk_id['id']) > 0) {
 								$error = self::text('err_3')."\n"; // duplicate ID
 							} //end if
 						} //end if
@@ -1350,14 +1350,14 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 						//--
 						$data = array();
 						//--
-						$data['name'] = (string) \SmartUnicode::sub_str((string)trim((string)$y_frm['name']), 0, 255);
+						$data['name'] = (string) \SmartUnicode::sub_str((string)\trim((string)$y_frm['name']), 0, 255);
 						if((string)$error == '') {
 							if((string)$data['name'] == '') {
 								$error = self::text('err_6')."\n"; // invalid (empty) Title
 							} //end if
 						} //end if
 						//--
-						$data['ctrl'] = (string) \SmartUnicode::sub_str((string)trim((string)$y_frm['ctrl']), 0, 128);
+						$data['ctrl'] = (string) \SmartUnicode::sub_str((string)\trim((string)$y_frm['ctrl']), 0, 128);
 						//--
 						$data['translations'] = (int) $y_frm['translations'];
 						if($data['translations'] !== 0) {
@@ -1387,7 +1387,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 								$data['auth'] = '0';
 							} //end if
 							//--
-							$data['mode'] = strtolower(trim($y_frm['mode']));
+							$data['mode'] = (string) \strtolower((string)\trim($y_frm['mode']));
 							switch((string)$data['mode']) {
 								case 'raw':
 									$data['mode'] = 'raw';
@@ -1403,10 +1403,10 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 									$data['mode'] = 'html';
 							} //end switch
 							//--
-							$data['layout'] = (string) trim((string)$y_frm['layout']);
+							$data['layout'] = (string) \trim((string)$y_frm['layout']);
 							$data['layout'] = (string) \Smart::safe_filename((string)$data['layout']);
-							$data['layout'] = (string) strtolower((string)$data['layout']);
-							if(strlen((string)$data['layout']) > 75) {
+							$data['layout'] = (string) \strtolower((string)$data['layout']);
+							if(\strlen((string)$data['layout']) > 75) {
 								$data['layout'] = ''; // fix to avoid DB overflow
 							} //end if
 							if((string)$data['mode'] == 'raw') {
@@ -1418,7 +1418,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 							$data['active'] = 0;
 							$data['auth'] = 0;
 							//--
-							$data['mode'] = (string) strtolower((string)trim((string)$y_frm['mode']));
+							$data['mode'] = (string) \strtolower((string)\trim((string)$y_frm['mode']));
 							switch((string)$data['mode']) {
 								case 'settings':
 									$data['mode'] = 'settings';
@@ -1435,10 +1435,10 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 									$data['mode'] = 'html';
 							} //end switch
 							//--
-							$data['layout'] = (string) trim((string)$y_frm['layout']);
+							$data['layout'] = (string) \trim((string)$y_frm['layout']);
 							$data['layout'] = (string) \Smart::safe_filename((string)$data['layout']);
-							$data['layout'] = (string) strtolower((string)$data['layout']);
-							if(strlen((string)$data['layout']) > 75) {
+							$data['layout'] = (string) \strtolower((string)$data['layout']);
+							if(\strlen((string)$data['layout']) > 75) {
 								$data['layout'] = ''; // fix to avoid DB overflow
 							} //end if
 							if((string)$data['mode'] == 'settings') {
@@ -1469,7 +1469,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 							//--
 							$data = array();
 							//--
-							if((string)trim((string)$y_frm['code']) == '') {
+							if((string)\trim((string)$y_frm['code']) == '') {
 								//--
 								$data['code'] = ''; // avoid save empty with only spaces
 								//--
@@ -1485,17 +1485,17 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 								} //end if
 								*/
 								//--
-								$data['code'] = (string) str_replace(["\r\n", "\r"], "\n", (string)$data['code']); 		// normalize line endings
-								$data['code'] = (string) str_replace(["\x0B", "\0", "\f"], ' ', (string)$data['code']); // fix weird characters
-								$data['code'] = (string) preg_replace('/[ ]+[\\n]/', "\n", (string)$data['code']); 		// remove empty line spaces
+								$data['code'] = (string) \str_replace(["\r\n", "\r"], "\n", (string)$data['code']); 		// normalize line endings
+								$data['code'] = (string) \str_replace(["\x0B", "\0", "\f"], ' ', (string)$data['code']); 	// fix weird characters
+								$data['code'] = (string) \preg_replace('/[ ]+[\\n]/', "\n", (string)$data['code']); 		// remove empty line spaces
 								//--
-								$data['code'] = (string) base64_encode((string)$data['code']);
+								$data['code'] = (string) \base64_encode((string)$data['code']);
 								//--
 							} //end if
 							//--
 							$y_frm['code'] = ''; // free mem
 							//--
-							if((int)strlen((string)$data['code']) > (int)self::$MaxStrCodeSize) {
+							if((int)\strlen((string)$data['code']) > (int)self::$MaxStrCodeSize) {
 								$error = 'Page Code is OVERSIZED !'."\n";
 							} //end if
 							//--
@@ -1521,16 +1521,16 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 								//--
 								$data = array();
 								//--
-								if((string)trim((string)$y_frm['data']) == '') {
+								if((string)\trim((string)$y_frm['data']) == '') {
 									$data['data'] = ''; // avoid save empty with only spaces
 								} else {
-									$data['data'] = (string) str_replace(["\r\n", "\r"], "\n", (string)$y_frm['data']); // normalize line endings
-									$data['data'] = (string) str_replace(["\x0B", "\0", "\f"], ' ', (string)$data['data']); // fix weird characters
-									$data['data'] = (string) base64_encode((string)$data['data']); // encode data b64 (encode must be here because will be transmitted later as B64 encode and must cover all error situations)
+									$data['data'] = (string) \str_replace(["\r\n", "\r"], "\n", (string)$y_frm['data']); // normalize line endings
+									$data['data'] = (string) \str_replace(["\x0B", "\0", "\f"], ' ', (string)$data['data']); // fix weird characters
+									$data['data'] = (string) \base64_encode((string)$data['data']); // encode data b64 (encode must be here because will be transmitted later as B64 encode and must cover all error situations)
 								} //end if
 								$y_frm['data'] = '';
 								//--
-								if((int)strlen($data['data']) > (int)(self::$MaxStrCodeSize/10)) {
+								if((int)\strlen($data['data']) > (int)(self::$MaxStrCodeSize/10)) {
 									$error = 'Page Data is OVERSIZED !'."\n";
 								} //end if
 								//--
@@ -1577,7 +1577,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				if(\Smart::array_size($data) > 0) {
 					//--
 					$data['admin'] = \SmartAuth::get_login_id();
-					$data['modified'] = date('Y-m-d H:i:s');
+					$data['modified'] = \date('Y-m-d H:i:s');
 					//--
 					if((string)$proc_mode == 'insert') {
 						$wr = \SmartModDataModel\PageBuilder\PageBuilderBackend::insertRecord($data);
@@ -1769,7 +1769,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		//--
 		$out = 0;
 		//--
-		if(substr((string)$y_id, 0, 1) == '#') {
+		if((string)\substr((string)$y_id, 0, 1) == '#') {
 			$out = 1;
 		} //endd if
 		//--
@@ -1816,7 +1816,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 	//==================================================================
 	private static function getImgForRef($y_ref) {
 		//--
-		$y_ref = (string) trim((string)$y_ref);
+		$y_ref = (string) \trim((string)$y_ref);
 		//--
 		if((string)$y_ref == '') {
 			return '';
@@ -1986,20 +1986,20 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		//--
 		$flimit = 500; // filter limit
 		//--
-		$src = (string) trim((string)$src);
-		if((string)trim((string)$src) == '') {
+		$src = (string) \trim((string)$src);
+		if((string)\trim((string)$src) == '') {
 			$srcby = '';
-		} elseif((string)trim((string)$srcby) == '') {
+		} elseif((string)\trim((string)$srcby) == '') {
 			$src = '';
 		} //end if
 		//--
 		$collapse = 'collapsed';
 		$fcollapse = '';
 		$filter = array();
-		if(((string)trim((string)$src) != '') AND ((string)trim((string)$srcby) != '')) {
+		if(((string)\trim((string)$src) != '') AND ((string)\trim((string)$srcby) != '')) {
 			$tmp_filter = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::listGetRecords($srcby, $src, (int)$flimit, 0, 'ASC', 'id');
 			for($i=0; $i<\Smart::array_size($tmp_filter); $i++) {
-				$filter[] = [ 'id' => (string)$tmp_filter[$i]['id'], 'hash-id' => (string)sha1((string)$tmp_filter[$i]['id']) ];
+				$filter[] = [ 'id' => (string)$tmp_filter[$i]['id'], 'hash-id' => (string)\sha1((string)$tmp_filter[$i]['id']) ];
 			} //end for
 			$tmp_filter = array();
 		} //end if
@@ -2019,7 +2019,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			for($j=0; $j<\Smart::array_size($tmp_arr_lvl1); $j++) {
 				if(\Smart::array_size($tmp_arr_lvl1[$j]) > 0) {
 					$tmp_arr_lvl2 = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByRef((string)$tmp_arr_lvl1[$j]['id']);
-					$tmp_arr_lvl1[$j]['hash-id'] = (string) sha1((string)$tmp_arr_lvl1[$j]['id']);
+					$tmp_arr_lvl1[$j]['hash-id'] = (string) \sha1((string)$tmp_arr_lvl1[$j]['id']);
 					$tmp_arr_lvl1[$j]['is-segment'] = (int) self::testIsSegmentPage((string)$tmp_arr_lvl1[$j]['id']);
 					if(((string)$tmp_arr_lvl1[$j]['active'] == 1) OR ($tmp_arr_lvl1[$j]['is-segment'] == 1)) {
 						$tmp_arr_lvl1[$j]['style-class'] = (string) $css_cls_a;
@@ -2033,7 +2033,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 						for($k=0; $k<\Smart::array_size($tmp_arr_lvl2); $k++) {
 							if(\Smart::array_size($tmp_arr_lvl2[$k]) > 0) {
 								$tmp_arr_lvl3 = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByRef((string)$tmp_arr_lvl2[$k]['id']);
-								$tmp_arr_lvl2[$k]['hash-id'] = (string) sha1((string)$tmp_arr_lvl2[$k]['id']);
+								$tmp_arr_lvl2[$k]['hash-id'] = (string) \sha1((string)$tmp_arr_lvl2[$k]['id']);
 								$tmp_arr_lvl2[$k]['is-segment'] = (int) self::testIsSegmentPage((string)$tmp_arr_lvl2[$k]['id']);
 								if(((string)$tmp_arr_lvl2[$k]['active'] == 1) OR ($tmp_arr_lvl2[$k]['is-segment'] == 1)) {
 									$tmp_arr_lvl2[$k]['style-class'] = (string) $css_cls_a;
@@ -2045,7 +2045,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 								$tmp_arr_lvl2[$k]['ref-childs'] = array();
 								if(\Smart::array_size($tmp_arr_lvl3) > 0) {
 									for($z=0; $z<\Smart::array_size($tmp_arr_lvl3); $z++) {
-										$tmp_arr_lvl3[$z]['hash-id'] = (string) sha1((string)$tmp_arr_lvl3[$z]['id']);
+										$tmp_arr_lvl3[$z]['hash-id'] = (string) \sha1((string)$tmp_arr_lvl3[$z]['id']);
 										$tmp_arr_lvl3[$z]['is-segment'] = (int) self::testIsSegmentPage((string)$tmp_arr_lvl3[$z]['id']);
 										if(((string)$tmp_arr_lvl3[$z]['active'] == 1) OR ($tmp_arr_lvl3[$z]['is-segment'] == 1)) {
 											$tmp_arr_lvl3[$z]['style-class'] = (string) $css_cls_a;
@@ -2071,8 +2071,8 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			} //end for
 			$tmp_arr_lvl1 = array();
 		} //end if
-		//print_r($total); die();
-		//print_r($arr_pages_data); die();
+		// \print_r($total); die();
+		// \print_r($arr_pages_data); die();
 		//--
 		$the_link_list = (string) self::composeUrl('op=records-tree&tpl='.\Smart::escape_url($y_tpl));
 		$the_alt_link_list = (string) self::composeUrl('tpl='.\Smart::escape_url($y_tpl).'#!'.'&srcby='.\Smart::escape_url($srcby).'&src='.\Smart::escape_url($src));
@@ -2080,7 +2080,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		$the_link_add = (string) self::composeUrl('op=record-add-form');
 		$the_link_view = (string) self::composeUrl('op=record-view&id=');
 		$the_link_delete = '';
-		if(!defined('SMART_PAGEBUILDER_DISABLE_DELETE')) {
+		if(!\defined('\\SMART_PAGEBUILDER_DISABLE_DELETE')) {
 			$the_link_delete = (string) self::composeUrl('op=record-delete&id=');
 		} //end if
 		//--
@@ -2099,7 +2099,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		return (string) \SmartMarkersTemplating::render_file_template(
 			self::$ModulePath.'libs/views/manager/view-list-tree.mtpl.htm',
 			[
-				'IS-DEV-MODE' 		=> (string) ((defined('SMART_ERROR_HANDLER') && SMART_ERROR_HANDLER === 'dev') ? 'yes' : 'no'),
+				'IS-DEV-MODE' 		=> (string) ((\defined('\\SMART_ERROR_HANDLER') && \SMART_ERROR_HANDLER === 'dev') ? 'yes' : 'no'),
 				'SHOW-FILTER-TYPE' 	=> 'no',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
 				'ALLOW-PAGES' 		=> (string) $allow_pages,
@@ -2172,7 +2172,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		$the_link_add = (string) self::composeUrl('op=record-add-form');
 		$the_link_view = (string) self::composeUrl('op=record-view&id=');
 		$the_link_delete = '';
-		if(!defined('SMART_PAGEBUILDER_DISABLE_DELETE')) {
+		if(!\defined('\\SMART_PAGEBUILDER_DISABLE_DELETE')) {
 			$the_link_delete = (string) self::composeUrl('op=record-delete&id=');
 		} //end if
 		//--
@@ -2191,7 +2191,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		return (string) \SmartMarkersTemplating::render_file_template(
 			(string) self::$ModulePath.'libs/views/manager/view-list.mtpl.htm',
 			[
-				'IS-DEV-MODE' 		=> (string) ((defined('SMART_ERROR_HANDLER') && SMART_ERROR_HANDLER === 'dev') ? 'yes' : 'no'),
+				'IS-DEV-MODE' 		=> (string) ((\defined('\\SMART_ERROR_HANDLER') && \SMART_ERROR_HANDLER === 'dev') ? 'yes' : 'no'),
 				'SHOW-FILTER-TYPE' 	=> 'yes',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
 				'ALLOW-PAGES' 		=> (string) $allow_pages,
@@ -2249,17 +2249,17 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		//--
 		$ofs = (int) \Smart::format_number_int($ofs, '+');
 		//--
-		$sortdir = (string) strtoupper((string)$sortdir);
+		$sortdir = (string) \strtoupper((string)$sortdir);
 		if((string)$sortdir != 'ASC') {
 			$sortdir = 'DESC';
 		} //end if
 		//--
 		$limit = 25;
 		//--
-		$src = (string) trim((string)$src);
-		if((string)trim((string)$src) == '') {
+		$src = (string) \trim((string)$src);
+		if((string)\trim((string)$src) == '') {
 			$srcby = '';
-		} elseif((string)trim((string)$srcby) == '') {
+		} elseif((string)\trim((string)$srcby) == '') {
 			$src = '';
 		} //end if
 		//--
@@ -2376,7 +2376,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		if(!$_FILES['import_file']['tmp_name']) {
 			return (string) \SmartComponents::operation_notice('NO File to Import (.xml)');
 		} //end if
-		if(substr((string)$_FILES['import_file']['name'], -4, 4) != '.xml') {
+		if(\substr((string)$_FILES['import_file']['name'], -4, 4) != '.xml') {
 			return (string) \SmartComponents::operation_warn('Invalid File to Import (.xml)');
 		} //end if
 		//--
@@ -2391,9 +2391,9 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		} //end if
 		$hdr_arr = array();
 		for($i=0; $i<\Smart::array_size($input_str['header']); $i++) {
-			$tmp_head_val_orig = (string) trim((string)$input_str['header'][$i]);
-			$tmp_head_val_lang = (string) substr((string)$tmp_head_val_orig, 6, 2);
-			if((strlen((string)$tmp_head_val_lang) == 2) AND ((string)$tmp_head_val_orig == '[lang_'.$tmp_head_val_lang.']')) {
+			$tmp_head_val_orig = (string) \trim((string)$input_str['header'][$i]);
+			$tmp_head_val_lang = (string) \substr((string)$tmp_head_val_orig, 6, 2);
+			if((\strlen((string)$tmp_head_val_lang) == 2) AND ((string)$tmp_head_val_orig == '[lang_'.$tmp_head_val_lang.']')) {
 				$hdr_arr[] = (string) $tmp_head_val_lang;
 			} //end if
 		} //end for
@@ -2410,7 +2410,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		if(\Smart::array_size($data_arr[(string)$hdr_arr[0]]) != \Smart::array_size($data_arr[(string)$hdr_arr[1]])) {
 			return \SmartComponents::operation_error('Invalid XL03/Xml Table Data to Import');
 		} //end if
-	//	print_r($hdr_arr); print_r($data_arr); die();
+	//	\print_r($hdr_arr); \print_r($data_arr); die();
 		//--
 		$def_lang = (string) \SmartTextTranslations::getDefaultLanguage();
 		//--
@@ -2423,7 +2423,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			//--
 			if(((string)$lang != (string)$def_lang) AND (\SmartTextTranslations::validateLanguage((string)$lang))) {
 				//--
-				if(is_array($val)) {
+				if(\is_array($val)) {
 					//--
 					for($i=0; $i<\Smart::array_size($val); $i++) {
 						//--
@@ -2434,11 +2434,11 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 						$x_is_not_imported = true;
 						$diffs_arr_rows = [];
 						//--
-						if((string)trim((string)$data_arr[(string)$def_lang][$i]) != '') {
+						if((string)\trim((string)$data_arr[(string)$def_lang][$i]) != '') {
 							//--
 							$x_is_empty = false;
 							//--
-							if((string)trim((string)$val[$i]) != '') {
+							if((string)\trim((string)$val[$i]) != '') {
 								//--
 								$x_is_tempty = false;
 								//--
@@ -2484,7 +2484,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 								//--
 							} //end if
 							//--
-						} elseif((string)trim((string)$val[$i]) == '') { // skip if both empty
+						} elseif((string)\trim((string)$val[$i]) == '') { // skip if both empty
 							//--
 							$x_is_all_empty = true;
 							//--
@@ -2492,7 +2492,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 						//--
 						if($x_is_all_empty === false) {
 							//--
-							if(!is_array($arr_xdata[(int)$x_iterator])) {
+							if(!\is_array($arr_xdata[(int)$x_iterator])) {
 								$arr_xdata[(int)$x_iterator] = [];
 							} //end if
 							$status = 'ok';
@@ -2510,7 +2510,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 							$arr_xdata[(int)$x_iterator]['is_base_diff_transl'] = (string) ($x_is_diff ? 'yes' : 'no');
 							$arr_xdata[(int)$x_iterator]['is_imported'] = (string) (!$x_is_not_imported ? 'yes' : 'no');
 							$arr_xdata[(int)$x_iterator]['status'] = (string) $status;
-							$arr_xdata[(int)$x_iterator]['diffs'] = (string) implode(', ', (array)$diffs_arr_rows);
+							$arr_xdata[(int)$x_iterator]['diffs'] = (string) \implode(', ', (array)$diffs_arr_rows);
 							$arr_xdata[(int)$x_iterator]['translate'] = (string) $val[$i];
 							$x_iterator++;
 							//--
@@ -2522,13 +2522,13 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				//--
 			} elseif((string)$lang == (string)$def_lang) {
 				//--
-				if(is_array($val)) {
+				if(\is_array($val)) {
 					//--
 					for($i=0; $i<\Smart::array_size($val); $i++) {
 						//--
-						if(((string)trim((string)$data_arr[(string)$def_lang][$i]) != '') AND ((string)trim((string)$val[$i]) != '')) { // skip all empty records
+						if(((string)\trim((string)$data_arr[(string)$def_lang][$i]) != '') AND ((string)\trim((string)$val[$i]) != '')) { // skip all empty records
 							//--
-							if(!is_array($arr_xdata[(int)$x_iterator])) {
+							if(!\is_array($arr_xdata[(int)$x_iterator])) {
 								$arr_xdata[(int)$x_iterator] = [];
 							} //end if
 							//--
@@ -2545,13 +2545,13 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				//--
 			} else { // INVALID LANGUAGE CASE
 				//--
-				if(is_array($val)) {
+				if(\is_array($val)) {
 					//--
 					for($i=0; $i<\Smart::array_size($val); $i++) {
 						//--
-						if(((string)trim((string)$data_arr[(string)$def_lang][$i]) != '') AND ((string)trim((string)$val[$i]) != '')) { // skip all empty records
+						if(((string)\trim((string)$data_arr[(string)$def_lang][$i]) != '') AND ((string)\trim((string)$val[$i]) != '')) { // skip all empty records
 							//--
-							if(!is_array($arr_xdata[(int)$x_iterator])) {
+							if(!\is_array($arr_xdata[(int)$x_iterator])) {
 								$arr_xdata[(int)$x_iterator] = [];
 							} //end if
 							//--

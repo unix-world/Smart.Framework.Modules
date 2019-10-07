@@ -5,16 +5,16 @@
 
 namespace SmartModDataModel\PageBuilder;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 /**
@@ -24,7 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20190529
+	// v.20191002
 
 
 	private static $db = null;
@@ -78,7 +78,7 @@ final class PageBuilderFrontend {
 			//--
 		} else {
 			//--
-			http_response_code(503);
+			@\http_response_code(503);
 			die(\SmartComponents::http_error_message('503 Service Unavailable / PageBuilder', 'PageBuilder DB Type is not set in configs ! ...'));
 			//--
 		} //end if else
@@ -88,10 +88,10 @@ final class PageBuilderFrontend {
 
 	public static function checkIfPageOrSegmentExist($y_id) {
 		//--
-		$y_id = (string) trim((string)$y_id);
+		$y_id = (string) \trim((string)$y_id);
 		//--
 		if((string)self::dbType() == 'pgsql') {
-			if((string)substr($y_id, 0, 1) == '#') { // segment
+			if((string)\substr($y_id, 0, 1) == '#') { // segment
 				$query = 'SELECT "id" FROM "web"."page_builder" WHERE ("id" = $1) LIMIT 1 OFFSET 0';
 			} else { // page
 				$query = 'SELECT "id" FROM "web"."page_builder" WHERE (("id" = $1) AND ("active" = 1)) LIMIT 1 OFFSET 0';
@@ -103,7 +103,7 @@ final class PageBuilderFrontend {
 				]
 			);
 		} elseif((string)self::dbType() == 'sqlite') {
-			if((string)substr($y_id, 0, 1) == '#') { // segment
+			if((string)\substr($y_id, 0, 1) == '#') { // segment
 				$query = 'SELECT `id` FROM `page_builder` WHERE (`id` = ?) LIMIT 1 OFFSET 0';
 			} else { // page
 				$query = 'SELECT `id` FROM `page_builder` WHERE ((`id` = ?) AND (`active` = 1)) LIMIT 1 OFFSET 0';
@@ -129,8 +129,8 @@ final class PageBuilderFrontend {
 
 	public static function getPage($y_id, $y_lang='') { // page must be active
 		//--
-		$y_id = (string) trim((string)$y_id);
-		if((string)substr($y_id, 0, 1) == '#') {
+		$y_id = (string) \trim((string)$y_id);
+		if((string)\substr($y_id, 0, 1) == '#') {
 			return array(); // avoid to load a segment
 		} //end if
 		//--
@@ -152,7 +152,7 @@ final class PageBuilderFrontend {
 			return array();
 		} //end if else
 		//--
-		if((string)SMART_ERROR_HANDLER == 'dev') {
+		if((string)\SMART_ERROR_HANDLER == 'dev') {
 			if((string)self::dbType() == 'pgsql') {
 				\SmartPgsqlDb::write_data(
 					'UPDATE "web"."page_builder" SET "counter" = "counter" + 1 WHERE (("id" = $1) AND ("active" = 1))',
@@ -170,11 +170,11 @@ final class PageBuilderFrontend {
 			} //end if else
 		} //end if
 		//--
-		$y_lang = (string) trim((string)$y_lang);
+		$y_lang = (string) \trim((string)$y_lang);
 		if((string)$y_lang != '') {
 			if((string)$arr['translations'] == '1') {
 				$tarr = (array) self::getTranslation($y_id, $y_lang);
-				if(((string)$tarr['id'] == (string)$arr['id']) AND ((string)trim((string)$tarr['code']) != '')) {
+				if(((string)$tarr['id'] == (string)$arr['id']) AND ((string)\trim((string)$tarr['code']) != '')) {
 					$arr['code'] = (string) $tarr['code'];
 					$arr['@lang'] = (string) $tarr['lang'];
 				} //end if
@@ -188,8 +188,8 @@ final class PageBuilderFrontend {
 
 	public static function getSegment($y_id, $y_lang='') {
 		//--
-		$y_id = (string) trim((string)$y_id);
-		if((string)substr($y_id, 0, 1) != '#') {
+		$y_id = (string) \trim((string)$y_id);
+		if((string)\substr($y_id, 0, 1) != '#') {
 			return array(); // avoid to load a page
 		} //end if
 		//--
@@ -212,7 +212,7 @@ final class PageBuilderFrontend {
 			return array();
 		} //end if else
 		//--
-		if((string)SMART_ERROR_HANDLER == 'dev') {
+		if((string)\SMART_ERROR_HANDLER == 'dev') {
 			if((string)self::dbType() == 'pgsql') {
 				\SmartPgsqlDb::write_data(
 					'UPDATE "web"."page_builder" SET "counter" = "counter" + 1 WHERE ("id" = $1)',
@@ -230,11 +230,11 @@ final class PageBuilderFrontend {
 			} //end if else
 		} //end if
 		//--
-		$y_lang = (string) trim((string)$y_lang);
+		$y_lang = (string) \trim((string)$y_lang);
 		if((string)$y_lang != '') {
 			if((string)$arr['translations'] == '1') {
 				$tarr = (array) self::getTranslation($y_id, $y_lang);
-				if(((string)$tarr['id'] == (string)$arr['id']) AND ((string)trim((string)$tarr['code']) != '')) {
+				if(((string)$tarr['id'] == (string)$arr['id']) AND ((string)\trim((string)$tarr['code']) != '')) {
 					$arr['code'] = (string) $tarr['code'];
 					$arr['@lang'] = (string) $tarr['lang'];
 				} //end if
@@ -301,7 +301,7 @@ final class PageBuilderFrontend {
 		//--
 		$out_arr = [];
 		for($i=0; $i<\Smart::array_size($arr); $i++) {
-			if(is_array($arr[$i])) {
+			if(\is_array($arr[$i])) {
 				if((string)$arr[$i]['id'] != '') {
 					$out_arr[] = (string) $arr[$i]['id'];
 				} //end if
@@ -315,7 +315,7 @@ final class PageBuilderFrontend {
 
 	private static function getTranslation($y_id, $y_lang) {
 		//--
-		if(((string)$y_lang == '') OR (strlen((string)$y_lang) != 2) OR (\SmartTextTranslations::validateLanguage((string)$y_lang) !== true)) {
+		if(((string)$y_lang == '') OR (\strlen((string)$y_lang) != 2) OR (\SmartTextTranslations::validateLanguage((string)$y_lang) !== true)) {
 			return array();
 		} //end if
 		//--

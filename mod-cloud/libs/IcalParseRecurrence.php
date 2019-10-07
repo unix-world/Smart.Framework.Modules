@@ -5,15 +5,15 @@
 
 namespace SmartModExtLib\Cloud;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 //namespace om;
@@ -32,10 +32,14 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @author Steven Oxley
  * @author Michael Kahn (C) 2013
  * @license http://creativecommons.org/licenses/by-sa/2.5/dk/deed.en_GB CC-BY-SA-DK
+ *
+ * Modified and adapted by unixman (c) 2018-2019
+ * @author unix-world.org
+ *
  */
 final class IcalParseRecurrence {
 
-	// r.180207
+	// r.20191007
 
 	public $rrule;
 	private $freq;
@@ -87,10 +91,10 @@ final class IcalParseRecurrence {
 		//member variables
 		foreach ($this->rrule as $propertyName => $propertyValue) {
 			//need the lower-case name for setting the member variable
-			$propertyName = strtolower($propertyName);
+			$propertyName = \strtolower($propertyName);
 			//split up the list of values into an array (if it's a list)
-			if (in_array($propertyName, $this->listProperties, true)) {
-				$propertyValue = explode(',', $propertyValue);
+			if (\in_array($propertyName, $this->listProperties, true)) {
+				$propertyValue = \explode(',', $propertyValue);
 			}
 			$this->$propertyName = $propertyValue;
 		}
@@ -105,7 +109,7 @@ final class IcalParseRecurrence {
 	public function setUntil($ts) {
 		if ($ts instanceof \DateTime) {
 			$dt = $ts;
-		} else if (is_int($ts)) {
+		} else if (\is_int($ts)) {
 			$dt = new \DateTime('@' . $ts);
 		} else {
 			$dt = new \DateTime($ts);

@@ -5,16 +5,16 @@
 
 namespace SmartModExtLib\PageBuilder;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 
@@ -26,7 +26,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @access 		private
  * @internal
  *
- * @version 	v.20190529
+ * @version 	v.20191002
  * @package 	PageBuilder
  *
  */
@@ -42,10 +42,10 @@ final class Utils {
 		//--
 		$type = '';
 		//--
-		if(defined('SMART_PAGEBUILDER_DB_TYPE')) {
-			if((string)SMART_PAGEBUILDER_DB_TYPE == 'sqlite') {
+		if(\defined('\\SMART_PAGEBUILDER_DB_TYPE')) {
+			if((string)\SMART_PAGEBUILDER_DB_TYPE == 'sqlite') {
 				$type = 'sqlite';
-			} elseif((string)SMART_PAGEBUILDER_DB_TYPE == 'pgsql') {
+			} elseif((string)\SMART_PAGEBUILDER_DB_TYPE == 'pgsql') {
 				$type = 'pgsql';
 			} //end if
 		} //end if
@@ -59,8 +59,8 @@ final class Utils {
 		//--
 		$allow = true;
 		//--
-		if(defined('SMART_PAGEBUILDER_DISABLE_PAGES')) {
-			if(SMART_PAGEBUILDER_DISABLE_PAGES === true) {
+		if(\defined('\\SMART_PAGEBUILDER_DISABLE_PAGES')) {
+			if(\SMART_PAGEBUILDER_DISABLE_PAGES === true) {
 				$allow = false;
 			} //end if
 		} //end if
@@ -81,7 +81,7 @@ final class Utils {
 		if($cnt_available_layouts > 0) {
 			if(\Smart::array_type_test($available_layouts) == 1) { // non-associative
 				for($i=0; $i<$cnt_available_layouts; $i++) {
-					$available_layouts[$i] = (string) trim((string)$available_layouts[$i]);
+					$available_layouts[$i] = (string) \trim((string)$available_layouts[$i]);
 					if((string)$available_layouts[$i] != '') {
 						if(\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$available_layouts[$i])) {
 							$layouts[(string)$available_layouts[$i]] = (string) $available_layouts[$i];
@@ -98,7 +98,7 @@ final class Utils {
 
 	public static function getMediaFolderByObjectId($y_id) {
 		//--
-		return (string) \Smart::safe_pathname('wpub/media-pbld/'.\Smart::safe_filename(str_replace('#', '@', (string)$y_id)).'/');
+		return (string) \Smart::safe_pathname('wpub/media-pbld/'.\Smart::safe_filename(\str_replace('#', '@', (string)$y_id)).'/');
 		//--
 	} //END FUNCTION
 
@@ -112,7 +112,7 @@ final class Utils {
 				$files_n_dirs = (array) (new \SmartGetFileSystem(true))->get_storage($y_media_dir, false, false);
 				if(\Smart::array_size($files_n_dirs['list-files']) > 0) {
 					for($i=0; $i<\Smart::array_size($files_n_dirs['list-files']); $i++) {
-						$tmp_ext = (string) substr((string)$files_n_dirs['list-files'][$i], -4, 4);
+						$tmp_ext = (string) \substr((string)$files_n_dirs['list-files'][$i], -4, 4);
 						switch((string)$tmp_ext) {
 							case '.svg':
 							case '.gif':
@@ -121,7 +121,7 @@ final class Utils {
 								$arr_imgs[] = [
 									'img' 	=> (string) $y_media_dir.$files_n_dirs['list-files'][$i],
 									'file' 	=> (string) $files_n_dirs['list-files'][$i],
-									'type' 	=> (string) substr((string)$tmp_ext, 1),
+									'type' 	=> (string) \substr((string)$tmp_ext, 1),
 									'size' 	=> (string) \SmartUtils::pretty_print_bytes(\SmartFileSystem::get_file_size($y_media_dir.$files_n_dirs['list-files'][$i]), 1, '')
 								];
 								break;
@@ -143,7 +143,7 @@ final class Utils {
 		$y_html = (string) $y_html;
 		//--
 		$y_html = \SmartUtils::comment_php_code($y_html); // avoid PHP code
-		$y_html = str_replace([' />', '/>'], ['>', '>'], $y_html); // cleanup XHTML tag style
+		$y_html = \str_replace([' />', '/>'], ['>', '>'], $y_html); // cleanup XHTML tag style
 		//--
 		return (string) $y_html;
 		//--
@@ -159,20 +159,20 @@ final class Utils {
 
 	public static function composePluginClassName($str) {
 		//--
-		$arr = (array) explode('-', (string)$str);
+		$arr = (array) \explode('-', (string)$str);
 		//--
 		$class = '';
 		//--
 		for($i=0; $i<\Smart::array_size($arr); $i++) {
 			//--
-			$arr[$i] = (string) trim((string)$arr[$i]);
+			$arr[$i] = (string) \trim((string)$arr[$i]);
 			//--
 			if((string)$arr[$i] != '') {
 				//--
 				$arr[$i] = (string) \Smart::safe_varname((string)$arr[$i]);
 				//--
 				if((string)$arr[$i] != '') {
-					$class .= (string) ucfirst((string)$arr[$i]);
+					$class .= (string) \ucfirst((string)$arr[$i]);
 				} //end if
 				//--
 			} //end if
@@ -189,7 +189,7 @@ final class Utils {
 		$arr_placeholder_diffs 	= (array) self::comparePlaceholders($original_str, $transl_str);
 		$arr_marker_diffs 		= (array) self::compareMarkers($original_str, $transl_str);
 		//--
-		return (array) array_merge((array)$arr_placeholder_diffs, (array)$arr_marker_diffs);
+		return (array) \array_merge((array)$arr_placeholder_diffs, (array)$arr_marker_diffs);
 		//--
 	} //END FUNCTION
 
@@ -199,7 +199,7 @@ final class Utils {
 		$original_arr 	= (array) self::extractPlaceholders((string)$original_str);
 		$transl_arr 	= (array) self::extractPlaceholders((string)$transl_str);
 		//--
-		return (array) array_diff($original_arr, $transl_arr);
+		return (array) \array_diff($original_arr, $transl_arr);
 		//--
 	} //END FUNCTION
 
@@ -209,7 +209,7 @@ final class Utils {
 		$original_arr 	= (array) self::extractMarkers((string)$original_str);
 		$transl_arr 	= (array) self::extractMarkers((string)$transl_str);
 		//--
-		return (array) array_diff($original_arr, $transl_arr);
+		return (array) \array_diff($original_arr, $transl_arr);
 		//--
 	} //END FUNCTION
 
@@ -221,7 +221,7 @@ final class Utils {
 		//--
 		$re = (string) self::REGEX_PLACEHOLDERS;
 		//--
-		preg_match_all((string)$re, (string)$str, $matches);
+		\preg_match_all((string)$re, (string)$str, $matches);
 		$arr = (array) \Smart::array_sort((array)$matches[0], 'natcasesort');
 		//--
 		return (array) $arr;
@@ -233,7 +233,7 @@ final class Utils {
 		//--
 		$re = (string) self::REGEX_MARKERS;
 		//--
-		preg_match_all((string)$re, (string)$str, $matches);
+		\preg_match_all((string)$re, (string)$str, $matches);
 		$arr = (array) \Smart::array_sort((array)$matches[0], 'natcasesort');
 		//--
 		return (array) $arr;

@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: TplTypo3Fluid v.github#master@20190409 r.20190423 #
+# Smart.Framework.Modules: TplTypo3Fluid v.github#master@20190409 r.20191007 #
 ## This is a custom patched version of Typo3Fluid to integrate with Smart.Framework ##
 
 // v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
