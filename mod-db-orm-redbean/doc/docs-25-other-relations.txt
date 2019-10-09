@@ -1,0 +1,26 @@
+Other relations
+
+This chapter discusses less common relations.
+Aggregations
+
+It's possible to treat two complementary N-1 relations as one many-to-many relation, thus benefiting from the advantages of a shared list. In RedBeanPHP 4.1+ you can use the aggr() method of a bean to collect the parent beans for each member of an own-list:
+    $targets = $quest1->aggr( 'ownQuestTargetList', 'target', 'quest' );
+
+This code will iterate over the ownQuestionTargetList and for every questTarget bean in the list it will load the bean in the target property as a bean of type 'quest'. This relation could not have been formed as as shared list because a shared list does not allow aliases. Without aliases the relation would have been a symmetrical one, lacking the notion of direction. Another solution to this problem would be to use the shared list and create a VIEW of quest called target.
+One-to-one
+
+One-to-one relations are not used frequently. Traditional 1-1 records are linked by their primary keys. Load them like this:
+    list( $author, $bio ) = R::loadMulti( 'author,bio', $id );
+
+This loads an author and a biography with the same ID. You need to make sure the IDs are in sync yourself.
+
+In RedBeanPHP one-to-one relations are an anti-pattern, the fields should belong to the same bean. This method has been added for compatibility reasons only, try to avoid it!
+Polymorph relations
+
+To load a bean whose type is determined by another column:
+    $ad = $page->poly( 'contentType' )->content;
+
+This code returns the bean referred to in content_id using the bean type specified in column content_type. If content_type contains the value 'advertisement' the content will be a bean of type 'advertisement'.
+
+This is an anti-pattern in RedBeanPHP, do not use this functionality unless you have to.
+Use poly() to retrieve polymorph data from an external or legacy database only.

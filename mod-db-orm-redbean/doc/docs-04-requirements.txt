@@ -1,0 +1,33 @@
+Requirements
+
+Short version first... minimal requirements
+
+    GNU/Linux, BSD
+    PHP 5.3.0 or higher (PHP 5.3.4+ recommended)
+    PDO plus driver for your database
+    Multibyte String Support
+
+PHP versions
+
+RedBeanPHP requires PHP 5.3.4 or higher. RedBeanPHP is works on both ZEND PHP and HHVM.
+RedBeanPHP also works with PHP 7. You can also use RedBeanPHP with PHP 5.3 - 5.3.3, just make sure you run the p533 patch first. PHP 5.2 and earlier are not supported by RedBeanPHP. If you happen to work with PHP 5.2 or earlier it's recommended to upgrade to a newer version of PHP.
+PHP 6.0 is also not supported, since this version has never been officially released. Still, some people have been e-mailing me about PHP 6.0. Although RedBeanPHP officially does not support this version, it is said to work 'reasonably'.
+Environment
+
+RedBeanPHP works on all well known operating systems, including GNU/Linux, BSD and Mac OSX.
+You need to have PDO installed and you need a PDO driver for the database you want to connect to. Most PHP stacks already take care of this.
+RedBeanPHP also requires the MB String extension, once again, chances are, this is already there.
+Databases
+
+RedBeanPHP supports all well known, open source, relational databases. Official support is provided for: MySQL, MariaDB, PostgreSQL, SQLite, CUBRID and Firebird/Interbase (experimental). Support for other databases might be provided by 3rd parties.
+MySQL Strict Mode
+
+RedBeanPHP does not work with MySQL strict mode. To turn off strict mode execute the following SQL query:
+    SET @@global.sql_mode= '';
+Existing schemas
+
+RedBeanPHP has been designed to build your database on-the-fly, as you go. Afterwards, you can manually change the schema to suit your needs (change column types, add additional indexes). Remember that the purpose of RedBeanPHP is to have an easy, configuration-less ORM. This can be achieved only by respecting certain conventions.
+Ready to download?
+
+Did you check your system requirements? Proceed to download RedBeanPHP.
+

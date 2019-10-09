@@ -8,16 +8,16 @@
 
 namespace SmartModExtLib\DbalZend;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 /**
@@ -89,7 +89,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: \Zend\Db
- * @version 	v.181107
+ * @version 	v.20191008
  * @package 	Database:ZendDb-PDO
  *
  */
@@ -124,8 +124,8 @@ final class DbalPdo {
 		//--
 		$this->cfg = (array) $cfg;
 		//--
-		$this->cfg['driver'] = (string) strtolower((string)trim((string)$this->cfg['driver']));
-		$this->cfg['host'] = (string) trim((string)$this->cfg['host']);
+		$this->cfg['driver'] = (string) \strtolower((string)\trim((string)$this->cfg['driver']));
+		$this->cfg['host'] = (string) \trim((string)$this->cfg['host']);
 		$this->cfg['port'] = (int) $this->cfg['port'];
 		//--
 		switch((string)$this->cfg['driver']) {
@@ -159,7 +159,7 @@ final class DbalPdo {
 				return;
 		} //end switch
 		//--
-		$this->cfg['charset'] = (string) SMART_FRAMEWORK_DBSQL_CHARSET;
+		$this->cfg['charset'] = (string) \SMART_FRAMEWORK_DBSQL_CHARSET;
 		$this->cfg['options'] = (array) $this->cfg['options'];
 		$this->cfg['options']['buffer_results'] = true;
 		//--
@@ -233,7 +233,7 @@ final class DbalPdo {
 	 */
 	public function count_data($query, $values='') {
 		//--
-		if(!is_array($values)) {
+		if(!\is_array($values)) {
 			$values = array();
 		} //end if
 		//--
@@ -248,7 +248,7 @@ final class DbalPdo {
 		} //end try catch
 		//--
 		$count = 0;
-		if(is_array($arr[0])) {
+		if(\is_array($arr[0])) {
 			foreach($arr[0] as $key => $val) {
 				$count = (int) $val; // find first row and first column value
 				break;
@@ -270,7 +270,7 @@ final class DbalPdo {
 	 */
 	public function read_data($query, $values='') {
 		//--
-		if(!is_array($values)) {
+		if(!\is_array($values)) {
 			$values = array();
 		} //end if
 		//--
@@ -307,7 +307,7 @@ final class DbalPdo {
 	 */
 	public function read_adata($query, $values='') {
 		//--
-		if(!is_array($values)) {
+		if(!\is_array($values)) {
 			$values = array();
 		} //end if
 		//--
@@ -348,7 +348,7 @@ final class DbalPdo {
 	 */
 	public function read_asdata($query, $values='') {
 		//--
-		if(!is_array($values)) {
+		if(!\is_array($values)) {
 			$values = array();
 		} //end if
 		//--
@@ -366,7 +366,7 @@ final class DbalPdo {
 			throw new \Exception('The Result contains more than one row ...');
 		} //end if
 		//--
-		if(!is_array($arr[0])) {
+		if(!\is_array($arr[0])) {
 			$arr[0] = array();
 		} //end if
 		//--
@@ -389,9 +389,9 @@ final class DbalPdo {
 	 */
 	public function write_data($query, $values_or_mode='') {
 		//--
-		if((string)strtoupper((string)$values_or_mode) == 'QUERY_MODE_EXECUTE') {
+		if((string)\strtoupper((string)$values_or_mode) == 'QUERY_MODE_EXECUTE') {
 			$values_or_mode = \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE;
-		} elseif(!is_array($values_or_mode)) {
+		} elseif(!\is_array($values_or_mode)) {
 			$values_or_mode = array();
 		} //end if
 		//--
@@ -434,7 +434,7 @@ final class DbalPdo {
 		//--
 		\SmartFrameworkRegistry::setDebugMsg('db', 'zend-db/'.$driver.'|log', [
 			'type' => 'metainfo',
-			'data' => 'Database Server: SQL ('.$driver.') / App Connector Version: '.$this->zend_db_version.' / Connection Charset: '.SMART_FRAMEWORK_DBSQL_CHARSET
+			'data' => 'Database Server: SQL ('.$driver.') / App Connector Version: '.$this->zend_db_version.' / Connection Charset: '.\SMART_FRAMEWORK_DBSQL_CHARSET
 		]);
 		\SmartFrameworkRegistry::setDebugMsg('db', 'zend-db/'.$driver.'|log', [
 			'type' => 'metainfo',
@@ -443,7 +443,7 @@ final class DbalPdo {
 		\SmartFrameworkRegistry::setDebugMsg('db', 'zend-db/'.$driver.'|log', [
 			'type' => 'open-close',
 			'data' => 'DB Connection: '.$this->connkey,
-			'connection' => (string) sha1(print_r($this->cfg,1))
+			'connection' => (string) \sha1((string)\print_r($this->cfg,1))
 		]);
 		//--
 		for($i=0; $i<\Smart::array_size($arr); $i++) {
@@ -451,7 +451,7 @@ final class DbalPdo {
 			$arr[$i] = (array) $arr[$i];
 			foreach($arr[$i] as $key => $val) {
 				if((string)$key == 'parameters') {
-					if((is_object($val)) AND ($val instanceof \Zend\Db\Adapter\ParameterContainer)) {
+					if((\is_object($val)) AND ($val instanceof \Zend\Db\Adapter\ParameterContainer)) {
 						$arr[$i][(string)$key] = (array) $val->getNamedArray();
 					} else {
 						$arr[$i][(string)$key] = array();
@@ -459,7 +459,7 @@ final class DbalPdo {
 				} //end if
 			} //end foreach
 			//--
-			\SmartFrameworkRegistry::setDebugMsg('db', 'zend-db/'.$driver.'|slow-time', number_format((float)$this->slow_query_time, 7, '.', ''), '=');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'zend-db/'.$driver.'|slow-time', \number_format((float)$this->slow_query_time, 7, '.', ''), '=');
 			\SmartFrameworkRegistry::setDebugMsg('db', 'zend-db/'.$driver.'|total-queries', 1, '+');
 			\SmartFrameworkRegistry::setDebugMsg('db', 'zend-db/'.$driver.'|total-time', (float)$arr[$i]['elapse'], '+');
 			\SmartFrameworkRegistry::setDebugMsg('db', 'zend-db/'.$driver.'|log', [
@@ -487,15 +487,15 @@ final class DbalPdo {
 		//--
 		$driver = (string) $this->cfg['driver'];
 		//--
-		if(defined('SMART_SOFTWARE_SQLDB_FATAL_ERR') AND (SMART_SOFTWARE_SQLDB_FATAL_ERR === false)) {
+		if(\defined('\\SMART_SOFTWARE_SQLDB_FATAL_ERR') AND (\SMART_SOFTWARE_SQLDB_FATAL_ERR === false)) {
 			throw new \Exception('#Zend-Db@'.$this->connkey.'# :: Q# // '.$driver.' :: EXCEPTION :: '.$y_area."\n".$y_error_message);
 			return;
 		} //end if
 		//--
-		$err_log = $y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Params:'."\n".print_r($y_params_or_title,1)."\n".'*** Query:'."\n".$y_query;
+		$err_log = $y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Params:'."\n".\print_r($y_params_or_title,1)."\n".'*** Query:'."\n".$y_query;
 		//--
 		$def_warn = 'Execution Halted !';
-		$y_warning = (string) trim((string)$y_warning);
+		$y_warning = (string) \trim((string)$y_warning);
 		if(\SmartFrameworkRuntime::ifDebug()) {
 			$width = 750;
 			$the_area = (string) $y_area;
@@ -503,14 +503,14 @@ final class DbalPdo {
 				$y_warning = (string) $def_warn;
 			} //end if
 			$the_error_message = 'Operation FAILED: '.$def_warn."\n".$y_error_message;
-			if(is_array($y_params_or_title)) {
-				$the_params = '*** Params ***'."\n".print_r($y_params_or_title, 1);
+			if(\is_array($y_params_or_title)) {
+				$the_params = '*** Params ***'."\n".\print_r($y_params_or_title, 1);
 			} elseif((string)$y_params_or_title != '') {
 				$the_params = '[ Reference Title ]: '.$y_params_or_title;
 			} else {
 				$the_params = '- No Params or Reference Title -';
 			} //end if
-			$the_query_info = (string) trim((string)$y_query);
+			$the_query_info = (string) \trim((string)$y_query);
 			if((string)$the_query_info == '') {
 				$the_query_info = '-'; // query cannot e empty in this case (templating enforcement)
 			} //end if
@@ -561,20 +561,19 @@ final class DbalPdo {
  */
 function autoload__ZendDbal_SFM($classname) {
 	//--
-	//--
 	$classname = (string) $classname;
 	//--
-	if((strpos($classname, '\\') === false) OR (!preg_match('/^[a-zA-Z0-9_\\\]+$/', $classname))) { // if have no namespace or not valid character set
+	if((\strpos($classname, '\\') === false) OR (!\preg_match('/^[a-zA-Z0-9_\\\]+$/', $classname))) { // if have no namespace or not valid character set
 		return;
 	} //end if
 	//--
-	if(strpos($classname, 'Zend\\') === false) { // must start with this namespaces only
+	if(\strpos($classname, 'Zend\\') === false) { // must start with this namespaces only
 		return;
 	} //end if
 	//--
-	$parts = (array) explode('\\', $classname);
+	$parts = (array) \explode('\\', $classname);
 	//--
-	$max = (int) count($parts) - 1; // the last is the class
+	$max = (int) \count($parts) - 1; // the last is the class
 	//--
 	$dir = 'modules/mod-dbal-zend/libs/Zend/';
 	//--
@@ -595,22 +594,21 @@ function autoload__ZendDbal_SFM($classname) {
 	$dir  = (string) $dir;
 	$file = (string) $parts[(int)$max];
 	$path = (string) $dir.$file;
-	$path = (string) str_replace(array('\\', "\0"), array('', ''), $path); // filter out null byte and backslash
+	$path = (string) \str_replace(array('\\', "\0"), array('', ''), $path); // filter out null byte and backslash
 	//--
-	if(!preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
+	if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
 		return; // invalid path characters in file
 	} //end if
 	//--
-	if(!is_file($path.'.php')) {
+	if(!\is_file($path.'.php')) {
 		return; // file does not exists
 	} //end if
 	//--
 	require_once($path.'.php');
 	//--
-	//--
 } //END FUNCTION
 //--
-spl_autoload_register('\\SmartModExtLib\\DbalZend\\autoload__ZendDbal_SFM', true, false); // throw / append
+\spl_autoload_register('\\SmartModExtLib\\DbalZend\\autoload__ZendDbal_SFM', true, false); // throw / append
 //--
 
 

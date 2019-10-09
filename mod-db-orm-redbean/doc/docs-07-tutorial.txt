@@ -1,0 +1,225 @@
+Tutorial
+
+Picture of a glass of Whisky, taken in Devils Advocate, Edinburgh. In this tutorial we're going to write a little application to demonstrate some basic features of RedBeanPHP. Instead of a boring todo app, we'll write a little application to manage whisky tasting notes. We call this application 'dram' which is 'a small glass of whisky'.
+
+
+
+
+The Environment
+
+We'll build a CLI application. This means we don't create a graphical user interface. Our application will run on the command line. This allows us to focus solely on the program code without having to bother with things like HTML templates. We also assume you're using a UNIX or GNU/Linux operating system.
+Step 1: Setup
+
+First, we need to download and install the RedBeanPHP package. Luckily, this is a no-brainer. RedBeanPHP is distributed as a single file which we just grab from the internet like this:
+url=http://www.redbeanphp.com/downloadredbean.php
+wget $url --output-document="redbeanphp.tar.gz"
+tar xvf redbeanphp.tar.gz
+
+Here we download the RedBeanPHP package from the RedBeanPHP servers. We then extract the contents of the tarball. RedBeanPHP is always distributed as a single tarball containing the single code file. The code file inside the tarball is named:
+rb.php
+
+For this tutorial, we'll use a temporary database, so after rebooting your system, the data will be gone.
+While not very practical in real life, this is ideal for testing and playing with RedBeanPHP. So, let's create our application, the dram.php file:
+touch dram.php
+
+...and we're going to edit it using our favourite editor...
+vim dram.php
+
+I like to use VIM but that's of course just a matter of choice. Any plaintext editor would do fine of course.
+Now, let's require the RedBeanPHP library file and setup our database connection:
+    require 'rb.php';
+    R::setup();
+
+That's all, we're now ready to start coding now.
+Step 2: Let's add a bottle of whisky
+
+When working with RedBeanPHP, it's important to start by creating records first. So first write your logic for adding records to the database. Some people like to begin by creating an overview page listing all the records in a table, however this means your database must already contain at least some data.
+Since we like RedBeanPHP to do all the heavy lifting for us, including table and column creation, we better start the other way around, by adding records. So, always start with your 'add' code.
+    $opts = getopt( '', [ 'add:', 'list' ] );
+
+We use the getopt() function of PHP to read commands from the console.
+In this case we listen for two commands: add and list.
+Now let's see how we add a bottle of whisky to our collection:
+    if ( isset( $opts['add'] ) ) {
+    $w = R::dispense( 'whisky' );
+    $w->name = $opts['add'];
+    $id = R::store( $w );
+    die( "OK.\n" );
+    }
+
+This code works very simple: it takes the value of the add parameter from the command line and creates a new bean of type whisky. It then puts the text in the name property of the bean and stores it. To make it possible for our users to view the whisky menu we also implement a list feature:
+    if ( isset( $opts['list'] ) ) {
+          $bottles = R::find( 'whisky' );
+          if ( !count( $bottles ) )
+            die( "The cellar is empty!\n" );
+          foreach( $bottles as $b ) {
+            echo "* #{$b->id}: {$b->name}\n";
+          }
+      exit;
+    }
+
+We can now use the application like this:
+php dram.php --add="Bowmore 12yo"
+OK.
+php dram.php --add="Lagavulin 16yo"
+OK.
+
+...and to view the list...
+php dram.php --list
+* #1: Bowmore 12yo
+* #2: Lagavulin 16yo
+
+That's already quite a fancy application in just a couple of lines. But we can do more! However, before we continue, let's take a look at the database. Before we began, it was empty, but now we see this:
+geek@beans$ sqlite3 /tmp/red.db
+SQLite version 3.7.13 2025-06-11 02:05:22
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+sqlite> .tables
+whisky
+
+We see the whisky table has been created. The required columns are there as well:
+sqlite> .schema
+CREATE TABLE `whisky` (
+id INTEGER PRIMARY KEY AUTOINCREMENT ,
+`name` TEXT
+);
+
+RedBeanPHP creates the necessary tables and columns automatically. The type of the column in the database depends on the value you want to store in it. RedBeanPHP scans the value you want to store in a column and makes sure the column has a type that can contain your data properly. You can always tune your database schema manually of course.
+Step 3: Throwing bottles away
+
+We are now going to add a new feature: 'delete'. Not suprising, the delete command will remove a specific record from the database. First we add the 'delete' command to getopts, so our application can recognize this command:
+    $opts = getopt( '', ['add:', 'list', 'delete:' ] );
+
+Next, we write a little code to perform the actual deletion:
+    if ( isset( $opts['delete'] ) ) {
+    R::trash( 'whisky', $opts['delete'] );
+    die( "Threw the bottle away!\n" );
+    }
+
+Nice, so we can now add, list and delete whiskies! Let's give it a try!
+php dram.php --add="daluaine 16yo"
+OK.
+php dram.php --list
+* #1: Bowmore 12yo
+* #3: Daluaine 16yo
+
+Oops, a typo, it's Dailuaine not Daluaine. A delicious whisky by the way. Thanks to our new delete function, we can now remove this faulty record and correct our silly mistake:
+php dram.php --delete=3
+Threw the bottle away!
+php dram.php --list
+* #1: Bowmore 12yo
+php dram.php --add="Dailuaine 16yo"
+
+Now this is all nice and fun but where are the notes? It's supposed to be a tasting notes app after all? So, let's add the notes before the Haggis gets cold!
+Step 4: Adding some tasting notes
+
+Let's first consider the relation between a tasting note and a bottle of whisky. A whisky bottle can have many tasting notes, yes? Right, so what about the other way around? Can one tasting note belong to many whiskies? Unlikely, since we consider every whisky to have a unique taste (except the very cheap stuff maybe).
+This means we need a one-to-many relation here.
+One whisky has many notes, each of these notes belongs to one whisky. This kind of relation is sometimes expressed as: 1-N. Now, when we throw away a bottle of whisky because we are no longer interested in it, should we keep the corresponding notes? No! of course not! The notes themselves are not of any interest, they only matter in relation to the whisky they describe. This means we have to use an exclusive own list: xownNoteList. We relate the note and the whisky like this:
+    $n = R::dispense( 'note' );
+    $n->note = $text;
+    $whisky->xownNoteList[] = $n;
+    R::store( $whisky );
+
+
+Note that the name of the list contains the type of bean we're storing in it. This is by convention. The format for a list is:
+<x> own <BEAN TYPE NAME> List
+
+So if we want to store pages in a book we use ownPageList. Because we want to throw the notes away with the bottle, we use an exclusive list. Therefore we begin the name of this list with an 'x'. Once an exclusive list has been defined, there is no way back. If you want the notes to stay after all, you'll have to open your database management tool (phpmyadmin) and change the foreign key setting.
+
+Now, let's make a feature for our users to list all the notes attached to a certain bottle of whisky:
+    $notes = $whisky->xownNoteList;
+    foreach( $notes as $note ) echo $note->note;
+Step 5: Wrapping up
+
+Now let's take a look at the whole application, here is my version:
+    require 'rb.php';
+    R::setup();
+    $opts = getopt( '', [
+      'add:',
+      'delete:',
+      'attach-to:',
+      'note:',
+      'notes:',
+      'remove-note:',
+      'list' ] );
+    if ( isset( $opts [ 'add' ] ) ) {
+      $w = R::dispense( 'whisky' );
+      $w->name = $opts['add'];
+      $id = R::store( $w );
+      die( "OK.\n" );
+    }
+    if ( isset( $opts['delete'] ) ) {
+      R::trash( 'whisky', $opts['delete'] );
+      die( "Threw the bottle away!\n" );
+    }
+    if ( isset( $opts['note'] ) && isset( $opts['attach-to'] ) ) {
+      $w = R::load( 'whisky', $opts['attach-to'] );
+      if (!$w->id) die( "No such bottle.\n" );
+      $n = R::dispense( 'note' );
+      $n->note = $opts['note'];
+      $w->xownNoteList[] = $n;
+      R::store( $w );
+      die( "Added note to whisky.\n" );
+    }
+    if ( isset( $opts['notes'] ) ) {
+    $w = R::load( 'whisky', $opts['notes'] );
+    foreach( $w->xownNoteList as $note ) {
+    echo "* #{$note->id}: {$note->note}\n";
+    }
+      exit;
+    }
+    if ( isset( $opts['remove-note'] ) ) {
+    R::trash( 'note', $opts['remove-note'] );
+      die( "Removed note.\n" );
+    }
+    if ( isset( $opts['list'] ) ) {
+     $bottles = R::find( 'whisky' );
+    if ( !count( $bottles ) ) die( "The cellar is empty!\n" );
+    foreach( $bottles as $b ) {
+    echo "* #{$b->id}: {$b->name}\n";
+    }
+    exit;
+    }
+
+Here is how to use it:
+php dram.php --add="Dailuaine 16yo"
+OK.
+php dram.php --list
+* #1: Bowmore 12yo
+* #4: Dailuaine 16yo
+php dram.php --attach-to=4 --note="vanilla, buttered cream"
+Added note to whisky.
+php dram.php --attach-to=4 --note="apple, pear"
+Added note to whisky.
+php dram.php --notes=4
+* #4: vanilla, buttered cream
+* #5: apple, pear
+Step 6: Playing with models
+
+Just for fun, we're going to add a model. In many web application using the MVC pattern, models are used to encapsulate the business rules. Now let's say we don't accept tasting notes containing less than four characters. This qualifies as a business rule in the drinking business :). To add this validation rule we need to have a model. In most object relational mappers this is why you have to create a whole class first. In RedBeanPHP we like to things a little different. We have no models remember? Just beans. So, how do we go from a bean to a model ? Simple, we just add a model and RedBeanPHP will automatically detect its presence. Based on the naming convention it will connect the model to the bean. Here we go:
+    class Model_Note extends RedBean_SimpleModel {
+        public function update() {
+        if ( strlen( $this->bean->note ) < 4 )
+        die( "Note is too short!\n" );
+        }
+    }
+
+Within the note model we can refer to our bean using:
+    $this->bean;
+
+The update() method will be invoked by the bean once we try to store it. There is no way to stop the code flow though, to prevent RedBeanPHP from storing the bean we have to throw an exception, or issue a die() statement. Let's test it:
+php dram.php --attach-to=4 --note="ap"
+Note is too short!
+
+Nice! That works really well! See? We did not have to change our code, simply add models whenever you like. No need to take all your code, put it in a class or add validation rules here and there, no, just add the model and suddenly all actions will flow through it. Besides update() we can use a lot of other 'hooks' to do all sorts of model stuff.
+Step 7: Freezing
+
+Before we deploy our application, we need to review the database and freeze it. To freeze the database we simply invoke the freeze() method on top of our code, just below the setup line:
+    R::setup();
+    R::freeze( TRUE );
+
+That's it, we have our whisky app!
+Of course there's much more to RedBeanPHP than just doing CRUD and one-to-many relations, but it's nearly impossible to fit all those features in a single tutorial.
+Feel free to extend this little app with tags, categories and other concepts to explore all the other features RedBeanPHP has to offer. Enjoy!
+

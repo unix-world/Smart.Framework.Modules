@@ -1,0 +1,48 @@
+Many-to-one
+
+Now let's look at this relation from the perspective of a product. A product belongs to a shop, so you can access the shop like this:
+    $shop = $product->shop;
+
+This is called the 'parent bean'.
+The shop is considered the parent of the product. It owns the product.
+Exists (5+)
+
+To check if a related bean exists:
+    $product->exists('shop');
+
+This function will return TRUE if a shop has been associated with the product and FALSE otherwise.
+Setting a parent bean
+
+To set a parent bean:
+    $product->shop = $someShop;
+    R::store( $product );
+
+Note that, when you set a new shop the property shop_id still points to the old shop (or is still NULL if there was no previous shop). This field gets updated after the bean has been saved. So, the shop_id and shop fields are not always in sync.
+    $product->shop = $newShop;
+    echo $product->shop_id; //still old value
+    R::store( $product );
+    echo $product->shop_id; //has been updated!
+
+Another way to update the shop is to simply set the new id, once again, shop_id and shop will be out-of-sync until the next R::store().
+    $oldShop = $product->shop;
+    $product->shop_id = $newID;
+    echo $product->shop->id; //old id
+    R::store( $product );
+    echo $product->shop->id; //new id
+
+However if we change the id before we load the shop, the new shop will be loaded:
+    $product->shop_id = $newID;
+    echo $product->shop->id; //old id
+    R::store( $product );
+    echo $product->shop->id; //new id
+
+This may seem a bit weird but it's actually quite logical. When accessing the parent bean, RedBeanPHP simply looks at the value of shop_id and loads the shop identified by that id.
+
+As of RedBeanPHP 4.3.4 the latter behavior has been resolved. Changing the _id property after loading will also sync the loaded bean.
+Removing the parent
+
+To remove the shop from our product in the example above, simply assign the value NULL to the property 'shop':
+    $product->shop = NULL; //removes product from shop
+
+Besides one-to-many, RedBeanPHP has a special version of this relation: the one-to-X also known as the one-to-fixed relation. Read more about the One-to-fixed relation.
+

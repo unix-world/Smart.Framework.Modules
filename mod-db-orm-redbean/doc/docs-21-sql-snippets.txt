@@ -1,0 +1,64 @@
+Using SQL Snippets
+
+You can modify the contents of an own-list and a shared-list using additional SQL snippets. Use with() to order or limit the list and withCondition to add additional filtering.
+    $pages = $book
+        ->with( ' ORDER BY pagenum ASC ' )
+        ->ownPageList;
+
+    $vases = $shop
+        ->withCondition(' category = ? ', ['vase'] )
+        ->ownProductList;
+
+    //combine condition and order
+    $vases = $shop
+        ->withCondition(' category = ? ORDER BY price ASC ', ['vase'] )
+        ->ownProductList;
+
+    $employees = $project
+        ->withCondition(' priority > 40 ')
+        ->sharedEmployeeList;
+
+    //Special case, filter on linking records...
+    $employees = $project
+        ->withCondition(' employee_project.assigned < ? ', [ $date ])
+        ->sharedEmployeeList;
+
+Note the last case in this example. Here we use a column from the link table to filter the rows. This technique allows you to filter on relational qualifications like the duration of the assignment to the project.
+
+You cannot combine with() and withCondition(). Instead, you can append additional clauses like in the third example.
+
+Important note about AND/OR statements in snippets. If you plan to use AND/OR statements in your conditions, please remember your snippet is integrated into a larger query. For the best results, it is recommended that you put your AND/OR snippets between parenthesis like this:
+
+...->withCondition(' ( deleted IS NULL OR deleted = 0 ) ')...
+Via and SQL
+
+Via can be used with SQL snippets as well:
+    $designers = $project
+        ->withCondition( ' participant.role = ? ', ['designer'] )
+        ->via( 'participant' )
+        ->sharedEmployeeList;
+
+Both with() and withCondition() cause the list to reload, however if the SQL snippet hasn't changed and the writer cache is active (default) then no query will be send to the database.
+Reloading a list
+
+To reload a list without an SQL snippet use the all() method or unset it:
+    $shop->all()->xownProductList;
+    unset( $shop->xownProductList ); //will be reloaded next time.
+Joins (version 4.1+)
+
+Sometimes you want to sort or filter an own-list based on some other property in another bean. You can use the @joined keyword to select such a property and RedBeanPHP will automatically join-in this field:
+    $books = $author
+        ->withCondition('
+            @joined.info.title LIKE ?
+            AND @joined.category.title = ?
+            ORDER BY @joined.info.title ASC ',
+        [ '%ing%', 'computers' ] )->xownBookList;
+
+
+In the example above, each book has an information bean called 'info' that contains the title of the book and a category bean called 'category'. We like to filter on category and book title - so we use the @joined.info.title and @joined.category.title for the filtering. We also like to order the resulting records, so we add an ORDER BY clause with @joined.info.title (orders on the book title).
+The noLoad modifier
+
+Sometimes, when you only want to add something to a list, there is no need to load the entire list. To keep RedBeanPHP from loading a list use the noLoad modifier as depicted in the following example:
+    $book->noLoad()->xownPageList[] = $newPage;
+
+This will add a new page to the list, but the initial loading of the list will not take place.

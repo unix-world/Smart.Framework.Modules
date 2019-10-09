@@ -1,0 +1,77 @@
+Welcome
+
+
+RedBeanPHP is an easy to use ORM for PHP. It's a Zero Config ORM lib that 'automagically' builds your database schema.
+News
+
+2019-10-01: RedBeanPHP 5.4 (St. Nicholas Edition)
+2019-06-01: RedBeanPHP 5.3.1
+2019-04-06: RedBeanPHP 5.3 (Palm Sunday Edition)
+2018-10-26: RedBeanPHP 5.2 (All Saints Edition)
+2018-04-02: RedBeanPHP 5.1 (Easter Edition)
+2017-10-31: RedBeanPHP 5.0 (Halloween Edition)
+2017-03-08: RedBeanPHP 4.3.4
+2016-10-25: RedBeanPHP 4.3.3
+2016-05-01: RedBeanPHP 4.3.2
+2016-01-09: RedBeanPHP 4.3.1
+2015-10-01: RedBeanPHP 4.3
+2015-07-29: RedBeanPHP 4.2.5
+Code Example
+
+This is how you do CRUD in RedBeanPHP:
+    require 'rb.php';
+    R::setup();
+
+    //for version 5.3 and higher
+    //optional but recommended
+    R::useFeatureSet( 'novice/latest' );
+
+    $post = R::dispense( 'post' );
+    $post->text = 'Hello World';
+
+    //create or update
+    $id = R::store( $post );
+
+    //retrieve
+    $post = R::load( 'post', $id );
+
+    //delete
+    R::trash( $post );
+
+This automatically generates the database, tables and columns... on-the-fly. It infers relations based on naming conventions. RedBeanPHP also makes it very easy to work with trees in databases:
+    $pages = R::children( $site, $extraSQL );
+
+RedBeanPHP uses recursive table expressions to deal with tree structures in your database to improve performance (to use this feature you need a database that supports RCTEs like MySQL 8.0.1+, MariaDB 10.2.2+ or PostgreSQL 9+). Learn more about RedBeanPHP trees.
+
+In RedBeanPHP 5.3 and higher you can use R::useFeatureSet( 'novice/latest' ) to automatically select the latest features. If you are working on an older code base you can ommit this line. The latest keyword means that you want use the latest features. The novice keyword means that some dangerous features like R::nuke() will be turned off. You can also specify a specific RedBeanPHP version like 5.3 (minimum).
+Zero Config
+
+No verbose XML files, no annoying annotations, no YAML or INI. Zero Config. Just start coding.
+Fluid Schema
+
+During development, RedBeanPHP will adapt the database schema to fit your needs, giving you the NoSQL experience. When deploying to production servers, you can freeze the schema and benefit from performance gains and referential integrity.
+RedBeanPHP offers the best of both worlds!
+Powerful
+
+RedBeanPHP features: auto-discovery of models, fast trees, deep copying and smart import.
+Write less, do more!
+Compatible
+
+RedBeanPHP strives to support all ALL Free, Open Source databases.
+Currently, RedBeanPHP supports: MySQL, MariaDB, SQLite, PostgreSQL, CUBRID and Firebird/Interbase***. RedBeanPHP supports PHP version 5.2*, 5.3.0-5.3.2**, 5.3.3, 5.4, 5.5, 5.6, 7.0, 7.1,7.2,7.3 and HHVM. We take backward compatibility very serious! RedBeanPHP has a track record of 10 years of PHP language level compatibility without a single breaking change.
+*=partial (according to community)
+**=requires patch
+***=experimental
+Quality Software
+
+The library has been created in 2009 and is now considered quite mature. No major bugs have been found since 2013 and only minor features have been added in recent years. The code base is being tested with every change, there are over 18000+ unit tests (100% code coverage) for PHP 5.3-7.2 and all supported databases. The project is actively maintained and we take backward compatibility *very* serious. The code is well-documented. RedBeanPHP is trusted by many developers worldwide and has over 1.7 million installs on packagist alone (since 3.5) and almost 2k stars on github. Signify keys are provided.
+Download
+
+Download the easy-to-use one-in-all package, one single file containing the entire RedBeanPHP library! No composer, no auto-loaders, no configuration, just download and run! Go to the DOWNLOAD page and download to latest version of RedBeanPHP!
+
+Github repository: RedBeanPHP on Github.
+Travis-CI Test Dashboard: RedBeanPHP on Travis.
+API Documentation: RedBeanPHP API Documentation.
+Community Forum: RedBeanPHP Community Forum.
+
+RedBeanPHP is written by BDFL Gabor de Mooij and the RedBeanPHP community.

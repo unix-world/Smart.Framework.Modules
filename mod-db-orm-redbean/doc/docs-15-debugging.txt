@@ -1,0 +1,79 @@
+Debugging
+
+The debug() method will reveal all queries being executed by RedBeanPHP:
+    //turns debugging ON (recommended way)
+    R::fancyDebug( TRUE );
+
+    //turns debugging ON (classic)
+    R::debug( TRUE );
+
+    //turns debugging OFF
+    R::debug( FALSE );
+
+The queries will be printed on the screen. The output of the debugging function looks like this:
+INSERT INTO "event" ( id, "name" ) VALUES
+( NULL, ? )
+Array
+
+(
+[0] => party
+)
+
+You can also log the queries:
+    R::debug( TRUE, 1 ); //select mode 1 to suppress screen output
+
+To access the logs:
+    $logs = R::getDatabaseAdapter()
+            ->getDatabase()
+            ->getLogger();
+
+    print_r( $logs->grep( 'SELECT' ) );
+
+Use the grep() method to search the logs.
+Query parameters
+
+By default, the debugger prints the queries and parameters in separate sections. Sometimes you might prefer to see what the actual query would look like if the parameters had been filled in. RedBeanPHP 4.1+ offers two new debugger modes to facilitate this:
+    R::debug( TRUE, 2 ); //select MODE 2 to see parameters filled in
+    R::fancyDebug();   //since 4.2
+
+Outputs the query above like this:
+INSERT INTO "event" ( id, "name" ) VALUES
+( NULL, "party" )
+
+Mode 2 also writes to the logs, if you want to suppress screen output, select mode 3.
+
+In 'fancy' mode schema altering queries are highlighted as well as bound parameters. Parameter bindings are also included in the SQL instead of in a separate list. If a parameter value is too long, fancy debug will only show the first part so your query remains readable. Also, fancy debug works with HTML colors as well, in case you like to debug with a browser instead of a command line.
+Under the hood
+
+Under the hood, all debugging functionality makes use of the logger classes. There are two logger classes available in RedBeanPHP: the Default Logger and the Debugger Logger (4.1+). Besides using the convenience methods listed here you can create your own logger instance and attach it to some object:
+    $myLogger = new \RedBeanPHP\Logger\RDefault;
+    $database->setLogger($myLogger);
+
+As of version 4.3.2 R::fancyDebug( TRUE ); is the recommended way to debug.
+Inspecting Beans
+
+The easiest way to inspect a bean is to just echo it.
+    echo $bean;
+
+If you have a list of beans, an array, you can use good old print_r of course, but print_r will also print useless details. To get a shorter and more descriptive summary of a bean or an array of beans you can use the dump() function:
+    print_r( R::dump( $myBeans ) );
+    print_r( R::dump( $singleBean ) );
+
+The output looks like this:
+[1] => {"id":"1","name":"party"}
+
+An even shorter syntax:
+    dmp( $myBean );
+
+The dmp() function is a global function for your convenience.
+Error handling
+
+Error handling is different in fluid and frozen mode. In fluid mode SQL errors caused by missing columns or tables will be suppressed but other errors (syntax) will throw RedException\SQL exceptions.
+
+SQLite and some plugin drivers do not provide meaningful SQLSTATE codes, therefore under these drivers fluid mode will suppress all errors.
+Testing the connection
+
+In RedBeanPHP 4.1+ you can test the connection using a special test function. This function will refrain from throwing exceptions and simply return TRUE if the connection has been established and FALSE otherwise:
+    $isConnected = R::testConnection();
+
+Besides debugging, this function is handy for installers and setup scripts of web applications to determine whether database credentials have been entered correctly.

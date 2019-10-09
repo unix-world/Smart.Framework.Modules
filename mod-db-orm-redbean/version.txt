@@ -1,0 +1,6 @@
+
+# Smart.Framework.Modules: RedBean-ORM r.20191009 (gabordemooij/redbean 5.4 with some fixes by unixman) #
+
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
+
+###

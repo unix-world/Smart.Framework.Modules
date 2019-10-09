@@ -1,0 +1,81 @@
+Database
+
+This chapter discusses general database functionality of RedBeanPHP.
+Reflection
+
+To get all the columns of table 'book':
+    $fields = R::inspect( 'book' );
+
+To get all tables:
+    $listOfTables = R::inspect();
+Multiple databases
+
+There are two important methods to keep in mind when working with multiple databases: addDatabase() and selectDatabase().
+To add a new database connection use R::addDatabase() like this:
+    R::addDatabase( 'DB1', 'sqlite:/tmp/d1.db', 'usr', 'pss', $frozen );
+
+To select a database, use the key you have previously specified:
+    R::selectDatabase( 'DB1' );
+
+If you used R::setup() to connect to your database you can switch back to this database using:
+    R::selectDatabase( 'default' );
+Transactions
+
+RedBeanPHP offers three simple methods to use database transactions: begin(), commit() and rollback(). Usage:
+    R::begin();
+    try{
+        R::store( $page );
+        R::commit();
+    }
+    catch( Exception $e ) {
+        R::rollback();
+    }
+
+Because RedBeanPHP throws exceptions, you can catch the exceptions thrown by methods like R::store(), R::trash(), or one of your 'fuse' methods, and perform a rollback(). The rollback() will completely undo all the pending database changes.
+Transaction closure
+
+You can also use this variation:
+    R::transaction( function() {
+        ..store some beans..
+    } );
+
+The transaction() method supports nested transactions.
+
+Note about auto-commits:
+Many databases automatically commit after changing schemas, so make sure you test your transactions after R::freeze(true); !
+Column Functions (version 4.1+)
+
+As of RedBeanPHP 4.1 you can bind an SQL function to a column. This is useful for wrapping values when reading from / writing to the database.
+For instance, to use MySQL spatial data types you need to prepare the columns like this:
+    R::bindFunc( 'read', 'location.point', 'asText' );
+    R::bindFunc( 'write', 'location.point', 'GeomFromText' );
+
+    $location = R::dispense( 'location' );
+    $location->point = 'POINT(14 6)';
+
+    //inserts using GeomFromText() function
+    R::store( $location );
+
+    //to unbind a function, pass NULL:
+    R::bindFunc( 'read', 'location.point', NULL );
+
+While this method has been implemented to support MySQL spatial data types, you can use it for other purposes as well.
+For instance, you can encode your own data types, create an encryption function or a UUID function.
+
+As you have seen in the previous chapters RedBeanPHP will keep changing the schema to fit your needs, this is called 'fluid mode'. While this is great for development, you don't want this to happen on your production server. Learn how to freeze your database for deployment.
+Query counter (4.2+)
+
+To count get number of queries processed use:
+    R::resetQueryCount(); //reset counter
+    R::getQueryCount(); //get number of queries processed by adapter
+Logging (4.2+)
+
+Logging has always been possible with RedBeanPHP, however from 4.2 on there is an easier way to setup logging:
+    R::startLogging(); //start logging
+    $logs = R::getLogs(); //obtain logs
+Partial Beans (5+)
+    R::usePartialBeans( TRUE );
+
+Toggles 'partial bean mode'. If this mode has been selected the repository will only update the fields of a bean that have been changed rather than the entire bean. This method will return the previous mode (TRUE/FALSE).
+
+In RedBeanPHP 5.2+ you can also set the 4th parameter of setup() to TRUE to enable partial beans.

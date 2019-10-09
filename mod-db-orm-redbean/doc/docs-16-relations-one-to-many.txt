@@ -1,0 +1,46 @@
+One-to-many
+
+In a one-to-many relation, one bean has a list of other beans but all those beans cannot belong to another bean at the same time. For instance, let's create a shop:
+    $shop = R::dispense( 'shop' );
+    $shop->name = 'Antiques';
+
+To add products to the shop, add beans to the ownProductList property, like this:
+    $vase = R::dispense( 'product' );
+    $vase->price = 25;
+    $shop->ownProductList[] = $vase
+    R::store( $shop );
+
+Each product in the ownProductList belongs to shop and cannot belong to another shop.
+
+Note that the name of the list has to match the type of beans it contains. So, the 'ownProductList' contains beans of type 'product', a pageList contains pages, an 'ownCarList' contains 'cars' and so on. This convention is used to create the database mapping, in case of the shop, every product record will get a 'shop_id' field.
+
+When you access an own-list, RedBeanPHP will query the related beans and populate the array, this is called lazy loading. So, to load the list:
+    $shop = R::load( 'shop', $id );
+    $first = reset( $shop->ownProductList ); //gets first product
+    $last = end( $shop->ownProductList ); //gets last product
+    foreach( $shop->ownProductList as $product ) {...} //iterate
+
+To remove the products from the shop:
+    //remove one product by its ID
+    unset( $store->ownProductList[$id] );
+
+    //remove all
+    $store->ownProductList = array();
+    R::store( $shop );
+
+To replace the current list of products:
+    $store->ownProductList = [ $vase, $lamp ];
+Exclusive mode
+
+Note that those products continue to exist in the database, they are just unrelated, don't want that ? Then open the own-list in exclusive mode, using the x-own-list like this:
+    $shop->xownProductList = array();
+    R::store( $shop );
+
+Emptying the list now will cause the vases to be gone too. In exclusive mode the beans in the list are considered to be dependent on their owner. If they are removed from the list, they are deleted as well (i.e. they depend exclusively on their owner).
+
+When using the x-own-list from the start, if you delete the shop, its products will be deleted as well.
+
+This happens because the first time you access an own-list, a foreign key will be created for the owned bean, one that will CASCADE ON DELETE for an x-own-list and one that will SET-TO-NULL otherwise. Once the foreign key is in place, it will not be modified by RedBeanPHP anymore. However you can always change the constraint manually using your database client.
+Other end of the one-to-many
+
+The other end of the one-to-many relation is the many-to-one relation. Learn more about the many-to-one relation.

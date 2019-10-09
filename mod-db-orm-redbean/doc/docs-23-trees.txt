@@ -1,0 +1,96 @@
+Trees
+
+RedBeanPHP supports self-referential relationships. In RedBeanPHP terminology, these are called trees. Here is an example, let's decorate a christmas tree with some candy canes:
+    $cane = R::dispense('cane',10);
+    $cane[1]->ownCane = [ $cane[2], $cane[9] ];
+    $cane[2]->ownCane = [ $cane[3], $cane[4] ];
+    $cane[4]->ownCane = [( $cane[5],
+                $cane[7], $cane[8] ];
+    $cane[5]->ownCane = [ $cane[6] ];
+    $id = R::store( $cane[1] );
+    $root = R::load( 'cane', $id );
+
+    echo $root->ownCane[2]->ownCane[4]
+        ->ownCane[5]->ownCane[6]->id;
+    //outputs: 6
+
+Trees are just a special case of lists, you use a list with the same name as the parent type. In the example script above, a cane has an ownCaneList. Another example: page->ownPageList. As you can see in the example above you can navigate the lists using the IDs.
+Traversal
+
+Instead of manually looping through each own-list of a bean you can use the traverse() method:
+    $page->traverse( 'ownPage', function( $page ) {
+        ....
+    } );
+
+This allows you to recursively apply a function to a list. To limit the results when accessing a list you can use the with/withCondition() method:
+    $page->with( ' LIMIT 10 ')->traverse( ... );
+    $page->withCondition( '  rating > ? ', [ 5 ] )->traverse( ... );
+
+You can also use withCondition and alias together with the traverse function.
+
+Use the third parameter to specify the maximum depth:
+    $page->traverse( 'ownPage', $func, 3 ); //max 3 levels
+
+Use the PHP use statement to import variables into the function scope:
+    $task->traverse( 'ownTask', function( $task ) use ( &$todos ) {
+        $todos[] = $task->name;
+    } );
+
+The traverse() function does not check for recursion in trees.
+Traversing upwards
+
+You can also traverse the other way around, here is a quick example:
+    $page = R::dispense('page');
+    $page->title = 'chapter';
+    $page2 = R::dispense('page');
+    $page2->title = 'article';
+    $page3 = R::dispense('page');
+    $page3->title = 'text';
+    $page->ownPageList[] = $page2;
+    $page2->ownPageList[] = $page3;
+    R::store($page);
+    $p = $page3->fresh();
+    $p->traverse('page', function($parent) {
+            echo $parent->title. PHP_EOL;
+    });
+Importing Trees
+
+Do you want to import a hierarchical data structure ? This can be accomplished using the R::dispense() feature.
+Faster trees (5.2+)
+
+If your database supports common table expressions (Postgres, MariaDB 10.3+) you can use the CTE-based tree tools as well:
+    $pages = R::dispense(array(
+        '_type' => 'page',
+        'title' => 'home',
+        'ownPageList' => array(array(
+            '_type' => 'page',
+            'title' => 'shop',
+            'ownPageList' => array(array(
+                '_type' => 'page',
+                'title' => 'wines',
+                'ownPageList' => array(array(
+                    '_type' => 'page',
+                    'title' => 'whiskies',
+                ))
+            ))
+        ))
+    ));
+
+
+Given the page hierarchy of the shop above you can use R::parents() and R::children() like this:
+    R::parents( $whiskyPage, ' ORDER BY title ASC ' );
+    //gives: home,shop,whiskies,wines
+
+    R::children( $homePage, ' ORDER BY title ASC ' ) );
+    //gives:home,shop,whiskies,wines
+
+    R::children( $winePage, ' title NOT IN (\'wines\') ORDER BY title ASC ' );
+    //whiskies
+
+    R::parents( $winePage, '  title NOT IN (\'home\') ORDER BY title ASC ' );
+    //shop,wines
+
+Because this approach uses common table expressions the performance is much better.
+
+Caution! This is a new, experimental feature available as of RedBeanPHP 5.2. The CTE API has been tested but may still contain bugs. Also the CTE API may be subject to change in future versions.
+

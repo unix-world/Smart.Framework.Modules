@@ -1,0 +1,47 @@
+Plugins
+
+Here is a list of 3rd party plugins for RedBeanPHP, enjoy! Did you create a plugin for RedBeanPHP? Send me an e-mail and I'll probably add it to the list! Do you want to create your own plugin? Consult the Plugin Creator's Manual for details on crafting your own RedBeanPHP extension!
+RedBean Model Validation
+
+Plugin: RVP, RedBeanPHP Validation Plugin.
+Author: Filisko
+
+With this plugin you will be able to filter and validate your RedBean Model, to do that, the plugin itself uses GUMP, a standalone PHP data validation and filtering class.
+SQN
+
+Plugin: SQN
+Short Query Notation library that is compatible with RedBeanPHP R::findMulti().
+PoolDB
+
+Plugin: PoolDB
+To have a pool of databases where each bean remembers the database it originated from. (experimental)
+RedBeanFVM
+
+Plugin: RedbeanFVM, easy validation for RedBeanPHP.
+Author: r3wt
+
+RedBeanFVM makes Filtering, Validating , and Generating RedBean Models easy, by taking your blank Model, some rules, and the data source and generating a fully constructed RedBean Model.
+ReBean
+
+Plugin: ReBean, automatic revision management for RedBeanPHP.
+Author: Zewa666
+
+ReBean adds revision tables to your database and uses triggers to automatically insert revision beans.
+StdErr Logger
+
+Plugin:StdErr Logger, Logger that writes to StdErr.
+Author: Zewa666
+
+Logs queries to error log.
+MySQL Backup Plugin
+
+Plugin:MySQL Backup, Table exporter for MySQL
+Author: Zewa666
+
+Backups all tables in a MySQL database to a file. Only works for MySQL.
+German Porter Stemmer Plugin
+
+Plugin:German Porter Stemmer Plugin, a tool to improve search results in German language.
+Author: Zewa666
+
+A linguistic extension to improve search results for German language.

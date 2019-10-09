@@ -1,0 +1,147 @@
+CRUD
+
+CRUD stands for Create, Update, Retrieve and Delete. CRUD operations are the core of many web applications.
+Working with beans
+
+RedBeanPHP works with beans. Most interactions with the database are accomplished using beans. Beans are used to carry data from and to the database.
+
+Every bean has a type and an ID. The type of a bean tells you which table in the database is used to store the bean. Every type maps to a corresponding table. The ID of a bean is the primary key of the corresponding record.
+You can create a new bean by dispensing one.
+Create
+
+To create a new bean (of type 'book') use:
+    $book = R::dispense( 'book' );
+
+You can now add properties:
+    $book->title = 'Learn to Program';
+    $book->rating = 10;
+
+You can also use array notation if you like:
+    $book['price'] = 29.99; //you can use array notation as well
+
+and store the bean in the database:
+    $id = R::store( $book );
+
+At this point, the bean will be stored in the database and all tables and columns have been created.
+The bean will now have an ID, which is also returned for your convenience.
+
+RedBeanPHP will build all the necessary structures to store your data. However custom indexes and constraints have to be added manually (after freezing your web application).
+Conventions
+
+You can dispense any type of bean you like, as long as the type name consists of lowercase alphabetical characters:
+    $page = R::dispense('page'); //valid
+    $page = R::dispense( 'Page' ); //invalid: uppercase
+    $page = R::dispense( 'cms_page' ); //invalid: _
+    $page = R::dispense( '@#!' ); //invalid
+
+However dispense also offers some shortcuts:
+    $twoBooks = R::dispense( 'book', 2 );
+
+    //Return an array with 2 beans
+    $twoBooks = R::dispense( 'book', 2 );
+
+    //Always returns an array with
+    //$i beans even if $i=1
+    $moreBooks = R::dispense( 'book', $i, TRUE );
+
+    list($book, $page) = R::dispenseAll( 'book,page' );
+    list($book, $pages) = R::dispenseAll( 'book,page*2' );
+
+Properties of beans may contain alphanumeric characters and underscores. Camelcased properties will automatically convert to snake_case:
+    $book->isSoldOut = TRUE; //is_sold_out
+    $book->hasISBNCode = TRUE; //has_isbn_code
+
+Do not use field names ending with _id, these are reserved for bean relations. Learn more... Other restrictions:
+
+    primary key need to be "id"
+    do not name a field "field" if a field "field_id" exist (because of a bean relation)
+    do not name a field "field_id" if it's not a foreign key
+
+Retrieve
+
+To load a bean, simply pass the type and ID of the bean you're looking for:
+    $book = R::load( 'book', $id ); //reloads our book
+
+If the bean does not exist an empty bean with ID 0 will be returned.
+
+By default RedBeanPHP returns only strings, to change this use: R::getDatabaseAdapter()->getDatabase()->stringifyFetches( FALSE );
+For MySQL you also need:
+R::getDatabaseAdapter()->getDatabase()->getPDO()->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
+
+Locking (version 5+)
+If you want to lock a bean while loading it, so nobody can change the record associated with your bean until your transaction completes use R::loadForUpdate() (version 5+).
+
+It's also possible to attach other kinds of SQL snippets along with the loading function, for instance to make use of the lock-in-shared-mode feature of a database, you can attach a snippet like this:
+
+R::load('bean', 1, 'LOCK IN SHARED MODE');
+
+You can also use SQL snippets like ' for update ' with operations like R::find() and R::batch(). Before invoking these commands just set the SQL snippet you wish to use:
+
+R::getWriter()->setSQLSelectSnippet( ... );
+
+Load Exceptions (version 5+)
+If a bean does not exist, R::load() and R::loadForUpdate() will return an empty bean.
+
+If there is an error because of a missing table or column, both methods will return an empty bean in fluid mode and throw an exception in frozen mode.
+
+If something else happens (lock timeout for instance) both methods will always throw an exception, even in fluid mode*.
+
+*except for SQLite, because in fluid mode it's too difficult to separate error types.
+Update
+
+To update a bean in the database, add or change properties:
+    $book->title = 'Learn to fly';
+    $book->rating = 'good';
+    $book->published = '2015-02-15';
+    R::store( $book );
+
+Note that we added a new property 'published', RedBeanPHP will add a new column of type 'date' for this property. Also, it will widen the 'rating' from INTEGER to VARCHAR to support text as well as numbers.
+    //Examples of other data types
+    $meeting->when = '1995-12-05'; //Date
+    $photo->created = '1995-12-05 19:00:00'; //Date time
+    $meeting->place = '(1,2)'; //SPATIAL only works in postgreSQL
+    $price->amount = '12.37'; //FIXED POINT NUMERIC - MySQL and Postgres
+    $price->amount = '$25.00'; //MONEY TYPE - Postgres only
+    $price->json = array( 'message' => 'hello' ); //JSON TYPE 5+
+
+If you want a suitable data type of monetary values, use the 'XX.XX' format and you'll get a fixed precision number data field. To make use of Postgres special purpose, currency-aware money data type, prefix the value with a common currency symbol.
+
+You can use R::isoDate() and R::isoDateTime() to generate the current date(time) if you like.
+
+As of RedBeanPHP 4.1 you can also use spatial columns for MySQL, learn more.
+
+As of RedBeanPHP 5 you can now use JSON columns. Arrays in bean properties will be automatically converted to JSON strings and the database Query Writer will automatically adjust the column type to JSON for you. To enable these features use: R::useJSONFeatures(TRUE); (by default these features are NOT active). JSON support should be considered experimental at this stage. JSON support is still very new, check whether your DB version supports this.
+
+RedBeanPHP will dynamically add new columns to your database. It determines the column type to use by looking at the value you are trying to store. For instance, a short text might be stored as a VARCHAR while a large text might be stored as TEXT. Similarly, a boolean value will probably get stored as TINYINT but when you put a float in that property the column will probably be changed to FLOAT or DOUBLE (depending on your database).
+Some column types behave differently, for instance if you store a valid ISO formatted date (i.e. 2015-01-01) RedBeanPHP builds a DATE column, but this column will not change. In general, RedBeanPHP tries to adapt the database to your application. If you're done developing, you can freeze the database using the freeze() function. After that, the database schema will no longer change (because it is very unlikely you want to store something other than a date in a column you filled with perfectly formatted date in the first place).
+Note that RedBeanPHP will never throw away columns or 'shrink' columns (from TEXT to VARCHAR) to avoid data loss. RedBeanPHP also only manipulates column types it recognizes, so if you change a VARCHAR(255) to a VARCHAR(254) it will leave that column alone, since it no longer recognizes the type. This means that if you customize columns, RedBeanPHP leaves them alone from that point on.
+If RedBeanPHP alters the database in a way you don't like, don't worry, you can always tune the schema to your liking (just use your database management tool or phpmyadmin), you can even freeze certain tables only.
+Delete
+
+To delete a bean:
+    R::trash( $book ); //for one bean
+    R::trashAll( $books ); //for multiple beans
+
+To delete all beans of a certain type:
+    R::wipe( 'book' ); //burns all the books!
+
+To destroy the entire database simply invoke the nuclear method (be careful!):
+    R::nuke();
+Batch
+
+To load a series of beans use:
+    $books = R::loadAll( 'book', $ids );
+
+This will load all beans of type 'book' that have their id listed in the $ids list.
+trashBatch (5.1+)
+
+Similarly, you can use trashBatch to delete an entire collection of beans in one go:
+    R::trashBatch( 'book', $ids );
+Reload
+
+To quickly reload a bean:
+    $bean = $bean->fresh();
+Finding Beans
+
+Instead of loading beans, you can also use the find() method to search for beans using certain criteria. Learn how to query beans in RedBeanPHP.
+

@@ -1,0 +1,25 @@
+Link Beans
+
+The following code associates an employee with a project using a many-to-many relation.
+    $project->sharedEmployeeList[] = $employee;
+
+The project and the employee are linked by a link bean. Link beans have their own type, in this case: employeeProject. In the database, these beans are stored in the employee_project table.
+Qualified links
+
+Sometimes you want to qualify a relationship. For instance, in the case of projects and employees, you might want to add a 'role' property to the relation:
+    list($e, $p) = R::dispenseAll('employee,project');
+    $p->link( 'employee_project', [
+        'role' => 'director'
+    ] )->employee = $e;
+
+While this is quite handy, it's often better to introduce the missing concept: participant in this case. Often, when you find yourself qualifying a relationship, you might have missed an important part of your data model. A relation or link is not a very good substitute for this.
+
+Be careful with adding to much properties and logic to relations, make sure you haven't missed an important concept in your domain model.
+Accessing link beans
+
+Since a many-to-many relation can be viewed as a combination of two one-to-many relations you can access the link beans through the ownList on either side of the relation. In the case of a project-employee relations you can access the intermediate bean like this:
+    $employee->ownEmployeeProjectList;
+
+To remove the intermediate beans upon assigning an empty array open the list in exclusive mode:
+    $employee->xownEmployeeProjectList;
+

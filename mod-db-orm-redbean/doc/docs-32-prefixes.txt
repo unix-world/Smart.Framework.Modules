@@ -1,0 +1,73 @@
+Prefixes
+
+In RedBeanPHP, the underscore '_' is used to denote a relation between two tables. For instance a table 'book_tag' is used to associate books with tags.
+So, if you want to use table prefixes like 'cms_' or 'tbl_' you'll have to bypass the RedBeanPHP schema policy check like this:
+    R::ext('xdispense', function( $type ){
+        return R::getRedBean()->dispense( $type );
+    });
+
+Now you can use an underscore in your bean type:
+    $page = R::xdispense( 'cms_page' );
+
+However, the name of the type still looks odd. Using a constant, you can improve the readability of this code:
+    define( 'PAGE', 'cms_page' );
+    $page = R::xdispense( PAGE );
+
+This also works for relations:
+    define( 'PAGES', 'ownCms_page' );
+    $pages = $site->{PAGES};
+
+Here is a complete example:
+    //Define your mappings like this
+    define( 'POEM', 'tbl_poem' );
+    define( 'BOOK', 'tbl_book' );
+    define( 'AUTHOR', 'tbl_author' );
+    define( 'CATEGORY', 'tbl_category' );
+    define( 'POEMS', 'ownTblPoem' );
+    define( 'CATEGORIES', 'sharedTblCategory' );
+
+    //Create an extension to by-pass security check in R::dispense
+    R::ext('xdispense', function( $type ){
+        return R::getRedBean()->dispense( $type );
+    });
+
+    //Use tbl_book_category instead of tbl_book_tbl_category
+    R::renameAssociation([
+        'tbl_book_tbl_category' => 'tbl_book_category'
+    ]);
+
+    //Use them like this:
+    $poem = R::xdispense( POEM );
+    $poem->title = 'Trees';
+    $author = R::xdispense( AUTHOR );
+    $author->name = 'Joyce Kilmer';
+    $book = R::xdispense( BOOK );
+    $book->title = 'Trees and other poems';
+    $category = R::xdispense( CATEGORY );
+    $category->name = 'nature';
+    $book->{AUTHOR} = $author;
+    $book->{POEMS}[] = $poem;
+    $book->{CATEGORIES}[] = $category;
+    $id = R::store( $book );
+
+    //For testing purposes let's output something:
+    $book = R::load( BOOK, $id );
+    $poem = reset( $book->{POEMS} );
+    $author = $book->{AUTHOR};
+    $category = reset( $book->{CATEGORIES} );
+
+    echo "Have you ever read '{$poem->title}' ({$book->title}) by {$author->name} ?
+    it's a beautiful poem about {$category->name}.";
+
+This code will output:
+Have you ever read 'Trees' (Trees and other poems) by Joyce Kilmer ? it's a beautiful poem about nature.
+
+Use the R::renameAssociation method to select a proper name for the association table.
+
+Note that using table prefixes can be quite dangerous, especially if you use them to avoid having to create multiple databases: mixing data from multiple clients in one database can cause serious security issues !
+
+Another way to map tables is to use VIEWS of course. This is an even simpler approach but it might affect performance.
+Using multiple schemas
+
+If you use Postgres you can devide your databases in multiple 'schemas'. Simply tell RedBeanPHP where to look for its beans using the 'search path':
+    R::exec( 'SET search_path TO crm' ); //use RedBeanPHP for the CRM module
