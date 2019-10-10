@@ -81,8 +81,8 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$res_time = (float) microtime(true);
 		//--
-		if(class_exists('SmartTypo3FluidTemplating') AND (rand(0,1))) { // must enable require_once('modules/smart-extra-libs/autoload.php'); in modules/app/app-custom-bootstrap.inc.php
-			if(class_exists('SmartTemplating') AND (rand(0,1))) {
+		if(class_exists('SmartTypo3FluidTemplating') AND (Smart::random_number(0,1))) { // must enable require_once('modules/smart-extra-libs/autoload.php'); in modules/app/app-custom-bootstrap.inc.php
+			if(class_exists('SmartTemplating') AND (Smart::random_number(0,1))) {
 				$this->PageViewSetVars([
 					'title' => 'Sample Typo3Fluid Templating (static, autodetect file extension)',
 					'main' => (string) SmartTemplating::render_file_template(

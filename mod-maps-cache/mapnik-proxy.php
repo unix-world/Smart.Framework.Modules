@@ -15,15 +15,10 @@ define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
 //=======================================================
 class SmartAppIndexController extends SmartAbstractAppController {
 
+	private $is_debug = false;
+
 	public function Run() {
 
-		//--
-		$this->PageViewSetCfg('rawpage', 'yes');
-		//$this->PageViewSetCfg('expires', 120); // cache expire ; or may use heads
-		//--
-
-		//--
-		$page = (string) $this->RequestVarGet('page', '', 'string');
 		//--
 		$x = (string) $this->RequestVarGet('x', 0, 'integer+');
 		$y = (string) $this->RequestVarGet('y', 0, 'integer+');
@@ -53,34 +48,34 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//==
 
 		//-- check IP (referer must come from javascript and must be the same as domain)
-		if((string)SMART_FRAMEWORK_DEBUG_MODE != 'yes') {
+		if(!$this->is_debug) {
 			if((string)$_SERVER['HTTP_REFERER'] == '') {
-				Smart::log_warning('Empty Referer in Mapnik Proxy (101)');
+				Smart::log_notice('Empty Referer in Mapnik Proxy (101)');
 				$this->PageViewSetVar('main', SmartComponents::http_message_403_forbidden('Invalid Proxy Referer (101)'));
 				return;
 			} //end if
 			//--
 			$parsed_referer = (array) Smart::url_parse($_SERVER['HTTP_REFERER']);
 			if((string)$parsed_referer['host'] == '') {
-				Smart::log_warning('Empty Referer in Mapnik Proxy / Parsed Host (102)');
+				Smart::log_notice('Empty Referer in Mapnik Proxy / Parsed Host (102)');
 				$this->PageViewSetVar('main', SmartComponents::http_message_403_forbidden('Invalid Proxy Referer (102)'));
 				return;
 			} //end if
 			//--
 			$parsed_domain = (string) gethostbyname($parsed_referer['host']);
 			if((string)$parsed_domain == '') {
-				Smart::log_warning('Empty Referer in Mapnik Proxy / Parsed HostByName (103)');
+				Smart::log_notice('Empty Referer in Mapnik Proxy / Parsed HostByName (103)');
 				$this->PageViewSetVar('main', SmartComponents::http_message_403_forbidden('Invalid Proxy Referer (103)'));
 				return;
 			} //end if
 			if(\SmartUtils::check_ip_in_range('127.0.0.1', '127.0.0.255', (string)$parsed_domain) != 1) {
-				Smart::log_warning('Invalid Proxy Access // Client IP Not Allowed (104): '.$parsed_domain);
+				Smart::log_notice('Invalid Proxy Access // Client IP Not Allowed (104): '.$parsed_domain);
 				$this->PageViewSetVar('main', SmartComponents::http_message_403_forbidden('Invalid Proxy Referer (104)'));
 				return;
 			} //end if
 			if(((string)$cfg_custom_iprange_start != '') AND ((string)$cfg_custom_iprange_end != '')) {
 				if(\SmartUtils::check_ip_in_range((string)$cfg_custom_iprange_start, (string)$cfg_custom_iprange_end, (string)$parsed_domain) != 1) {
-					Smart::log_warning('Invalid Proxy Access // Client IP Not Allowed (105): '.$parsed_domain);
+					Smart::log_notice('Invalid Proxy Access // Client IP Not Allowed (105): '.$parsed_domain);
 					$this->PageViewSetVar('main', SmartComponents::http_message_403_forbidden('Invalid Proxy Referer (105)'));
 					return;
 				} //end if
@@ -89,11 +84,40 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		if((string)$page != '') {
-			$this->PageViewSetVar('main', \SmartModExtLib\MapsCache\OpenMapsProxyCache::getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, 'tmp/cache-maps/', $cfg_cache_get_timeout, $cfg_custom_mapnik));
+		$arr = (array) \SmartModExtLib\MapsCache\OpenMapsProxyCache::getTilesFromCache(
+			$max_cache_zoom,
+			$r,
+			$x,
+			$y,
+			$z,
+			'tmp/cache-maps/',
+			$cfg_cache_get_timeout,
+			$cfg_custom_mapnik
+		);
+		if(((string)$arr['status'] == 'OK') AND ((int)$arr['code'] == 200)) {
+			$this->PageViewSetCfg('rawpage', true);
+			$expires = 3600; // expire headers
+			$this->PageViewResetRawHeaders();
+			$this->PageViewSetRawHeader('Y-Image-Served-From', (string)$arr['message']);
+			/*
+			$this->PageViewSetRawHeaders([
+				'Expires' 			=> (string) \gmdate('D, d M Y H:i:s', (int)((int)$arr['imgmodif'] + (int)$expires)).' GMT',
+				'Last-Modified' 	=> (string) \gmdate('D, d M Y H:i:s', (int)$arr['imgmodif']).' GMT',
+				'Cache-Control' 	=> (string) 'public, max-age='.(int)$expires,
+				'Y-Cache-Status' 	=> (string) $arr['message']
+			]);
+			*/
+			$this->PageViewSetCfg('c-control', 'public');
+			$this->PageViewSetCfg('expires', (int)$expires);
+			$this->PageViewSetCfg('modified', (int)$arr['imgmodif']);
+			$this->PageViewSetCfg('rawmime', (string)$arr['imgtype']); // set mime type: Image / PNG
+			$this->PageViewSetCfg('rawdisp', 'inline; filename="'.$y.$arr['imgext'].'"'); // display inline and set the file name for the image
+			$this->PageViewSetVar('main', (string)$arr['image']);
+		} elseif((int)$arr['code'] == 200) {
+			return 500; // mismatch
 		} else {
-			trigger_error('Invalid Proxy Access Mode - Mapnik (105)'."\n", E_USER_NOTICE);
-			$this->PageViewSetVar('main', 'Invalid Proxy Access Mode - Mapnik (105)');
+			$this->PageViewSetErrorStatus((int)$arr['code'], (string)$arr['message']);
+			return;
 		} //end if else
 		//--
 

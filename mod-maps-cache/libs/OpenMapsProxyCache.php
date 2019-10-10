@@ -7,35 +7,39 @@
 namespace SmartModExtLib\MapsCache;
 
 
-//----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
 
 
 //=====================================================================================
-//===================================================================================== CLASS START
+//===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 
 class OpenMapsProxyCache {
 
 	// ::
-	// r.20190226
+	// r.20191010
 
 
 //=========================================================================
 public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_maps_cache_dir, $y_timeout=30, $y_custom_mapnik='') {
 
-	global $configs;
-
 	//--
-	$expires = 3600; // expire headers
-	$day = 86400; // day in seconds
-	$ttl = $day * 365; //cache timeout in seconds
+	$arr_response = [
+		'status' 	=> 'ERROR', // OK
+		'message' 	=> '?',
+		'code' 		=> 500,
+		'image' 	=> '',
+		'imgtype' 	=> '',
+		'imgext' 	=> '',
+		'imgmodif' 	=> ''
+	];
 	//--
 
 	//--
@@ -77,10 +81,6 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 	} //end if
 	//--
 
-	//--
-	$saferand = sha1(time().date('Y-m-d H:i:s O').microtime().uniqid().rand(1, 999999999).$r.$x.$y.$z.$_SERVER['HTTP_USER_AGENT'].$_SERVER['REMOTE_ADDR']);
-	//--
-
 	//-- defaults
 	$server = array();
 	$mapdir = 'none/';
@@ -109,7 +109,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 				//--
 				$server[] = (string) $y_custom_mapnik; // domain.ext/mapnik-folder
 				//--
-				$url = 'http://'.$server[array_rand($server)].'/'.$z.'/'.$x.'/'.$y.'.png';
+				$url = 'http://'.$server[\array_rand($server)].'/'.$z.'/'.$x.'/'.$y.'.png';
 				//--
 			} else {
 				//--
@@ -126,7 +126,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 			$server[] = 'b.tile.openstreetmap.org';
 			$server[] = 'c.tile.openstreetmap.org';
 			//--
-			$url = 'http://'.$server[array_rand($server)].'/'.$z.'/'.$x.'/'.$y.'.png';
+			$url = 'http://'.$server[\array_rand($server)].'/'.$z.'/'.$x.'/'.$y.'.png';
 			//--
 			break;
 		case 'mapquest':
@@ -139,7 +139,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 			$server[] = 'otile3.mqcdn.com';
 			$server[] = 'otile4.mqcdn.com';
 			//--
-			$url = 'http://'.$server[array_rand($server)].'/tiles/1.0.0/osm/'.$z.'/'.$x.'/'.$y.'.jpg';
+			$url = 'http://'.$server[\array_rand($server)].'/tiles/1.0.0/osm/'.$z.'/'.$x.'/'.$y.'.jpg';
 			//--
 			break;
 		case 'mapquest-aerial':
@@ -152,7 +152,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 			$server[] = 'oatile3.mqcdn.com';
 			$server[] = 'oatile4.mqcdn.com';
 			//--
-			$url = 'http://'.$server[array_rand($server)].'/tiles/1.0.0/sat/'.$z.'/'.$x.'/'.$y.'.jpg';
+			$url = 'http://'.$server[\array_rand($server)].'/tiles/1.0.0/sat/'.$z.'/'.$x.'/'.$y.'.jpg';
 			//--
 			break;
 		case 'cyclemap':
@@ -163,7 +163,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 			$server[] = 'b.tile.opencyclemap.org';
 			$server[] = 'c.tile.opencyclemap.org';
 			//--
-			$url = 'http://'.$server[array_rand($server)].'/cycle/'.$z.'/'.$x.'/'.$y.'.png';
+			$url = 'http://'.$server[\array_rand($server)].'/cycle/'.$z.'/'.$x.'/'.$y.'.png';
 			//--
 			break;
 		case 'cyclemap-transport':
@@ -174,7 +174,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 			$server[] = 'b.tile2.opencyclemap.org';
 			$server[] = 'c.tile2.opencyclemap.org';
 			//--
-			$url = 'http://'.$server[array_rand($server)].'/transport/'.$z.'/'.$x.'/'.$y.'.png';
+			$url = 'http://'.$server[\array_rand($server)].'/transport/'.$z.'/'.$x.'/'.$y.'.png';
 			//--
 			break;
 		default:
@@ -182,6 +182,10 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 			$valid_map_type = false;
 			//--
 	} //end switch
+	//--
+
+	//--
+	$saferand = \sha1((string)'R='.$r.'; X='.$x.'; Y='.$y.'; Z='.$z.'; M='.$max_cache_zoom.';');
 	//--
 
 	//--
@@ -199,129 +203,125 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 	$dir = (string) $y_maps_cache_dir.$mapdir.$z.'/'.$x.'/';
 	$file = (string) $dir.$y.$ext;
 	if(\SmartFileSysUtils::check_if_safe_path($file) !== 1) {
-		http_response_code(400);
-		die(\SmartComponents::http_message_400_badrequest('Invalid Map Tile: '.$y.$ext));
+		$arr_response['status'] = 'ERROR';
+		$arr_response['message'] = 'Invalid Map Tile: '.$y.$ext;
+		$arr_response['code'] = 400;
+		return (array) $arr_response;
 	} //end if
 	//--
 
 	//--
-	ob_start();
+	if(!$valid_map_type) {
+		//--
+		$arr_response['status'] = 'ERROR';
+		$arr_response['message'] = 'Invalid Map Type: '.$r;
+		$arr_response['code'] = 400;
+		return (array) $arr_response;
+		//--
+	} //end if
 	//--
 
 	//--
-	if($valid_map_type) {
+	$cache_modified = 0;
+	//--
 
-		//--
-		$expiredfile = 0;
-		//--
+	//--
+	if($savecache) {
+		\SmartFileSystem::dir_create((string)$dir, true); // recursive
+	} else {
+		if(!\SmartFileSystem::is_type_file((string)$y_maps_cache_dir.$mapdir.'no-cache.txt')) {
+			\SmartFileSystem::dir_create((string)$y_maps_cache_dir.$mapdir, true); // recursive
+			\SmartFileSystem::write((string)$y_maps_cache_dir.$mapdir.'no-cache.txt', date('Y-m-d H:i:s O'));
+		} //end if
+	} //end if
+	//--
 
+	//--
+	$img = '';
+	$msg = '';
+	//--
+	if(!\SmartFileSystem::is_type_file($file)) { // avoid to clear cache here, only check if file exists
 		//--
-		if($savecache) {
-			\SmartFileSystem::dir_create((string)$dir, true); // recursive
-		} else {
-			if(!\SmartFileSystem::is_type_file((string)$y_maps_cache_dir.$mapdir.'no-cache.txt')) {
-				\SmartFileSystem::dir_create((string)$y_maps_cache_dir.$mapdir, true); // recursive
-				\SmartFileSystem::write((string)$y_maps_cache_dir.$mapdir.'no-cache.txt', date('Y-m-d H:i:s O'));
-			} //end if
+		$httpclient = new \SmartHttpClient('1.0');
+		$httpclient->connect_timeout = (int) $y_timeout;
+		if(\SmartFrameworkRuntime::ifDebug()) {
+			$httpclient->debug = 1;
 		} //end if
 		//--
-
+		$bwdata = (array) $httpclient->browse_url($url, 'GET');
 		//--
-		$out = '';
+		$tmp_validate_by_header = \SmartUtils::guess_image_extension_by_url_head($bwdata['headers']);
+		$tmp_validate_by_fbytes = \SmartUtils::guess_image_extension_by_img_content(\substr($bwdata['content'], 0, 256), false);
 		//--
-		if(!\SmartFileSystem::is_type_file($file)) { // avoid to clear cache here, only check if file exists
+		$tmp_uniq_prefix = $file.'.tmp-'.$saferand;
+		$tmp_uniq_file = $tmp_uniq_prefix.'.download'.$ext;
+		$tmp_uniq_log = $tmp_uniq_prefix.'.debug-log.txt';
+		//--
+		if(\SmartFrameworkRuntime::ifDebug()) {
+			\SmartFileSystem::write($tmp_uniq_log, '##### IsPngOrJpegByHeader: '.$tmp_validate_by_header."\n".'##### STATUS-CODE: '.$bwdata['code']."\n".'##### Header: '."\n".$bwdata['headers']."\n".'##### Debug-Log:'."\n".$bwdata['debuglog']."\n".'##### END #');
+		} //end if
+		//--
+		if(((string)\trim($bwdata['code']) == '200') AND ((string)$bwdata['content'] != '')) {
 			//--
-			$httpclient = new \SmartHttpClient('1.0');
-			$httpclient->connect_timeout = (int) $y_timeout;
-			if((string)SMART_FRAMEWORK_DEBUG_MODE == 'yes') {
-				$httpclient->debug = 1;
-			} //end if
-			//--
-			$bwdata = (array) $httpclient->browse_url($url, 'GET');
-			//--
-			$tmp_validate_by_header = \SmartUtils::guess_image_extension_by_url_head($bwdata['headers']);
-			$tmp_validate_by_fbytes = \SmartUtils::guess_image_extension_by_img_content(substr($bwdata['content'], 0, 256));
-			//--
-			$tmp_uniq_prefix = $file.'.tmp-'.$saferand;
-			$tmp_uniq_file = $tmp_uniq_prefix.'.download'.$ext;
-			$tmp_uniq_log = $tmp_uniq_prefix.'.debug-log.txt';
-			//--
-			if((string)SMART_FRAMEWORK_DEBUG_MODE == 'yes') {
-				\SmartFileSystem::write($tmp_uniq_log, '##### IsPngOrJpegByHeader: '.$tmp_validate_by_header."\n".'##### STATUS-CODE: '.$bwdata['code']."\n".'##### Header: '."\n".$bwdata['headers']."\n".'##### Debug-Log:'."\n".$bwdata['debuglog']."\n".'##### END #');
-			} //end if
-			//--
-			if((trim($bwdata['code']) == '200') AND ((string)$bwdata['content'] != '')) {
+			if(((string)$tmp_validate_by_header['extension'] == (string)$ext) AND ((string)$tmp_validate_by_fbytes == (string)$ext)) { // double validate: by header mime-type and also detect bytes
 				//--
-				if(((string)$tmp_validate_by_header['extension'] == (string)$ext) AND ((string)$tmp_validate_by_fbytes == (string)$ext)) {
+				if($savecache) {
 					//--
-					if($savecache) {
+					\SmartFileSystem::delete($tmp_uniq_file); // delete if a previous file exists with the same tempID
+					\SmartFileSystem::write($tmp_uniq_file, $bwdata['content']);
+					//--
+					if(\SmartFileSystem::is_type_file($tmp_uniq_file)) { // if write successful
 						//--
-						\SmartFileSystem::delete($tmp_uniq_file); // delete if a previous file exists with the same tempID
-						\SmartFileSystem::write($tmp_uniq_file, $bwdata['content']);
-						//--
-						if(\SmartFileSystem::is_type_file($tmp_uniq_file)) { // if write successful
-							//--
-							\SmartFileSystem::delete($file); // delete original
-							\SmartFileSystem::rename($tmp_uniq_file, $file); // replace
-							\SmartFileSystem::delete($tmp_uniq_file); // cleanup if it i still there :-)
-							//--
-						} //end if
-						//--
-						if(\SmartFileSystem::is_type_file($file)) {
-							$expiredfile = @filemtime($file);
-						} //end if
+						\SmartFileSystem::delete($file); // delete original
+						\SmartFileSystem::rename($tmp_uniq_file, $file); // replace
+						\SmartFileSystem::delete($tmp_uniq_file); // cleanup if it i still there :-)
 						//--
 					} //end if
 					//--
-					$out = $bwdata['content']; // serve browsed file
+					if(\SmartFileSystem::is_type_file($file)) {
+						$cache_modified = (int) \SmartFileSystem::get_file_mtime($file);
+					} //end if
 					//--
 				} //end if
 				//--
+				$img = (string) $bwdata['content']; // serve browsed file
+				$msg = 'load';
+				//--
 			} //end if
-			//--
-			unset($httpclient);
-			//--
-		} else {
-			//--
-			$out = \SmartFileSystem::read($file); // read file from saved cache
 			//--
 		} //end if
 		//--
-
+		$httpclient = null;
 		//--
-		if(strlen($out) > 0) {
-			//--
-			header('Expires: '.gmdate("D, d M Y H:i:s", time() + $expires) ." GMT");
-			header('Last-Modified: '.gmdate("D, d M Y H:i:s", $expiredfile)." GMT");
-			header('Cache-Control: public, max-age='.$expires);
-			header('Content-Type: '.$map_content_type);
-			header('Content-Length: '.strlen($out)); // notice: this can cause pink squares ... somehow sometimes only partial images are loaded
-			echo $out;
-			//--
-		} else {
-			//--
-			http_response_code(404);
-			echo(\SmartComponents::http_message_404_notfound('Map Tile Not Found: '.$y.$ext));
-			//--
-		} //end if else
-		//--
-
 	} else {
-
 		//--
-		http_response_code(400);
-		echo(\SmartComponents::http_message_400_badrequest('Invalid Map Type: '.$r));
+		$img = (string) \SmartFileSystem::read($file); // read file from saved cache
+		$msg = 'cache';
+		$cache_modified = (int) \SmartFileSystem::get_file_mtime($file);
 		//--
+	} //end if
+	//--
 
+	//--
+	if((string)$img == '') {
+		//--
+		$arr_response['status'] = 'ERROR';
+		$arr_response['message'] = 'Map Tile Not Found: '.$y.$ext;
+		$arr_response['code'] = 404;
+		return (array) $arr_response;
+		//--
 	} //end if else
-
-	//--
-	$img = ob_get_contents();
-	ob_end_clean();
 	//--
 
 	//--
-	return $img;
+	$arr_response['status'] = 'OK';
+	$arr_response['message'] = (string) $msg; // this is displayed public in headers
+	$arr_response['code'] = 200;
+	$arr_response['image'] = (string) $img; // image data
+	$arr_response['imgtype'] = (string) $map_content_type; // image/png|jpeg
+	$arr_response['imgext'] = (string) $ext;
+	$arr_response['imgmodif'] = (int) $cache_modified;
+	return (array) $arr_response;
 	//--
 
 } //END FUNCTION
