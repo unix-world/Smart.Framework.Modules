@@ -42,13 +42,16 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
+ * @access 		private
+ * @internal
+ *
  * @access 		PUBLIC
  * @depends 	extensions: classes: \SmartModExtLib\TplTwig\SmartTwigEnvironment, Twig
- * @version 	v.20191007
+ * @version 	v.20191021
  * @package 	Templating:Engines
  *
  */
-final class Templating {
+final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 
 	// ->
 
@@ -200,19 +203,25 @@ final class Templating {
 		//--
 		$dbg_tpl = (array) \SmartDebugProfiler::read_tpl_file_for_debug((string)$tpl);
 		//--
-		if((string)$dbg_tpl['dbg-file-contents'] != '') {
+		if((\SmartFileSystem::is_type_file($dbg_tpl['dbg-file-name'])) AND ((string)$dbg_tpl['dbg-file-contents'] != '')) {
 			//-- the hash
 			$hash = \sha1((string)$dbg_tpl['dbg-file-name']);
 			//-- get arr dbg data
 			$dbgarr = (array) $this->render_file_template((string)$dbg_tpl['dbg-file-name'], [], true); // need to render before get dbg
 			//-- pre-render vars
 			$tbl_vars = '<table id="'.'__twig__template__debug-tplvars_'.\Smart::escape_html($hash).'" class="ux-table ux-table-striped" cellspacing="0" cellpadding="4" width="500" style="font-size:0.750em!important;">';
-			$tbl_vars .= '<tr align="center"><th>{{ Twig TPL variables }}</th><th>#</th></tr>';
+			$tbl_vars .= '<tr align="center"><th>{{ Twig TPL variables }}</th><th>#&nbsp;('.(int)\Smart::array_size($dbgarr['tpl-vars']).')</th></tr>';
 			if(\Smart::array_size($dbgarr['tpl-vars']) > 0) {
 				foreach((array)$dbgarr['tpl-vars'] as $key => $val) {
 					if((string)\substr((string)$key, 0, 1) != '_') {
 						$tbl_vars .= '<tr><td align="left">';
+						if((string)substr((string)$key, -2, 2) == '__') {
+							$tbl_vars .= '<i>';
+						} //end if
 						$tbl_vars .= (string) \Smart::escape_html((string)$key);
+						if((string)substr((string)$key, -2, 2) == '__') {
+							$tbl_vars .= '</i>';
+						} //end if
 						$tbl_vars .= '</td>';
 						$tbl_vars .= '<td align="right">';
 						$tbl_vars .= (string) \Smart::escape_html((string)$val);
@@ -259,8 +268,8 @@ final class Templating {
 				$tbl_subs .= '<tr><td align="left">';
 				$dumper = new \Twig\Profiler\Dumper\TextDumper();
 				$tbl_subs .= '<hr><pre>'.\Smart::escape_html((string)$dumper->dump($this->twprof)).'</pre><hr>';
-				$tbl_subs .= 'Compile&nbsp;Time:&nbsp;'.\Smart::escape_html((string)$this->twprof->getDuration()).'&nbsp;seconds<br>';
-				$tbl_subs .= 'Memory&nbsp;Usage:&nbsp;'.\Smart::escape_html((string)$this->twprof->getPeakMemoryUsage()).'&nbsp;bytes<br>';
+				$tbl_subs .= 'Compile&nbsp;Time:&nbsp;'.\Smart::escape_html((string)\Smart::format_number_dec((float)$this->twprof->getDuration(), 9, '.', '')).'&nbsp;seconds<br>';
+				$tbl_subs .= 'Memory&nbsp;Usage:&nbsp;'.\Smart::escape_html((string)(int)$this->twprof->getPeakMemoryUsage()).'&nbsp;bytes<br>';
 				$tbl_subs .= '</td></tr>';
 			} //end if
 			$tbl_subs .= '</table>';
@@ -290,7 +299,7 @@ final class Templating {
 			//--
 			//$content .= '<hr><pre>'.\Smart::escape_html(print_r((array)$dbgarr,1)).'</pre><hr>';
 			//-- source highlight
-			$content .= (string) \SmartComponents::js_code_highlightsyntax('div#tpl-twig-display-for-highlight',['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'</div><h2 style="display:inline;background:#003366;color:#FFFFFF;padding:3px;">Twig-TPL Source</h2><div id="tpl-twig-display-for-highlight"><pre id="'.'__twig__template__debug-tpl_'.\Smart::escape_html(\sha1((string)$dbg_tpl['dbg-file-name'])).'"><code class="twig">'.\Smart::escape_html($dbg_tpl['dbg-file-contents']).'</code></pre></div><hr>'."\n";
+			$content .= (string) \SmartComponents::js_code_highlightsyntax('div#tpl-twig-display-for-highlight',['web','tpl']).'<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'</div><h2 style="display:inline;background:#003366;color:#FFFFFF;padding:3px;">Twig-TPL Source</h2><div id="tpl-twig-display-for-highlight"><pre id="'.'__twig__template__debug-tpl_'.\Smart::escape_html(\sha1((string)$dbg_tpl['dbg-file-name'])).'"><code class="twig">'.\Smart::escape_html($dbg_tpl['dbg-file-contents']).'</code></pre></div><hr>'."\n";
 			//-- ending
 			$content .= '<!-- #END: Twig-TPL Debug Analysis @ '.\Smart::escape_html((string)$dbg_tpl['dbg-file-name']).' -->';
 			//--
@@ -307,30 +316,6 @@ final class Templating {
 		$dbg_tpl = array();
 		//--
 		return (string) $content;
-		//--
-	} //END FUNCTION
-
-
-	private static function fix_array_keys($y_arr, $y_allow_upper_camelcase) { // v.191217 :: fix array keys to be compliant with variable names, but only at level 1 ; level 2..n must not be fixed as tkey are accessible in loops
-		//--
-		if(!\is_array($y_arr)) { // fix bug if empty array / max nested level
-			return $y_arr; // mixed
-		} //end if
-		//--
-		$new_arr = [];
-		//--
-		foreach($y_arr as $key => $val) {
-			$key = (string) \rtrim((string)\preg_replace('/[^0-9a-zA-Z_]/', '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; make safe variable name for PHP
-			if(\SmartFrameworkSecurity::ValidateVariableName((string)$key, (bool)$y_allow_upper_camelcase)) {
-				if(\is_array($val)) {
-					$new_arr[(string)$key] = (array) $val; // do not go recursive as = self::fix_array_keys((array)$val);
-				} else {
-					$new_arr[(string)$key] = $val; // mixed
-				} //end if
-			} //end if else
-		} //end foreach
-		//--
-		return $new_arr; // mixed
 		//--
 	} //END FUNCTION
 

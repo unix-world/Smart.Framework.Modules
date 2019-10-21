@@ -32,6 +32,13 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
+		if(!SmartAppInfo::TestIfModuleExists('mod-tpl')) {
+			$this->PageViewSetErrorStatus(500, 'ERROR: TPL module (mod-tpl) is missing ...');
+			return;
+		} //end if
+		//--
+
+		//--
 		$op = $this->RequestVarGet('op', '', 'string');
 		//--
 
@@ -43,19 +50,19 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		if((string)$op == 'viewsource') {
 			//--
-			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/latte.js"></script>'.'<h1>nette/Latte Template Source:<br><i>'.Smart::escape_html($tpl).'</i></h1><hr><pre style="background:#FAFAFA; margin:0px; padding:0px; width:98vw; height:75vh; overflow:hidden;"><code class="latte" style="margin:0px; padding:0px; width:100%; height:100%; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
+			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/latte.js"></script>'.'<h1>nette/Latte Template Source:<br><i>'.Smart::escape_html($tpl).'</i></h1><hr><pre style="background:#FAFAFA; margin:0px; padding:0px; width:98vw; height:75vh; overflow:hidden;"><code class="latte" style="margin:0px; padding:0px; width:100%; height:100%; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
 			return;
 			//--
 		} elseif((string)$op == 'viewpartialsource') {
 			//--
-			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-js-components/views/js/highlightjs-extra/syntax/tpl/latte.js"></script>'.'<h1>nette/Latte Sub-Template Source:<br><i>'.Smart::escape_html($ptpl).'</i></h1><hr><pre style="background:#FAFAFA; margin:0px; padding:0px; width:98vw; height:75vh; overflow:hidden;"><code class="latte" style="margin:0px; padding:0px; width:100%; height:100%; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$ptpl)).'</code></pre><hr><br>');
+			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/latte.js"></script>'.'<h1>nette/Latte Sub-Template Source:<br><i>'.Smart::escape_html($ptpl).'</i></h1><hr><pre style="background:#FAFAFA; margin:0px; padding:0px; width:98vw; height:75vh; overflow:hidden;"><code class="latte" style="margin:0px; padding:0px; width:100%; height:100%; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$ptpl)).'</code></pre><hr><br>');
 			return;
 			//--
 		} //end if
 		//--
 
 		//--
-		$data = [ // v.181222
+		$data = [ // v.20191019
 			// ### variables are case insensitive in controllers on the 1st level ; the template will use all lowercase variables for this instance of Latte ; array keys that contain - and . will be replaced recursive by _ to make compliant with PHP variable names
 			'Version' => (string) \SmartModExtLib\TplNetteLatte\Templating::getVersion(),
 			'heLLo-.World' => '<h1>Demo: nette/Latte Templating as module for Smart.Framework</h1>',
@@ -64,7 +71,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				array('href' => '#link2', 'caption' => 'Sample Link <2>'),
 				array('href' => '#link3', 'caption' => 'Sample Link <3>')
 			],
-			'date_time' => (string) date('Y-m-d H:i:s O'),
+			'date_time' => (string) date('Y-m-d H:i:s O')."\t"."'".date('T')."'",
 			'TBl' => [
 				['a1' => '1.1', 'a2' => '1.2', 'a3' => '1.3'],
 				['a1' => '2.1', 'a2' => '2.2', 'a3' => '2.3'],
@@ -79,28 +86,18 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$res_time = (float) microtime(true);
 		//--
-		if(class_exists('SmartNetteLatteTemplating') AND (Smart::random_number(0,1))) { // must enable require_once('modules/smart-extra-libs/autoload.php'); in modules/app/app-custom-bootstrap.inc.php
-			if(class_exists('SmartTemplating') AND (Smart::random_number(0,1))) {
-				$this->PageViewSetVars([
-					'title' => 'Sample netteLatte Templating (static, autodetect file extension)',
-					'main' => (string) SmartTemplating::render_file_template(
-						(string) $tpl, // the TPL view (syntax: netteLatte-TPL ; must contain '.latte.' in the file name)
-						(array)  $data // the Variables array
-					)
-				]);
-			} else {
-				$this->PageViewSetVars([
-					'title' => 'Sample netteLatte Templating (static)',
-					'main' => (string) SmartNetteLatteTemplating::render_file_template(
-						(string) $tpl, // the TPL view (syntax: netteLatte-TPL)
-						(array)  $data // the Variables array
-					)
-				]);
-			} //end if else
+		if(class_exists('SmartTemplating') AND (Smart::random_number(0,1))) { // must enable require_once('modules/smart-extra-libs/autoload.php'); in modules/app/app-custom-bootstrap.inc.php
+			$this->PageViewSetVars([
+				'title' => 'Sample netteLatte Templating (autodetect file extension)',
+				'main' => (string) SmartTemplating::render_file_template(
+					(string) $tpl, // the TPL view (syntax: netteLatte-TPL ; must contain '.latte.' in the file name)
+					(array)  $data // the Variables array
+				)
+			]);
 		} else {
 			$this->PageViewSetVars([
 				'title' => 'Sample netteLatte Templating',
-				'main' => (string) (new \SmartModExtLib\TplNetteLatte\Templating())->render_file_template(
+				'main' => (string) \SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating::render_file_template(
 					(string) $tpl, // the TPL view (syntax: netteLatte-TPL)
 					(array)  $data // the Variables array
 				)

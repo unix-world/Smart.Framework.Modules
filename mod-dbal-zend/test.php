@@ -41,89 +41,38 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$configs = [];
-		//--
-		$configs['zend-dbal']['pdo_sqlite'] = Smart::get_from_config('zend-dbal.pdo_sqlite');
-		if(Smart::array_size($configs['zend-dbal']['pdo_sqlite']) <= 0) {
-			$configs['zend-dbal']['pdo_sqlite']					= array();
-			$configs['zend-dbal']['pdo_sqlite']['driver'] 		= 'PDO_SQLITE';
-			$configs['zend-dbal']['pdo_sqlite']['database'] 	= 'tmp/zend-test.sqlite';
-		} //end if
-		//--
-		$configs['zend-dbal']['pdo_pgsql'] = Smart::get_from_config('zend-dbal.pdo_pgsql');
-		if(Smart::array_size($configs['zend-dbal']['pdo_pgsql']) <= 0) {
-			$cfg_pgsql = Smart::get_from_config('pgsql');
-			$configs['zend-dbal']['pdo_pgsql']						= array();
-			if(Smart::array_size($cfg_pgsql) > 0) {
-				$configs['zend-dbal']['pdo_pgsql']['driver'] 		= 'PDO_PGSQL';
-				$configs['zend-dbal']['pdo_pgsql']['database'] 		= (string) $cfg_pgsql['dbname'];
-				$configs['zend-dbal']['pdo_pgsql']['host'] 			= (string) $cfg_pgsql['server-host'];
-				$configs['zend-dbal']['pdo_pgsql']['port'] 			= (int)    $cfg_pgsql['server-port'];
-				$configs['zend-dbal']['pdo_pgsql']['username'] 		= (string) $cfg_pgsql['username'];
-				$configs['zend-dbal']['pdo_pgsql']['password'] 		= (string) base64_decode((string)$cfg_pgsql['password']);
-			} else {
-				$configs['zend-dbal']['pdo_pgsql']['database'] 		= 'smart_framework';
-				$configs['zend-dbal']['pdo_pgsql']['host'] 			= '127.0.0.1';
-				$configs['zend-dbal']['pdo_pgsql']['port'] 			= 5432;
-				$configs['zend-dbal']['pdo_pgsql']['username'] 		= 'pgsql';
-				$configs['zend-dbal']['pdo_pgsql']['password'] 		= 'pgsql';
-			} //end if else
-		} //end if
-		//--
-		$configs['zend-dbal']['pdo_mysql'] = Smart::get_from_config('zend-dbal.pdo_mysql');
-		if(Smart::array_size($configs['zend-dbal']['pdo_mysql']) <= 0) {
-			$cfg_mysqli = Smart::get_from_config('mysqli');
-			$configs['zend-dbal']['pdo_mysql']						= array();
-			if(Smart::array_size($cfg_mysqli) > 0) {
-				$configs['zend-dbal']['pdo_mysql']['driver'] 		= 'PDO_MYSQL';
-				$configs['zend-dbal']['pdo_mysql']['database'] 		= (string) $cfg_mysqli['dbname'];
-				$configs['zend-dbal']['pdo_mysql']['host'] 			= (string) $cfg_mysqli['server-host'];
-				$configs['zend-dbal']['pdo_mysql']['port'] 			= (int)    $cfg_mysqli['server-port'];
-				$configs['zend-dbal']['pdo_mysql']['username'] 		= (string) $cfg_mysqli['username'];
-				$configs['zend-dbal']['pdo_mysql']['password'] 		= (string) base64_decode((string)$cfg_mysqli['password']);
-			} //end if else
-		} //end if
-		//--
-
-		//--
-		$zconf = [];
+		$zconf = '';
 		switch((string)$driver) {
 			case 'sqlite':
-				if(Smart::array_size($configs['zend-dbal']['pdo_sqlite']) <= 0) {
-					$this->PageViewSetErrorStatus(500, 'ERROR: Zend/DBAL Test: Invalid Config: SQLite');
-					return;
-				} //end if
-				$zconf = (array) $configs['zend-dbal']['pdo_sqlite'];
+				$zconf = 'sqlite:tmp/test-zend-dbal.sqlite';
 				break;
 			case 'pgsql':
-				if(Smart::array_size($configs['zend-dbal']['pdo_pgsql']) <= 0) {
-					$this->PageViewSetErrorStatus(500, 'ERROR: Zend/DBAL Test: Invalid Config: PostgreSQL');
+				if(Smart::array_size(Smart::get_from_config('pgsql')) <= 0) {
+					$this->PageViewSetErrorStatus(503, 'ERROR: Zend/DBAL PostgreSQL Config is Not Available ...');
 					return;
 				} //end if
-				$zconf = (array) $configs['zend-dbal']['pdo_pgsql'];
+				$zconf = 'pgsql:config';
 				break;
 			case 'mysql':
-				if(Smart::array_size($configs['zend-dbal']['pdo_mysql']) <= 0) {
-					$this->PageViewSetErrorStatus(500, 'ERROR: Zend/DBAL Test: Invalid Config: MySQL');
+				if(Smart::array_size(Smart::get_from_config('mysqli')) <= 0) {
+					$this->PageViewSetErrorStatus(503, 'ERROR: Zend/DBAL MySQL Config is Not Available ...');
 					return;
 				} //end if
-				$zconf = (array) $configs['zend-dbal']['pdo_mysql'];
+				$zconf = 'mysqli:config';
 				break;
 			default:
 				$this->PageViewSetErrorStatus(400, 'ERROR: Zend/DBAL Test: Invalid Driver Selected: `'.$driver.'`');
 				return;
 		} //end switch
 		//--
-
-		//--
-		if(Smart::array_size($zconf) <= 0) {
-			$this->PageViewSetErrorStatus(500, 'ERROR: Zend/DBAL Test: Invalid Config Detected ...');
+		if((string)$zconf == '') {
+			$this->PageViewSetErrorStatus(500, 'ERROR: Zend/DBAL Test: Invalid Config Selected ...');
 			return;
 		} //end if
 		//--
 
 		//--
-		$db = new \SmartModExtLib\DbalZend\DbalPdo((array)$zconf);
+		$db = new \SmartModExtLib\DbalZend\DbalPdo((string)$zconf);
 		//--
 		$adapter = $db->getConnection();
 		//--
@@ -131,7 +80,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$db->write_data('DROP TABLE IF EXISTS sf_zend_dbal_test', 'QUERY_MODE_EXECUTE');
 		//--
-		$table = new \Zend\Db\Sql\Ddl\CreateTable('sf_zend_dbal_test', true);
+		$table = new \Zend\Db\Sql\Ddl\CreateTable('sf_zend_dbal_test', false); // set second parameter to TRUE to create a TEMPORARY table
 		$table->addColumn(new \Zend\Db\Sql\Ddl\Column\Integer('id'));
 		$table->addConstraint(new \Zend\Db\Sql\Ddl\Constraint\PrimaryKey('id'));
 		$table->addColumn(new \Zend\Db\Sql\Ddl\Column\Varchar('name', 100));

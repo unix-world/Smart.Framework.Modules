@@ -1,0 +1,101 @@
+<?php
+// Class: \SmartModExtLib\Tpl\AbstractTemplating
+// [Smart.Framework.Modules - ABSTRACT / Templating]
+// (c) 2006-2019 unix-world.org - all rights reserved
+// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
+
+// this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
+
+namespace SmartModExtLib\Tpl;
+
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
+} //end if
+//-----------------------------------------------------
+
+
+//=====================================================================================
+//===================================================================================== ABSTRACT CLASS START
+//=====================================================================================
+
+
+/**
+ * Abstract Inteface Templating
+ * The extended object MUST NOT CONTAIN OTHER FUNCTIONS BECAUSE MAY NOT WORK as Expected !!!
+ *
+ * @access 		private
+ * @internal
+ *
+ * @version 	v.20191021
+ *
+ */
+abstract class AbstractTemplating {
+
+	// :: ABSTRACT CLASS
+
+
+	//=====
+	/**
+	 * RETURN the TPL Version String
+	 */
+	abstract public static function getVersion();
+	//=====
+
+
+	//=====
+	/**
+	 * RETURN: the Rendered TPL String
+	 */
+	abstract public function render_file_template($file, $arr_vars=array(), $onlydebug=false);
+	//=====
+
+
+	//=====
+	/**
+	 * RETURN: the Debug TPL String
+	 */
+	abstract public function debug($tpl);
+	//=====
+
+
+	//=====
+	/**
+	 * UTILITY: fix array keys to be compliant with variable names, but only at level 1 ; level 2..n must not be fixed as tkey are accessible in loops
+	 */
+	final protected static function fix_array_keys($y_arr, $y_allow_upper_camelcase) {
+		//--
+		if(!\is_array($y_arr)) { // fix bug if empty array / max nested level
+			return $y_arr; // mixed
+		} //end if
+		//--
+		$new_arr = [];
+		//--
+		foreach($y_arr as $key => $val) {
+			$key = (string) \rtrim((string)\preg_replace('/[^0-9a-zA-Z_]/', '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; make safe variable name for PHP
+			if(\SmartFrameworkSecurity::ValidateVariableName((string)$key, (bool)$y_allow_upper_camelcase)) {
+				if(\is_array($val)) {
+					$new_arr[(string)$key] = (array) $val;
+				} else {
+					$new_arr[(string)$key] = $val; // mixed
+				} //end if
+			} //end if else
+		} //end foreach
+		//--
+		return (array) $new_arr;
+		//--
+	} //END FUNCTION
+	//=====
+
+
+} //END ABSTRACT CLASS
+
+
+//=====================================================================================
+//===================================================================================== ABSTRACT CLASS END
+//=====================================================================================
+
+
+//end of php code
+?>

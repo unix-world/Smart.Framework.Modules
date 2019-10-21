@@ -32,6 +32,13 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
+		if(!SmartAppInfo::TestIfModuleExists('mod-tpl')) {
+			$this->PageViewSetErrorStatus(500, 'ERROR: TPL module (mod-tpl) is missing ...');
+			return;
+		} //end if
+		//--
+
+		//--
 		$op = $this->RequestVarGet('op', '', 'string');
 		//--
 
@@ -57,7 +64,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		// !!! all main templates must start / end with the section ID: Typo3FluidTpl
 		//--
-		$data = [ // v.181222
+		$data = [ // v.20191019
 			// variables are case sensitive in Typo3Fluid ; array keys that contain - and . will be replaced recursive by _ to make compliant with PHP variable names
 			'version' => (string) \SmartModExtLib\TplTypo3Fluid\Templating::getVersion(),
 			'hello-.world' => '<h1>Demo: Typo3Fluid Templating as module for Smart.Framework</h1>',
@@ -66,7 +73,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				[ 'href' => '#link2', 'caption' => 'Sample Link <2>' ],
 				[ 'href' => '#link3', 'caption' => 'Sample Link <3>' ]
 			],
-			'date_time' => (string) date('Y-m-d H:i:s O'),
+			'date_time' => (string) date('Y-m-d H:i:s O')."\t"."'".date('T')."'",
 			'tbl' => [
 				['a1' => '1.1', 'a2' => '1.2', 'a3' => '1.3'],
 				['a1' => '2.1', 'a2' => '2.2', 'a3' => '2.3'],
@@ -81,28 +88,18 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$res_time = (float) microtime(true);
 		//--
-		if(class_exists('SmartTypo3FluidTemplating') AND (Smart::random_number(0,1))) { // must enable require_once('modules/smart-extra-libs/autoload.php'); in modules/app/app-custom-bootstrap.inc.php
-			if(class_exists('SmartTemplating') AND (Smart::random_number(0,1))) {
-				$this->PageViewSetVars([
-					'title' => 'Sample Typo3Fluid Templating (static, autodetect file extension)',
-					'main' => (string) SmartTemplating::render_file_template(
-						(string) $tpl, // the TPL view (syntax: Typo3Fluid-TPL ; must contain '.t3fluid.' in the file name)
-						(array)  $data // the Variables array
-					)
-				]);
-			} else {
-				$this->PageViewSetVars([
-					'title' => 'Sample Typo3Fluid Templating (static)',
-					'main' => (string) SmartTypo3FluidTemplating::render_file_template(
-						(string) $tpl, // the TPL view (syntax: Typo3Fluid-TPL)
-						(array)  $data // the Variables array
-					)
-				]);
-			} //end if else
+		if(class_exists('SmartTemplating') AND (Smart::random_number(0,1))) { // must enable require_once('modules/smart-extra-libs/autoload.php'); in modules/app/app-custom-bootstrap.inc.php
+			$this->PageViewSetVars([
+				'title' => 'Sample Typo3Fluid Templating (autodetect file extension)',
+				'main' => (string) SmartTemplating::render_file_template(
+					(string) $tpl, // the TPL view (syntax: Typo3Fluid-TPL ; must contain '.t3fluid.' in the file name)
+					(array)  $data // the Variables array
+				)
+			]);
 		} else {
 			$this->PageViewSetVars([
 				'title' => 'Sample Typo3Fluid Templating',
-				'main' => (string) (new \SmartModExtLib\TplTypo3Fluid\Templating())->render_file_template(
+				'main' => (string) \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating::render_file_template(
 					(string) $tpl, // the TPL view (syntax: Typo3Fluid-TPL)
 					(array)  $data // the Variables array
 				)

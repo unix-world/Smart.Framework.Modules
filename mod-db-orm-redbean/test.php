@@ -45,7 +45,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		switch((string)$driver) {
 			case 'sqlite':
-				$setup = R::setup('sqlite:tmp/redbean-dbfile.sqlite');
+				$setup = R::setup('sqlite:tmp/test-readbean-orm.sqlite');
 				break;
 			case 'pgsql':
 				if(Smart::array_size(Smart::get_from_config('pgsql')) > 0) {

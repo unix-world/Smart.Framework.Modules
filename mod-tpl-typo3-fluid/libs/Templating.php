@@ -42,13 +42,16 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
+ * @access 		private
+ * @internal
+ *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.20191007
+ * @version 	v.20191021
  * @package 	Templating:Engines
  *
  */
-final class Templating {
+final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 
 	// ->
 
@@ -178,26 +181,23 @@ final class Templating {
 	} //END FUNCTION
 
 
-	private static function fix_array_keys($y_arr, $y_allow_upper_camelcase) { // v.191217 :: fix array keys to be compliant with variable names, but only at level 1 ; level 2..n must not be fixed as tkey are accessible in loops
+	/**
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public function debug($tpl) {
 		//--
-		if(!\is_array($y_arr)) { // fix bug if empty array / max nested level
-			return $y_arr; // mixed
+		if(!\SmartFrameworkRuntime::ifDebug()) {
+			return '';
 		} //end if
 		//--
-		$new_arr = [];
+		if((string)\trim((string)$tpl) == '') {
+			return '';
+		} //end if
 		//--
-		foreach($y_arr as $key => $val) {
-			$key = (string) \rtrim((string)\preg_replace('/[^0-9a-zA-Z_]/', '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; make safe variable name for PHP
-			if(\SmartFrameworkSecurity::ValidateVariableName((string)$key, (bool)$y_allow_upper_camelcase)) {
-				if(\is_array($val)) {
-					$new_arr[(string)$key] = (array) $val; // do not go recursive as = self::fix_array_keys((array)$val);
-				} else {
-					$new_arr[(string)$key] = $val; // mixed
-				} //end if
-			} //end if else
-		} //end foreach
-		//--
-		return $new_arr; // mixed
+		return '<h1>Debug N/A for this TPL Engine ...</h1>';
 		//--
 	} //END FUNCTION
 

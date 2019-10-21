@@ -1,7 +1,7 @@
 [%%%%COMMENT%%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
 [%%%%/COMMENT%%%%]
-//===== QUnit Tests.Mod.TPL-Nette-Latte: START :: r.181221
+//===== QUnit Tests.Mod.TPL-Twig: START :: r.20191021
 
 (function() {
 
@@ -20,4 +20,4 @@
 
 })();
 
-//===== QUnit Tests.TPL-Nette-Latte: #END
+//===== QUnit Tests.TPL-Twig: #END

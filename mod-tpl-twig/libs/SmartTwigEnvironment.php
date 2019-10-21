@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	extensions: classes: Twig
- * @version 	v.20191007
+ * @version 	v.20191021
  * @package 	Templating:Engines
  *
  */
@@ -133,7 +133,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 		\ksort($dbg_arr['tpl-vars']);
 		//--
 		if((string)$mode != 'get') {
-			\SmartFrameworkRegistry::setDebugMsg('optimizations', '*TWIG-CLASSES:OPTIMIZATION-HINTS*', [
+			\SmartFrameworkRegistry::setDebugMsg('optimizations', '*TWIG-TPL-CLASSES:OPTIMIZATION-HINTS*', [
 				'title' => 'SmartTwigEnvironment // Optimization Hints @ Number of FS Reads for rendering current Template incl. Sub-Templates ; Test if Cache File exists',
 				'data' => (array) $optim_msg
 			]);

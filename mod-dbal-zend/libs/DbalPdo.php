@@ -28,19 +28,21 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 * <code>
  *
  * $conf_driver = [
- *		'driver'   => 'pdo_sqlite',
+ *		'driver'   => 'PDO_SQLITE',
  *		'database' => 'tmp/zend-test.sqlite'
  * ];
  * //$conf_driver = [
+ * //	'driver'   => 'PDO_MYSQL',
  * //	'host'     => '127.0.0.1',
- * //	'driver'   => 'pdo_mysql',
+ * //	'port'     => 3306,
  * //	'database' => 'smart_framework',
  * //	'username' => 'root',
  * //	'password' => 'root'
  * //];
  * //$conf_driver = [
+ * //	'driver'   => 'PDO_PGSQL',
  * //	'host'     => '127.0.0.1',
- * //	'driver'   => 'pdo_pgsql',
+ * //	'port'     => 5432,
  * //	'database' => 'smart_framework',
  * //	'username' => 'pgsql',
  * //	'password' => 'pgsql'
@@ -51,7 +53,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * // write test using the Zend DB Objects
  * $db->write_data('DROP TABLE IF EXISTS sf_zend_dbal_test', 'QUERY_MODE_EXECUTE');
- * $table = new \Zend\Db\Sql\Ddl\CreateTable('sf_zend_dbal_test', true);
+ * $table = new \Zend\Db\Sql\Ddl\CreateTable('sf_zend_dbal_test');
  * $table->addColumn(new \Zend\Db\Sql\Ddl\Column\Integer('id'));
  * $table->addConstraint(new \Zend\Db\Sql\Ddl\Constraint\PrimaryKey('id'));
  * $table->addColumn(new \Zend\Db\Sql\Ddl\Column\Varchar('name', 100));
@@ -89,7 +91,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: \Zend\Db
- * @version 	v.20191008
+ * @version 	v.20191021
  * @package 	Database:ZendDb-PDO
  *
  */
@@ -116,24 +118,85 @@ final class DbalPdo {
 	 *
 	 * @hint: 	For the DB direct access Drivers (Adapters) such as: PgSQL, SQlite3 and MySQLi the Smart.Framework provides built-in / includded and more optimized libraries
 	 *
-	 * @param ARRAY 	$cfg							:: the driver options
+	 * @param MIXED 	$cfg							:: the driver options as array[] or 'mysqli:config' | 'pgsql:config' | 'sqlite:tmp/sample-dbfile.sqlite'
 	 * @param INTEGER+ 	$timeout 						:: the connection timeout (applies only to MySQL and PostgreSQL)
 	 *
 	 */
 	public function __construct($cfg, $timeout=30) {
 		//--
-		$this->cfg = (array) $cfg;
+		if(!\is_array($cfg)) {
+			$this->cfg = array();
+			switch((string)$cfg) {
+				case 'mysqli:config':
+					$arr_cfg = \Smart::get_from_config('mysqli');
+					if(\Smart::array_size($arr_cfg) <= 0) {
+						\Smart::raise_error(__METHOD__.' The CFG not found in Smart.Framework config (mysqli): '.$cfg);
+						return false;
+					} //end if
+					$this->cfg = array();
+					$this->cfg['driver'] 		= 'PDO_MYSQL';
+					$this->cfg['database'] 	= (string) $arr_cfg['dbname'];
+					$this->cfg['host'] 		= (string) $arr_cfg['server-host'];
+					$this->cfg['port'] 		= (int)    $arr_cfg['server-port'];
+					$this->cfg['username'] 	= (string) $arr_cfg['username'];
+					$this->cfg['password'] 	= (string) base64_decode((string)$arr_cfg['password']);
+					$this->cfg['timeout'] 	= (int)    $arr_cfg['timeout'];
+					$this->cfg['slowtime'] 	= (float)  $arr_cfg['slowtime'];
+					break;
+				case 'pgsql:config':
+					$arr_cfg = \Smart::get_from_config('pgsql');
+					if(\Smart::array_size($arr_cfg) <= 0) {
+						\Smart::raise_error(__METHOD__.' The CFG not found in Smart.Framework config (pgsql): '.$cfg);
+						return false;
+					} //end if
+					$this->cfg = array();
+					$this->cfg['driver'] 		= 'PDO_PGSQL';
+					$this->cfg['database'] 	= (string) $arr_cfg['dbname'];
+					$this->cfg['host'] 		= (string) $arr_cfg['server-host'];
+					$this->cfg['port'] 		= (int)    $arr_cfg['server-port'];
+					$this->cfg['username'] 	= (string) $arr_cfg['username'];
+					$this->cfg['password'] 	= (string) base64_decode((string)$arr_cfg['password']);
+					$this->cfg['timeout'] 	= (int)    $arr_cfg['timeout'];
+					$this->cfg['slowtime'] 	= (float)  $arr_cfg['slowtime'];
+					break;
+				default: // sqlite:tmp/sample-dbfile.sqlite
+					if((string)\trim((string)$cfg) == '') {
+						\Smart::raise_error(__METHOD__.' Empty CFG not allowed !');
+						return false;
+					} //end if
+					if(\strpos((string)$cfg, 'sqlite:') !== 0) {
+						\Smart::raise_error(__METHOD__.' Invalid CFG: '.$cfg);
+						return false;
+					} //end if
+					$the_db = (string) \trim((string)\substr((string)$cfg, 7));
+					if((string)$the_db == '') {
+						\Smart::raise_error(__METHOD__.' Empty Database Path (sqlite): '.$cfg);
+						return false;
+					} //end if
+					if(!\SmartFileSysUtils::check_if_safe_path((string)$the_db, 'yes', 'yes')) { // deny absolute path access ; allow protected path access (starting with #)
+						\Smart::raise_error(__METHOD__.' Unsafe Database Path (sqlite): '.$cfg);
+						return false;
+					} //end if
+					$arr_cfg = \Smart::get_from_config('sqlite');
+					if(\Smart::array_size($arr_cfg) <= 0) {
+						\Smart::raise_error(__METHOD__.' The CFG not found in Smart.Framework config (sqlite): '.$cfg);
+						return false;
+					} //end if
+					$this->cfg = array();
+					$this->cfg['driver'] 		= 'PDO_SQLITE';
+					$this->cfg['database'] 	= (string) $the_db;
+					$this->cfg['timeout'] 	= (int)    $arr_cfg['timeout'];
+					$this->cfg['slowtime'] 	= (float)  $arr_cfg['slowtime'];
+			} //end switch
+		} else {
+			$this->cfg = (array) $cfg;
+		} //end if else
 		//--
 		$this->cfg['driver'] = (string) \strtolower((string)\trim((string)$this->cfg['driver']));
 		$this->cfg['host'] = (string) \trim((string)$this->cfg['host']);
 		$this->cfg['port'] = (int) $this->cfg['port'];
 		//--
 		switch((string)$this->cfg['driver']) {
-			case 'pdo_sqlite':
-				$this->cfg['host'] = 'local-file';
-				$this->cfg['port'] = 0;
-				$this->slow_query_time = 0.0025;
-				break;
 		//	case 'mysqli': // do not use as the cross-db params compatibility in queries would be broken !
 			case 'pdo_mysql':
 				if((string)$this->cfg['host'] == '') {
@@ -142,7 +205,7 @@ final class DbalPdo {
 				if($this->cfg['port'] <= 0) {
 					$this->cfg['port'] = 3306;
 				} //end if
-				$this->slow_query_time = 0.0050;
+				$this->slow_query_time = (float) (((float)$this->cfg['slowtime'] > 0) ? (float)$this->cfg['slowtime'] : 0.0050);
 				break;
 		//	case 'pgsql': // do not use as the cross-db params compatibility in queries would be broken !
 			case 'pdo_pgsql':
@@ -152,10 +215,15 @@ final class DbalPdo {
 				if($this->cfg['port'] <= 0) {
 					$this->cfg['port'] = 5432;
 				} //end if
-				$this->slow_query_time = 0.0050;
+				$this->slow_query_time = (float) (((float)$this->cfg['slowtime'] > 0) ? (float)$this->cfg['slowtime'] : 0.0050);
+				break;
+			case 'pdo_sqlite':
+				$this->cfg['host'] = 'sqlite-file';
+				$this->cfg['port'] = 0;
+				$this->slow_query_time = (float) (((float)$this->cfg['slowtime'] > 0) ? (float)$this->cfg['slowtime'] : 0.0025);
 				break;
 			default:
-				$this->error('INIT', 'Unsupported PDO Zend/Db Driver', $this->cfg['driver'], '');
+				$this->error('INIT', 'Unsupported PDO Zend/Db Driver: '.$this->cfg['driver'], '@Driver', '');
 				return;
 		} //end switch
 		//--
@@ -172,6 +240,10 @@ final class DbalPdo {
 		if(\SmartFrameworkRuntime::ifDebug()) {
 			$this->profiler = new \Zend\Db\Adapter\Profiler\Profiler();
 			$this->connection->setProfiler($this->profiler);
+		} //end if
+		//--
+		if((int)$this->cfg['timeout'] > 0) {
+			$timeout = (int) $this->cfg['timeout'];
 		} //end if
 		//--
 		$timeout = (int) $timeout;

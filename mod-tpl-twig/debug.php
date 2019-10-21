@@ -1,6 +1,6 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Controller: Twig Templating Debug r.181018
+// Controller: Twig Templating Debug r.20191021
 // Route: ?/page/tpl-twig.debug (?page=tpl-twig.debug)
 // (c) 2006-2019 unix-world.org - all rights reserved
 // v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
@@ -32,6 +32,13 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
+		if(!SmartAppInfo::TestIfModuleExists('mod-tpl')) {
+			$this->PageViewSetErrorStatus(500, 'ERROR: TPL module (mod-tpl) is missing ...');
+			return;
+		} //end if
+		//--
+
+		//--
 		$tpl = $this->RequestVarGet('tpl', '', 'string');
 		//--
 
@@ -40,14 +47,9 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$this->PageViewSetVar(
 			'main',
-			(string) SmartMarkersTemplating::render_file_template(
-				'lib/core/templates/debug-profiler-util.htm',
-				[
-					'CHARSET' 	=> Smart::escape_html(SmartUtils::get_encoding_charset()),
-					'TITLE' 	=> '{{ Twig-TPL }} Template Debug Profiling',
-					'MAIN' 		=> (string) (new \SmartModExtLib\TplTwig\Templating())->debug($tpl)
-				],
-				'no'
+			(string) SmartDebugProfiler::display_debug_page(
+				'{{ Twig-TPL }} Template Debug Profiling',
+				(string) \SmartModExtLib\TplTwig\SmartTwigTemplating::debug($tpl)
 			)
 		);
 		//--

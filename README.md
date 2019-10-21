@@ -17,10 +17,12 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 	* JS Components: a collection of Javascript components and utils
 	* Maps Cache: a caching API for Open Map types
 	* Language Detect: NGrams Language Detection library
-	* Nette Latte Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl-nette-latte into smart-framework/modules/
-	* Twig Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl-twig into smart-framework/modules/
-	* TYPO3Flow Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl-typo3-fluid into smart-framework/modules/
-	* Zend DBAL: PDO based connector for: PgSQL, MySQL and SQLite
+	* Dust Templating Engine (by LinkedIn) integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-dust into smart-framework/modules/
+	* Twig Templating Engine (by Symfony): integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-twig into smart-framework/modules/
+	* Nette Latte Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-nette-latte into smart-framework/modules/
+	* TYPO3Flow Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-typo3-fluid into smart-framework/modules/
+	* Zend DBAL: PDO based connector for: PgSQL, MySQL and SQLite ; to start use just copy the mod-dbal-zend into smart-framework/modules/
+	* Redbean ORM: an ORM based connector for: PgSQL, MySQL and SQLite ; to start use just copy the mod-db-orm-redbean into smart-framework/modules/
 	* MediaGallery: a media gallery api for Smart.Framework
 	* SocialMedia Facebook: Js + PHP API
 	* SocialMedia Twitter: Js + PHP API
@@ -38,7 +40,7 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 	* CURL based HTTP Client Lib with proxy support
 	* LangID.py client wrapper (a language detection utility based on external service)
 	* Charts library for PHP
-	* TPL wrapper Lib for the includded TPL engines (this make life easier with existing TPL engines in Smart.Framework: MarkersTPL and Smart.Framework.Modules: netteLatte, Twig and typo3Fluid)
+	* TPL wrapper Lib for the includded TPL engines (this make life easier with existing TPL engines in Smart.Framework: MarkersTPL and Smart.Framework.Modules: Dust, Twig, netteLatte and typo3Fluid)
 
 ### Vendor Libs (BSD licensed):
 	* CSS and JS Minify vendor/MatthiasMullie

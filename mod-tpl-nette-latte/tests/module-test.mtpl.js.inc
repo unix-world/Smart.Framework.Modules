@@ -1,13 +1,13 @@
 [%%%%COMMENT%%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
 [%%%%/COMMENT%%%%]
-//===== QUnit Tests.Mod.TPL-Nette-Latte: START :: r.181221
+//===== QUnit Tests.Mod.TPL-Nette-Latte: START :: r.20191021
 
 (function() {
 
 	QUnit.module('Templating.Modules', function(){
 
-		QUnit.test('nette-Latte TPL Demo Test: PHP :: iFrame', function(assert) {
+		QUnit.test('Nette-Latte TPL Demo Test: PHP :: iFrame', function(assert) {
 			SmartQUnit.runiFrameTest(
 				baseScript + '?page=tpl-nette-latte.test',
 				500,

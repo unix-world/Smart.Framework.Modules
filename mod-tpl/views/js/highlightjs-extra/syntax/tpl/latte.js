@@ -4,6 +4,7 @@ Requires: xml.js
 Author: Radu Ovidiu I. <iradu@unix-world.org>
 Description: Latte is a templating language for PHP (from Nette framework)
 Category: template
+### created by unixman
 */
 
 // syntax/tpl/latte.js

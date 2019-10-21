@@ -17,7 +17,7 @@
 	</table>
 	<ul>
 	{% for item in navigation %}
-		<li><a href="{{ item.href }}">{{ item.caption }}</a></li>
+		<li><a href="{{ item.href }}">{{ loop.index }}.  {{ item.caption }} ({{ loop.index0 }})</a></li>
 	{% endfor %}
 	</ul>
 	Test Condition#1:
@@ -31,6 +31,14 @@
 	{% if b == a %}
 		<span style="color:#FF3300;"><b>NOT OK</b></span>
 	{% else %}
-		<b>OK</b>
+		{%if b == 'Test-1' %}
+			<span style="color:#FF3300;"><b>NOT OK</b></span>
+		{% else %}
+			{% if a != 'Test-1' %}
+				<span style="color:#FF3300;"><b>NOT OK</b></span>
+			{% else %}
+				<b>OK</b>
+			{% endif %}
+		{% endif %}
 	{% endif %}
 <!-- end twig partial / sub-template -->
