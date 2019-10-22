@@ -250,8 +250,8 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 		//--
 		$bwdata = (array) $httpclient->browse_url($url, 'GET');
 		//--
-		$tmp_validate_by_header = \SmartUtils::guess_image_extension_by_url_head($bwdata['headers']);
-		$tmp_validate_by_fbytes = \SmartUtils::guess_image_extension_by_img_content(\substr($bwdata['content'], 0, 256), false);
+		$tmp_validate_by_header = \SmartDetectImages::guess_image_extension_by_url_head($bwdata['headers']);
+		$tmp_validate_by_fbytes = \SmartDetectImages::guess_image_extension_by_img_content(\substr($bwdata['content'], 0, 256), false);
 		//--
 		$tmp_uniq_prefix = $file.'.tmp-'.$saferand;
 		$tmp_uniq_file = $tmp_uniq_prefix.'.download'.$ext;

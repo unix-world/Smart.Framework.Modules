@@ -296,7 +296,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$count = Smart::format_number_int($arr_count['count'], '+');
 				$size = Smart::format_number_int($arr_count['size'], '+');
 				//--
-				echo 'There are #'.SmartUtils::local_display_number($count, 0).' messages in the MailBox';
+				echo 'There are #'.SmartTextTranslations::formatAsLocalNumber($count, 0).' messages in the MailBox';
 				if($size > 0) {
 					echo ' with size of '.SmartUtils::pretty_print_bytes($size);
 				} //end if

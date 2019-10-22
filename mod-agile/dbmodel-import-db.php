@@ -69,7 +69,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			//--
 			$this->PageViewSetVar(
 				'main',
-				SmartComponents::js_ajax_replyto_html_form(
+				SmartViewHtmlHelpers::js_ajax_replyto_html_form(
 					(!$err) ? 'OK' : 'ERROR',
 					'Import DbModel from DB',
 					(!$err) ? 'DbModel Imported Successfuly' : 'Cannot import the DbModel: '.$err,

@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-manage'] 		= 'WebPages // Manage (Specia
  * @access 		private
  * @internal
  *
- * @version 	v.20191002
+ * @version 	v.20191022
  * @package 	PageBuilder
  *
  */
@@ -213,7 +213,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			$type = (string) $query['mode'];
 		} //end if else
 		//--
-		$out = \SmartComponents::html_jsload_editarea();
+		$out = \SmartViewHtmlHelpers::html_jsload_editarea();
 		$out .= \SmartComponents::js_code_highlightsyntax('body');
 		$out .= '<div style="text-align:left;">';
 		$out .= '<h3>Code Preview: '.\Smart::escape_html($query['name']).' :: '.\Smart::escape_html($query['id']).'</h3>';
@@ -237,7 +237,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		//--
 		$type = 'yaml';
 		//--
-		$out = \SmartComponents::html_jsload_editarea();
+		$out = \SmartViewHtmlHelpers::html_jsload_editarea();
 		$out .= \SmartComponents::js_code_highlightsyntax('body');
 		$out .= '<div style="text-align:left;">';
 		$out .= '<h3>Data Preview: '.\Smart::escape_html($query['name']).' :: '.\Smart::escape_html($query['id']).'</h3>';
@@ -292,11 +292,11 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		$translator_window = \SmartTextTranslations::getTranslator('@core', 'window');
 		//--
 		$out = '';
-	//	$out .= \SmartComponents::html_jsload_htmlarea(''); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
+	//	$out .= \SmartViewHtmlHelpers::html_jsload_htmlarea(''); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
 		$out .= '<link href="lib/js/jquery/jsonview/jquery.json-viewer.css" type="text/css" rel="stylesheet">';
 		$out .= '<script src="lib/js/jquery/jsonview/jquery.json-viewer.js"></script>';
-		$out .= \SmartComponents::html_jsload_editarea();
-		$out .= '<script>'.\SmartComponents::js_code_init_away_page('The changes will be lost !').'</script>';
+		$out .= \SmartViewHtmlHelpers::html_jsload_editarea();
+		$out .= '<script>'.\SmartViewHtmlHelpers::js_code_init_away_page('The changes will be lost !').'</script>';
 		$out .= \SmartMarkersTemplating::render_file_template(
 			(string) self::$ModulePath.'libs/views/manager/view-record.mtpl.htm',
 			[
@@ -380,9 +380,9 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			//--
 			$chk_reset_transl = '<input type="checkbox" name="frm[reset-translations]" value="all" onchange="if(jQuery(this).is(\':checked\')) { SmartJS_BrowserUtils.alert_Dialog(\'<span style=&quot;font-weight:bold; color:#FF5500;&quot;>If this checkbox is checked will reset (erase) all the PageBuilder Translations for this Object when you save it. Cannot be Undone.</span>\', function(){ jQuery(\'#warn-lang-reset\').empty().text(\'NOTICE: All Translations for this PageBuilder Object will be erased on Save.\'); }, \'Reset All Translations for this PageBuilder Object\', 550, 175); } else { jQuery(\'#warn-lang-reset\').empty(); }">';
 			//--
-			$bttns .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-save.svg'.'" alt="'.self::text('save').'" title="'.self::text('save').'" style="cursor:pointer;" onClick="'.\SmartComponents::js_ajax_submit_html_form('page_form_props', self::composeUrl('op=record-edit-do&id='.\Smart::escape_url($query['id']))).'">';
+			$bttns .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-save.svg'.'" alt="'.self::text('save').'" title="'.self::text('save').'" style="cursor:pointer;" onClick="'.\SmartViewHtmlHelpers::js_ajax_submit_html_form('page_form_props', self::composeUrl('op=record-edit-do&id='.\Smart::escape_url($query['id']))).'">';
 			$bttns .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-			$bttns .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-back.svg'.'" alt="'.self::text('cancel').'" title="'.self::text('cancel').'" style="cursor:pointer;" onClick="'.\SmartComponents::js_code_ui_confirm_dialog('<h3>'.self::text('msg_unsaved').'</h3>'.'<br>'.'<b>'.\Smart::escape_html($translator_window->text('confirm_action')).'</b>', "SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#adm-page-props').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-props&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');").'">';
+			$bttns .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-back.svg'.'" alt="'.self::text('cancel').'" title="'.self::text('cancel').'" style="cursor:pointer;" onClick="'.\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h3>'.self::text('msg_unsaved').'</h3>'.'<br>'.'<b>'.\Smart::escape_html($translator_window->text('confirm_action')).'</b>', "SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#adm-page-props').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-props&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');").'">';
 			//--
 			$fld_name = '<input type="text" name="frm[name]" value="'.\Smart::escape_html($query['name']).'" size="70" maxlength="150" autocomplete="off" placeholder="'.self::text('name').'" required>';
 			//--
@@ -390,18 +390,18 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				unset($arr_pmodes['html']);
 				unset($arr_pmodes['markdown']);
 				unset($arr_pmodes['text']);
-				$fld_pmode = \SmartComponents::html_select_list_single('pmode', $query['mode'], 'form', $arr_pmodes, 'frm[mode]', '150/0', '', 'no', 'no');
+				$fld_pmode = \SmartViewHtmlHelpers::html_select_list_single('pmode', $query['mode'], 'form', $arr_pmodes, 'frm[mode]', '150/0', '', 'no', 'no');
 			} else {
 				unset($arr_pmodes['raw']);
 				unset($arr_pmodes['settings']);
-				$fld_pmode = \SmartComponents::html_select_list_single('pmode', $query['mode'], 'form', $arr_pmodes, 'frm[mode]', '150/0', '', 'no', 'no');
+				$fld_pmode = \SmartViewHtmlHelpers::html_select_list_single('pmode', $query['mode'], 'form', $arr_pmodes, 'frm[mode]', '150/0', '', 'no', 'no');
 			} //end if else
 			//--
 			$fld_ctrl = self::drawFieldCtrl($query['ctrl'], $is_subsegment, 'form', 'frm[ctrl]');
-			$fld_special = \SmartComponents::html_selector_true_false('frm[special]', $query['special']);
-			$fld_active = \SmartComponents::html_selector_true_false('frm[active]', $query['active']);
-			$fld_auth = \SmartComponents::html_selector_true_false('frm[auth]', $query['auth']);
-			$fld_trans = \SmartComponents::html_selector_true_false('frm[translations]', $query['translations']);
+			$fld_special = \SmartViewHtmlHelpers::html_selector_true_false('frm[special]', $query['special']);
+			$fld_active = \SmartViewHtmlHelpers::html_selector_true_false('frm[active]', $query['active']);
+			$fld_auth = \SmartViewHtmlHelpers::html_selector_true_false('frm[auth]', $query['auth']);
+			$fld_trans = \SmartViewHtmlHelpers::html_selector_true_false('frm[translations]', $query['translations']);
 			//--
 			if(self::testIsSegmentPage($query['id'])) {
 				$fld_area = '<input type="text" name="frm[layout]" value="'.\Smart::escape_html($query['layout']).'" size="35" maxlength="75" autocomplete="off" placeholder="'.self::text('template').'">';
@@ -434,12 +434,12 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			} //end if
 			//--
 			$fld_name = \Smart::escape_html($query['name']);
-			$fld_pmode = \SmartComponents::html_select_list_single('pmode', $query['mode'], 'list', $arr_pmodes);
+			$fld_pmode = \SmartViewHtmlHelpers::html_select_list_single('pmode', $query['mode'], 'list', $arr_pmodes);
 			$fld_ctrl = self::drawFieldCtrl($query['ctrl'], $is_subsegment, 'list');
-			$fld_special = \SmartComponents::html_selector_true_false('', $query['special']);
-			$fld_active = \SmartComponents::html_selector_true_false('', $query['active']);
-			$fld_auth = \SmartComponents::html_selector_true_false('', $query['auth']);
-			$fld_trans = \SmartComponents::html_selector_true_false('', $query['translations']);
+			$fld_special = \SmartViewHtmlHelpers::html_selector_true_false('', $query['special']);
+			$fld_active = \SmartViewHtmlHelpers::html_selector_true_false('', $query['active']);
+			$fld_auth = \SmartViewHtmlHelpers::html_selector_true_false('', $query['auth']);
+			$fld_trans = \SmartViewHtmlHelpers::html_selector_true_false('', $query['translations']);
 			//--
 			if(self::testIsSegmentPage($query['id'])) {
 				$fld_area = (string) \Smart::escape_html($query['layout']);
@@ -478,7 +478,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		} //end if
 		if(\Smart::array_size($transl_arr) > 0) {
 			for($i=0; $i<\Smart::array_size($transl_arr); $i++) {
-				$transl_arr[$i] = (string) \SmartComponents::html_select_list_single('', (string)$transl_arr[$i], 'list', (array)$arr_raw_langs);
+				$transl_arr[$i] = (string) \SmartViewHtmlHelpers::html_select_list_single('', (string)$transl_arr[$i], 'list', (array)$arr_raw_langs);
 			} //end if
 		} //end if
 		if((string)$query['mode'] == 'settings') {
@@ -573,7 +573,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			$tselmode = 'form';
 		} //end if else
 		if(\Smart::array_size($arr_langs) > 1) {
-			$tselect = (string) \SmartComponents::html_select_list_single(
+			$tselect = (string) \SmartViewHtmlHelpers::html_select_list_single(
 				'language-select',
 				(string) $y_lang,
 				(string) $tselmode,
@@ -624,9 +624,9 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 					$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 					$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 					$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-					$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-save.svg'.'" alt="'.self::text('save').'" title="'.self::text('save').'" style="cursor:pointer;" onClick="'.\SmartComponents::js_ajax_submit_html_form('page_form_html', self::composeUrl('op=record-edit-do&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang))).'">';
+					$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-save.svg'.'" alt="'.self::text('save').'" title="'.self::text('save').'" style="cursor:pointer;" onClick="'.\SmartViewHtmlHelpers::js_ajax_submit_html_form('page_form_html', self::composeUrl('op=record-edit-do&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang))).'">';
 					$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-					$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-back.svg'.'" alt="'.self::text('cancel').'" title="'.self::text('cancel').'" style="cursor:pointer;" onClick="'.\SmartComponents::js_code_ui_confirm_dialog('<h3>'.self::text('msg_unsaved').'</h3>'.'<br>'.'<b>'.\Smart::escape_html($translator_window->text('confirm_action')).'</b>', "SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#code-editor').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');").'">';
+					$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-back.svg'.'" alt="'.self::text('cancel').'" title="'.self::text('cancel').'" style="cursor:pointer;" onClick="'.\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h3>'.self::text('msg_unsaved').'</h3>'.'<br>'.'<b>'.\Smart::escape_html($translator_window->text('confirm_action')).'</b>', "SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#code-editor').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');").'">';
 					$out .= (string) self::getPreviewButtons($query['id']);
 					$out .= '</div>'."\n";
 					$out .= '<form name="page_form_html" id="page_form_html" method="post" action="#" onsubmit="return false;">';
@@ -635,14 +635,14 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 						$out .= '<input type="hidden" name="frm[language]" value="'.\Smart::escape_html((string)$y_lang).'">';
 					} //end if
 					if((string)$query['mode'] == 'raw') {
-						$out .= \SmartComponents::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'text', true, '885px', '70vh');
+						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'text', true, '885px', '70vh');
 					} elseif((string)$query['mode'] == 'text') {
-						$out .= \SmartComponents::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'text', true, '885px', '70vh');
+						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'text', true, '885px', '70vh');
 					} elseif((string)$query['mode'] == 'markdown') {
-						$out .= \SmartComponents::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'markdown', true, '885px', '70vh');
+						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'markdown', true, '885px', '70vh');
 					} else {
-					//	$out .= \SmartComponents::html_js_htmlarea('pbld_code_htmleditor', 'frm[code]', $query['code'], '885px', '70vh', true); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
-						$out .= \SmartComponents::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'html', true, '885px', '70vh');
+					//	$out .= \SmartViewHtmlHelpers::html_js_htmlarea('pbld_code_htmleditor', 'frm[code]', $query['code'], '885px', '70vh', true); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
+						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'html', true, '885px', '70vh');
 					} //end if else
 					$out .= "\n".'</form>'."\n";
 					$out .= '<div align="left">';
@@ -693,10 +693,10 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 						//--
 						if((string)$query['mode'] == 'raw') {
 							$out .= '</div>'."\n";
-							$out .= \SmartComponents::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '885px', '70vh');
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '885px', '70vh');
 						} elseif((string)$query['mode'] == 'text') {
 							$out .= '</div>'."\n";
-							$out .= \SmartComponents::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '885px', '70vh');
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '885px', '70vh');
 						} elseif((string)$query['mode'] == 'markdown') {
 							$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 							$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-preview.svg'.'" alt="'.self::text('record_sytx_html').'" title="'.self::text('record_sytx_html').'" style="cursor:pointer;" onClick="'."SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#code-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-preview-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');".'">';
@@ -706,12 +706,12 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code']); // render on the fly
 							} //end if
 							$out .= '</div>'."\n";
-							$out .= \SmartComponents::html_js_editarea('pbld_code_editor', '', $query['code'], 'markdown', false, '885px', '70vh');
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'markdown', false, '885px', '70vh');
 						} else { // html
 							$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 							$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-preview.svg'.'" alt="'.self::text('record_sytx_html').' Preview" title="'.self::text('record_sytx_html').' Preview" style="cursor:pointer;" onClick="'."SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#code-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-preview-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');".'">';
 							$out .= '</div>'."\n";
-							$out .= \SmartComponents::html_js_editarea('pbld_code_editor', '', $query['code'], 'html', false, '885px', '70vh');
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'html', false, '885px', '70vh');
 						} //end if else
 						//--
 					} else { // view
@@ -736,7 +736,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 							} //end if else
 							//$the_website_styles = '<link rel="stylesheet" type="text/css" href="etc/templates/website/styles.css">';
 							$the_website_styles = '<style>* { font-family: tahoma,arial,sans-serif; font-smooth: always; } a, th, td, div, span, p, blockquote, pre, code { font-size:13px; }</style>';
-							$out .= \SmartComponents::html_js_preview_iframe('pbld_code_editor', '<!DOCTYPE html><html><head>'.$the_website_styles.$the_editor_styles.'</head><body style="background:#FFFFFF;">'.$query['code'].'</body></html></html>', $y_width='885px', $y_height='70vh');
+							$out .= \SmartViewHtmlHelpers::html_js_preview_iframe('pbld_code_editor', '<!DOCTYPE html><html><head>'.$the_website_styles.$the_editor_styles.'</head><body style="background:#FFFFFF;">'.$query['code'].'</body></html></html>', $y_width='885px', $y_height='70vh');
 						} //end if else
 						//--
 					} //end if else
@@ -797,14 +797,14 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				$out = '';
 				$out .= '<div align="left" id="yaml-editor"><font size="4" color="#003399"><b>&lt;<i>yaml</i>&gt;</b>'.' - '.self::text('ttl_edtac').'</font>';
 				$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-				$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-save.svg'.'" alt="'.self::text('save').'" title="'.self::text('save').'" style="cursor:pointer;" onClick="'.\SmartComponents::js_ajax_submit_html_form('page_form_yaml', self::composeUrl('op=record-edit-do&id='.\Smart::escape_url($query['id']))).'">';
+				$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-save.svg'.'" alt="'.self::text('save').'" title="'.self::text('save').'" style="cursor:pointer;" onClick="'.\SmartViewHtmlHelpers::js_ajax_submit_html_form('page_form_yaml', self::composeUrl('op=record-edit-do&id='.\Smart::escape_url($query['id']))).'">';
 				$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-				$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-back.svg'.'" alt="'.self::text('cancel').'" title="'.self::text('cancel').'" style="cursor:pointer;" onClick="'.\SmartComponents::js_code_ui_confirm_dialog('<h3>'.self::text('msg_unsaved').'</h3>'.'<br>'.'<b>'.\Smart::escape_html($translator_window->text('confirm_action')).'</b>', "SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#yaml-editor').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-data&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');").'">';
+				$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-back.svg'.'" alt="'.self::text('cancel').'" title="'.self::text('cancel').'" style="cursor:pointer;" onClick="'.\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h3>'.self::text('msg_unsaved').'</h3>'.'<br>'.'<b>'.\Smart::escape_html($translator_window->text('confirm_action')).'</b>', "SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#yaml-editor').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-data&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');").'">';
 				$out .= (string) self::getPreviewButtons($query['id']);
 				$out .= '</div>'."\n";
 				$out .= '<form class="ux-form" name="page_form_yaml" id="page_form_yaml" method="post" action="#" onsubmit="return false;">';
 				$out .= '<input type="hidden" name="frm[form_mode]" value="yaml">';
-				$out .= \SmartComponents::html_js_editarea('record_sytx_yaml', 'frm[data]', $query['data'], 'yaml', true, '885px', '70vh'); // OK.new
+				$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', 'frm[data]', $query['data'], 'yaml', true, '885px', '70vh'); // OK.new
 				$out .= "\n".'</form>'."\n";
 				$out .= '<div align="left"><font size="4" color="#003399"><b>&lt;/<i>yaml</i>&gt;</b></font></div>'."\n";
 				$out .= '<script>SmartJS_BrowserUtils_PageAway = false;</script>';
@@ -855,7 +855,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				if((string)$y_mode == 'preview') {
 					$out .= '<div id="yaml-json-renderer" style="width:835px; height: 70vh; border: 1px solid #ECECEC; padding: 0.5em 1.5em; overflow:auto;"></div><script>(function(){ var yamlData = \''.\Smart::escape_js(\Smart::json_encode($yaml, false, false, true)).'\'; var yamlJsonData = null; try { yamlJsonData = JSON.parse(yamlData); } catch(err){ jQuery(\'#yaml-json-renderer\').html(\'<div id="operation_error">\' + \'ERROR Parsing YAML to JSON Data: \' + err + \'</div>\'); return; } jQuery(\'#yaml-json-renderer\').css({\'white-space\':\'pre\'}).jsonViewer(yamlJsonData, {collapsed:false, withQuotes:false}); })();</script>';
 				} else { // view
-					$out .= \SmartComponents::html_js_editarea('record_sytx_yaml', '', $query['data'], 'yaml', false, '885px', '70vh'); // OK.new
+					$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', '', $query['data'], 'yaml', false, '885px', '70vh'); // OK.new
 				} //end if else
 				$out .= '<div align="left"><font size="4"><b>&lt;/yaml&gt;</b></font></div>'."\n";
 				$out .= '<script>SmartJS_BrowserUtils_PageAway = true; SmartJS_BrowserUIUtils.Tabs_Activate("tabs", true);</script>';
@@ -1080,7 +1080,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		//--
 		$title = 'Upload Media: '.$y_type;
 		//--
-		return (string) \SmartComponents::js_ajax_replyto_html_form(
+		return (string) \SmartViewHtmlHelpers::js_ajax_replyto_html_form(
 			(string) $status,
 			(string) $title,
 			(string) $message
@@ -1161,7 +1161,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 		//--
 		$title = 'Delete Media: '.$y_filename;
 		//--
-		return (string) \SmartComponents::js_ajax_replyto_html_form(
+		return (string) \SmartViewHtmlHelpers::js_ajax_replyto_html_form(
 			(string) $status,
 			(string) $title,
 			(string) $message
@@ -1198,7 +1198,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			$arr_objects = (array) $arr_objects_segments;
 		} //end if else
 		//--
-		$out .= '<script>'.\SmartComponents::js_code_init_away_page('The changes will be lost !').'</script>';
+		$out .= '<script>'.\SmartViewHtmlHelpers::js_code_init_away_page('The changes will be lost !').'</script>';
 		$out .= \SmartMarkersTemplating::render_file_template(
 			(string) self::$ModulePath.'libs/views/manager/view-record-frm-add.mtpl.htm',
 			[
@@ -1207,11 +1207,11 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				'REFRESH-PARENT' 	=> (string) '<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>',
 				'FORM-NAME' 		=> (string) 'page_form_add',
 				'LABELS-TYPE'		=> (string) self::text('record_syntax'),
-				'CONTROLS-TYPE' 	=> (string) \SmartComponents::html_select_list_single('ptype', '', 'form', (array)$arr_objects, 'frm[ptype]', '275/0', '', 'no', 'yes'),
+				'CONTROLS-TYPE' 	=> (string) \SmartViewHtmlHelpers::html_select_list_single('ptype', '', 'form', (array)$arr_objects, 'frm[ptype]', '275/0', '', 'no', 'yes'),
 				'LABELS-ID'			=> (string) self::text('id'),
 				'LABELS-NAME'		=> (string) self::text('name'),
 				'LABELS-CTRL' 		=> (string) self::text('ctrl'),
-				'BUTTONS-SUBMIT' 	=> (string) '<button class="ux-button ux-button-highlight" type="button" onClick="'.\SmartComponents::js_ajax_submit_html_form('page_form_add', self::composeUrl('op=record-add-do')).' return false;">'.' &nbsp; '.'<i class="sfi sfi-floppy-disk"></i>'.' &nbsp; '.self::text('save').'</button>'
+				'BUTTONS-SUBMIT' 	=> (string) '<button class="ux-button ux-button-highlight" type="button" onClick="'.\SmartViewHtmlHelpers::js_ajax_submit_html_form('page_form_add', self::composeUrl('op=record-add-do')).' return false;">'.' &nbsp; '.'<i class="sfi sfi-floppy-disk"></i>'.' &nbsp; '.self::text('save').'</button>'
 			],
 			'no'
 		);
@@ -1627,7 +1627,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 			//--
 		} //end if
 		//--
-		return (string) \SmartComponents::js_ajax_replyto_html_form($result, $title, $message, $redirect);
+		return (string) \SmartViewHtmlHelpers::js_ajax_replyto_html_form($result, $title, $message, $redirect);
 		//--
 	} // END FUNCTION
 	//==================================================================
@@ -1668,9 +1668,9 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				//--
 				if((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder-delete') === true) AND ((string)$tmp_rd_arr['special'] != '1')) OR ((\SmartAuth::test_login_privilege('pagebuilder-delete') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-manage') === true) AND ((string)$tmp_rd_arr['special'] == '1'))) {
 					//--
-					$rdw = '<script type="text/javascript">'.\SmartComponents::js_code_wnd_redirect(self::composeUrl('op=record-view&id='.\Smart::escape_url($tmp_rd_arr['id'])), 3500).'</script>';
+					$rdw = '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_wnd_redirect(self::composeUrl('op=record-view&id='.\Smart::escape_url($tmp_rd_arr['id'])), 3500).'</script>';
 					//--
-					$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_refresh_parent().'</script>';
+					$out .= '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_wnd_refresh_parent().'</script>';
 					//--
 					$chk_is_used = 0;
 					$fdir = (string) \SmartModExtLib\PageBuilder\Utils::getMediaFolderByObjectId((string)$tmp_rd_arr['id']);
@@ -1703,7 +1703,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 								} //end if
 							} //end if
 							$out .= '<br>'.\SmartComponents::operation_ok(self::text('op_compl'));
-							$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_close_modal_popup().'</script>'; // ok
+							$out .= '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_wnd_close_modal_popup().'</script>'; // ok
 						} elseif($chk_del == -1) {
 							$out .= '<br>'.\SmartComponents::operation_warn('Delete Failed: Empty ID');
 							$out .= $rdw;
@@ -1720,22 +1720,22 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 				} else {
 					//--
 					$out .= '<br>'.\SmartComponents::operation_error(self::text('msg_no_priv_del'));
-					$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_refresh_parent().'</script>';
-					$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_close_modal_popup(1500).'</script>'; // ok
+					$out .= '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_wnd_refresh_parent().'</script>';
+					$out .= '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_wnd_close_modal_popup(1500).'</script>'; // ok
 					//--
 				} //end if else
 				//--
 			} else {
 				//--
 				$out .= '<br>'.\SmartComponents::operation_warn(self::text('err_8'));
-				$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_refresh_parent().'</script>';
-				$out .= '<script type="text/javascript">'.\SmartComponents::js_code_wnd_close_modal_popup(2500).'</script>'; // ok
+				$out .= '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_wnd_refresh_parent().'</script>';
+				$out .= '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_wnd_close_modal_popup(2500).'</script>'; // ok
 				//--
 			} //end if else
 			//--
 		} else {
 			//--
-			$out .= \SmartComponents::operation_question(self::text('ttl_del').' ?<div style="display:inline-block; margin-left:100px; min-width:200px;"><a class="ux-button ux-button-special" onClick="'.\Smart::escape_html(\SmartComponents::js_code_ui_confirm_dialog('<h1>'.self::text('msg_confirm_del').' !</h1>', 'self.location=\''.self::composeUrl('op=record-delete&delete=yes&id='.\Smart::escape_url($y_id)).'\';', '550', '250', self::text('dp').' ?')).'; return false;" href="#">Yes</a><a class="ux-button ux-button-primary" href="'.\Smart::escape_html(self::composeUrl('op=record-view&id='.\Smart::escape_url($y_id))).'">No</a></div>', '720');
+			$out .= \SmartComponents::operation_question(self::text('ttl_del').' ?<div style="display:inline-block; margin-left:100px; min-width:200px;"><a class="ux-button ux-button-special" onClick="'.\Smart::escape_html(\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h1>'.self::text('msg_confirm_del').' !</h1>', 'self.location=\''.self::composeUrl('op=record-delete&delete=yes&id='.\Smart::escape_url($y_id)).'\';', '550', '250', self::text('dp').' ?')).'; return false;" href="#">Yes</a><a class="ux-button ux-button-primary" href="'.\Smart::escape_html(self::composeUrl('op=record-view&id='.\Smart::escape_url($y_id))).'">No</a></div>', '720');
 			$out .= self::ViewDisplayRecord((string)$y_id, 0);
 			//--
 		} //end if else
@@ -1975,7 +1975,7 @@ final class Manager { // TODO: On Delete Object Check if is not related and diss
 	private static function drawFieldLayoutPages($y_mode, $y_listmode, $y_value, $y_htmlvar='') {
 		// TO BE DONE ...
 		//--
-		return \SmartComponents::html_select_list_single('', $y_value, $y_listmode, (array)\SmartModExtLib\PageBuilder\Utils::getAvailableLayouts(), $y_htmlvar, '250', '', 'no', 'no');
+		return \SmartViewHtmlHelpers::html_select_list_single('', $y_value, $y_listmode, (array)\SmartModExtLib\PageBuilder\Utils::getAvailableLayouts(), $y_htmlvar, '250', '', 'no', 'no');
 		//--
 	} //END FUNCTION
 	//==================================================================

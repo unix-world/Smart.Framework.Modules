@@ -186,7 +186,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			//--
 			$this->PageViewSetVar(
 				'main',
-				(string) SmartComponents::js_ajax_replyto_html_form($answer, $title, $message, $redirect)
+				(string) SmartViewHtmlHelpers::js_ajax_replyto_html_form($answer, $title, $message, $redirect)
 			);
 			return;
 			//--

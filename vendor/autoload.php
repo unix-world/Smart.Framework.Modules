@@ -1,14 +1,15 @@
 <?php
 
-// Smart.Framework.Modules/vendor/autoload, r.20190331 :: Psr, League, MatthiasMullie, PHPMathParser, MeyFaSvg
+// Smart.Framework.Modules/vendor/autoload, r.20191022 :: Psr, League, MatthiasMullie, PHPMathParser, MeyFaSvg, Medoo
 
 define('SMART_FRAMEWORK_MODULES_VENDOR_LOADED', true);
 
 require_once('Psr/autoload.php');
 require_once('League/autoload.php');
 require_once('MatthiasMullie/autoload.php');
-require_once('PHPMathParser/autoload.php');
+require_once('PHPMathParser/autoload.php'); // Math Parser
 require_once('MeyFaSvg/autoload.php'); // SVG
+require_once('Medoo/autoload.php'); // PDO db class
 
 // end of php code
 ?>

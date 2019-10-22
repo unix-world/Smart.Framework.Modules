@@ -41,7 +41,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		$this->PageViewSetVar(
 			'main',
-			SmartComponents::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save DbModel', ($wr === 1) ? 'DbModel Saved Successfuly' : 'Failed to save the DbModel: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.dbmodel-editor/uuid/'.Smart::escape_url($uuid) : '')
+			SmartViewHtmlHelpers::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save DbModel', ($wr === 1) ? 'DbModel Saved Successfuly' : 'Failed to save the DbModel: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.dbmodel-editor/uuid/'.Smart::escape_url($uuid) : '')
 		);
 
 	} // END FUNCTION

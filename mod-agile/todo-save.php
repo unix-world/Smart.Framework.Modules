@@ -47,7 +47,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		$this->PageViewSetVar(
 			'main',
-			SmartComponents::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save ToDo-List', ($wr === 1) ? 'ToDo-List Saved Successfuly' : 'Failed to save the ToDo-List: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.todo-editor/'.$url_mode.'uuid/'.Smart::escape_url($uuid) : '')
+			SmartViewHtmlHelpers::js_ajax_replyto_html_form(($wr === 1) ? 'OK' : 'ERROR', 'Save ToDo-List', ($wr === 1) ? 'ToDo-List Saved Successfuly' : 'Failed to save the ToDo-List: '.$wr, ($wr === 1) ? 'admin.php?/page/agile.todo-editor/'.$url_mode.'uuid/'.Smart::escape_url($uuid) : '')
 		);
 
 	} // END FUNCTION

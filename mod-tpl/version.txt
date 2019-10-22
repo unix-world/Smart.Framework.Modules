@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: AbstractTPL r.20191021 #
+# Smart.Framework.Modules: AbstractTPL r.20191022 #
 ## This is a helper module to integrate various TPL Engines with Smart.Framework ##
 
 // v.3.7.8 r.2019.01.03 / smart.framework.v.3.7

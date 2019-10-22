@@ -142,7 +142,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$title = 'SVN - Web Manager :: Repo: '.$repo.' @ File: '.$path;
 
 				if(\SmartModExtLib\Svn\SvnWebManager::isTextFileByMimeType((string)$fmime[0]) === true) {
-					$highlight_arr = (array) SmartComponents::filetype_highlightsyntax((string)$path);
+					$highlight_arr = (array) SmartComponents::get_filetype_highlightsyntax((string)$path);
 					$main = (string) SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'web-manager-view-file.inc.htm',
 						[
