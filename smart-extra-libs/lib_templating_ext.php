@@ -17,11 +17,17 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 /**
  * Provides an easy to use connector for All available Templating Engines inside the Smart.Framework at once.
+ *
  * Depending upon the file name extension will choose to render as:
+ *
  * some-file.mtpl.htm 		: SmartMarkersTemplating 									(Markers-TPL syntax: .mtpl.)
+ *
  * some-file.dust.htm 		: \SmartModExtLib\TplDust\SmartDustTemplating 				(Dust-TPL syntax: .dust.)
+ *
  * some-file.latte.htm 		: \SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating 	(NetteLatte-TPL syntax: .latte.)
+ *
  * some-file.twig.htm 		: \SmartModExtLib\TplTwig\SmartTwigTemplating 				(Twig-TPL syntax: .twig.)
+ *
  * some-file.t3fluid.htm 	: \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating 	(Typo3Fluid-TPL syntax: .t3fluid.)
  *
  * <code>

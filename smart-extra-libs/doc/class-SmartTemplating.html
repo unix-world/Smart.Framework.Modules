@@ -2,10 +2,10 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Class SmartTemplating | Smart.Framework Documentation :: 2019-01-07 13:03</title>
+	<title>Class SmartTemplating | Smart.Framework.Modules Documentation v.3.7.8 r.2019.10.23</title>
 	<link rel="stylesheet" href="resources/style.css?2361662816">
 	<script src="resources/combined.js?4174473549"></script>
-	<script src="elementlist.js?1128067815"></script>
+	<script src="elementlist.js?1458646976"></script>
 </head>
 
 <body>
@@ -23,9 +23,13 @@
 						</li>
 				<li><a href="package-Database.Solr.html">Database:Solr</a>
 						</li>
+				<li><a href="package-Exporters.html">Exporters</a>
+						</li>
 				<li><a href="package-LanguageDetection.html">LanguageDetection</a>
 						</li>
 				<li><a href="package-Network.html">Network</a>
+						</li>
+				<li><a href="package-Parsers.html">Parsers</a>
 						</li>
 				<li class="active"><a href="package-Templating.Engines.html">Templating:Engines</a>
 						</li>
@@ -38,10 +42,7 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
-				<li><a href="class-SmartNetteLatteTemplating.html">SmartNetteLatteTemplating</a></li>
 				<li class="active"><a href="class-SmartTemplating.html">SmartTemplating</a></li>
-				<li><a href="class-SmartTwigTemplating.html">SmartTwigTemplating</a></li>
-				<li><a href="class-SmartTypo3FluidTemplating.html">SmartTypo3FluidTemplating</a></li>
 			</ul>
 
 
@@ -89,12 +90,25 @@
 
 	<div class="description">
 	
-<p>Provides an easy to use connector for All Templating Engines available inside
-the Smart.Framework at once. Depending upon the file name to render will choose
-like this: some-file.mtpl.htm : SmartMarkersTemplating (Markers-TPL syntax)
-some-file.latte.htm : SmartNetteLatteTemplating (NetteLatte-TPL syntax)
-some-file.twig.htm : SmartTwigTemplating (Twig-TPL syntax) some-file.t3fluid.htm
-: SmartTypo3FluidTemplating (Typo3Fluid-TPL syntax)</p>
+<p>Provides an easy to use connector for All available Templating Engines inside
+the Smart.Framework at once.</p>
+
+<p>Depending upon the file name extension will choose to render as:</p>
+
+<p>some-file.mtpl.htm : SmartMarkersTemplating (Markers-TPL syntax: .mtpl.)</p>
+
+<p>some-file.dust.htm : \SmartModExtLib\TplDust\SmartDustTemplating (Dust-TPL
+syntax: .dust.)</p>
+
+<p>some-file.latte.htm : \SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating
+(NetteLatte-TPL syntax: .latte.)</p>
+
+<p>some-file.twig.htm : \SmartModExtLib\TplTwig\SmartTwigTemplating (Twig-TPL
+syntax: .twig.)</p>
+
+<p>some-file.t3fluid.htm :
+\SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating (Typo3Fluid-TPL syntax:
+.t3fluid.)</p>
 
 <pre>
 
@@ -106,7 +120,7 @@ class="php-var">$this</span>-&gt;PageViewSetVar(
 class="php-quote">'main'</span>,
     SmartTemplating::render_file_template(
         <span
-class="php-quote">'modules/my-module-name/views/my-view.(mtpl|latte|twig|t3fluid).htm'</span>,
+class="php-quote">'modules/my-module-name/views/my-view.(mtpl|dust|latte|twig|t3fluid).htm'</span>,
         [
             <span
 class="php-quote">'someVar'</span> =&gt; <span
@@ -138,13 +152,15 @@ class="php-quote">'Y-m-d H:i:s'</span>)
 		<b>Package:</b> <a href="package-Templating.Engines.html">Templating:Engines</a><br>
 
 				<b>Version:</b>
-				v.181217<br>
+				v.20191021<br>
 				<b>Depends:</b>
-				classes: SmartMarkersTemplating, SmartNetteLatteTemplating, SmartTwigTemplating,
-SmartTypo3FluidTemplating<br>
+				classes: SmartMarkersTemplating, \SmartModExtLib\TplDust\SmartDustTemplating,
+\SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating,
+\SmartModExtLib\TplTwig\SmartTwigTemplating,
+\SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating<br>
 				<b>Usage:</b>
 				static object: Class::method() - This class provides only STATIC methods<br>
-		<b>Located at</b> modules/smart-extra-libs/lib_templating_ext.php<br>
+		<b>Located at</b> lib_templating_ext.php<br>
 	</div>
 
 
@@ -202,7 +218,7 @@ SmartTypo3FluidTemplating<br>
 </div>
 
 	<div id="footer">
-		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework Documentation :: 2019-01-07 13:03</a>
+		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework.Modules Documentation v.3.7.8 r.2019.10.23</a>
 	</div>
 </div>
 </div>

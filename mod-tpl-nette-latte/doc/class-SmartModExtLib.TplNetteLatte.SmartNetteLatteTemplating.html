@@ -2,10 +2,10 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Class SmartTwigTemplating | Smart.Framework Documentation :: 2019-01-07 13:03</title>
+	<title>Class SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating | Smart.Framework.Modules Documentation v.3.7.8 r.2019.10.23</title>
 	<link rel="stylesheet" href="resources/style.css?2361662816">
 	<script src="resources/combined.js?4174473549"></script>
-	<script src="elementlist.js?1128067815"></script>
+	<script src="elementlist.js?3634648750"></script>
 </head>
 
 <body>
@@ -21,11 +21,21 @@
 						</li>
 				<li><a href="package-Database.PostgreSQL.html">Database:PostgreSQL</a>
 						</li>
+				<li><a href="package-Database.RedbeanOrm.DB.html">Database:RedbeanOrm-DB</a>
+						</li>
 				<li><a href="package-Database.Solr.html">Database:Solr</a>
+						</li>
+				<li><a href="package-Database.ZendDb.PDO.html">Database:ZendDb-PDO</a>
+						</li>
+				<li><a href="package-Exporters.html">Exporters</a>
 						</li>
 				<li><a href="package-LanguageDetection.html">LanguageDetection</a>
 						</li>
+				<li><a href="package-Media.Gallery.html">Media:Gallery</a>
+						</li>
 				<li><a href="package-Network.html">Network</a>
+						</li>
+				<li><a href="package-Parsers.html">Parsers</a>
 						</li>
 				<li class="active"><a href="package-Templating.Engines.html">Templating:Engines</a>
 						</li>
@@ -38,10 +48,11 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
-				<li><a href="class-SmartNetteLatteTemplating.html">SmartNetteLatteTemplating</a></li>
+				<li><a href="class-SmartModExtLib.TplDust.SmartDustTemplating.html">SmartModExtLib\TplDust\SmartDustTemplating</a></li>
+				<li class="active"><a href="class-SmartModExtLib.TplNetteLatte.SmartNetteLatteTemplating.html">SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating</a></li>
+				<li><a href="class-SmartModExtLib.TplTwig.SmartTwigTemplating.html">SmartModExtLib\TplTwig\SmartTwigTemplating</a></li>
+				<li><a href="class-SmartModExtLib.TplTypo3Fluid.SmartTypo3FluidTemplating.html">SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating</a></li>
 				<li><a href="class-SmartTemplating.html">SmartTemplating</a></li>
-				<li class="active"><a href="class-SmartTwigTemplating.html">SmartTwigTemplating</a></li>
-				<li><a href="class-SmartTypo3FluidTemplating.html">SmartTypo3FluidTemplating</a></li>
 			</ul>
 
 
@@ -84,12 +95,12 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class SmartTwigTemplating</h1>
+	<h1>Class SmartNetteLatteTemplating</h1>
 
 
 	<div class="description">
 	
-<p>Provides an easy to use connector for Twig Templating Engine inside the
+<p>Provides an easy to use connector for NetteLatte Templating Engine inside the
 Smart.Framework.</p>
 
 <pre>
@@ -100,9 +111,9 @@ class="php-comment">// Sample: use this code in a controller of Smart.Framework 
 class="php-var">$this</span>-&gt;PageViewSetVar(
     <span
 class="php-quote">'main'</span>,
-    SmartTwigTemplating::render_file_template(
+    \SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating::render_file_template(
         <span
-class="php-quote">'modules/my-module-name/views/my-view.twig.htm'</span>,
+class="php-quote">'modules/my-module-name/views/my-view.latte.htm'</span>,
         [
             <span
 class="php-quote">'someVar'</span> =&gt; <span
@@ -119,6 +130,15 @@ class="php-quote">'Y-m-d H:i:s'</span>)
 
 	</div>
 
+	<dl class="tree">
+		<dd style="padding-left:0px">
+<b><span>SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating</span></b>			
+			 implements 
+<span>SmartModExtLib\Tpl\InterfaceSmartTemplating</span>
+			
+			
+		</dd>
+	</dl>
 
 
 
@@ -130,16 +150,16 @@ class="php-quote">'Y-m-d H:i:s'</span>)
 	<div class="info">
 		<b>Final</b><br>
 		
-		
+		<b>Namespace:</b> SmartModExtLib\TplNetteLatte<br>
 		<b>Package:</b> <a href="package-Templating.Engines.html">Templating:Engines</a><br>
 
 				<b>Version:</b>
-				v.181217<br>
+				v.20191021<br>
 				<b>Depends:</b>
-				classes: Twig, \SmartModExtLib\TplTwig\Templating<br>
+				classes: Latte, \SmartModExtLib\TplNetteLatte\Templating<br>
 				<b>Usage:</b>
 				static object: Class::method() - This class provides only STATIC methods<br>
-		<b>Located at</b> modules/smart-extra-libs/lib_templating_ext.php<br>
+		<b>Located at</b> mod-tpl-nette-latte/libs/SmartNetteLatteTemplating.php<br>
 	</div>
 
 
@@ -197,7 +217,7 @@ class="php-quote">'Y-m-d H:i:s'</span>)
 </div>
 
 	<div id="footer">
-		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework Documentation :: 2019-01-07 13:03</a>
+		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework.Modules Documentation v.3.7.8 r.2019.10.23</a>
 	</div>
 </div>
 </div>

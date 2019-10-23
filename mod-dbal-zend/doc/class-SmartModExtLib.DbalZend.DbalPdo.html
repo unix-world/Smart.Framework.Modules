@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Class SmartModExtLib\DbalZend\DbalPdo | Smart.Framework.Modules Documentation v.3.7.8 r.2019.10.23</title>
+	<link rel="stylesheet" href="resources/style.css?2361662816">
+	<script src="resources/combined.js?4174473549"></script>
+	<script src="elementlist.js?3634648750"></script>
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Packages</h3>
+			<ul>
+				<li><a href="package-Components.Misc.html">Components:Misc</a>
+						</li>
+				<li><a href="package-Database.PostgreSQL.html">Database:PostgreSQL</a>
+						</li>
+				<li><a href="package-Database.RedbeanOrm.DB.html">Database:RedbeanOrm-DB</a>
+						</li>
+				<li><a href="package-Database.Solr.html">Database:Solr</a>
+						</li>
+				<li class="active"><a href="package-Database.ZendDb.PDO.html">Database:ZendDb-PDO</a>
+						</li>
+				<li><a href="package-Exporters.html">Exporters</a>
+						</li>
+				<li><a href="package-LanguageDetection.html">LanguageDetection</a>
+						</li>
+				<li><a href="package-Media.Gallery.html">Media:Gallery</a>
+						</li>
+				<li><a href="package-Network.html">Network</a>
+						</li>
+				<li><a href="package-Parsers.html">Parsers</a>
+						</li>
+				<li><a href="package-Templating.Engines.html">Templating:Engines</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-SmartModExtLib.DbalZend.DbalPdo.html">SmartModExtLib\DbalZend\DbalPdo</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text">
+		<input type="submit" value="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="package-Database.ZendDb.PDO.html" title="Summary of Database:ZendDb-PDO"><span>Package</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class DbalPdo</h1>
+
+
+	<div class="description">
+	
+<p>Class: \SmartModExtLib\DbalZend\DbalPdo - provides a general PDO Database
+Adapter using Zend/Db as a module for Smart.Framework that supports the
+following PDO drivers such as: PDO SQLite, PDO MySQL, PDO PostgreSQL.</p>
+
+<p>If you wish to use the PDO drivers in your projects instead of the direct
+ones supported directly by Smart.Framework this is a good solution.</p>
+
+<pre>
+
+<span class="php-var">$conf_driver</span> = [
+        <span
+class="php-quote">'driver'</span>   =&gt; <span
+class="php-quote">'PDO_SQLITE'</span>,
+        <span
+class="php-quote">'database'</span> =&gt; <span
+class="php-quote">'tmp/zend-test.sqlite'</span>
+];
+<span
+class="php-comment">//$conf_driver = [</span>
+<span
+class="php-comment">//      'driver'   =&gt; 'PDO_MYSQL',</span>
+<span
+class="php-comment">//      'host'     =&gt; '127.0.0.1',</span>
+<span
+class="php-comment">//      'port'     =&gt; 3306,</span>
+<span
+class="php-comment">//      'database' =&gt; 'smart_framework',</span>
+<span
+class="php-comment">//      'username' =&gt; 'root',</span>
+<span
+class="php-comment">//      'password' =&gt; 'root'</span>
+<span
+class="php-comment">//];</span>
+<span
+class="php-comment">//$conf_driver = [</span>
+<span
+class="php-comment">//      'driver'   =&gt; 'PDO_PGSQL',</span>
+<span
+class="php-comment">//      'host'     =&gt; '127.0.0.1',</span>
+<span
+class="php-comment">//      'port'     =&gt; 5432,</span>
+<span
+class="php-comment">//      'database' =&gt; 'smart_framework',</span>
+<span
+class="php-comment">//      'username' =&gt; 'pgsql',</span>
+<span
+class="php-comment">//      'password' =&gt; 'pgsql'</span>
+<span
+class="php-comment">//];</span>
+
+<span class="php-var">$db</span> = <span
+class="php-keyword1">new</span> \SmartModExtLib\DbalZend\DbalPdo((<span
+class="php-keyword1">array</span>)<span
+class="php-var">$conf_driver</span>);
+<span
+class="php-var">$adapter</span> = <span
+class="php-var">$db</span>-&gt;getConnection();
+
+<span
+class="php-comment">// write test using the Zend DB Objects</span>
+<span
+class="php-var">$db</span>-&gt;write_data(<span
+class="php-quote">'DROP TABLE IF EXISTS sf_zend_dbal_test'</span>, <span
+class="php-quote">'QUERY_MODE_EXECUTE'</span>);
+<span
+class="php-var">$table</span> = <span
+class="php-keyword1">new</span> \Zend\Db\Sql\Ddl\CreateTable(<span
+class="php-quote">'sf_zend_dbal_test'</span>);
+<span
+class="php-var">$table</span>-&gt;addColumn(<span
+class="php-keyword1">new</span> \Zend\Db\Sql\Ddl\Column\Integer(<span
+class="php-quote">'id'</span>));
+<span
+class="php-var">$table</span>-&gt;addConstraint(<span
+class="php-keyword1">new</span> \Zend\Db\Sql\Ddl\Constraint\PrimaryKey(<span
+class="php-quote">'id'</span>));
+<span
+class="php-var">$table</span>-&gt;addColumn(<span
+class="php-keyword1">new</span> \Zend\Db\Sql\Ddl\Column\Varchar(<span
+class="php-quote">'name'</span>, <span class="php-num">100</span>));
+<span
+class="php-var">$table</span>-&gt;addColumn(<span
+class="php-keyword1">new</span> \Zend\Db\Sql\Ddl\Column\Text(<span
+class="php-quote">'descr'</span>));
+<span
+class="php-var">$table</span>-&gt;addColumn(<span
+class="php-keyword1">new</span> \Zend\Db\Sql\Ddl\Column\Integer(<span
+class="php-quote">'cnt'</span>));
+<span class="php-var">$sql</span> = <span
+class="php-keyword1">new</span> \Zend\Db\Sql\Sql(<span
+class="php-var">$adapter</span>);
+<span
+class="php-var">$adapter</span>-&gt;query(
+                <span
+class="php-var">$sql</span>-&gt;getSqlStringForSqlObject(<span
+class="php-var">$table</span>),
+                <span
+class="php-var">$adapter</span>::QUERY_MODE_EXECUTE
+);
+
+<span
+class="php-comment">// read test using the Zend DB Objects</span>
+<span
+class="php-var">$sql</span> = <span
+class="php-keyword1">new</span> \Zend\Db\Sql\Sql(<span
+class="php-var">$adapter</span>);
+<span class="php-var">$select</span> = <span
+class="php-var">$sql</span>-&gt;select();
+<span
+class="php-var">$select</span>-&gt;from(<span
+class="php-quote">'sf_zend_dbal_test'</span>);
+<span
+class="php-var">$select</span>-&gt;where(<span
+class="php-keyword1">array</span>(<span
+class="php-quote">'id'</span> =&gt; <span class="php-num">1</span>));
+<span
+class="php-var">$sqlstr</span> = (string) <span
+class="php-var">$sql</span>-&gt;getSqlStringForSqlObject(<span
+class="php-var">$select</span>);
+<span class="php-var">$results</span> = (<span
+class="php-keyword1">array</span>) <span
+class="php-var">$adapter</span>-&gt;query(<span
+class="php-var">$sqlstr</span>, [])-&gt;toArray();
+
+<span
+class="php-comment">// tests using Smart.Framework DB compatibility: count, read, write</span>
+<span
+class="php-var">$db</span>-&gt;write_data(<span
+class="php-quote">'DELETE FROM sf_zend_dbal_test'</span>);
+<span
+class="php-var">$count</span> = <span
+class="php-var">$db</span>-&gt;count_data(<span
+class="php-quote">'SELECT COUNT(1) FROM sf_zend_dbal_test'</span>);
+<span
+class="php-var">$results</span> = <span
+class="php-var">$db</span>-&gt;read_adata( <span
+class="php-comment">// get many rows 0..n [field1, field2, ..., fieldn]</span>
+                <span
+class="php-quote">'SELECT * FROM sf_zend_dbal_test WHERE id &gt; ?'</span>, <span
+class="php-comment">// id &gt; 0</span>
+                [ <span
+class="php-num">0</span> ]
+);
+<span class="php-var">$results</span> = <span
+class="php-var">$db</span>-&gt;read_asdata( <span
+class="php-comment">// get just one row [field1, field2, ..., fieldn]</span>
+                <span
+class="php-quote">'SELECT * FROM sf_zend_dbal_test WHERE id &gt; ? LIMIT 1 OFFSET 0'</span>, <span
+class="php-comment">// id &gt; 1</span>
+                [ <span
+class="php-num">1</span> ]
+);
+
+</pre>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		<b>Final</b><br>
+		
+		<b>Namespace:</b> SmartModExtLib\DbalZend<br>
+		<b>Package:</b> <a href="package-Database.ZendDb.PDO.html">Database:ZendDb-PDO</a><br>
+
+				<b>Version:</b>
+				v.20191021<br>
+				<b>Depends:</b>
+				extensions: classes: \Zend\Db<br>
+				<b>Usage:</b>
+				dynamic object: (new Class())-&gt;method() - This class provides only DYNAMIC
+methods<br>
+		<b>Located at</b> mod-dbal-zend/libs/DbalPdo.php<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code>__construct( <span>MIXED <var>$cfg</var></span>, <span>INTEGER+ <var>$timeout</var> = <span class="php-num">30</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Class Constructor for using Zend/DB with a custom driver and options, using
+PDO, providing a compatible layer to use a project with any of PDO/PgSQL,
+PDO/SQLite and PDO/MySQL. The utility of this DB Driver is to serve the missing
+cross-db PDO Drivers support from Smart.Framework such as PDO/PgSQL, PDO/SQLite
+and PDO/MySQL to support a cross-DB project. The Zend/DB provides a unified
+query parameters implementation using PDO and is not 100% compatible with the
+queries written for the direct drivers supplied by Smart.Framework when
+parameters are used (PostgreSQL, MySQLi, SQLite and other Non-PDO drivers)
+because the parameter mode can differ from driver to driver (Ex: ? :param $#
+...)</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Class Constructor for using Zend/DB with a custom driver and options, using
+PDO, providing a compatible layer to use a project with any of PDO/PgSQL,
+PDO/SQLite and PDO/MySQL. The utility of this DB Driver is to serve the missing
+cross-db PDO Drivers support from Smart.Framework such as PDO/PgSQL, PDO/SQLite
+and PDO/MySQL to support a cross-DB project. The Zend/DB provides a unified
+query parameters implementation using PDO and is not 100% compatible with the
+queries written for the direct drivers supplied by Smart.Framework when
+parameters are used (PostgreSQL, MySQLi, SQLite and other Non-PDO drivers)
+because the parameter mode can differ from driver to driver (Ex: ? :param $#
+...)</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$cfg</var></dt>
+					<dd>:: the driver options as array[] or 'mysqli:config' | 'pgsql:config' |
+'sqlite:tmp/sample-dbfile.sqlite'</dd>
+					<dt><var>$timeout</var></dt>
+					<dd>:: the connection timeout (applies only to MySQL and PostgreSQL)</dd>
+				</dl></div>
+
+
+
+				<h4>Hint:</h4>
+				<div class="list">
+						For the DB direct access Drivers (Adapters) such as: PgSQL, SQlite3 and MySQLi
+the Smart.Framework provides built-in / includded and more optimized libraries<br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDriver" id="_getDriver">
+
+		<td class="attributes"><code>
+			 public 
+			STRING
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDriver">#</a>
+		<code>getDriver( )</code>
+
+		<div class="description short">
+			
+<p>Zend/DB: Get the Current Driver</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Zend/DB: Get the Current Driver</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>STRING</code><br>STRING<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getConnection" id="_getConnection">
+
+		<td class="attributes"><code>
+			 public 
+			OBJECT
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getConnection">#</a>
+		<code>getConnection( )</code>
+
+		<div class="description short">
+			
+<p>Zend/DB: Get the Connection</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Zend/DB: Get the Connection</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>OBJECT</code><br>OBJECT<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getPlatform" id="_getPlatform">
+
+		<td class="attributes"><code>
+			 public 
+			OBJECT
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getPlatform">#</a>
+		<code>getPlatform( )</code>
+
+		<div class="description short">
+			
+<p>Zend/DB: Get the Platform</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Zend/DB: Get the Platform</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>OBJECT</code><br>OBJECT<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="count_data" id="_count_data">
+
+		<td class="attributes"><code>
+			 public 
+			INTEGER
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_count_data">#</a>
+		<code>count_data( <span>STRING <var>$query</var></span>, <span>STRING <var>$values</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>PDO Query :: Count This function is intended to be used for count type
+queries: SELECT COUNT().</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>PDO Query :: Count This function is intended to be used for count type
+queries: SELECT COUNT().</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$query</var></dt>
+					<dd>$queryval :: the query</dd>
+					<dt><var>$values</var></dt>
+					<dd>:: &lt;em&gt;optional&lt;/em&gt; array of parameters</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>INTEGER</code><br>:: the result of COUNT()<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="read_data" id="_read_data">
+
+		<td class="attributes"><code>
+			 public 
+			ARRAY
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_read_data">#</a>
+		<code>read_data( <span>STRING <var>$query</var></span>, <span>STRING <var>$values</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>PDO Query :: Read (Non-Associative) one or multiple rows. This function is
+intended to be used for read type queries: SELECT.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>PDO Query :: Read (Non-Associative) one or multiple rows. This function is
+intended to be used for read type queries: SELECT.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$query</var></dt>
+					<dd>$queryval :: the query</dd>
+					<dt><var>$values</var></dt>
+					<dd>:: &lt;em&gt;optional&lt;/em&gt; array of parameters</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>ARRAY</code><br>(non-asociative) of results :: array('column-0-0', 'column-0-1', ...,
+'column-0-n', 'column-1-0', 'column-1-1', ... 'column-1-n', ..., 'column-m-0',
+'column-m-1', ..., 'column-m-n')<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="read_adata" id="_read_adata">
+
+		<td class="attributes"><code>
+			 public 
+			ARRAY
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_read_adata">#</a>
+		<code>read_adata( <span>STRING <var>$query</var></span>, <span>STRING <var>$values</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>PDO Query :: Read (Associative) one or multiple rows. This function is
+intended to be used for read type queries: SELECT.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>PDO Query :: Read (Associative) one or multiple rows. This function is
+intended to be used for read type queries: SELECT.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$query</var></dt>
+					<dd>$queryval :: the query</dd>
+					<dt><var>$values</var></dt>
+					<dd>:: &lt;em&gt;optional&lt;/em&gt; array of parameters</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>ARRAY</code><br>(asociative) of results :: array(0 =&gt; array('column1', 'column2', ...
+'column-n'), 1 =&gt; array('column1', 'column2', ... 'column-n'), ..., m =&gt;
+array('column1', 'column2', ... 'column-n'))<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="read_asdata" id="_read_asdata">
+
+		<td class="attributes"><code>
+			 public 
+			ARRAY
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_read_asdata">#</a>
+		<code>read_asdata( <span>STRING <var>$query</var></span>, <span>STRING <var>$values</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>PDO Query :: Read (Associative) - Single Row (just for 1 row, to easy the use
+of data from queries). !!! This will raise an error if more than one row(s) are
+returned !!! This function does not support multiple rows because the
+associative data is structured without row iterator. For queries that return
+more than one row use: read_adata() or read_data(). This function is intended to
+be used for read type queries: SELECT.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>PDO Query :: Read (Associative) - Single Row (just for 1 row, to easy the use
+of data from queries). !!! This will raise an error if more than one row(s) are
+returned !!! This function does not support multiple rows because the
+associative data is structured without row iterator. For queries that return
+more than one row use: read_adata() or read_data(). This function is intended to
+be used for read type queries: SELECT.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$query</var></dt>
+					<dd>$queryval :: the query</dd>
+					<dt><var>$values</var></dt>
+					<dd>:: &lt;em&gt;optional&lt;/em&gt; array of parameters</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>ARRAY</code><br>(asociative) of results :: Returns just a SINGLE ROW as: array('column1',
+'column2', ... 'column-n')<br>
+				</div>
+
+
+				<h4>Hints</h4>
+				<div class="list">
+						ALWAYS use a LIMIT 1 OFFSET 0 with all queries using this function to avoid
+situations that will return more than 1 rows and will raise ERROR with this
+function.<br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="write_data" id="_write_data">
+
+		<td class="attributes"><code>
+			 public 
+			ARRAY
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_write_data">#</a>
+		<code>write_data( <span>STRING <var>$query</var></span>, <span>STRING <var>$values_or_mode</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>PDO Query :: Write. This function is intended to be used for write type
+queries: BEGIN (TRANSACTION) ; COMMIT ; ROLLBACK ; INSERT ; INSERT IGNORE ;
+REPLACE ; UPDATE ; CREATE SCHEMAS ; CALLING STORED PROCEDURES ...</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>PDO Query :: Write. This function is intended to be used for write type
+queries: BEGIN (TRANSACTION) ; COMMIT ; ROLLBACK ; INSERT ; INSERT IGNORE ;
+REPLACE ; UPDATE ; CREATE SCHEMAS ; CALLING STORED PROCEDURES ...</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$query</var></dt>
+					<dd>$queryval :: the query</dd>
+					<dt><var>$values_or_mode</var></dt>
+					<dd>:: &lt;em&gt;optional&lt;/em&gt; ARRAY of parameters OR the PDO query execution mode as
+STRING (QUERY_MODE_EXECUTE, implementing
+\Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE)</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>ARRAY</code><br>:: [0 =&gt; 'control-message', 1 =&gt; #affected-rows]<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework.Modules Documentation v.3.7.8 r.2019.10.23</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

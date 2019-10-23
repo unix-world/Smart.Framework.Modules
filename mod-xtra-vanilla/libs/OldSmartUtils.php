@@ -1,8 +1,16 @@
 <?php
 
+//----------------------------------------------------- PREVENT DIRECT EXECUTION
+if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+} //end if
+//-----------------------------------------------------
+
 class OldSmartUtils {
 
 	// ::
+	// v.20191021 (pre-refactoring)
 
 	//================================================================
 	// Used for log arrays
@@ -106,6 +114,103 @@ class OldSmartUtils {
 		} //end if else
 		//--
 		return Smart::format_number_dec($out, 2, '.', '') ;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Parse Simple Notes :: '-----< yyyy-mm-dd hh:ii:ss >----- some note\nsome other line'
+	 *
+	 * @param STRING $ynotes			:: The Text or HTML to be processed
+	 * @param YES/NO $y_hide_times 		:: Show / Hide the time stamps
+	 * @param #SIZE $y_tblsize			:: HTML Table Size
+	 * @param #COLOR $ytxtcolor			:: HTML Table Color for Text
+	 * @param #COLOR $ycolor			:: HTML Table Row Color
+	 * @param #COLOR $ycolor_alt		:: HTML Table Row Alternate Color
+	 * @param #COLOR $ybrdcolor			:: HTML Table Border Color
+	 * @param #STYLE $y_style			:: HTML Extra Style
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @return 	STRING					:: The HTML processed code
+	 */
+	public static function simple_notes($ynotes, $y_hide_times, $y_tblsize='100%', $ytxtcolor='#000000', $ycolor='#FFFFFF', $ycolor_alt='#FFFFFF', $ybrdcolor='#CCCCCC', $y_style=' style="overflow: auto; height:200px;"') {
+		//--
+		if(strpos((string)$ynotes, '-----<') === false) {
+			return $tbl_start.'<tr><td bgcolor="'.$ycolor.'" valign="top"><font size="1">'.Smart::nl_2_br(Smart::escape_html($ynotes)).'</font></td></tr>'.$tbl_end ; // not compatible notes, so we not parse them
+		} //end if
+		//--
+		$out = '';
+		//--
+		$tbl_start = '<table width="'.$y_tblsize.'" cellspacing="0" cellpadding="2" border="1" bordercolor="'.$ybrdcolor.'" style="border-style: solid; border-collapse: collapse;">'."\n";
+		$tbl_end = '</table>';
+		//--
+		$tmp_shnotes_arr = (array) explode('-----<', (string)$ynotes);
+		//--
+		$i_alt=0;
+		//--
+		if(Smart::array_size($tmp_shnotes_arr) > 0) {
+			//--
+			$out .= '<!-- OVERFLOW START (S.NOTES) -->'.'<div title="#S.NOTES#"'.$y_style.'>'."\n";
+			$out .= $tbl_start;
+			//--
+			for($i=0; $i<Smart::array_size($tmp_shnotes_arr); $i++) {
+				//--
+				$tmp_shnotes_arr[$i] = (string) trim((string)$tmp_shnotes_arr[$i]);
+				//--
+				if(Smart::striptags(str_replace('-----<', '', (string)$tmp_shnotes_arr[$i])) != '') {
+					//--
+					$tmp_expld = (array) explode('>-----', (string)$tmp_shnotes_arr[$i]);
+					//--
+					$tmp_meta_expl = (array) explode('|', (string)$tmp_expld[0]);
+					$tmp_meta_date = trim((string)$tmp_meta_expl[0]);
+					if(strlen(trim((string)$tmp_meta_expl[1])) > 0) {
+						$tmp_metainfo = ' :: '.trim($tmp_meta_expl[1]);
+					} else {
+						$tmp_metainfo = '';
+					} //end if else
+					//--
+					if(strlen(trim((string)$tmp_expld[1])) > 0) {
+						//--
+						$i_alt += 1;
+						//-- alternate
+						if($i_alt % 2) {
+							$alt_color = $ycolor;
+						} else {
+							$alt_color = $ycolor_alt;
+						} //end if else
+						//--
+						$out .= '<tr>'."\n";
+						$out .= '<td bgcolor="'.$alt_color.'" valign="top">'."\n";
+						//--
+						if((string)$y_hide_times != 'yes') {
+							$out .= '<div align="right" title="'.Smart::escape_html('#'.$i_alt.'.'.$tmp_metainfo).'"><font size="1" color="'.$ytxtcolor.'"><b>'.Smart::escape_html($tmp_meta_date).'</b></font></div><font size="1" color="'.$ytxtcolor.'">'.Smart::nl_2_br(Smart::escape_html(trim($tmp_expld[1]))).'</font>';
+						} else {
+							$out .= '<div title="'.Smart::escape_html('#'.$i_alt.'. '.$tmp_meta_date.$tmp_metainfo).'"><font size="1" color="'.$ytxtcolor.'">'.Smart::nl_2_br(Smart::escape_html(trim($tmp_expld[1]))).'</font></div>';
+						} //end if else
+						//--
+						$out .= '</td>'."\n";
+						$out .= '</tr>'."\n";
+						//--
+					} //end if
+					//--
+				} //end if
+				//--
+			} //end for
+			//--
+			$out .= $tbl_end;
+			$out .= '</div>'.'<!-- OVERFLOW END (S.NOTES) -->'."\n";
+			//--
+		} //end if
+		//--
+		if($i_alt <= 0) {
+			$out = '';
+		} //end if
+		//--
+		return $out ;
 		//--
 	} //END FUNCTION
 	//================================================================

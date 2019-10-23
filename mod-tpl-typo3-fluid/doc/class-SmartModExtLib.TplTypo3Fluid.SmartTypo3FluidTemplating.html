@@ -2,10 +2,10 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Class SmartModExtLib\TplTwig\Templating | Smart.Framework Documentation :: 2019-01-07 13:01</title>
+	<title>Class SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating | Smart.Framework.Modules Documentation v.3.7.8 r.2019.10.23</title>
 	<link rel="stylesheet" href="resources/style.css?2361662816">
 	<script src="resources/combined.js?4174473549"></script>
-	<script src="elementlist.js?1757911618"></script>
+	<script src="elementlist.js?3634648750"></script>
 </head>
 
 <body>
@@ -17,6 +17,26 @@
 		<div id="groups">
 			<h3>Packages</h3>
 			<ul>
+				<li><a href="package-Components.Misc.html">Components:Misc</a>
+						</li>
+				<li><a href="package-Database.PostgreSQL.html">Database:PostgreSQL</a>
+						</li>
+				<li><a href="package-Database.RedbeanOrm.DB.html">Database:RedbeanOrm-DB</a>
+						</li>
+				<li><a href="package-Database.Solr.html">Database:Solr</a>
+						</li>
+				<li><a href="package-Database.ZendDb.PDO.html">Database:ZendDb-PDO</a>
+						</li>
+				<li><a href="package-Exporters.html">Exporters</a>
+						</li>
+				<li><a href="package-LanguageDetection.html">LanguageDetection</a>
+						</li>
+				<li><a href="package-Media.Gallery.html">Media:Gallery</a>
+						</li>
+				<li><a href="package-Network.html">Network</a>
+						</li>
+				<li><a href="package-Parsers.html">Parsers</a>
+						</li>
 				<li class="active"><a href="package-Templating.Engines.html">Templating:Engines</a>
 						</li>
 			</ul>
@@ -28,9 +48,11 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
-				<li><a href="class-SmartModExtLib.TplNetteLatte.Templating.html">SmartModExtLib\TplNetteLatte\Templating</a></li>
-				<li class="active"><a href="class-SmartModExtLib.TplTwig.Templating.html">SmartModExtLib\TplTwig\Templating</a></li>
-				<li><a href="class-SmartModExtLib.TplTypo3Fluid.Templating.html">SmartModExtLib\TplTypo3Fluid\Templating</a></li>
+				<li><a href="class-SmartModExtLib.TplDust.SmartDustTemplating.html">SmartModExtLib\TplDust\SmartDustTemplating</a></li>
+				<li><a href="class-SmartModExtLib.TplNetteLatte.SmartNetteLatteTemplating.html">SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating</a></li>
+				<li><a href="class-SmartModExtLib.TplTwig.SmartTwigTemplating.html">SmartModExtLib\TplTwig\SmartTwigTemplating</a></li>
+				<li class="active"><a href="class-SmartModExtLib.TplTypo3Fluid.SmartTypo3FluidTemplating.html">SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating</a></li>
+				<li><a href="class-SmartTemplating.html">SmartTemplating</a></li>
 			</ul>
 
 
@@ -73,12 +95,13 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class Templating</h1>
+	<h1>Class SmartTypo3FluidTemplating</h1>
 
 
 	<div class="description">
 	
-<p>Provides connector for Twig Templating inside the Smart.Framework.</p>
+<p>Provides an easy to use connector for Typo3Fluid Templating Engine inside the
+Smart.Framework.</p>
 
 <pre>
 
@@ -88,10 +111,9 @@ class="php-comment">// Sample: use this code in a controller of Smart.Framework 
 class="php-var">$this</span>-&gt;PageViewSetVar(
     <span
 class="php-quote">'main'</span>,
-    (<span
-class="php-keyword1">new</span> \SmartModExtLib\TplTwig\Templating())-&gt;render_file_template(
+    \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating::render_file_template(
         <span
-class="php-quote">'modules/my-module-name/views/myView.twig.htm'</span>,
+class="php-quote">'modules/my-module-name/views/my-view.t3fluid.htm'</span>,
         [
             <span
 class="php-quote">'someVar'</span> =&gt; <span
@@ -108,6 +130,15 @@ class="php-quote">'Y-m-d H:i:s'</span>)
 
 	</div>
 
+	<dl class="tree">
+		<dd style="padding-left:0px">
+<b><span>SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating</span></b>			
+			 implements 
+<span>SmartModExtLib\Tpl\InterfaceSmartTemplating</span>
+			
+			
+		</dd>
+	</dl>
 
 
 
@@ -119,85 +150,26 @@ class="php-quote">'Y-m-d H:i:s'</span>)
 	<div class="info">
 		<b>Final</b><br>
 		
-		<b>Namespace:</b> SmartModExtLib\TplTwig<br>
+		<b>Namespace:</b> SmartModExtLib\TplTypo3Fluid<br>
 		<b>Package:</b> <a href="package-Templating.Engines.html">Templating:Engines</a><br>
 
 				<b>Version:</b>
-				v.181217<br>
+				v.20191021<br>
 				<b>Depends:</b>
-				extensions: classes: \SmartModExtLib\TplTwig\SmartTwigEnvironment, Twig<br>
+				classes: Typo3Fluid, \SmartModExtLib\TplTypo3Fluid\Templating<br>
 				<b>Usage:</b>
-				dynamic object: (new Class())-&gt;method() - This class provides only DYNAMIC
-methods<br>
-		<b>Located at</b> modules/mod-tpl-twig/libs/Templating.php<br>
+				static object: Class::method() - This class provides only STATIC methods<br>
+		<b>Located at</b> mod-tpl-typo3-fluid/libs/SmartTypo3FluidTemplating.php<br>
 	</div>
 
 
 
 	<table class="summary methods" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="getVersion" id="_getVersion">
-
-		<td class="attributes"><code>
-			 public static
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getVersion">#</a>
-		<code>getVersion( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="__construct" id="___construct">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#___construct">#</a>
-		<code>__construct( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="render_file_template" id="_render_file_template">
 
 		<td class="attributes"><code>
-			 public 
+			 public static
 			
 			
 			</code>
@@ -245,7 +217,7 @@ methods<br>
 </div>
 
 	<div id="footer">
-		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework Documentation :: 2019-01-07 13:01</a>
+		Documentation for PHP Classes and Functions // <a href="http://demo.unix-world.org/smart-framework/" target="_blank">Smart.Framework.Modules Documentation v.3.7.8 r.2019.10.23</a>
 	</div>
 </div>
 </div>

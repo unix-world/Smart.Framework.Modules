@@ -43,8 +43,12 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 	* TPL wrapper Lib for the includded TPL engines (this make life easier with existing TPL engines in Smart.Framework: MarkersTPL and Smart.Framework.Modules: Dust, Twig, netteLatte and typo3Fluid)
 
 ### Vendor Libs (BSD licensed):
-	* CSS and JS Minify vendor/MatthiasMullie
+	* CSS and JS Minify: vendor/MatthiasMullie
 	* PSR Cache: vendor/Psr
+	* HTMLToMarkdown: vendor/League
+	* SVG Draw: vendor/MeyFaSvg
+	* Math Parser: vendor/PHPMathParser
+	* Lightweight DB Connector: vendor/Medoo
 
 ### Other App Modules:
 	* Xtra Bizz (Business Widgets) (GPLv3 licensed ; can be used with Smart.Framework licensed under GPLv3 license only)
@@ -63,3 +67,4 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 	* using the vendor from Smart.Framework.Modules:
 		uncomment or add the following line into: modules/app/app-custom-bootstrap.php
 			require_once('modules/vendor/autoload.php'); // autoload for Smart.Framework.Modules / Vendor Libs
+
