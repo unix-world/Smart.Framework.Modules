@@ -1,6 +1,6 @@
 <?php
 // Medoo database framework
-// (c) 2019, Angel Lai, https://medoo.in
+// (c) 2019, Angel Lai, https://github.com/catfan/Medoo
 // Released under the MIT license
 // v.1.7.5
 
