@@ -20,7 +20,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
  * @version 20191029
  * @ignore
  */
-class SmartAppAdminController extends SmartAbstractAppController {
+final class SmartAppAdminController extends SmartAbstractAppController {
 
 
 	public function Initialize() {
@@ -70,11 +70,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$cls = (string) $this->parseUrlClass($cls);
-		//--
 		$ref = (string) trim((string)$this->RequestVarGet('ref', '', 'string')); // sometimes loading a class / interface / trait needs to pre-load another one
 		if((string)$ref != '') {
-			$ref = (string) $this->parseUrlClass($ref);
 			if((string)$ref != '') {
 				if((!class_exists((string)$ref, true)) AND (!interface_exists((string)$ref, true)) AND (!trait_exists((string)$ref, true))) {
 					$this->displaySelector($cls, 'Info: The selected PHP Class / Interface / Trait does could not be loaded: `'.$cls.'` as it depends on: `'.$ref.'` which is not available');
@@ -116,21 +113,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 
 	//##### PRIVATES
-
-
-	private function parseUrlClass($cls) {
-		//--
-		if(strpos((string)$cls, '@') !== false) { // {class|interface|trait}@-Namespace-ClassOrInterfaceOrTraitName.html -> \Namespace\ClassOrInterfaceOrTraitName
-			$cls = (array) explode('@', (string)$cls);
-			$cls = (string) trim((string)$cls[1]);
-			$cls = (string) Smart::base_name((string)$cls, '.html');
-			$cls = (string) trim((string)$cls);
-			$cls = (string) str_replace('-', '\\', (string)$cls);
-		} //end if
-		//--
-		return (string) $cls;
-		//--
-	} //END FUNCTION
 
 
 	private function displayDocs($cls, $base_url, $ref_url) {
@@ -1173,7 +1155,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
  * @version 20191029
  * @ignore
  */
-class SmartAppIndexController extends SmartAbstractAppController {
+final class SmartAppIndexController extends SmartAbstractAppController {
 
 	// this is just for the purpose of documentation of Smart.Framework as this controller only serves ADMIN area
 

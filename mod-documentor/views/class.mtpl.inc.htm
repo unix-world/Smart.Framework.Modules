@@ -2,7 +2,7 @@
 <!-- Styles -->
 [@@@@SUB-TEMPLATE:partials/styles.mtpl.inc.htm@@@@]
 <!-- Headings -->
-<h1 title="PHP [####TYPE|html####]: `[####NAME|html####]` @ PHP Namespace: `[####NAMESPACE|html####]`">
+<h1 title="PHP [####TYPE|html####]: `[####NAME|html####]` @ PHP Namespace: `[####NAMESPACE|html####]`" id="Class--Summary-">
 	<span class="doc-modifiers">[####MODIFIERS|html####]</span> <span class="doc-keyword"><i>[####TYPE|html####]</i></span> <span class="doc-ns">[####NAMESPACE|html####]</span><span class="doc-name">[####SHORT-NAME|html####]</span><br>
 	[%%%%IF:EXTENDS:!=;%%%%]<span title="extends (abstract) Class" class="doc-extends"><i>extends</i> [####EXTENDS|html####]</span><br>[%%%%/IF:EXTENDS%%%%]
 	[%%%%IF:IMPLEMENTS:!=;%%%%]<span title="implements Interface(s)" class="doc-implements"><i>implements</i> [####IMPLEMENTS|html####]</span><br>[%%%%/IF:IMPLEMENTS%%%%]
@@ -29,7 +29,7 @@
 			<ul>
 				<span class="doc-name"><i>[####TYPE|html####]</i>&nbsp;[####NAME|html####]</span>&nbsp;&rarr;
 				[%%%%LOOP:PARENTS%%%%]
-				<li>&nbsp;&#8627;&nbsp;<a href="[####BASE-URL|html####][####PARENTS.TYPE|lower|slug|html####]@[####PARENTS.NAME|slug|html####].html[####REF-URL|html####][####TYPE|lower|slug|html####]@[####NAME|slug|html####].html"><span class="doc-type-[####PARENTS.TYPE|lower|html####]"><i>[####PARENTS.TYPE|html####]</i>&nbsp;[####PARENTS.NAME|html####]</span></a>[%%%%IF:PARENTS._-ITERATOR-_:<####PARENTS._-MAXCOUNT-_####;%%%%]&nbsp;&rarr;[%%%%/IF:PARENTS._-ITERATOR-_%%%%]</li>
+				<li>&nbsp;&#8627;&nbsp;<a href="[####BASE-URL|html####][####PARENTS.NAME|url|html####][####REF-URL|html####][####NAME|url|html####]"><span class="doc-type-[####PARENTS.TYPE|lower|html####]"><i>[####PARENTS.TYPE|html####]</i>&nbsp;[####PARENTS.NAME|html####]</span></a>[%%%%IF:PARENTS._-ITERATOR-_:<####PARENTS._-MAXCOUNT-_####;%%%%]&nbsp;&rarr;[%%%%/IF:PARENTS._-ITERATOR-_%%%%]</li>
 				[%%%%/LOOP:PARENTS%%%%]
 			</ul>
 		</li>
@@ -68,5 +68,6 @@
 <br>
 <hr>
 [@@@@SUB-TEMPLATE:partials/summary.mtpl.inc.htm@@@@]
+<hr>
 <br>
 <!-- # -->

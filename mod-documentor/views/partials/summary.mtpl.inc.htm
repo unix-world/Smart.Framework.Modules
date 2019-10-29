@@ -10,15 +10,18 @@ function smartHandleDocSelector(obj) {
 	} catch(err){}
 	if(selection) {
 		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
 	} else {
-		self.location.href = self.location.href.split('#')[0];
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
 	}
 }
 </script>
 <div class="doc-summary">
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* [####TYPE|ucfirst|html####] [####NAME|html####] # Documentation Index *</option>
 		<optgroup label="[####TYPE|ucfirst|html####] [####NAME|html####]">
-			<option value="">***** [####TYPE|ucfirst|html####] Definition *****</option>
+			<option value="Class--Summary-">***** [####TYPE|ucfirst|html####] Definition *****</option>
 		</optgroup>
 		<optgroup label="[####TYPE|ucfirst|html####] Methods">
 			<option value="Methods--Summary-">*** Methods summary ***</option>
