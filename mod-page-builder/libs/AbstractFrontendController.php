@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20191002
+ * @version 	v.20191028
  * @package 	PageBuilder
  *
  */
@@ -1274,14 +1274,11 @@ abstract class AbstractFrontendController extends \SmartAbstractAppController {
 										//--
 										if(\is_subclass_of((string)$plugin_class, '\\SmartModExtLib\\PageBuilder\\AbstractFrontendPlugin')) {
 											//--
-											$plugin_obj = new $plugin_class(
-												'index',
+											$plugin_obj = new $plugin_class( // fix w. SmartAbstractAppController r.20191028
 												(string) $plugin_modpath, // this should be the module path to plugin's module
-												(string) $this->ControllerGetParam('url-script'),
-												(string) $this->ControllerGetParam('url-path'),
-												(string) $this->ControllerGetParam('url-addr'),
-												(string) $this->ControllerGetParam('url-page'),
-												(string) $this->ControllerGetParam('controller') // this is the controller path where plugin runs into (it can be used to re-build the path to the current module)
+												(string) $this->ControllerGetParam('controller'), // this is the controller path where plugin runs into (it can be used to re-build the path to the current module)
+												(string) $this->ControllerGetParam('url-page'), // the URL Page Param
+												(string) 'index' // $this->ControllerGetParam('module-area') // the hard-coded Area
 											);
 											$plugin_obj->initPlugin((string)$plugin_fname, (array)$plugin_cfg, (string)$this->ControllerGetParam('module-path')); // initialize before run !
 											//--
