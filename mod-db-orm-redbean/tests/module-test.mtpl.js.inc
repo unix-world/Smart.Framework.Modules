@@ -1,7 +1,7 @@
 [%%%%COMMENT%%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
 [%%%%/COMMENT%%%%]
-//===== QUnit Tests.Mod.RedBean-ORM: START :: r.20191009
+//===== QUnit Tests.Mod.RedBean-ORM: START :: r.20191031
 
 (function() {
 
@@ -10,7 +10,7 @@
 	if(!localTest) {
 
 		// skip RedBean-ORM Test
-		testingQUnitDisabledTests++;
+		smartQUnitDisabledTests++;
 
 	} else {
 
@@ -30,7 +30,7 @@
 		if(!localTest) {
 
 			// skip RedBean-ORM Test
-			testingQUnitDisabledTests++;
+			smartQUnitDisabledTests++;
 
 		} else {
 

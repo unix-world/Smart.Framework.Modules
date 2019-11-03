@@ -84,7 +84,7 @@ function autoload__RedbeanOrm_SFM($classname) {
  * @access 		PUBLIC
  * @depends 	extensions: classes: \RedbeanOrm\Db
  * @version 	v.20191008
- * @package 	Database:RedbeanOrm-DB
+ * @package 	modules:Database:PDO:Redbean-ORM
  *
  */
 final class ORM extends \RedBeanPHP\Facade {

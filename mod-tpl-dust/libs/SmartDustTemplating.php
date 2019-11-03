@@ -44,7 +44,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		PUBLIC
  * @depends 	classes: Dust, \SmartModExtLib\TplDust\Templating
  * @version 	v.20191021
- * @package 	Templating:Engines
+ * @package 	modules:TemplatingEngine
  *
  */
 final class SmartDustTemplating implements \SmartModExtLib\Tpl\InterfaceSmartTemplating {

@@ -57,7 +57,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSysUtils
  * @version 	v.180320
- * @package 	LanguageDetection
+ * @package 	modules:LanguageDetection
  *
  */
 final class LanguageNgrams {

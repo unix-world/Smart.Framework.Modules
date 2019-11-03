@@ -92,7 +92,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		PUBLIC
  * @depends 	extensions: classes: \Zend\Db
  * @version 	v.20191021
- * @package 	Database:ZendDb-PDO
+ * @package 	modules:Database:PDO:Zend-Dbal
  *
  */
 final class DbalPdo {

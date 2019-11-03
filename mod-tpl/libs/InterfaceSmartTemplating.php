@@ -29,6 +29,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @version 	v.20191021
+ * @package 	development:modules:TemplatingEngine
  *
  */
 interface InterfaceSmartTemplating {

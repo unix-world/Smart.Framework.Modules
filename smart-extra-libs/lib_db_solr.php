@@ -78,8 +78,8 @@ $configs['solr']['slowtime']	= 0.4500;									// 0.0500 .. 0.7500 slow query ti
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartComponents
- * @version 	v.20190226
- * @package 	Database:Solr
+ * @version 	v.20191101
+ * @package 	extralibs:Database:Solr
  *
  */
 final class SmartSolrDb {
@@ -249,15 +249,7 @@ public function __destruct() {
 		//--
 	} //end if
 	//--
-	try {
-		//--
-		unset($this->instance);
-		//--
-	} catch (Exception $e) {
-		//--
-		Smart::log_warning('Solr ERROR # Disconnect # '.$e->getMessage());
-		//--
-	} //end try catch
+	$this->instance = null;
 	//--
 } //END FUNCTION
 //======================================================

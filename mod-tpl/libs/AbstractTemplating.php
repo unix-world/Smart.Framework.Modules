@@ -28,7 +28,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20191021
+ * @version 	v.20191101
+ * @package 	development:modules:TemplatingEngine
  *
  */
 abstract class AbstractTemplating {
@@ -37,11 +38,10 @@ abstract class AbstractTemplating {
 
 
 	//=====
-	/**
-	 * RETURN the TPL Version String
-	 */
-	abstract public static function getVersion();
-	//=====
+	public function __construct() {
+		// constructor
+	} //END FUNCTION
+	//====
 
 
 	//=====
@@ -57,6 +57,18 @@ abstract class AbstractTemplating {
 	 * RETURN: the Debug TPL String
 	 */
 	abstract public function debug($tpl);
+	//=====
+
+
+	//=====
+	/**
+	 * RETURN the TPL Version String
+	 */
+	public static function getVersion() {
+		//--
+		return 'unknown.version';
+		//--
+	} //END FUNCTION
 	//=====
 
 

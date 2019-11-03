@@ -51,7 +51,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @access 		PUBLIC
  * @depends 	classes: SmartMarkersTemplating, \SmartModExtLib\TplDust\SmartDustTemplating, \SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating, \SmartModExtLib\TplTwig\SmartTwigTemplating, \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating
  * @version 	v.20191021
- * @package 	Templating:Engines
+ * @package 	extralibs:TemplatingEngine
  *
  */
 final class SmartTemplating {

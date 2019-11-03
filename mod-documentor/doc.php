@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Controller: Documentor/Display
-// Route: admin.php?page=documentor.display
+// Controller: Documentor/Doc (display, save)
+// Route: admin.php?page=documentor.doc{&cls=SomeClass&ref={&action=save{&mode=multi}}}
 // (c) 2006-2019 unix-world.org - all rights reserved
 // v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 
@@ -12,31 +12,54 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
+
 define('SMART_APP_MODULE_AREA', 'ADMIN'); // INDEX, ADMIN, SHARED
 define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
+
 /**
  * Admin Area Controller
- * @version 20191029
- * @ignore
+ * @version 20191101
+ * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
 
+	private $errMsg 	= null;
+	private $clsType 	= '';
+	private $clsPackage = '';
+
+	private const IMG_LOGO 		= 'lib/framework/img/sf-logo.svg';
+	private const DIR_DOCS 		= 'tmp/documentor-php/';
+	private const DIR_PACKAGES 	= 'tmp/documentor-php@packages/';
+
 	public function Initialize() {
 
 		//--
+		if(!defined('SMART_APP_MODULES_EXTRALIBS_VER')) {
+			require_once('modules/smart-extra-libs/autoload.php');
+		} //end if
+		//--
+
+		//-- {{{SYNC-DOCUMENTOR-TPL}}}
 		$this->PageViewSetCfg('template-path', '@'); // set template path to this module
 		$this->PageViewSetCfg('template-file', 'template-documentor.htm'); // the default template
 		//--
-
-		//--
 		$this->PageViewSetVars([
-			'fonts-path' 	=> $this->ControllerGetParam('module-path'),
-			'logo-img' 		=> 'lib/framework/img/sf-logo.svg',
-			'year' 			=> (string) date('Y')
+			//--
+			'fonts-path' 		=> (string) $this->ControllerGetParam('module-path').'fonts/',
+			'logo-img' 			=> (string) self::IMG_LOGO,
+			'year' 				=> (string) date('Y'),
+			//--
+			'title' 			=> (string) 'Documentation',
+			'heading-title' 	=> (string) 'PHP Documentation',
+			'seo-description'	=> (string) 'Smart.Framework Documentation',
+			'seo-keywords'		=> (string) 'php, smart, framework, documentor',
+			'seo-summary' 		=> (string) 'Smart.Framework, a PHP / Javascript Framework for Web',
+			'url-index' 		=> ''
+			//--
 		]);
-		//--
+		//-- #end sync
 
 	} //END FUNCTION
 
@@ -44,7 +67,14 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
-		if(version_compare((string)phpversion(), '7.1') < 0) {
+		if($this->IfDebug()) {
+			$this->PageViewSetErrorStatus(500, 'ERROR: Documentor cannot be used when Debug is ON ...'); // results are unpredictable ...
+			return;
+		} //end if
+		//--
+
+		//--
+		if(version_compare((string)phpversion(), '7.1') < 0) { // {{{SYNC-DOCUMENTOR-PHP-MIN-VERSION}}}
 			$this->PageViewSetErrorStatus(503, 'Service N/A: PHP 7.1 or later is required for this service');
 			return;
 		} //end if
@@ -58,80 +88,418 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$url_index = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url($this->ControllerGetParam('controller'));
-		$url_cls = '&cls=';
-		$url_ref = '&ref=';
+		$action = $this->RequestVarGet('action', '', 'string');
+		$mode = $this->RequestVarGet('mode', '', 'string');
+		$extra = $this->RequestVarGet('extra', '', 'string');
+		$heading = $this->RequestVarGet('heading', 'PHP Documentation', 'string');
 		//--
-
-		//--
-		$cls = (string) trim((string)$this->RequestVarGet('cls', '', 'string'));
-		if((string)$cls == '') {
-			$this->displaySelector($cls);
-			return;
-		} //end if
-		//--
-		$ref = (string) trim((string)$this->RequestVarGet('ref', '', 'string')); // sometimes loading a class / interface / trait needs to pre-load another one
-		if((string)$ref != '') {
-			if((string)$ref != '') {
-				if((!class_exists((string)$ref, true)) AND (!interface_exists((string)$ref, true)) AND (!trait_exists((string)$ref, true))) {
-					$this->displaySelector($cls, 'Info: The selected PHP Class / Interface / Trait does could not be loaded: `'.$cls.'` as it depends on: `'.$ref.'` which is not available');
+		if((string)$action == 'cleanup@documentation') {
+			//--
+			if(SmartFileSystem::is_type_dir((string)self::DIR_PACKAGES)) {
+				SmartFileSystem::dir_delete((string)self::DIR_PACKAGES);
+				if(SmartFileSystem::is_type_dir((string)self::DIR_PACKAGES)) {
+					$this->jsonAnswer('Documentation Packages directory cannot be cleared ...', false);
 					return;
 				} //end if
 			} //end if
+			if(SmartFileSystem::is_type_dir((string)self::DIR_DOCS)) {
+				SmartFileSystem::dir_delete((string)self::DIR_DOCS);
+				if(SmartFileSystem::is_type_dir((string)self::DIR_DOCS)) {
+					$this->jsonAnswer('Documentation directory cannot be cleared ...', false);
+					return;
+				} //end if
+			} //end if
+			//--
+			$this->jsonAnswer('Documentation directory and Documentation Packages directory Cleared');
+			return;
+			//--
+		} elseif((string)$action == 'index@packages') {
+			//--
+			if(!SmartFileSystem::is_type_dir((string)self::DIR_DOCS)) {
+				$this->jsonAnswer('Documentation directory not found ...', false);
+				return;
+			} //end if
+			if(!SmartFileSystem::is_type_dir((string)self::DIR_PACKAGES)) {
+				$this->jsonAnswer('Documentation Packages directory not found ...', false);
+				return;
+			} //end if
+			//--
+			$arr_packages = [];
+			$files_n_dirs = (array) (new \SmartGetFileSystem(true))->get_storage((string)self::DIR_PACKAGES, false, false, '.json'); // non-recuring, no dot files, only JSON files
+			for($i=0; $i<\Smart::array_size($files_n_dirs['list-files']); $i++) {
+				$tmp_json = (string) self::DIR_PACKAGES.$files_n_dirs['list-files'][$i];
+				if(SmartFileSystem::is_type_file($tmp_json)) {
+					$tmp_json = (string) SmartFileSystem::read($tmp_json);
+				} else {
+					$tmp_json = '';
+				} //end if
+				if((string)trim((string)$tmp_json) == '') {
+					$this->jsonAnswer('Documentation Package NOT FOUND: '.$files_n_dirs['list-files'][$i], false);
+					return;
+				} //end if
+				$tmp_json = Smart::json_decode((string)$tmp_json);
+				if(Smart::array_size($tmp_json) <= 0) {
+					$this->jsonAnswer('Documentation Package is INVALID: '.$files_n_dirs['list-files'][$i], false);
+					return;
+				} else {
+					$tmp_json['package'] = (string) trim((string)$tmp_json['package']);
+					$tmp_json['name'] = (string) trim((string)$tmp_json['name']);
+					$tmp_json['type'] = (string) trim((string)$tmp_json['type']);
+					if((string)$tmp_json['package'] == '') {
+						$tmp_json['package'] = '@No-Package';
+					} //end if
+					$tmp_json['file'] = (string) Smart::base_name((string)$files_n_dirs['list-files'][$i], '.json');
+					if(!is_array($arr_packages[(string)$tmp_json['package']])) {
+						$arr_packages[(string)$tmp_json['package']] = [];
+					} //end if
+					$arr_packages[(string)$tmp_json['package']][] = (array) $tmp_json;
+				} //end if
+				$tmp_json = null;
+			} //end for
+			$files_n_dirs = null; // free mem
+			//--
+			ksort($arr_packages);
+			//print_r($arr_packages); die();
+			if(Smart::array_size($arr_packages) <= 0) {
+				$this->jsonAnswer('Documentation Packages is Empty', false);
+				return;
+			} //end if
+			//--
+			$main = (string) SmartMarkersTemplating::render_file_template(
+				(string) $this->ControllerGetParam('module-view-path').'packages.mtpl.inc.htm',
+				[
+					'packages' 		=> (array) $arr_packages,
+					'generated-on' 	=> (string) date('Y-m-d H:i:s O')
+				]
+			);
+			//-- {{{SYNC-DOCUMENTOR-SAVE-MODE}}}
+			$url_index = '';
+			$url_img   = '';
+			$url_fonts = '';
+			$extdir = '';
+			if((string)$mode == 'multi') {
+				if((string)$extra != '') {
+					if((string)$extra == '@') {
+						$url_img 	= 'img/sf-logo.svg';
+						$url_fonts 	= 'fonts/';
+					} else {
+						$url_index = '../index.html';
+						$extdir 	= (string) SmartFileSysUtils::add_dir_last_slash(Smart::safe_filename((string)$extra));
+						$url_img 	= '../img/sf-logo.svg';
+						$url_fonts 	= '../fonts/';
+					} //end if else
+				} //end if
+			} //end if else
+			//-- #end sync
+			$doc = (string) SmartMarkersTemplating::render_file_template(
+				(string) $this->ControllerGetParam('module-path').'templates/template-documentor.htm',
+				(array)  SmartComponents::set_app_template_conform_metavars([
+					//--
+					'fonts-path' 		=> (string) $url_fonts,
+					'logo-img' 			=> (string) $url_img,
+					'year' 				=> (string) date('Y'),
+					//--
+					'title' 			=> (string) 'PHP Documentation',
+					'heading-title' 	=> (string) $heading,
+					'seo-description' 	=> (string) SmartUtils::extract_description($main),
+					'seo-keywords' 		=> (string) SmartUtils::extract_keywords($main),
+					'seo-summary' 		=> (string) SmartUtils::extract_title($heading),
+					'main' 				=> (string) $main,
+					'url-index' 		=> (string) $url_index
+					//--
+				])
+			);
+			//--
+			$dir = self::DIR_DOCS.$extdir;
+			if(SmartFileSystem::is_type_file($dir.'index.html')) {
+				SmartFileSystem::delete($dir.'index.html');
+				if(SmartFileSystem::is_type_file($dir.'index.html')) {
+					$this->jsonAnswer('Cannot delete Documentation Packages Index file', false);
+					return;
+				} //end if
+			} //end if
+			if(!SmartFileSystem::write($dir.'index.html', $doc)) {
+				$this->jsonAnswer('Cannot save Documentation Packages Index file', false);
+				return;
+			} //end if
+			if(!SmartFileSystem::is_type_file($dir.'index.html')) {
+				$this->jsonAnswer('Cannot find Documentation Packages Index file', false);
+				return;
+			} //end if
+			//--
+			if(SmartFileSystem::is_type_dir((string)self::DIR_PACKAGES)) {
+				SmartFileSystem::dir_delete((string)self::DIR_PACKAGES);
+				if(SmartFileSystem::is_type_dir((string)self::DIR_PACKAGES)) {
+					$this->jsonAnswer('Documentation Packages directory cannot be cleared ...', false);
+					return;
+				} //end if
+			} //end if
+			//--
+			if((string)$extra != '') {
+				//--
+				if(SmartFileSystem::dir_copy($this->ControllerGetParam('module-path').'fonts/', self::DIR_DOCS.'fonts/', true) != 1) {
+					$this->jsonAnswer('Failed to copy font files to Documentation font directory ...', false);
+					return;
+				} //end if
+				if(!SmartFileSystem::is_type_file(self::DIR_DOCS.'fonts/index.html')) {
+					$this->jsonAnswer('Cannot find fonts directory Index file for Documentation', false);
+					return;
+				} //end if
+				//--
+				if(!SmartFileSystem::is_type_dir(self::DIR_DOCS.'img/')) {
+					SmartFileSystem::dir_create(self::DIR_DOCS.'img/', true);
+					if(!SmartFileSystem::is_type_dir(self::DIR_DOCS.'img/')) {
+						$this->jsonAnswer('Failed to create img directory into Documentation directory ...', false);
+						return;
+					} //end if
+				} //end if
+				if(!SmartFileSystem::write(self::DIR_DOCS.'img/index.html', '')) {
+					$this->jsonAnswer('Cannot create img directory Index file for Documentation', false);
+					return;
+				} //end if
+				if(!SmartFileSystem::is_type_file(self::DIR_DOCS.'img/index.html')) {
+					$this->jsonAnswer('Cannot find img directory Index file for Documentation', false);
+					return;
+				} //end if
+				if(!SmartFileSystem::copy((string)self::IMG_LOGO, self::DIR_DOCS.'img/'.SmartFileSysUtils::get_file_name_from_path((string)self::IMG_LOGO), false, true)) {
+					$this->jsonAnswer('Failed to copy font img Logo to Documentation img directory ...', false);
+					return;
+				} //end if
+				if(!SmartFileSystem::is_type_file(self::DIR_DOCS.'img/sf-logo.svg')) {
+					$this->jsonAnswer('Cannot find img Logo file for Documentation', false);
+					return;
+				} //end if
+				//--
+			} //end if
+			//--
+			$this->jsonAnswer('Documentation Packages Indexed');
+			return;
+			//--
 		} //end if
 		//--
+
+		//--
+		$ref = (string) trim((string)$this->RequestVarGet('ref', '', 'string')); // sometimes loading a class / interface / trait needs to pre-load another one
+		if((string)$ref != '') {
+			$ref = (string) '\\'.ltrim((string)$ref, '\\');
+			if((!class_exists((string)$ref, true)) AND (!interface_exists((string)$ref, true)) AND (!trait_exists((string)$ref, true))) {
+				$errmsg = 'Info: The selected PHP Class / Interface / Trait does could not be loaded: `'.$cls.'` as it depends on: `'.$ref.'` which is not available';
+				switch((string)$action) {
+					case 'save':
+						$this->jsonAnswer((string)$errmsg, false);
+						break;
+					default:
+						$this->displaySelector($cls, (string)$errmsg);
+				} //end switch
+				return;
+			} //end if
+		} //end if
+		//--
+		$cls = (string) trim((string)$this->RequestVarGet('cls', '', 'string'));
+		if((string)$cls == '') {
+			switch((string)$action) {
+				case 'save':
+					$this->jsonAnswer('A Class / Interface / Trait must be selected ...', false);
+					break;
+				default:
+					$this->displaySelector($cls);
+			} //end switch
+			return;
+		} //end if
+		$cls = (string) '\\'.ltrim((string)$cls, '\\');
+		//--
 		if((!class_exists((string)$cls, true)) AND (!interface_exists((string)$cls, true)) AND (!trait_exists((string)$cls, true))) {
-			$this->displaySelector($cls, 'Info: The selected PHP Class / Interface / Trait does not exists: `'.$cls.'`');
+			$errmsg = 'Info: The selected PHP Class / Interface / Trait does not exists: `'.$cls.'`';
+			switch((string)$action) {
+				case 'save':
+					$this->jsonAnswer((string)$errmsg, false);
+					break;
+				default:
+					$this->displaySelector($cls, (string)$errmsg);
+			} //end switch
 			return;
 		} //end if
 		//--
 
 		//--
-		$this->PageViewSetVars([
-			'title' 	=> (string) $arr['class']['type'].' Documentation: '.$cls,
-			'main' 		=> SmartMarkersTemplating::render_file_template(
-							(string) $this->ControllerGetParam('module-view-path').'display.mtpl.htm',
-							[
-								'DISPLAY' 	=> 'documentation',
-								'MESSAGE' 	=> '',
-								'DOCS-HTML' => (string) $this->displayDocs(
-									(string) $cls,
-									(string) $url_index.$url_cls,
-									(string) $url_ref
-								)
-							]
-						),
-			'url-index' => (string) $url_index
-		]);
+		switch((string)$action) {
+			case 'save':
+				//--
+				$main = $this->displayDocs((string)$cls);
+				//--
+				if($this->errMsg === null) { // OK
+					//-- {{{SYNC-DOCUMENTOR-SAVE-MODE}}}
+					$url_index = '';
+					$url_img   = '';
+					$url_fonts = '';
+					$extdir = '';
+					if((string)$mode == 'multi') {
+						$url_index = 'index.html#Package--'.Smart::create_htmid($this->clsPackage).'-';
+						if((string)$extra != '') {
+							if((string)$extra == '@') {
+								$url_img 	= 'img/sf-logo.svg';
+								$url_fonts 	= 'fonts/';
+							} else {
+								$extdir 	= (string) SmartFileSysUtils::add_dir_last_slash(Smart::safe_filename((string)$extra));
+								$url_img 	= '../img/sf-logo.svg';
+								$url_fonts 	= '../fonts/';
+							} //end if else
+						} //end if
+					} //end if else
+					//-- #end sync
+					$doc = (string) SmartMarkersTemplating::render_file_template(
+						(string) $this->ControllerGetParam('module-path').'templates/template-documentor.htm',
+						(array)  SmartComponents::set_app_template_conform_metavars([
+							//--
+							'fonts-path' 		=> (string) $url_fonts,
+							'logo-img' 			=> (string) $url_img,
+							'year' 				=> (string) date('Y'),
+							//--
+							'title' 			=> (string) 'PHP Documentation for: '.$cls,
+							'heading-title' 	=> (string) $heading,
+							'seo-description' 	=> (string) SmartUtils::extract_description($cls.' '.$main),
+							'seo-keywords' 		=> (string) SmartUtils::extract_keywords($cls.' '.$main),
+							'seo-summary' 		=> (string) SmartUtils::extract_title($heading.': '.$cls),
+							'main' 				=> (string) $main,
+							'url-index' 		=> (string) $url_index
+							//--
+						])
+					);
+					//--
+					$type = 'unknown';
+					if((string)$this->clsType != '') {
+						$type = (string) $this->clsType;
+					} //end if
+					//--
+					$slug = (string) Smart::safe_filename($type.'@'.Smart::create_slug((string)$cls).'.html');
+					//--
+					$dir = (string) self::DIR_DOCS.$extdir;
+					if(!SmartFileSystem::is_type_dir($dir)) {
+						SmartFileSystem::dir_create($dir, true);
+						if(!SmartFileSystem::is_type_dir($dir)) {
+							$this->jsonAnswer('Cannot create Documentation directory for: `'.$cls.'` as: '.$dir, false);
+							return;
+						} //end if
+					} //end if
+					if(SmartFileSystem::is_type_file($dir.$slug)) {
+						SmartFileSystem::delete($dir.$slug);
+						if(SmartFileSystem::is_type_file($dir.$slug)) {
+							$this->jsonAnswer('Cannot delete Documentation file for: `'.$cls.'` as: '.$dir.$slug, false);
+							return;
+						} //end if
+					} //end if
+					if(!SmartFileSystem::write($dir.$slug, $doc)) {
+						$this->jsonAnswer('Cannot save Documentation file for: `'.$cls.'` as: '.$dir.$slug, false);
+						return;
+					} //end if
+					if(!SmartFileSystem::is_type_file($dir.$slug)) {
+						$this->jsonAnswer('Cannot find Documentation file for: `'.$cls.'` as: '.$dir.$slug, false);
+						return;
+					} //end if
+					//--
+					$xdir = (string) self::DIR_PACKAGES;
+					if(!SmartFileSystem::is_type_dir($xdir)) {
+						SmartFileSystem::dir_create($xdir, true);
+						if(!SmartFileSystem::is_type_dir($xdir)) {
+							$this->jsonAnswer('Cannot create Documentation Packages directory for: `'.$cls.'` as: '.$xdir, false);
+							return;
+						} //end if
+					} //end if
+					if(!SmartFileSystem::write($xdir.$slug.'.json', (string)Smart::json_encode([ 'package' => (string)$this->clsPackage, 'name' => (string)$cls, 'type' => (string)$this->clsType ]))) {
+						$this->jsonAnswer('Cannot save Documentation Package file for: `'.$cls.'` as: '.$xdir.$slug.'.json', false);
+						return;
+					} //end if
+					if(!SmartFileSystem::is_type_file($xdir.$slug.'.json')) {
+						$this->jsonAnswer('Cannot find Documentation Package file for: `'.$cls.'` as: '.$xdir.$slug.'.json', false);
+						return;
+					} //end if
+					//--
+					$this->jsonAnswer('Documentation saved for: '.$type.' `'.$cls.'` as: '.$slug);
+					//--
+				} else { // ERR
+					//--
+					$this->jsonAnswer((string)$this->errMsg, false);
+					//--
+				} //end if
+				//--
+				return;
+				//--
+				break;
+			default:
+				//--
+				$url_index = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url($this->ControllerGetParam('controller'));
+				$url_cls = '&cls=';
+				$url_ref = '&ref=';
+				//--
+				$this->PageViewSetVars([
+					'title' 			=> (string) 'Documentation for: '.$cls,
+					'main' 				=> SmartMarkersTemplating::render_file_template(
+									(string) $this->ControllerGetParam('module-view-path').'display.mtpl.htm',
+									[
+										'DISPLAY' 	=> 'documentation',
+										'MESSAGE' 	=> '',
+										'DOCS-HTML' => (string) $this->displayDocs(
+											(string) $cls,
+											(string) $url_index.$url_cls,
+											(string) $url_ref
+										)
+									]
+								),
+					'url-index' => (string) $url_index
+				]);
+				//--
+		} //end switch
 		//--
-
 
 	} //END FUNCTION
 
 
-	public function ShutDown() {}
+	public function ShutDown() {} // re-implement for documentation purposes
 
 
 	//##### PRIVATES
 
 
-	private function displayDocs($cls, $base_url, $ref_url) {
+	private function jsonAnswer($msg, $is_ok=true) {
+		//--
+		$this->PageViewSetCfg('rawpage', true);
+		//--
+		if($is_ok !== true) {
+			$status = 'ERROR';
+		} else {
+			$status = 'OK';
+		} //end if else
+		//--
+		$this->PageViewSetVar(
+			'main',
+			(string) Smart::json_encode([
+				'status' 	=> (string) $status,
+				'message' 	=> (string) $msg
+			])
+		);
+		//--
+	} //END FUNCTION
+
+
+	private function displayDocs($cls, $base_url='', $ref_url='') {
 		//--
 		$arr = (array) $this->parseClass($cls);
 		//print_r($arr); die();
 		if(empty($arr)) {
+			$this->errMsg = 'Cannot get the definition (1) for class: '.$cls;
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
-					'MESSAGE' => (string) 'Cannot get the definition (1) for class: '.$cls
+					'MESSAGE' => (string) $this->errMsg
 				]
 			);
 		} //end if
 		if(empty($arr['class'])) {
+			$this->errMsg = 'Cannot get the definition (2) for class: '.$cls;
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
-					'MESSAGE' => (string) 'Cannot get the definition (2) for class: '.$cls
+					'MESSAGE' => (string) $this->errMsg
 				]
 			);
 		} //end if
@@ -153,12 +521,14 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$doc_depends = '';
 		$doc_hints = '';
 		$doc_usage = '';
+		$doc_throws = '';
 		if(Smart::array_size($arr['class']['doc-@comments']) > 0) {
 			$doc_package = (string) $arr['class']['doc-@comments']['package'];
 			$doc_version = (string) $arr['class']['doc-@comments']['version'];
 			$doc_depends = (string) $arr['class']['doc-@comments']['depends'];
 			$doc_hints = (string) $arr['class']['doc-@comments']['hints'];
 			$doc_usage = (string) $arr['class']['doc-@comments']['usage'];
+			$doc_throws = (string) $arr['class']['doc-@comments']['throws'];
 		} //end if
 		//--
 		if(Smart::array_size($arr['constants']) > 0) {
@@ -197,44 +567,46 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			for($i=0; $i<Smart::array_size($arr['methods']); $i++) {
 				//--
 				$arr['methods'][$i]['ret-param-html'] = '';
+				$tmp_arr_ret_param = [];
 				//--
+				if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['throws']) > 0) {
+					$tmp_arr_ret_param[] = '@throws: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['throws']['type'].'} : '.ltrim($arr['methods'][$i]['doc-comments']['props']['throws']['comment'], ' :'));
+				} //end if
 				if($arr['methods'][$i]['is-magic'] === true) {
-					$tmp_arr_ret_param = [];
 					if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']) > 0) {
 						if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['method']) > 0) {
 							for($j=0; $j<Smart::array_size($arr['methods'][$i]['doc-comments']['props']['method']); $j++) {
-									$tmp_arr_ret_param[] = rtrim('@method: '.trim((string)$arr['methods'][$i]['doc-comments']['props']['method'][$j]['type']).': '.trim((string)ltrim($arr['methods'][$i]['doc-comments']['props']['method'][$j]['comment'], ' :')), ' :');
+									$tmp_arr_ret_param[] = rtrim('@method: {@return: '.trim((string)$arr['methods'][$i]['doc-comments']['props']['method'][$j]['type']).'} '.trim((string)ltrim($arr['methods'][$i]['doc-comments']['props']['method'][$j]['comment'], ' :')), ' :');
 							} //end for
 						} //end if
 					} //end if
-					if(Smart::array_size($tmp_arr_ret_param) > 0) {
-						$arr['methods'][$i]['ret-param-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html(implode("\n", (array)$tmp_arr_ret_param))));
-					} //end if else
-					$tmp_arr_ret_param = [];
 				} else {
-					$tmp_arr_ret_param = [];
 					if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']) > 0) {
 						if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['return']) > 0) {
-							$tmp_arr_ret_param[] = '@return: '.trim((string)$arr['methods'][$i]['doc-comments']['props']['return']['type'].' - '.ltrim($arr['methods'][$i]['doc-comments']['props']['return']['comment'], ' :'));
+							$tmp_arr_ret_param[] = '@return: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['return']['type'].'} : '.ltrim($arr['methods'][$i]['doc-comments']['props']['return']['comment'], ' :'));
 						} //end if
 						if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['param']) > 0) {
 							for($j=0; $j<Smart::array_size($arr['methods'][$i]['doc-comments']['props']['param']); $j++) {
 								if(strpos(trim((string)$arr['methods'][$i]['doc-comments']['props']['param'][$j]['var']), '$') === 0) {
-									$tmp_arr_ret_param[] = rtrim('@param: '.trim((string)$arr['methods'][$i]['doc-comments']['props']['param'][$j]['var']).': '.trim((string)ltrim($arr['methods'][$i]['doc-comments']['props']['param'][$j]['comment'], ' :')), ' :');
+									$tmp_arr_ret_param[] = rtrim('@param: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['param'][$j]['var']).'} '.trim((string)ltrim($arr['methods'][$i]['doc-comments']['props']['param'][$j]['comment'], ' :')), ' :');
 								} //end if
 							} //end for
 						} //end if
 					} //end if
-					if(Smart::array_size($tmp_arr_ret_param) > 0) {
-						$arr['methods'][$i]['ret-param-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html(implode("\n", (array)$tmp_arr_ret_param))));
-					} //end if else
-					$tmp_arr_ret_param = [];
 				} //end if else
+				//--
+				if(Smart::array_size($tmp_arr_ret_param) > 0) {
+					$arr['methods'][$i]['ret-param-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html(implode("\n", (array)$tmp_arr_ret_param))));
+				} //end if else
+				$tmp_arr_ret_param = [];
 				//--
 				$arr['methods'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['methods'][$i]['doc-comments']['comments'])));
 				//--
 			} //end for
 		} //end if
+		//--
+		$this->clsType = (string) $arr['class']['type'];
+		$this->clsPackage = (string) $doc_package;
 		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			(string) $this->ControllerGetParam('module-view-path').'class.mtpl.inc.htm',
@@ -264,6 +636,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				'depends' 				=> (string) $doc_depends,
 				'hints' 				=> (string) $doc_hints,
 				'usage' 				=> (string) $doc_usage,
+				'throws' 				=> (string) $doc_throws,
+				'generated-on' 			=> (string) date('Y-m-d H:i:s O')
 			]
 		);
 		//--
@@ -311,7 +685,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 		//--
 		$fname = (string) $rc->getFileName();
-		$fname = (string) Smart::base_name($fname);
+		if(strpos((string)$fname, '/lib/') !== false) {
+			$fname = (string) substr((string)$fname, (strpos((string)$fname, '/lib/')+1));
+		} elseif(strpos((string)$fname, 'modules/') !== false) {
+			$fname = (string) substr((string)$fname, (strpos((string)$fname, 'modules/'))); // must be without first slash as it can be in the Smart.Framework.Modules repo
+		} else {
+			$fname = (string) Smart::base_name($fname);
+		} //end if else
 		//--
 		$pclass = $rc->getParentClass(); // mixed
 		if(is_a($pclass, 'ReflectionClass')) {
@@ -431,6 +811,9 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							break;
 						case 'usage':
 							$class['doc-@comments']['usage'] = (string) trim($val['type'].' '.$val['var'].' '.$val['comment']);
+							break;
+						case 'throws':
+							$class['doc-@comments']['throws'] = (string) trim($val['type'].' '.$val['var'].' '.$val['comment']);
 							break;
 					} //end switch
 				} //end if
@@ -1132,13 +1515,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$arr_highlight_default = [];
 		//-- save defaults and set new / custom
 		foreach($arr_highlight_custom as $key => $val) {
-			$arr_highlight_default[(string)$key] = (string) @ini_get((string)$key);
-			@ini_set((string)$key, $val);
+			$arr_highlight_default[(string)$key] = (string) @ini_get((string)$key); // get defaults from INI to restore later
+			@ini_set((string)$key, $val); // set custom to INI for custom render
 		} //end for
 		//-- render
 		$code = (string) highlight_string((string)'<'.'?php'."\n".SmartUtils::comment_php_code($code, [])."\n".'?'.'>', true);
-		$code = (new SmartHtmlParser((string)$code))->get_clean_html(false); // fix XHTML Tags
-		//-- restore
+		$code = (new SmartHtmlParser((string)$code, true, true, false))->get_clean_html(false); // fix XHTML Tags and deliver clean HTML
+		//-- restore render settings to INI
 		foreach($arr_highlight_default as $key => $val) {
 			@ini_set((string)$key, $val);
 		} //end for
@@ -1150,24 +1533,25 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 } //END CLASS
 
+
 /**
  * Index Area Controller
- * @version 20191029
- * @ignore
+ * @version 20191101
+ * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {
 
 	// this is just for the purpose of documentation of Smart.Framework as this controller only serves ADMIN area
 
-	public function Initialize() {}
+	public function Initialize() {} // re-implement for documentation purposes
 
-	public function Run() {
+	public function Run() { // re-implement for documentation purposes
 		//--
 		return 503;
 		//--
 	} //END FUNCTION
 
-	public function ShutDown() {}
+	public function ShutDown() {} // re-implement for documentation purposes
 
 } //END CLASS
 

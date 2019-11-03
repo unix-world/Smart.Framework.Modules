@@ -45,7 +45,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		PUBLIC
  * @depends 	classes: Latte, \SmartModExtLib\TplNetteLatte\Templating
  * @version 	v.20191021
- * @package 	Templating:Engines
+ * @package 	modules:TemplatingEngine
  *
  */
 final class SmartNetteLatteTemplating implements \SmartModExtLib\Tpl\InterfaceSmartTemplating {

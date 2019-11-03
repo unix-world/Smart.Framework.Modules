@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartPgsqlExtDb
  * @version 	v.181031
- * @package 	Database:PostgreSQL
+ * @package 	development:extralibs:Database
  *
  */
 abstract class SmartAbstractPgsqlExtDb {

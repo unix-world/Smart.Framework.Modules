@@ -1,21 +1,6 @@
-<!-- Version: r.20191029 -->
+<!-- summary r.20191103 -->
 <script>
-function smartHandleDocSelector(obj) {
-	if(!obj) {
-		return;
-	}
-	var selection = '';
-	try {
-		selection = obj.options[obj.selectedIndex].value;
-	} catch(err){}
-	if(selection) {
-		self.location.hash = String(selection);
-		obj.selectedIndex = 0; // reset selection to index zero
-	} else {
-		selection = '';
-		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
-	}
-}
+[@@@@SUB-TEMPLATE:partials/summary-js.mtpl.inc.js@@@@]
 </script>
 <div class="doc-summary">
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">

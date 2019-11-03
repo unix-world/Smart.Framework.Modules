@@ -56,7 +56,7 @@ $configs['langid']['auth-pass']		= '';										// LangId.Py Service Auth Pass
  *
  * @depends 	classes: Smart, SmartHttpClient
  * @version 	v.170920
- * @package 	LanguageDetection
+ * @package 	extralibs:LanguageDetection
  *
  */
 final class SmartLangIdClient {

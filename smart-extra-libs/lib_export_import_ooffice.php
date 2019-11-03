@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @depends 	classes: Smart, SmartZipArchive
  * @version 	v.20190103
- * @package 	Exporters
+ * @package 	extralibs:ExportAndImport
  *
  */
 final class SmartExportToOpenOffice {
@@ -400,7 +400,7 @@ echo $oo->ODS_SpreadSheet('A Table', array('column 1', 'column 2'), array('data 
  *
  * @depends 	classes: Smart
  * @version 	v.20190521
- * @package 	Parsers
+ * @package 	extralibs:ExportAndImport
  *
  */
 final class SmartImportFromOpenOffice {

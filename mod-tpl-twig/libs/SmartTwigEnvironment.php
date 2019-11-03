@@ -29,7 +29,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @depends 	extensions: classes: Twig
  * @version 	v.20191021
- * @package 	Templating:Engines
+ * @package 	modules:TemplatingEngine
  *
  */
 final class SmartTwigEnvironment extends \Twig\Environment {

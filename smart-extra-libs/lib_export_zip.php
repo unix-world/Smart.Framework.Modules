@@ -40,7 +40,7 @@ if((!function_exists('gzcompress')) OR (!function_exists('gzuncompress'))) {
  *
  * @depends 	extensions: PHP ZLIB
  * @version 	v.170105
- * @package 	Exporters
+ * @package 	extralibs:Archivers
  *
  */
 final class SmartZipArchive {
