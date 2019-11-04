@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		PUBLIC
  *
  * @version 	v.20191028
- * @package 	PageBuilder
+ * @package 	development:modules:PageBuilder
  *
  */
 abstract class AbstractFrontendController extends \SmartAbstractAppController {

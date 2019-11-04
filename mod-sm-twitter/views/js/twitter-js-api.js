@@ -1,7 +1,7 @@
 
 // Twitter JS API Handler
 // (c) 2012 - 2017 Radu I.
-// v.181002
+// v.20191104
 
 // Depends on: codebird.js, SmartJS_BrowserUtils
 

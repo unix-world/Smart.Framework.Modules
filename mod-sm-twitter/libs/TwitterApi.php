@@ -1,4 +1,5 @@
 <?php
+// Class: \SmartModExtLib\SmTwitter\TwitterApi
 // Twitter SDK for Smart.Framework
 // Module Library
 // (c) 2006-2019 unix-world.org - all rights reserved
@@ -17,14 +18,14 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 
 /**
- * Provides connector for Twitter Api inside the Smart.Framework.
+ * Provides a PHP connector for Twitter Api inside the Smart.Framework.
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: Twitter Api
- * @version 	v.180928
- * @package 	SocialMedia:Twitter
+ * @version 	v.20191104
+ * @package 	modules:SocialMedia
  *
  */
 final class TwitterApi {

@@ -1,7 +1,7 @@
 
 // Facebook JS API Handler
 // (c) 2012 - 2017 Radu I.
-// v.170919
+// v.20191104
 
 // Depends on: jQuery
 // Depends on: SmartJS_Base64, SmartJS_Archiver_LZS, SmartJS_BrowserUtils
@@ -20,8 +20,8 @@ var FacebookApiHandler = new function() { // START CLASS
 		cookie: 	true,
 		oauth: 		true,
 		xfbml: 		true,
-		perms: 		'public_profile,email,publish_actions', // Extended permissions (req. FB approval): 'manage_pages,publish_pages,user_managed_groups'
-		version: 	'v2.10',
+		perms: 		'public_profile,email', // Extended permissions (req. FB approval): 'manage_pages,publish_pages,user_managed_groups' ; 'publish_pages,manage_pages' only for Pages and Groups
+		version: 	'v5.0',
 		domain: 	null
 	};
 

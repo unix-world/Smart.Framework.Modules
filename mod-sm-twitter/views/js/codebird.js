@@ -2,14 +2,14 @@
  * A Twitter library in JavaScript (ES5)
  *
  * @package   codebird
- * @version   3.0.0-dev.uxm-181023
+ * @version   3.0.0-dev.uxm-20191104
  * @author    Jublo Limited <support@jublo.net>
  * @copyright 2010-2018 Jublo Limited <support@jublo.net>
  * @license   http://opensource.org/licenses/GPL-3.0 GNU Public License 3.0
  * @link      https://github.com/jublonet/codebird-php
  */
 
-// modified by unixman v.181023
+// modified by unixman v.20191104
 // 		+ security feature: connect with the proxy by using a special hash in header
 //		+ converted to ES5 with babeljs
 

@@ -15,8 +15,9 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
 
 /**
- * Index Controller :: v.170919
+ * Index Controller :: v.20191104
  *
+ * First Test the Js-Api: 				modules/mod-sm-facebook/views/js/demo/sample.html?app_id={the-app-id-goes-here}
  * Test PHP-Api (run on localhost): 	?/page/sm-facebook.test/app_id/{the-app-id-goes-here}/app_secret/{the-app-secret-goes-here}
  *
  * @ignore
@@ -80,6 +81,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 /**
  * Admin Controller
  *
+ * First Test the Js-Api: 				modules/mod-sm-facebook/views/js/demo/sample.html?app_id={the-app-id-goes-here}
  * Test PHP-Api (run on localhost): 	admin.php?/page/sm-facebook.test/app_id/{the-app-id-goes-here}/app_secret/{the-app-secret-goes-here}
  *
  * @ignore

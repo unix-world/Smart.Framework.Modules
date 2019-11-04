@@ -39,9 +39,9 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	extensions: PHP GD Extension (w. TrueColor support) ; executables: imageMagick Utility (can replace PHP GD), FFMpeg (for movies) ; classes: Smart, SmartUtils, SmartFileSystem
+ * @depends 	extensions: PHP GD Extension (w. TrueColor support) ; optional executables: imageMagick Utility (can replace PHP GD), FFMpeg (for movies), Pdf2HtmlEx (for PDF) ; classes: Smart, SmartUtils, SmartFileSystem
  * @version 	v.181019
- * @package 	Media:Gallery
+ * @package 	modules:ViewComponents
  *
  */
 final class Manager { // [OK]

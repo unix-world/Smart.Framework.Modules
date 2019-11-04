@@ -1,4 +1,5 @@
 <?php
+// Class: \SmartModExtLib\SmFacebook\FacebookApi
 // Facebook SDK for Smart.Framework
 // Module Library
 // (c) 2006-2019 unix-world.org - all rights reserved
@@ -17,14 +18,14 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 
 /**
- * Provides connector for Facebook Graph Api inside the Smart.Framework.
+ * Provides a PHP connector for Facebook Graph Api (default to 5.0) inside the Smart.Framework.
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: Facebook Graph Api
- * @version 	v.180424
- * @package 	SocialMedia:Facebook
+ * @version 	v.20191104
+ * @package 	modules:SocialMedia
  *
  */
 final class FacebookApi {
@@ -42,7 +43,7 @@ final class FacebookApi {
 	private $usrdata = array();
 
 
-	public function __construct($app_id, $app_secret, $api_version='v2.10') {
+	public function __construct($app_id, $app_secret, $api_version='v5.0') {
 		//--
 		if((string)$app_id == '') {
 			$this->last_error = (string) 'ERROR: '.__METHOD__.'(): Empty App ID';

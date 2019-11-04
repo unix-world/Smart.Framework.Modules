@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191101
+ * @version 20191104
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -29,9 +29,9 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	private $clsType 	= '';
 	private $clsPackage = '';
 
-	private const IMG_LOGO 		= 'lib/framework/img/sf-logo.svg';
-	private const DIR_DOCS 		= 'tmp/documentor-php/';
-	private const DIR_PACKAGES 	= 'tmp/documentor-php@packages/';
+	const IMG_LOGO 		= 'lib/framework/img/sf-logo.svg';
+	const DIR_DOCS 		= 'tmp/documentor-php/';
+	const DIR_PACKAGES 	= 'tmp/documentor-php@packages/';
 
 	public function Initialize() {
 
@@ -65,6 +65,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 
 	public function Run() {
+
+		//--
+		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_ALLOW !== true)) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: Documentor is disabled ...');
+			return;
+		} //end if
+		//--
 
 		//--
 		if($this->IfDebug()) {
@@ -283,7 +290,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		if((string)$ref != '') {
 			$ref = (string) '\\'.ltrim((string)$ref, '\\');
 			if((!class_exists((string)$ref, true)) AND (!interface_exists((string)$ref, true)) AND (!trait_exists((string)$ref, true))) {
-				$errmsg = 'Info: The selected PHP Class / Interface / Trait does could not be loaded: `'.$cls.'` as it depends on: `'.$ref.'` which is not available';
+				$errmsg = 'Info: The selected PHP Class / Interface / Trait does could not be loaded: `'.$cls.'` as it depends on: `'.$ref.'` which could not be found';
 				switch((string)$action) {
 					case 'save':
 						$this->jsonAnswer((string)$errmsg, false);
@@ -309,7 +316,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$cls = (string) '\\'.ltrim((string)$cls, '\\');
 		//--
 		if((!class_exists((string)$cls, true)) AND (!interface_exists((string)$cls, true)) AND (!trait_exists((string)$cls, true))) {
-			$errmsg = 'Info: The selected PHP Class / Interface / Trait does not exists: `'.$cls.'`';
+			$errmsg = 'Info: The selected PHP Class / Interface / Trait could not be found: `'.$cls.'`';
 			switch((string)$action) {
 				case 'save':
 					$this->jsonAnswer((string)$errmsg, false);
@@ -458,6 +465,31 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 
 	//##### PRIVATES
+
+
+	private function displaySelector($cls, $message='') {
+		//--
+		$title = 'Select a PHP Class / Interface or Trait to display Documentation';
+		//--
+		$this->PageViewSetVars([
+			'title' 	=> (string) 'Smart.Framework Documentation: '.$title,
+			'main' 		=> (string) SmartMarkersTemplating::render_file_template(
+				$this->ControllerGetParam('module-view-path').'display.mtpl.htm',
+				[
+					'DISPLAY' 		=> 'selection',
+					'MESSAGE' 		=> (string) $message,
+					'DOCS-HTML' 	=> '',
+					//-- form
+					'form-title' 	=> (string) $title,
+					'form-cls' 		=> (string) $cls,
+					'form-action' 	=> (string) $this->ControllerGetParam('url-script'),
+					'form-page' 	=> (string) $this->ControllerGetParam('controller')
+				]
+			),
+			'url-index' => ''
+		]);
+		//--
+	} //END FUNCTION
 
 
 	private function jsonAnswer($msg, $is_ok=true) {
@@ -640,28 +672,6 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				'generated-on' 			=> (string) date('Y-m-d H:i:s O')
 			]
 		);
-		//--
-	} //END FUNCTION
-
-
-	private function displaySelector($cls, $message='') {
-		//--
-		$this->PageViewSetVars([
-			'title' 	=> 'Smart.Framework Documentation: Select a Class / Interface or Trait to display Documentation',
-			'main' 		=> SmartMarkersTemplating::render_file_template(
-				$this->ControllerGetParam('module-view-path').'display.mtpl.htm',
-				[
-					'DISPLAY' 		=> 'selection',
-					'MESSAGE' 		=> (string) $message,
-					'DOCS-HTML' 	=> '',
-					//-- form
-					'form-cls' 		=> (string) $cls,
-					'form-action' 	=> (string) $this->ControllerGetParam('url-script'),
-					'form-page' 	=> (string) $this->ControllerGetParam('controller')
-				]
-			),
-			'url-index' => ''
-		]);
 		//--
 	} //END FUNCTION
 
@@ -1371,7 +1381,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if
 			} //end if
 		} //end for
-		//print_r($matches); print_r($arr_code); die('----- Code -----');
+		//if(strpos($str, '<code>') !== false) { print_r($matches); print_r($arr_code); die('----- Code -----'); }
 		$matches = array();
 		//--
 		$str = (string) preg_replace((string)$regex_dc_code, '', (string)$str); // cleanup all code before getting comments to avoid mixings
@@ -1536,7 +1546,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 /**
  * Index Area Controller
- * @version 20191101
+ * @version 20191104
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {

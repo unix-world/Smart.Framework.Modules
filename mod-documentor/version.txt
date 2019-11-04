@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: Documentor r.20191103 #
+# Smart.Framework.Modules: Documentor r.20191104 #
 
 // v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
 

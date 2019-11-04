@@ -53,12 +53,12 @@ class Facebook
     /**
      * @const string Version number of the Facebook PHP SDK.
      */
-    const VERSION = '5.6.2';
+    const VERSION = '5.7.0';
 
     /**
      * @const string Default Graph API version for requests.
      */
-    const DEFAULT_GRAPH_VERSION = 'v2.10';
+    const DEFAULT_GRAPH_VERSION = 'v2.11';
 
     /**
      * @const string The name of the environment variable that contains the app ID.

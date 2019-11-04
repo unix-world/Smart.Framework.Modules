@@ -19,13 +19,20 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191031
+ * @version 20191104
  * @ignore
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
 
 	public function Run() {
+
+		//--
+		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_ALLOW !== true)) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: Documentor is disabled ...');
+			return;
+		} //end if
+		//--
 
 		//--
 		if($this->IfDebug()) {
@@ -184,9 +191,17 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			'\\SmartExportToOpenOffice',
 			'\\SmartImportFromOpenOffice',
 			//--
+			'\\SmartModExtLib\\MediaGallery\\Manager',
+			'\\SmartModExtLib\\JsComponents\\TextEditor',
+			//--
 			'\\SmartImgGfxCharts',
 			'\\SmartImgBizCharts',
 			//--
+			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendController',
+			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendPlugin',
+			//--
+			'\\SmartModExtLib\\SmFacebook\\FacebookApi',
+			'\\SmartModExtLib\\SmTwitter\\TwitterApi',
 			//--
 		];
 		//--

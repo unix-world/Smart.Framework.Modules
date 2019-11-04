@@ -22,10 +22,11 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 /**
  * Class: TextEditor (JS Component)
  *
- * @version 	v.20190121
+ * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @access 		private
- * @internal
+ * @depends 	javascript: CKEditor
+ * @version 	v.20190121
+ * @package 	modules:ViewComponents
  *
  */
 class TextEditor {

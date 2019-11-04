@@ -21,10 +21,18 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //=====================================================================================
 
 
+/**
+ * Class OpenMaps Proxy Cache
+ *
+ * @access 		private
+ * @internal
+ *
+ * @version 	v.20191010
+ *
+ */
 class OpenMapsProxyCache {
 
 	// ::
-	// r.20191010
 
 
 //=========================================================================
