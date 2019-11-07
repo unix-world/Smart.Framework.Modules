@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191104
+ * @version 20191106
  * @ignore
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -183,6 +183,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			'\\SmartModExtLib\\DbOrmRedbean\\ORM',
 			//--
 			'\\SmartCurlHttpFtpClient',
+			'\\SmartModExtLib\\Soap\\SoapServerRequestHandler',
 			//--
 			'\\SmartLangIdClient',
 			'\\SmartModExtLib\\LangDetect\\LanguageNgrams',

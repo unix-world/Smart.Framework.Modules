@@ -14,6 +14,13 @@ smartQUnitStartDelay = 500;
 		// console.log('QUnit DONE :: Total: ', details.total, ' Failed: ', details.failed, ' Passed: ', details.passed, ' Runtime: ', details.runtime);
 	});
 
+	// @TestDone handler
+	QUnit.testDone(function(details) {
+		if(details.failed > 0) {
+			QUnit.config.queue.length = 0; // stop after 1st failure
+		} //end if
+	});
+
 	// @Settings
 	var charSet 				= '[####CHARSET|js####]';
 	var phpVersion 				= '[####PHP-VERSION|js####]';

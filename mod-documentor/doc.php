@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191104
+ * @version 20191106
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -603,6 +603,9 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['throws']) > 0) {
 					$tmp_arr_ret_param[] = '@throws: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['throws']['type'].'} : '.ltrim($arr['methods'][$i]['doc-comments']['props']['throws']['comment'], ' :'));
+				} //end if
+				if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['hints']) > 0) {
+					$tmp_arr_ret_param[] = '@hints: '.ltrim($arr['methods'][$i]['doc-comments']['props']['hints']['line'], ' :');
 				} //end if
 				if($arr['methods'][$i]['is-magic'] === true) {
 					if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']) > 0) {
@@ -1546,7 +1549,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 /**
  * Index Area Controller
- * @version 20191104
+ * @version 20191106
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {

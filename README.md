@@ -15,6 +15,7 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 	* UI jQueryUI: CSS + Javascript UI Toolkit
 	* UI W3: CSS UI Toolkit
 	* JS Components: a collection of Javascript components and utils
+	* SOAP (Server) Request Handler, built over DomDocument XML - handle SOAP server requests without need of SoapServer class from PHP SOAP extension
 	* Maps Cache: a caching API for Open Map types
 	* Language Detect: NGrams Language Detection library
 	* Dust Templating Engine (by LinkedIn) integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-dust into smart-framework/modules/
@@ -30,6 +31,7 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 	* SVN (manager): a web based SVN (subversion) manager
 
 ### Extra App Modules (GPLv3 licensed ; can be used with Smart.Framework licensed under GPLv3 license only):
+	* Documentor: a PHP and JavaScript documentation generator
 	* Cloud App: an advanced Cloud Api and app module: WebDAV, CalDAV / WebCal and CardDAV / WebAddressbook
 	* Agile App: an document store API and app module for Smart.Framework
 	* Workflow Components: a collection of smart Javascript components and utilities
