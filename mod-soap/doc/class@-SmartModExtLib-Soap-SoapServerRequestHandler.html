@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartModExtLib\Soap\SoapServerRequestHandler       final class \SmartModExtLib\Soap\ SoapServerRequestHandler    {   } ::    Provides a SOAP Server">
-	<meta name="keywords" content="smartmodextlib soap soapserverrequesthandler, final, class, smartmodextlib soap, soapserverrequesthandler, provides, a, soap, server, request, handler, full, unicode, compliant, utf ., this, does, not, depend, on, the, php, extension, located, at, modules mod-soap libs soapserverrequesthandler.php, package, modules network, namespace, name, version, v, depends, classes, smart, smartxmlparser, domxml, smartmarkerstemplating, hints, use, to, easy, manage, calls, usage, static, object, class  method, -, only, methods, summary, public, function, issoaprequest, boolean, return, boolean, true, if, is, or, false, check, getsoaprequesturl, string, hints, comes, from, raw, string, will, return, non-empty, url, aka, httpsoapaction">
+	<meta name="keywords" content="smartmodextlib soap soapserverrequesthandler, final, class, smartmodextlib soap, soapserverrequesthandler, provides, a, soap, server, request, handler, full, unicode, compliant, utf ., this, does, not, depend, on, the, php, extension, located, at, modules mod-soap libs soapserverrequesthandler.php, package, modules network, namespace, name, version, v, depends, classes, smart, smartxmlparser, domxml, domdocument, smartmarkerstemplating, hints, use, to, easy, manage, calls, usage, static, object, class  method, -, only, methods, summary, public, function, issoaprequest, boolean, return, boolean, true, if, is, or, false, check, getsoaprequesturl, string, hints, comes, from, raw, string, will, return, non-empty, url, aka, httpsoapaction, else, an">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 	<title>PHP Documentation for: \SmartModExtLib\Soap\SoapServerRequestHandler</title>
 	<!-- CSS and Fonts -->
@@ -557,8 +557,8 @@ This class does NOT depend on the PHP SOAP extension</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\Soap\</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SoapServerRequestHandler</span></li>
 		
-		<li><b>Version:</b> v.20191106</li>
-		<li><b>Depends:</b> classes:  Smart, SmartXmlParser, PHP DomXML extension, SmartMarkersTemplating</li>
+		<li><b>Version:</b> v.20191107</li>
+		<li><b>Depends:</b> classes:  Smart, SmartXmlParser, PHP DomXML extension (DOMDocument), SmartMarkersTemplating</li>
 		<li><b>Hints:</b> Use  this class to easy manage SOAP calls</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -587,7 +587,7 @@ This class does NOT depend on the PHP SOAP extension</div><br>
 	
 	<div class="doc-method-ret-params">@hints: This  comes from SOAP Request, raw<br>
 @return: {STRING} : if this is a SOAP Request will return a non-empty URL aka the HttpSoapAction ; else will return an empty URL</div>
-	<div class="doc-method-comments">Get The SOAP URL from SOAP Request<br>
+	<div class="doc-method-comments">Get the SOAP URL from SOAP Request<br>
 The SOAP clients will have to send the HTTP_SOAPACTION to comply with this Server</div>
 </div><div class="doc-container" id="Method--getSoapRequestAction">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapRequestAction</b></span>&nbsp;(
@@ -597,7 +597,7 @@ The SOAP clients will have to send the HTTP_SOAPACTION to comply with this Serve
 	
 	<div class="doc-method-ret-params">@hints: This  comes from SOAP Request, processed<br>
 @return: {STRING} : if this is a SOAP Request have a non-empty URL aka the HttpSoapAction will return the #SoapAction ; else will return an empty string</div>
-	<div class="doc-method-comments">Get The SOAP Action from SOAP Request<br>
+	<div class="doc-method-comments">Get the SOAP Action from SOAP Request<br>
 The Valid URL format to recognize the SOAP Action must be something like: urn://some-request.url/SomeSoapAction#SomeSoapAction<br>
 For using with Smart.Framework URL format can be: http(s)://smart-framework.url/?/page/some.controller/action/SomeSoapAction/#SomeSoapAction</div>
 </div><div class="doc-container" id="Method--getSoapRequestXmlStr">
@@ -629,14 +629,15 @@ For using with Smart.Framework URL format can be: http(s)://smart-framework.url/
 	<div class="doc-method-comments">Get the SOAP Request XML Array re-parsed only for the Body section of the SOAP XML Request</div>
 </div><div class="doc-container" id="Method--getSoapResponseXmlEnvelope">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapResponseXmlEnvelope</b></span>&nbsp;(
-	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$url` Parameter is REQUIRED">$url</span></b></span>, <i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$xml` Parameter is REQUIRED">$xml</span></b></span>
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$url` Parameter is REQUIRED">$url</span></b></span>, <i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$xml` Parameter is REQUIRED">$xml</span></b></span>, <i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$action` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$action</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	<div class="doc-method-ret-params">@hints: This  have to be sent as returning response to the SOAP Client<br>
 @return: {STRING} : The SOAP Envelope with the XML Response<br>
 @param: {$url} The current URL of the SOAP Server ; Ex: http(s)://smart-framework.url/?/page/some.controller/<br>
-@param: {$xml} The XML response that will be enveloped ; this will be done using CDATA to be more compliant</div>
+@param: {$xml} The XML response that will be enveloped ; this will be done using CDATA to be more compliant<br>
+@param: {$action} The Response Action ; *OPTIONAL* ; Default is empty string ; If non-empty string it will use this, else will use the Action from SOAP Request</div>
 	<div class="doc-method-comments">Get the SOAP Envelope XML Response to return to the SOAP Client</div>
 </div><div class="doc-container" id="Method--getSoapResponseXmlError">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapResponseXmlError</b></span>&nbsp;(
@@ -711,7 +712,7 @@ function smartHandleDocSelector(obj) {
 </div>
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2019-11-06 16:33:23 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2019-11-07 11:46:59 +0000</small>
 <hr>
 <br>
 <!-- # -->

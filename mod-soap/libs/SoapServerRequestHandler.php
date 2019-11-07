@@ -60,7 +60,7 @@ final class SoapServerRequestHandler {
 
 
 	/**
-	 * Get The SOAP URL from SOAP Request
+	 * Get the SOAP URL from SOAP Request
 	 * The SOAP clients will have to send the HTTP_SOAPACTION to comply with this Server
 	 *
 	 * @hints This comes from SOAP Request, raw
@@ -79,7 +79,7 @@ final class SoapServerRequestHandler {
 
 
 	/**
-	 * Get The SOAP Action from SOAP Request
+	 * Get the SOAP Action from SOAP Request
 	 * The Valid URL format to recognize the SOAP Action must be something like: urn://some-request.url/SomeSoapAction#SomeSoapAction
 	 * For using with Smart.Framework URL format can be: http(s)://smart-framework.url/?/page/some.controller/action/SomeSoapAction/#SomeSoapAction
 	 *
@@ -157,16 +157,21 @@ final class SoapServerRequestHandler {
 	 *
 	 * @hints This have to be sent as returning response to the SOAP Client
 	 *
-	 * @param STRING $url 	:: The current URL of the SOAP Server ; Ex: http(s)://smart-framework.url/?/page/some.controller/
-	 * @param STRING $xml 	:: The XML response that will be enveloped ; this will be done using CDATA to be more compliant
+	 * @param STRING $url 		:: The current URL of the SOAP Server ; Ex: http(s)://smart-framework.url/?/page/some.controller/
+	 * @param STRING $xml 		:: The XML response that will be enveloped ; this will be done using CDATA to be more compliant
+	 * @param STRING $action 	:: The Response Action ; *OPTIONAL* ; Default is empty string ; If non-empty string it will use this, else will use the Action from SOAP Request
 	 *
-	 * @return STRING		:: The SOAP Envelope with the XML Response
+	 * @return STRING			:: The SOAP Envelope with the XML Response
 	 */
-	public static function getSoapResponseXmlEnvelope($url, $xml) {
+	public static function getSoapResponseXmlEnvelope($url, $xml, $action='') {
 		//--
-		$action = (string) \trim((string)self::getSoapRequestAction());
+		$action = (string) \trim((string)$action);
+		//--
 		if((string)$action == '') {
-			return (string) self::getSoapResponseXmlError('Empty SOAP Action');
+			$action = (string) \trim((string)self::getSoapRequestAction());
+			if((string)$action == '') {
+				return (string) self::getSoapResponseXmlError('Empty SOAP Action');
+			} //end if
 		} //end if
 		//--
 		return (string) self::buildSoapXmlEnvelopeResponse($action, $url, $xml);
