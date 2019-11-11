@@ -197,7 +197,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			} //end if
 		} //end if
 		if($version_pos === false) {
-			//header('HTTP/1.1 412 Precondition failed');
+			//SmartFrameworkRuntime::outputHttpSafeHeader('HTTP/1.1 412 Precondition failed');
 			$this->PageViewSetErrorStatus(400, 'This is a private Proxy to support requests to REST API version 1.1 / Twitter TON API / Twitter Ads API / CodeBird.');
 			return;
 		} //end if
@@ -261,7 +261,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 		foreach($reply_headers as $kk => $reply_header) {
 			if(strpos($reply_header, ':') !== false) {
-				//header($reply_header);
+				//SmartFrameworkRuntime::outputHttpSafeHeader($reply_header);
 				$tmp_hdr_arr = (array) explode(':', (string)$reply_header);
 				$this->PageViewSetRawHeader(trim((string)$tmp_hdr_arr[0]), trim((string)$tmp_hdr_arr[1]));
 				$tmp_hdr_arr = array();
