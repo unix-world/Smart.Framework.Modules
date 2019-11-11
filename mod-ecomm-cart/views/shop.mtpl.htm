@@ -1,4 +1,4 @@
-[@@@@SUB-TEMPLATE:partials/base.inc.mtpl.htm@@@@]
+[@@@SUB-TEMPLATE:partials/base.inc.mtpl.htm@@@]
 <style>
 .shop-area * {
 	font-size: 0.875rem !important;
@@ -60,72 +60,72 @@
 }
 </style>
 <div class="shop-area">
-	<h1>Products @ [####DATE-TIME|html####]</h1>
-[%%%%LOOP:PRODUCTS-ARR%%%%]
-	[%%%%IF:PRODUCTS-ARR._-ITERATOR-_:%2;%%%%]
+	<h1>Products @ [###DATE-TIME|html###]</h1>
+[%%%LOOP:PRODUCTS-ARR%%%]
+	[%%%IF:PRODUCTS-ARR._-ITERATOR-_:%2;%%%]
 	<div class="ux-grid-row">
-	[%%%%/IF:PRODUCTS-ARR._-ITERATOR-_%%%%]
+	[%%%/IF:PRODUCTS-ARR._-ITERATOR-_%%%]
 		<div class="ux-grid-col m1">
 		</div>
 		<div class="ux-grid-col m4">
 			<div class="shop-item">
 				<div class="ux-grid-col m5">
-					<h3>[####PRODUCTS-ARR.NAME|html####]&nbsp;</h3>
-					[%%%%IF:PRODUCTS-ARR.IMG-SRC:!=;%%%%]
-					<img class="shop-item-img" src="[####PRODUCTS-ARR.IMG-SRC|html####]" data-width="[####PRODUCTS-ARR.IMG-W|int####]" data-height="[####PRODUCTS-ARR.IMG-H|int####]" title="[####PRODUCTS-ARR.NAME|html####]">
-					[%%%%ELSE:PRODUCTS-ARR.IMG-SRC%%%%]
+					<h3>[###PRODUCTS-ARR.NAME|html###]&nbsp;</h3>
+					[%%%IF:PRODUCTS-ARR.IMG-SRC:!=;%%%]
+					<img class="shop-item-img" src="[###PRODUCTS-ARR.IMG-SRC|html###]" data-width="[###PRODUCTS-ARR.IMG-W|int###]" data-height="[###PRODUCTS-ARR.IMG-H|int###]" title="[###PRODUCTS-ARR.NAME|html###]">
+					[%%%ELSE:PRODUCTS-ARR.IMG-SRC%%%]
 					&nbsp;
-					[%%%%/IF:PRODUCTS-ARR.IMG-SRC%%%%]
-					<h5>SKU:&nbsp;[####PRODUCTS-ARR.ID|html####]</h5>
+					[%%%/IF:PRODUCTS-ARR.IMG-SRC%%%]
+					<h5>SKU:&nbsp;[###PRODUCTS-ARR.ID|html###]</h5>
 				</div>
 				<div class="ux-grid-col m7">
-					<h4>[####PRODUCTS-ARR.PRICE|html####]&nbsp;[####PRODUCTS-ARR.CURRENCY|html####]</h4>
-					<form class="ux-form" name="Form_[####PRODUCTS-ARR.UUID|html####]" id="Form_[####PRODUCTS-ARR.UUID|html####]" method="post" action="#" onsubmit="return false;" autocomplete="off">
-						<input id="item-id" type="hidden" name="frm[id]" value="[####PRODUCTS-ARR.ID|html####]">
-						<input id="item-uuid" type="hidden" name="frm[uuid]" value="[####PRODUCTS-ARR.UUID|html####]">
-						[%%%%LOOP:PRODUCTS-ARR.ATTS%%%%]
-						[%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.DISPLAY:!=no;%%%%]
+					<h4>[###PRODUCTS-ARR.PRICE|html###]&nbsp;[###PRODUCTS-ARR.CURRENCY|html###]</h4>
+					<form class="ux-form" name="Form_[###PRODUCTS-ARR.UUID|html###]" id="Form_[###PRODUCTS-ARR.UUID|html###]" method="post" action="#" onsubmit="return false;" autocomplete="off">
+						<input id="item-id" type="hidden" name="frm[id]" value="[###PRODUCTS-ARR.ID|html###]">
+						<input id="item-uuid" type="hidden" name="frm[uuid]" value="[###PRODUCTS-ARR.UUID|html###]">
+						[%%%LOOP:PRODUCTS-ARR.ATTS%%%]
+						[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.DISPLAY:!=no;%%%]
 						<div class="form-group">
-							<label><span class="help-area" title="[%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.VALIDHINT:!=;%%%%][####PRODUCTS-ARR.ATTS._-VAL-_.VALIDHINT|html####][%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.VALIDHINT%%%%][%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.MIN:!=;%%%%] Min=[####PRODUCTS-ARR.ATTS._-VAL-_.MIN|html####][%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.MIN%%%%][%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.MAX:!=;%%%%] Max=[####PRODUCTS-ARR.ATTS._-VAL-_.MAX|html####][%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.MAX%%%%][%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.MINLEN:>0;%%%%] MinLen=[####PRODUCTS-ARR.ATTS._-VAL-_.MINLEN|int####][%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.MINLEN%%%%][%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.MINVAL:!=;%%%%] MinVal=`[####PRODUCTS-ARR.ATTS._-VAL-_.MINVAL|html####]`[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.MINVAL%%%%][%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.MAXVAL:!=;%%%%] MaxVal=`[####PRODUCTS-ARR.ATTS._-VAL-_.MAXVAL|html####]`[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.MAXVAL%%%%][%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.MAXLEN:>0;%%%%] MaxLen=[####PRODUCTS-ARR.ATTS._-VAL-_.MAXLEN|int####][%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.MAXLEN%%%%][%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.VALIDATION:^~decimal;%%%%][%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.DECIMALS:>0;(1)%%%%][%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.DECIMALS:<=4;(2)%%%%] ; Decimals=[####PRODUCTS-ARR.ATTS._-VAL-_.DECIMALS|int####][%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.DECIMALS(2)%%%%][%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.DECIMALS(1)%%%%][%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.VALIDATION%%%%]"><i class="sfi sfi-info light-text-area"></i></span> <span title="[####PRODUCTS-ARR.ATTS._-KEY-_|html####]">[%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.NAME:!=;%%%%][####PRODUCTS-ARR.ATTS._-VAL-_.NAME|html####][%%%%ELSE:PRODUCTS-ARR.ATTS._-VAL-_.NAME%%%%][####PRODUCTS-ARR.ATTS._-KEY-_|html####][%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.NAME%%%%]:</span></label>
-							[%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE:==list;%%%%]
-							[%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.VALIDATION:@+;%%%%]
-							<select id="item-attributes" name="frm[att][[####PRODUCTS-ARR.ATTS._-KEY-_|htmid####]]" class="form-control form-control-select" [%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:==;%%%%]required[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL%%%%]>
+							<label><span class="help-area" title="[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.VALIDHINT:!=;%%%][###PRODUCTS-ARR.ATTS._-VAL-_.VALIDHINT|html###][%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.VALIDHINT%%%][%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.MIN:!=;%%%] Min=[###PRODUCTS-ARR.ATTS._-VAL-_.MIN|html###][%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.MIN%%%][%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.MAX:!=;%%%] Max=[###PRODUCTS-ARR.ATTS._-VAL-_.MAX|html###][%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.MAX%%%][%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.MINLEN:>0;%%%] MinLen=[###PRODUCTS-ARR.ATTS._-VAL-_.MINLEN|int###][%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.MINLEN%%%][%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.MINVAL:!=;%%%] MinVal=`[###PRODUCTS-ARR.ATTS._-VAL-_.MINVAL|html###]`[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.MINVAL%%%][%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.MAXVAL:!=;%%%] MaxVal=`[###PRODUCTS-ARR.ATTS._-VAL-_.MAXVAL|html###]`[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.MAXVAL%%%][%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.MAXLEN:>0;%%%] MaxLen=[###PRODUCTS-ARR.ATTS._-VAL-_.MAXLEN|int###][%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.MAXLEN%%%][%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.VALIDATION:^~decimal;%%%][%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.DECIMALS:>0;(1)%%%][%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.DECIMALS:<=4;(2)%%%] ; Decimals=[###PRODUCTS-ARR.ATTS._-VAL-_.DECIMALS|int###][%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.DECIMALS(2)%%%][%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.DECIMALS(1)%%%][%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.VALIDATION%%%]"><i class="sfi sfi-info light-text-area"></i></span> <span title="[###PRODUCTS-ARR.ATTS._-KEY-_|html###]">[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.NAME:!=;%%%][###PRODUCTS-ARR.ATTS._-VAL-_.NAME|html###][%%%ELSE:PRODUCTS-ARR.ATTS._-VAL-_.NAME%%%][###PRODUCTS-ARR.ATTS._-KEY-_|html###][%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.NAME%%%]:</span></label>
+							[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE:==list;%%%]
+							[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.VALIDATION:@>0;%%%]
+							<select id="item-attributes" name="frm[att][[###PRODUCTS-ARR.ATTS._-KEY-_|htmid###]]" class="form-control form-control-select" [%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:==;%%%]required[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL%%%]>
 								<option value=""></option>
-								[%%%%LOOP:PRODUCTS-ARR.ATTS._-VAL-_%%%%]
-								[%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_._-KEY-_:==validation;%%%%]
-								[%%%%LOOP:PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_%%%%]
-								<option value="[####PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-KEY-_|html####]" title="[####PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-VAL-_.HINT|html####]">[####PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-KEY-_|html####][%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-VAL-_.ADJUST-PRICE:!=0;(1)%%%%] [[%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-VAL-_.ADJUST-PRICE:>0;(2)%%%%]+[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-VAL-_.ADJUST-PRICE(2)%%%%][####PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-VAL-_.ADJUST-PRICE|html####]&nbsp;[####PRODUCTS-ARR.CURRENCY|html####]][%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-VAL-_.ADJUST-PRICE(1)%%%%]</option>
-								[%%%%/LOOP:PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_%%%%]
-								[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_._-KEY-_%%%%]
-								[%%%%/LOOP:PRODUCTS-ARR.ATTS._-VAL-_%%%%]
+								[%%%LOOP:PRODUCTS-ARR.ATTS._-VAL-_%%%]
+								[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_._-KEY-_:==validation;%%%]
+								[%%%LOOP:PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_%%%]
+								<option value="[###PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-KEY-_|html###]" title="[###PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-VAL-_.HINT|html###]">[###PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-KEY-_|html###][%%%IF:PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-VAL-_.ADJUST-PRICE:!=0;(1)%%%] [[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-VAL-_.ADJUST-PRICE:>0;(2)%%%]+[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-VAL-_.ADJUST-PRICE(2)%%%][###PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-VAL-_.ADJUST-PRICE|html###]&nbsp;[###PRODUCTS-ARR.CURRENCY|html###]][%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_._-VAL-_.ADJUST-PRICE(1)%%%]</option>
+								[%%%/LOOP:PRODUCTS-ARR.ATTS._-VAL-_._-VAL-_%%%]
+								[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_._-KEY-_%%%]
+								[%%%/LOOP:PRODUCTS-ARR.ATTS._-VAL-_%%%]
 							</select>
-							[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.VALIDATION%%%%]
-							[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE%%%%]
-							[%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE:==free;%%%%]
-							<input type="text" name="frm[att][[####PRODUCTS-ARR.ATTS._-KEY-_|htmid####]]" value="" class="form-control form-control-text" [%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:==;%%%%]required[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL%%%%]>
-							[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE%%%%]
-							[%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE:==date;%%%%]
-							<input type="date" name="frm[att][[####PRODUCTS-ARR.ATTS._-KEY-_|htmid####]]" value="" class="form-control form-control-date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" [%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:==;%%%%]required[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL%%%%]>
-							[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE%%%%]
-							[%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:==inventory;(1)%%%%]
-								<span title="optional:[####PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL|html####]" class="help-area">**</span>
-							[%%%%ELSE:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL(1)%%%%]
-								[%%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:!=;(2)%%%%]
-								<span title="optional:[####PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL|html####]" class="help-area">*</span>
-								[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL(2)%%%%]
-							[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL(1)%%%%]
+							[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.VALIDATION%%%]
+							[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE%%%]
+							[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE:==free;%%%]
+							<input type="text" name="frm[att][[###PRODUCTS-ARR.ATTS._-KEY-_|htmid###]]" value="" class="form-control form-control-text" [%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:==;%%%]required[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL%%%]>
+							[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE%%%]
+							[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE:==date;%%%]
+							<input type="date" name="frm[att][[###PRODUCTS-ARR.ATTS._-KEY-_|htmid###]]" value="" class="form-control form-control-date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" [%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:==;%%%]required[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL%%%]>
+							[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE%%%]
+							[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:==inventory;(1)%%%]
+								<span title="optional:[###PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL|html###]" class="help-area">**</span>
+							[%%%ELSE:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL(1)%%%]
+								[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:!=;(2)%%%]
+								<span title="optional:[###PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL|html###]" class="help-area">*</span>
+								[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL(2)%%%]
+							[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL(1)%%%]
 						</div>
-						[%%%%ELSE:PRODUCTS-ARR.ATTS._-VAL-_.DISPLAY%%%%]
-							<input type="hidden" name="frm[att][[####PRODUCTS-ARR.ATTS._-KEY-_|htmid####]]" value="">
-						[%%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.DISPLAY%%%%]
-						[%%%%/LOOP:PRODUCTS-ARR.ATTS%%%%]
+						[%%%ELSE:PRODUCTS-ARR.ATTS._-VAL-_.DISPLAY%%%]
+							<input type="hidden" name="frm[att][[###PRODUCTS-ARR.ATTS._-KEY-_|htmid###]]" value="">
+						[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.DISPLAY%%%]
+						[%%%/LOOP:PRODUCTS-ARR.ATTS%%%]
 						<div class="form-group">
 							<label class="strong-area">Quantity:</label>
 							<input id="item-qty" name="frm[qty]" type="text" value="1" class="form-control form-quantity">
-							<span>[####PRODUCTS-ARR._-VAL-_.UM|html####]</span>
+							<span>[###PRODUCTS-ARR._-VAL-_.UM|html###]</span>
 						</div>
 						<div class="form-group">
-							<button class="ux-button ux-button-secondary ux-button-small add-to-cart" data-uuid="[####PRODUCTS-ARR.UUID|html####]"><i class="sfi sfi-cart"></i> Add to Cart</button>
+							<button class="ux-button ux-button-secondary ux-button-small add-to-cart" data-uuid="[###PRODUCTS-ARR.UUID|html###]"><i class="sfi sfi-cart"></i> Add to Cart</button>
 						</div>
 					</form>
 				</div>
@@ -134,10 +134,10 @@
 		</div>
 		<div class="ux-grid-col m1">
 		</div>
-	[%%%%IF:PRODUCTS-ARR._-ITERATOR-_:!%2;%%%%]
+	[%%%IF:PRODUCTS-ARR._-ITERATOR-_:!%2;%%%]
 	</div>
-	[%%%%/IF:PRODUCTS-ARR._-ITERATOR-_%%%%]
-[%%%%/LOOP:PRODUCTS-ARR%%%%]
+	[%%%/IF:PRODUCTS-ARR._-ITERATOR-_%%%]
+[%%%/LOOP:PRODUCTS-ARR%%%]
 </div>
 <script>
 jQuery('#btn-goto-shop').hide();
@@ -146,7 +146,7 @@ jQuery(document).ready(function(){
 		e.preventDefault();
 		var $btn = jQuery(this);
 		var uuid = $btn.attr('data-uuid'); // $btn.parent().parent().find('#item-uuid').val();
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('Form_' + String(uuid), '?page=[####PAGE-URL|url|js####]&op=cart-json&cart_action=add', true);
+		SmartJS_BrowserUtils.Submit_Form_By_Ajax('Form_' + String(uuid), '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=add', true);
 		return false;
 	});
 });

@@ -9,15 +9,7 @@ class IfHelper {
 		$rexpr = (string) $context->get('rexpr');
 		$operator = (string) trim((string)$context->get('operator'));
 		switch((string)$operator) {
-			case '@+': // array count >
-				if(\Smart::array_size($lexpr) > (int)$rexpr) {
-					return $chunk->render($bodies->block, $context);
-				} elseif(isset($bodies['else'])) {
-					return $chunk->render($bodies['else'], $context);
-				} else {
-					return $chunk;
-				}
-				break; //--
+			//--
 			case '==':
 				if((string)$lexpr == (string)$rexpr) {
 					return $chunk->render($bodies->block, $context);
@@ -90,7 +82,86 @@ class IfHelper {
 					return $chunk;
 				}
 				break; //--
-			case '^~': // if variable starts with part, case sensitive
+			//--
+			case '@==': // array(lexpr) count ==
+				if(\Smart::array_size($lexpr) == (int)$rexpr) {
+					return $chunk->render($bodies->block, $context);
+				} elseif(isset($bodies['else'])) {
+					return $chunk->render($bodies['else'], $context);
+				} else {
+					return $chunk;
+				}
+				break; //--
+			case '@!=': // array(lexpr) count !=
+				if(\Smart::array_size($lexpr) != (int)$rexpr) {
+					return $chunk->render($bodies->block, $context);
+				} elseif(isset($bodies['else'])) {
+					return $chunk->render($bodies['else'], $context);
+				} else {
+					return $chunk;
+				}
+				break; //--
+			case '@>=': // array(lexpr) count >=
+				if(\Smart::array_size($lexpr) >= (int)$rexpr) {
+					return $chunk->render($bodies->block, $context);
+				} elseif(isset($bodies['else'])) {
+					return $chunk->render($bodies['else'], $context);
+				} else {
+					return $chunk;
+				}
+				break; //--
+			case '@>': // array(lexpr) count >
+				if(\Smart::array_size($lexpr) > (int)$rexpr) {
+					return $chunk->render($bodies->block, $context);
+				} elseif(isset($bodies['else'])) {
+					return $chunk->render($bodies['else'], $context);
+				} else {
+					return $chunk;
+				}
+				break; //--
+			case '@<=': // array(lexpr) count <=
+				if(\Smart::array_size($lexpr) <= (int)$rexpr) {
+					return $chunk->render($bodies->block, $context);
+				} elseif(isset($bodies['else'])) {
+					return $chunk->render($bodies['else'], $context);
+				} else {
+					return $chunk;
+				}
+				break; //--
+			case '@<': // array(lexpr) count <
+				if(\Smart::array_size($lexpr) < (int)$rexpr) {
+					return $chunk->render($bodies->block, $context);
+				} elseif(isset($bodies['else'])) {
+					return $chunk->render($bodies['else'], $context);
+				} else {
+					return $chunk;
+				}
+				break; //--
+			//--
+			case '?': // in list(rexpr)='a|b|c' the key lexpr
+				$tmp_compare_arr = (array) \explode('|', (string)$rexpr);
+				if(\in_array((string)$lexpr, (array)$tmp_compare_arr)) { // if evaluate to true keep the inner content
+					return $chunk->render($bodies->block, $context);
+				} elseif(isset($bodies['else'])) {
+					return $chunk->render($bodies['else'], $context);
+				} else {
+					return $chunk;
+				}
+				$tmp_compare_arr = array();
+				break; //--
+			case '!?': // not in list(rexpr)='a|b|c' the key lexpr
+				$tmp_compare_arr = (array) \explode('|', (string)$rexpr);
+				if(!\in_array((string)$lexpr, (array)$tmp_compare_arr)) { // if evaluate to true keep the inner content
+					return $chunk->render($bodies->block, $context);
+				} elseif(isset($bodies['else'])) {
+					return $chunk->render($bodies['else'], $context);
+				} else {
+					return $chunk;
+				}
+				$tmp_compare_arr = array();
+				break; //--
+			//--
+			case '^~': // if lexpr starts with rexpr, case sensitive
 				if(\SmartUnicode::str_pos((string)$lexpr, (string)$rexpr) === 0) { // if evaluate to true keep the inner content
 					return $chunk->render($bodies->block, $context);
 				} elseif(isset($bodies['else'])) {
@@ -99,7 +170,7 @@ class IfHelper {
 					return $chunk;
 				}
 				break; //--
-			case '^*': // if variable starts with part, case insensitive
+			case '^*': // if lexpr starts with rexpr, case insensitive
 				if(\SmartUnicode::str_ipos((string)$lexpr, (string)$rexpr) === 0) { // if evaluate to true keep the inner content
 					return $chunk->render($bodies->block, $context);
 				} elseif(isset($bodies['else'])) {
@@ -108,7 +179,7 @@ class IfHelper {
 					return $chunk;
 				}
 				break; //--
-			case '~~': // if variable contains part, case sensitive
+			case '&~': // if variable contains part, case sensitive
 				if(\SmartUnicode::str_contains((string)$lexpr, (string)$rexpr)) { // if evaluate to true keep the inner content
 					return $chunk->render($bodies->block, $context);
 				} elseif(isset($bodies['else'])) {
@@ -117,7 +188,7 @@ class IfHelper {
 					return $chunk;
 				}
 				break; //--
-			case '~*': // if variable contains part, case insensitive
+			case '&*': // if variable contains part, case insensitive
 				if(\SmartUnicode::str_icontains((string)$lexpr, (string)$rexpr)) { // if evaluate to true keep the inner content
 					return $chunk->render($bodies->block, $context);
 				} elseif(isset($bodies['else'])) {
@@ -148,8 +219,10 @@ class IfHelper {
 					return $chunk;
 				}
 				break; //--
+			//--
 			default:
 				$chunk->setError('Invalid condition operator for if');
+			//--
 		} //end switch
 	}
 

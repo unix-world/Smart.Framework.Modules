@@ -1,7 +1,7 @@
-[%%%%COMMENT%%%%]
+[%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
-[%%%%/COMMENT%%%%]
-//===== QUnit Tests.Mod.TPL-Twig: START :: r.20191021
+[%%%/COMMENT%%%]
+//===== QUnit Tests.Mod.TPL-Twig: START :: r.20191109
 
 (function() {
 

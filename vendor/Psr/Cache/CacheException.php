@@ -8,3 +8,5 @@ namespace Psr\Cache;
 interface CacheException
 {
 }
+
+// #END

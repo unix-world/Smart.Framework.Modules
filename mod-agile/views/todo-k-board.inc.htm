@@ -1,11 +1,11 @@
-<!-- todo-k-board.inc.htm v.20190405 -->
-[%%%%IF:OP-MODE:@=create|edit;%%%%]
+<!-- todo-k-board.inc.htm v.20191109 -->
+[%%%IF:OP-MODE:?create|edit;%%%]
 <style>
 .jskanban_add_area {
 	margin-left: 10px;
 }
 </style>
-[%%%%/IF:OP-MODE%%%%]
+[%%%/IF:OP-MODE%%%]
 <div>
 	<div class="jskanban_passive_elements"></div>
 	<div class="jskanban_area" id="jskanban_area">
@@ -13,12 +13,12 @@
 			<h2 class="box-title" title="Not Started">1.To-Do</h2>
 			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-todo" data-kanban-status="todo">
 			</ul>
-			[%%%%IF:OP-MODE:@=create|edit;%%%%]
+			[%%%IF:OP-MODE:?create|edit;%%%]
 			<div class="jskanban_add_area">
 				<input id="jskanban_add_field" type="text" class="ux-field" value="">
 				<button id="jskanban_add_bttn" class="ux-button ux-button-small">Add New Task</button>
 			</div>
-			[%%%%/IF:OP-MODE%%%%]
+			[%%%/IF:OP-MODE%%%]
 		</div>
 		<div id="kanban-area-inprogress" class="jskanban_holder jskanban_holder_inprogress">
 			<h2 class="box-title" title="Started, Not Completed">2.In-Progress</h2>
@@ -37,7 +37,7 @@
 		</div>
 	</div>
 </div>
-[%%%%IF:OP-MODE:@=create|edit;%%%%]
+[%%%IF:OP-MODE:?create|edit;%%%]
 <script>
 jQuery('#jskanban_add_bttn').click(function() {
 	var txtNewItem = jQuery('#jskanban_add_field').val();
@@ -47,4 +47,4 @@ jQuery('#jskanban_add_bttn').click(function() {
 	jQuery('#jskanban_add_field').val('');
 });
 </script>
-[%%%%/IF:OP-MODE%%%%]
+[%%%/IF:OP-MODE%%%]

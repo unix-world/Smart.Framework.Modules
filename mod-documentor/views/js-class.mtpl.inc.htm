@@ -1,0 +1,60 @@
+<!-- class r.20191109 -->
+<!-- Styles -->
+[@@@SUB-TEMPLATE:partials/styles.mtpl.inc.htm@@@]
+<!-- Headings -->
+<h1 title="PHP [###TYPE|html###]: `[###NAME|html###]` @ JavaScript" id="Class--Summary-">
+	<span class="doc-modifiers">[###MODIFIERS|html###]</span> <span class="doc-keyword"><i>[###TYPE|html###]</i></span> <span class="doc-name">[###NAME|html###]</span><br>
+	{
+	}[%%%IF:CALLMODE:!=;%%%]&nbsp;[###CALLMODE|html###][%%%/IF:CALLMODE%%%]
+</h1>
+<!-- Description -->
+<div class="doc-comments">[%%%IF:DOC-COMMENTS-HTML:!=;%%%][###DOC-COMMENTS-HTML###][%%%ELSE:DOC-COMMENTS-HTML%%%]&nbsp;[%%%/IF:DOC-COMMENTS-HTML%%%]</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-located"><b>Located at:</b> [###FILE-NAME|html###]</span></li>
+		[%%%IF:PACKAGE:!=;%%%]<li><span class="doc-package"><b>Package:</b> [###PACKAGE|html###]</span></li>[%%%/IF:PACKAGE%%%]
+		<li><span class="doc-name"><b>[###TYPE|ucfirst|html###] Name:</b> [###NAME|html###]</span></li>
+		<li><b>Usage:</b> [###USAGE|html###]</li>
+		[%%%IF:THROWS:!=;%%%]<li><b>Throws:</b> [###THROWS|html###]</li>[%%%/IF:THROWS%%%]
+		[%%%IF:VERSION:!=;%%%]<li><b>Version:</b> [###VERSION|html###]</li>[%%%/IF:VERSION%%%]
+		[%%%IF:DEPENDS:!=;%%%]<li><b>Depends:</b> [###DEPENDS|html###]</li>[%%%/IF:DEPENDS%%%]
+		[%%%IF:HINTS:!=;%%%]<li><b>Hints:</b> [###HINTS|html###]</li>[%%%/IF:HINTS%%%]
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">Methods summary</h2>
+</div>
+
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">Properties summary</h2>
+</div>
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">Constants summary</h2>
+</div>
+
+<!-- Sample Code -->
+[%%%IF:DOC-CODE-HTML:!=;%%%]
+<br>
+<div class="doc-container" id="SAMPLE--Code-">
+	<h2 class="doc-header">Sample Code</h2>
+</div>
+<div class="doc-code">
+	<pre><code>[###DOC-CODE-HTML###]</code></pre>
+</div>
+[%%%/IF:DOC-CODE-HTML%%%]
+<!-- Summary List -->
+<br>
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: [###GENERATED-ON|html###]</small>
+<hr>
+<br>
+<!-- # -->

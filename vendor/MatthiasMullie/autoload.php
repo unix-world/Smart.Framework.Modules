@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Function AutoLoad Extra Libs for Vendor / MatthiasMullie (Minify, PathConverter)
+ * Function AutoLoad Extra Libs for Vendor / MatthiasMullie (Minify, PathConverter, Geo, Scrapbook)
  * they are loaded via Dependency Injection
  *
  * @access 		private
@@ -29,6 +29,8 @@ function autoload__VendorMatthiasMullie($classname) {
 	switch((string)$parts[1]) {
 		case 'Minify':
 		case 'PathConverter':
+		case 'Geo':
+		case 'Scrapbook':
 			if((string)$parts[1] != '') {
 				for($i=1; $i<$max; $i++) {
 					$dir .= (string) $parts[$i].'/';

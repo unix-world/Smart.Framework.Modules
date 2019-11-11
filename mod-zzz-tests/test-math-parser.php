@@ -3,7 +3,7 @@
 // Controller: ZZZ Tests / Math Parser
 // Route: ?page=zzz-tests.test-math-parser
 // (c) 2006-2019 unix-world.org - all rights reserved
-// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
+// r.5.2.7 / smart.framework.v.5.2
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -54,7 +54,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$this->PageViewSetVars([
 			'title' => 'ZZZ Tests: Math Parser',
-			'main' => '<h1 id="qunit-test-result">Math Expression Parser Test: '.Smart::escape_html($test_answer).'</h1><h2 id="qunit-test-result">Math Expression:</h2><pre>'.Smart::escape_html($expr).'</pre><hr>'.'<h2>Evaluated Result</h2><pre>'.Smart::escape_html($answer).'</pre><hr>'.'<br><br>'
+			'main' => '<h1 id="qunit-test-result">Math Expression Parser Test: '.Smart::escape_html($test_answer).'</h1><h2>Math Expression:</h2><pre>'.Smart::escape_html($expr).'</pre><hr>'.'<h2>Evaluated Result</h2><pre>'.Smart::escape_html($answer).'</pre><hr>'.'<br><br>'
 		]);
 		//--
 

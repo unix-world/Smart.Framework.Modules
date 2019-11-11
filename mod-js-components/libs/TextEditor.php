@@ -2,7 +2,7 @@
 // Class: \SmartModExtLib\JsComponents\TextEditor
 // [Smart.Framework.Modules - JsComponents / Text Editor]
 // (c) 2006-2019 unix-world.org - all rights reserved
-// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
+// r.5.2.7 / smart.framework.v.5.2
 
 namespace SmartModExtLib\JsComponents;
 
@@ -25,7 +25,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	javascript: CKEditor
- * @version 	v.20190121
+ * @version 	v.20191109
  * @package 	modules:ViewComponents
  *
  */

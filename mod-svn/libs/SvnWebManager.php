@@ -1,7 +1,7 @@
 <?php
 // [LIB - SmartFramework / Svn / Svn Web Manager]
 // (c) 2006-2019 unix-world.org - all rights reserved
-// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
+// r.5.2.7 / smart.framework.v.5.2
 
 // Class: \SmartModExtLib\Svn\SvnWebManager
 // Type: Module Library
@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SvnWebManager {
 
 	// ::
-	// v.20191006
+	// v.20191110
 
 	private static $svn_cache_dir = 'tmp/cache/svn/'; 		// must have trailing slash :: the svn proc jail root
 
@@ -458,11 +458,13 @@ final class SvnWebManager {
 			return array();
 		} //end if
 		if(\Smart::array_size($tmp_arr['log'][0]) <= 0) {
+			/* if zero revisions avoid fatal error
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN Rev. List: Invalid XML (2): ['.$path.']',
 				'ERR: SVN Rev. List: Invalid XML (2)' // msg to display
 			);
 			die(''); // just in case
+			*/
 			return array();
 		} //end if
 		//--
@@ -626,7 +628,7 @@ final class SvnWebManager {
 	//============================================================
 
 
-	//##### PRIVATES
+	//===== PRIVATES
 
 
 	//============================================================ OK

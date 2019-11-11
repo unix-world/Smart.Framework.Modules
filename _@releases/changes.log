@@ -1,5 +1,14 @@
 
-# CHANGELOG / MIGRATION NOTES - SMART.FRAMEWORK.MODULES #
+# CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
+## This apply onlt for for Milestone Releases
+
+November 09, 2019 :: Version 5.2.7
+	* Migrate Markers-TPL from v3 to v5 (stable)
+	* Fixes for Smart.Framework v5 (stable)
+
+October 22, 2019 :: Version 3.7.8 # rev.2019.10.22
+	* new modules: mod-tpl, mod-tpl-dust, mod-documentor, mod-soap
+	* fixes, optimizations
 
 February 07, 2019 :: Version 3.7.8 # rev.190207
 	* changed the license to multi-licensing (see LICENSE)
@@ -18,10 +27,10 @@ October 10, 2018 :: Version 3.7.7
 	* bug fixes and optimizations
 
 March 09, 2018 :: Version 3.7.5
-	* many optimizations and fixes
+	* optimizations and fixes
 
 Sep 27, 2017 :: Version 3.5.7
-	* many new modules includded
+	* new modules
 	* bug fixes and optimizations
 
 May 12, 2017 :: Version 3.5.1

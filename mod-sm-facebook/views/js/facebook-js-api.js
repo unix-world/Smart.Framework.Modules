@@ -1,7 +1,7 @@
 
 // Facebook JS API Handler
 // (c) 2012 - 2017 Radu I.
-// v.20191104
+// v.20191109
 
 // Depends on: jQuery
 // Depends on: SmartJS_Base64, SmartJS_Archiver_LZS, SmartJS_BrowserUtils
@@ -303,7 +303,7 @@ var FacebookApiHandler = new function() { // START CLASS
 	} //END FUNCTION
 
 
-	//##### Data Model
+	//===== Data Model
 
 
 	var storageGetItem = function(key, archive) {
@@ -338,7 +338,7 @@ var FacebookApiHandler = new function() { // START CLASS
 	} //END FUNCTION
 
 
-	//##### Below functions can be supplied by Smart.Framework/Js.Api/SmartJS_BrowserUtils
+	//===== Below functions can be supplied by Smart.Framework/Js.Api/SmartJS_BrowserUtils
 
 
 	var getCookie = function(name) {

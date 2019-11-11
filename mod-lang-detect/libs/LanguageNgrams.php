@@ -3,7 +3,7 @@
 // Ngrams Language Detection :: for Smart.Framework
 // Module Library
 // (c) 2006-2019 unix-world.org - all rights reserved
-// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
+// r.5.2.7 / smart.framework.v.5.2
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -56,7 +56,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @hints		By default will use the 1-3-930 NGrams. To use extended NGrams (Ex: 1-4-15k) see the local code examples.
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSysUtils
- * @version 	v.180320
+ * @version 	v.20191109
  * @package 	modules:LanguageDetection
  *
  */
@@ -427,7 +427,7 @@ final class LanguageNgrams {
 /***** Sample Usage:
 
 //--
-//##### DETECT
+//===== DETECT
 //--
 $lndet = new \SmartModExtLib\LangDetect\LanguageNgrams();
 $lndet->setMaxNgrams(20000);
@@ -436,7 +436,7 @@ print_r($arr); die();
 //--
 
 //--
-//##### TRAIN
+//===== TRAIN
 //--
 $ngrams_path = 'modules/mod-lang-detect/libs/data-1-4-15k';
 //--

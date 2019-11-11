@@ -1,4 +1,4 @@
-<!-- TPL: Smart.Cloud / WebAddressbook / WebCards :: [####USER-ACC|html####] -->
+<!-- TPL: Smart.Cloud / WebAddressbook / WebCards :: [###USER-ACC|html###] -->
 <div align="center">
 	<span style="font-size:40px!important; color:#778899;"><b><i>Smart.Cloud</i></b> <img width="32" height="32" src="modules/mod-cloud/views/img/globe.svg" alt="Smart.Cloud WebAddressbook" title="Smart.Cloud WebAddressbook" style="opacity:0.7;cursor:help;"> <b>WebAddressbook</b></span>
 	<br>
@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid.css">
 <script type="text/javascript" src="lib/js/jquery/slickgrid/slick.grid.js"></script>
 <div align="center">
-	<h3>Addressbook: [####USER-ABK|html####] (Cards: [####COUNT-CARDS|int####]) / Account: [####USER-ACC|html####]</h3>
+	<h3>Addressbook: [###USER-ABK|html###] (Cards: [###COUNT-CARDS|int###]) / Account: [###USER-ACC|html###]</h3>
 </div>
 <style>
 .slick-cell {
@@ -65,12 +65,12 @@
 	<div id="abook-grid" style="text-align:left; font-size:12px;width:600px;height:80vh; border:1px solid #ECECEC;"></div>
 </div>
 <script>
-var tpl = '[####CARD-TPL|js####]';
+var tpl = '[###CARD-TPL|js###]';
 </script>
 <script type="text/javascript">
 jQuery(function() {
 
-	var data = [####JSON-CARDS|json####];
+	var data = [###JSON-CARDS|json###];
 
 	function waitingFormatter(row, cell, value, columnDef, dataContext) {
 		return '<img width="32" height="32" src="lib/framework/img/loading-bubbles.svg">';
@@ -93,7 +93,7 @@ jQuery(function() {
 	var columns = [
 		{
 			id: 'id',
-			name: '[####USER-ABK|js####] :: Contacts',
+			name: '[###USER-ABK|js###] :: Contacts',
 			width: 750,
 			cssClass: 'contact-card-cell',
 			formatter: waitingFormatter,

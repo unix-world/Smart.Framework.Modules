@@ -1,17 +1,17 @@
-[@@@@SUB-TEMPLATE:flowchart-init.inc.htm@@@@]
-<!-- flowchart-reader.htm v.20190405 -->
+[@@@SUB-TEMPLATE:flowchart-init.inc.htm@@@]
+<!-- flowchart-reader.htm v.20191109 -->
 <style>
 #area-readonly .jtk-canvas {
 	overflow: auto !important;
 }
 </style>
 <div style="text-align:center; font-size:1rem!important; font-weight:bold; background:#445566; color:#FFFFFF; border-radius:1px;">
-	<span id="flowchart_title">[####TITLE|html####]</span>
+	<span id="flowchart_title">[###TITLE|html###]</span>
 </div>
-<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<div style="text-align:center; font-weight:bold;">Version: [###DATE|html###] / Author: [###AUTHOR|html###]</div>
 <div style="text-align:center;">
 	<button class="ux-button ux-button-small ux-button-secondary" id="flowchartExportBtn" onclick="doExportFlowchart();" style="margin-left: 15px;">Export as JSON</button>
-	<button class="ux-button ux-button-small ux-button-highlight" id="flowchartEditBtn" onclick="self.location='admin.php?/page/agile.flowchart-editor/uuid/[####UUID|url|html####]/edit/yes'; return false;" style="margin-left: 15px;">Edit FlowChart</button>
+	<button class="ux-button ux-button-small ux-button-highlight" id="flowchartEditBtn" onclick="self.location='admin.php?/page/agile.flowchart-editor/uuid/[###UUID|url|html###]/edit/yes'; return false;" style="margin-left: 15px;">Edit FlowChart</button>
 	<button class="ux-button ux-button-small ux-button-special" id="flowchartCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
 </div>
 <br>
@@ -19,11 +19,11 @@
 	<div class="jtk-canvas canvas-wide flowchart-area jtk-surface jtk-surface-nopan" id="canvas" style="border: 1px solid #ECECEC;"></div>
 </div>
 <script>
-var flowchartDataObj = [####JSON-DATA|json####];
+var flowchartDataObj = [###JSON-DATA|json###];
 flowchartEditorInit(flowchartDataObj);
 // do not clear flowchartDataObj, it is req. by export
-var exportDTime = '[####DTIME|js####]';
-var exportAuthor = '[####AUTHOR|js####]';
+var exportDTime = '[###DTIME|js###]';
+var exportAuthor = '[###AUTHOR|js###]';
 </script>
 <script>
 function doExportFlowchart() {

@@ -3,8 +3,8 @@
 ### This software project is open source. You must choose which license to use depending on your use case: BSD license or GPLv3 license (see LICENSE file)
 <b>(c) 2009 - 2019 unix-world.org</b> / <i>support&#64;unix-world.org</i>
 
-This software framework is compatible, stable and actively tested with PHP 5.6 / 7.0 / 7.1 / 7.2 / 7.3 versions.
-Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
+#### This software framework is compatible, stable and actively tested with PHP 5.6 / 7.0 / 7.1 / 7.2 / 7.3 / 7.4 versions.
+**Prefered PHP versions** are: **7.2 / 7.3** which are currently LTS.
 
 ## List of available Modules for Smart.Framework:
 
@@ -27,7 +27,6 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 	* MediaGallery: a media gallery api for Smart.Framework
 	* SocialMedia Facebook: Js + PHP API
 	* SocialMedia Twitter: Js + PHP API
-	* PageBuilder: a content management API for Smart.Framework
 	* SVN (manager): a web based SVN (subversion) manager
 
 ### Extra App Modules (GPLv3 licensed ; can be used with Smart.Framework licensed under GPLv3 license only):
@@ -45,8 +44,8 @@ Prefered PHP versions are: 7.1 / 7.2 which are currently LTS.
 	* TPL wrapper Lib for the includded TPL engines (this make life easier with existing TPL engines in Smart.Framework: MarkersTPL and Smart.Framework.Modules: Dust, Twig, netteLatte and typo3Fluid)
 
 ### Vendor Libs (BSD licensed):
-	* CSS and JS Minify: vendor/MatthiasMullie
-	* PSR Cache: vendor/Psr
+	* CSS and JS Minify, Geo, Scrapbook: vendor/MatthiasMullie
+	* PSR Cache, SimpleCache: vendor/Psr
 	* HTMLToMarkdown: vendor/League
 	* SVG Draw: vendor/MeyFaSvg
 	* Math Parser: vendor/PHPMathParser

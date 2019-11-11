@@ -1,7 +1,7 @@
 
 // NetVision JS - Contextual Advertising
 // (c) 2006-2017 unix-world.org
-// r.2017.04.28
+// r.20191109
 
 //========================
 

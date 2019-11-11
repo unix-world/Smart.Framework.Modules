@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModDataModel\Cloud\SqWebmail
 // (c) 2006-2019 unix-world.org - all rights reserved
-// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
+// r.5.2.7 / smart.framework.v.5.2
 
 namespace SmartModDataModel\Cloud;
 
@@ -21,7 +21,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class SqWebmail {
 
 	// ->
-	// v.20190113
+	// v.20191109
 
 	private $db;
 
@@ -204,7 +204,7 @@ final class SqWebmail {
 	} //END FUNCTION
 
 
-	//##### PRIVATES
+	//===== PRIVATES
 
 
 	private function buildListWhereCondition($srcby, $src) {

@@ -1,20 +1,20 @@
-[@@@@SUB-TEMPLATE:flowchart-init.inc.htm@@@@]
-<!-- flowchart-editor.htm v.20190405 -->
+[@@@SUB-TEMPLATE:flowchart-init.inc.htm@@@]
+<!-- flowchart-editor.htm v.20191109 -->
 <link rel="stylesheet" href="modules/mod-wflow-components/views/flowchart/editor/flowchart-editor-edit.css">
 <style>
 #area-editable {
-	background: white url("[####VIEWS-PATH|html####]img/back.svg");
+	background: white url("[###VIEWS-PATH|html###]img/back.svg");
 	background-size: 250px 250px;
 	background-repeat: repeat;
 	border: 0px !important;
 }
 </style>
 <form class="ux-form" id="flowchart_form" name="flowchart_form" method="POST" action="#">
-	<input id="flowchart_uuid" name="uuid" type="hidden" value="[####UUID|html####]">
-	<input id="flowchart_title" name="flowchart_title" type="text" maxlength="255" value="[####TITLE|html####]" title="Flowchart Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:1rem!important; font-weight:bold; text-align:center;">
+	<input id="flowchart_uuid" name="uuid" type="hidden" value="[###UUID|html###]">
+	<input id="flowchart_title" name="flowchart_title" type="text" maxlength="255" value="[###TITLE|html###]" title="Flowchart Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:1rem!important; font-weight:bold; text-align:center;">
 	<input id="flowchart_data" name="flowchart_data" type="hidden" value="">
 </form>
-<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<div style="text-align:center; font-weight:bold;">Version: [###DATE|html###] / Author: [###AUTHOR|html###]</div>
 <br>
 <div style="text-align:center;">
 	<select class="ux-field ux-input-medium" style="width:300px;" autocomplete="off">
@@ -31,11 +31,11 @@
 		</optgroup>
 	</select>
 	<button class="ux-button ux-button-small ux-button-regular" id="flowchartSaveBtn" onclick="" style="margin-left: 15px;">Save Flowchart</button>
-	[%%%%IF:OP-MODE:==create;%%%%]
+	[%%%IF:OP-MODE:==create;%%%]
 	<button class="ux-button ux-button-small ux-button-special" id="flowchartCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
-	[%%%%ELSE:OP-MODE%%%%]
-	<button class="ux-button ux-button-small ux-button-special" id="flowchartCancelBtn" onclick="self.location='admin.php?/page/agile.flowchart-editor/uuid/[####UUID|url|html####]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
-	[%%%%/IF:OP-MODE%%%%]
+	[%%%ELSE:OP-MODE%%%]
+	<button class="ux-button ux-button-small ux-button-special" id="flowchartCancelBtn" onclick="self.location='admin.php?/page/agile.flowchart-editor/uuid/[###UUID|url|html###]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
+	[%%%/IF:OP-MODE%%%]
 </div>
 <br>
 <div id="area-editable" class="jtk-main">
@@ -72,7 +72,7 @@
 		labelType = String(labelType || '');
 		if(labelType.toLowerCase() === 'box icon') {
 			var theList = '';
-			var theIcons = [####THE-ICONS|json####];
+			var theIcons = [###THE-ICONS|json###];
 			theList += '<h5 style="color:#555555;">SF.Icons</h5>';
 			theList += '<input type="hidden" id="flowchart-element-icon" value="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '">';
 			if(theIcons.length) {
@@ -80,8 +80,8 @@
 					theList += '<div title="Click to select SF.Icon: ' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" style="float:left; margin-right:3px; margin-bottom:3px; cursor:pointer; color:#778899; font-size:1rem!important;" class="' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" onclick="var theIconClass = jQuery(this).attr(\'class\'); jQuery(\'#flowchart-element-icon\').val(theIconClass); jQuery(\'#flowchart-element-selected-icon\').attr(\'class\', theIconClass).attr(\'title\', \'Selected Icon: \' + theIconClass);"></div>';
 				}
 			}
-			[%%%%IF:LOAD-FA:==yes;%%%%]
-			theIcons = [####FA-ICONS|json####];
+			[%%%IF:LOAD-FA:==yes;%%%]
+			theIcons = [###FA-ICONS|json###];
 			if(theIcons.length) {
 				theList += '<div style="clear:both;"></div><br>';
 				theList += '<h5 style="color:#555555;">Font Awesome</h5>';
@@ -89,7 +89,7 @@
 					theList += '<div title="Click to select FontAwesome Icon: ' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" style="float:left; margin-right:3px; margin-bottom:3px; cursor:pointer; color:#778899; font-size:1rem!important;" class="' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" onclick="var theIconClass = jQuery(this).attr(\'class\'); jQuery(\'#flowchart-element-icon\').val(theIconClass); jQuery(\'#flowchart-element-selected-icon\').attr(\'class\', theIconClass).attr(\'title\', \'Selected Icon: \' + theIconClass);"></div>';
 				}
 			}
-			[%%%%/IF:LOAD-FA%%%%]
+			[%%%/IF:LOAD-FA%%%]
 			SmartJS_BrowserUtils.confirm_Dialog('<h3>' + SmartJS_CoreUtils.escape_html(labelType) + ' &nbsp; <span title="Selected Icon: ' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" style="font-size:1.5rem!important; cursor:help;" id="flowchart-element-selected-icon" class="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" onClick="jQuery(\'#flowchart-element-icon\').val(\'\'); jQuery(this).attr(\'class\', \'\').attr(\'title\', \'\');"></span></h3><div style="width:100%; height:200px; overflow:auto;">' + theList + '</div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-icon").val()); }, 'Modify Flowchart Element', 550, 355);
 		} else {
 			SmartJS_BrowserUtils.confirm_Dialog('<h3>' + SmartJS_CoreUtils.escape_html(labelType) + '</h3><div>Label:&nbsp; <input type="text" maxlength="50" value="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" id="flowchart-element-label" class="ux-field" style="width:425px;"></div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-label").val()); }, 'Modify Flowchart Element', 550, 200);
@@ -111,7 +111,7 @@
 	} */
 </script>
 <script>
-	var flowchartDataObj = [####JSON-DATA|json####];
+	var flowchartDataObj = [###JSON-DATA|json###];
 	flowchartEditorInit(flowchartDataObj, flowchartIsReadonly, flowchartAddDialogHelper, flowchartEditDialogHelper, flowchartDeleteDialogHelper, flowchartSaveDataHelper, flowchartExportDataHelper);
 	flowchartDataObj = null; // clear
 </script>

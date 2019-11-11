@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20191104 -->
+<!-- Template: Smart.Framework@Documentor v.20191109 -->
 <html>
 <head>
-	<meta charset="[####CHARSET|html####]">
+	<meta charset="[###CHARSET|html###]">
 	<meta name="viewport" content="width=device-width">
 	<meta name="author" content="unix-world.org">
-	<meta name="description" content="[####SEO-DESCRIPTION|html####]">
-	<meta name="keywords" content="[####SEO-KEYWORDS|html####]">
-	<meta name="summary" content="[####SEO-SUMMARY|html####]">
-	<title>[####TITLE|html####]</title>
+	<meta name="description" content="[###SEO-DESCRIPTION|html###]">
+	<meta name="keywords" content="[###SEO-KEYWORDS|html###]">
+	<meta name="summary" content="[###SEO-SUMMARY|html###]">
+	<title>[###TITLE|html###]</title>
 	<!-- CSS and Fonts -->
-	[%%%%IF:FONTS-PATH:!=;%%%%]
-	<link rel="stylesheet" type="text/css" href="[####FONTS-PATH|html####]source-sans-pro.css">
-	[%%%%ELSE:FONTS-PATH%%%%]
+	[%%%IF:FONTS-PATH:!=;%%%]
+	<link rel="stylesheet" type="text/css" href="[###FONTS-PATH|html###]source-sans-pro.css">
+	[%%%ELSE:FONTS-PATH%%%]
 	<!-- skip fonts -->
-	[%%%%/IF:FONTS-PATH%%%%]
+	[%%%/IF:FONTS-PATH%%%]
 	<style type="text/css">
 	* {
-		font-family: [%%%%IF:FONTS-PATH:!=;%%%%]'Source Sans Pro', [%%%%/IF:FONTS-PATH%%%%]sans-serif;
+		font-family: [%%%IF:FONTS-PATH:!=;%%%]'Source Sans Pro', [%%%/IF:FONTS-PATH%%%]sans-serif;
 		font-smooth: always;
 	}
 	/* ----- #start ----- */
@@ -422,24 +422,24 @@
 </head>
 <body>
 <nav class="ux-navbar">
-	<div id="logo"><span>&#9776; </span>[####HEADING-TITLE|html####]</div>
+	<div id="logo"><span>&#9776; </span>[###HEADING-TITLE|html###]</div>
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
-	[%%%%IF:URL-INDEX:!=;%%%%]
+	[%%%IF:URL-INDEX:!=;%%%]
 	<ul class="menu">
-		<li><a href="[####URL-INDEX|html####]" title="return to Index">return to Index</a></li>
+		<li><a href="[###URL-INDEX|html###]" title="return to Index">return to Index</a></li>
 	</ul>
-	[%%%%/IF:URL-INDEX%%%%]
+	[%%%/IF:URL-INDEX%%%]
 </nav>
-[%%%%IF:LOGO-IMG:!=;%%%%]
-<a href="https://github.com/unix-world/Smart.Framework" target="_blank" title="Smart.Framework Demo"><img src="[####LOGO-IMG|html####]" alt="Smart.Framework Logo" width="128" height="128" align="right" style="margin:5px; margin-top:0;"></a>
-[%%%%ELSE:LOGO-IMG%%%%]
+[%%%IF:LOGO-IMG:!=;%%%]
+<a href="https://github.com/unix-world/Smart.Framework" target="_blank" title="Smart.Framework Demo"><img src="[###LOGO-IMG|html###]" alt="Smart.Framework Logo" width="128" height="128" align="right" style="margin:5px; margin-top:0;"></a>
+[%%%ELSE:LOGO-IMG%%%]
 <!-- skip logo -->
-[%%%%/IF:LOGO-IMG%%%%]
-[####MAIN####]
+[%%%/IF:LOGO-IMG%%%]
+[###MAIN###]
 <div align="center">
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-[####YEAR|html####] unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-[###YEAR|html###] unix-world.org</small>
 </div>
 </body>
 </html>

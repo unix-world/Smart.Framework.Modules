@@ -1,7 +1,7 @@
-[%%%%COMMENT%%%%]
+[%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
-// generate-js r.20191104
-[%%%%/COMMENT%%%%]
+// generate-js r.20191109
+[%%%/COMMENT%%%]
 
 //===== QUnit: START
 
@@ -22,17 +22,17 @@ smartQUnitStartDelay = 500;
 	});
 
 	// @Settings
-	var charSet 				= '[####CHARSET|js####]';
-	var phpVersion 				= '[####PHP-VERSION|js####]';
-	var phpMinVersion 			= '[####PHP-MIN-VERSION|js####]';
-	var phpCompareVer 			= '[####PHP-COMPARE-VERSIONS|js####]';
-	var phpResultOkVer 			= '[####PHP-OK-VERSION|js####]';
-	var smartFrameworkVersion 	= '[####SF-VERSION|js####]';
-	var appRealm 				= '[####APP-REALM|js####]';
-	var debugMode 				= '[####DEBUG-MODE|js####]';
-	var currentLanguage 		= '[####LANG|js####]';
-	var modulePath 				= '[####MODULE-PATH|js####]';
-	var baseScript  			= '[####SRV-SCRIPT|js####]';
+	var charSet 				= '[###CHARSET|js###]';
+	var phpVersion 				= '[###PHP-VERSION|js###]';
+	var phpMinVersion 			= '[###PHP-MIN-VERSION|js###]';
+	var phpCompareVer 			= '[###PHP-COMPARE-VERSIONS|js###]';
+	var phpResultOkVer 			= '[###PHP-OK-VERSION|js###]';
+	var smartFrameworkVersion 	= '[###SF-VERSION|js###]';
+	var appRealm 				= '[###APP-REALM|js###]';
+	var debugMode 				= '[###DEBUG-MODE|js###]';
+	var currentLanguage 		= '[###LANG|js###]';
+	var modulePath 				= '[###MODULE-PATH|js###]';
+	var baseScript  			= '[###SRV-SCRIPT|js###]';
 
 	// @Self Tests
 	QUnit.module('@App-Environment', function(){
@@ -40,34 +40,34 @@ smartQUnitStartDelay = 500;
 			var expected;
 			expected = 'charSet: UTF-8';
 			assert.equal('charSet: ' + charSet, expected, expected);
-			expected = 'phpVersion: [####PHP-VERSION|js####]';
+			expected = 'phpVersion: [###PHP-VERSION|js###]';
 			assert.equal('phpVersion: ' + phpVersion, expected, expected);
-			expected = 'phpMinVersion: [####PHP-MIN-VERSION|js####]';
+			expected = 'phpMinVersion: [###PHP-MIN-VERSION|js###]';
 			assert.equal('phpMinVersion: ' + phpMinVersion, expected, expected);
 			expected = 'phpCompareVer: ' + phpResultOkVer;
 			assert.equal('phpCompareVer: ' + phpCompareVer, expected, expected);
-			expected = 'smartFrameworkVersion: [####SF-VERSION|js####]';
+			expected = 'smartFrameworkVersion: [###SF-VERSION|js###]';
 			assert.equal('smartFrameworkVersion: ' + smartFrameworkVersion, expected, expected);
 			expected = 'debugMode: no';
 			assert.equal('debugMode: ' + debugMode, expected, expected);
-			expected = 'appRealm: [####APP-REALM|js####] / [####SRV-SCRIPT|js####]';
+			expected = 'appRealm: [###APP-REALM|js###] / [###SRV-SCRIPT|js###]';
 			assert.equal('appRealm: ' + appRealm + ' / ' + baseScript, expected, expected);
 			expected = 'currentLanguage: en';
 			assert.equal('currentLanguage: ' + currentLanguage, expected, expected);
-			expected = 'modulePath: [####MODULE-PATH|js####]';
+			expected = 'modulePath: [###MODULE-PATH|js###]';
 			assert.equal('modulePath: ' + modulePath, expected, expected);
 		});
 	});
 
 	// Local Tasks
 
-	[%%%%IF:PRE-TASKS:@+0;%%%%]
+	[%%%IF:PRE-TASKS:@>0;%%%]
 	var msgOkPreTask = 'Pre-Task OK: Done';
 	QUnit.module('Documentation Pre-Generate', function(){
-		[%%%%LOOP:PRE-TASKS%%%%]
-		QUnit.test('Task #[####PRE-TASKS.-_INDEX_-|js####]: [####PRE-TASKS._-VAL-_|upper|js####]', function(assert) {
+		[%%%LOOP:PRE-TASKS%%%]
+		QUnit.test('Task #[###PRE-TASKS.-_INDEX_-|js###]: [###PRE-TASKS._-VAL-_|upper|js###]', function(assert) {
 			SmartQUnit.runAjaxTest(
-				'admin.php?page=documentor.doc&action=[####PRE-TASKS._-VAL-_|url|js####]&mode=[####MODE|url|js####]&extra=[####EXTRA|url|js####]&heading=[####HEADING|url|js####]',
+				'admin.php?page=documentor.doc&action=[###PRE-TASKS._-VAL-_|url|js###]&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
 				'GET',
 				'json', // data type
 				assert,
@@ -91,19 +91,19 @@ smartQUnitStartDelay = 500;
 				} //end function
 			);
 		});
-		[%%%%/LOOP:PRE-TASKS%%%%]
+		[%%%/LOOP:PRE-TASKS%%%]
 	});
-	[%%%%ELSE:PRE-TASKS%%%%]
+	[%%%ELSE:PRE-TASKS%%%]
 	// there are no pre-tasks ...
-	[%%%%/IF:PRE-TASKS%%%%]
+	[%%%/IF:PRE-TASKS%%%]
 
-	[%%%%IF:TASKS:@+0;%%%%]
+	[%%%IF:TASKS:@>0;%%%]
 	var msgOkTask = 'Task OK: Doc Generated';
 	QUnit.module('Documentation Generate', function(){
-		[%%%%LOOP:TASKS%%%%]
-		QUnit.test('Task #[####TASKS.-_INDEX_-|js####]: [####TASKS._-VAL-_|js####]', function(assert) {
+		[%%%LOOP:TASKS%%%]
+		QUnit.test('Task #[###TASKS.-_INDEX_-|js###]: [###TASKS._-VAL-_|js###]', function(assert) {
 			SmartQUnit.runAjaxTest(
-				'admin.php?page=documentor.doc&cls=[####TASKS._-VAL-_|url|js####]&action=save&mode=[####MODE|url|js####]&extra=[####EXTRA|url|js####]&heading=[####HEADING|url|js####]',
+				'admin.php?page=documentor.doc&cls=[###TASKS._-VAL-_|url|js###]&action=save&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
 				'GET',
 				'json', // data type
 				assert,
@@ -127,19 +127,19 @@ smartQUnitStartDelay = 500;
 				} //end function
 			);
 		});
-		[%%%%/LOOP:TASKS%%%%]
+		[%%%/LOOP:TASKS%%%]
 	});
-	[%%%%ELSE:TASKS%%%%]
+	[%%%ELSE:TASKS%%%]
 	// there are no tasks ...
-	[%%%%/IF:TASKS%%%%]
+	[%%%/IF:TASKS%%%]
 
-	[%%%%IF:POST-TASKS:@+0;%%%%]
+	[%%%IF:POST-TASKS:@>0;%%%]
 	var msgOkPostTask = 'Post-Task OK: Done';
 	QUnit.module('Documentation Post-Generate', function(){
-		[%%%%LOOP:POST-TASKS%%%%]
-		QUnit.test('Task #[####POST-TASKS.-_INDEX_-|js####]: [####POST-TASKS._-VAL-_|upper|js####]', function(assert) {
+		[%%%LOOP:POST-TASKS%%%]
+		QUnit.test('Task #[###POST-TASKS.-_INDEX_-|js###]: [###POST-TASKS._-VAL-_|upper|js###]', function(assert) {
 			SmartQUnit.runAjaxTest(
-				'admin.php?page=documentor.doc&action=[####POST-TASKS._-VAL-_|url|js####]&mode=[####MODE|url|js####]&extra=[####EXTRA|url|js####]&heading=[####HEADING|url|js####]',
+				'admin.php?page=documentor.doc&action=[###POST-TASKS._-VAL-_|url|js###]&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
 				'GET',
 				'json', // data type
 				assert,
@@ -163,11 +163,11 @@ smartQUnitStartDelay = 500;
 				} //end function
 			);
 		});
-		[%%%%/LOOP:POST-TASKS%%%%]
+		[%%%/LOOP:POST-TASKS%%%]
 	});
-	[%%%%ELSE:POST-TASKS%%%%]
+	[%%%ELSE:POST-TASKS%%%]
 	// there are no post-tasks ...
-	[%%%%/IF:POST-TASKS%%%%]
+	[%%%/IF:POST-TASKS%%%]
 
 })();
 

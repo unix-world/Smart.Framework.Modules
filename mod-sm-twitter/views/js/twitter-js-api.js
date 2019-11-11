@@ -1,7 +1,7 @@
 
 // Twitter JS API Handler
 // (c) 2012 - 2017 Radu I.
-// v.20191104
+// v.20191109
 
 // Depends on: codebird.js, SmartJS_BrowserUtils
 
@@ -313,7 +313,7 @@ var TwitterApiHandler = new function() { // START CLASS
 	} //END FUNCTION
 
 
-	//#####
+	//=====
 
 
 	var requestPermissions = function(callbackUrl, fxResponseOk, fxResponseNotOk) {
@@ -413,7 +413,7 @@ var TwitterApiHandler = new function() { // START CLASS
 	} //END FUNCTION
 
 
-	//##### Data Model
+	//===== Data Model
 
 
 	var storageGetItem = function(key, archive) {
@@ -448,7 +448,7 @@ var TwitterApiHandler = new function() { // START CLASS
 	} //END FUNCTION
 
 
-	//##### Below functions can be supplied by Smart.Framework/Js.Api/SmartJS_BrowserUtils
+	//===== Below functions can be supplied by Smart.Framework/Js.Api/SmartJS_BrowserUtils
 
 
 	var parseUrlParams = function() {

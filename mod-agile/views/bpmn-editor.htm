@@ -1,5 +1,5 @@
-[@@@@SUB-TEMPLATE:bpmn-init.inc.htm@@@@]
-<!-- bpmn-editor.htm v.20190405 -->
+[@@@SUB-TEMPLATE:bpmn-init.inc.htm@@@]
+<!-- bpmn-editor.htm v.20191109 -->
 <link rel="stylesheet" href="modules/mod-wflow-components/views/bpmn-flow/modeler.css">
 <style>
 #canvas {
@@ -18,7 +18,7 @@
 	width: 95px;
 }
 #canvas {
-	background: white url("[####VIEWS-PATH|html####]img/back.svg");
+	background: white url("[###VIEWS-PATH|html###]img/back.svg");
 	background-size: 250px 250px;
 	background-repeat: repeat;
 	border: 0px !important;
@@ -27,19 +27,19 @@
 </style>
 <script src="modules/mod-wflow-components/views/bpmn-flow/bpmn-modeler.js"></script>
 <form class="ux-form" id="bpmn_form" name="bpmn_form" method="POST" action="#">
-	<input id="bpmn_uuid" name="uuid" type="hidden" value="[####UUID|html####]">
-	<input id="bpmn_title" name="bpmn_title" type="text" maxlength="255" value="[####TITLE|html####]" title="BPMN-Diagram Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:1rem!important; font-weight:bold; text-align:center;">
+	<input id="bpmn_uuid" name="uuid" type="hidden" value="[###UUID|html###]">
+	<input id="bpmn_title" name="bpmn_title" type="text" maxlength="255" value="[###TITLE|html###]" title="BPMN-Diagram Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:1rem!important; font-weight:bold; text-align:center;">
 	<input id="bpmn_data" name="bpmn_data" type="hidden" value="">
 </form>
-<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<div style="text-align:center; font-weight:bold;">Version: [###DATE|html###] / Author: [###AUTHOR|html###]</div>
 <br>
 <div style="text-align:center;">
 	<button class="ux-button ux-button-small ux-button-regular" id="bpmnSaveBtn" onclick="doSaveBpmn();" style="margin-left: 15px;">Save BPMN-Diagram</button>
-	[%%%%IF:OP-MODE:==create;%%%%]
+	[%%%IF:OP-MODE:==create;%%%]
 	<button class="ux-button ux-button-small ux-button-special" id="bpmnCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
-	[%%%%ELSE:OP-MODE%%%%]
-	<button class="ux-button ux-button-small ux-button-special" id="bpmnCancelBtn" onclick="self.location='admin.php?/page/agile.bpmn-editor/uuid/[####UUID|url|html####]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
-	[%%%%/IF:OP-MODE%%%%]
+	[%%%ELSE:OP-MODE%%%]
+	<button class="ux-button ux-button-small ux-button-special" id="bpmnCancelBtn" onclick="self.location='admin.php?/page/agile.bpmn-editor/uuid/[###UUID|url|html###]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
+	[%%%/IF:OP-MODE%%%]
 </div>
 <br>
 <div id="canvas"></div>
@@ -89,7 +89,7 @@ var diagramModeler;
 		}
 	}
 
-	var bpmnDataObj = [####JSON-DATA|json####];
+	var bpmnDataObj = [###JSON-DATA|json###];
 	openDiagram(bpmnDataObj);
 	bpmnDataObj = null;
 

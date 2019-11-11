@@ -1,11 +1,11 @@
-[%%%%COMMENT%%%%]
+[%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
-[%%%%/COMMENT%%%%]
-//===== QUnit Tests.Mod.Zend-DBAL: START :: r.20191031
+[%%%/COMMENT%%%]
+//===== QUnit Tests.Mod.Zend-DBAL: START :: r.20191109
 
 (function() {
 
-	var localTest = [####TEST-MOD-DB|bool####];
+	var localTest = [###TEST-MOD-DB|bool###];
 
 	if(!localTest) {
 
@@ -17,9 +17,9 @@
 		localTest = false; // reset
 
 		var localTests = {};
-		localTests.SQLite 		= [####TEST-DB-SQLITE|bool####];
-		localTests.PostgreSQL 	= [####TEST-DB-PGSQL|bool####];
-		localTests.MySQL 		= [####TEST-DB-MYSQL|bool####];
+		localTests.SQLite 		= [###TEST-DB-SQLITE|bool###];
+		localTests.PostgreSQL 	= [###TEST-DB-PGSQL|bool###];
+		localTests.MySQL 		= [###TEST-DB-MYSQL|bool###];
 		for(var val in localTests) {
 			if(localTests[val] === true) {
 				localTest = true;

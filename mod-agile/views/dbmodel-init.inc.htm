@@ -1,13 +1,13 @@
-<!-- dbmodel-init.inc.htm v.20190405 -->
+<!-- dbmodel-init.inc.htm v.20191109 -->
 <link rel="stylesheet" href="modules/mod-wflow-components/views/dbmodeler/css/style.css" media="all">
 <script src="modules/mod-wflow-components/views/dbmodeler/js/config.js"></script>
 <script type="text/javascript">
-	[%%%%IF:OP-MODE:@=create|edit;%%%%]
+	[%%%IF:OP-MODE:?create|edit;%%%]
 	CONFIG.IS_READONLY = false;
-	[%%%%ELSE:OP-MODE%%%%]
+	[%%%ELSE:OP-MODE%%%]
 	CONFIG.IS_READONLY = true;
-	[%%%%/IF:OP-MODE%%%%]
-	CONFIG.DEFAULT_DB = '[####DB-TYPE|js####]';
+	[%%%/IF:OP-MODE%%%]
+	CONFIG.DEFAULT_DB = '[###DB-TYPE|js###]';
 	CONFIG.STATIC_PATH = 'modules/mod-wflow-components/views/dbmodeler/';
 </script>
 <script src="modules/mod-wflow-components/views/dbmodeler/js/oz.js"></script>
@@ -27,24 +27,24 @@
 <script src="modules/mod-wflow-components/views/dbmodeler/js/window.js"></script>
 <script src="modules/mod-wflow-components/views/dbmodeler/js/options.js"></script>
 <script src="modules/mod-wflow-components/views/dbmodeler/js/wwwsqldesigner.js"></script>
-<div id="area"[%%%%IF:OP-MODE:@=create|edit;%%%%] class="area-editable"[%%%%/IF:OP-MODE%%%%]></div><!-- # area -->
+<div id="area"[%%%IF:OP-MODE:?create|edit;%%%] class="area-editable"[%%%/IF:OP-MODE%%%]></div><!-- # area -->
 <div id="controls">
 	<div id="bar">
 		<div id="toggle"></div>
-		[%%%%IF:OP-MODE:@=create|edit;(1)%%%%]
+		[%%%IF:OP-MODE:?create|edit;(1)%%%]
 		<button class="ux-button ux-button-small ux-button-regular" onclick="saveModelData(); return false;">Save Model</button>
-			[%%%%IF:OP-MODE:==create;(2)%%%%]
+			[%%%IF:OP-MODE:==create;(2)%%%]
 		<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;">Cancel Create</button>
-			[%%%%ELSE:OP-MODE(2)%%%%]
-		<button class="ux-button ux-button-small ux-button-special" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[####UUID|url|js####]'; return false;">Cancel Edit</button>
-			[%%%%/IF:OP-MODE(2)%%%%]
-		[%%%%ELSE:OP-MODE(1)%%%%]
+			[%%%ELSE:OP-MODE(2)%%%]
+		<button class="ux-button ux-button-small ux-button-special" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[###UUID|url|js###]'; return false;">Cancel Edit</button>
+			[%%%/IF:OP-MODE(2)%%%]
+		[%%%ELSE:OP-MODE(1)%%%]
 		<button class="ux-button ux-button-small ux-button-secondary" onclick="exportModelData();">Export as JSON</button>
-		<button class="ux-button ux-button-small ux-button-highlight" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[####UUID|url|js####]/edit/yes'; return false;">Edit DB-Model</button>
+		<button class="ux-button ux-button-small ux-button-highlight" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[###UUID|url|js###]/edit/yes'; return false;">Edit DB-Model</button>
 		<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;">Close View</button>
-		[%%%%/IF:OP-MODE(1)%%%%]
+		[%%%/IF:OP-MODE(1)%%%]
 		<hr>
-		[%%%%IF:OP-MODE:@=create|edit;%%%%]
+		[%%%IF:OP-MODE:?create|edit;%%%]
 		<input type="button" id="addtable">
 		<input type="button" id="edittable">
 		<input type="button" id="addrow">
@@ -59,7 +59,7 @@
 		<input type="button" id="cleartables">
 		<hr>
 		<input type="button" id="saveload">
-		[%%%%/IF:OP-MODE%%%%]
+		[%%%/IF:OP-MODE%%%]
 		<input type="button" id="options">
 		<hr>
 		<div id="the-db-type" style="font-weight:bold; cursor:help;">DB-Type:?</div>
@@ -123,7 +123,7 @@
 	<hr>
 	* <span class="small" id="optionsnotice"></span>
 </div><!-- # options -->
-[%%%%IF:OP-MODE:@=create|edit;%%%%]
+[%%%IF:OP-MODE:?create|edit;%%%]
 <div id="io">
 	<table>
 		<tbody>
@@ -149,7 +149,7 @@
 		</tbody>
 	</table>
 </div><!-- # io load/dump -->
-[%%%%/IF:OP-MODE%%%%]
+[%%%/IF:OP-MODE%%%]
 <div id="keys">
 	<fieldset>
 		<legend id="keyslistlabel"></legend>
@@ -223,24 +223,24 @@
 <script type="text/javascript">
 var sqlDesigner = null;
 jQuery(function(){
-	var sqlObjData = [####JSON-DATA|json####];
+	var sqlObjData = [###JSON-DATA|json###];
 	sqlDesigner = new SQL.Designer(sqlObjData);
 	sqlObjData = null;
 });
 </script>
 <script type="text/javascript">
 function exportModelData() {
-	var exportDTime = '[####DTIME|js####]';
-	var exportAuthor = '[####AUTHOR|js####]';
+	var exportDTime = '[###DTIME|js###]';
+	var exportAuthor = '[###AUTHOR|js###]';
 	var data = sqlDesigner.getOption('exportdata');
-	[%%%%IF:OP-MODE:@=create|edit;%%%%]
+	[%%%IF:OP-MODE:?create|edit;%%%]
 	data.docTitle = String($('#dbmodel_title').val());
-	[%%%%ELSE:OP-MODE%%%%]
+	[%%%ELSE:OP-MODE%%%]
 	data.docTitle = String($('#dbmodel_title').text());
-	[%%%%/IF:OP-MODE%%%%]
+	[%%%/IF:OP-MODE%%%]
 	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'dbmodel-' + exportDTime + '@' + exportAuthor + '.json', 'application/json', 'UTF-8');
 }
-[%%%%IF:OP-MODE:@=create|edit;%%%%]
+[%%%IF:OP-MODE:?create|edit;%%%]
 function saveModelData() {
 	var data = sqlDesigner.getOption('exportdata');
 	if(data) {
@@ -253,6 +253,6 @@ function saveModelData() {
 		alert('ERROR: Empty DB-Model Data ...');
 	}
 }
-[%%%%/IF:OP-MODE%%%%]
+[%%%/IF:OP-MODE%%%]
 </script>
 <!-- # end init -->

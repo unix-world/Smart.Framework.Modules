@@ -1,7 +1,7 @@
 
-# Smart.Framework.Modules: Dust/PHP v.0.1.91 / Dust/Js v.2.7.2 r.20191022 #
-## This is a custom patched version of Dust to integrate with Smart.Framework ##
+# Smart.Framework.Modules: TplDust r.20191110 #
+## Dust Templating Engine PHP v.0.1.91 w. modif / Js v.2.7.2 ##
 
-// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
+// r.5.2.7 / smart.framework.v.5.2
 
 ###

@@ -1,6 +1,7 @@
 
-# Smart.Framework.Modules: UI Bootstrap v.3.4.0 and v.4.2.1 r.20190326 #
+# Smart.Framework.Modules: UI Bootstrap r.20191110 #
+## Bootstrap v.3.4.0 and v.4.2.1 ##
 
-// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
+// r.5.2.7 / smart.framework.v.5.2
 
 ###

@@ -1,5 +1,5 @@
-[@@@@SUB-TEMPLATE:bpmn-init.inc.htm@@@@]
-<!-- bpmn-reader.htm v.20190405 -->
+[@@@SUB-TEMPLATE:bpmn-init.inc.htm@@@]
+<!-- bpmn-reader.htm v.20191109 -->
 <style>
 #dld-xml-button {
 	position: fixed;
@@ -16,12 +16,12 @@
 </style>
 <script src="modules/mod-wflow-components/views/bpmn-flow/bpmn-viewer.js"></script>
 <div style="text-align:center; font-size:1rem!important; font-weight:bold; background:#445566; color:#FFFFFF; border-radius:1px;">
-	<span id="bpmn_title">[####TITLE|html####]</span>
+	<span id="bpmn_title">[###TITLE|html###]</span>
 </div>
-<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<div style="text-align:center; font-weight:bold;">Version: [###DATE|html###] / Author: [###AUTHOR|html###]</div>
 <div style="text-align:center;">
 	<button class="ux-button ux-button-small ux-button-secondary" id="bpmnExportBtn" onclick="doExportBpmn();" style="margin-left: 15px;">Export as JSON</button>
-	<button class="ux-button ux-button-small ux-button-highlight" id="bpmnEditBtn" onclick="self.location='admin.php?/page/agile.bpmn-editor/uuid/[####UUID|url|html####]/edit/yes'; return false;" style="margin-left: 15px;">Edit BPMN-Diagram</button>
+	<button class="ux-button ux-button-small ux-button-highlight" id="bpmnEditBtn" onclick="self.location='admin.php?/page/agile.bpmn-editor/uuid/[###UUID|url|html###]/edit/yes'; return false;" style="margin-left: 15px;">Edit BPMN-Diagram</button>
 	<button class="ux-button ux-button-small ux-button-special" id="bpmnCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
 </div>
 <br>
@@ -29,10 +29,10 @@
 <button id="dld-svg-button" class="ux-button ux-button-small">Get as SVG</button>
 <button id="dld-xml-button" class="ux-button ux-button-small">Get as XML</button>
 <script>
-var bpmnDataObj = [####JSON-DATA|json####];
+var bpmnDataObj = [###JSON-DATA|json###];
 var diagramViewer;
-var exportDTime = '[####DTIME|js####]';
-var exportAuthor = '[####AUTHOR|js####]';
+var exportDTime = '[###DTIME|js###]';
+var exportAuthor = '[###AUTHOR|js###]';
 </script>
 <script>
 (function(){

@@ -1,20 +1,20 @@
-[@@@@SUB-TEMPLATE:todo-k-init.inc.htm@@@@]
-<!-- todo-k-editor.htm v.20190405 -->
+[@@@SUB-TEMPLATE:todo-k-init.inc.htm@@@]
+<!-- todo-k-editor.htm v.20191109 -->
 <style>
 .jskanban_box {
 	cursor: grab;
 }
 </style>
 <form class="ux-form" id="todo_form" name="todo_form" method="POST" action="#">
-	<input id="todo_uuid" name="uuid" type="hidden" value="[####UUID|html####]">
-	<input id="todo_title" name="todo_title" type="text" maxlength="255" value="[####TITLE|html####]" title="ToDo-List Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:1rem!important; font-weight:bold; text-align:center;">
+	<input id="todo_uuid" name="uuid" type="hidden" value="[###UUID|html###]">
+	<input id="todo_title" name="todo_title" type="text" maxlength="255" value="[###TITLE|html###]" title="ToDo-List Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:1rem!important; font-weight:bold; text-align:center;">
 	<input id="todo_data" name="todo_data" type="hidden" value="">
 </form>
-<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<div style="text-align:center; font-weight:bold;">Version: [###DATE|html###] / Author: [###AUTHOR|html###]</div>
 <script>
 var kanbanBoard = new JsKanban;
 jQuery(document).ready(function() {
-	var kanbanDataObj = [####JSON-DATA|json####];
+	var kanbanDataObj = [###JSON-DATA|json###];
 	kanbanBoard.initBoard('.jskanban_area');
 	kanbanBoard.importData(kanbanDataObj);
 	kanbanDataObj = null;
@@ -48,14 +48,14 @@ jQuery(document).ready(function() {
 </script>
 <div style="text-align:center;">
 	<button class="ux-button ux-button-small ux-button-regular" id="kanban-save-data" style="margin-left: 15px;">Save ToDo-List</button>
-	[%%%%IF:OP-MODE:==create;%%%%]
+	[%%%IF:OP-MODE:==create;%%%]
 	<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
-	[%%%%ELSE:OP-MODE%%%%]
-	<button class="ux-button ux-button-small ux-button-special" onclick="self.location='admin.php?/page/agile.todo-editor/mode/kanban/uuid/[####UUID|url|html####]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
-	[%%%%/IF:OP-MODE%%%%]
+	[%%%ELSE:OP-MODE%%%]
+	<button class="ux-button ux-button-small ux-button-special" onclick="self.location='admin.php?/page/agile.todo-editor/mode/kanban/uuid/[###UUID|url|html###]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
+	[%%%/IF:OP-MODE%%%]
 </div>
 <br>
-[@@@@SUB-TEMPLATE:todo-k-board.inc.htm@@@@]
+[@@@SUB-TEMPLATE:todo-k-board.inc.htm@@@]
 <script>
 	SmartJS_BrowserUtils.PageAwayControl('Exit without Save ?');
 </script>

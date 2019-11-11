@@ -2,7 +2,7 @@
 // Module Lib: OpenMaps Proxy Cache
 // Framework: Smart.Framework
 // (c) 2006-2019 unix-world.org - all rights reserved
-// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
+// r.5.2.7 / smart.framework.v.5.2
 
 namespace SmartModExtLib\MapsCache;
 
@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20191010
+ * @version 	v.20191109
  *
  */
 class OpenMapsProxyCache {
@@ -266,7 +266,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 		$tmp_uniq_log = $tmp_uniq_prefix.'.debug-log.txt';
 		//--
 		if(\SmartFrameworkRuntime::ifDebug()) {
-			\SmartFileSystem::write($tmp_uniq_log, '##### IsPngOrJpegByHeader: '.$tmp_validate_by_header."\n".'##### STATUS-CODE: '.$bwdata['code']."\n".'##### Header: '."\n".$bwdata['headers']."\n".'##### Debug-Log:'."\n".$bwdata['debuglog']."\n".'##### END #');
+			\SmartFileSystem::write($tmp_uniq_log, '===== IsPngOrJpegByHeader: '.$tmp_validate_by_header."\n".'===== STATUS-CODE: '.$bwdata['code']."\n".'===== Header: '."\n".$bwdata['headers']."\n".'===== Debug-Log:'."\n".$bwdata['debuglog']."\n".'===== END #');
 		} //end if
 		//--
 		if(((string)\trim($bwdata['code']) == '200') AND ((string)$bwdata['content'] != '')) {

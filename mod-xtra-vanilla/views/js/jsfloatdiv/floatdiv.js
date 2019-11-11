@@ -1,7 +1,7 @@
 
 // NetVision JS - Float Div
-// (c) 2006-2015 unix-world.org
-// v.2015.02.15
+// (c) 2006-2019 unix-world.org
+// v.20191109
 
 // DEPENDS: jQuery, Cross-Browser
 

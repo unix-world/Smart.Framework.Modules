@@ -1,13 +1,25 @@
-[%%%%COMMENT%%%%]
+[%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
-[%%%%/COMMENT%%%%]
-//===== QUnit Tests.Mod.ZZZ-Tests: START :: r.20190412
+[%%%/COMMENT%%%]
+//===== QUnit Tests.Mod.ZZZ-Tests: START :: r.20191109
 
 (function() {
 
 	QUnit.module('Utils.Modules', function(){
 
-		QUnit.test('ZZZ Tests: PHP :: iFrame', function(assert) {
+		QUnit.test('(Vendor) ZZZ Tests: PHP :: iFrame', function(assert) {
+			SmartQUnit.runiFrameTest(
+				baseScript + '?page=zzz-tests.test-db-medoo',
+				500,
+				assert,
+				'Medoo DB Driver Test: OK'
+			);
+			SmartQUnit.runiFrameTest(
+				baseScript + '?page=zzz-tests.test-geo',
+				500,
+				assert,
+				'Geo Test: OK'
+			);
 			SmartQUnit.runiFrameTest(
 				baseScript + '?page=zzz-tests.test-math-parser',
 				500,

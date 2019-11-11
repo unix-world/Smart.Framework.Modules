@@ -3,7 +3,7 @@
 // Controller: Documentor/DocJs (display, save)
 // Route: admin.php?page=documentor.docjs{&cls=SomeClass{&mode=multi}}
 // (c) 2006-2019 unix-world.org - all rights reserved
-// v.3.7.8 r.2019.01.03 / smart.framework.v.3.7
+// r.5.2.7 / smart.framework.v.5.2
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -245,8 +245,105 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				]
 			);
 		} //end if
+		if(empty($arr['class']['data'])) {
+			$this->errMsg = 'Cannot get the definition (6) for class: '.$cls;
+			return (string) SmartMarkersTemplating::render_file_template(
+				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
+				[
+					'MESSAGE' => (string) $this->errMsg
+				]
+			);
+		} //end if
+		if(Smart::array_size($arr['class']['data']['props']) <= 0) {
+			$this->errMsg = 'Cannot get the definition (7) for class: '.$cls;
+			return (string) SmartMarkersTemplating::render_file_template(
+				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
+				[
+					'MESSAGE' => (string) $this->errMsg
+				]
+			);
+		} //end if
+		if(Smart::array_size($arr['class']['data']['props']['class']) <= 0) {
+			$this->errMsg = 'Cannot get the definition (8) for class: '.$cls;
+			return (string) SmartMarkersTemplating::render_file_template(
+				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
+				[
+					'MESSAGE' => (string) $this->errMsg
+				]
+			);
+		} //end if
+		if((string)$arr['class']['data']['props']['class']['type'] !== (string)$cls) {
+			$this->errMsg = 'Cannot get the definition (9) for class: '.$cls;
+			return (string) SmartMarkersTemplating::render_file_template(
+				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
+				[
+					'MESSAGE' => (string) $this->errMsg
+				]
+			);
+		} //end if
 		//--
-		return (string) '<pre>'.Smart::escape_html(print_r($arr,1)).'</pre>';
+	//	print_r($arr); die();
+		//--
+		$keys = [
+			'requires', // can be array
+			'file',
+			'package',
+			'version',
+			'summary',
+			'throws',
+			'desc',
+		];
+		for($i=0; $i<Smart::array_size($keys); $i++) {
+			if(Smart::array_size($arr['class']['data']['props'][(string)$keys[$i]]) <= 0) {
+				$arr['class']['data']['props'][(string)$keys[$i]] = array();
+			} //end if
+		} //end if
+		//--
+		$depends = [];
+		if((string)trim((string)$arr['class']['data']['props']['requires']['line']) != '') {
+			$depends[] = (string) trim((string)$arr['class']['data']['props']['requires']['line']);
+		} else {
+			for($i=0; $i<Smart::array_size($arr['class']['data']['props']['requires']); $i++) {
+				if((string)trim((string)$arr['class']['data']['props']['requires'][$i]['line']) != '') {
+					$depends[] = (string) trim((string)$arr['class']['data']['props']['requires'][$i]['line']);
+				} //end if
+			} //end for
+		} //end if
+		//--
+		if(array_key_exists('static', (array)$arr['class']['data']['props'])) {
+			$modifier = 'static';
+			$usage = (string) $cls.'.method();';
+		} else {
+			$modifier = 'object';
+			$usage = (string) 'var obj = new '.$cls.'(); obj.Method();';
+		} //end if
+		if((string)$modifier == 'static') {
+			$callmode = '.';
+		} else {
+			$callmode = '(new) .';
+		} //end if else
+		//--
+		return (string) SmartMarkersTemplating::render_file_template(
+			(string) $this->ControllerGetParam('module-view-path').'js-class.mtpl.inc.htm',
+			[
+				'base-url' 				=> (string) $base_url,
+				'file-name' 			=> (string) $arr['class']['data']['props']['file']['line'],
+				'type' 					=> (string) 'class',
+				'callmode' 				=> (string) $callmode,
+				'usage' 				=> (string) $usage,
+				'name' 					=> (string) $arr['class']['data']['props']['class']['type'],
+				'modifiers' 			=> (string) $modifier,
+				'package' 				=> (string) $arr['class']['data']['props']['package']['line'],
+				'version' 				=> (string) $arr['class']['data']['props']['version']['line'],
+				'depends' 				=> (string) implode(', ', (array)$depends),
+				'hints' 				=> (string) $arr['class']['data']['props']['summary']['line'],
+				'throws' 				=> (string) $arr['class']['data']['props']['throws']['line'],
+
+				'doc-comments-html' 	=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template($arr['class']['data']['props']['desc']['line']),
+				'doc-code-html' 		=> (string) '',
+				'generated-on' 			=> (string) date('Y-m-d H:i:s O')
+			]
+		);
 		//--
 	} //END FUNCTION
 
@@ -411,7 +508,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 								'comment' 	=> (string) $this->fixDocCommentPropPart($matches[4]),
 								'line' 		=> (string) $prop
 							];
-							if(((string)$name == 'param') OR ((string)$name == 'requires')) { // parse magic methods
+							if(((string)$name == 'param') OR ((string)$name == 'requires')) { // parse special params
 								if(!is_array($arr_props[(string)$name])) {
 									$arr_props[(string)$name] = array();
 								} //end if

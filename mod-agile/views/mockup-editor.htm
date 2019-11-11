@@ -1,18 +1,18 @@
-<!-- mockup-editor.htm v.20190405 -->
+<!-- mockup-editor.htm v.20191109 -->
 <form class="ux-form" id="mockup_form" name="mockup_form" method="POST" action="#">
-	<input id="mockup_uuid" name="uuid" type="hidden" value="[####UUID|html####]">
-	<input id="mockup_title" name="mockup_title" type="text" maxlength="255" value="[####TITLE|html####]" title="Mockup Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:1rem!important; font-weight:bold; text-align:center;">
+	<input id="mockup_uuid" name="uuid" type="hidden" value="[###UUID|html###]">
+	<input id="mockup_title" name="mockup_title" type="text" maxlength="255" value="[###TITLE|html###]" title="Mockup Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:1rem!important; font-weight:bold; text-align:center;">
 	<input id="mockup_data" name="mockup_data" type="hidden" value="">
 </form>
-<div style="text-align:center; font-weight:bold;">Version: [####DATE|html####] / Author: [####AUTHOR|html####]</div>
+<div style="text-align:center; font-weight:bold;">Version: [###DATE|html###] / Author: [###AUTHOR|html###]</div>
 <br>
 <div style="text-align:center;">
 	<button class="ux-button ux-button-small ux-button-regular" id="mockupSaveBtn" onclick="doSaveMockup();" style="margin-left: 15px;">Save Mockup</button>
-	[%%%%IF:OP-MODE:==create;%%%%]
+	[%%%IF:OP-MODE:==create;%%%]
 	<button class="ux-button ux-button-small ux-button-special" id="mockupCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
-	[%%%%ELSE:OP-MODE%%%%]
-	<button class="ux-button ux-button-small ux-button-special" id="mockupCancelBtn" onclick="self.location='admin.php?/page/agile.mockup-editor/uuid/[####UUID|url|html####]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
-	[%%%%/IF:OP-MODE%%%%]
+	[%%%ELSE:OP-MODE%%%]
+	<button class="ux-button ux-button-small ux-button-special" id="mockupCancelBtn" onclick="self.location='admin.php?/page/agile.mockup-editor/uuid/[###UUID|url|html###]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
+	[%%%/IF:OP-MODE%%%]
 </div>
 <br>
 <!-- jQueryUI Interractions -->
@@ -48,7 +48,7 @@
 	background-color: #333333;
 }
 #canvas {
-	background: white url("[####VIEWS-PATH|html####]img/back.svg");
+	background: white url("[###VIEWS-PATH|html###]img/back.svg");
 	background-size: 250px 250px;
 	background-repeat: repeat;
 	border: 0px !important;
@@ -66,7 +66,7 @@
 <input id="img-uploader-id" type="file" size="1" style="width: 5px !important; height: 5px !important; opacity: 0 !important;">
 <div id="img-uploader-preview" style="position:fixed; bottom:5px; right:5px; background-color:#FFFFFF; border: 3px solid #FFFFFF;"></div>
 <script>
-	var mockupDataObj = [####JSON-DATA|json####];
+	var mockupDataObj = [###JSON-DATA|json###];
 	qMockupEditor.setupEditor('widgetsArea', 350);
 	qMockupEditor.loadDocumentData(mockupDataObj);
 	mockupDataObj = null; // clear
