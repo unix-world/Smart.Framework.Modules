@@ -1,6 +1,8 @@
 <?php
 namespace TYPO3Fluid\Fluid\Core\Parser;
 
+// contains fixes by unixman
+
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
@@ -355,8 +357,11 @@ class TemplateParser
     protected function initializeViewHelperAndAddItToStack(ParsingState $state, $namespaceIdentifier, $methodIdentifier, $argumentsObjectTree)
     {
         $viewHelperResolver = $this->renderingContext->getViewHelperResolver();
-        if (!$viewHelperResolver->isNamespaceValid($namespaceIdentifier)) {
+        if ($viewHelperResolver->isNamespaceIgnored($namespaceIdentifier)) {
             return null;
+        }
+        if (!$viewHelperResolver->isNamespaceValid($namespaceIdentifier)) {
+            throw new UnknownNamespaceException('Unknown Namespace: ' . $namespaceIdentifier);
         }
         try {
             $currentViewHelperNode = new ViewHelperNode(
@@ -398,8 +403,11 @@ class TemplateParser
     protected function closingViewHelperTagHandler(ParsingState $state, $namespaceIdentifier, $methodIdentifier)
     {
         $viewHelperResolver = $this->renderingContext->getViewHelperResolver();
-        if (!$viewHelperResolver->isNamespaceValid($namespaceIdentifier)) {
+        if ($viewHelperResolver->isNamespaceIgnored($namespaceIdentifier)) {
             return false;
+        }
+        if (!$viewHelperResolver->isNamespaceValid($namespaceIdentifier)) {
+            throw new UnknownNamespaceException('Unknown Namespace: ' . $namespaceIdentifier);
         }
         $lastStackElement = $state->popNodeFromStack();
         if (!($lastStackElement instanceof ViewHelperNode)) {
@@ -588,6 +596,11 @@ class TemplateParser
     protected function textAndShorthandSyntaxHandler(ParsingState $state, $text, $context)
     {
         $sections = preg_split(Patterns::$SPLIT_PATTERN_SHORTHANDSYNTAX, $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        if ($sections === false) {
+            // String $text was not possible to split; we must return a text node with the full text instead.
+            $this->textHandler($state, $text);
+            return;
+        }
         foreach ($sections as $section) {
             $matchedVariables = [];
             $expressionNode = null;
@@ -625,6 +638,8 @@ class TemplateParser
                                 if ($expressionStartPosition > 0) {
                                     $state->getNodeFromStack()->addChildNode(new TextNode(substr($section, 0, $expressionStartPosition)));
                                 }
+
+                                $this->callInterceptor($expressionNode, InterceptorInterface::INTERCEPT_EXPRESSION, $state);
                                 $state->getNodeFromStack()->addChildNode($expressionNode);
 
                                 $expressionEndPosition = $expressionStartPosition + strlen($matchedVariableSet[0]);

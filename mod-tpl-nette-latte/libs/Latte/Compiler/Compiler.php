@@ -160,31 +160,36 @@ class Compiler
 		$prepare = $epilogs = '';
 		foreach ($macroHandlers as $handler) {
 			$res = $handler->finalize();
-			$prepare .= empty($res[0]) ? '' : "<?php $res[0] ?>";
-			$epilogs = (empty($res[1]) ? '' : "<?php $res[1] ?>") . $epilogs;
+			$prepare .= empty($res[0]) ? '' : '<'.'?php '.$res[0].' ?'.'>';
+			$epilogs = (empty($res[1]) ? '' : '<'.'?php '.$res[1].' ?'.'>') . $epilogs;
 		}
 
-		$this->addMethod('main', $this->expandTokens("extract(\$this->params);?>\n$output$epilogs<?php return get_defined_vars();"));
+		$this->addMethod(
+			'main',
+			$this->expandTokens(
+				'extract($this->params);'.'?'.'>'."\n".$output.$epilogs.'<'.'?'.'php return get_defined_vars();'
+			)
+		);
 
 		if ($prepare) {
-			$this->addMethod('prepare', "extract(\$this->params);?>$prepare<?php");
+			$this->addMethod('prepare', 'extract($this->params);?'.'>'.$prepare.'<'.'?'.'php');
 		}
 		if ($this->contentType !== self::CONTENT_HTML) {
 			$this->addProperty('contentType', $this->contentType);
 		}
 
 		foreach ($this->properties as $name => $value) {
-			$members[] = "\tpublic $$name = " . PhpHelpers::dump($value) . ';';
+			$members[] = "\t".'public $'.$name.' = '.PhpHelpers::dump($value).';';
 		}
 		foreach (array_filter($this->methods) as $name => $method) {
-			$members[] = "\n\tfunction $name($method[arguments])\n\t{\n" . ($method['body'] ? "\t\t$method[body]\n" : '') . "\t}";
+			$members[] = "\n\t".'function '.$name.'('.$method['arguments'].')'."\n\t".'{'."\n".($method['body'] ? "\t\t".$method['body']."\n" : '')."\t".'}';
 		}
 
-		return "<?php\n"
-			. "use Latte\\Runtime as LR;\n\n"
-			. "class $className extends Latte\\Runtime\\Template\n{\n"
-			. implode("\n\n", $members)
-			. "\n\n}\n";
+		return '<'.'?'.'php'."\n".
+			'use Latte\\Runtime as LR;'."\n\n".
+			'class '.$className.' extends Latte\\Runtime\\Template'."\n".'{'."\n".
+			implode("\n\n", $members).
+			"\n\n".'}'."\n";
 	}
 
 
@@ -370,9 +375,9 @@ class Compiler
 		} elseif ($token->text === '<!--') {
 			$this->context = self::CONTEXT_HTML_COMMENT;
 
-		} elseif ($token->text === '<?' || $token->text === '<!') {
+		} elseif ($token->text === '<'.'?' || $token->text === '<'.'!') {
 			$this->context = self::CONTEXT_HTML_BOGUS_COMMENT;
-			$this->output .= $token->text === '<?' ? '<<?php ?>?' : '<!'; // bypass error in escape()
+			$this->output .= $token->text === '<'.'?' ? '<'.'<'.'?'.'php '.'?'.'>'.'?' : '<'.'!'; // bypass error in escape()
 			return;
 
 		} else {
@@ -509,10 +514,10 @@ class Compiler
 	{
 		return preg_replace_callback('#<(\z|\?xml|\?)#', function ($m) {
 			if ($m[1] === '?') {
-				trigger_error('Inline <?php ... ?> is deprecated, use {php ... } on line ' . $this->getLine(), E_USER_DEPRECATED);
-				return '<?';
+				trigger_error('Inline <'.'?'.'php ... '.'?'.'> is deprecated, use {php ... } on line ' . $this->getLine(), E_USER_DEPRECATED);
+				return '<'.'?';
 			} else {
-				return '<<?php ?>' . $m[1];
+				return '<'.'<'.'?'.'php'.' ?'.'>' . $m[1];
 			}
 		}, $s);
 	}
@@ -616,7 +621,7 @@ class Compiler
 			if ($isLeftmost && !$isReplaced) {
 				$this->output = substr($this->output, 0, $leftOfs); // alone macro without output -> remove indentation
 				if (substr($code, -2) !== '?>') {
-					$code .= '<?php ?>'; // consume new line
+					$code .= '<'.'?'.'php'.' ?'.'>'; // consume new line
 				}
 			} elseif (substr($code, -2) === '?>') {
 				$code .= "\n"; // double newline to avoid newline eating by PHP
