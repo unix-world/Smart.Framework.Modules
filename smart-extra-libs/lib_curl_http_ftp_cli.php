@@ -26,11 +26,12 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 /**
  * Class: SmartCurlHttpFtpClient - provides a CURL based HTTP / HTTPS / FTP Client (browser) with Proxy Support.
+ * It can handle: HEAD / GET / POST / PUT (json/xml/raw) / DELETE
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP CURL, PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
- * @version 	v.171007
+ * @version 	v.20191113
  * @package 	extralibs:Network
  *
  */
@@ -67,7 +68,7 @@ final class SmartCurlHttpFtpClient {
 	private $raw_headers = array();							// Raw-Headers (internals)
 	private $url_parts = array();							// URL Parts
 	private $method = 'GET';								// method: GET / POST / HEAD / PUT / DELETE ...
-	private $no_content_stop_if_unauth = true;				// Return no Content (response body) if Not Auth (401)
+	private $no_content_if_unauth = true;					// Return no Content (response body) if Not Auth (401)
 	//--
 	private $cafile = '';									// Certificate Authority File (instead of using the global SMART_FRAMEWORK_SSL_CA_FILE can use a private cafile
 	//--
@@ -76,7 +77,7 @@ final class SmartCurlHttpFtpClient {
 
 	//==============================================
 	// [CONSTRUCTOR] :: init object
-	public function __construct($y_protocol='', $y_no_content_stop_if_unauth=true) {
+	public function __construct($y_protocol='', $y_no_content_if_unauth=true) {
 
 		//-- preset debugging
 		$this->debug = 0;
@@ -110,7 +111,7 @@ final class SmartCurlHttpFtpClient {
 		//--
 
 		//-- option
-		$this->no_content_stop_if_unauth = (bool) $y_no_content_stop_if_unauth;
+		$this->no_content_if_unauth = (bool) $y_no_content_if_unauth;
 		//--
 
 	} //END FUNCTION
@@ -118,10 +119,15 @@ final class SmartCurlHttpFtpClient {
 
 
 	//==============================================
-	// [PUBLIC] :: set the SSL/TLS Certificate Authority File
+	// [PUBLIC] :: set a SSL/TLS Certificate Authority File ; by default will use the SMART_FRAMEWORK_SSL_CA_FILE
 	public function set_ssl_tls_ca_file($cafile) {
 		//--
-		$this->cafile = (string) $cafile;
+		$this->cafile = '';
+		if(SmartFileSysUtils::check_if_safe_path((string)$cafile) == '1') {
+			if(SmartFileSystem::is_type_file((string)$cafile)) {
+				$this->cafile = (string) $cafile;
+			} //end if
+		} //end if
 		//--
 	} //END FUNCTION
 	//==============================================
@@ -178,7 +184,7 @@ final class SmartCurlHttpFtpClient {
 		//--
 
 		//-- method
-		$this->method = (string) strtoupper(trim((string)$method));
+		$this->method = (string) strtoupper((string)trim((string)$method));
 		//--
 
 		//-- separations
@@ -215,9 +221,14 @@ final class SmartCurlHttpFtpClient {
 					$this->log .= '[ERR] Unsupported URL Type: ['.$protocol.'] for URL: '.$url."\n";
 				} //end if
 				//--
-				Smart::log_warning('LibCurlHttp(s)Ftp // GetFromURL () // Unsupported URL Type: ['.$protocol.'] for URL: '.$url);
-				//--
-				return (array) $this->answer(0, $url, $ssl_version, $user);
+				return (array) $this->answer(
+					-100,
+					'LibCurlHttp(s)Ftp // GetFromURL () // Unsupported URL Type: ['.$protocol.'] for URL: '.$url,
+					0,
+					(string) $url,
+					(string) $ssl_version,
+					(string) $user
+				);
 				//--
 		} //end switch
 		//--
@@ -229,9 +240,14 @@ final class SmartCurlHttpFtpClient {
 				$this->log .= '[ERR] PHP CURL Extension is missing'."\n";
 			} //end if
 			//--
-			Smart::log_warning('LibCurlHttp(s)Ftp // GetFromURL () // CURL Extension is missing ...');
-			//--
-			return (array) $this->answer(0, $url, $ssl_version, $user);
+			return (array) $this->answer(
+				-101,
+				'LibCurlHttp(s)Ftp // GetFromURL () // CURL Extension is missing ...',
+				0,
+				(string) $url,
+				(string) $ssl_version,
+				(string) $user
+			);
 			//--
 		} //end if
 		//--
@@ -245,9 +261,14 @@ final class SmartCurlHttpFtpClient {
 				$this->log .= '[ERR] PHP CURL Init Failed'."\n";
 			} //end if
 			//--
-			Smart::log_warning('LibCurlHttp(s)Ftp // GetFromURL () // CURL Init Failed ...');
-			//--
-			return (array) $this->answer(0, $url, $ssl_version, $user);
+			return (array) $this->answer(
+				-99,
+				'LibCurlHttp(s)Ftp // GetFromURL () // CURL Init Failed ...',
+				0,
+				(string) $url,
+				(string) $ssl_version,
+				(string) $user
+			);
 			//--
 		} //end if
 		//--
@@ -373,9 +394,14 @@ final class SmartCurlHttpFtpClient {
 					$this->log .= '[ERR] PHP OpenSSL Extension is required to perform SSL requests'."\n";
 				} //end if
 				//--
-				Smart::log_warning('LibCurlHttp(s)Ftp // GetFromURL ('.$browser_protocol.$host.':'.$port.$path.') // PHP OpenSSL Extension not installed ...');
-				//--
-				return (array) $this->answer(0, $url, $ssl_version, $user);
+				return (array) $this->answer(
+					-98,
+					'LibCurlHttp(s)Ftp // GetFromURL ('.$browser_protocol.$host.':'.$port.$path.') // PHP OpenSSL Extension not installed ...',
+					0,
+					(string) $url,
+					(string) $ssl_version,
+					(string) $user
+				);
 				//--
 			} //end if
 			//--
@@ -459,15 +485,25 @@ final class SmartCurlHttpFtpClient {
 			} //end if
 			$have_post_vars = true;
 			@curl_setopt($this->curl, CURLOPT_POSTFIELDS, (string)$this->poststring);
-		} elseif((string)$this->jsonrequest != '') {
+		} //end if
+		if((string)$this->jsonrequest != '') {
+			if((string)$this->method == 'GET') {
+				$this->method = 'PUT';
+			} //end if
 			$this->raw_headers[] = 'Content-Type: application/json';
 			$this->raw_headers[] = 'Content-Length: '.strlen($this->jsonrequest);
+			@curl_setopt($this->curl, CURLOPT_POSTFIELDS, (string)$this->jsonrequest);
 		} elseif((string)$this->xmlrequest != '') {
+			if((string)$this->method == 'GET') {
+				$this->method = 'PUT';
+			} //end if
 			$this->raw_headers[] = 'Content-Type: application/xml';
 			$this->raw_headers[] = 'Content-Length: '.strlen($this->xmlrequest);
+			@curl_setopt($this->curl, CURLOPT_POSTFIELDS, (string)$this->xmlrequest);
 		} //end if else
 		//--
 		switch((string)$this->method) {
+			case 'HEAD':
 			case 'GET':
 				break;
 			case 'POST':
@@ -475,7 +511,6 @@ final class SmartCurlHttpFtpClient {
 					@curl_setopt($this->curl, CURLOPT_POST, true);
 				} //end if
 				break;
-			case 'HEAD':
 			case 'PUT':
 			case 'DELETE':
 			default:
@@ -502,14 +537,20 @@ final class SmartCurlHttpFtpClient {
 				$this->log .= '[ERR] CURL Aborted before Execution'."\n";
 			} //end if
 			//--
-			Smart::log_warning('LibCurlHttp(s)Ftp // GetFromURL () // CURL Aborted before Execution ...');
-			//--
-			return (array) $this->answer(0, $url, $ssl_version, $user);
+			return (array) $this->answer(
+				-79,
+				'LibCurlHttp(s)Ftp // GetFromURL () // CURL Aborted before Execution ...',
+				0,
+				(string) $url,
+				(string) $ssl_version,
+				(string) $user
+			);
 			//--
 		} //end if
 		//--
 		$results = @curl_exec($this->curl);
 		$error = @curl_errno($this->curl);
+		$ermsg = @curl_error($this->curl);
 		//--
 
 		//-- eval results
@@ -571,7 +612,7 @@ final class SmartCurlHttpFtpClient {
 				//--
 			} //end if
 			//--
-			if(($is_unauth) AND ($this->no_content_stop_if_unauth)) {
+			if(($is_unauth) AND ($this->no_content_if_unauth)) {
 				//--
 				$this->body = ''; // in this case (by settings) no content (response body) should be returned
 				//--
@@ -582,8 +623,8 @@ final class SmartCurlHttpFtpClient {
 				$is_ok = 0;
 				//--
 				if($this->debug) {
-					$this->log .= '[ERR] CURL Execution Reported some Errors. ErrorCode: ['.$error.']'."\n";
-					Smart::log_notice('LibCurlHttp(s)Ftp // GetFromURL () // CURL Execution Reported some Errors. ErrorCode: ['.$error.']');
+					$this->log .= '[ERR] CURL Execution Reported some Errors. ErrorCode: ['.$error.'] / ErrorMessage: '.$ermsg."\n";
+					Smart::log_notice('LibCurlHttp(s)Ftp // GetFromURL () // CURL Execution Reported some Errors. ErrorCode: ['.$error.'] / ErrorMessage: '.$ermsg);
 				} //end if
 				//--
 			} //end if
@@ -617,7 +658,15 @@ final class SmartCurlHttpFtpClient {
 		//--
 
 		//--
-		return (array) $this->answer($is_ok, $url, $ssl_version, $user, $bw_info);
+		return (array) $this->answer(
+			(int) 		$error,
+			(string) 	$ermsg,
+			(int) 		$is_ok,
+			(string) 	$url,
+			(string) 	$ssl_version,
+			(string) 	$user,
+			(array) 	$bw_info
+		);
 		//--
 
 	} //END FUNCTION
@@ -628,7 +677,7 @@ final class SmartCurlHttpFtpClient {
 
 
 	//==============================================
-	private function answer($result, $url, $ssl_version, $user, $curl_getinfo=array()) {
+	private function answer($errcode, $errmsg, $result, $url, $ssl_version, $user, $curl_getinfo=array()) {
 		//--
 		return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
 			'client' 		=> (string) __CLASS__,
@@ -637,21 +686,25 @@ final class SmartCurlHttpFtpClient {
 			'method' 		=> (string) $this->method,
 			'url' 			=> (string) $url,
 			'ssl'			=> (string) $ssl_version,
+			'ssl-ca' 		=> (string) ($this->cafile ? $this->cafile : (defined('SMART_FRAMEWORK_SSL_CA_FILE') ? SMART_FRAMEWORK_SSL_CA_FILE : '')),
 			'auth-user' 	=> (string) $user,
-			'cookies-len' 	=> (int) Smart::array_size($this->cookies),
-			'post-vars-len' => (int) Smart::array_size($this->postvars),
-			'post-str-len' 	=> (int) strlen($this->poststring),
-			'json-req-len' 	=> (int) strlen($this->jsonrequest),
-			'xml-req-len' 	=> (int) strlen($this->jsonrequest),
+			'cookies-len' 	=> (int)    Smart::array_size($this->cookies),
+			'post-vars-len' => (int)    Smart::array_size($this->postvars),
+			'post-str-len' 	=> (int)    strlen($this->poststring),
+			'json-req-len' 	=> (int)    strlen($this->jsonrequest),
+			'xml-req-len' 	=> (int)    strlen($this->xmlrequest),
 			'mode' 			=> (string) trim((string)$this->url_parts['protocol']),
-			'result' 		=> (int) $result,
+			'result' 		=> (int)    $result,
 			'code' 			=> (string) $this->status,
 			'headers' 		=> (string) $this->header,
 			'content' 		=> (string) $this->body,
 			'log' 			=> (string) 'User-Agent: '.$this->useragent."\n", // this is reserved for calltime functions
 			'debuglog' 		=> (string) $this->log, // this is for internal use
-			'curl-proxy' 	=> (array) $this->cproxy, // the Proxy if Any
-			'curl-info' 	=> (array) $curl_getinfo // CUSTOM (just for CURL)
+			//--
+			'curl-errno' 	=> (int)    $errcode,
+			'curl-ermsg' 	=> (string) $errmsg,
+			'curl-proxy' 	=> (array)  $this->cproxy, // the Proxy if Any
+			'curl-info' 	=> (array)  $curl_getinfo // CUSTOM (just for CURL)
 		);
 		//--
 	} //END FUNCTION

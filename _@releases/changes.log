@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply onlt for for Milestone Releases
 
+November 13, 2019 :: Version 5.2.7 rev.191113
+	* Security Fix: Safe Set CA File in several Client Libs
+
 November 09, 2019 :: Version 5.2.7
 	* Migrate Markers-TPL from v3 to v5 (stable)
 	* Fixes for Smart.Framework v5 (stable)
