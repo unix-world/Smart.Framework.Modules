@@ -3,11 +3,17 @@
 namespace Dust\Helper;
 
 use Dust\Evaluate;
+
 class ContextDump {
+
 	public function __invoke(Evaluate\Chunk $chunk, Evaluate\Context $context, Evaluate\Bodies $bodies, Evaluate\Parameters $params) {
 		//get config
+		if(!\SmartFrameworkRuntime::ifDebug()) {
+			\Smart::log_warning(__METHOD__.' The Dust contextDump must not be enabled when Debug is OFF');
+			return $chunk;
+		}
 		$current = !isset($params->{'key'}) || $params->{'key'} != 'full';
-		$output = !isset($params->{'to'}) || $params->{'to'} != 'console';
+		$output = !isset($params->{'to'}) || $params->{'to'} != 'log';
 		//ok, basically we're gonna give parent object w/ two extra values, "__forcedParent__", "__child__", and "__params__"
 		$getContext = function (Evaluate\Context $ctx) use ($current, &$getContext) {
 			//first parent
@@ -23,10 +29,12 @@ class ContextDump {
 			return $parent;
 		};
 		//now json_encode
-		$str = $context->parent == null ? '{ }' : json_encode($getContext($context->parent), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT); // JSON_PRETTY_PRINT);
+		$str = $context->parent == null ? '{ }' : \Smart::json_encode($getContext($context->parent), true, true, true); // pretty print, unescaped unicode, html safe
 		//now put where necessary
-		if ($output) return $chunk->write($str);
-		echo($str . "\n");
+		if($output) {
+			return $chunk->write($str);
+		}
+		\Smart::log_notice(__METHOD__.' # '.$str."\n");
 		return $chunk;
 	}
 

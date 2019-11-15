@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: TplDust r.20191113 #
+# Smart.Framework.Modules: TplDust r.20191115 #
 ## Dust Templating Engine PHP v.0.1.91 w. modif / Js v.2.7.2 ##
 
 // r.5.2.7 / smart.framework.v.5.2

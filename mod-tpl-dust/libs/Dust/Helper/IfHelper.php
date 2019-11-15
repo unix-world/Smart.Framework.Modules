@@ -1,17 +1,26 @@
 <?php
-// modified by unixman to avoid using eval()
+// completely rewritten by unixman to avoid using eval() ; allow only a fixed set of operators
 namespace Dust\Helper;
 
 use Dust\Evaluate;
+
 class IfHelper {
-	public function __invoke(Evaluate\Chunk $chunk, Evaluate\Context $context, Evaluate\Bodies $bodies) {
+
+	public function __invoke(Evaluate\Chunk $chunk, Evaluate\Context $context, Evaluate\Bodies $bodies, Evaluate\Parameters $params) {
+		//--
+		if((!isset($params->{'lexpr'})) OR (!isset($params->{'operator'})) OR (!isset($params->{'rexpr'}))) {
+			$chunk->setError('IF syntax parameters required are: lexpr / operator / rexpr');
+		} //end if
+		//--
 		$lexpr = (string) $context->get('lexpr');
 		$rexpr = (string) $context->get('rexpr');
 		$operator = (string) trim((string)$context->get('operator'));
+		//--
 		switch((string)$operator) {
 			//-- arrays
 			case '@==': // array(lexpr) count ==
-				if(\Smart::array_size($lexpr) == (int)$rexpr) {
+				$lexpr = \Smart::json_decode($lexpr); // mixed, but expects array
+				if(\is_array($lexpr) && (\array_key_exists('#dust#--array:size--#', $lexpr)) && ((int)$lexpr['#dust#--array:size--#'] == (int)$rexpr)) {
 					return $chunk->render($bodies->block, $context);
 				} elseif(isset($bodies['else'])) {
 					return $chunk->render($bodies['else'], $context);
@@ -20,7 +29,8 @@ class IfHelper {
 				}
 				break; //--
 			case '@!=': // array(lexpr) count !=
-				if(\Smart::array_size($lexpr) != (int)$rexpr) {
+				$lexpr = \Smart::json_decode($lexpr); // mixed, but expects array
+				if(\is_array($lexpr) && (\array_key_exists('#dust#--array:size--#', $lexpr)) && ((int)$lexpr['#dust#--array:size--#'] != (int)$rexpr)) {
 					return $chunk->render($bodies->block, $context);
 				} elseif(isset($bodies['else'])) {
 					return $chunk->render($bodies['else'], $context);
@@ -29,7 +39,8 @@ class IfHelper {
 				}
 				break; //--
 			case '@<=': // array(lexpr) count <=
-				if(\Smart::array_size($lexpr) <= (int)$rexpr) {
+				$lexpr = \Smart::json_decode($lexpr); // mixed, but expects array
+				if(\is_array($lexpr) && (\array_key_exists('#dust#--array:size--#', $lexpr)) && ((int)$lexpr['#dust#--array:size--#'] <= (int)$rexpr)) {
 					return $chunk->render($bodies->block, $context);
 				} elseif(isset($bodies['else'])) {
 					return $chunk->render($bodies['else'], $context);
@@ -38,7 +49,8 @@ class IfHelper {
 				}
 				break; //--
 			case '@<': // array(lexpr) count <
-				if(\Smart::array_size($lexpr) < (int)$rexpr) {
+				$lexpr = \Smart::json_decode($lexpr); // mixed, but expects array
+				if(\is_array($lexpr) && (\array_key_exists('#dust#--array:size--#', $lexpr)) && ((int)$lexpr['#dust#--array:size--#'] < (int)$rexpr)) {
 					return $chunk->render($bodies->block, $context);
 				} elseif(isset($bodies['else'])) {
 					return $chunk->render($bodies['else'], $context);
@@ -47,7 +59,8 @@ class IfHelper {
 				}
 				break; //--
 			case '@>=': // array(lexpr) count >=
-				if(\Smart::array_size($lexpr) >= (int)$rexpr) {
+				$lexpr = \Smart::json_decode($lexpr); // mixed, but expects array
+				if(\is_array($lexpr) && (\array_key_exists('#dust#--array:size--#', $lexpr)) && ((int)$lexpr['#dust#--array:size--#'] >= (int)$rexpr)) {
 					return $chunk->render($bodies->block, $context);
 				} elseif(isset($bodies['else'])) {
 					return $chunk->render($bodies['else'], $context);
@@ -56,7 +69,8 @@ class IfHelper {
 				}
 				break; //--
 			case '@>': // array(lexpr) count >
-				if(\Smart::array_size($lexpr) > (int)$rexpr) {
+				$lexpr = \Smart::json_decode($lexpr); // mixed, but expects array
+				if(\is_array($lexpr) && (\array_key_exists('#dust#--array:size--#', $lexpr)) && ((int)$lexpr['#dust#--array:size--#'] > (int)$rexpr)) {
 					return $chunk->render($bodies->block, $context);
 				} elseif(isset($bodies['else'])) {
 					return $chunk->render($bodies['else'], $context);

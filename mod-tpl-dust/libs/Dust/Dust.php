@@ -8,7 +8,7 @@ namespace Dust;
 
 class Dust implements \Serializable {
 
-	const VERSION = 'v.0.1.91-r.20191021.sfm'; // github.com/Bloafer/dust-php
+	const VERSION = 'v.0.1.91-r.20191115.sfm'; // github.com/Bloafer/dust-php
 
 	private $parser;
 
@@ -44,50 +44,50 @@ class Dust implements \Serializable {
 		$this->fsRdRpls = [];
 		$this->filters = [
 			//--
-			"s"     => new Filter\SuppressEscape(),
+			's' => new Filter\SuppressEscape(),
 			//--
 			/* originals
-			"u"     => new Filter\EncodeUri(),
-			"uc"    => new Filter\EncodeUriComponent(),
-			"js"    => new Filter\JsonEncode(),
-			"jp"    => new Filter\JsonDecode()
+			'u'  => new Filter\EncodeUri(),
+			'uc' => new Filter\EncodeUriComponent(),
+			'js' => new Filter\JsonEncode(),
+			'jp' => new Filter\JsonDecode()
 			*/
 			//--
-			"h"     => new Filter\EscapeHtml(),
-			"j"     => new Filter\EscapeJs(),
-			"c"     => new Filter\EscapeCss(), // new by unixman
-			"u"     => new Filter\EscapeUrl(),
-			"o"     => new Filter\EscapeJson(),
+			'h'  => new Filter\EscapeHtml(),
+			'j'  => new Filter\EscapeJs(),
+			'c'  => new Filter\EscapeCss(), // new by unixman
+			'u'  => new Filter\EscapeUrl(),
+			'o'  => new Filter\EscapeJson(),
 			//--
-			"b"     => new Filter\ForceBool(), // new by unixman
-			"i"     => new Filter\ForceInteger(), // new by unixman
-			"d"     => new Filter\ForceDecimal(), // new by unixman (w. 2 decimals)
-			"n"     => new Filter\ForceNumeric(), // new by unixman
+			'b'  => new Filter\ForceBool(), // new by unixman
+			'i'  => new Filter\ForceInteger(), // new by unixman
+			'd'  => new Filter\ForceDecimal(), // new by unixman (w. 2 decimals)
+			'n'  => new Filter\ForceNumeric(), // new by unixman
 			//--
-			"t"     => new Filter\StrTrim(), // new by unixman
-			"ml"    => new Filter\StrToLower(), // new by unixman
-			"mu"    => new Filter\StrToUpper(), // new by unixman
-			"mf"    => new Filter\StrUcFirst(), // new by unixman
-			"mw"    => new Filter\StrUcWords(), // new by unixman
+			't'  => new Filter\StrTrim(), // new by unixman
+			'ml' => new Filter\StrToLower(), // new by unixman
+			'mu' => new Filter\StrToUpper(), // new by unixman
+			'mf' => new Filter\StrUcFirst(), // new by unixman
+			'mw' => new Filter\StrUcWords(), // new by unixman
 			//--
-			"ih"    => new Filter\FormatHtmlId(), // new by unixman
-			"vj"    => new Filter\FormatJsVar(), // new by unixman
-			"fn"    => new Filter\FormatNl2Br(), // new by unixman
+			'ih' => new Filter\FormatHtmlId(), // new by unixman
+			'vj' => new Filter\FormatJsVar(), // new by unixman
+			'fn' => new Filter\FormatNl2Br(), // new by unixman
 		];
 		$this->helpers = [
-		//	"select"        => new Helper\Select(),
-		//	"math"          => new Helper\Math(),
-		//	"eq"            => new Helper\Eq(),
-		//	"ne"            => new Helper\Ne(),
-		//	"lt"            => new Helper\Lt(),
-		//	"lte"           => new Helper\Lte(),
-		//	"gt"            => new Helper\Gt(),
-		//	"gte"           => new Helper\Gte(),
-		//	"default"       => new Helper\DefaultHelper(),
-			"if"            => new Helper\IfHelper(),
-			"sep"           => new Helper\Sep(),
-			"size"          => new Helper\Size(),
-			"contextDump"   => new Helper\ContextDump()
+		//	'select'      => new Helper\Select(),
+		//	'math'        => new Helper\Math(),
+		//	'eq'          => new Helper\Eq(),
+		//	'ne'          => new Helper\Ne(),
+		//	'lt'          => new Helper\Lt(),
+		//	'lte'         => new Helper\Lte(),
+		//	'gt'          => new Helper\Gt(),
+		//	'gte'         => new Helper\Gte(),
+		//	'default'     => new Helper\DefaultHelper(),
+		//	'size'        => new Helper\Size(),
+			'if'          => new Helper\IfHelper(),
+			'sep'         => new Helper\Sep(), // works only inside array context
+			'contextDump' => new Helper\ContextDump()
 		];
 		$this->automaticFilters = [
 		//	$this->filters['h']

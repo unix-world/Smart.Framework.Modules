@@ -43,6 +43,8 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
+		$stpl = (string) 'modules/mod-tpl/views/templating-highlight-syntax.mtpl.htm';
+		//--
 		$tpl = (string) $this->ControllerGetParam('module-view-path').'sample.latte.htm';
 		$ptpl = (string) $this->ControllerGetParam('module-view-path').'sample-partial.latte.inc.htm';
 		//--
@@ -50,19 +52,49 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		if((string)$op == 'viewsource') {
 			//--
-			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/latte.js"></script>'.'<h1>nette/Latte Template Source:<br><i>'.Smart::escape_html($tpl).'</i></h1><hr><pre style="background:#FAFAFA; margin:0px; padding:0px; width:98vw; height:75vh; overflow:hidden;"><code class="latte" style="margin:0px; padding:0px; width:100%; height:100%; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
+			$this->PageViewSetVar(
+				'main',
+				(string) SmartMarkersTemplating::render_file_template(
+					(string) $stpl,
+					[
+						'@SUB-TEMPLATES@' => [
+							'%the-tpl%|html' => (string) $tpl
+						],
+						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartComponents::js_code_highlightsyntax('body', ['web','tpl']),
+						'HTML-HIGHLIGHT-CUSTOM' => '<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/latte.js"></script>',
+						'TPL-PATH' 				=> (string) $tpl,
+						'TPL-SYNTAX' 			=> 'latte',
+						'TPL-TYPE' 				=> 'nette/Latte Template'
+					]
+				)
+			);
 			return;
 			//--
 		} elseif((string)$op == 'viewpartialsource') {
 			//--
-			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/latte.js"></script>'.'<h1>nette/Latte Sub-Template Source:<br><i>'.Smart::escape_html($ptpl).'</i></h1><hr><pre style="background:#FAFAFA; margin:0px; padding:0px; width:98vw; height:75vh; overflow:hidden;"><code class="latte" style="margin:0px; padding:0px; width:100%; height:100%; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$ptpl)).'</code></pre><hr><br>');
+			$this->PageViewSetVar(
+				'main',
+				(string) SmartMarkersTemplating::render_file_template(
+					(string) $stpl,
+					[
+						'@SUB-TEMPLATES@' => [
+							'%the-tpl%|html' => (string) $ptpl
+						],
+						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartComponents::js_code_highlightsyntax('body', ['web','tpl']),
+						'HTML-HIGHLIGHT-CUSTOM' => '<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/latte.js"></script>',
+						'TPL-PATH' 				=> (string) $ptpl,
+						'TPL-SYNTAX' 			=> 'latte',
+						'TPL-TYPE' 				=> 'nette/Latte Sub-Template'
+					]
+				)
+			);
 			return;
 			//--
 		} //end if
 		//--
 
 		//--
-		$data = [ // v.20191019
+		$data = [ // v.20191115
 			// ### variables are case insensitive in controllers on the 1st level ; the template will use all lowercase variables for this instance of Latte ; array keys that contain - and . will be replaced recursive by _ to make compliant with PHP variable names
 			'Version' => (string) \SmartModExtLib\TplNetteLatte\Templating::getVersion(),
 			'heLLo-.World' => '<h1>Demo: nette/Latte Templating as module for Smart.Framework</h1>',

@@ -159,8 +159,12 @@ class Evaluator {
 
 	public function evaluatePartial(Ast\Partial $partial, Context $ctx, Chunk $chunk) {
 		$partialName = $partial->key; // {{{SYNC-DUST-UXM-TPL-INCLUDE-FEATURE-SUBTEMPLATE}}} :: for enabling this feature this condition should be enabled here ($partial->key != 'sub-template')
-		if ($partialName == null) $partialName = $this->toDustString($this->normalizeResolved($ctx, $partial->inline, $chunk));
-		if ($partialName == null) return $chunk;
+		if($partialName == null) {
+			$partialName = $this->toDustString($this->normalizeResolved($ctx, $partial->inline, $chunk));
+		}
+		if($partialName == null) {
+			return $chunk;
+		}
 		//+ is a named block
 		if ($partial->type == '+') {
 			//mark beginning
@@ -277,9 +281,13 @@ class Evaluator {
 				//resolve full inline parameter
 				$newChunk = $chunk->newChild();
 				foreach ($resolved->parts as $value) {
-					if ($value instanceof Ast\Reference) $newChunk = $this->evaluateReference($value, $ctx, $newChunk);
-					elseif ($value instanceof Ast\Special) $newChunk = $this->evaluateSpecial($value, $ctx, $newChunk);
-					else $newChunk->write(strval($value));
+					if($value instanceof Ast\Reference) {
+						$newChunk = $this->evaluateReference($value, $ctx, $newChunk);
+					} elseif($value instanceof Ast\Special) {
+						$newChunk = $this->evaluateSpecial($value, $ctx, $newChunk);
+					} else {
+						$newChunk->write(strval($value));
+					}
 				}
 				$resolved = $newChunk->out;
 				break;
@@ -317,6 +325,7 @@ class Evaluator {
 			return $val ? 'true' : 'false';
 		}
 		if(is_array($val)){
+			/*
 			$hasSubArray = false;
 			foreach($val as $valCheck){
 				if(is_array($valCheck)){
@@ -329,10 +338,15 @@ class Evaluator {
 			}else{
 				return implode(',', $val);
 			}
+			*/
+			return (string) \Smart::json_encode([ '#dust#--array:size--#' => (int) \Smart::array_size($val) ]); // fix by unixman: can handle only strings !!
 		}
-		if(is_object($val) && !method_exists($val, '__toString')){
+	/*	if(is_object($val) && !method_exists($val, '__toString')){
 			return get_class($val);
-		}
+		} */
+		if(is_object($val)) {
+			return (string) get_class($val); // fix by unixman
+		} //end if
 		return (string) $val;
 	}
 

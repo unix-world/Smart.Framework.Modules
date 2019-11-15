@@ -43,6 +43,8 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
+		$stpl = (string) 'modules/mod-tpl/views/templating-highlight-syntax.mtpl.htm';
+		//--
 		$tpl = (string) $this->ControllerGetParam('module-view-path').'sample.twig.htm';
 		$ptpl = (string) $this->ControllerGetParam('module-view-path').'sample-partial.twig.inc.htm';
 		//--
@@ -50,19 +52,49 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		if((string)$op == 'viewsource') {
 			//--
-			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'<h1>Twig Template Source:<br><i>'.Smart::escape_html($tpl).'</i></h1><hr><pre style="background:#FAFAFA; margin:0px; padding:0px; width:98vw; height:75vh; overflow:hidden;"><code class="twig" style="margin:0px; padding:0px; width:100%; height:100%; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$tpl)).'</code></pre><hr><br>');
+			$this->PageViewSetVar(
+				'main',
+				(string) SmartMarkersTemplating::render_file_template(
+					(string) $stpl,
+					[
+						'@SUB-TEMPLATES@' => [
+							'%the-tpl%|html' => (string) $tpl
+						],
+						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartComponents::js_code_highlightsyntax('body', ['web','tpl']),
+						'HTML-HIGHLIGHT-CUSTOM' => '<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>',
+						'TPL-PATH' 				=> (string) $tpl,
+						'TPL-SYNTAX' 			=> 'twig',
+						'TPL-TYPE' 				=> 'Twig Template'
+					]
+				)
+			);
 			return;
 			//--
 		} elseif((string)$op == 'viewpartialsource') {
 			//--
-			$this->PageViewSetVar('main', SmartComponents::js_code_highlightsyntax('body', ['web','tpl']).'<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'<h1>Twig Sub-Template Source:<br><i>'.Smart::escape_html($ptpl).'</i></h1><hr><pre style="background:#FAFAFA; margin:0px; padding:0px; width:98vw; height:75vh; overflow:hidden;"><code class="twig" style="margin:0px; padding:0px; width:100%; height:100%; overflow:auto;">'.Smart::escape_html((string)SmartFileSystem::read((string)$ptpl)).'</code></pre><hr><br>');
+			$this->PageViewSetVar(
+				'main',
+				(string) SmartMarkersTemplating::render_file_template(
+					(string) $stpl,
+					[
+						'@SUB-TEMPLATES@' => [
+							'%the-tpl%|html' => (string) $ptpl
+						],
+						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartComponents::js_code_highlightsyntax('body', ['web','tpl']),
+						'HTML-HIGHLIGHT-CUSTOM' => '<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>',
+						'TPL-PATH' 				=> (string) $ptpl,
+						'TPL-SYNTAX' 			=> 'twig',
+						'TPL-TYPE' 				=> 'Twig Sub-Template'
+					]
+				)
+			);
 			return;
 			//--
 		} //end if
 		//--
 
 		//--
-		$data = [ // v.20191019
+		$data = [ // v.20191115
 			//### variables are case sensitive in Twig ; array keys that contain - and . will be replaced recursive by _ to make compliant with PHP variable names
 			'version' => (string) \SmartModExtLib\TplTwig\Templating::getVersion(),
 			'hello-.world' => '<h1>Demo: Twig Templating as module for Smart.Framework</h1>',

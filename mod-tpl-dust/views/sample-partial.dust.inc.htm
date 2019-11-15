@@ -1,4 +1,4 @@
-<!-- start dust partial / sub-template -->
+<!-- start dust partial / sub-template v.20191115 -->
 {! Partial / Sub-Template: sample-partial.dust.inc.htm !}<!-- comments are removed -->
 	<h5 id="qunit-test-result">Dust TPL w. Sub-Template Render (Table with #{tcount|h} columns):</h5>
 	<table style="border: 1px solid #ECECEC; width: 550px;" id="qunit-test-el">
@@ -16,10 +16,13 @@
 	{/tbl}
 	</table>
 	<ul>
-	{#navigation}
-		<!-- index: {$idx|h} -->
-		<li><a href="{href|h}" title="maxsize={$len|h} ; maxcount={$cnt|h}">{$icnt|h}. {caption|h} ({$iter|h})</a></li>{~n}
-	{/navigation}
+	{@if lexpr="{navigation}" operator="@>" rexpr="0"}
+		{#navigation}
+		<li><a href="{href|h}" title="index={$idx|h} ; maxsize={$len|h} ; maxcount={$cnt|h}">{$icnt|h}. {caption|h} ({$iter|h})</a></li>{@sep}{~n}{/sep}
+		{/navigation}
+	{:else}
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	{/if}
 	</ul>
 	Test Condition#1:
 	{@if lexpr="{a}" operator="==" rexpr="Test-1"}

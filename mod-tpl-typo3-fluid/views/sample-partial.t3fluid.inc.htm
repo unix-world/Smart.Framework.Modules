@@ -1,4 +1,4 @@
-<!-- start Typo3Fluid partial / sub-template -->
+<!-- start Typo3Fluid partial / sub-template v.20191115 -->
 	<f:comment> Partial / Sub-Template: @sample-partial.t3fluid.inc.htm </f:comment><!-- comments are removed -->
 	<h5 id="qunit-test-result">Typo3-Fluid TPL w. Sub-Template Render (Table with #{tcount} columns):</h5>
 	<table style="border: 1px solid #ECECEC; width: 550px;" id="qunit-test-el">
@@ -16,9 +16,13 @@
 	</f:for>
 	</table>
 	<ul>
-		<f:for each="{navigation}" as="item" key="key" iteration="iterator">
+		<f:if condition="{navigation -> f:count()}>0"><f:then>
+			<f:for each="{navigation}" as="item" key="key" iteration="iterator">
 			<li><a href="{item.href}">{iterator.index + 1}. {item.caption} ({iterator.index})</a></li>
-		</f:for>
+			</f:for>
+		</f:then><f:else>
+			<span style="color:#FF3300;"><b>NOT OK</b></span>
+		</f:else></f:if>
 	</ul>
 	Test Condition#1:
 	<f:if condition="{a} == 'Test-1'"><f:then>

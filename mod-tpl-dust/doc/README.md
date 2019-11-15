@@ -1,11 +1,14 @@
 # Dust Templating PHP for Smart.Framework
 
-PHP templating based off Dust.js by LinkedIn - This fork is maintained by unixman (Smart.Framework.Modules) based on a fork from [http://bloafer.github.com/](http://bloafer.github.com/)
+## This fork is maintained by unixman (Smart.Framework.Modules)
+
+PHP templating based off Dust.js by LinkedIn - based on a fork from [http://bloafer.github.com/](http://bloafer.github.com/)
 
 
 ## Syntax: Variable Escapes and Formatters (By default this version of Dust Templating will apply no Escape or Formatter)
 
 ### Examples:
+
 - {var|h} will escape the variable to HTMLSpecialChars
 - {var|j|h} will escape variable to JavascriptSafeChars + HTMLSpecialChars
 - {var|u} will escape variable to SafeUrlEncoding
