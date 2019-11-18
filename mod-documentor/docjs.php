@@ -27,6 +27,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	private $errMsg 	= null;
 	private $classes 	= [
 		'SmartJS_CoreUtils' 		=> 'lib/js/framework/src/core_utils.js',
+		'SmartJS_DateUtils' 		=> 'lib/js/framework/src/date_utils.js',
 		'SmartJS_Base64' 			=> 'lib/js/framework/src/crypt_utils.js',
 		'SmartJS_CryptoHash' 		=> 'lib/js/framework/src/crypt_utils.js',
 		'SmartJS_CryptoBlowfish' 	=> 'lib/js/framework/src/crypt_utils.js',
@@ -74,6 +75,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		if($this->IfDebug()) {
 			$this->PageViewSetErrorStatus(500, 'ERROR: Documentor cannot be used when Debug is ON ...'); // results are unpredictable ...
+			return;
+		} //end if
+		//--
+
+		//--
+		if(!SmartAppInfo::TestIfModuleExists('mod-highlight-syntax')) {
+			$this->PageViewSetErrorStatus(500, 'ERROR: Highlight Syntax module (mod-highlight-syntax) is missing ...');
 			return;
 		} //end if
 		//--
@@ -289,9 +297,10 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			'file',
 			'package',
 			'version',
-			'summary',
+			'hint',
 			'throws',
 			'desc',
+			'code'
 		];
 		for($i=0; $i<Smart::array_size($keys); $i++) {
 			if(Smart::array_size($arr['class']['data']['props'][(string)$keys[$i]]) <= 0) {
@@ -323,6 +332,58 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			$callmode = '(new) .';
 		} //end if else
 		//--
+		$methods = [];
+		for($i=0; $i<Smart::array_size($arr['methods']); $i++) {
+			if(Smart::array_size($arr['methods'][$i]['data']) > 0) {
+				$tmp_method = [];
+				$tmp_method['throws'] = '';
+				$tmp_method['fires'] = '';
+				$tmp_method['listens'] = '';
+				$tmp_method['modifiers'] = 'public';
+				$tmp_method['code-html'] = '';
+				$tmp_method['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html(trim((string)$arr['methods'][$i]['data']['comments']))));
+				$tmp_method['is-static'] = 0;
+				$tmp_method['is-internal-priv'] = 0;
+				$tmp_method['returns'] = '{Void}';
+				$tmp_method['_return'] = '';
+				$tmp_method['params'] = [];
+				if(Smart::array_size($arr['methods'][$i]['data']['props']) > 0) {
+					foreach($arr['methods'][$i]['data']['props'] as $key => $val) {
+						if((string)$key == 'method') {
+							$tmp_method['name'] = (string) trim((string)$val['type']);
+						} elseif((string)$key == 'static') {
+							$tmp_method['is-static'] = 1;
+						} elseif((string)$key == 'private') {
+							$tmp_method['is-internal-priv'] = 1;
+						} elseif((string)$key == 'throws') {
+							$tmp_method['throws'] = (string) $val['line'];
+						} elseif((string)$key == 'fires') {
+							$tmp_method['fires'] = (string) $val['line'];
+						} elseif((string)$key == 'listens') {
+							$tmp_method['listens'] = (string) $val['line'];
+						} elseif((string)$key == 'code') {
+							$tmp_method['code-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html(trim((string)implode("\n", (array)$val))));
+						} elseif((string)$key == 'param') {
+							$tmp_method['params'] = (array) $val;
+						} elseif((string)$key == 'return') {
+							$tmp_method['returns'] = (string) $val['type'];
+							$tmp_method['_return'] = (string) $val['line'];
+						} else {
+							$tmp_method[(string)$key] = (string) $val['line'];
+						} //end if
+					} //end foreach
+				} //end if
+				if($modifier === 'static') { // let the class overwrite this values
+					$tmp_method['is-static'] = 1;
+					$tmp_method['modifiers'] .= ' static';
+				} //end if
+				if((string)$tmp_method['name'] != '') {
+					$methods[] = (array) $tmp_method;
+				} //end if
+				$tmp_method = null;
+			} //end if
+		} //end for
+		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			(string) $this->ControllerGetParam('module-view-path').'js-class.mtpl.inc.htm',
 			[
@@ -336,14 +397,29 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				'package' 				=> (string) $arr['class']['data']['props']['package']['line'],
 				'version' 				=> (string) $arr['class']['data']['props']['version']['line'],
 				'depends' 				=> (string) implode(', ', (array)$depends),
-				'hints' 				=> (string) $arr['class']['data']['props']['summary']['line'],
+				'hints' 				=> (string) $arr['class']['data']['props']['hint']['line'],
 				'throws' 				=> (string) $arr['class']['data']['props']['throws']['line'],
-
-				'doc-comments-html' 	=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template($arr['class']['data']['props']['desc']['line']),
-				'doc-code-html' 		=> (string) '',
+				'fires' 				=> (string) $arr['class']['data']['props']['fires']['line'],
+				'listens' 				=> (string) $arr['class']['data']['props']['listens']['line'],
+				'arr-methods' 			=> (array)  $methods,
+				'doc-comments-html' 	=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['class']['data']['comments']))),
+				'doc-code-html' 		=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template($this->highlightJsCode(trim((string)implode("\n", (array)$arr['class']['data']['code'])))),
 				'generated-on' 			=> (string) date('Y-m-d H:i:s O')
 			]
 		);
+		//--
+	} //END FUNCTION
+
+
+	private function highlightJsCode($code) {
+		//--
+		if((string)trim((string)$code) == '') {
+			return '';
+		} //end if
+		//--
+		$hl = (new \SmartModExtLib\HighlightSyntax\Highlighter())->highlight('javascript', (string)$code);
+		//--
+		return (string) $hl->value;
 		//--
 	} //END FUNCTION
 
@@ -386,13 +462,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					//--
 					if($is_class_found > 0) {
 						if(Smart::array_size($props['props']['desc']) > 0) {
-							$props['comments'] .= (string) "\n\n".$props['props']['desc']['line'];
-						} //end if
-						if(Smart::array_size($props['props']['summary']) > 0) {
-							$props['comments'] .= (string) "\n\n".$props['props']['summary']['line'];
-						} //end if
-						if(Smart::array_size($props['props']['hint']) > 0) {
-							$props['comments'] .= (string) "\n\n".$props['props']['hint']['line'];
+							$props['comments'] .= (string) "\n".$props['props']['desc']['line'];
 						} //end if
 					} //end if
 					$props['comments'] = (string) trim((string)$props['comments']);
@@ -564,7 +634,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			return ''; // avoid if only stars and spaces or newlines
 		} //end if
 		//--
-		return (string) $str;
+		return (string) trim((string)$str);
 		//--
 	} //END FUNCTION
 

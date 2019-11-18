@@ -1,0 +1,31 @@
+<!-- methods r.20191118 -->
+[%%%LOOP:ARR-METHODS%%%]
+[%%%IF:ARR-METHODS.IS-INTERNAL-PRIV:!=1;%%%]
+<div class="doc-container" id="Method--[###ARR-METHODS.NAME|htmid|html###]">
+	<span class="doc-modifiers">[###ARR-METHODS.MODIFIERS|html###]</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>[###ARR-METHODS.NAME|html###]</b></span>&nbsp;(
+	[%%%LOOP:ARR-METHODS.PARAMS%%%]
+		[%%%IF:ARR-METHODS.PARAMS.TYPE:!=;%%%]<i>[###ARR-METHODS.PARAMS.TYPE|html###]</i>&nbsp;[%%%/IF:ARR-METHODS.PARAMS.TYPE%%%]<span class="doc-param-name"><b><span title="`[###ARR-METHODS.PARAMS.VAR|html###]` Parameter">[###ARR-METHODS.PARAMS.VAR|html###]</span></b></span>[%%%IF:ARR-METHODS.PARAMS._-ITERATOR-_:<###ARR-METHODS.PARAMS._-MAXCOUNT-_###;%%%],[%%%|SPACE%%%][%%%/IF:ARR-METHODS.PARAMS._-ITERATOR-_%%%]
+	[%%%/LOOP:ARR-METHODS.PARAMS%%%]
+	)&nbsp;{}&nbsp;[%%%IF:ARR-METHODS.IS-STATIC:==1;%%%]<span title="Static Method"><b>.</b></span>[%%%ELSE:ARR-METHODS.IS-STATIC%%%]<span title="Object Method"><b>(new)&nbsp;.</b></span>[%%%/IF:ARR-METHODS.IS-STATIC%%%]&nbsp;[###ARR-METHODS.RETURNS|html###]
+	<div class="doc-method-ret-params">
+	[%%%IF:ARR-METHODS._RETURN:!=;%%%]
+		@return: [###ARR-METHODS._RETURN|html###]<br>
+	[%%%/IF:ARR-METHODS._RETURN%%%]
+	[%%%IF:ARR-METHODS.FIRES:!=;%%%]
+		@fires: [###ARR-METHODS.FIRES|html|syntaxhtml###]<br>
+	[%%%/IF:ARR-METHODS.FIRES%%%]
+	[%%%IF:ARR-METHODS.LISTENS:!=;%%%]
+		@listens: [###ARR-METHODS.LISTENS|html|syntaxhtml###]<br>
+	[%%%/IF:ARR-METHODS.LISTENS%%%]
+	[%%%IF:ARR-METHODS.THROWS:!=;%%%]
+		@throws: [###ARR-METHODS.THROWS|html|syntaxhtml###]<br>
+	[%%%/IF:ARR-METHODS.THROWS%%%]
+	</div>
+	[%%%IF:ARR-METHODS.COMMENT-HTML:!=;%%%]
+		<div class="doc-method-comments">[###ARR-METHODS.COMMENT-HTML###]</div>
+	[%%%/IF:ARR-METHODS.COMMENT-HTML%%%]
+</div>
+[%%%ELSE:ARR-METHODS.IS-INTERNAL-PRIV%%%]
+<!-- Skip Internal-Priv Method: `[###ARR-METHODS.NAME|html###]()` -->
+[%%%/IF:ARR-METHODS.IS-INTERNAL-PRIV%%%]
+[%%%/LOOP:ARR-METHODS%%%]

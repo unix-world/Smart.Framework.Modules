@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20190808
+var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20191116
 
 this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
@@ -463,7 +463,11 @@ this.Tabs_Init = function(tabs_id, tab_selected, prevent_reload) {
 			} //end if
 			if(!ui.tab.data('loaded')) {
 				$('#smartframeworkcomponents_jquery_tabs_loader').remove();
-				$('<div id="smartframeworkcomponents_jquery_tabs_loader" style="width:250px; position:absolute; top:37px; right:0px; text-align:center;"><img src="' + SmartJS_BrowserUtils_LoaderImg + '" alt="... loading Tab data ..."></div>').appendTo('#' + tabs_id);
+				var imgLoader = '';
+				if(SmartJS_BrowserUtils.param_LoaderImg) {
+					imgLoader = '<img src="' + SmartJS_CoreUtils.escape_html(SmartJS_BrowserUtils.param_LoaderImg) + '" alt="... loading Tab data ...">';
+				} //end if
+				$('<div id="smartframeworkcomponents_jquery_tabs_loader" style="width:250px; position:absolute; top:37px; right:0px; text-align:center;">' + imgLoader + '</div>').appendTo('#' + tabs_id);
 				//ui.ajaxSettings.type = 'GET';
 				//ui.ajaxSettings.async = true;
 				//ui.ajaxSettings.cache = true;

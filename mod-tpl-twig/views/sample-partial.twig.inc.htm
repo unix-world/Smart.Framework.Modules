@@ -1,4 +1,4 @@
-<!-- start twig partial / sub-template v.20191115 -->
+<!-- start twig partial / sub-template v.20191116 -->
 {# Partial / Sub-Template: sample-partial.twig.inc.htm #}<!-- comments are removed -->
 	<h5 id="qunit-test-result">Twig TPL w. Sub-Template Render (Table with #{{ tcount }} columns):</h5>
 	<table style="border: 1px solid #ECECEC; width: 550px;" id="qunit-test-el">
@@ -21,7 +21,7 @@
 		<li><a href="{{ item.href }}">{{ loop.index }}.  {{ item.caption }} ({{ loop.index0 }})</a></li>
 		{% endfor %}
 	{% else %}
-		<span style="color:#FF3300;"><b>NOT OK</b></span>
+		<li><span style="color:#FF3300;"><b>NOT OK</b></span></li>
 	{% endif %}
 	</ul>
 	Test Condition#1:

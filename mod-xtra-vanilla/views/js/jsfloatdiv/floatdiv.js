@@ -1,7 +1,7 @@
 
 // NetVision JS - Float Div
 // (c) 2006-2019 unix-world.org
-// v.20191109
+// v.20191116
 
 // DEPENDS: jQuery, Cross-Browser
 
@@ -150,7 +150,7 @@ this.FloatXLayer_Toggle = function(DivID, TitleID, iFrmID, iState, fURL, fWidth,
 		obj.onDblclick = FloatXLayer_EndMove;
 		//--
 		try {
-			SmartJS_BrowserUtils_PageAway = false;
+			SmartJS_BrowserUtils.param_PageAway = false;
 		} catch(err){}
 		//--
 	} else {
@@ -169,7 +169,7 @@ this.FloatXLayer_Toggle = function(DivID, TitleID, iFrmID, iState, fURL, fWidth,
 		obj.onDblclick = function() {};
 		//--
 		try {
-			SmartJS_BrowserUtils_PageAway = true;
+			SmartJS_BrowserUtils.param_PageAway = true;
 		} catch(err){}
 		//--
 	} //end if

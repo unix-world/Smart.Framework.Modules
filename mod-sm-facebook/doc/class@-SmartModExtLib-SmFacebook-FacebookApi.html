@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20191104 -->
+<!-- Template: Smart.Framework@Documentor v.20191118 -->
 <html>
 <head>
 	<meta charset="UTF-8">
@@ -10,7 +10,8 @@
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 	<title>PHP Documentation for: \SmartModExtLib\SmFacebook\FacebookApi</title>
 	<!-- CSS and Fonts -->
-	<!-- skip fonts -->
+		<!-- skip fonts -->
+	
 	<style type="text/css">
 	* {
 		font-family: sans-serif;
@@ -415,6 +416,36 @@
 	}
 	/* ----- #end ----- */
 	</style>
+	<style type="text/css">
+		
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.5.2.7 / smart.framework.v.5.2 -- */
+
+/* ----------------------------- */
+
+.sf__tpl__highlight__marker {
+	background: #DDEEFF !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #B3FF80 !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #FDE223 !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+	</style>
 </head>
 <body>
 <nav class="ux-navbar">
@@ -424,10 +455,10 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20191103 -->
+<!-- class r.20191109 -->
 <!-- Styles -->
-<!-- styles r.20191031 -->
-<style>
+<!-- styles r.20191118 -->
+<style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
@@ -521,7 +552,8 @@ ul.doc-list ul {
 .doc-code {
 	background: #232B50;
 	color: #FFFFFF;
-	padding: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 .doc-code pre {
 	padding: 5px;
@@ -556,7 +588,7 @@ div.doc-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\SmFacebook\</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> FacebookApi</span></li>
 		
-		<li><b>Version:</b> v.20191104</li>
+		<li><b>Version:</b> v.20191110</li>
 		<li><b>Depends:</b> extensions:  classes: Facebook Graph Api</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -569,10 +601,14 @@ div.doc-summary {
 <div class="doc-container" id="Methods--Summary-">
 	<h2 class="doc-header">Methods summary</h2>
 </div>
-<!-- methods r.20191031 -->
+<!-- methods r.20191109 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-	<span class="doc-param-name"><b><span title="`$app_id` Parameter is REQUIRED">$app_id</span></b></span>, <span class="doc-param-name"><b><span title="`$app_secret` Parameter is REQUIRED">$app_secret</span></b></span>, <span class="doc-param-name"><b><span class="doc-param-optional" title="`$api_version` Parameter is OPTIONAL, with the Default Value: &quot;v5.0&quot;">$api_version</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;v5.0&quot;</b></span>
+				<span class="doc-param-name"><b><span title="`$app_id` Parameter is REQUIRED">$app_id</span></b></span>, 
+			<span class="doc-param-name"><b><span title="`$app_secret` Parameter is REQUIRED">$app_secret</span></b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$api_version` Parameter is OPTIONAL, with the Default Value: &quot;v5.0&quot;">$api_version</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;v5.0&quot;</b></span>
+	
+	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
 	
 	
@@ -580,6 +616,7 @@ div.doc-summary {
 	
 </div><div class="doc-container" id="Method--getApiObject">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getApiObject</b></span>&nbsp;(
+		
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
 	
@@ -588,6 +625,7 @@ div.doc-summary {
 	
 </div><div class="doc-container" id="Method--getLastError">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getLastError</b></span>&nbsp;(
+		
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
 	
@@ -596,6 +634,7 @@ div.doc-summary {
 	
 </div><div class="doc-container" id="Method--getUserData">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getUserData</b></span>&nbsp;(
+		
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
 	
@@ -604,6 +643,7 @@ div.doc-summary {
 	
 </div><div class="doc-container" id="Method--validateUserData">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validateUserData</b></span>&nbsp;(
+		
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
 	
@@ -616,22 +656,22 @@ div.doc-summary {
 <div class="doc-container" id="Properties--Summary-">
 	<h2 class="doc-header">Properties summary</h2>
 </div>
-<!-- properties r.20191031 -->
+<!-- properties r.20191109 -->
 
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
 	<h2 class="doc-header">Constants summary</h2>
 </div>
-<!-- constants r.20191031 -->
+<!-- constants r.20191109 -->
 
 <!-- Sample Code -->
 
 <!-- Summary List -->
 <br>
-<!-- summary r.20191103 -->
+<!-- summary r.20191109 -->
 <script>
-// summary r.20191103
+// summary r.20191109
 function smartHandleDocSelector(obj) {
 	if(!obj) {
 		return;
@@ -657,7 +697,17 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">*** Methods summary ***</option>
-			<option value="Method--__construct">Method: __construct()</option><option value="Method--getApiObject">Method: getApiObject()</option><option value="Method--getLastError">Method: getLastError()</option><option value="Method--getUserData">Method: getUserData()</option><option value="Method--validateUserData">Method: validateUserData()</option>
+									<option value="Method--__construct">Method: __construct()</option>
+			
+									<option value="Method--getApiObject">Method: getApiObject()</option>
+			
+									<option value="Method--getLastError">Method: getLastError()</option>
+			
+									<option value="Method--getUserData">Method: getUserData()</option>
+			
+									<option value="Method--validateUserData">Method: validateUserData()</option>
+			
+			
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">*** Properties summary ***</option>
@@ -672,7 +722,7 @@ function smartHandleDocSelector(obj) {
 </div>
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2019-11-04 09:18:16 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2019-11-18 10:08:48 +0000</small>
 <hr>
 <br>
 <!-- # -->

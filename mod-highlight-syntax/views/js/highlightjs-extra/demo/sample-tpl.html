@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>highlight.js - Templating Engines Demo</title>
+
+  <link rel="stylesheet" href="../../../css/codepen-embed.css">
+  <script type="text/javascript" src="../../../../../../lib/js/jshighlight/highlight.js"></script>
+
+  <script type="text/javascript" src="../../../../../../lib/js/jshighlight/syntax/web/xml.js"></script>
+  <script type="text/javascript" src="../syntax/tpl/django.js"></script>
+  <script type="text/javascript" src="../syntax/tpl/tex.js"></script>
+
+  <script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+  <script>
+  jQuery(document).ready(function() {
+    jQuery('div pre code').each(function(i, block) {
+      hljs.highlightBlock(block);
+    });
+  });
+  </script>
+
+  <link rel="stylesheet" href="sample.css">
+
+</head>
+<body>
+
+<h1>Highlight.Js Demo: Templating Engines</h1>
+<hr>
+
+<!-- Django -->
+
+<div>
+<h2>Django (Python Templating)</h2>
+<pre><code class="django">{% if articles|length %}
+&lt;table&gt;
+{% for article in articles %}
+
+{% custom %}
+
+{# Striped table #}
+&lt;tr class=&quot;{% cycle odd,even %}&quot;&gt;
+  &lt;td&gt;{{ article|default:&quot;Hi... &quot; }}&lt;/td&gt;
+  &lt;td {% if article.today %}class=&quot;today&quot;{% endif %}&gt;
+    Published on {{ article.date }}
+  &lt;/td&gt;
+&lt;/tr&gt;
+
+{% endfor %}
+&lt;/table&gt;
+{% endif %}
+</code></pre>
+</div>
+
+<!-- TEX -->
+
+<div>
+<h2>TeX</h2>
+<pre><code class="tex">\documentclass{article}
+\usepackage[koi8-r]{inputenc}
+\hoffset=0pt
+\voffset=.3em
+\tolerance=400
+\newcommand{\eTiX}{\TeX}
+\begin{document}
+\section*{Highlight.js}
+\begin{table}[c|c]
+$\frac 12\, + \, \frac 1{x^3}\text{Hello \! world}$ &amp; \textbf{Goodbye\~ world} \\\eTiX $ \pi=400 $
+\end{table}
+Ch\&#39;erie, \c{c}a ne me pla\^\i t pas! % comment \b
+G\&quot;otterd\&quot;ammerung~45\%=34.
+$$
+    \int\limits_{0}^{\pi}\frac{4}{x-7}=3
+$$
+\end{document}
+</code></pre>
+</div>
+
+
+<!-- #END -->
+<br>
+<hr>
+<br>
+
+</body>
+</html>

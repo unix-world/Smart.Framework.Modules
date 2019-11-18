@@ -110,7 +110,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$vcf_cards = null; // free mem
 				//--
-				$tpl_one = (string) SmartFileSystem::read((string)$this->ControllerGetParam('module-view-path').'abookweb-webcards-one.mtpl.inc.htm');
 				$this->PageViewSetVars([
 					'title' => 'WebAddressbook / Addressbook View',
 					'main' => (string) SmartMarkersTemplating::render_file_template(
@@ -119,8 +118,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'USER-ACC' 		=> (string) $safe_user_dir,
 							'USER-ABK' 		=> (string) $abook_addressbook,
 							'COUNT-CARDS' 	=> (string) Smart::array_size($cards),
-							'JSON-CARDS' 	=> (string) Smart::json_encode($cards),
-							'CARD-TPL' 		=> (string) SmartMarkersTemplating::escape_template((string)$tpl_one)
+							'JSON-CARDS' 	=> (string) Smart::json_encode($cards)
 						]
 					)
 				]);

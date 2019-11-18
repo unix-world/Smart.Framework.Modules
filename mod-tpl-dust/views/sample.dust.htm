@@ -1,12 +1,5 @@
-<!-- start dust template v.20191115 -->
+<!-- start dust template v.20191116 -->
 {! Template: sample.dust.htm !}<!-- comments are removed -->
-<script>
-	var jsDate = '{date_time|j}';
-	var testEncodings = '{date_time|s|h|c|u|t|ml|mu|mf|mw|fn|ih|vj|i|d|n|b|o|j}'; // test escapings
-	if(testEncodings !== 'true') {
-		alert('Escapings ERROR !');
-	}
-</script>
 <div align="center">
 	<div>
 		<a href="//github.com/linkedin/dustjs/wiki/Dust-Tutorial" target="_blank"><img src="{Tpl_Dir__|h}img/dust.svg" width="160" height="160"></a>
@@ -27,7 +20,14 @@
 	{> "sample-partial.dust.inc.htm" /}
 </div>
 <script>
+	var jsDate = '{date_time|j}';
 	jQuery('#the-dateTime').text(jsDate);
+</script>
+<script>
+	var testEncodings = '{date_time|s|h|c|u|t|ml|mu|mf|mw|fn|ih|vj|i|d|n|b|o|j}'; // specific test for Dust: test escapings
+	if(testEncodings !== 'true') {
+		alert('Escapings ERROR !');
+	}
 </script>
 {! <pre>{@contextDump/}</pre> !}
 <!-- end dust template -->

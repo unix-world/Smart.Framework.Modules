@@ -574,7 +574,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					} //end if
 				} //end if
 				//--
-				$arr['constants'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['constants'][$i]['doc-comments']['comments'])));
+				$arr['constants'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['constants'][$i]['doc-comments']['comments'])), true);
 				//--
 			} //end for
 		} //end if
@@ -590,7 +590,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					} //end if
 				} //end if
 				//--
-				$arr['properties'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['properties'][$i]['doc-comments']['comments'])));
+				$arr['properties'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['properties'][$i]['doc-comments']['comments'])), true);
 				//--
 			} //end for
 		} //end if
@@ -631,11 +631,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if else
 				//--
 				if(Smart::array_size($tmp_arr_ret_param) > 0) {
-					$arr['methods'][$i]['ret-param-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html(implode("\n", (array)$tmp_arr_ret_param))));
+					$arr['methods'][$i]['ret-param-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html(implode("\n", (array)$tmp_arr_ret_param))), true);
 				} //end if else
 				$tmp_arr_ret_param = [];
 				//--
-				$arr['methods'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['methods'][$i]['doc-comments']['comments'])));
+				$arr['methods'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['methods'][$i]['doc-comments']['comments'])), true);
 				//--
 			} //end for
 		} //end if
@@ -661,8 +661,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				'implements' 			=> (string) implode(', ', (array)$arr['class']['interfaces']),
 				'use' 					=> (string) implode(', ', (array)$arr['class']['traits']),
 				'constructor' 			=> (string) $arr['class']['constructor'],
-				'doc-comments-html' 	=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template($doc_comments),
-				'doc-code-html' 		=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template($doc_code),
+				'doc-comments-html' 	=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template($doc_comments, true),
+				'doc-code-html' 		=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template($doc_code, true),
 				'arr-constants' 		=> (array)  $arr['constants'],
 				'arr-properties' 		=> (array)  $arr['properties'],
 				'arr-methods' 			=> (array)  $arr['methods'],
@@ -1532,7 +1532,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			@ini_set((string)$key, $val); // set custom to INI for custom render
 		} //end for
 		//-- render
-		$code = (string) highlight_string((string)'<'.'?php'."\n".SmartUtils::comment_php_code($code, [])."\n".'?'.'>', true);
+		$code = (string) highlight_string((string)'<'.'?php'."\n".SmartUtils::comment_php_code(trim((string)$code), [])."\n".'?'.'>', true);
 		$code = (new SmartHtmlParser((string)$code, true, true, false))->get_clean_html(false); // fix XHTML Tags and deliver clean HTML
 		//-- restore render settings to INI
 		foreach($arr_highlight_default as $key => $val) {

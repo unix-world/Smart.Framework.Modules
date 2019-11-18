@@ -171,6 +171,16 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$arr_sfm_tasks = [
 			//--
+			'\\SmartModExtLib\\AuthAdmins\\SimpleAuthAdminsHandler',
+			'\\SmartModExtLib\\AuthAdmins\\AuthAdminsHandler',
+			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendController',
+			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendPlugin',
+			'\\SmartModExtLib\\Webdav\\ControllerAdmDavFs',
+			'\\SmartModExtLib\\Webdav\\ControllerAdmCalDavFs',
+			'\\SmartModExtLib\\Webdav\\ControllerAdmCardDavFs',
+			//--
+			'\\SmartModExtLib\\HighlightSyntax\\Highlighter',
+			//--
 			'\\SmartTemplating',
 			'\\SmartModExtLib\\TplDust\\SmartDustTemplating',
 			'\\SmartModExtLib\\TplTwig\\SmartTwigTemplating',
@@ -197,9 +207,6 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			//--
 			'\\SmartImgGfxCharts',
 			'\\SmartImgBizCharts',
-			//--
-			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendController',
-			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendPlugin',
 			//--
 			'\\SmartModExtLib\\SmFacebook\\FacebookApi',
 			'\\SmartModExtLib\\SmTwitter\\TwitterApi',

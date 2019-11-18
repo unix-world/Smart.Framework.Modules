@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20191104 -->
+<!-- Template: Smart.Framework@Documentor v.20191118 -->
 <html>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartModExtLib\LangDetect\LanguageNgrams       final class \SmartModExtLib\LangDetect\ LanguageNgrams    {   } -&gt;    Class: LanguageNgrams - provides a">
-	<meta name="keywords" content="smartmodextlib langdetect languagengrams, final, class, smartmodextlib langdetect, languagengrams, -, class, -, provides, a, language, detection, utility, based, on, text, n-grams, that, can, be, used, to, validate, getlanguage, confidence, for, text., located, at, modules mod-lang-detect libs languagengrams.php, package, modules languagedetection, namespace, name, version, v, depends, classes, smart, smartunicode, smartfilesysutils, hints, by, default, will, use, the, ngrams., extended, ngrams, ex, see, local, code, examples., usage, dynamic, object, new, class   - method, this, only, methods, summary, public, function, construct, string, ngrams path, modules mod-lang-detect libs data, array, lang, array, param, ngrams path, path, resources, or, null, if, need, train, lang, of, languages, detect, an, empty, try, all, available, constructor, getlanguageconfidence">
+	<meta name="keywords" content="smartmodextlib langdetect languagengrams, final, class, smartmodextlib langdetect, languagengrams, -, class, -, provides, a, language, detection, utility, based, on, text, n-grams, that, can, be, used, to, validate, getlanguage, confidence, for, text., located, at, modules mod-lang-detect libs languagengrams.php, package, modules languagedetection, namespace, name, version, v, depends, classes, smart, smartunicode, smartfilesysutils, hints, by, default, will, use, the, ngrams., extended, ngrams, ex, see, local, code, examples., usage, dynamic, object, new, class   - method, this, only, methods, summary, public, function, construct, string, ngrams path, modules mod-lang-detect libs data, array, lang, array, param, ngrams path, path, resources, or, null, if, need, train, lang, of, languages, detect, an, empty, try, all, available, constructor">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 	<title>PHP Documentation for: \SmartModExtLib\LangDetect\LanguageNgrams</title>
 	<!-- CSS and Fonts -->
-	<!-- skip fonts -->
+		<!-- skip fonts -->
+	
 	<style type="text/css">
 	* {
 		font-family: sans-serif;
@@ -415,6 +416,36 @@
 	}
 	/* ----- #end ----- */
 	</style>
+	<style type="text/css">
+		
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.5.2.7 / smart.framework.v.5.2 -- */
+
+/* ----------------------------- */
+
+.sf__tpl__highlight__marker {
+	background: #DDEEFF !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #B3FF80 !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #FDE223 !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+	</style>
 </head>
 <body>
 <nav class="ux-navbar">
@@ -424,10 +455,10 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20191103 -->
+<!-- class r.20191109 -->
 <!-- Styles -->
-<!-- styles r.20191031 -->
-<style>
+<!-- styles r.20191118 -->
+<style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
@@ -521,7 +552,8 @@ ul.doc-list ul {
 .doc-code {
 	background: #232B50;
 	color: #FFFFFF;
-	padding: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 .doc-code pre {
 	padding: 5px;
@@ -556,7 +588,7 @@ div.doc-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\LangDetect\</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> LanguageNgrams</span></li>
 		
-		<li><b>Version:</b> v.180320</li>
+		<li><b>Version:</b> v.20191109</li>
 		<li><b>Depends:</b> classes:  Smart, SmartUnicode, SmartFileSysUtils</li>
 		<li><b>Hints:</b> By  default will use the 1-3-930 NGrams. To use extended NGrams (Ex: 1-4-15k) see the local code examples.</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -569,66 +601,87 @@ div.doc-summary {
 <div class="doc-container" id="Methods--Summary-">
 	<h2 class="doc-header">Methods summary</h2>
 </div>
-<!-- methods r.20191031 -->
+<!-- methods r.20191109 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ngrams_path` Parameter is OPTIONAL, with the Default Value: &quot;modules/mod-lang-detect/libs/data-1-3-930&quot;">$ngrams_path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;modules/mod-lang-detect/libs/data-1-3-930&quot;</b></span>, <i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$lang` Parameter is OPTIONAL, with the Default Value: array()">$lang</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array()</b></span>
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ngrams_path` Parameter is OPTIONAL, with the Default Value: &quot;modules/mod-lang-detect/libs/data-1-3-930&quot;">$ngrams_path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;modules/mod-lang-detect/libs/data-1-3-930&quot;</b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$lang` Parameter is OPTIONAL, with the Default Value: array()">$lang</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array()</b></span>
+	
+	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
 	
 	
-	<div class="doc-method-ret-params">@param: {$ngrams_path} The path to the resources or NULL if only need to train<br>
+			<div class="doc-method-ret-params">@param: {$ngrams_path} The path to the resources or NULL if only need to train<br>
 @param: {$lang} The Array of languages to detect for OR an empty array to try detect all available languages</div>
-	<div class="doc-method-comments">Class Constructor</div>
+	
+			<div class="doc-method-comments">Class Constructor</div>
+	
 </div><div class="doc-container" id="Method--getLanguageConfidence">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getLanguageConfidence</b></span>&nbsp;(
-	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$str` Parameter is REQUIRED">$str</span></b></span>
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$str` Parameter is REQUIRED">$str</span></b></span>
+	
+	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
 	
 	
-	<div class="doc-method-ret-params">@return: {ARRAY} : The detection result: [ service-available, lang-id, confidence-score, error-message ]<br>
+			<div class="doc-method-ret-params">@return: {ARRAY} : The detection result: [ service-available, lang-id, confidence-score, error-message ]<br>
 @param: {$str} The text to be checked</div>
-	<div class="doc-method-comments">Detects and Get the Language Confidence information for the best detected Language (from the available list) for a given text</div>
+	
+			<div class="doc-method-comments">Detects and Get the Language Confidence information for the best detected Language (from the available list) for a given text</div>
+	
 </div><!-- Skip Internal-Priv Method: `detect()` --><!-- Skip Internal-Priv Method: `train()` --><!-- Skip Internal-Priv Method: `getNgrams()` --><div class="doc-container" id="Method--setMinLength">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setMinLength</b></span>&nbsp;(
-	<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$minLength` Parameter is REQUIRED">$minLength</span></b></span>
+				<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$minLength` Parameter is REQUIRED">$minLength</span></b></span>
+	
+	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;VOID
 	
 	
-	<div class="doc-method-ret-params">@return: {VOID} :<br>
+			<div class="doc-method-ret-params">@return: {VOID} :<br>
 @param: {$minLength} Min Ngrams Length: Default is 1</div>
-	<div class="doc-method-comments">Set the Ngrams Minimum Length</div>
+	
+			<div class="doc-method-comments">Set the Ngrams Minimum Length</div>
+	
 </div><div class="doc-container" id="Method--setMaxLength">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setMaxLength</b></span>&nbsp;(
-	<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$maxLength` Parameter is REQUIRED">$maxLength</span></b></span>
+				<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$maxLength` Parameter is REQUIRED">$maxLength</span></b></span>
+	
+	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;VOID
 	
 	
-	<div class="doc-method-ret-params">@return: {VOID} :<br>
+			<div class="doc-method-ret-params">@return: {VOID} :<br>
 @param: {$maxLength} Max Ngrams Length: Default is 3</div>
-	<div class="doc-method-comments">Set the Ngrams Maximum Length</div>
+	
+			<div class="doc-method-comments">Set the Ngrams Maximum Length</div>
+	
 </div><div class="doc-container" id="Method--setMaxNgrams">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setMaxNgrams</b></span>&nbsp;(
-	<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$maxNgrams` Parameter is REQUIRED">$maxNgrams</span></b></span>
+				<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$maxNgrams` Parameter is REQUIRED">$maxNgrams</span></b></span>
+	
+	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;VOID
 	
 	
-	<div class="doc-method-ret-params">@return: {VOID} :<br>
+			<div class="doc-method-ret-params">@return: {VOID} :<br>
 @param: {$maxNgrams} Max Ngrams: Default is 310</div>
-	<div class="doc-method-comments">Set the Maximum (significant) Ngrams</div>
+	
+			<div class="doc-method-comments">Set the Maximum (significant) Ngrams</div>
+	
 </div>
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
 	<h2 class="doc-header">Properties summary</h2>
 </div>
-<!-- properties r.20191031 -->
+<!-- properties r.20191109 -->
 
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
 	<h2 class="doc-header">Constants summary</h2>
 </div>
-<!-- constants r.20191031 -->
+<!-- constants r.20191109 -->
 
 <!-- Sample Code -->
 <br>
@@ -637,15 +690,15 @@ div.doc-summary {
 </div>
 <div class="doc-code">
 	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br>&nbsp;$langtest&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(new&nbsp;\</span><span style="color: #FFFFFF">SmartModExtLib</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">LangDetect</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">LanguageNgrams</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">getLanguageConfidence</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Your&nbsp;Text&nbsp;to&nbsp;Check&nbsp;Goes&nbsp;Here&nbsp;...'</span><span style="color: #FFCC00; font-weight: bold">);<br><br><br></span><span style="color: #FFFFFF">?&gt;</span>
+<span style="color: #FFFFFF">&lt;?php<br>$langtest&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(new&nbsp;\</span><span style="color: #FFFFFF">SmartModExtLib</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">LangDetect</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">LanguageNgrams</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">getLanguageConfidence</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Your&nbsp;Text&nbsp;to&nbsp;Check&nbsp;Goes&nbsp;Here&nbsp;...'</span><span style="color: #FFCC00; font-weight: bold">);<br></span><span style="color: #FFFFFF">?&gt;</span>
 </span>
 </code><!-- [/@] Smart/HTML.Cleaner --></code></pre>
 </div>
 <!-- Summary List -->
 <br>
-<!-- summary r.20191103 -->
+<!-- summary r.20191109 -->
 <script>
-// summary r.20191103
+// summary r.20191109
 function smartHandleDocSelector(obj) {
 	if(!obj) {
 		return;
@@ -671,7 +724,20 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">*** Methods summary ***</option>
-			<option value="Method--__construct">Method: __construct()</option><option value="Method--getLanguageConfidence">Method: getLanguageConfidence()</option><option value="Method--setMinLength">Method: setMinLength()</option><option value="Method--setMaxLength">Method: setMaxLength()</option><option value="Method--setMaxNgrams">Method: setMaxNgrams()</option>
+									<option value="Method--__construct">Method: __construct()</option>
+			
+									<option value="Method--getLanguageConfidence">Method: getLanguageConfidence()</option>
+			
+						
+						
+						
+									<option value="Method--setMinLength">Method: setMinLength()</option>
+			
+									<option value="Method--setMaxLength">Method: setMaxLength()</option>
+			
+									<option value="Method--setMaxNgrams">Method: setMaxNgrams()</option>
+			
+			
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">*** Properties summary ***</option>
@@ -681,14 +747,15 @@ function smartHandleDocSelector(obj) {
 			<option value="Constants--Summary-">*** Constants summary ***</option>
 			
 		</optgroup>
-		<optgroup label="Class Sample code">
+				<optgroup label="Class Sample code">
 			<option value="SAMPLE--Code-">*** Sample code ***</option>
 		</optgroup>
+		
 	</select>
 </div>
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2019-11-04 08:11:23 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2019-11-18 10:08:47 +0000</small>
 <hr>
 <br>
 <!-- # -->

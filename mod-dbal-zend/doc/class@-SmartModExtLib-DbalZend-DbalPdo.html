@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20191104 -->
+<!-- Template: Smart.Framework@Documentor v.20191118 -->
 <html>
 <head>
 	<meta charset="UTF-8">
@@ -10,7 +10,8 @@
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 	<title>PHP Documentation for: \SmartModExtLib\DbalZend\DbalPdo</title>
 	<!-- CSS and Fonts -->
-	<!-- skip fonts -->
+		<!-- skip fonts -->
+	
 	<style type="text/css">
 	* {
 		font-family: sans-serif;
@@ -415,6 +416,36 @@
 	}
 	/* ----- #end ----- */
 	</style>
+	<style type="text/css">
+		
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.5.2.7 / smart.framework.v.5.2 -- */
+
+/* ----------------------------- */
+
+.sf__tpl__highlight__marker {
+	background: #DDEEFF !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #B3FF80 !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #FDE223 !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+	</style>
 </head>
 <body>
 <nav class="ux-navbar">
@@ -424,10 +455,10 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20191103 -->
+<!-- class r.20191109 -->
 <!-- Styles -->
-<!-- styles r.20191031 -->
-<style>
+<!-- styles r.20191118 -->
+<style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
@@ -521,7 +552,8 @@ ul.doc-list ul {
 .doc-code {
 	background: #232B50;
 	color: #FFFFFF;
-	padding: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 .doc-code pre {
 	padding: 5px;
@@ -570,114 +602,154 @@ If you wish to use the PDO drivers in your projects instead of the direct ones s
 <div class="doc-container" id="Methods--Summary-">
 	<h2 class="doc-header">Methods summary</h2>
 </div>
-<!-- methods r.20191031 -->
+<!-- methods r.20191109 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-	<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$cfg` Parameter is REQUIRED">$cfg</span></b></span>, <i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$timeout` Parameter is OPTIONAL, with the Default Value: 30">$timeout</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>30</b></span>
+				<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$cfg` Parameter is REQUIRED">$cfg</span></b></span>, 
+			<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$timeout` Parameter is OPTIONAL, with the Default Value: 30">$timeout</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>30</b></span>
+	
+	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
 	
 	
-	<div class="doc-method-ret-params">@param: {$cfg} the driver options as array[] or 'mysqli:config' | 'pgsql:config' | 'sqlite:tmp/sample-dbfile.sqlite'<br>
+			<div class="doc-method-ret-params">@param: {$cfg} the driver options as array[] or 'mysqli:config' | 'pgsql:config' | 'sqlite:tmp/sample-dbfile.sqlite'<br>
 @param: {$timeout} the connection timeout (applies only to MySQL and PostgreSQL)</div>
-	<div class="doc-method-comments">Class Constructor for using Zend/DB with a custom driver and options, using PDO, providing a compatible layer to use a project with any of PDO/PgSQL, PDO/SQLite and PDO/MySQL.<br>
+	
+			<div class="doc-method-comments">Class Constructor for using Zend/DB with a custom driver and options, using PDO, providing a compatible layer to use a project with any of PDO/PgSQL, PDO/SQLite and PDO/MySQL.<br>
 The utility of this DB Driver is to serve the missing cross-db PDO Drivers support from Smart.Framework such as PDO/PgSQL, PDO/SQLite and PDO/MySQL to support a cross-DB project.<br>
 The Zend/DB provides a unified query parameters implementation using PDO and is not 100% compatible with the queries written for the direct drivers supplied by Smart.Framework when parameters are used (PostgreSQL, MySQLi, SQLite and other Non-PDO drivers) because the parameter mode can differ from driver to driver (Ex: ? :param $# ...)</div>
+	
 </div><div class="doc-container" id="Method--getDriver">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getDriver</b></span>&nbsp;(
+		
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
 	
 	
-	<div class="doc-method-ret-params">@return: {STRING} :</div>
-	<div class="doc-method-comments">Zend/DB: Get the Current Driver</div>
+			<div class="doc-method-ret-params">@return: {STRING} :</div>
+	
+			<div class="doc-method-comments">Zend/DB: Get the Current Driver</div>
+	
 </div><div class="doc-container" id="Method--getConnection">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getConnection</b></span>&nbsp;(
+		
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;OBJECT
 	
 	
-	<div class="doc-method-ret-params">@return: {OBJECT} :</div>
-	<div class="doc-method-comments">Zend/DB: Get the Connection</div>
+			<div class="doc-method-ret-params">@return: {OBJECT} :</div>
+	
+			<div class="doc-method-comments">Zend/DB: Get the Connection</div>
+	
 </div><div class="doc-container" id="Method--getPlatform">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getPlatform</b></span>&nbsp;(
+		
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;OBJECT
 	
 	
-	<div class="doc-method-ret-params">@return: {OBJECT} :</div>
-	<div class="doc-method-comments">Zend/DB: Get the Platform</div>
+			<div class="doc-method-ret-params">@return: {OBJECT} :</div>
+	
+			<div class="doc-method-comments">Zend/DB: Get the Platform</div>
+	
 </div><div class="doc-container" id="Method--count_data">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>count_data</b></span>&nbsp;(
-	<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, <i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$values` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$values</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+				<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, 
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$values` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$values</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INTEGER
 	
 	
-	<div class="doc-method-ret-params">@return: {INTEGER} : the result of COUNT()<br>
+			<div class="doc-method-ret-params">@return: {INTEGER} : the result of COUNT()<br>
 @param: {$queryval} the query<br>
 @param: {$values} *optional* array of parameters</div>
-	<div class="doc-method-comments">PDO Query :: Count<br>
+	
+			<div class="doc-method-comments">PDO Query :: Count<br>
 This function is intended to be used for count type queries: SELECT COUNT().</div>
+	
 </div><div class="doc-container" id="Method--read_data">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read_data</b></span>&nbsp;(
-	<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, <i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$values` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$values</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+				<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, 
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$values` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$values</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
 	
 	
-	<div class="doc-method-ret-params">@return: {ARRAY} : (non-asociative) of results	:: array('column-0-0', 'column-0-1', ..., 'column-0-n', 'column-1-0', 'column-1-1', ... 'column-1-n', ..., 'column-m-0', 'column-m-1', ..., 'column-m-n')<br>
+			<div class="doc-method-ret-params">@return: {ARRAY} : (non-asociative) of results	:: array('column-0-0', 'column-0-1', ..., 'column-0-n', 'column-1-0', 'column-1-1', ... 'column-1-n', ..., 'column-m-0', 'column-m-1', ..., 'column-m-n')<br>
 @param: {$queryval} the query<br>
 @param: {$values} *optional* array of parameters</div>
-	<div class="doc-method-comments">PDO Query :: Read (Non-Associative) one or multiple rows.<br>
+	
+			<div class="doc-method-comments">PDO Query :: Read (Non-Associative) one or multiple rows.<br>
 This function is intended to be used for read type queries: SELECT.</div>
+	
 </div><div class="doc-container" id="Method--read_adata">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read_adata</b></span>&nbsp;(
-	<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, <i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$values` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$values</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+				<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, 
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$values` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$values</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
 	
 	
-	<div class="doc-method-ret-params">@return: {ARRAY} : (asociative) of results		:: array(0 =&gt; array('column1', 'column2', ... 'column-n'), 1 =&gt; array('column1', 'column2', ... 'column-n'), ..., m =&gt; array('column1', 'column2', ... 'column-n'))<br>
+			<div class="doc-method-ret-params">@return: {ARRAY} : (asociative) of results		:: array(0 =&gt; array('column1', 'column2', ... 'column-n'), 1 =&gt; array('column1', 'column2', ... 'column-n'), ..., m =&gt; array('column1', 'column2', ... 'column-n'))<br>
 @param: {$queryval} the query<br>
 @param: {$values} *optional* array of parameters</div>
-	<div class="doc-method-comments">PDO Query :: Read (Associative) one or multiple rows.<br>
+	
+			<div class="doc-method-comments">PDO Query :: Read (Associative) one or multiple rows.<br>
 This function is intended to be used for read type queries: SELECT.</div>
+	
 </div><div class="doc-container" id="Method--read_asdata">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read_asdata</b></span>&nbsp;(
-	<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, <i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$values` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$values</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+				<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, 
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$values` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$values</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
 	
 	
-	<div class="doc-method-ret-params">@return: {ARRAY} : (asociative) of results		:: Returns just a SINGLE ROW as: array('column1', 'column2', ... 'column-n')<br>
+			<div class="doc-method-ret-params">@hints: ALWAYS  use a LIMIT 1 OFFSET 0 with all queries using this function to avoid situations that will return more than 1 rows and will raise ERROR with this function.<br>
+@return: {ARRAY} : (asociative) of results		:: Returns just a SINGLE ROW as: array('column1', 'column2', ... 'column-n')<br>
 @param: {$queryval} the query<br>
 @param: {$values} *optional* array of parameters</div>
-	<div class="doc-method-comments">PDO Query :: Read (Associative) - Single Row (just for 1 row, to easy the use of data from queries).<br>
+	
+			<div class="doc-method-comments">PDO Query :: Read (Associative) - Single Row (just for 1 row, to easy the use of data from queries).<br>
 !!! This will raise an error if more than one row(s) are returned !!!<br>
 This function does not support multiple rows because the associative data is structured without row iterator.<br>
 For queries that return more than one row use: read_adata() or read_data().<br>
 This function is intended to be used for read type queries: SELECT.</div>
+	
 </div><div class="doc-container" id="Method--write_data">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>write_data</b></span>&nbsp;(
-	<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, <i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$values_or_mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$values_or_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+				<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, 
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$values_or_mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$values_or_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
 	
 	
-	<div class="doc-method-ret-params">@return: {ARRAY} : [0 =&gt; 'control-message', 1 =&gt; #affected-rows]<br>
+			<div class="doc-method-ret-params">@return: {ARRAY} : [0 =&gt; 'control-message', 1 =&gt; #affected-rows]<br>
 @param: {$queryval} the query<br>
 @param: {$values_or_mode} *optional* ARRAY of parameters OR the PDO query execution mode as STRING (QUERY_MODE_EXECUTE, implementing \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE)</div>
-	<div class="doc-method-comments">PDO Query :: Write.<br>
+	
+			<div class="doc-method-comments">PDO Query :: Write.<br>
 This function is intended to be used for write type queries: BEGIN (TRANSACTION) ; COMMIT ; ROLLBACK ; INSERT ; INSERT IGNORE ; REPLACE ; UPDATE ; CREATE SCHEMAS ; CALLING STORED PROCEDURES ...</div>
+	
 </div><!-- Skip Internal-Priv Method: `__destruct()` -->
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
 	<h2 class="doc-header">Properties summary</h2>
 </div>
-<!-- properties r.20191031 -->
+<!-- properties r.20191109 -->
 
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
 	<h2 class="doc-header">Constants summary</h2>
 </div>
-<!-- constants r.20191031 -->
+<!-- constants r.20191109 -->
 
 <!-- Sample Code -->
 <br>
@@ -686,15 +758,15 @@ This function is intended to be used for write type queries: BEGIN (TRANSACTION)
 </div>
 <div class="doc-code">
 	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br>&nbsp;$conf_driver&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'driver'&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'PDO_SQLITE'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'database'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'tmp/zend-test.sqlite'<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">];<br>&nbsp;</span><span style="color: #999999">//$conf_driver&nbsp;=&nbsp;[<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'driver'&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'PDO_MYSQL',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'host'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'127.0.0.1',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'port'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;3306,<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'database'&nbsp;=&gt;&nbsp;'smart_framework',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'username'&nbsp;=&gt;&nbsp;'root',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'password'&nbsp;=&gt;&nbsp;'root'<br>&nbsp;//];<br>&nbsp;//$conf_driver&nbsp;=&nbsp;[<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'driver'&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'PDO_PGSQL',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'host'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'127.0.0.1',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'port'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;5432,<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'database'&nbsp;=&gt;&nbsp;'smart_framework',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'username'&nbsp;=&gt;&nbsp;'pgsql',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'password'&nbsp;=&gt;&nbsp;'pgsql'<br>&nbsp;//];<br><br>&nbsp;</span><span style="color: #FFFFFF">$db&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;\</span><span style="color: #FFFFFF">SmartModExtLib</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">DbalZend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">DbalPdo</span><span style="color: #FFCC00; font-weight: bold">((array)</span><span style="color: #FFFFFF">$conf_driver</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$adapter&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">getConnection</span><span style="color: #FFCC00; font-weight: bold">();<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;write&nbsp;test&nbsp;using&nbsp;the&nbsp;Zend&nbsp;DB&nbsp;Objects<br>&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">write_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'DROP&nbsp;TABLE&nbsp;IF&nbsp;EXISTS&nbsp;sf_zend_dbal_test'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'QUERY_MODE_EXECUTE'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$table&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Ddl</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">CreateTable</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'sf_zend_dbal_test'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$table</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">addColumn</span><span style="color: #FFCC00; font-weight: bold">(new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Ddl</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Column</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Integer</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'id'</span><span style="color: #FFCC00; font-weight: bold">));<br>&nbsp;</span><span style="color: #FFFFFF">$table</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">addConstraint</span><span style="color: #FFCC00; font-weight: bold">(new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Ddl</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Constraint</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">PrimaryKey</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'id'</span><span style="color: #FFCC00; font-weight: bold">));<br>&nbsp;</span><span style="color: #FFFFFF">$table</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">addColumn</span><span style="color: #FFCC00; font-weight: bold">(new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Ddl</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Column</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Varchar</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'name'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">100</span><span style="color: #FFCC00; font-weight: bold">));<br>&nbsp;</span><span style="color: #FFFFFF">$table</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">addColumn</span><span style="color: #FFCC00; font-weight: bold">(new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Ddl</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Column</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Text</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'descr'</span><span style="color: #FFCC00; font-weight: bold">));<br>&nbsp;</span><span style="color: #FFFFFF">$table</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">addColumn</span><span style="color: #FFCC00; font-weight: bold">(new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Ddl</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Column</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Integer</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'cnt'</span><span style="color: #FFCC00; font-weight: bold">));<br>&nbsp;</span><span style="color: #FFFFFF">$sql&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$adapter</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$adapter</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">query</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$sql</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">getSqlStringForSqlObject</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$table</span><span style="color: #FFCC00; font-weight: bold">),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$adapter</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">QUERY_MODE_EXECUTE<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">);<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;read&nbsp;test&nbsp;using&nbsp;the&nbsp;Zend&nbsp;DB&nbsp;Objects<br>&nbsp;</span><span style="color: #FFFFFF">$sql&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$adapter</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$select&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$sql</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">select</span><span style="color: #FFCC00; font-weight: bold">();<br>&nbsp;</span><span style="color: #FFFFFF">$select</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">from</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'sf_zend_dbal_test'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$select</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">where</span><span style="color: #FFCC00; font-weight: bold">(array(</span><span style="color: #5F9CCE">'id'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">1</span><span style="color: #FFCC00; font-weight: bold">));<br>&nbsp;</span><span style="color: #FFFFFF">$sqlstr&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;</span><span style="color: #FFFFFF">$sql</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">getSqlStringForSqlObject</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$select</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$results&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;</span><span style="color: #FFFFFF">$adapter</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">query</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$sqlstr</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;[])-&gt;</span><span style="color: #FFFFFF">toArray</span><span style="color: #FFCC00; font-weight: bold">();<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;tests&nbsp;using&nbsp;Smart.Framework&nbsp;DB&nbsp;compatibility:&nbsp;count,&nbsp;read,&nbsp;write<br>&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">write_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'DELETE&nbsp;FROM&nbsp;sf_zend_dbal_test'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$count&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">count_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SELECT&nbsp;COUNT(1)&nbsp;FROM&nbsp;sf_zend_dbal_test'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$results&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">read_adata</span><span style="color: #FFCC00; font-weight: bold">(&nbsp;</span><span style="color: #999999">//&nbsp;get&nbsp;many&nbsp;rows&nbsp;0..n&nbsp;[field1,&nbsp;field2,&nbsp;...,&nbsp;fieldn]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'SELECT&nbsp;*&nbsp;FROM&nbsp;sf_zend_dbal_test&nbsp;WHERE&nbsp;id&nbsp;&gt;&nbsp;?'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;id&nbsp;&gt;&nbsp;0<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">[&nbsp;</span><span style="color: #FFFFFF">0&nbsp;</span><span style="color: #FFCC00; font-weight: bold">]<br>&nbsp;);<br>&nbsp;</span><span style="color: #FFFFFF">$results&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">read_asdata</span><span style="color: #FFCC00; font-weight: bold">(&nbsp;</span><span style="color: #999999">//&nbsp;get&nbsp;just&nbsp;one&nbsp;row&nbsp;[field1,&nbsp;field2,&nbsp;...,&nbsp;fieldn]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'SELECT&nbsp;*&nbsp;FROM&nbsp;sf_zend_dbal_test&nbsp;WHERE&nbsp;id&nbsp;&gt;&nbsp;?&nbsp;LIMIT&nbsp;1&nbsp;OFFSET&nbsp;0'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;id&nbsp;&gt;&nbsp;1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">[&nbsp;</span><span style="color: #FFFFFF">1&nbsp;</span><span style="color: #FFCC00; font-weight: bold">]<br>&nbsp;);<br><br><br></span><span style="color: #FFFFFF">?&gt;</span>
+<span style="color: #FFFFFF">&lt;?php<br>$conf_driver&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'driver'&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'PDO_SQLITE'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'database'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'tmp/zend-test.sqlite'<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">];<br>&nbsp;</span><span style="color: #999999">//$conf_driver&nbsp;=&nbsp;[<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'driver'&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'PDO_MYSQL',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'host'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'127.0.0.1',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'port'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;3306,<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'database'&nbsp;=&gt;&nbsp;'smart_framework',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'username'&nbsp;=&gt;&nbsp;'root',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'password'&nbsp;=&gt;&nbsp;'root'<br>&nbsp;//];<br>&nbsp;//$conf_driver&nbsp;=&nbsp;[<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'driver'&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'PDO_PGSQL',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'host'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'127.0.0.1',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'port'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;5432,<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'database'&nbsp;=&gt;&nbsp;'smart_framework',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'username'&nbsp;=&gt;&nbsp;'pgsql',<br>&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;'password'&nbsp;=&gt;&nbsp;'pgsql'<br>&nbsp;//];<br><br>&nbsp;</span><span style="color: #FFFFFF">$db&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;\</span><span style="color: #FFFFFF">SmartModExtLib</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">DbalZend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">DbalPdo</span><span style="color: #FFCC00; font-weight: bold">((array)</span><span style="color: #FFFFFF">$conf_driver</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$adapter&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">getConnection</span><span style="color: #FFCC00; font-weight: bold">();<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;write&nbsp;test&nbsp;using&nbsp;the&nbsp;Zend&nbsp;DB&nbsp;Objects<br>&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">write_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'DROP&nbsp;TABLE&nbsp;IF&nbsp;EXISTS&nbsp;sf_zend_dbal_test'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'QUERY_MODE_EXECUTE'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$table&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Ddl</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">CreateTable</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'sf_zend_dbal_test'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$table</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">addColumn</span><span style="color: #FFCC00; font-weight: bold">(new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Ddl</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Column</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Integer</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'id'</span><span style="color: #FFCC00; font-weight: bold">));<br>&nbsp;</span><span style="color: #FFFFFF">$table</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">addConstraint</span><span style="color: #FFCC00; font-weight: bold">(new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Ddl</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Constraint</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">PrimaryKey</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'id'</span><span style="color: #FFCC00; font-weight: bold">));<br>&nbsp;</span><span style="color: #FFFFFF">$table</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">addColumn</span><span style="color: #FFCC00; font-weight: bold">(new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Ddl</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Column</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Varchar</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'name'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">100</span><span style="color: #FFCC00; font-weight: bold">));<br>&nbsp;</span><span style="color: #FFFFFF">$table</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">addColumn</span><span style="color: #FFCC00; font-weight: bold">(new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Ddl</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Column</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Text</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'descr'</span><span style="color: #FFCC00; font-weight: bold">));<br>&nbsp;</span><span style="color: #FFFFFF">$table</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">addColumn</span><span style="color: #FFCC00; font-weight: bold">(new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Ddl</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Column</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Integer</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'cnt'</span><span style="color: #FFCC00; font-weight: bold">));<br>&nbsp;</span><span style="color: #FFFFFF">$sql&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$adapter</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$adapter</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">query</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$sql</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">getSqlStringForSqlObject</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$table</span><span style="color: #FFCC00; font-weight: bold">),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$adapter</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">QUERY_MODE_EXECUTE<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">);<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;read&nbsp;test&nbsp;using&nbsp;the&nbsp;Zend&nbsp;DB&nbsp;Objects<br>&nbsp;</span><span style="color: #FFFFFF">$sql&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;\</span><span style="color: #FFFFFF">Zend</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Db</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">\</span><span style="color: #FFFFFF">Sql</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$adapter</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$select&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$sql</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">select</span><span style="color: #FFCC00; font-weight: bold">();<br>&nbsp;</span><span style="color: #FFFFFF">$select</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">from</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'sf_zend_dbal_test'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$select</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">where</span><span style="color: #FFCC00; font-weight: bold">(array(</span><span style="color: #5F9CCE">'id'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">1</span><span style="color: #FFCC00; font-weight: bold">));<br>&nbsp;</span><span style="color: #FFFFFF">$sqlstr&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;</span><span style="color: #FFFFFF">$sql</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">getSqlStringForSqlObject</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$select</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$results&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;</span><span style="color: #FFFFFF">$adapter</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">query</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$sqlstr</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;[])-&gt;</span><span style="color: #FFFFFF">toArray</span><span style="color: #FFCC00; font-weight: bold">();<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;tests&nbsp;using&nbsp;Smart.Framework&nbsp;DB&nbsp;compatibility:&nbsp;count,&nbsp;read,&nbsp;write<br>&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">write_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'DELETE&nbsp;FROM&nbsp;sf_zend_dbal_test'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$count&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">count_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SELECT&nbsp;COUNT(1)&nbsp;FROM&nbsp;sf_zend_dbal_test'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$results&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">read_adata</span><span style="color: #FFCC00; font-weight: bold">(&nbsp;</span><span style="color: #999999">//&nbsp;get&nbsp;many&nbsp;rows&nbsp;0..n&nbsp;[field1,&nbsp;field2,&nbsp;...,&nbsp;fieldn]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'SELECT&nbsp;*&nbsp;FROM&nbsp;sf_zend_dbal_test&nbsp;WHERE&nbsp;id&nbsp;&gt;&nbsp;?'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;id&nbsp;&gt;&nbsp;0<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">[&nbsp;</span><span style="color: #FFFFFF">0&nbsp;</span><span style="color: #FFCC00; font-weight: bold">]<br>&nbsp;);<br>&nbsp;</span><span style="color: #FFFFFF">$results&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">read_asdata</span><span style="color: #FFCC00; font-weight: bold">(&nbsp;</span><span style="color: #999999">//&nbsp;get&nbsp;just&nbsp;one&nbsp;row&nbsp;[field1,&nbsp;field2,&nbsp;...,&nbsp;fieldn]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'SELECT&nbsp;*&nbsp;FROM&nbsp;sf_zend_dbal_test&nbsp;WHERE&nbsp;id&nbsp;&gt;&nbsp;?&nbsp;LIMIT&nbsp;1&nbsp;OFFSET&nbsp;0'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;id&nbsp;&gt;&nbsp;1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">[&nbsp;</span><span style="color: #FFFFFF">1&nbsp;</span><span style="color: #FFCC00; font-weight: bold">]<br>&nbsp;);<br></span><span style="color: #FFFFFF">?&gt;</span>
 </span>
 </code><!-- [/@] Smart/HTML.Cleaner --></code></pre>
 </div>
 <!-- Summary List -->
 <br>
-<!-- summary r.20191103 -->
+<!-- summary r.20191109 -->
 <script>
-// summary r.20191103
+// summary r.20191109
 function smartHandleDocSelector(obj) {
 	if(!obj) {
 		return;
@@ -720,7 +792,26 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">*** Methods summary ***</option>
-			<option value="Method--__construct">Method: __construct()</option><option value="Method--getDriver">Method: getDriver()</option><option value="Method--getConnection">Method: getConnection()</option><option value="Method--getPlatform">Method: getPlatform()</option><option value="Method--count_data">Method: count_data()</option><option value="Method--read_data">Method: read_data()</option><option value="Method--read_adata">Method: read_adata()</option><option value="Method--read_asdata">Method: read_asdata()</option><option value="Method--write_data">Method: write_data()</option>
+									<option value="Method--__construct">Method: __construct()</option>
+			
+									<option value="Method--getDriver">Method: getDriver()</option>
+			
+									<option value="Method--getConnection">Method: getConnection()</option>
+			
+									<option value="Method--getPlatform">Method: getPlatform()</option>
+			
+									<option value="Method--count_data">Method: count_data()</option>
+			
+									<option value="Method--read_data">Method: read_data()</option>
+			
+									<option value="Method--read_adata">Method: read_adata()</option>
+			
+									<option value="Method--read_asdata">Method: read_asdata()</option>
+			
+									<option value="Method--write_data">Method: write_data()</option>
+			
+						
+			
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">*** Properties summary ***</option>
@@ -730,14 +821,15 @@ function smartHandleDocSelector(obj) {
 			<option value="Constants--Summary-">*** Constants summary ***</option>
 			
 		</optgroup>
-		<optgroup label="Class Sample code">
+				<optgroup label="Class Sample code">
 			<option value="SAMPLE--Code-">*** Sample code ***</option>
 		</optgroup>
+		
 	</select>
 </div>
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2019-11-04 08:11:22 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2019-11-18 10:08:47 +0000</small>
 <hr>
 <br>
 <!-- # -->

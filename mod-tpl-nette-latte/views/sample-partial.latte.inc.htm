@@ -1,4 +1,4 @@
-<!-- start latte partial / sub-template v.20191115 -->
+<!-- start latte partial / sub-template v.20191116 -->
 {* Partial / Sub-Template: sample-partial.latte.inc.htm *}<!-- comments are removed -->
 	<h5 id="qunit-test-result">nette/Latte TPL w. Sub-Template Render (Table with #{$tcount} columns):</h5>
 	<table style="border: 1px solid #ECECEC; width: 550px;" id="qunit-test-el">
@@ -22,7 +22,7 @@
 		<li><a href="{$item['href']}">{$iterator->counter}. {$item['caption']} ({$iter})</a></li>
 		{/foreach}
 	{else}
-		<span style="color:#FF3300;"><b>NOT OK</b></span>
+		<li><span style="color:#FF3300;"><b>NOT OK</b></span></li>
 	{/if}
 	</ul>
 	Test Condition#1:
