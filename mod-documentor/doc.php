@@ -12,6 +12,23 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
+//-----------------------------------------------------
+if(version_compare((string)phpversion(), '7.1') < 0) { // {{{SYNC-DOCUMENTOR-PHP-MIN-VERSION}}}
+	@http_response_code(503);
+	die(SmartComponents::http_message_503_serviceunavailable('Service N/A: PHP 7.1 or later is required for this service'));
+} //end if
+if(function_exists('\\opcache_get_status')) {
+	if((string)ini_get('opcache.save_comments') != '1') {
+		@http_response_code(503);
+		die(SmartComponents::http_message_503_serviceunavailable('Service N/A: PHP Opcache is active and Opcache.SaveComments is Disabled (and must be Enabled)'));
+	} //end if
+} //end if
+//-----------------------------------------------------
+define('SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO', 'lib/framework/img/sf-logo.svg');
+define('SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS', 'tmp/documentor-php/');
+define('SMART_FRAMEWORK_DOCUMENTOR_DIR_PKGS', 'tmp/documentor-php@packages/');
+//-----------------------------------------------------
+
 
 define('SMART_APP_MODULE_AREA', 'ADMIN'); // INDEX, ADMIN, SHARED
 define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
@@ -19,7 +36,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191106
+ * @version 20191120
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -29,9 +46,6 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	private $clsType 	= '';
 	private $clsPackage = '';
 
-	const IMG_LOGO 		= 'lib/framework/img/sf-logo.svg';
-	const DIR_DOCS 		= 'tmp/documentor-php/';
-	const DIR_PACKAGES 	= 'tmp/documentor-php@packages/';
 
 	public function Initialize() {
 
@@ -48,7 +62,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$this->PageViewSetVars([
 			//--
 			'fonts-path' 		=> (string) $this->ControllerGetParam('module-path').'fonts/',
-			'logo-img' 			=> (string) self::IMG_LOGO,
+			'logo-img' 			=> (string) SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO,
 			'year' 				=> (string) date('Y'),
 			//--
 			'title' 			=> (string) 'Documentation',
@@ -68,7 +82,15 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_ALLOW !== true)) {
-			$this->PageViewSetErrorStatus(503, 'ERROR: Documentor is disabled ...');
+			$this->PageViewSetErrorStatus(503, 'ERROR: Documentor is disabled. Must defined SMART_FRAMEWORK_DOCUMENTOR_ALLOW = TRUE to allow it.');
+			return;
+		} //end if
+		//--
+
+		//--
+		$testRequiredConstants = \SmartModExtLib\Documentor\Utils::checkRequiredConstants(); // mixed
+		if($testRequiredConstants !== true) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: '.$testRequiredConstants);
 			return;
 		} //end if
 		//--
@@ -81,20 +103,6 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		if(version_compare((string)phpversion(), '7.1') < 0) { // {{{SYNC-DOCUMENTOR-PHP-MIN-VERSION}}}
-			$this->PageViewSetErrorStatus(503, 'Service N/A: PHP 7.1 or later is required for this service');
-			return;
-		} //end if
-		//--
-		if(function_exists('\\opcache_get_status')) {
-			if((string)ini_get('opcache.save_comments') != '1') {
-				$this->PageViewSetErrorStatus(503, 'Service N/A: PHP Opcache is active and Opcache.SaveComments is Disabled (and must be Enabled)');
-				return;
-			} //end if
-		} //end if
-		//--
-
-		//--
 		$action = $this->RequestVarGet('action', '', 'string');
 		$mode = $this->RequestVarGet('mode', '', 'string');
 		$extra = $this->RequestVarGet('extra', '', 'string');
@@ -102,183 +110,21 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		if((string)$action == 'cleanup@documentation') {
 			//--
-			if(SmartFileSystem::is_type_dir((string)self::DIR_PACKAGES)) {
-				SmartFileSystem::dir_delete((string)self::DIR_PACKAGES);
-				if(SmartFileSystem::is_type_dir((string)self::DIR_PACKAGES)) {
-					$this->jsonAnswer('Documentation Packages directory cannot be cleared ...', false);
-					return;
-				} //end if
+			$proc = \SmartModExtLib\Documentor\Utils::cleanupDocumentationDirectory(); // mixed
+			if($proc !== true) {
+				$this->jsonAnswer($proc.' ...', false);
+				return;
 			} //end if
-			if(SmartFileSystem::is_type_dir((string)self::DIR_DOCS)) {
-				SmartFileSystem::dir_delete((string)self::DIR_DOCS);
-				if(SmartFileSystem::is_type_dir((string)self::DIR_DOCS)) {
-					$this->jsonAnswer('Documentation directory cannot be cleared ...', false);
-					return;
-				} //end if
-			} //end if
-			//--
 			$this->jsonAnswer('Documentation directory and Documentation Packages directory Cleared');
 			return;
 			//--
 		} elseif((string)$action == 'index@packages') {
 			//--
-			if(!SmartFileSystem::is_type_dir((string)self::DIR_DOCS)) {
-				$this->jsonAnswer('Documentation directory not found ...', false);
+			$proc = \SmartModExtLib\Documentor\Utils::indexDocumentationPackages('php', $heading, $mode, $extra); // mixed
+			if($proc !== true) {
+				$this->jsonAnswer($proc.' ...', false);
 				return;
 			} //end if
-			if(!SmartFileSystem::is_type_dir((string)self::DIR_PACKAGES)) {
-				$this->jsonAnswer('Documentation Packages directory not found ...', false);
-				return;
-			} //end if
-			//--
-			$arr_packages = [];
-			$files_n_dirs = (array) (new \SmartGetFileSystem(true))->get_storage((string)self::DIR_PACKAGES, false, false, '.json'); // non-recuring, no dot files, only JSON files
-			for($i=0; $i<\Smart::array_size($files_n_dirs['list-files']); $i++) {
-				$tmp_json = (string) self::DIR_PACKAGES.$files_n_dirs['list-files'][$i];
-				if(SmartFileSystem::is_type_file($tmp_json)) {
-					$tmp_json = (string) SmartFileSystem::read($tmp_json);
-				} else {
-					$tmp_json = '';
-				} //end if
-				if((string)trim((string)$tmp_json) == '') {
-					$this->jsonAnswer('Documentation Package NOT FOUND: '.$files_n_dirs['list-files'][$i], false);
-					return;
-				} //end if
-				$tmp_json = Smart::json_decode((string)$tmp_json);
-				if(Smart::array_size($tmp_json) <= 0) {
-					$this->jsonAnswer('Documentation Package is INVALID: '.$files_n_dirs['list-files'][$i], false);
-					return;
-				} else {
-					$tmp_json['package'] = (string) trim((string)$tmp_json['package']);
-					$tmp_json['name'] = (string) trim((string)$tmp_json['name']);
-					$tmp_json['type'] = (string) trim((string)$tmp_json['type']);
-					if((string)$tmp_json['package'] == '') {
-						$tmp_json['package'] = '@No-Package';
-					} //end if
-					$tmp_json['file'] = (string) Smart::base_name((string)$files_n_dirs['list-files'][$i], '.json');
-					if(!is_array($arr_packages[(string)$tmp_json['package']])) {
-						$arr_packages[(string)$tmp_json['package']] = [];
-					} //end if
-					$arr_packages[(string)$tmp_json['package']][] = (array) $tmp_json;
-				} //end if
-				$tmp_json = null;
-			} //end for
-			$files_n_dirs = null; // free mem
-			//--
-			ksort($arr_packages);
-			//print_r($arr_packages); die();
-			if(Smart::array_size($arr_packages) <= 0) {
-				$this->jsonAnswer('Documentation Packages is Empty', false);
-				return;
-			} //end if
-			//--
-			$main = (string) SmartMarkersTemplating::render_file_template(
-				(string) $this->ControllerGetParam('module-view-path').'packages.mtpl.inc.htm',
-				[
-					'packages' 		=> (array) $arr_packages,
-					'generated-on' 	=> (string) date('Y-m-d H:i:s O')
-				]
-			);
-			//-- {{{SYNC-DOCUMENTOR-SAVE-MODE}}}
-			$url_index = '';
-			$url_img   = '';
-			$url_fonts = '';
-			$extdir = '';
-			if((string)$mode == 'multi') {
-				if((string)$extra != '') {
-					if((string)$extra == '@') {
-						$url_img 	= 'img/sf-logo.svg';
-						$url_fonts 	= 'fonts/';
-					} else {
-						$url_index = '../index.html';
-						$extdir 	= (string) SmartFileSysUtils::add_dir_last_slash(Smart::safe_filename((string)$extra));
-						$url_img 	= '../img/sf-logo.svg';
-						$url_fonts 	= '../fonts/';
-					} //end if else
-				} //end if
-			} //end if else
-			//-- #end sync
-			$doc = (string) SmartMarkersTemplating::render_file_template(
-				(string) $this->ControllerGetParam('module-path').'templates/template-documentor.htm',
-				(array)  SmartComponents::set_app_template_conform_metavars([
-					//--
-					'fonts-path' 		=> (string) $url_fonts,
-					'logo-img' 			=> (string) $url_img,
-					'year' 				=> (string) date('Y'),
-					//--
-					'title' 			=> (string) 'PHP Documentation',
-					'heading-title' 	=> (string) $heading,
-					'seo-description' 	=> (string) SmartUtils::extract_description($main),
-					'seo-keywords' 		=> (string) SmartUtils::extract_keywords($main),
-					'seo-summary' 		=> (string) SmartUtils::extract_title($heading),
-					'main' 				=> (string) $main,
-					'url-index' 		=> (string) $url_index
-					//--
-				])
-			);
-			//--
-			$dir = self::DIR_DOCS.$extdir;
-			if(SmartFileSystem::is_type_file($dir.'index.html')) {
-				SmartFileSystem::delete($dir.'index.html');
-				if(SmartFileSystem::is_type_file($dir.'index.html')) {
-					$this->jsonAnswer('Cannot delete Documentation Packages Index file', false);
-					return;
-				} //end if
-			} //end if
-			if(!SmartFileSystem::write($dir.'index.html', $doc)) {
-				$this->jsonAnswer('Cannot save Documentation Packages Index file', false);
-				return;
-			} //end if
-			if(!SmartFileSystem::is_type_file($dir.'index.html')) {
-				$this->jsonAnswer('Cannot find Documentation Packages Index file', false);
-				return;
-			} //end if
-			//--
-			if(SmartFileSystem::is_type_dir((string)self::DIR_PACKAGES)) {
-				SmartFileSystem::dir_delete((string)self::DIR_PACKAGES);
-				if(SmartFileSystem::is_type_dir((string)self::DIR_PACKAGES)) {
-					$this->jsonAnswer('Documentation Packages directory cannot be cleared ...', false);
-					return;
-				} //end if
-			} //end if
-			//--
-			if((string)$extra != '') {
-				//--
-				if(SmartFileSystem::dir_copy($this->ControllerGetParam('module-path').'fonts/', self::DIR_DOCS.'fonts/', true) != 1) {
-					$this->jsonAnswer('Failed to copy font files to Documentation font directory ...', false);
-					return;
-				} //end if
-				if(!SmartFileSystem::is_type_file(self::DIR_DOCS.'fonts/index.html')) {
-					$this->jsonAnswer('Cannot find fonts directory Index file for Documentation', false);
-					return;
-				} //end if
-				//--
-				if(!SmartFileSystem::is_type_dir(self::DIR_DOCS.'img/')) {
-					SmartFileSystem::dir_create(self::DIR_DOCS.'img/', true);
-					if(!SmartFileSystem::is_type_dir(self::DIR_DOCS.'img/')) {
-						$this->jsonAnswer('Failed to create img directory into Documentation directory ...', false);
-						return;
-					} //end if
-				} //end if
-				if(!SmartFileSystem::write(self::DIR_DOCS.'img/index.html', '')) {
-					$this->jsonAnswer('Cannot create img directory Index file for Documentation', false);
-					return;
-				} //end if
-				if(!SmartFileSystem::is_type_file(self::DIR_DOCS.'img/index.html')) {
-					$this->jsonAnswer('Cannot find img directory Index file for Documentation', false);
-					return;
-				} //end if
-				if(!SmartFileSystem::copy((string)self::IMG_LOGO, self::DIR_DOCS.'img/'.SmartFileSysUtils::get_file_name_from_path((string)self::IMG_LOGO), false, true)) {
-					$this->jsonAnswer('Failed to copy font img Logo to Documentation img directory ...', false);
-					return;
-				} //end if
-				if(!SmartFileSystem::is_type_file(self::DIR_DOCS.'img/sf-logo.svg')) {
-					$this->jsonAnswer('Cannot find img Logo file for Documentation', false);
-					return;
-				} //end if
-				//--
-			} //end if
-			//--
 			$this->jsonAnswer('Documentation Packages Indexed');
 			return;
 			//--
@@ -335,92 +181,12 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$main = $this->displayDocs((string)$cls);
 				//--
 				if($this->errMsg === null) { // OK
-					//-- {{{SYNC-DOCUMENTOR-SAVE-MODE}}}
-					$url_index = '';
-					$url_img   = '';
-					$url_fonts = '';
-					$extdir = '';
-					if((string)$mode == 'multi') {
-						$url_index = 'index.html#Package--'.Smart::create_htmid($this->clsPackage).'-';
-						if((string)$extra != '') {
-							if((string)$extra == '@') {
-								$url_img 	= 'img/sf-logo.svg';
-								$url_fonts 	= 'fonts/';
-							} else {
-								$extdir 	= (string) SmartFileSysUtils::add_dir_last_slash(Smart::safe_filename((string)$extra));
-								$url_img 	= '../img/sf-logo.svg';
-								$url_fonts 	= '../fonts/';
-							} //end if else
-						} //end if
-					} //end if else
-					//-- #end sync
-					$doc = (string) SmartMarkersTemplating::render_file_template(
-						(string) $this->ControllerGetParam('module-path').'templates/template-documentor.htm',
-						(array)  SmartComponents::set_app_template_conform_metavars([
-							//--
-							'fonts-path' 		=> (string) $url_fonts,
-							'logo-img' 			=> (string) $url_img,
-							'year' 				=> (string) date('Y'),
-							//--
-							'title' 			=> (string) 'PHP Documentation for: '.$cls,
-							'heading-title' 	=> (string) $heading,
-							'seo-description' 	=> (string) SmartUtils::extract_description($cls.' '.$main),
-							'seo-keywords' 		=> (string) SmartUtils::extract_keywords($cls.' '.$main),
-							'seo-summary' 		=> (string) SmartUtils::extract_title($heading.': '.$cls),
-							'main' 				=> (string) $main,
-							'url-index' 		=> (string) $url_index
-							//--
-						])
-					);
 					//--
-					$type = 'unknown';
-					if((string)$this->clsType != '') {
-						$type = (string) $this->clsType;
-					} //end if
-					//--
-					$slug = (string) Smart::safe_filename($type.'@'.Smart::create_slug((string)$cls).'.html');
-					//--
-					$dir = (string) self::DIR_DOCS.$extdir;
-					if(!SmartFileSystem::is_type_dir($dir)) {
-						SmartFileSystem::dir_create($dir, true);
-						if(!SmartFileSystem::is_type_dir($dir)) {
-							$this->jsonAnswer('Cannot create Documentation directory for: `'.$cls.'` as: '.$dir, false);
-							return;
-						} //end if
-					} //end if
-					if(SmartFileSystem::is_type_file($dir.$slug)) {
-						SmartFileSystem::delete($dir.$slug);
-						if(SmartFileSystem::is_type_file($dir.$slug)) {
-							$this->jsonAnswer('Cannot delete Documentation file for: `'.$cls.'` as: '.$dir.$slug, false);
-							return;
-						} //end if
-					} //end if
-					if(!SmartFileSystem::write($dir.$slug, $doc)) {
-						$this->jsonAnswer('Cannot save Documentation file for: `'.$cls.'` as: '.$dir.$slug, false);
+					$proc = \SmartModExtLib\Documentor\Utils::indexDocumentationDocument('php', $this->clsPackage, $this->clsType, $cls, $main, $heading, $mode, $extra); // mixed
+					if($proc !== true) {
+						$this->jsonAnswer($proc.' ...', false);
 						return;
 					} //end if
-					if(!SmartFileSystem::is_type_file($dir.$slug)) {
-						$this->jsonAnswer('Cannot find Documentation file for: `'.$cls.'` as: '.$dir.$slug, false);
-						return;
-					} //end if
-					//--
-					$xdir = (string) self::DIR_PACKAGES;
-					if(!SmartFileSystem::is_type_dir($xdir)) {
-						SmartFileSystem::dir_create($xdir, true);
-						if(!SmartFileSystem::is_type_dir($xdir)) {
-							$this->jsonAnswer('Cannot create Documentation Packages directory for: `'.$cls.'` as: '.$xdir, false);
-							return;
-						} //end if
-					} //end if
-					if(!SmartFileSystem::write($xdir.$slug.'.json', (string)Smart::json_encode([ 'package' => (string)$this->clsPackage, 'name' => (string)$cls, 'type' => (string)$this->clsType ]))) {
-						$this->jsonAnswer('Cannot save Documentation Package file for: `'.$cls.'` as: '.$xdir.$slug.'.json', false);
-						return;
-					} //end if
-					if(!SmartFileSystem::is_type_file($xdir.$slug.'.json')) {
-						$this->jsonAnswer('Cannot find Documentation Package file for: `'.$cls.'` as: '.$xdir.$slug.'.json', false);
-						return;
-					} //end if
-					//--
 					$this->jsonAnswer('Documentation saved for: '.$type.' `'.$cls.'` as: '.$slug);
 					//--
 				} else { // ERR
@@ -544,7 +310,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$doc_comments = (string) Smart::nl_2_br(Smart::escape_html($doc_comments)); // need to be HTML for prepare nosyntax
 			} //end if
 			if(Smart::array_size($arr['class']['doc-comments']['code']) > 0) {
-				$doc_code = (string) $this->prettyPrintPhpCode((string)implode("\n\n\n", (array)$arr['class']['doc-comments']['code']));
+				$doc_code = (string) $this->prettyPrintPhpCode((string)implode("\n\n", (array)$arr['class']['doc-comments']['code']));
 			} //end if
 		} //end if
 		//--
@@ -587,6 +353,9 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				if(Smart::array_size($arr['properties'][$i]['doc-comments']['props']) > 0) {
 					if(Smart::array_size($arr['properties'][$i]['doc-comments']['props']['var']) > 0) {
 						$arr['properties'][$i]['doc-var-type'] = (string) trim((string)$arr['properties'][$i]['doc-comments']['props']['var']['type']);
+						if((string)$arr['properties'][$i]['value'] == '') {
+							$arr['properties'][$i]['value'] = (string) trim((string)$arr['properties'][$i]['doc-comments']['props']['default']['type']);
+						} //end if
 					} //end if
 				} //end if
 				//--
@@ -598,6 +367,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		if(Smart::array_size($arr['methods']) > 0) {
 			for($i=0; $i<Smart::array_size($arr['methods']); $i++) {
 				//--
+				$arr['methods'][$i]['sub-methods'] = [];
 				$arr['methods'][$i]['ret-param-html'] = '';
 				$tmp_arr_ret_param = [];
 				//--
@@ -611,7 +381,52 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']) > 0) {
 						if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['method']) > 0) {
 							for($j=0; $j<Smart::array_size($arr['methods'][$i]['doc-comments']['props']['method']); $j++) {
-									$tmp_arr_ret_param[] = rtrim('@method: {@return: '.trim((string)$arr['methods'][$i]['doc-comments']['props']['method'][$j]['type']).'} '.trim((string)ltrim($arr['methods'][$i]['doc-comments']['props']['method'][$j]['comment'], ' :')), ' :');
+									$tmp_proc_sub_meth_params = [];
+									$tmp_proc_sub_meth_type = trim((string)$arr['methods'][$i]['doc-comments']['props']['method'][$j]['type']);
+									$tmp_proc_sub_meth_arr = (string) trim((string)$arr['methods'][$i]['doc-comments']['props']['method'][$j]['comment']);
+									$tmp_proc_sub_meth_arr = (array) explode('::', (string)$tmp_proc_sub_meth_arr);
+									$tmp_proc_sub_meth_name = (string) trim((string)$tmp_proc_sub_meth_arr[0]);
+									array_shift($tmp_proc_sub_meth_arr);
+									$tmp_proc_sub_meth_arr = (array) array_values((array)$tmp_proc_sub_meth_arr);
+									$tmp_proc_sub_meth_arr = (string) implode('#', (array)$tmp_proc_sub_meth_arr);
+									$tmp_proc_sub_meth_desc = (string) trim((string)$tmp_proc_sub_meth_arr);
+									$tmp_proc_sub_meth_arr = null;
+									$tmp_proc_sub_meth_arr = (array) explode('(', (string)rtrim((string)$tmp_proc_sub_meth_name, ')'));
+									$tmp_proc_sub_meth_name = (string) trim((string)$tmp_proc_sub_meth_arr[0]);
+									$tmp_proc_sub_meth_arr = (array) explode(',', (string)trim((string)$tmp_proc_sub_meth_arr[1]));
+									if(Smart::array_size($tmp_proc_sub_meth_arr) > 0) {
+										for($p=0; $p<Smart::array_size($tmp_proc_sub_meth_arr); $p++) {
+											$tmp_proc_sub_meth_param = (array) explode(' ', (string)trim((string)$tmp_proc_sub_meth_arr[$p]));
+											$tmp_proc_sub_meth_param[0] = (string) trim((string)$tmp_proc_sub_meth_param[0]);
+											$tmp_proc_sub_meth_param[1] = (string) trim((string)$tmp_proc_sub_meth_param[1]);
+											if((string)$tmp_proc_sub_meth_param[1] == '') {
+												$tmp_proc_sub_meth_param[1] = $tmp_proc_sub_meth_param[0];
+												$tmp_proc_sub_meth_param[0] = '';
+											} //end if
+											if((strpos((string)$tmp_proc_sub_meth_param[1], '$') === 0) OR (strpos((string)$tmp_proc_sub_meth_param[1], '*$') === 0)) {
+												$tmp_proc_sub_meth_params[] = [
+													'name' 			=> (string) ltrim((string)$tmp_proc_sub_meth_param[1], '*'),
+													'type' 			=> (string) $tmp_proc_sub_meth_param[0],
+													'is-optional' 	=> (strpos((string)$tmp_proc_sub_meth_param[1], '*$') === 0) ? 1 : 0
+												];
+											} //end if
+											$tmp_proc_sub_meth_param = null;
+										} //end for
+									} //end if
+									$tmp_proc_sub_meth_arr = null;
+									$tmp_proc_sub_meth_arr = [
+										'name' 					=> (string) $tmp_proc_sub_meth_name,
+										'params' 				=> (array)  $tmp_proc_sub_meth_params,
+										'returns' 				=> (string) $tmp_proc_sub_meth_type,
+										'desc' 					=> (string) $tmp_proc_sub_meth_desc,
+										'have-params-or-ret' 	=> ((Smart::array_size($tmp_proc_sub_meth_params) > 0) || ((string)$tmp_proc_sub_meth_type != '')) ? 1 : 0
+									];
+									$arr['methods'][$i]['sub-methods'][] = (array) $tmp_proc_sub_meth_arr;
+									$tmp_proc_sub_meth_name = null;
+									$tmp_proc_sub_meth_type = '';
+									$tmp_proc_sub_meth_desc = null;
+									$tmp_proc_sub_meth_arr = null;
+								//	$tmp_arr_ret_param[] = (string) rtrim('@method: {@return: '.trim((string)$arr['methods'][$i]['doc-comments']['props']['method'][$j]['type']).'} '.trim((string)ltrim($arr['methods'][$i]['doc-comments']['props']['method'][$j]['comment'], ' :')), ' :');
 							} //end for
 						} //end if
 					} //end if
@@ -623,7 +438,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['param']) > 0) {
 							for($j=0; $j<Smart::array_size($arr['methods'][$i]['doc-comments']['props']['param']); $j++) {
 								if(strpos(trim((string)$arr['methods'][$i]['doc-comments']['props']['param'][$j]['var']), '$') === 0) {
-									$tmp_arr_ret_param[] = rtrim('@param: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['param'][$j]['var']).'} '.trim((string)ltrim($arr['methods'][$i]['doc-comments']['props']['param'][$j]['comment'], ' :')), ' :');
+									$tmp_arr_ret_param[] = (string) rtrim('@param: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['param'][$j]['type']).'} '.trim((string)$arr['methods'][$i]['doc-comments']['props']['param'][$j]['var']).': '.trim((string)ltrim($arr['methods'][$i]['doc-comments']['props']['param'][$j]['comment'], ' :')), ' :');
 								} //end if
 							} //end for
 						} //end if
@@ -636,6 +451,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$tmp_arr_ret_param = [];
 				//--
 				$arr['methods'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['methods'][$i]['doc-comments']['comments'])), true);
+				if(Smart::array_size($arr['methods'][$i]['doc-comments']['code']) > 0) {
+					$arr['methods'][$i]['code-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template($this->highlightPhpCode((string)implode("\n\n", (array)$arr['methods'][$i]['doc-comments']['code'])));
+				} else {
+					$arr['methods'][$i]['code-html'] = '';
+				} //end if else
 				//--
 			} //end for
 		} //end if
@@ -1369,7 +1189,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$str = (string) str_replace(["\r\n", "\r"], "\n", (string)$str);
 		//--
-		$regex_dc_code = '/\*\s+(\<code\>)(.*)(\<\/code\>)/s';
+		$regex_dc_code = '/\*\s+(\<code\>)(.*)(\<\/code\>)/sU'; // non greedy
 		$regex_dc_propx = '/^@([a-z]+)$/';
 		$regex_dc_props = '/@([a-z]+)\s+([^\s]+)(\s+\$[a-zA-Z0-9_]+)?(.*)/';
 		//--
@@ -1380,7 +1200,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			if(Smart::array_size($matches[$i]) === 4) {
 				$code = (string) $this->fixDocCommentCodePart($matches[$i][2]);
 				if((string)$code != '') {
-					$arr_code[] = (string) $code;
+					$arr_code[] = (string) trim((string)$code);
 				} //end if
 			} //end if
 		} //end for
@@ -1395,7 +1215,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//print_r($arr);
 		for($l=0; $l<=Smart::array_size($arr); $l++) {
 			$line = (string) $arr[$l];
-			//echo "\n\n\n".'('.$l.'.) '.$line."\n";
+			//echo "\n\n".'('.$l.'.) '.$line."\n";
 			$line = (string) trim((string)$line);
 			$line = (string) ltrim((string)$line, '/*');
 			$line = (string) trim((string)$line);
@@ -1515,6 +1335,19 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	} //END FUNCTION
 
 
+	private function highlightPhpCode($code) {
+		//--
+		if((string)trim((string)$code) == '') {
+			return '';
+		} //end if
+		//--
+		$hl = (new \SmartModExtLib\HighlightSyntax\Highlighter())->highlight('php', (string)'<'.'?php'."\n\n".trim((string)$code)."\n\n".'?'.'>');
+		//--
+		return (string) SmartUtils::comment_php_code(trim($hl->value));
+		//--
+	} //END FUNCTION
+
+
 	private function prettyPrintPhpCode($code) {
 		//-- custom render settings
 		$arr_highlight_custom = [ // background: #232B50
@@ -1532,7 +1365,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			@ini_set((string)$key, $val); // set custom to INI for custom render
 		} //end for
 		//-- render
-		$code = (string) highlight_string((string)'<'.'?php'."\n".SmartUtils::comment_php_code(trim((string)$code), [])."\n".'?'.'>', true);
+		$code = (string) highlight_string((string)'<'.'?php'."\n\n".SmartUtils::comment_php_code(trim((string)$code), [])."\n\n".'?'.'>', true);
 		$code = (new SmartHtmlParser((string)$code, true, true, false))->get_clean_html(false); // fix XHTML Tags and deliver clean HTML
 		//-- restore render settings to INI
 		foreach($arr_highlight_default as $key => $val) {
@@ -1549,7 +1382,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 /**
  * Index Area Controller
- * @version 20191106
+ * @version 20191120
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {

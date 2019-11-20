@@ -1,9 +1,6 @@
-<!-- class r.20191118 -->
+<!-- class r.20191120 -->
 <!-- Styles -->
 [@@@SUB-TEMPLATE:partials/styles.mtpl.inc.htm@@@]
-<style type="text/css">
-[@@@SUB-TEMPLATE:!modules/mod-highlight-syntax/views/css/atelier-sulphurpool-dark.css!|syntax@@@]
-</style>
 <!-- Headings -->
 <h1 title="PHP [###TYPE|html###]: `[###NAME|html###]` @ JavaScript" id="Class--Summary-">
 	<span class="doc-modifiers">[###MODIFIERS|html###]</span> <span class="doc-keyword"><i>[###TYPE|html###]</i></span> <span class="doc-name">[###NAME|html###]</span><br>
@@ -15,11 +12,12 @@
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> Javascript<span></li>
 		<li><span class="doc-located"><b>Located at:</b> [###FILE-NAME|html###]</span></li>
 		[%%%IF:PACKAGE:!=;%%%]<li><span class="doc-package"><b>Package:</b> [###PACKAGE|html###]</span></li>[%%%/IF:PACKAGE%%%]
 		<li><span class="doc-name"><b>[###TYPE|ucfirst|html###] Name:</b> [###NAME|html###]</span></li>
 		<li><b>Usage:</b> [###USAGE|html###]</li>
-		[%%%IF:THROWS:!=;%%%]<li><b>Throws:</b> [###THROWS|html###]</li>[%%%/IF:THROWS%%%]
+		[%%%IF:THROWS:!=;%%%]<li><span class="doc-throws"><b>Throws:</b> [###THROWS|html###]</span></li>[%%%/IF:THROWS%%%]
 		[%%%IF:FIRES:!=;%%%]<li><b>Fires:</b> [###FIRES|html###]</li>[%%%/IF:FIRES%%%]
 		[%%%IF:LISTENS:!=;%%%]<li><b>Listens:</b> [###LISTENS|html###]</li>[%%%/IF:LISTENS%%%]
 		[%%%IF:VERSION:!=;%%%]<li><b>Version:</b> [###VERSION|html###]</li>[%%%/IF:VERSION%%%]
@@ -34,11 +32,13 @@
 </div>
 [@@@SUB-TEMPLATE:partials/js-methods.mtpl.inc.htm@@@]
 <!-- Properties -->
+[%%%IF:ARR-PROPERTIES:@>0;%%%]
 <br>
 <div class="doc-container" id="Properties--Summary-">
 	<h2 class="doc-header">Properties summary</h2>
 </div>
-
+[@@@SUB-TEMPLATE:partials/js-properties.mtpl.inc.htm@@@]
+[%%%/IF:ARR-PROPERTIES%%%]
 <!-- Sample Code -->
 [%%%IF:DOC-CODE-HTML:!=;%%%]
 <br>
@@ -46,12 +46,12 @@
 	<h2 class="doc-header">Sample Code: JavaScript</h2>
 </div>
 <div class="doc-code">
-	<pre><br><code>[###DOC-CODE-HTML###]</code><br><br></pre>
+	<pre><br><code class="hljs javascript">[###DOC-CODE-HTML###]</code><br></pre>
 </div>
 [%%%/IF:DOC-CODE-HTML%%%]
 <!-- Summary List -->
 <br>
-
+[@@@SUB-TEMPLATE:partials/js-summary.mtpl.inc.htm@@@]
 <hr>
 <small style="color:#BBBBBB;">documentation generated on: [###GENERATED-ON|html###]</small>
 <hr>

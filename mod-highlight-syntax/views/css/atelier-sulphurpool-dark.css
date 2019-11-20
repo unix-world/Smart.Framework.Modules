@@ -3,12 +3,15 @@
 // HighlightJs: v.9.13.1
 */
 
+/* modified by unixman - changed color for comment */
 /* Base16 Atelier Sulphurpool Dark - Theme */
 /* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
 /* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
 
 /* Atelier-Sulphurpool Comment */
-.hljs-comment,
+.hljs-comment {
+	color: #777777;
+}
 .hljs-quote {
 	color: #898ea4;
 }

@@ -1,6 +1,6 @@
 [%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
-// generate-js r.20191109
+// generate-js r.20191120
 [%%%/COMMENT%%%]
 
 //===== QUnit: START

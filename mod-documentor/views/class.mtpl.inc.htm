@@ -1,4 +1,4 @@
-<!-- class r.20191109 -->
+<!-- class r.20191120 -->
 <!-- Styles -->
 [@@@SUB-TEMPLATE:partials/styles.mtpl.inc.htm@@@]
 <!-- Headings -->
@@ -15,11 +15,12 @@
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
 		<li><span class="doc-located"><b>Located at:</b> [###FILE-NAME|html###]</span></li>
 		[%%%IF:PACKAGE:!=;%%%]<li><span class="doc-package"><b>Package:</b> [###PACKAGE|html###]</span></li>[%%%/IF:PACKAGE%%%]
 		<li><span class="doc-ns"><b>Namespace:</b> [###NAMESPACE|html###]</span></li>
 		<li><span class="doc-name"><b>[###TYPE|ucfirst|html###] Name:</b> [###SHORT-NAME|html###]</span></li>
-		[%%%IF:THROWS:!=;%%%]<li><b>Throws:</b> [###THROWS|html###]</li>[%%%/IF:THROWS%%%]
+		[%%%IF:THROWS:!=;%%%]<li><span class="doc-throws"><b>Throws:</b> [###THROWS|html###]</span></li>[%%%/IF:THROWS%%%]
 		[%%%IF:VERSION:!=;%%%]<li><b>Version:</b> [###VERSION|html###]</li>[%%%/IF:VERSION%%%]
 		[%%%IF:DEPENDS:!=;%%%]<li><b>Depends:</b> [###DEPENDS|html###]</li>[%%%/IF:DEPENDS%%%]
 		[%%%IF:HINTS:!=;%%%]<li><b>Hints:</b> [###HINTS|html###]</li>[%%%/IF:HINTS%%%]
@@ -44,22 +45,26 @@
 </div>
 [@@@SUB-TEMPLATE:partials/methods.mtpl.inc.htm@@@]
 <!-- Properties -->
+[%%%IF:ARR-PROPERTIES:@>0;%%%]
 <br>
 <div class="doc-container" id="Properties--Summary-">
 	<h2 class="doc-header">Properties summary</h2>
 </div>
 [@@@SUB-TEMPLATE:partials/properties.mtpl.inc.htm@@@]
+[%%%/IF:ARR-PROPERTIES%%%]
 <!-- Constants -->
+[%%%IF:ARR-CONSTANTS:@>0;%%%]
 <br>
 <div class="doc-container" id="Constants--Summary-">
 	<h2 class="doc-header">Constants summary</h2>
 </div>
 [@@@SUB-TEMPLATE:partials/constants.mtpl.inc.htm@@@]
+[%%%/IF:ARR-CONSTANTS%%%]
 <!-- Sample Code -->
 [%%%IF:DOC-CODE-HTML:!=;%%%]
 <br>
 <div class="doc-container" id="SAMPLE--Code-">
-	<h2 class="doc-header">Sample Code</h2>
+	<h2 class="doc-header">Sample Code: PHP</h2>
 </div>
 <div class="doc-code">
 	<pre><code>[###DOC-CODE-HTML###]</code></pre>

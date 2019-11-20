@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191106
+ * @version 20191120
  * @ignore
  */
 final class SmartAppAdminController extends SmartAbstractAppController {

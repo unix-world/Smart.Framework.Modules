@@ -1,4 +1,4 @@
-// summary r.20191109
+// summary r.20191120
 function smartHandleDocSelector(obj) {
 	if(!obj) {
 		return;

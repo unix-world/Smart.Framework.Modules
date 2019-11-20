@@ -1,4 +1,4 @@
-<!-- methods r.20191118 -->
+<!-- methods r.20191120 -->
 [%%%LOOP:ARR-METHODS%%%]
 [%%%IF:ARR-METHODS.IS-INTERNAL-PRIV:!=1;%%%]
 <div class="doc-container" id="Method--[###ARR-METHODS.NAME|htmid|html###]">
@@ -24,6 +24,9 @@
 	[%%%IF:ARR-METHODS.COMMENT-HTML:!=;%%%]
 		<div class="doc-method-comments">[###ARR-METHODS.COMMENT-HTML###]</div>
 	[%%%/IF:ARR-METHODS.COMMENT-HTML%%%]
+	[%%%IF:ARR-METHODS.CODE-HTML:!=;%%%]
+		<pre><b>Sample Code: JavaScript</b><br><code class="hljs javascript">[###ARR-METHODS.CODE-HTML###]</code></pre>
+	[%%%/IF:ARR-METHODS.CODE-HTML%%%]
 </div>
 [%%%ELSE:ARR-METHODS.IS-INTERNAL-PRIV%%%]
 <!-- Skip Internal-Priv Method: `[###ARR-METHODS.NAME|html###]()` -->
