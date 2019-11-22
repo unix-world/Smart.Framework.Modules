@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20191118 -->
+<!-- Template: Smart.Framework@Documentor v.20191122 -->
 <html>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<meta name="author" content="unix-world.org">
-	<meta name="description" content="\SmartLangIdClient       final class \ SmartLangIdClient    {   } -&gt;    Class: SmartLangIdClient - provides a LangId.Py Service Client that can be used to">
-	<meta name="keywords" content="smartlangidclient, final, class, smartlangidclient, -, class, -, provides, a, langid.py, service, client, that, can, be, used, to, validate, language, getlanguage, confidence, for, text., this, just, with, the, default, settings, which, must, set, in, etc config.php, configs  langid, or, custom, settings., located, at, modules smart-extra-libs lib langid cli.php, package, extralibs languagedetection, namespace, name, version, v, depends, classes, smart, smarthttpclient, hints, if, are, not, available, will, simply, fallback, using, any, service., usage, dynamic, object, new, class   - method, only, methods, summary, public, function, construct, array, cfg, array, param, cfg, optional, of, configuration, parameters, provided, use, config, from, config.php, configs  langid  .">
+	<meta name="description" content="\SmartLangIdClient        final class \ SmartLangIdClient    {   } -&gt;    Class: SmartLangIdClient - provides a LangId.Py Service Client that can be used">
+	<meta name="keywords" content="smartlangidclient, final, class, smartlangidclient, -, class, -, provides, a, langid.py, service, client, that, can, be, used, to, validate, language, getlanguage, confidence, for, text., this, just, with, the, default, settings, which, must, set, in, etc config.php, configs  langid, or, custom, settings., language, php, located, at, modules smart-extra-libs lib langid cli.php, package, extralibs languagedetection, namespace, name, version, v, depends, classes, smart, smarthttpclient, hints, if, are, not, available, will, simply, fallback, using, any, service., usage, dynamic, object, new, class   - method, only, methods, summary, public, function, construct, array, cfg, array, param, array, cfg, optional, of, configuration, parameters, provided, use, config">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation: \SmartLangIdClient">
 	<title>PHP Documentation for: \SmartLangIdClient</title>
 	<!-- CSS and Fonts -->
@@ -455,9 +455,9 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20191109 -->
+<!-- class r.20191122 -->
 <!-- Styles -->
-<!-- styles r.20191118 -->
+<!-- styles r.20191122 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -478,6 +478,9 @@
 .doc-method-name {
 	color: #111111;
 }
+.doc-method-sub-name {
+	color: #555555;
+}
 .doc-method-special-name {
 	color: #003399;
 }
@@ -494,6 +497,9 @@
 .doc-implements {
 	color: #72C100;
 }
+.doc-language {
+	color: #92981b;
+}
 .doc-extends,
 .doc-type-class {
 	color: #20639E;
@@ -509,6 +515,9 @@
 .doc-reimplemented,
 .doc-reuses {
 	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
 }
 .doc-header {
 	color: #3F51B5;
@@ -569,6 +578,88 @@ div.doc-summary {
 	border: 1px solid #CCCCCC;
 }
 </style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
 <!-- Headings -->
 <h1 title="PHP class: `\SmartLangIdClient` @ PHP Namespace: `\`" id="Class--Summary-">
 	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartLangIdClient</span><br>
@@ -584,6 +675,7 @@ This class can be used just with the DEFAULT settings which must be set in etc/c
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
 		<li><span class="doc-located"><b>Located at:</b> modules/smart-extra-libs/lib_langid_cli.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> extralibs:LanguageDetection</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
@@ -602,7 +694,7 @@ This class can be used just with the DEFAULT settings which must be set in etc/c
 <div class="doc-container" id="Methods--Summary-">
 	<h2 class="doc-header">Methods summary</h2>
 </div>
-<!-- methods r.20191109 -->
+<!-- methods r.20191122 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
 				<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cfg` Parameter is OPTIONAL, with the Default Value: array()">$cfg</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array()</b></span>
@@ -611,9 +703,11 @@ This class can be used just with the DEFAULT settings which must be set in etc/c
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
 	
 	
-			<div class="doc-method-ret-params">@param: {$cfg} *OPTIONAL* The Array of Configuration parameters - if not provided will use the DEFAULT config from config.php: $configs['langid'].</div>
+			<div class="doc-method-ret-params">@param: {ARRAY} $cfg: *OPTIONAL* The Array of Configuration parameters - if not provided will use the DEFAULT config from config.php: $configs['langid'].</div>
 	
 			<div class="doc-method-comments">Class Constructor - will initiate also the LangId.Py Client with the DEFAULT or CUSTOM connection.</div>
+	
+	
 	
 </div><div class="doc-container" id="Method--getLanguageConfidence">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getLanguageConfidence</b></span>&nbsp;(
@@ -623,43 +717,35 @@ This class can be used just with the DEFAULT settings which must be set in etc/c
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
 	
 	
-			<div class="doc-method-ret-params">@return: {ARRAY} : The LangId.Py detection result: [ service-available, lang-id, confidence-score, error-message ]<br>
-@param: {$the_text} The text to be checked</div>
+			<div class="doc-method-ret-params">@return: {ARRAY} The LangId.Py detection result: [ service-available, lang-id, confidence-score, error-message ]<br>
+@param: {STRING} $the_text: The text to be checked</div>
 	
 			<div class="doc-method-comments">Checks and Get the Language Confidence information for the best detected Language (from the available list) for a given text using the LangId.Py Service.<br>
 If LangId.Py is not set in configuration as it may not be available will return a negative confidence score and the default language: en.</div>
 	
+	
+	
 </div>
 <!-- Properties -->
-<br>
-<div class="doc-container" id="Properties--Summary-">
-	<h2 class="doc-header">Properties summary</h2>
-</div>
-<!-- properties r.20191109 -->
 
 <!-- Constants -->
-<br>
-<div class="doc-container" id="Constants--Summary-">
-	<h2 class="doc-header">Constants summary</h2>
-</div>
-<!-- constants r.20191109 -->
 
 <!-- Sample Code -->
 <br>
 <div class="doc-container" id="SAMPLE--Code-">
-	<h2 class="doc-header">Sample Code</h2>
+	<h2 class="doc-header">Sample Code: PHP</h2>
 </div>
 <div class="doc-code">
 	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br>$check_with_default_service&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartLangIdClient</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">getLanguageConfidence</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Your&nbsp;text&nbsp;to&nbsp;check&nbsp;goes&nbsp;here&nbsp;...'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$check_with_custom_service&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartLangIdClient</span><span style="color: #FFCC00; font-weight: bold">([&nbsp;</span><span style="color: #5F9CCE">'url'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'http://langid.host:9008/detect'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'ssl'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">''</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'auth-user'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">''</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'auth-pass'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">''&nbsp;</span><span style="color: #FFCC00; font-weight: bold">]))-&gt;</span><span style="color: #FFFFFF">getLanguageConfidence</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Your&nbsp;text&nbsp;to&nbsp;check&nbsp;goes&nbsp;here&nbsp;...'</span><span style="color: #FFCC00; font-weight: bold">);<br></span><span style="color: #FFFFFF">?&gt;</span>
+<span style="color: #FFFFFF">&lt;?php<br><br>$check_with_default_service&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartLangIdClient</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">getLanguageConfidence</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Your&nbsp;text&nbsp;to&nbsp;check&nbsp;goes&nbsp;here&nbsp;...'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$check_with_custom_service&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartLangIdClient</span><span style="color: #FFCC00; font-weight: bold">([&nbsp;</span><span style="color: #5F9CCE">'url'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'http://langid.host:9008/detect'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'ssl'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">''</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'auth-user'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">''</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'auth-pass'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">''&nbsp;</span><span style="color: #FFCC00; font-weight: bold">]))-&gt;</span><span style="color: #FFFFFF">getLanguageConfidence</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Your&nbsp;text&nbsp;to&nbsp;check&nbsp;goes&nbsp;here&nbsp;...'</span><span style="color: #FFCC00; font-weight: bold">);<br><br></span><span style="color: #FFFFFF">?&gt;</span>
 </span>
 </code><!-- [/@] Smart/HTML.Cleaner --></code></pre>
 </div>
 <!-- Summary List -->
 <br>
-<!-- summary r.20191109 -->
+<!-- summary r.20191122 -->
 <script>
-// summary r.20191109
+// summary r.20191122
 function smartHandleDocSelector(obj) {
 	if(!obj) {
 		return;
@@ -679,7 +765,7 @@ function smartHandleDocSelector(obj) {
 </script>
 <div class="doc-summary">
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
-		<option value="" selected>* Class \SmartLangIdClient # Documentation Index *</option>
+		<option value="" selected>* PHP Class \SmartLangIdClient # Documentation Index *</option>
 		<optgroup label="Class \SmartLangIdClient">
 			<option value="Class--Summary-">***** Class Definition *****</option>
 		</optgroup>
@@ -687,18 +773,14 @@ function smartHandleDocSelector(obj) {
 			<option value="Methods--Summary-">*** Methods summary ***</option>
 									<option value="Method--__construct">Method: __construct()</option>
 			
+			
 									<option value="Method--getLanguageConfidence">Method: getLanguageConfidence()</option>
 			
 			
-		</optgroup>
-		<optgroup label="Class Properties">
-			<option value="Properties--Summary-">*** Properties summary ***</option>
 			
 		</optgroup>
-		<optgroup label="Class Constants">
-			<option value="Constants--Summary-">*** Constants summary ***</option>
-			
-		</optgroup>
+		
+		
 				<optgroup label="Class Sample code">
 			<option value="SAMPLE--Code-">*** Sample code ***</option>
 		</optgroup>
@@ -707,7 +789,7 @@ function smartHandleDocSelector(obj) {
 </div>
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2019-11-18 10:08:47 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2019-11-22 15:33:45 +0000</small>
 <hr>
 <br>
 <!-- # -->

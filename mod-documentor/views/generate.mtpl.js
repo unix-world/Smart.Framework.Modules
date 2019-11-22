@@ -1,6 +1,6 @@
 [%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
-// generate-js r.20191120
+// generate-js r.20191122
 [%%%/COMMENT%%%]
 
 //===== QUnit: START
@@ -61,13 +61,15 @@ smartQUnitStartDelay = 500;
 
 	// Local Tasks
 
+[%%%IF:PAGE:!=;%%%]
+
 	[%%%IF:PRE-TASKS:@>0;%%%]
 	var msgOkPreTask = 'Pre-Task OK: Done';
 	QUnit.module('Documentation Pre-Generate', function(){
 		[%%%LOOP:PRE-TASKS%%%]
 		QUnit.test('Task #[###PRE-TASKS.-_INDEX_-|js###]: [###PRE-TASKS._-VAL-_|upper|js###]', function(assert) {
 			SmartQUnit.runAjaxTest(
-				'admin.php?page=documentor.doc&action=[###PRE-TASKS._-VAL-_|url|js###]&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
+				'admin.php?page=[###PAGE|url|js###]&action=[###PRE-TASKS._-VAL-_|url|js###]&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
 				'GET',
 				'json', // data type
 				assert,
@@ -103,7 +105,7 @@ smartQUnitStartDelay = 500;
 		[%%%LOOP:TASKS%%%]
 		QUnit.test('Task #[###TASKS.-_INDEX_-|js###]: [###TASKS._-VAL-_|js###]', function(assert) {
 			SmartQUnit.runAjaxTest(
-				'admin.php?page=documentor.doc&cls=[###TASKS._-VAL-_|url|js###]&action=save&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
+				'admin.php?page=[###PAGE|url|js###]&cls=[###TASKS._-VAL-_|url|js###]&file=[###TASKS._-KEY-_|url|js###]&action=save&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
 				'GET',
 				'json', // data type
 				assert,
@@ -139,7 +141,7 @@ smartQUnitStartDelay = 500;
 		[%%%LOOP:POST-TASKS%%%]
 		QUnit.test('Task #[###POST-TASKS.-_INDEX_-|js###]: [###POST-TASKS._-VAL-_|upper|js###]', function(assert) {
 			SmartQUnit.runAjaxTest(
-				'admin.php?page=documentor.doc&action=[###POST-TASKS._-VAL-_|url|js###]&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
+				'admin.php?page=[###PAGE|url|js###]&action=[###POST-TASKS._-VAL-_|url|js###]&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
 				'GET',
 				'json', // data type
 				assert,
@@ -168,6 +170,8 @@ smartQUnitStartDelay = 500;
 	[%%%ELSE:POST-TASKS%%%]
 	// there are no post-tasks ...
 	[%%%/IF:POST-TASKS%%%]
+
+[%%%/IF:PAGE%%%]
 
 })();
 

@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191120
+ * @version 20191122
  * @ignore
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -65,8 +65,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				'logo-img' 			=> (string) 'lib/framework/img/sf-logo.svg',
 				'year' 				=> (string) date('Y'),
 				//--
-				'title' 			=> (string) 'Documentation',
-				'heading-title' 	=> (string) 'PHP Documentation',
+				'title' 			=> (string) 'Documentation Generator for Smart.Framework and Smart.Framework.Modules',
+				'heading-title' 	=> (string) 'Documentation Generator',
 				'seo-description'	=> (string) 'Smart.Framework Documentation',
 				'seo-keywords'		=> (string) 'php, smart, framework, documentor',
 				'seo-summary' 		=> (string) 'Smart.Framework, a PHP / Javascript Framework for Web',
@@ -80,9 +80,15 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				(string) SmartMarkersTemplating::render_file_template(
 					$this->ControllerGetParam('module-view-path').$this->ControllerGetParam('action').'.mtpl.htm',
 					[
-						'URL-SF' 	=> (string) $url_base.'&area=sf&mode=multi&heading='.Smart::escape_url('Smart.Framework : PHP Documentation'),
-						'URL-SFM' 	=> (string) $url_base.'&area=sfm&heading='.Smart::escape_url('Smart.Framework.Modules : PHP Documentation'),
-						'URL-SFD' 	=> (string) $url_base.'&area=sfd&extra=docs&mode=multi&heading='.Smart::escape_url('Smart.Framework and Smart.Framework.Modules : PHP Documentation')
+						//--
+						'URL-PHP-SF' 	=> (string) $url_base.'&area=php-sf&mode=multi&heading='.Smart::escape_url('Smart.Framework : PHP Documentation'),
+						'URL-PHP-SFM' 	=> (string) $url_base.'&area=php-sfm&heading='.Smart::escape_url('Smart.Framework.Modules : PHP Documentation'),
+						'URL-PHP-SFD' 	=> (string) $url_base.'&area=php-sfd&extra=docs&mode=multi&heading='.Smart::escape_url('Smart.Framework and Smart.Framework.Modules : PHP Documentation'),
+						//--
+						'URL-JS-SF' 	=> (string) $url_base.'&area=js-sf&mode=multi&heading='.Smart::escape_url('Smart.Framework : Javascript Documentation'),
+						'URL-JS-SFM' 	=> (string) $url_base.'&area=js-sfm&heading='.Smart::escape_url('Smart.Framework.Modules : Javascript Documentation'),
+						'URL-JS-SFD' 	=> (string) $url_base.'&area=js-sfd&extra=docs&mode=multi&heading='.Smart::escape_url('Smart.Framework and Smart.Framework.Modules : Javascript Documentation'),
+						//--
 					]
 				)
 			);
@@ -98,136 +104,46 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$arr_sf_tasks = [
-			//--
-			'\\Smart',
-			'\\SmartUnicode',
-			'\\SmartParser',
-			'\\SmartValidator',
-			'\\SmartCache',
-			'\\SmartAbstractPersistentCache', // dev
-			'\\SmartPersistentCache',
-			'\\SmartInterfaceAdapterTextTranslations', // dev
-		//	'\\SmartAdapterTextTranslations', // custom
-			'\\SmartTextTranslator',
-			'\\SmartTextTranslations',
-			'\\SmartHashCrypto',
-			'\\SmartCipherCrypto',
-			'\\SmartFileSysUtils',
-			'\\SmartFileSystem',
-			'\\SmartGetFileSystem',
-			'\\SmartHttpClient',
-			'\\SmartHttpUtils',
-			'\\SmartMarkersTemplating',
-			'\\SmartAuth',
-			'\\SmartUtils',
-			//--
-			'\\SmartAbstractAppController', // dev
-			'\\SmartAppIndexController',
-			'\\SmartAppAdminController',
-			//--
-			'\\SmartAppInfo',
-			'\\SmartComponents',
-			//--
-			'\\SmartPunycode',
-			'\\SmartDetectImages',
-			'\\SmartRobot',
-			'\\SmartMailerUtils',
-			'\\SmartMailerMimeDecode',
-			'\\SmartMailerMimeParser',
-			'\\SmartMailerSend',
-			'\\SmartMailerSmtpClient',
-			'\\SmartMailerImap4Client',
-			'\\SmartMailerPop3Client',
-			'\\SmartYamlConverter',
-			'\\SmartXmlParser',
-			'\\SmartXmlComposer',
-			'\\SmartHtmlParser',
-			'\\SmartMarkdownToHTML',
-			'\\SmartArchiverLZS',
-			'\\SmartImageGdProcess',
-			'\\SmartBarcode1D',
-			'\\SmartBarcode2D',
-			'\\SmartCaptchaFormCheck',
-			'\\SmartViewHtmlHelpers',
-			'\\SmartHTMLCalendar',
-			'\\SmartCalendarComponent',
-			'\\SmartFtpClient',
-			'\\SmartRedisDb',
-			'\\SmartMysqliDb',
-			'\\SmartMysqliExtDb',
-			'\\SmartPgsqlDb',
-			'\\SmartPgsqlExtDb',
-			'\\SmartSQliteDb',
-			'\\SmartMongoDb',
-			'\\SmartAbstractCustomSession', // dev
-			'\\SmartSession',
-		//	'\\SmartCustomSession', // custom: require_once('lib/app/custom-session-redis.php');
-			'\\SmartSpreadSheetExport',
-			'\\SmartSpreadSheetImport',
-			'\\SmartPdfExport',
-			//--
-		];
-		//--
-		$arr_sfm_tasks = [
-			//--
-			'\\SmartModExtLib\\AuthAdmins\\SimpleAuthAdminsHandler',
-			'\\SmartModExtLib\\AuthAdmins\\AuthAdminsHandler',
-			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendController',
-			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendPlugin',
-			'\\SmartModExtLib\\Webdav\\ControllerAdmDavFs',
-			'\\SmartModExtLib\\Webdav\\ControllerAdmCalDavFs',
-			'\\SmartModExtLib\\Webdav\\ControllerAdmCardDavFs',
-			//--
-			'\\SmartModExtLib\\HighlightSyntax\\Highlighter',
-			//--
-			'\\SmartTemplating',
-			'\\SmartModExtLib\\TplDust\\SmartDustTemplating',
-			'\\SmartModExtLib\\TplTwig\\SmartTwigTemplating',
-			'\\SmartModExtLib\\TplNetteLatte\\SmartNetteLatteTemplating',
-			'\\SmartModExtLib\\TplTypo3Fluid\\SmartTypo3FluidTemplating',
-			//--
-			'\\SmartSolrDb',
-			'\\SmartAbstractPgsqlExtDb', // dev
-			'\\SmartModExtLib\\DbalZend\\DbalPdo',
-			'\\SmartModExtLib\\DbOrmRedbean\\ORM',
-			//--
-			'\\SmartCurlHttpFtpClient',
-			'\\SmartModExtLib\\Soap\\SoapServerRequestHandler',
-			//--
-			'\\SmartLangIdClient',
-			'\\SmartModExtLib\\LangDetect\\LanguageNgrams',
-			//--
-			'\\SmartZipArchive',
-			'\\SmartExportToOpenOffice',
-			'\\SmartImportFromOpenOffice',
-			//--
-			'\\SmartModExtLib\\MediaGallery\\Manager',
-			'\\SmartModExtLib\\JsComponents\\TextEditor',
-			//--
-			'\\SmartImgGfxCharts',
-			'\\SmartImgBizCharts',
-			//--
-			'\\SmartModExtLib\\SmFacebook\\FacebookApi',
-			'\\SmartModExtLib\\SmTwitter\\TwitterApi',
-			//--
-		];
-		//--
-
+		$the_page = '';
 		//--
 		switch((string)$area) {
-			case 'sf':
-				$arr_sfm_tasks = []; // do not generate sfm
+			//--
+			case 'php-sf':
+				$the_page = 'documentor.doc';
+				$arr_sf_tasks = (array) \SmartModExtLib\Documentor\SmartClasses::listPhpSfClasses();
+				$arr_sfm_tasks = []; // do not generate php-sfm
 				break;
-			case 'sfm':
-				$arr_sf_tasks = []; // do not generate sf
+			case 'php-sfm':
+				$the_page = 'documentor.doc';
+				$arr_sf_tasks = []; // do not generate php-sf
+				$arr_sfm_tasks = (array) \SmartModExtLib\Documentor\SmartClasses::listPhpSfmClasses();
 				break;
-			case 'sfd':
+			case 'php-sfd':
+				$the_page = 'documentor.doc';
+				$arr_sf_tasks = (array) \SmartModExtLib\Documentor\SmartClasses::listPhpSfClasses();
+				$arr_sfm_tasks = (array) \SmartModExtLib\Documentor\SmartClasses::listPhpSfmClasses();
+				break;
+			//--
+			case 'js-sf':
+				$the_page = 'documentor.docjs';
+				$arr_sf_tasks = (array) array_flip((array)\SmartModExtLib\Documentor\SmartClasses::listJavascriptSfClasses());
+				$arr_sfm_tasks = []; // do not generate php-sfm
+				break;
+			case 'js-sfm':
+				$the_page = 'documentor.docjs';
+				$arr_sf_tasks = []; // do not generate php-sf
+				$arr_sfm_tasks = (array) array_flip((array)\SmartModExtLib\Documentor\SmartClasses::listJavascriptSfmClasses());
+				break;
+			case 'js-sfd':
+				$the_page = 'documentor.docjs';
+				$arr_sf_tasks = (array) array_flip((array)\SmartModExtLib\Documentor\SmartClasses::listJavascriptSfClasses());
+				$arr_sfm_tasks = (array) array_flip((array)\SmartModExtLib\Documentor\SmartClasses::listJavascriptSfmClasses());
+				break;
+			//--
 			default:
-				// all
+				return 400; // bad request
+			//--
 		} //end switch
-		//--
-
 		//--
 		$arr_pre_tasks = [
 			'cleanup@documentation'
@@ -267,6 +183,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					'LANG' 					=> (string) $this->ControllerGetParam('lang'),
 					'MODULE-PATH' 			=> (string) $this->ControllerGetParam('module-path'),
 					'SRV-SCRIPT' 			=> (string) $this->ControllerGetParam('url-script'),
+					//--
+					'PAGE' 					=> (string) $the_page,
 					//--
 					'PRE-TASKS' 			=> (array)  $arr_pre_tasks,
 					'POST-TASKS' 			=> (array)  $arr_post_tasks,

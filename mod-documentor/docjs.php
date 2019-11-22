@@ -13,32 +13,40 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
+//-----------------------------------------------------
+define('SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO', 'lib/framework/img/sf-logo.svg');
+define('SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS', 'tmp/documentor-js/');
+define('SMART_FRAMEWORK_DOCUMENTOR_DIR_PKGS', 'tmp/documentor-js@packages/');
+//-----------------------------------------------------
+
+
 define('SMART_APP_MODULE_AREA', 'ADMIN'); // INDEX, ADMIN, SHARED
 define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 
 /**
  * Admin Area Controller
- * @version 20191120
+ * @version 20191122
  * @ignore
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
+	private $sfjfile 	= '';
+	private $classes 	= [];
+
 	private $errMsg 	= null;
-	private $masterfile = 'lib/js/framework/smart-framework.js';
-	private $classes 	= [
-		'SmartJS_CoreUtils' 		=> 'lib/js/framework/src/core_utils.js',
-		'SmartJS_DateUtils' 		=> 'lib/js/framework/src/date_utils.js',
-		'SmartJS_Base64' 			=> 'lib/js/framework/src/crypt_utils.js',
-		'SmartJS_CryptoHash' 		=> 'lib/js/framework/src/crypt_utils.js',
-		'SmartJS_CryptoBlowfish' 	=> 'lib/js/framework/src/crypt_utils.js',
-		'SmartJS_Archiver_LZS' 		=> 'lib/js/framework/src/arch_utils.js',
-		'SmartJS_ModalBox' 			=> 'lib/js/framework/src/ifmodalbox.js',
-		'SmartJS_BrowserUtils' 		=> 'lib/js/framework/src/browser_utils.js',
-		'Test_Browser_Compliance' 	=> 'lib/js/framework/src/browser_check.js'
-	];
+	private $clsType 	= '';
+	private $clsPackage = '';
+
 
 	public function Initialize() {
+
+		//--
+		$this->sfjfile = (string) \SmartModExtLib\Documentor\SmartClasses::getJavascriptSfFile();
+		$this->classes = (array) \SmartModExtLib\Documentor\SmartClasses::listJavascriptSfClasses();
+		//--
+		$this->clsType = 'class'; // for JS there are no interface or trait
+		//--
 
 		//--
 		$this->PageViewSetCfg('template-path', '@'); // set template path to this module
@@ -94,6 +102,28 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$extra = $this->RequestVarGet('extra', '', 'string');
 		$heading = $this->RequestVarGet('heading', 'JavaScript Documentation', 'string');
 		//--
+		if((string)$action == 'cleanup@documentation') {
+			//--
+			$proc = \SmartModExtLib\Documentor\Utils::cleanupDocumentationDirectory(); // mixed
+			if($proc !== true) {
+				$this->jsonAnswer($proc.' ...', false);
+				return;
+			} //end if
+			$this->jsonAnswer('Documentation directory and Documentation Packages directory Cleared: Javascript');
+			return;
+			//--
+		} elseif((string)$action == 'index@packages') {
+			//--
+			$proc = \SmartModExtLib\Documentor\Utils::indexDocumentationPackages('js', $heading, $mode, $extra); // mixed
+			if($proc !== true) {
+				$this->jsonAnswer($proc.' ...', false);
+				return;
+			} //end if
+			$this->jsonAnswer('Documentation Packages Indexed: Javascript');
+			return;
+			//--
+		} //end if
+		//--
 
 		//--
 		$cls = (string) trim((string)$this->RequestVarGet('cls', '', 'string'));
@@ -104,9 +134,15 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					$this->jsonAnswer('A JavaScript Class must be selected ...', false);
 					break;
 				default:
-					$this->displaySelector($cls);
+					$this->displaySelector($file, $cls);
 			} //end switch
 			return;
+		} //end if
+		//--
+		$file = (string) $this->classes[(string)$cls];
+		if((string)$file == '') {
+			$this->sfjfile = '';
+			$file = (string) trim((string)$this->RequestVarGet('file', '', 'string'));
 		} //end if
 		//--
 
@@ -114,7 +150,27 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		switch((string)$action) {
 			case 'save':
 				//--
-
+				$main = (string) $this->displayDocs(
+					(string) $file,
+					(string) $cls
+				);
+				//--
+				if($this->errMsg === null) { // OK
+					//--
+					$proc = \SmartModExtLib\Documentor\Utils::indexDocumentationDocument('js', $this->clsPackage, $this->clsType, $cls, $main, $heading, $mode, $extra); // mixed
+					if($proc !== true) {
+						$this->jsonAnswer($proc.' ...', false);
+						return;
+					} //end if
+					$this->jsonAnswer('Documentation saved for: '.$type.' `'.$cls.'`');
+					//--
+				} else { // ERR
+					//--
+					$this->jsonAnswer((string)$this->errMsg, false);
+					//--
+				} //end if
+				//--
+				return;
 				//--
 				break;
 			default:
@@ -122,21 +178,28 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$url_index = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url($this->ControllerGetParam('controller'));
 				$url_cls = '&cls=';
 				//--
-				$this->PageViewSetVars([
-					'title' 			=> (string) 'Documentation for: '.$cls,
-					'main' 				=> SmartMarkersTemplating::render_file_template(
-									(string) $this->ControllerGetParam('module-view-path').'display.mtpl.htm',
-									[
-										'DISPLAY' 	=> 'documentation',
-										'MESSAGE' 	=> '',
-										'DOCS-HTML' => (string) $this->displayDocs(
-											(string) $cls,
-											(string) $url_index.$url_cls
-										)
-									]
-								),
-					'url-index' => (string) $url_index
-				]);
+				$main = (string) $this->displayDocs(
+					(string) $file,
+					(string) $cls,
+					(string) $url_index.$url_cls
+				);
+				//--
+				if($this->errMsg === null) { // OK
+					$this->PageViewSetVars([
+						'title' => (string) 'Documentation for: '.$cls,
+						'main' 	=> SmartMarkersTemplating::render_file_template(
+							(string) $this->ControllerGetParam('module-view-path').'display.mtpl.htm',
+							[
+								'DISPLAY' 	=> 'documentation',
+								'MESSAGE' 	=> '',
+								'DOCS-HTML' => (string) $main
+							]
+						),
+						'url-index' => (string) $url_index
+					]);
+				} else {
+					$this->displaySelector($file, $cls, (string)$this->errMsg);
+				} //end if else
 				//--
 		} //end switch
 
@@ -147,7 +210,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	//##### PRIVATES
 
 
-	private function displaySelector($cls, $message='') {
+	private function displaySelector($file, $cls, $message='') {
 		//--
 		$title = 'Select a JavaScript Class to display Documentation';
 		//--
@@ -162,6 +225,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					//-- form
 					'form-title' 	=> (string) $title,
 					'form-cls' 		=> (string) $cls,
+					'hint-cls' 		=> (string) 'Javascript Class',
+					'form-ref' 		=> (string) '',
+					'hint-ref' 		=> (string) 'N/A',
+					'show-ref' 		=> (string) 'no',
+					'form-file' 	=> (string) $file,
+					'hint-file' 	=> (string) 'path/to/file.js',
+					'show-file' 	=> (string) 'yes',
 					'form-action' 	=> (string) $this->ControllerGetParam('url-script'),
 					'form-page' 	=> (string) $this->ControllerGetParam('controller')
 				]
@@ -193,10 +263,10 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	} //END FUNCTION
 
 
-	private function displayDocs($cls, $base_url='') {
+	private function displayDocs($file, $cls, $base_url='') {
 		//--
-		if(!in_array((string)$cls, (array)array_keys((array)$this->classes))) {
-			$this->errMsg = 'The selected JavaScript Class could not be found: '.$cls;
+		if((string)\trim((string)$cls) == '') {
+			$this->errMsg = 'No class selected';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
@@ -205,9 +275,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			);
 		} //end if
 		//--
-		$file = (string) $this->classes[(string)$cls];
-		if((string)$file == '') {
-			$this->errMsg = 'Cannot get the definition (1) for class: '.$cls;
+		if(((string)$file == '') OR ((string)substr((string)$file, -3, 3) != '.js') OR (!SmartFileSysUtils::check_if_safe_path((string)$file))) {
+			$this->errMsg = 'The selected Javascript Class could not be found (1):'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
@@ -216,7 +285,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			);
 		} //end if
 		if(!SmartFileSystem::is_type_file((string)$file)) {
-			$this->errMsg = 'Cannot get the definition (2) for class: '.$cls;
+			$this->errMsg = 'The selected Javascript Class could not be found (2):'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
@@ -226,7 +295,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 		$js = (string) SmartFileSystem::read((string)$file);
 		if((string)$js == '') {
-			$this->errMsg = 'Cannot get the definition (3) for class: '.$cls;
+			$this->errMsg = 'The selected Javascript Class could not be found (3):'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
@@ -238,7 +307,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$arr = (array) $this->parseClassOnlyDocComments($cls, $js);
 		//print_r($arr); die();
 		if(empty($arr)) {
-			$this->errMsg = 'Cannot get the definition (4) for class: '.$cls;
+			$this->errMsg = 'Cannot get the definition (1) for class:'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
@@ -247,7 +316,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			);
 		} //end if
 		if(empty($arr['class'])) {
-			$this->errMsg = 'Cannot get the definition (5) for class: '.$cls;
+			$this->errMsg = 'Cannot get the definition (2) for class:'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
@@ -256,7 +325,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			);
 		} //end if
 		if(empty($arr['class']['data'])) {
-			$this->errMsg = 'Cannot get the definition (6) for class: '.$cls;
+			$this->errMsg = 'Cannot get the definition (3) for class:'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
@@ -265,7 +334,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			);
 		} //end if
 		if(Smart::array_size($arr['class']['data']['props']) <= 0) {
-			$this->errMsg = 'Cannot get the definition (7) for class: '.$cls;
+			$this->errMsg = 'Cannot get the definition (4) for class:'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
@@ -274,7 +343,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			);
 		} //end if
 		if(Smart::array_size($arr['class']['data']['props']['class']) <= 0) {
-			$this->errMsg = 'Cannot get the definition (8) for class: '.$cls;
+			$this->errMsg = 'Cannot get the definition (5) for class:'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
@@ -283,7 +352,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			);
 		} //end if
 		if((string)$arr['class']['data']['props']['class']['type'] !== (string)$cls) {
-			$this->errMsg = 'Cannot get the definition (9) for class: '.$cls;
+			$this->errMsg = 'Cannot get the definition (6) for class:'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
@@ -339,6 +408,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			if(Smart::array_size($arr['methods'][$i]['data']) > 0) {
 				$tmp_method = [];
 				$tmp_method['name'] = '';
+				$tmp_method['depends'] = [];
+				$tmp_method['hint'] = '';
 				$tmp_method['throws'] = '';
 				$tmp_method['fires'] = '';
 				$tmp_method['listens'] = '';
@@ -358,6 +429,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							$tmp_method['is-static'] = 1;
 						} elseif((string)$key == 'private') {
 							$tmp_method['is-internal-priv'] = 1;
+						} elseif((string)$key == 'hint') {
+							$tmp_method['hint'] = (string) $val['line'];
 						} elseif((string)$key == 'throws') {
 							$tmp_method['throws'] = (string) $val['line'];
 						} elseif((string)$key == 'fires') {
@@ -368,7 +441,17 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							$tmp_method['code-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html(trim((string)implode("\n", (array)$val))), true);
 						} elseif((string)$key == 'param') {
 							$tmp_method['params'] = (array) $val;
-						} elseif((string)$key == 'return') {
+						} elseif((string)$key == 'requires') {
+							if((string)trim((string)$val['line']) != '') {
+								$tmp_method['depends'][] = (string) trim((string)$val['line']);
+							} else {
+								for($z=0; $z<Smart::array_size($val); $z++) {
+									if((string)trim((string)$val[$z]['line']) != '') {
+										$tmp_method['depends'][] = (string) trim((string)$val[$z]['line']);
+									} //end if
+								} //end for
+							} //end if
+						} elseif(((string)$key == 'return') OR ((string)$key == 'returns')) {
 							$tmp_method['returns'] = (string) $val['type'];
 							$tmp_method['_return'] = (string) $val['line'];
 						} else {
@@ -423,17 +506,19 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			} //end if
 		} //end for
 		//--
+		$this->clsPackage = (string) $arr['class']['data']['props']['package']['line'];
+		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			(string) $this->ControllerGetParam('module-view-path').'js-class.mtpl.inc.htm',
 			[
 				'base-url' 				=> (string) $base_url,
-				'file-name' 			=> (string) implode('; ', [ (string)($this->masterfile ? $this->masterfile : $file), (string)$arr['class']['data']['props']['file']['line'] ]),
-				'type' 					=> (string) 'class',
+				'file-name' 			=> (string) implode('; ', [ (string)($this->sfjfile ? $this->sfjfile : $file), (string)$arr['class']['data']['props']['file']['line'] ]),
+				'type' 					=> (string) $this->clsType,
 				'callmode' 				=> (string) $callmode,
 				'usage' 				=> (string) $usage,
 				'name' 					=> (string) $arr['class']['data']['props']['class']['type'],
 				'modifiers' 			=> (string) $modifier,
-				'package' 				=> (string) $arr['class']['data']['props']['package']['line'],
+				'package' 				=> (string) $this->clsPackage,
 				'version' 				=> (string) $arr['class']['data']['props']['version']['line'],
 				'depends' 				=> (string) implode(', ', (array)$depends),
 				'hints' 				=> (string) $arr['class']['data']['props']['hint']['line'],
@@ -457,7 +542,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			return '';
 		} //end if
 		//--
-		$hl = (new \SmartModExtLib\HighlightSyntax\Highlighter())->highlight('javascript', (string)$code);
+		$hl = (new \SmartModExtLib\HighlightSyntax\Highlighter())->highlight('javascript', (string)' '.$code);
 		//--
 		return (string) $hl->value;
 		//--

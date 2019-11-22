@@ -36,7 +36,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191120
+ * @version 20191122
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -115,7 +115,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$this->jsonAnswer($proc.' ...', false);
 				return;
 			} //end if
-			$this->jsonAnswer('Documentation directory and Documentation Packages directory Cleared');
+			$this->jsonAnswer('Documentation directory and Documentation Packages directory Cleared: PHP');
 			return;
 			//--
 		} elseif((string)$action == 'index@packages') {
@@ -125,7 +125,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$this->jsonAnswer($proc.' ...', false);
 				return;
 			} //end if
-			$this->jsonAnswer('Documentation Packages Indexed');
+			$this->jsonAnswer('Documentation Packages Indexed: PHP');
 			return;
 			//--
 		} //end if
@@ -142,7 +142,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						$this->jsonAnswer((string)$errmsg, false);
 						break;
 					default:
-						$this->displaySelector($cls, (string)$errmsg);
+						$this->displaySelector($cls, $ref, (string)$errmsg);
 				} //end switch
 				return;
 			} //end if
@@ -155,20 +155,20 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					$this->jsonAnswer('A Class / Interface / Trait must be selected ...', false);
 					break;
 				default:
-					$this->displaySelector($cls);
+					$this->displaySelector($cls, $ref);
 			} //end switch
 			return;
 		} //end if
 		$cls = (string) '\\'.ltrim((string)$cls, '\\');
 		//--
 		if((!class_exists((string)$cls, true)) AND (!interface_exists((string)$cls, true)) AND (!trait_exists((string)$cls, true))) {
-			$errmsg = 'Info: The selected PHP Class / Interface / Trait could not be found: `'.$cls.'`';
+			$errmsg = 'Info: The selected PHP Class / Interface / Trait could not be found:'."\n".'`'.$cls.'`';
 			switch((string)$action) {
 				case 'save':
 					$this->jsonAnswer((string)$errmsg, false);
 					break;
 				default:
-					$this->displaySelector($cls, (string)$errmsg);
+					$this->displaySelector($cls, $ref, (string)$errmsg);
 			} //end switch
 			return;
 		} //end if
@@ -187,7 +187,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						$this->jsonAnswer($proc.' ...', false);
 						return;
 					} //end if
-					$this->jsonAnswer('Documentation saved for: '.$type.' `'.$cls.'` as: '.$slug);
+					$this->jsonAnswer('Documentation saved for: '.$type.' `'.$cls.'`');
 					//--
 				} else { // ERR
 					//--
@@ -204,22 +204,28 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$url_cls = '&cls=';
 				$url_ref = '&ref=';
 				//--
-				$this->PageViewSetVars([
-					'title' 			=> (string) 'Documentation for: '.$cls,
-					'main' 				=> SmartMarkersTemplating::render_file_template(
-									(string) $this->ControllerGetParam('module-view-path').'display.mtpl.htm',
-									[
-										'DISPLAY' 	=> 'documentation',
-										'MESSAGE' 	=> '',
-										'DOCS-HTML' => (string) $this->displayDocs(
-											(string) $cls,
-											(string) $url_index.$url_cls,
-											(string) $url_ref
-										)
-									]
-								),
-					'url-index' => (string) $url_index
-				]);
+				$main = (string) $this->displayDocs(
+					(string) $cls,
+					(string) $url_index.$url_cls,
+					(string) $url_ref
+				);
+				//--
+				if($this->errMsg === null) { // OK
+					$this->PageViewSetVars([
+						'title' => (string) 'Documentation for: '.$cls,
+						'main' 	=> SmartMarkersTemplating::render_file_template(
+							(string) $this->ControllerGetParam('module-view-path').'display.mtpl.htm',
+							[
+								'DISPLAY' 	=> 'documentation',
+								'MESSAGE' 	=> '',
+								'DOCS-HTML' => (string) $main
+							]
+						),
+						'url-index' => (string) $url_index
+					]);
+				} else {
+					$this->displaySelector($cls, $ref, (string)$this->errMsg);
+				} //end if else
 				//--
 		} //end switch
 		//--
@@ -233,7 +239,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	//##### PRIVATES
 
 
-	private function displaySelector($cls, $message='') {
+	private function displaySelector($cls, $ref, $message='') {
 		//--
 		$title = 'Select a PHP Class / Interface or Trait to display Documentation';
 		//--
@@ -248,6 +254,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					//-- form
 					'form-title' 	=> (string) $title,
 					'form-cls' 		=> (string) $cls,
+					'hint-cls' 		=> (string) 'PHP Class / Interface / Trait',
+					'form-ref' 		=> (string) $ref,
+					'hint-ref' 		=> (string) 'preload a PHP Class / Interface / Trait',
+					'show-ref' 		=> (string) 'yes',
+					'form-file' 	=> (string) '',
+					'hint-file' 	=> (string) 'N/A',
+					'show-file' 	=> (string) 'no',
 					'form-action' 	=> (string) $this->ControllerGetParam('url-script'),
 					'form-page' 	=> (string) $this->ControllerGetParam('controller')
 				]
@@ -284,7 +297,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$arr = (array) $this->parseClass($cls);
 		//print_r($arr); die();
 		if(empty($arr)) {
-			$this->errMsg = 'Cannot get the definition (1) for class: '.$cls;
+			$this->errMsg = 'Cannot get the definition (1) for class:'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
@@ -293,7 +306,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			);
 		} //end if
 		if(empty($arr['class'])) {
-			$this->errMsg = 'Cannot get the definition (2) for class: '.$cls;
+			$this->errMsg = 'Cannot get the definition (2) for class:'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
 				[
@@ -372,7 +385,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$tmp_arr_ret_param = [];
 				//--
 				if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['throws']) > 0) {
-					$tmp_arr_ret_param[] = '@throws: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['throws']['type'].'} : '.ltrim($arr['methods'][$i]['doc-comments']['props']['throws']['comment'], ' :'));
+					$tmp_arr_ret_param[] = '@throws: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['throws']['type'].'} '.ltrim($arr['methods'][$i]['doc-comments']['props']['throws']['comment'], ' :'));
 				} //end if
 				if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['hints']) > 0) {
 					$tmp_arr_ret_param[] = '@hints: '.ltrim($arr['methods'][$i]['doc-comments']['props']['hints']['line'], ' :');
@@ -433,7 +446,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} else {
 					if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']) > 0) {
 						if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['return']) > 0) {
-							$tmp_arr_ret_param[] = '@return: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['return']['type'].'} : '.ltrim($arr['methods'][$i]['doc-comments']['props']['return']['comment'], ' :'));
+							$tmp_arr_ret_param[] = '@return: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['return']['type'].'} '.ltrim($arr['methods'][$i]['doc-comments']['props']['return']['comment'], ' :'));
 						} //end if
 						if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['param']) > 0) {
 							for($j=0; $j<Smart::array_size($arr['methods'][$i]['doc-comments']['props']['param']); $j++) {
@@ -1341,7 +1354,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			return '';
 		} //end if
 		//--
-		$hl = (new \SmartModExtLib\HighlightSyntax\Highlighter())->highlight('php', (string)'<'.'?php'."\n\n".trim((string)$code)."\n\n".'?'.'>');
+		$hl = (new \SmartModExtLib\HighlightSyntax\Highlighter())->highlight('php', (string)'<'.'?php'."\n\n".' '.trim((string)$code)."\n\n".'?'.'>');
 		//--
 		return (string) SmartUtils::comment_php_code(trim($hl->value));
 		//--
@@ -1382,7 +1395,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 /**
  * Index Area Controller
- * @version 20191120
+ * @version 20191122
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {

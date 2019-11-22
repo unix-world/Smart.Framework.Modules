@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20191118 -->
+<!-- Template: Smart.Framework@Documentor v.20191122 -->
 <html>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<meta name="author" content="unix-world.org">
-	<meta name="description" content="\SmartModExtLib\Soap\SoapServerRequestHandler       final class \SmartModExtLib\Soap\ SoapServerRequestHandler    {   } ::    Provides a SOAP Server">
-	<meta name="keywords" content="smartmodextlib soap soapserverrequesthandler, final, class, smartmodextlib soap, soapserverrequesthandler, provides, a, soap, server, request, handler, full, unicode, compliant, utf ., this, does, not, depend, on, the, php, extension, located, at, modules mod-soap libs soapserverrequesthandler.php, package, modules network, namespace, name, version, v, depends, classes, smart, smartxmlparser, domxml, domdocument, smartmarkerstemplating, hints, use, to, easy, manage, calls, usage, static, object, class  method, -, only, methods, summary, public, function, issoaprequest, boolean, return, boolean, true, if, is, or, false, check, getsoaprequesturl, string, hints, comes, from, raw, string, will, return, non-empty, url, aka, httpsoapaction">
+	<meta name="description" content="\SmartModExtLib\Soap\SoapServerRequestHandler        final class \SmartModExtLib\Soap\ SoapServerRequestHandler    {   } ::    Provides a SOAP Server">
+	<meta name="keywords" content="smartmodextlib soap soapserverrequesthandler, final, class, smartmodextlib soap, soapserverrequesthandler, provides, a, soap, server, request, handler, full, unicode, compliant, utf ., this, does, not, depend, on, the, php, extension, language, located, at, modules mod-soap libs soapserverrequesthandler.php, package, modules network, namespace, name, version, v, depends, classes, smart, smartxmlparser, domxml, domdocument, smartmarkerstemplating, hints, use, to, easy, manage, calls, usage, static, object, class  method, -, only, methods, summary, public, function, issoaprequest, boolean, return, boolean, true, if, is, or, false, check, getsoaprequesturl, string, hints, comes, from, raw, string, will, return">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 	<title>PHP Documentation for: \SmartModExtLib\Soap\SoapServerRequestHandler</title>
 	<!-- CSS and Fonts -->
@@ -455,9 +455,9 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20191109 -->
+<!-- class r.20191122 -->
 <!-- Styles -->
-<!-- styles r.20191118 -->
+<!-- styles r.20191122 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -478,6 +478,9 @@
 .doc-method-name {
 	color: #111111;
 }
+.doc-method-sub-name {
+	color: #555555;
+}
 .doc-method-special-name {
 	color: #003399;
 }
@@ -494,6 +497,9 @@
 .doc-implements {
 	color: #72C100;
 }
+.doc-language {
+	color: #92981b;
+}
 .doc-extends,
 .doc-type-class {
 	color: #20639E;
@@ -509,6 +515,9 @@
 .doc-reimplemented,
 .doc-reuses {
 	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
 }
 .doc-header {
 	color: #3F51B5;
@@ -569,6 +578,88 @@ div.doc-summary {
 	border: 1px solid #CCCCCC;
 }
 </style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
 <!-- Headings -->
 <h1 title="PHP class: `\SmartModExtLib\Soap\SoapServerRequestHandler` @ PHP Namespace: `\SmartModExtLib\Soap\`" id="Class--Summary-">
 	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\SmartModExtLib\Soap\</span><span class="doc-name">SoapServerRequestHandler</span><br>
@@ -584,6 +675,7 @@ This class does NOT depend on the PHP SOAP extension</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
 		<li><span class="doc-located"><b>Located at:</b> modules/mod-soap/libs/SoapServerRequestHandler.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> modules:Network</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\Soap\</span></li>
@@ -602,7 +694,7 @@ This class does NOT depend on the PHP SOAP extension</div><br>
 <div class="doc-container" id="Methods--Summary-">
 	<h2 class="doc-header">Methods summary</h2>
 </div>
-<!-- methods r.20191109 -->
+<!-- methods r.20191122 -->
 <div class="doc-container" id="Method--isSoapRequest">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isSoapRequest</b></span>&nbsp;(
 		
@@ -610,9 +702,11 @@ This class does NOT depend on the PHP SOAP extension</div><br>
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
 	
 	
-			<div class="doc-method-ret-params">@return: {BOOLEAN} : TRUE if this is a SOAP Request or FALSE if not</div>
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if this is a SOAP Request or FALSE if not</div>
 	
 			<div class="doc-method-comments">Check if this is a SOAP Request</div>
+	
+	
 	
 </div><div class="doc-container" id="Method--getSoapRequestUrl">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapRequestUrl</b></span>&nbsp;(
@@ -622,10 +716,12 @@ This class does NOT depend on the PHP SOAP extension</div><br>
 	
 	
 			<div class="doc-method-ret-params">@hints: This  comes from SOAP Request, raw<br>
-@return: {STRING} : if this is a SOAP Request will return a non-empty URL aka the HttpSoapAction ; else will return an empty URL</div>
+@return: {STRING} if this is a SOAP Request will return a non-empty URL aka the HttpSoapAction ; else will return an empty URL</div>
 	
 			<div class="doc-method-comments">Get the SOAP URL from SOAP Request<br>
 The SOAP clients will have to send the HTTP_SOAPACTION to comply with this Server</div>
+	
+	
 	
 </div><div class="doc-container" id="Method--getSoapRequestAction">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapRequestAction</b></span>&nbsp;(
@@ -635,11 +731,13 @@ The SOAP clients will have to send the HTTP_SOAPACTION to comply with this Serve
 	
 	
 			<div class="doc-method-ret-params">@hints: This  comes from SOAP Request, processed<br>
-@return: {STRING} : if this is a SOAP Request have a non-empty URL aka the HttpSoapAction will return the #SoapAction ; else will return an empty string</div>
+@return: {STRING} if this is a SOAP Request have a non-empty URL aka the HttpSoapAction will return the #SoapAction ; else will return an empty string</div>
 	
 			<div class="doc-method-comments">Get the SOAP Action from SOAP Request<br>
 The Valid URL format to recognize the SOAP Action must be something like: urn://some-request.url/SomeSoapAction#SomeSoapAction<br>
 For using with Smart.Framework URL format can be: http(s)://smart-framework.url/?/page/some.controller/action/SomeSoapAction/#SomeSoapAction</div>
+	
+	
 	
 </div><div class="doc-container" id="Method--getSoapRequestXmlStr">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapRequestXmlStr</b></span>&nbsp;(
@@ -649,9 +747,11 @@ For using with Smart.Framework URL format can be: http(s)://smart-framework.url/
 	
 	
 			<div class="doc-method-ret-params">@hints: This  comes from SOAP Request, raw<br>
-@return: {STRING} : Soap Request XML</div>
+@return: {STRING} Soap Request XML</div>
 	
 			<div class="doc-method-comments">Get the SOAP Request XML Str from SOAP Request</div>
+	
+	
 	
 </div><div class="doc-container" id="Method--getSoapRequestXmlArr">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapRequestXmlArr</b></span>&nbsp;(
@@ -661,9 +761,11 @@ For using with Smart.Framework URL format can be: http(s)://smart-framework.url/
 	
 	
 			<div class="doc-method-ret-params">@hints: This  comes from SOAP Request, processed<br>
-@return: {ARRAY} : Parsed SOAP Request XML as ARRAY</div>
+@return: {ARRAY} Parsed SOAP Request XML as ARRAY</div>
 	
 			<div class="doc-method-comments">Get the SOAP Request XML Str parsed as Array from SOAP Request</div>
+	
+	
 	
 </div><div class="doc-container" id="Method--getSoapRequestXmlBodyArr">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapRequestXmlBodyArr</b></span>&nbsp;(
@@ -673,9 +775,11 @@ For using with Smart.Framework URL format can be: http(s)://smart-framework.url/
 	
 	
 			<div class="doc-method-ret-params">@hints: This  comes from SOAP Request, processed<br>
-@return: {ARRAY} : Parsed SOAP Request XML[Body] as ARRAY</div>
+@return: {ARRAY} Parsed SOAP Request XML[Body] as ARRAY</div>
 	
 			<div class="doc-method-comments">Get the SOAP Request XML Array re-parsed only for the Body section of the SOAP XML Request</div>
+	
+	
 	
 </div><div class="doc-container" id="Method--getSoapResponseXmlEnvelope">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapResponseXmlEnvelope</b></span>&nbsp;(
@@ -688,12 +792,14 @@ For using with Smart.Framework URL format can be: http(s)://smart-framework.url/
 	
 	
 			<div class="doc-method-ret-params">@hints: This  have to be sent as returning response to the SOAP Client<br>
-@return: {STRING} : The SOAP Envelope with the XML Response<br>
-@param: {$url} The current URL of the SOAP Server ; Ex: http(s)://smart-framework.url/?/page/some.controller/<br>
-@param: {$xml} The XML response that will be enveloped ; this will be done using CDATA to be more compliant<br>
-@param: {$action} The Response Action ; *OPTIONAL* ; Default is empty string ; If non-empty string it will use this, else will use the Action from SOAP Request</div>
+@return: {STRING} The SOAP Envelope with the XML Response<br>
+@param: {STRING} $url: The current URL of the SOAP Server ; Ex: http(s)://smart-framework.url/?/page/some.controller/<br>
+@param: {STRING} $xml: The XML response that will be enveloped ; this will be done using CDATA to be more compliant<br>
+@param: {STRING} $action: The Response Action ; *OPTIONAL* ; Default is empty string ; If non-empty string it will use this, else will use the Action from SOAP Request</div>
 	
 			<div class="doc-method-comments">Get the SOAP Envelope XML Response to return to the SOAP Client</div>
+	
+	
 	
 </div><div class="doc-container" id="Method--getSoapResponseXmlError">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapResponseXmlError</b></span>&nbsp;(
@@ -705,34 +811,26 @@ For using with Smart.Framework URL format can be: http(s)://smart-framework.url/
 	
 	
 			<div class="doc-method-ret-params">@hints: This  have to be sent as returning error response to the SOAP Client<br>
-@return: {STRING} : The SOAP Error (Envelope) with the XML Error Response<br>
-@param: {$msg} The Error Message<br>
-@param: {$code} The Error Code ; *OPTIONAL* ; Default is: 'Server'</div>
+@return: {STRING} The SOAP Error (Envelope) with the XML Error Response<br>
+@param: {STRING} $msg: The Error Message<br>
+@param: {STRING} $code: The Error Code ; *OPTIONAL* ; Default is: 'Server'</div>
 	
 			<div class="doc-method-comments">Get the SOAP Error XML Response to return to the SOAP Client</div>
 	
+	
+	
 </div>
 <!-- Properties -->
-<br>
-<div class="doc-container" id="Properties--Summary-">
-	<h2 class="doc-header">Properties summary</h2>
-</div>
-<!-- properties r.20191109 -->
 
 <!-- Constants -->
-<br>
-<div class="doc-container" id="Constants--Summary-">
-	<h2 class="doc-header">Constants summary</h2>
-</div>
-<!-- constants r.20191109 -->
 
 <!-- Sample Code -->
 
 <!-- Summary List -->
 <br>
-<!-- summary r.20191109 -->
+<!-- summary r.20191122 -->
 <script>
-// summary r.20191109
+// summary r.20191122
 function smartHandleDocSelector(obj) {
 	if(!obj) {
 		return;
@@ -752,7 +850,7 @@ function smartHandleDocSelector(obj) {
 </script>
 <div class="doc-summary">
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
-		<option value="" selected>* Class \SmartModExtLib\Soap\SoapServerRequestHandler # Documentation Index *</option>
+		<option value="" selected>* PHP Class \SmartModExtLib\Soap\SoapServerRequestHandler # Documentation Index *</option>
 		<optgroup label="Class \SmartModExtLib\Soap\SoapServerRequestHandler">
 			<option value="Class--Summary-">***** Class Definition *****</option>
 		</optgroup>
@@ -760,36 +858,38 @@ function smartHandleDocSelector(obj) {
 			<option value="Methods--Summary-">*** Methods summary ***</option>
 									<option value="Method--isSoapRequest">Method: isSoapRequest()</option>
 			
+			
 									<option value="Method--getSoapRequestUrl">Method: getSoapRequestUrl()</option>
+			
 			
 									<option value="Method--getSoapRequestAction">Method: getSoapRequestAction()</option>
 			
+			
 									<option value="Method--getSoapRequestXmlStr">Method: getSoapRequestXmlStr()</option>
+			
 			
 									<option value="Method--getSoapRequestXmlArr">Method: getSoapRequestXmlArr()</option>
 			
+			
 									<option value="Method--getSoapRequestXmlBodyArr">Method: getSoapRequestXmlBodyArr()</option>
 			
+			
 									<option value="Method--getSoapResponseXmlEnvelope">Method: getSoapResponseXmlEnvelope()</option>
+			
 			
 									<option value="Method--getSoapResponseXmlError">Method: getSoapResponseXmlError()</option>
 			
 			
-		</optgroup>
-		<optgroup label="Class Properties">
-			<option value="Properties--Summary-">*** Properties summary ***</option>
 			
 		</optgroup>
-		<optgroup label="Class Constants">
-			<option value="Constants--Summary-">*** Constants summary ***</option>
-			
-		</optgroup>
+		
+		
 		
 	</select>
 </div>
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2019-11-18 10:08:47 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2019-11-22 15:33:45 +0000</small>
 <hr>
 <br>
 <!-- # -->

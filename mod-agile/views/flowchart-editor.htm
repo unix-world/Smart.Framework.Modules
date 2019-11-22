@@ -1,5 +1,5 @@
 [@@@SUB-TEMPLATE:flowchart-init.inc.htm@@@]
-<!-- flowchart-editor.htm v.20191109 -->
+<!-- flowchart-editor.htm v.20191122 -->
 <link rel="stylesheet" href="modules/mod-wflow-components/views/flowchart/editor/flowchart-editor-edit.css">
 <style>
 #area-editable {
@@ -45,7 +45,7 @@
 	var flowchartIsReadonly = false;
 	var flowchartAddDialogHelper = function(elemType, fxGenerateElement) {
 		if(elemType == 'note') {
-			SmartJS_BrowserUtils.confirm_Dialog('<h3>Create Element: ' + SmartJS_CoreUtils.escape_html(SmartJS_CoreUtils.ucfirst(elemType)) + '</h3><div class="flowchart-area"><div class="jtk-node ' + SmartJS_CoreUtils.escape_html(elemType) + '" style="position:absolute; top:82px; right:25px;"></div></div>', function(){ fxGenerateElement(elemType, null); }, 'New Flowchart Passive Element', 550, 200);
+			SmartJS_BrowserUtils.confirm_Dialog('<h3>Create Element: ' + SmartJS_CoreUtils.escape_html(SmartJS_CoreUtils.stringUcFirst(elemType)) + '</h3><div class="flowchart-area"><div class="jtk-node ' + SmartJS_CoreUtils.escape_html(elemType) + '" style="position:absolute; top:82px; right:25px;"></div></div>', function(){ fxGenerateElement(elemType, null); }, 'New Flowchart Passive Element', 550, 200);
 		} else {
 			var extClass = '';
 			switch(elemType) {
@@ -65,7 +65,7 @@
 				default:
 					extClass = '';
 			}
-			SmartJS_BrowserUtils.confirm_Dialog('<h3>Create Element: ' + SmartJS_CoreUtils.escape_html(SmartJS_CoreUtils.ucfirst(elemType)) + '</h3><div>Select the Connector Type for Element: <select id="flowchart-add-element-type" class="ux-field"><option value="DEFAULT">Default</option><option value="INVERTED">Inverted</option><option value="PERIMETER">Perimeter</option></select></div><div class="flowchart-area"><div class="jtk-node' + SmartJS_CoreUtils.escape_html(extClass) + '" style="position:absolute; top:57px; right:25px;"></div></div>', function(){ var theLabel = $("#flowchart-add-element-type").val(); fxGenerateElement(elemType, theLabel); }, 'New Flowchart Active Element', 550, 235);
+			SmartJS_BrowserUtils.confirm_Dialog('<h3>Create Element: ' + SmartJS_CoreUtils.escape_html(SmartJS_CoreUtils.stringUcFirst(elemType)) + '</h3><div>Select the Connector Type for Element: <select id="flowchart-add-element-type" class="ux-field"><option value="DEFAULT">Default</option><option value="INVERTED">Inverted</option><option value="PERIMETER">Perimeter</option></select></div><div class="flowchart-area"><div class="jtk-node' + SmartJS_CoreUtils.escape_html(extClass) + '" style="position:absolute; top:57px; right:25px;"></div></div>', function(){ var theLabel = $("#flowchart-add-element-type").val(); fxGenerateElement(elemType, theLabel); }, 'New Flowchart Active Element', 550, 235);
 		}
 	}
 	var flowchartEditDialogHelper = function(labelType, txtElemLabel, objElemLabel, fxSetLabel) {

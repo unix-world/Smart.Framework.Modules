@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20191116
+var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20191121
 
 this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
@@ -296,7 +296,6 @@ this.Date_Picker_Init = function(elemID, dateFmt, selDate, calStart, calMinDate,
 	//--
 	var the_initial_altdate = '';
 	if(the_initial_date != '') {
-		$('#date-bttn-' + elemID).attr('title', String(selDate));
 		the_initial_altdate = SmartJS_CoreUtils.formatDate(String(dateFmt), new Date(the_initial_date));
 		$('#date-entry-' + elemID).val(the_initial_altdate);
 	} //end if
@@ -317,7 +316,6 @@ this.Date_Picker_Init = function(elemID, dateFmt, selDate, calStart, calMinDate,
 		minDate: calMinDate, maxDate: calMaxDate,
 		onSelect: function(date, inst) {
 			//--
-			$('#date-bttn-' + elemID).attr('title', date);
 			var altdate = date;
 			try {
 				altdate = SmartJS_CoreUtils.formatDate(String(dateFmt), new Date(date));

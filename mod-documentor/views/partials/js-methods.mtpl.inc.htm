@@ -1,4 +1,4 @@
-<!-- methods r.20191120 -->
+<!-- methods r.20191122 -->
 [%%%LOOP:ARR-METHODS%%%]
 [%%%IF:ARR-METHODS.IS-INTERNAL-PRIV:!=1;%%%]
 <div class="doc-container" id="Method--[###ARR-METHODS.NAME|htmid|html###]">
@@ -8,8 +8,14 @@
 	[%%%/LOOP:ARR-METHODS.PARAMS%%%]
 	)&nbsp;{}&nbsp;[%%%IF:ARR-METHODS.IS-STATIC:==1;%%%]<span title="Static Method"><b>.</b></span>[%%%ELSE:ARR-METHODS.IS-STATIC%%%]<span title="Object Method"><b>(new)&nbsp;.</b></span>[%%%/IF:ARR-METHODS.IS-STATIC%%%]&nbsp;[###ARR-METHODS.RETURNS|html###]
 	<div class="doc-method-ret-params">
+	[%%%IF:ARR-METHODS.HINT:!=;%%%]
+		@hint: [###ARR-METHODS.HINT|html|syntaxhtml###]<br>
+	[%%%/IF:ARR-METHODS.HINT%%%]
+	[%%%IF:ARR-METHODS.THROWS:!=;%%%]
+		@throws: [###ARR-METHODS.THROWS|html|syntaxhtml###]<br>
+	[%%%/IF:ARR-METHODS.THROWS%%%]
 	[%%%IF:ARR-METHODS._RETURN:!=;%%%]
-		@return: [###ARR-METHODS._RETURN|html###]<br>
+		@return: [###ARR-METHODS._RETURN|html|syntaxhtml###]<br>
 	[%%%/IF:ARR-METHODS._RETURN%%%]
 	[%%%IF:ARR-METHODS.FIRES:!=;%%%]
 		@fires: [###ARR-METHODS.FIRES|html|syntaxhtml###]<br>
@@ -17,9 +23,12 @@
 	[%%%IF:ARR-METHODS.LISTENS:!=;%%%]
 		@listens: [###ARR-METHODS.LISTENS|html|syntaxhtml###]<br>
 	[%%%/IF:ARR-METHODS.LISTENS%%%]
-	[%%%IF:ARR-METHODS.THROWS:!=;%%%]
-		@throws: [###ARR-METHODS.THROWS|html|syntaxhtml###]<br>
-	[%%%/IF:ARR-METHODS.THROWS%%%]
+	[%%%LOOP:ARR-METHODS.PARAMS%%%]
+		@param: [###ARR-METHODS.PARAMS.LINE|html|syntaxhtml###]<br>
+	[%%%/LOOP:ARR-METHODS.PARAMS%%%]
+	[%%%LOOP:ARR-METHODS.DEPENDS%%%]
+		@requires: [###ARR-METHODS.DEPENDS._-VAL-_|html|syntaxhtml###]<br>
+	[%%%/LOOP:ARR-METHODS.DEPENDS%%%]
 	</div>
 	[%%%IF:ARR-METHODS.COMMENT-HTML:!=;%%%]
 		<div class="doc-method-comments">[###ARR-METHODS.COMMENT-HTML###]</div>
