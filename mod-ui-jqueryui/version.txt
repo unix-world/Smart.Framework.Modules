@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: UI jQueryUI r.20191121 #
+# Smart.Framework.Modules: UI jQueryUI r.20191123 #
 ## jQueryUI v.1.12.1 ##
 
 // r.5.2.7 / smart.framework.v.5.2

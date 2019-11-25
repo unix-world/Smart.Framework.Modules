@@ -25,6 +25,7 @@
 	* Zend DBAL: PDO based connector for: PgSQL, MySQL and SQLite ; to start use just copy the mod-dbal-zend into smart-framework/modules/
 	* Redbean ORM: an ORM based connector for: PgSQL, MySQL and SQLite ; to start use just copy the mod-db-orm-redbean into smart-framework/modules/
 	* MediaGallery: a media gallery api for Smart.Framework
+	* Countries: json list of countries + svg flags for countries
 	* SocialMedia Facebook: Js + PHP API
 	* SocialMedia Twitter: Js + PHP API
 	* SVN (manager): a web based SVN (subversion) manager

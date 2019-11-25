@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: Dust
- * @version 	v.20191021
+ * @version 	v.20191124
  * @package 	modules:TemplatingEngine
  *
  */
@@ -88,7 +88,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			$arr_vars = array();
 		} //end if
 		$arr_vars = (array) \array_change_key_case((array)$arr_vars, \CASE_LOWER); // make all keys lower (only 1st level, not nested)
-		$arr_vars = (array) self::fix_array_keys($arr_vars, false); // make keys compatible with PHP variable names, LOWER only (only 1st level, not nested)
+		$arr_vars = (array) $this->fix_array_keys($arr_vars, false); // make keys compatible with PHP variable names, LOWER only (only 1st level, not nested)
 		//--
 		if((string)\trim((string)$file) == '') {
 			throw new \Exception('Dust Templating / Render File / The file name is Empty');

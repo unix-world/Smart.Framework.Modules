@@ -26,7 +26,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191122
+ * @version 20191124
  * @ignore
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -43,7 +43,10 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		$this->sfjfile = (string) \SmartModExtLib\Documentor\SmartClasses::getJavascriptSfFile();
-		$this->classes = (array) \SmartModExtLib\Documentor\SmartClasses::listJavascriptSfClasses();
+		$this->classes = (array) array_merge(
+			(array) \SmartModExtLib\Documentor\SmartClasses::listJavascriptSfClasses(),
+			(array) \SmartModExtLib\Documentor\SmartClasses::listJavascriptSfmClasses()
+		);
 		//--
 		$this->clsType = 'class'; // for JS there are no interface or trait
 		//--
@@ -57,7 +60,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$this->PageViewSetVars([
 			//--
 			'fonts-path' 		=> (string) $this->ControllerGetParam('module-path').'fonts/',
-			'logo-img' 			=> (string) 'lib/framework/img/sf-logo.svg',
+			'logo-img' 			=> (string) SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO,
+			'lang-img' 			=> (string) 'lib/framework/img/javascript-logo.svg',
 			'year' 				=> (string) date('Y'),
 			//--
 			'title' 			=> (string) 'Documentation',
@@ -102,6 +106,21 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$extra = $this->RequestVarGet('extra', '', 'string');
 		$heading = $this->RequestVarGet('heading', 'JavaScript Documentation', 'string');
 		//--
+
+		//-- {{{SYNC-DOCUMENTOR-SAVE-MODE}}}
+		$js_path = '';
+		if((string)$mode == 'multi') {
+			if((string)$extra != '') {
+				if((string)$extra == '@') {
+					$js_path = 'js/';
+				} else {
+					$js_path = '../js/';
+				} //end if else
+			} //end if
+		} //end if else
+		//--
+
+		//--
 		if((string)$action == 'cleanup@documentation') {
 			//--
 			$proc = \SmartModExtLib\Documentor\Utils::cleanupDocumentationDirectory(); // mixed
@@ -114,7 +133,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			//--
 		} elseif((string)$action == 'index@packages') {
 			//--
-			$proc = \SmartModExtLib\Documentor\Utils::indexDocumentationPackages('js', $heading, $mode, $extra); // mixed
+			$proc = \SmartModExtLib\Documentor\Utils::indexDocumentationPackages('js', $heading, $mode, $extra, $js_path); // mixed
 			if($proc !== true) {
 				$this->jsonAnswer($proc.' ...', false);
 				return;
@@ -152,7 +171,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$main = (string) $this->displayDocs(
 					(string) $file,
-					(string) $cls
+					(string) $cls,
+					(string) $js_path
 				);
 				//--
 				if($this->errMsg === null) { // OK
@@ -181,6 +201,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$main = (string) $this->displayDocs(
 					(string) $file,
 					(string) $cls,
+					(string) $this->ControllerGetParam('module-view-path').'js/',
 					(string) $url_index.$url_cls
 				);
 				//--
@@ -263,7 +284,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	} //END FUNCTION
 
 
-	private function displayDocs($file, $cls, $base_url='') {
+	private function displayDocs($file, $cls, $jsPath, $base_url='') {
 		//--
 		if((string)\trim((string)$cls) == '') {
 			$this->errMsg = 'No class selected';
@@ -470,11 +491,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			} //end if
 		} //end for
 		//--
-		$properties = [];
+		$properties = []; // variables
+		$constants = []; // constants
 		for($i=0; $i<Smart::array_size($arr['properties']); $i++) {
 			if(Smart::array_size($arr['properties'][$i]['data']) > 0) {
 				$tmp_property = [];
 				$tmp_property['name'] = '';
+				$tmp_property['prop-type'] = (string) $arr['properties'][$i]['type'];
 				$tmp_property['doc-var-type'] = '';
 				$tmp_property['modifiers'] = 'public';
 				$tmp_property['code-html'] = '';
@@ -483,7 +506,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$tmp_property['is-internal-priv'] = 0;
 				if(Smart::array_size($arr['properties'][$i]['data']['props']) > 0) {
 					foreach($arr['properties'][$i]['data']['props'] as $key => $val) {
-						if((string)$key == 'var') {
+						if(((string)$key == 'var') OR ((string)$key == 'const')) {
 							$tmp_property['name'] = (string) trim((string)$val['var']);
 							$tmp_property['doc-var-type'] = (string) trim((string)$val['type']);
 						} elseif((string)$key == 'default') {
@@ -497,10 +520,16 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if
 				if($modifier === 'static') { // let the class overwrite this values
 					$tmp_property['is-static'] = 1;
-					$tmp_property['modifiers'] .= ' static';
 				} //end if
 				if((string)$tmp_property['name'] != '') {
-					$properties[] = (array) $tmp_property;
+					if((string)$tmp_property['prop-type'] == 'variable') {
+						if($tmp_property['is-static'] == 1) {
+							$tmp_property['modifiers'] .= ' static';
+						} //end if
+						$properties[] = (array) $tmp_property;
+					} elseif((string)$tmp_property['prop-type'] == 'constant') {
+						$constants[] = (array) $tmp_property;
+					} //end if else
 				} //end if
 				$tmp_property = null;
 			} //end if
@@ -512,6 +541,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			(string) $this->ControllerGetParam('module-view-path').'js-class.mtpl.inc.htm',
 			[
 				'base-url' 				=> (string) $base_url,
+				'js-path' 				=> (string) $jsPath,
 				'file-name' 			=> (string) implode('; ', [ (string)($this->sfjfile ? $this->sfjfile : $file), (string)$arr['class']['data']['props']['file']['line'] ]),
 				'type' 					=> (string) $this->clsType,
 				'callmode' 				=> (string) $callmode,
@@ -527,6 +557,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				'listens' 				=> (string) $arr['class']['data']['props']['listens']['line'],
 				'arr-methods' 			=> (array)  $methods,
 				'arr-properties' 		=> (array)  $properties,
+				'arr-constants' 		=> (array)  $constants,
 				'doc-comments-html' 	=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['class']['data']['comments'])), true),
 				'doc-code-html' 		=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template($this->highlightJsCode(trim((string)implode("\n", (array)$arr['class']['data']['code'])))),
 				'generated-on' 			=> (string) date('Y-m-d H:i:s O')
@@ -581,6 +612,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 								$is_class_found = 2;
 							} elseif(Smart::array_size($props['props']['var']) > 0) {
 								$is_class_found = 3;
+							} elseif(Smart::array_size($props['props']['const']) > 0) {
+								$is_class_found = 4;
 							} //end if else
 						} //end if
 					} //end if else
@@ -607,6 +640,14 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							break;
 						case 3:
 							$arr['properties'][] = [
+								'type' 			=> 'variable',
+								'doc-comment' 	=> (string) $matches[$i][2],
+								'data' 			=> (array)  $props
+							];
+							break;
+						case 4:
+							$arr['properties'][] = [
+								'type' 			=> 'constant',
 								'doc-comment' 	=> (string) $matches[$i][2],
 								'data' 			=> (array)  $props
 							];

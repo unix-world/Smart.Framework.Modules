@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20191122 -->
+<!-- Template: Smart.Framework@Documentor v.20191124 -->
 <html>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartModExtLib\DbOrmRedbean\ORM        final class \SmartModExtLib\DbOrmRedbean\ ORM  extends \RedBeanPHP\Facade   {   } ::    Class:">
-	<meta name="keywords" content="smartmodextlib dbormredbean orm, final, class, smartmodextlib dbormredbean, orm, extends, redbeanphp facade, class, -, provides, a, general, database, adapter, using, readbean, as, module, for, smart.framework, that, supports, the, following, drivers, such, as, sqlite, mysqli, postgresql, and, pdo sqlite, mysql, postgresql ., if, you, wish, to, use, an, in, your, projects, instead, of, direct, ones, supported, directly, by, this, is, good, solution., language, php, located, at, modules mod-db-orm-redbean libs orm.php, package, modules database pdo redbean-orm, namespace, name, version, v, depends, extensions, classes, redbeanorm db, usage, dynamic, object, new, class   - method, only, methods, inheritance, chart, →, ↳, summary, public, static, function, setup, string, dsn, null, username, password, boolean, frozen, true, partialbeans, false, toolbox, reimplemented">
+	<meta name="keywords" content="smartmodextlib dbormredbean orm, final, class, smartmodextlib dbormredbean, orm, extends, redbeanphp facade, class, -, provides, a, general, database, adapter, using, readbean, as, module, for, smart.framework, that, supports, the, following, drivers, such, as, sqlite, mysqli, postgresql, and, pdo sqlite, mysql, postgresql ., if, you, wish, to, use, an, in, your, projects, instead, of, direct, ones, supported, directly, by, this, is, good, solution., language, php, located, at, modules mod-db-orm-redbean libs orm.php, package, modules database pdo redbean-orm, namespace, name, version, v, depends, extensions, classes, redbeanorm db, usage, dynamic, object, new, class   - method, only, methods, inheritance, chart, →, ↳, public, static, function, setup, string, dsn, null, username, password, boolean, frozen, true, partialbeans, false, toolbox, reimplemented, over">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 	<title>PHP Documentation for: \SmartModExtLib\DbOrmRedbean\ORM</title>
 	<!-- CSS and Fonts -->
@@ -206,7 +206,7 @@
 	[hidden] {
 		display: none !important;
 	}
-	button {
+	button, a.ux-button {
 		/* Structure */
 		display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
 		padding: 7px 15px 7px 15px !important;
@@ -236,13 +236,16 @@
 		user-select: none !important;
 		zoom: 1 !important;
 	}
-	button:hover,
-	button:focus {
+	button *, a.ux-button * {
+		font-weight: bold !important;
+	}
+	button:hover, a.ux-button:hover,
+	button:focus, a.ux-button:focus {
 		border: 1px solid #CCCCCC !important;
 		background-color: #F3F3F3 !important;
 		color: #2069A9 !important;
 	}
-	button:focus {
+	button:focus, a.ux-button:focus {
 		outline: 0 !important;
 	}
 	button[disabled],
@@ -263,7 +266,7 @@
 	nav.ux-navbar {
 		margin: 0;
 		padding: 0;
-		background-color: #3f51b5;
+		background-color: #3c4663;
 	}
 	nav.ux-navbar div#logo {
 		display: block;
@@ -289,7 +292,7 @@
 		margin: 0px;
 		display: inline-block;
 		float: left;
-		background-color: #3f51b5;
+		background-color: #3c4663;
 	}
 	nav.ux-navbar a {
 		display: block;
@@ -300,11 +303,11 @@
 		text-decoration: none;
 	}
 	nav.ux-navbar ul li ul li:hover {
-		background-color: #2e40a4;
+		background-color: #2b3a57;
 	}
 	nav.ux-navbar a:hover {
 		color: #FFFFFF;
-		background-color: #1d3093;
+		background-color: #1a2946;
 	}
 	nav.ux-navbar ul ul {
 		display: none;
@@ -353,7 +356,7 @@
 		}
 		nav.ux-navbar label.toggle {
 			display: block;
-			background-color: #3f51b5;
+			background-color: #3c4663;
 			padding: 0 20px;
 			color: #FFFFFF;
 			font-size: 20px;
@@ -366,7 +369,7 @@
 		}
 		nav.ux-navbar label.toggle:hover {
 			color: #FFFFFF;
-			background-color: #1d3093;
+			background-color: #1a2946;
 		}
 		nav.ux-navbar input[id^=drop]:checked + ul {
 			display: block;
@@ -387,15 +390,15 @@
 		}
 		nav.ux-navbar a:hover {
 			color: #FFFFFF;
-			background-color: #1d3093;
+			background-color: #1a2946;
 		}
 		nav.ux-navbar ul ul ul a {
 			color: #FFFFFF;
-			background-color: #2e40a4;
+			background-color: #2b3a57;
 		}
 		nav.ux-navbar ul li ul li .toggle,
 		nav.ux-navbar ul ul a {
-			background-color: #2e40a4;
+			background-color: #2b3a57;
 		}
 		nav.ux-navbar ul ul {
 			float: none;
@@ -449,15 +452,21 @@
 </head>
 <body>
 <nav class="ux-navbar">
-	<div id="logo"><span>&#9776; </span>Smart.Framework.Modules : PHP Documentation</div>
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework.Modules : PHP Documentation</span>
+	</div>
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20191122 -->
+<!-- class r.20191124 -->
 <!-- Styles -->
-<!-- styles r.20191122 -->
+<!-- styles r.20191124 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -576,6 +585,11 @@ div.doc-summary {
 	background: #343C61;
 	color: #FFFFFF;
 	border: 1px solid #CCCCCC;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
 }
 </style>
 <style type="text/css">
@@ -699,9 +713,9 @@ If you wish to use an ORM in your projects instead of the direct ones supported 
 <!-- Methods -->
 <br>
 <div class="doc-container" id="Methods--Summary-">
-	<h2 class="doc-header">Methods summary</h2>
+	<h2 class="doc-header">class Methods</h2>
 </div>
-<!-- methods r.20191122 -->
+<!-- methods r.20191124 -->
 <div class="doc-container" id="Method--setup">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setup</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$dsn` Parameter is OPTIONAL, with the Default Value: null">$dsn</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
@@ -737,7 +751,7 @@ Instead, it will prepare the connection and connect 'lazily', i.e. the moment<br
 a connection is really required, for instance when attempting to load<br>
 a bean.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::setup( <span class="hljs-string">'mysql:host=localhost;dbname=mydatabase'</span>, <span class="hljs-string">'dba'</span>, <span class="hljs-string">'dbapassword'</span> );
 
@@ -816,7 +830,7 @@ the wide selector for backward compatibility; use this method<br>
 to turn OFF Narrow Field Mode by passing FALSE.<br>
 Default is TRUE.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  SELECT {table}.*
 
@@ -884,7 +898,7 @@ you have many methods that needs transactions but are unaware of<br>
 each other).<br>
 Example:</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $from = <span class="hljs-number">1</span>;
  $to = <span class="hljs-number">2</span>;
@@ -929,7 +943,7 @@ Usage:<br>
 This method allows you to dynamically add (and select) new databases<br>
 to the facade. Adding a database with the same key will cause an exception.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::addDatabase( <span class="hljs-string">'database-1'</span>, <span class="hljs-string">'sqlite:/tmp/db1.txt'</span> );
  R::selectDatabase( <span class="hljs-string">'database-1'</span> ); <span class="hljs-comment">//to select database again</span>
@@ -1104,7 +1118,7 @@ Hybrid mode is allowed (default OFF for novice), then RedBeanPHP<br>
 will automatically temporarily switch to fluid mode to attempt to store the<br>
 bean in case of an SQLException.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $post = R::dispense(<span class="hljs-string">'post'</span>);
  $post-&gt;title = <span class="hljs-string">'my post'</span>;
@@ -1155,7 +1169,7 @@ RedBeanPHP has only limited support for 1-1 relations.<br>
 In general it is recommended to use 1-N for this.<br>
 Usage:</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  <span class="hljs-keyword">list</span>( $author, $bio ) = R::loadMulti( <span class="hljs-string">'author, bio'</span>, $id );
 
@@ -1198,7 +1212,7 @@ store the bean. The store() method will return the primary<br>
 key ID $id assigned by the database. We can now use this<br>
 ID to load the bean from the database again and delete it.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $post = R::dispense(<span class="hljs-string">'post'</span>);
  $post-&gt;title = <span class="hljs-string">'my post'</span>;
@@ -1228,7 +1242,7 @@ Use this method if you want to load a bean you intend to UPDATE.<br>
 This method should be used to 'LOCK a bean'.<br>
 Usage:</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $bean = R::loadForUpdate( <span class="hljs-string">'bean'</span>, $id );
  ...update...
@@ -1258,7 +1272,7 @@ Use this method if you want to load a bean you intend to UPDATE.<br>
 This method should be used to 'LOCK a bean'.<br>
 Usage:</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $bean = R::findForUpdate(
     <span class="hljs-string">'bean'</span>,
@@ -1297,7 +1311,7 @@ store the bean. The store() method will return the primary<br>
 key ID $id assigned by the database. We can now use this<br>
 ID to load the bean from the database again and delete it.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $post = R::dispense(<span class="hljs-string">'post'</span>);
  $post-&gt;title = <span class="hljs-string">'my post'</span>;
@@ -1344,7 +1358,7 @@ Note that, if you specify an array to generate a bean graph, the number<br>
 parameter will be ignored.<br>
 Usage:</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $book = R::dispense( <span class="hljs-string">'book'</span> );
  $book-&gt;title = <span class="hljs-string">'My Book'</span>;
@@ -1383,7 +1397,7 @@ Usage:<br>
 This returns an array with a book bean and then another array<br>
 containing 100 page beans.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  <span class="hljs-keyword">list</span>( $book, $page, $text ) = R::dispenseAll( <span class="hljs-string">'book,page,text'</span> );
 
@@ -1602,7 +1616,7 @@ this function will pre-process the query to get all the data required to find th
 selector starts with a SPACE. ' book.*' NOT ',book.*'. This is because<br>
 it's actually an SQL-like template SLOT, not real SQL.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $stuff = $finder-&gt;findMulti(<span class="hljs-string">'movie,review'</span>, <span class="hljs-string">'
           SELECT movie.*, review.* FROM movie
@@ -1996,7 +2010,7 @@ useful for bundling additional information with custom queries.<br>
 Values of every column whos name starts with $mask will be<br>
 transferred to the meta section of the bean under key 'data.bundle'.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $rows = R::getAll( <span class="hljs-string">'SELECT * FROM ...'</span> )
  $beans = R::convertToBeans( $rows );
@@ -2059,7 +2073,7 @@ as BOTH horror and movie. If the post has only been tagged as 'movie'<br>
 or 'horror' this operation will return FALSE because the third parameter<br>
 has been set to TRUE.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::hasTag( $blog, <span class="hljs-string">'horror,movie'</span>, <span class="hljs-keyword">TRUE</span> );
 
@@ -2087,7 +2101,7 @@ Usage:<br>
 In the example above, the $blog bean will no longer<br>
 be associated with the tags 'smart' and 'interesting'.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::untag( $blog, <span class="hljs-string">'smart,interesting'</span> );
 
@@ -2118,7 +2132,7 @@ The first line in the example above will tag the $meal<br>
 as 'TexMex' and 'Mexican Cuisine'. The second line will<br>
 retrieve all tags attached to the meal object.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::tag( $meal, <span class="hljs-string">&quot;TexMex,Mexican&quot;</span> );
  $tags = R::tag( $meal );
@@ -2147,7 +2161,7 @@ Usage:<br>
 The example adds the tag 'halloween' to the $blog<br>
 bean.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::addTags( $blog, [<span class="hljs-string">&quot;halloween&quot;</span>] );
 
@@ -2180,7 +2194,7 @@ The example uses R::tagged() to find all movies that have been<br>
 tagged as 'horror' or 'gothic', order them by title and limit<br>
 the number of movies to be returned to 10.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $watchList = R::tagged(
    <span class="hljs-string">'movie'</span>,
@@ -2218,7 +2232,7 @@ Usage:<br>
 The example above returns at most 4 movies (due to the LIMIT clause in the SQL<br>
 Query Snippet) that have been tagged as BOTH 'short' AND 'gothic'.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $watchList = R::taggedAll(
     <span class="hljs-string">'movie'</span>,
@@ -2349,7 +2363,7 @@ systems. If you use a database that can handle DDL changes you might wish<br>
 to use setAllowFluidTransactions(TRUE). If you do this, the behavior of<br>
 this function in fluid mode will depend on the database platform used.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::begin();
  <span class="hljs-keyword">try</span> {
@@ -2389,7 +2403,7 @@ systems. If you use a database that can handle DDL changes you might wish<br>
 to use setAllowFluidTransactions(TRUE). If you do this, the behavior of<br>
 this function in fluid mode will depend on the database platform used.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::begin();
  <span class="hljs-keyword">try</span> {
@@ -2429,7 +2443,7 @@ systems. If you use a database that can handle DDL changes you might wish<br>
 to use setAllowFluidTransactions(TRUE). If you do this, the behavior of<br>
 this function in fluid mode will depend on the database platform used.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::begin();
  <span class="hljs-keyword">try</span> {
@@ -2487,7 +2501,7 @@ Another example, using a template string:<br>
 The statement in the example will produce the string:<br>
 ' IN( ?,? ) '.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::genSlots( <span class="hljs-keyword">array</span>( <span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span> ) );
 
@@ -2513,7 +2527,7 @@ R::genSlots( <span class="hljs-keyword">array</span>(<span class="hljs-string">'
 Usage:<br>
 produces an array like: [ 'a', 'b', 'c' ]</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::flat( <span class="hljs-keyword">array</span>( <span class="hljs-string">'a'</span>, <span class="hljs-keyword">array</span>( <span class="hljs-string">'b'</span> ), <span class="hljs-string">'c'</span> ) );
 
@@ -2693,7 +2707,7 @@ if it does not exist yet.<br>
 To obtain all flavours:<br>
 To get a list of all flavour names:</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $tea-&gt;flavour = R::enum( <span class="hljs-string">'flavour:apple'</span> );
 
@@ -2737,7 +2751,7 @@ closing database connections is generally recommended to improve performance.<br
 Closing a database connection will immediately return the resources to PHP.<br>
 Usage:</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::setup( ... );
  ... <span class="hljs-keyword">do</span> stuff ...
@@ -2860,7 +2874,7 @@ This is a convenience method, it will do the same as:<br>
 If the PDO object could not be found, for whatever reason, this method<br>
 will return NULL instead.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::getDatabaseAdapter()-&gt;getDatabase()-&gt;getPDO();
 
@@ -3006,7 +3020,7 @@ You can set the following options:<br>
 * OODBBean::C_ERR_FATAL, triggers a E_USER_ERROR<br>
 This method returns the old mode and handler as an array.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  Custom handler method signature: handler( <span class="hljs-keyword">array</span> (
  	<span class="hljs-string">'message'</span> =&gt; string
@@ -3039,7 +3053,7 @@ specified bean to the screen, limiting the output per bean<br>
 to 35 characters to improve readability. Nested beans will<br>
 also be dumped.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  <span class="hljs-keyword">echo</span> R::dump( $bean );
 
@@ -3070,7 +3084,7 @@ Example:<br>
 Passing NULL as the function will reset (clear) the function<br>
 for this column/mode.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::bindFunc( <span class="hljs-string">'read'</span>, <span class="hljs-string">'location.point'</span>, <span class="hljs-string">'asText'</span> );
  R::bindFunc( <span class="hljs-string">'write'</span>, <span class="hljs-string">'location.point'</span>, <span class="hljs-string">'GeomFromText'</span> );
@@ -3104,7 +3118,7 @@ will return a 'page' bean. Note that with autoResolve this<br>
 feature along with fetchAs() is no longer very important, although<br>
 relying on explicit aliases can be a bit faster.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::aliases( <span class="hljs-keyword">array</span>( <span class="hljs-string">'cover'</span> =&gt; <span class="hljs-string">'page'</span> ) );
  $book = R::dispense( <span class="hljs-string">'book'</span> );
@@ -3186,7 +3200,7 @@ logs we invoke R::getLogs() after stopping the logging.<br>
 at the same time because R::debug is essentially a<br>
 special kind of logging.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::startLogging();
  R::store( R::dispense( <span class="hljs-string">'book'</span> ) );
@@ -3222,7 +3236,7 @@ special kind of logging.<br>
 Therefore, only stop logging AFTER you have obtained the<br>
 query logs using R::getLogs()</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::startLogging();
  R::store( R::dispense( <span class="hljs-string">'book'</span> ) );
@@ -3264,7 +3278,7 @@ special kind of logging.<br>
 Therefore, only stop logging AFTER you have obtained the<br>
 query logs using R::getLogs()</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::startLogging();
  R::store( R::dispense( <span class="hljs-string">'book'</span> ) );
@@ -3293,7 +3307,7 @@ been processed according to the database driver. You can use this<br>
 to monitor the number of queries required to render a page.<br>
 Usage:</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::resetQueryCount();
  <span class="hljs-keyword">echo</span> R::getQueryCount() . <span class="hljs-string">' queries processed.'</span>;
@@ -3316,7 +3330,7 @@ been processed according to the database driver. You can use this<br>
 to monitor the number of queries required to render a page.<br>
 Usage:</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  <span class="hljs-keyword">echo</span> R::getQueryCount() . <span class="hljs-string">' queries processed.'</span>;
 
@@ -3406,7 +3420,7 @@ and create a CSV with columns 'city' and 'population' and<br>
 populate the cells under these column headers with the<br>
 names of the cities and the population numbers respectively.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::csv( <span class="hljs-string">'SELECT
                  `name`,
@@ -3520,7 +3534,7 @@ In previous versions of RedBeanPHP you had to use:<br>
 R::getLook()-&gt;look() instead of R::look(). However to improve useability of the<br>
 library the look() function can now directly be invoked from the facade.</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  $htmlPulldown = R::look(
    <span class="hljs-string">'SELECT * FROM color WHERE value != ? ORDER BY value ASC'</span>,
@@ -3662,7 +3676,7 @@ So invoking this method is the same as:<br>
 Unlike the methods above, that return the previous state, this<br>
 method does not return anything (void).</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  AQueryWriter::useJSONColumns( $flag );
  OODBBean::convertArraysToJSON( $flag );
@@ -3750,7 +3764,7 @@ Returns the old flag value.</div>
 the label.<br>
 Usage:</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::useFeatureSet( <span class="hljs-string">'novice/latest'</span> );
 
@@ -3777,7 +3791,7 @@ the facade.<br>
 Usage:<br>
 Now you can use your makeTea plugin like this:</div>
 	
-			<pre><b>Sample Code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
  R::ext( <span class="hljs-string">'makeTea'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{ ... }  );
 
@@ -3808,9 +3822,9 @@ intercept static calls and route them to the specified plugin.</div>
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
-	<h2 class="doc-header">Properties summary</h2>
+	<h2 class="doc-header">class Properties</h2>
 </div>
-<!-- properties r.20191122 -->
+<!-- properties r.20191124 -->
 <div class="doc-container" id="Property--toolbox">
 	<span class="doc-modifiers">public static</span> <b>$toolbox</b>&nbsp;<span title="Static Property"><b>::</b></span>&nbsp;<i>ToolBox</i>
 	
@@ -3828,9 +3842,9 @@ intercept static calls and route them to the specified plugin.</div>
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
-	<h2 class="doc-header">Constants summary</h2>
+	<h2 class="doc-header">class Constants</h2>
 </div>
-<!-- constants r.20191122 -->
+<!-- constants r.20191124 -->
 <div class="doc-container" id="Constant--C_REDBEANPHP_VERSION">
 	<span class="doc-modifiers">public</span> <i>const</i> <b>C_REDBEANPHP_VERSION</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;5.4&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
 			<div class="doc-method-comments">RedBeanPHP version constant.</div>
@@ -3839,7 +3853,7 @@ intercept static calls and route them to the specified plugin.</div>
 <!-- Sample Code -->
 <br>
 <div class="doc-container" id="SAMPLE--Code-">
-	<h2 class="doc-header">Sample Code: PHP</h2>
+	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
 	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
@@ -3849,9 +3863,9 @@ intercept static calls and route them to the specified plugin.</div>
 </div>
 <!-- Summary List -->
 <br>
-<!-- summary r.20191122 -->
-<script>
-// summary r.20191122
+<!-- summary r.20191124 -->
+<script type="text/javascript">
+// summary r.20191124
 function smartHandleDocSelector(obj) {
 	if(!obj) {
 		return;
@@ -3873,403 +3887,403 @@ function smartHandleDocSelector(obj) {
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
 		<option value="" selected>* PHP Class \SmartModExtLib\DbOrmRedbean\ORM # Documentation Index *</option>
 		<optgroup label="Class \SmartModExtLib\DbOrmRedbean\ORM">
-			<option value="Class--Summary-">***** Class Definition *****</option>
+			<option value="Class--Summary-">Class definition</option>
 		</optgroup>
 		<optgroup label="Class Methods">
-			<option value="Methods--Summary-">*** Methods summary ***</option>
-									<option value="Method--setup">Method: setup()</option>
+			<option value="Methods--Summary-">Methods list</option>
+									<option value="Method--setup"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setup()</option>
 			
 			
 						
 			
-									<option value="Method--setAllowHybridMode">Method: setAllowHybridMode()</option>
+									<option value="Method--setAllowHybridMode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setAllowHybridMode()</option>
 			
 			
-									<option value="Method--getVersion">Method: getVersion()</option>
+									<option value="Method--getVersion"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getVersion()</option>
 			
 			
-									<option value="Method--testConnection">Method: testConnection()</option>
+									<option value="Method--testConnection"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;testConnection()</option>
 			
 			
-									<option value="Method--setNarrowFieldMode">Method: setNarrowFieldMode()</option>
+									<option value="Method--setNarrowFieldMode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setNarrowFieldMode()</option>
 			
 			
-									<option value="Method--setAllowFluidTransactions">Method: setAllowFluidTransactions()</option>
+									<option value="Method--setAllowFluidTransactions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setAllowFluidTransactions()</option>
 			
 			
-									<option value="Method--useISNULLConditions">Method: useISNULLConditions()</option>
+									<option value="Method--useISNULLConditions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;useISNULLConditions()</option>
 			
 			
-									<option value="Method--transaction">Method: transaction()</option>
+									<option value="Method--transaction"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;transaction()</option>
 			
 			
-									<option value="Method--addDatabase">Method: addDatabase()</option>
+									<option value="Method--addDatabase"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addDatabase()</option>
 			
 			
-									<option value="Method--useMysqlSSL">Method: useMysqlSSL()</option>
+									<option value="Method--useMysqlSSL"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;useMysqlSSL()</option>
 			
 			
-									<option value="Method--hasDatabase">Method: hasDatabase()</option>
+									<option value="Method--hasDatabase"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;hasDatabase()</option>
 			
 			
-									<option value="Method--selectDatabase">Method: selectDatabase()</option>
+									<option value="Method--selectDatabase"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;selectDatabase()</option>
 			
 			
-									<option value="Method--debug">Method: debug()</option>
+									<option value="Method--debug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;debug()</option>
 			
 			
-									<option value="Method--fancyDebug">Method: fancyDebug()</option>
+									<option value="Method--fancyDebug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;fancyDebug()</option>
 			
 			
-									<option value="Method--inspect">Method: inspect()</option>
+									<option value="Method--inspect"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;inspect()</option>
 			
 			
-									<option value="Method--store">Method: store()</option>
+									<option value="Method--store"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;store()</option>
 			
 			
-									<option value="Method--freeze">Method: freeze()</option>
+									<option value="Method--freeze"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;freeze()</option>
 			
 			
-									<option value="Method--loadMulti">Method: loadMulti()</option>
+									<option value="Method--loadMulti"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;loadMulti()</option>
 			
 			
-									<option value="Method--load">Method: load()</option>
+									<option value="Method--load"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;load()</option>
 			
 			
-									<option value="Method--loadForUpdate">Method: loadForUpdate()</option>
+									<option value="Method--loadForUpdate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;loadForUpdate()</option>
 			
 			
-									<option value="Method--findForUpdate">Method: findForUpdate()</option>
+									<option value="Method--findForUpdate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findForUpdate()</option>
 			
 			
-									<option value="Method--trash">Method: trash()</option>
+									<option value="Method--trash"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;trash()</option>
 			
 			
-									<option value="Method--dispense">Method: dispense()</option>
+									<option value="Method--dispense"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dispense()</option>
 			
 			
-									<option value="Method--dispenseAll">Method: dispenseAll()</option>
+									<option value="Method--dispenseAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dispenseAll()</option>
 			
 			
-									<option value="Method--findOrDispense">Method: findOrDispense()</option>
+									<option value="Method--findOrDispense"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findOrDispense()</option>
 			
 			
-									<option value="Method--findOneOrDispense">Method: findOneOrDispense()</option>
+									<option value="Method--findOneOrDispense"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findOneOrDispense()</option>
 			
 			
-									<option value="Method--find">Method: find()</option>
+									<option value="Method--find"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;find()</option>
 			
 			
-									<option value="Method--findAll">Method: findAll()</option>
+									<option value="Method--findAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findAll()</option>
 			
 			
-									<option value="Method--findAndExport">Method: findAndExport()</option>
+									<option value="Method--findAndExport"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findAndExport()</option>
 			
 			
-									<option value="Method--findOne">Method: findOne()</option>
+									<option value="Method--findOne"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findOne()</option>
 			
 			
-									<option value="Method--findLast">Method: findLast()</option>
+									<option value="Method--findLast"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findLast()</option>
 			
 			
-									<option value="Method--findCollection">Method: findCollection()</option>
+									<option value="Method--findCollection"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findCollection()</option>
 			
 			
-									<option value="Method--findMulti">Method: findMulti()</option>
+									<option value="Method--findMulti"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findMulti()</option>
 			
 			
-									<option value="Method--batch">Method: batch()</option>
+									<option value="Method--batch"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;batch()</option>
 			
 			
-									<option value="Method--loadAll">Method: loadAll()</option>
+									<option value="Method--loadAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;loadAll()</option>
 			
 			
-									<option value="Method--exec">Method: exec()</option>
+									<option value="Method--exec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;exec()</option>
 			
 			
-									<option value="Method--getAll">Method: getAll()</option>
+									<option value="Method--getAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getAll()</option>
 			
 			
-									<option value="Method--getCell">Method: getCell()</option>
+									<option value="Method--getCell"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getCell()</option>
 			
 			
-									<option value="Method--getCursor">Method: getCursor()</option>
+									<option value="Method--getCursor"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getCursor()</option>
 			
 			
-									<option value="Method--getRow">Method: getRow()</option>
+									<option value="Method--getRow"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getRow()</option>
 			
 			
-									<option value="Method--getCol">Method: getCol()</option>
+									<option value="Method--getCol"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getCol()</option>
 			
 			
-									<option value="Method--getAssoc">Method: getAssoc()</option>
+									<option value="Method--getAssoc"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getAssoc()</option>
 			
 			
-									<option value="Method--getAssocRow">Method: getAssocRow()</option>
+									<option value="Method--getAssocRow"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getAssocRow()</option>
 			
 			
-									<option value="Method--getInsertID">Method: getInsertID()</option>
+									<option value="Method--getInsertID"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getInsertID()</option>
 			
 			
-									<option value="Method--dup">Method: dup()</option>
+									<option value="Method--dup"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dup()</option>
 			
 			
-									<option value="Method--duplicate">Method: duplicate()</option>
+									<option value="Method--duplicate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;duplicate()</option>
 			
 			
-									<option value="Method--exportAll">Method: exportAll()</option>
+									<option value="Method--exportAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;exportAll()</option>
 			
 			
-									<option value="Method--useExportCase">Method: useExportCase()</option>
+									<option value="Method--useExportCase"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;useExportCase()</option>
 			
 			
-									<option value="Method--convertToBeans">Method: convertToBeans()</option>
+									<option value="Method--convertToBeans"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;convertToBeans()</option>
 			
 			
-									<option value="Method--convertToBean">Method: convertToBean()</option>
+									<option value="Method--convertToBean"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;convertToBean()</option>
 			
 			
-									<option value="Method--hasTag">Method: hasTag()</option>
+									<option value="Method--hasTag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;hasTag()</option>
 			
 			
-									<option value="Method--untag">Method: untag()</option>
+									<option value="Method--untag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;untag()</option>
 			
 			
-									<option value="Method--tag">Method: tag()</option>
+									<option value="Method--tag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag()</option>
 			
 			
-									<option value="Method--addTags">Method: addTags()</option>
+									<option value="Method--addTags"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addTags()</option>
 			
 			
-									<option value="Method--tagged">Method: tagged()</option>
+									<option value="Method--tagged"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tagged()</option>
 			
 			
-									<option value="Method--taggedAll">Method: taggedAll()</option>
+									<option value="Method--taggedAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;taggedAll()</option>
 			
 			
-									<option value="Method--countTaggedAll">Method: countTaggedAll()</option>
+									<option value="Method--countTaggedAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;countTaggedAll()</option>
 			
 			
-									<option value="Method--countTagged">Method: countTagged()</option>
+									<option value="Method--countTagged"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;countTagged()</option>
 			
 			
-									<option value="Method--wipe">Method: wipe()</option>
+									<option value="Method--wipe"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;wipe()</option>
 			
 			
-									<option value="Method--count">Method: count()</option>
+									<option value="Method--count"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;count()</option>
 			
 			
-									<option value="Method--configureFacadeWithToolbox">Method: configureFacadeWithToolbox()</option>
+									<option value="Method--configureFacadeWithToolbox"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;configureFacadeWithToolbox()</option>
 			
 			
-									<option value="Method--begin">Method: begin()</option>
+									<option value="Method--begin"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;begin()</option>
 			
 			
-									<option value="Method--commit">Method: commit()</option>
+									<option value="Method--commit"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;commit()</option>
 			
 			
-									<option value="Method--rollback">Method: rollback()</option>
+									<option value="Method--rollback"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;rollback()</option>
 			
 			
-									<option value="Method--getColumns">Method: getColumns()</option>
+									<option value="Method--getColumns"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getColumns()</option>
 			
 			
-									<option value="Method--genSlots">Method: genSlots()</option>
+									<option value="Method--genSlots"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;genSlots()</option>
 			
 			
-									<option value="Method--flat">Method: flat()</option>
+									<option value="Method--flat"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;flat()</option>
 			
 			
-									<option value="Method--nuke">Method: nuke()</option>
+									<option value="Method--nuke"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;nuke()</option>
 			
 			
-									<option value="Method--storeAll">Method: storeAll()</option>
+									<option value="Method--storeAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;storeAll()</option>
 			
 			
-									<option value="Method--trashAll">Method: trashAll()</option>
+									<option value="Method--trashAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;trashAll()</option>
 			
 			
-									<option value="Method--trashBatch">Method: trashBatch()</option>
+									<option value="Method--trashBatch"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;trashBatch()</option>
 			
 			
-									<option value="Method--hunt">Method: hunt()</option>
+									<option value="Method--hunt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;hunt()</option>
 			
 			
-									<option value="Method--useWriterCache">Method: useWriterCache()</option>
+									<option value="Method--useWriterCache"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;useWriterCache()</option>
 			
 			
-									<option value="Method--dispenseLabels">Method: dispenseLabels()</option>
+									<option value="Method--dispenseLabels"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dispenseLabels()</option>
 			
 			
-									<option value="Method--enum">Method: enum()</option>
+									<option value="Method--enum"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;enum()</option>
 			
 			
-									<option value="Method--gatherLabels">Method: gatherLabels()</option>
+									<option value="Method--gatherLabels"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;gatherLabels()</option>
 			
 			
-									<option value="Method--close">Method: close()</option>
+									<option value="Method--close"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;close()</option>
 			
 			
-									<option value="Method--isoDate">Method: isoDate()</option>
+									<option value="Method--isoDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isoDate()</option>
 			
 			
-									<option value="Method--isoDateTime">Method: isoDateTime()</option>
+									<option value="Method--isoDateTime"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isoDateTime()</option>
 			
 			
-									<option value="Method--setDatabaseAdapter">Method: setDatabaseAdapter()</option>
+									<option value="Method--setDatabaseAdapter"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setDatabaseAdapter()</option>
 			
 			
-									<option value="Method--setWriter">Method: setWriter()</option>
+									<option value="Method--setWriter"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setWriter()</option>
 			
 			
-									<option value="Method--setRedBean">Method: setRedBean()</option>
+									<option value="Method--setRedBean"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setRedBean()</option>
 			
 			
-									<option value="Method--getDatabaseAdapter">Method: getDatabaseAdapter()</option>
+									<option value="Method--getDatabaseAdapter"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getDatabaseAdapter()</option>
 			
 			
-									<option value="Method--getPDO">Method: getPDO()</option>
+									<option value="Method--getPDO"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getPDO()</option>
 			
 			
-									<option value="Method--getDuplicationManager">Method: getDuplicationManager()</option>
+									<option value="Method--getDuplicationManager"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getDuplicationManager()</option>
 			
 			
-									<option value="Method--getWriter">Method: getWriter()</option>
+									<option value="Method--getWriter"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getWriter()</option>
 			
 			
-									<option value="Method--getRedBean">Method: getRedBean()</option>
+									<option value="Method--getRedBean"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getRedBean()</option>
 			
 			
-									<option value="Method--getToolBox">Method: getToolBox()</option>
+									<option value="Method--getToolBox"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getToolBox()</option>
 			
 			
-									<option value="Method--getExtractedToolbox">Method: getExtractedToolbox()</option>
+									<option value="Method--getExtractedToolbox"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getExtractedToolbox()</option>
 			
 			
-									<option value="Method--renameAssociation">Method: renameAssociation()</option>
+									<option value="Method--renameAssociation"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;renameAssociation()</option>
 			
 			
-									<option value="Method--beansToArray">Method: beansToArray()</option>
+									<option value="Method--beansToArray"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;beansToArray()</option>
 			
 			
-									<option value="Method--setErrorHandlingFUSE">Method: setErrorHandlingFUSE()</option>
+									<option value="Method--setErrorHandlingFUSE"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setErrorHandlingFUSE()</option>
 			
 			
-									<option value="Method--dump">Method: dump()</option>
+									<option value="Method--dump"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dump()</option>
 			
 			
-									<option value="Method--bindFunc">Method: bindFunc()</option>
+									<option value="Method--bindFunc"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;bindFunc()</option>
 			
 			
-									<option value="Method--aliases">Method: aliases()</option>
+									<option value="Method--aliases"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;aliases()</option>
 			
 			
-									<option value="Method--findOrCreate">Method: findOrCreate()</option>
+									<option value="Method--findOrCreate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findOrCreate()</option>
 			
 			
-									<option value="Method--findLike">Method: findLike()</option>
+									<option value="Method--findLike"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findLike()</option>
 			
 			
-									<option value="Method--startLogging">Method: startLogging()</option>
+									<option value="Method--startLogging"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;startLogging()</option>
 			
 			
-									<option value="Method--stopLogging">Method: stopLogging()</option>
+									<option value="Method--stopLogging"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stopLogging()</option>
 			
 			
-									<option value="Method--getLogs">Method: getLogs()</option>
+									<option value="Method--getLogs"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getLogs()</option>
 			
 			
-									<option value="Method--resetQueryCount">Method: resetQueryCount()</option>
+									<option value="Method--resetQueryCount"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;resetQueryCount()</option>
 			
 			
-									<option value="Method--getQueryCount">Method: getQueryCount()</option>
+									<option value="Method--getQueryCount"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getQueryCount()</option>
 			
 			
-									<option value="Method--getLogger">Method: getLogger()</option>
+									<option value="Method--getLogger"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getLogger()</option>
 			
 			
-									<option value="Method--setAutoResolve">Method: setAutoResolve()</option>
+									<option value="Method--setAutoResolve"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setAutoResolve()</option>
 			
 			
-									<option value="Method--usePartialBeans">Method: usePartialBeans()</option>
+									<option value="Method--usePartialBeans"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;usePartialBeans()</option>
 			
 			
-									<option value="Method--csv">Method: csv()</option>
+									<option value="Method--csv"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;csv()</option>
 			
 			
-									<option value="Method--matchUp">Method: matchUp()</option>
+									<option value="Method--matchUp"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;matchUp()</option>
 			
 			
-									<option value="Method--getLook">Method: getLook()</option>
+									<option value="Method--getLook"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getLook()</option>
 			
 			
-									<option value="Method--look">Method: look()</option>
+									<option value="Method--look"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;look()</option>
 			
 			
-									<option value="Method--diff">Method: diff()</option>
+									<option value="Method--diff"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;diff()</option>
 			
 			
-									<option value="Method--addToolBoxWithKey">Method: addToolBoxWithKey()</option>
+									<option value="Method--addToolBoxWithKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addToolBoxWithKey()</option>
 			
 			
-									<option value="Method--removeToolBoxByKey">Method: removeToolBoxByKey()</option>
+									<option value="Method--removeToolBoxByKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;removeToolBoxByKey()</option>
 			
 			
-									<option value="Method--getToolBoxByKey">Method: getToolBoxByKey()</option>
+									<option value="Method--getToolBoxByKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getToolBoxByKey()</option>
 			
 			
-									<option value="Method--useJSONFeatures">Method: useJSONFeatures()</option>
+									<option value="Method--useJSONFeatures"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;useJSONFeatures()</option>
 			
 			
-									<option value="Method--children">Method: children()</option>
+									<option value="Method--children"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;children()</option>
 			
 			
-									<option value="Method--parents">Method: parents()</option>
+									<option value="Method--parents"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parents()</option>
 			
 			
-									<option value="Method--noNuke">Method: noNuke()</option>
+									<option value="Method--noNuke"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;noNuke()</option>
 			
 			
-									<option value="Method--useFeatureSet">Method: useFeatureSet()</option>
+									<option value="Method--useFeatureSet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;useFeatureSet()</option>
 			
 			
-									<option value="Method--ext">Method: ext()</option>
+									<option value="Method--ext"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ext()</option>
 			
 			
-									<option value="Method--__callStatic">Method: __callStatic()</option>
+									<option value="Method--__callStatic"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__callStatic()</option>
 			
 			
 			
 		</optgroup>
-				<optgroup label="Class Properties">
-			<option value="Properties--Summary-">*** Properties summary ***</option>
-									<option value="Property--toolbox">Property: $toolbox</option>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+									<option value="Property--toolbox"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$toolbox</option>
 			
-									<option value="Property--f">Property: $f</option>
+									<option value="Property--f"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$f</option>
 			
-									<option value="Property--currentDB">Property: $currentDB</option>
+									<option value="Property--currentDB"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$currentDB</option>
 			
-									<option value="Property--toolboxes">Property: $toolboxes</option>
-			
-			
-		</optgroup>
-		
-				<optgroup label="Class Constants">
-			<option value="Constants--Summary-">*** Constants summary ***</option>
-									<option value="Constant--C_REDBEANPHP_VERSION">Constant: C_REDBEANPHP_VERSION</option>
+									<option value="Property--toolboxes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$toolboxes</option>
 			
 			
 		</optgroup>
-		
-				<optgroup label="Class Sample code">
-			<option value="SAMPLE--Code-">*** Sample code ***</option>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+									<option value="Constant--C_REDBEANPHP_VERSION">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;C_REDBEANPHP_VERSION</option>
+			
+			
+		</optgroup>
+				<optgroup label="Class Sample usage">
+			<option value="SAMPLE--Code-">Sample code</option>
 		</optgroup>
 		
 	</select>
 </div>
+<!-- summary-selectjs r.20191124 -->
+
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2019-11-22 15:33:45 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2019-11-25 14:23:10 +0000</small>
 <hr>
 <br>
 <!-- # -->

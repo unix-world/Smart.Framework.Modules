@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: TplTwig r.20191116 #
+# Smart.Framework.Modules: TplTwig r.20191124 #
 ## Symfony Twig Templating Engine v.1.42.4 ##
 
 // r.5.2.7 / smart.framework.v.5.2

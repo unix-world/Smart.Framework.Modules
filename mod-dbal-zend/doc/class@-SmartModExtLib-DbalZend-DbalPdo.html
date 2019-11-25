@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20191122 -->
+<!-- Template: Smart.Framework@Documentor v.20191124 -->
 <html>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartModExtLib\DbalZend\DbalPdo        final class \SmartModExtLib\DbalZend\ DbalPdo    {   } -&gt;    Class: \SmartModExtLib\DbalZend\DbalPdo - provides a">
-	<meta name="keywords" content="smartmodextlib dbalzend dbalpdo, final, class, smartmodextlib dbalzend, dbalpdo, -, class, -, provides, a, general, pdo, database, adapter, using, zend db, as, module, for, smart.framework, that, supports, the, following, drivers, such, as, sqlite, mysql, postgresql., if, you, wish, to, use, in, your, projects, instead, of, direct, ones, supported, directly, by, this, is, good, solution., language, php, located, at, modules mod-dbal-zend libs dbalpdo.php, package, modules database pdo zend-dbal, namespace, name, version, v, depends, extensions, classes, zend db, usage, dynamic, object, new, class   - method, only, methods, summary, public, function, construct, mixed, cfg, integer, timeout, param, mixed, cfg, driver, options, array, or, mysqli config, pgsql config, sqlite tmp sample-dbfile.sqlite, integer, timeout, connection, timeout, applies, and, postgresql, constructor">
+	<meta name="keywords" content="smartmodextlib dbalzend dbalpdo, final, class, smartmodextlib dbalzend, dbalpdo, -, class, -, provides, a, general, pdo, database, adapter, using, zend db, as, module, for, smart.framework, that, supports, the, following, drivers, such, as, sqlite, mysql, postgresql., if, you, wish, to, use, in, your, projects, instead, of, direct, ones, supported, directly, by, this, is, good, solution., language, php, located, at, modules mod-dbal-zend libs dbalpdo.php, package, modules database pdo zend-dbal, namespace, name, version, v, depends, extensions, classes, zend db, usage, dynamic, object, new, class   - method, only, methods, public, function, construct, mixed, cfg, integer, timeout, param, mixed, cfg, driver, options, array, or, mysqli config, pgsql config, sqlite tmp sample-dbfile.sqlite, integer, timeout, connection, timeout, applies, and, postgresql, constructor, with">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 	<title>PHP Documentation for: \SmartModExtLib\DbalZend\DbalPdo</title>
 	<!-- CSS and Fonts -->
@@ -206,7 +206,7 @@
 	[hidden] {
 		display: none !important;
 	}
-	button {
+	button, a.ux-button {
 		/* Structure */
 		display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
 		padding: 7px 15px 7px 15px !important;
@@ -236,13 +236,16 @@
 		user-select: none !important;
 		zoom: 1 !important;
 	}
-	button:hover,
-	button:focus {
+	button *, a.ux-button * {
+		font-weight: bold !important;
+	}
+	button:hover, a.ux-button:hover,
+	button:focus, a.ux-button:focus {
 		border: 1px solid #CCCCCC !important;
 		background-color: #F3F3F3 !important;
 		color: #2069A9 !important;
 	}
-	button:focus {
+	button:focus, a.ux-button:focus {
 		outline: 0 !important;
 	}
 	button[disabled],
@@ -263,7 +266,7 @@
 	nav.ux-navbar {
 		margin: 0;
 		padding: 0;
-		background-color: #3f51b5;
+		background-color: #3c4663;
 	}
 	nav.ux-navbar div#logo {
 		display: block;
@@ -289,7 +292,7 @@
 		margin: 0px;
 		display: inline-block;
 		float: left;
-		background-color: #3f51b5;
+		background-color: #3c4663;
 	}
 	nav.ux-navbar a {
 		display: block;
@@ -300,11 +303,11 @@
 		text-decoration: none;
 	}
 	nav.ux-navbar ul li ul li:hover {
-		background-color: #2e40a4;
+		background-color: #2b3a57;
 	}
 	nav.ux-navbar a:hover {
 		color: #FFFFFF;
-		background-color: #1d3093;
+		background-color: #1a2946;
 	}
 	nav.ux-navbar ul ul {
 		display: none;
@@ -353,7 +356,7 @@
 		}
 		nav.ux-navbar label.toggle {
 			display: block;
-			background-color: #3f51b5;
+			background-color: #3c4663;
 			padding: 0 20px;
 			color: #FFFFFF;
 			font-size: 20px;
@@ -366,7 +369,7 @@
 		}
 		nav.ux-navbar label.toggle:hover {
 			color: #FFFFFF;
-			background-color: #1d3093;
+			background-color: #1a2946;
 		}
 		nav.ux-navbar input[id^=drop]:checked + ul {
 			display: block;
@@ -387,15 +390,15 @@
 		}
 		nav.ux-navbar a:hover {
 			color: #FFFFFF;
-			background-color: #1d3093;
+			background-color: #1a2946;
 		}
 		nav.ux-navbar ul ul ul a {
 			color: #FFFFFF;
-			background-color: #2e40a4;
+			background-color: #2b3a57;
 		}
 		nav.ux-navbar ul li ul li .toggle,
 		nav.ux-navbar ul ul a {
-			background-color: #2e40a4;
+			background-color: #2b3a57;
 		}
 		nav.ux-navbar ul ul {
 			float: none;
@@ -449,15 +452,21 @@
 </head>
 <body>
 <nav class="ux-navbar">
-	<div id="logo"><span>&#9776; </span>Smart.Framework.Modules : PHP Documentation</div>
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework.Modules : PHP Documentation</span>
+	</div>
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20191122 -->
+<!-- class r.20191124 -->
 <!-- Styles -->
-<!-- styles r.20191122 -->
+<!-- styles r.20191124 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -576,6 +585,11 @@ div.doc-summary {
 	background: #343C61;
 	color: #FFFFFF;
 	border: 1px solid #CCCCCC;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
 }
 </style>
 <style type="text/css">
@@ -692,9 +706,9 @@ If you wish to use the PDO drivers in your projects instead of the direct ones s
 <!-- Methods -->
 <br>
 <div class="doc-container" id="Methods--Summary-">
-	<h2 class="doc-header">Methods summary</h2>
+	<h2 class="doc-header">class Methods</h2>
 </div>
-<!-- methods r.20191122 -->
+<!-- methods r.20191124 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
 				<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$cfg` Parameter is REQUIRED">$cfg</span></b></span>, 
@@ -848,13 +862,23 @@ This function is intended to be used for write type queries: BEGIN (TRANSACTION)
 	
 </div><!-- Skip Internal-Priv Method: `__destruct()` -->
 <!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20191124 -->
 
 <!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20191124 -->
 
 <!-- Sample Code -->
 <br>
 <div class="doc-container" id="SAMPLE--Code-">
-	<h2 class="doc-header">Sample Code: PHP</h2>
+	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
 	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
@@ -864,9 +888,9 @@ This function is intended to be used for write type queries: BEGIN (TRANSACTION)
 </div>
 <!-- Summary List -->
 <br>
-<!-- summary r.20191122 -->
-<script>
-// summary r.20191122
+<!-- summary r.20191124 -->
+<script type="text/javascript">
+// summary r.20191124
 function smartHandleDocSelector(obj) {
 	if(!obj) {
 		return;
@@ -888,52 +912,60 @@ function smartHandleDocSelector(obj) {
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
 		<option value="" selected>* PHP Class \SmartModExtLib\DbalZend\DbalPdo # Documentation Index *</option>
 		<optgroup label="Class \SmartModExtLib\DbalZend\DbalPdo">
-			<option value="Class--Summary-">***** Class Definition *****</option>
+			<option value="Class--Summary-">Class definition</option>
 		</optgroup>
 		<optgroup label="Class Methods">
-			<option value="Methods--Summary-">*** Methods summary ***</option>
-									<option value="Method--__construct">Method: __construct()</option>
+			<option value="Methods--Summary-">Methods list</option>
+									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--getDriver">Method: getDriver()</option>
+									<option value="Method--getDriver"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getDriver()</option>
 			
 			
-									<option value="Method--getConnection">Method: getConnection()</option>
+									<option value="Method--getConnection"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getConnection()</option>
 			
 			
-									<option value="Method--getPlatform">Method: getPlatform()</option>
+									<option value="Method--getPlatform"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getPlatform()</option>
 			
 			
-									<option value="Method--count_data">Method: count_data()</option>
+									<option value="Method--count_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;count_data()</option>
 			
 			
-									<option value="Method--read_data">Method: read_data()</option>
+									<option value="Method--read_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_data()</option>
 			
 			
-									<option value="Method--read_adata">Method: read_adata()</option>
+									<option value="Method--read_adata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_adata()</option>
 			
 			
-									<option value="Method--read_asdata">Method: read_asdata()</option>
+									<option value="Method--read_asdata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_asdata()</option>
 			
 			
-									<option value="Method--write_data">Method: write_data()</option>
+									<option value="Method--write_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;write_data()</option>
 			
 			
 						
 			
 			
 		</optgroup>
-		
-		
-				<optgroup label="Class Sample code">
-			<option value="SAMPLE--Code-">*** Sample code ***</option>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
+				<optgroup label="Class Sample usage">
+			<option value="SAMPLE--Code-">Sample code</option>
 		</optgroup>
 		
 	</select>
 </div>
+<!-- summary-selectjs r.20191124 -->
+
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2019-11-22 15:33:45 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2019-11-25 14:23:09 +0000</small>
 <hr>
 <br>
 <!-- # -->

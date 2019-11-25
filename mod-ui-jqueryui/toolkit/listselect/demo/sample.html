@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>jQuery MultiSelect Widget Demo</title>
+
+	<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../../../../lib/js/framework/src/core_utils.js"></script>
+	<script type="text/javascript" src="../../../../../lib/js/framework/src/browser_utils.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="../../themes/default/jquery-ui.css">
+	<script type="text/javascript" src="../../jquery-ui.js"></script>
+	<link rel="stylesheet" type="text/css" href="../jquery.multiselect.css">
+	<script type="text/javascript" src="../jquery.multiselect.js"></script>
+
+</head>
+<body id="test">
+	<script type="text/javascript">
+	$(function() {
+
+		$("#List1").multiselect({
+			multiple: false,
+			selectedList: 1,
+			minWidth: 225,
+			close: function(){
+				var evcode = $(this).attr('onChange');
+				if((evcode != undefined) && (evcode != '')) {
+					eval(evcode);
+				} //end if
+			},
+	   });
+
+	   $("#List2").multiselect({
+		  multiple: true,
+		  selectedList: 0,
+		  minWidth: 250
+	   });
+
+	   $("#List3").multiselect({
+		  multiple: true,
+		  selectedList: 0,
+		  minWidth: 250
+	   });
+
+	});
+	</script>
+
+	<form name="aaa" method="post">
+
+	<h2>Basic Demos</h2>
+
+	<p>Both multiselects are created with the following one-liner.  Optgroup support is built in out of the box:</p>
+
+	<h3>Basic Single</h3>
+	<p>
+		<select id="List1" title="Basic example" name="example-basic" size="1" onChange="alert(this.value);">
+		<option value="option1">Option 1</option>
+		<option value="option2">Option 2</option>
+		<option value="option3">Option 3</option>
+		<option value="option4">Option 4</option>
+		<option value="option5">Option 5</option>
+		<option value="option6">Option 6</option>
+		<option value="option7">Option 7</option>
+		<option value="option8">Option 8</option>
+		<option value="option9">Option 9</option>
+		<option value="option10">Option 10</option>
+		<option value="option11">Option 11</option>
+		<option value="option12">Option 12</option>
+		</select>
+	</p>
+
+	<h3>Basic</h3>
+	<p>
+		<select name="list2" id="List2" title="Basic example" multiple size="5" onBlur="alert('Values');">
+		<option value="option1">Option 1</option>
+		<option value="option2">Option 2</option>
+		<option value="option3">Option 3</option>
+		<option value="option4">Option 4</option>
+		<option value="option5">Option 5</option>
+		<option value="option6">Option 6</option>
+		<option value="option7">Option 7</option>
+		<option value="option8">Option 8</option>
+		<option value="option9">Option 9</option>
+		<option value="option10">Option 10</option>
+		<option value="option11">Option 11</option>
+		<option value="option12">Option 12</option>
+		</select>
+	</p>
+
+	<h3>With Optgroups</h3>
+	<p>Click on an optgroup's heading to toggle the checked state of the entire group.</p>
+	<p>
+		<select id="List3" name="example-optgroup" multiple="multiple" size="5">
+		<optgroup label="Group One">
+			<option value="option1">Option 1</option>
+			<option value="option2">Option 2</option>
+			<option value="option3">Option 3</option>
+		</optgroup>
+		<optgroup label="Group Two">
+			<option value="option4">Option 4</option>
+			<option value="option5">Option 5</option>
+			<option value="option6">Option 6</option>
+			<option value="option7">Option 7</option>
+		</optgroup>
+		</select>
+	</p>
+
+	</form>
+</body>
+</html>

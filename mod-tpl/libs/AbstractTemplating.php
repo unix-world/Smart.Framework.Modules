@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20191101
+ * @version 	v.20191124
  * @package 	development:modules:TemplatingEngine
  *
  */
@@ -62,7 +62,8 @@ abstract class AbstractTemplating {
 
 	//=====
 	/**
-	 * RETURN the TPL Version String
+	 * Must be re-implemented to return the real TPL version
+	 * @return STRING the TPL Version String (ex: 'v.0.1')
 	 */
 	public static function getVersion() {
 		//--
@@ -74,9 +75,9 @@ abstract class AbstractTemplating {
 
 	//=====
 	/**
-	 * UTILITY: fix array keys to be compliant with variable names, but only at level 1 ; level 2..n must not be fixed as tkey are accessible in loops
+	 * UTILITY: fix array keys to be compliant with PHP variable names, but only at level 1 ; level 2..n must not be fixed as tkey can accessible in loops even if not compatible with PHP variable names
 	 */
-	final protected static function fix_array_keys($y_arr, $y_allow_upper_camelcase) {
+	final protected function fix_array_keys($y_arr, $y_allow_upper_camelcase) {
 		//--
 		if(!\is_array($y_arr)) { // fix bug if empty array / max nested level
 			return $y_arr; // mixed

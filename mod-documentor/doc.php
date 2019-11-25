@@ -36,7 +36,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191122
+ * @version 20191124
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -63,6 +63,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			//--
 			'fonts-path' 		=> (string) $this->ControllerGetParam('module-path').'fonts/',
 			'logo-img' 			=> (string) SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO,
+			'lang-img' 			=> (string) 'lib/framework/img/php-logo.svg',
 			'year' 				=> (string) date('Y'),
 			//--
 			'title' 			=> (string) 'Documentation',
@@ -108,6 +109,21 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$extra = $this->RequestVarGet('extra', '', 'string');
 		$heading = $this->RequestVarGet('heading', 'PHP Documentation', 'string');
 		//--
+
+		//-- {{{SYNC-DOCUMENTOR-SAVE-MODE}}}
+		$js_path = '';
+		if((string)$mode == 'multi') {
+			if((string)$extra != '') {
+				if((string)$extra == '@') {
+					$js_path = 'js/';
+				} else {
+					$js_path = '../js/';
+				} //end if else
+			} //end if
+		} //end if else
+		//--
+
+		//--
 		if((string)$action == 'cleanup@documentation') {
 			//--
 			$proc = \SmartModExtLib\Documentor\Utils::cleanupDocumentationDirectory(); // mixed
@@ -120,7 +136,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			//--
 		} elseif((string)$action == 'index@packages') {
 			//--
-			$proc = \SmartModExtLib\Documentor\Utils::indexDocumentationPackages('php', $heading, $mode, $extra); // mixed
+			$proc = \SmartModExtLib\Documentor\Utils::indexDocumentationPackages('php', $heading, $mode, $extra, $js_path); // mixed
 			if($proc !== true) {
 				$this->jsonAnswer($proc.' ...', false);
 				return;
@@ -178,7 +194,10 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		switch((string)$action) {
 			case 'save':
 				//--
-				$main = $this->displayDocs((string)$cls);
+				$main = $this->displayDocs(
+					(string) $cls,
+					(string) $js_path
+				);
 				//--
 				if($this->errMsg === null) { // OK
 					//--
@@ -206,6 +225,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$main = (string) $this->displayDocs(
 					(string) $cls,
+					(string) $this->ControllerGetParam('module-view-path').'js/',
 					(string) $url_index.$url_cls,
 					(string) $url_ref
 				);
@@ -292,7 +312,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	} //END FUNCTION
 
 
-	private function displayDocs($cls, $base_url='', $ref_url='') {
+	private function displayDocs($cls, $jsPath, $base_url='', $ref_url='') {
 		//--
 		$arr = (array) $this->parseClass($cls);
 		//print_r($arr); die();
@@ -367,7 +387,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					if(Smart::array_size($arr['properties'][$i]['doc-comments']['props']['var']) > 0) {
 						$arr['properties'][$i]['doc-var-type'] = (string) trim((string)$arr['properties'][$i]['doc-comments']['props']['var']['type']);
 						if((string)$arr['properties'][$i]['value'] == '') {
-							$arr['properties'][$i]['value'] = (string) trim((string)$arr['properties'][$i]['doc-comments']['props']['default']['type']);
+							$arr['properties'][$i]['value'] = (string) trim((string)$arr['properties'][$i]['doc-comments']['props']['default']['line']);
 						} //end if
 					} //end if
 				} //end if
@@ -480,6 +500,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			(string) $this->ControllerGetParam('module-view-path').'class.mtpl.inc.htm',
 			[
 				'base-url' 				=> (string) $base_url,
+				'js-path' 				=> (string) $jsPath,
 				'ref-url' 				=> (string) $ref_url,
 				'file-name' 			=> (string) $arr['class']['file-name'],
 				'is-internal-priv' 		=> (bool)   $arr['class']['is-internal-priv'],
@@ -1395,7 +1416,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 /**
  * Index Area Controller
- * @version 20191122
+ * @version 20191124
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {

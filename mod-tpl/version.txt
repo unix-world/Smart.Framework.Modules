@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: AbstractTPL r.20191116 #
+# Smart.Framework.Modules: AbstractTPL r.20191124 #
 
 // r.5.2.7 / smart.framework.v.5.2
 

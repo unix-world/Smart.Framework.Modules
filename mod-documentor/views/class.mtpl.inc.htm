@@ -1,4 +1,4 @@
-<!-- class r.20191122 -->
+<!-- class r.20191124 -->
 <!-- Styles -->
 [@@@SUB-TEMPLATE:partials/styles.mtpl.inc.htm@@@]
 <!-- Headings -->
@@ -41,30 +41,26 @@
 <!-- Methods -->
 <br>
 <div class="doc-container" id="Methods--Summary-">
-	<h2 class="doc-header">Methods summary</h2>
+	<h2 class="doc-header">[###TYPE|html###] Methods</h2>
 </div>
 [@@@SUB-TEMPLATE:partials/methods.mtpl.inc.htm@@@]
 <!-- Properties -->
-[%%%IF:ARR-PROPERTIES:@>0;%%%]
 <br>
 <div class="doc-container" id="Properties--Summary-">
-	<h2 class="doc-header">Properties summary</h2>
+	<h2 class="doc-header">[###TYPE|html###] Properties</h2>
 </div>
 [@@@SUB-TEMPLATE:partials/properties.mtpl.inc.htm@@@]
-[%%%/IF:ARR-PROPERTIES%%%]
 <!-- Constants -->
-[%%%IF:ARR-CONSTANTS:@>0;%%%]
 <br>
 <div class="doc-container" id="Constants--Summary-">
-	<h2 class="doc-header">Constants summary</h2>
+	<h2 class="doc-header">[###TYPE|html###] Constants</h2>
 </div>
 [@@@SUB-TEMPLATE:partials/constants.mtpl.inc.htm@@@]
-[%%%/IF:ARR-CONSTANTS%%%]
 <!-- Sample Code -->
 [%%%IF:DOC-CODE-HTML:!=;%%%]
 <br>
 <div class="doc-container" id="SAMPLE--Code-">
-	<h2 class="doc-header">Sample Code: PHP</h2>
+	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
 	<pre><code>[###DOC-CODE-HTML###]</code></pre>

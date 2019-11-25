@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20191122 -->
+<!-- Template: Smart.Framework@Documentor v.20191124 -->
 <html>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartModExtLib\Soap\SoapServerRequestHandler        final class \SmartModExtLib\Soap\ SoapServerRequestHandler    {   } ::    Provides a SOAP Server">
-	<meta name="keywords" content="smartmodextlib soap soapserverrequesthandler, final, class, smartmodextlib soap, soapserverrequesthandler, provides, a, soap, server, request, handler, full, unicode, compliant, utf ., this, does, not, depend, on, the, php, extension, language, located, at, modules mod-soap libs soapserverrequesthandler.php, package, modules network, namespace, name, version, v, depends, classes, smart, smartxmlparser, domxml, domdocument, smartmarkerstemplating, hints, use, to, easy, manage, calls, usage, static, object, class  method, -, only, methods, summary, public, function, issoaprequest, boolean, return, boolean, true, if, is, or, false, check, getsoaprequesturl, string, hints, comes, from, raw, string, will, return">
+	<meta name="keywords" content="smartmodextlib soap soapserverrequesthandler, final, class, smartmodextlib soap, soapserverrequesthandler, provides, a, soap, server, request, handler, full, unicode, compliant, utf ., this, does, not, depend, on, the, php, extension, language, located, at, modules mod-soap libs soapserverrequesthandler.php, package, modules network, namespace, name, version, v, depends, classes, smart, smartxmlparser, domxml, domdocument, smartmarkerstemplating, hints, use, to, easy, manage, calls, usage, static, object, class  method, -, only, methods, public, function, issoaprequest, boolean, return, boolean, true, if, is, or, false, check, getsoaprequesturl, string, hints, comes, from, raw, string, will, return">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 	<title>PHP Documentation for: \SmartModExtLib\Soap\SoapServerRequestHandler</title>
 	<!-- CSS and Fonts -->
@@ -206,7 +206,7 @@
 	[hidden] {
 		display: none !important;
 	}
-	button {
+	button, a.ux-button {
 		/* Structure */
 		display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
 		padding: 7px 15px 7px 15px !important;
@@ -236,13 +236,16 @@
 		user-select: none !important;
 		zoom: 1 !important;
 	}
-	button:hover,
-	button:focus {
+	button *, a.ux-button * {
+		font-weight: bold !important;
+	}
+	button:hover, a.ux-button:hover,
+	button:focus, a.ux-button:focus {
 		border: 1px solid #CCCCCC !important;
 		background-color: #F3F3F3 !important;
 		color: #2069A9 !important;
 	}
-	button:focus {
+	button:focus, a.ux-button:focus {
 		outline: 0 !important;
 	}
 	button[disabled],
@@ -263,7 +266,7 @@
 	nav.ux-navbar {
 		margin: 0;
 		padding: 0;
-		background-color: #3f51b5;
+		background-color: #3c4663;
 	}
 	nav.ux-navbar div#logo {
 		display: block;
@@ -289,7 +292,7 @@
 		margin: 0px;
 		display: inline-block;
 		float: left;
-		background-color: #3f51b5;
+		background-color: #3c4663;
 	}
 	nav.ux-navbar a {
 		display: block;
@@ -300,11 +303,11 @@
 		text-decoration: none;
 	}
 	nav.ux-navbar ul li ul li:hover {
-		background-color: #2e40a4;
+		background-color: #2b3a57;
 	}
 	nav.ux-navbar a:hover {
 		color: #FFFFFF;
-		background-color: #1d3093;
+		background-color: #1a2946;
 	}
 	nav.ux-navbar ul ul {
 		display: none;
@@ -353,7 +356,7 @@
 		}
 		nav.ux-navbar label.toggle {
 			display: block;
-			background-color: #3f51b5;
+			background-color: #3c4663;
 			padding: 0 20px;
 			color: #FFFFFF;
 			font-size: 20px;
@@ -366,7 +369,7 @@
 		}
 		nav.ux-navbar label.toggle:hover {
 			color: #FFFFFF;
-			background-color: #1d3093;
+			background-color: #1a2946;
 		}
 		nav.ux-navbar input[id^=drop]:checked + ul {
 			display: block;
@@ -387,15 +390,15 @@
 		}
 		nav.ux-navbar a:hover {
 			color: #FFFFFF;
-			background-color: #1d3093;
+			background-color: #1a2946;
 		}
 		nav.ux-navbar ul ul ul a {
 			color: #FFFFFF;
-			background-color: #2e40a4;
+			background-color: #2b3a57;
 		}
 		nav.ux-navbar ul li ul li .toggle,
 		nav.ux-navbar ul ul a {
-			background-color: #2e40a4;
+			background-color: #2b3a57;
 		}
 		nav.ux-navbar ul ul {
 			float: none;
@@ -449,15 +452,21 @@
 </head>
 <body>
 <nav class="ux-navbar">
-	<div id="logo"><span>&#9776; </span>Smart.Framework.Modules : PHP Documentation</div>
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework.Modules : PHP Documentation</span>
+	</div>
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20191122 -->
+<!-- class r.20191124 -->
 <!-- Styles -->
-<!-- styles r.20191122 -->
+<!-- styles r.20191124 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -576,6 +585,11 @@ div.doc-summary {
 	background: #343C61;
 	color: #FFFFFF;
 	border: 1px solid #CCCCCC;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
 }
 </style>
 <style type="text/css">
@@ -692,9 +706,9 @@ This class does NOT depend on the PHP SOAP extension</div><br>
 <!-- Methods -->
 <br>
 <div class="doc-container" id="Methods--Summary-">
-	<h2 class="doc-header">Methods summary</h2>
+	<h2 class="doc-header">class Methods</h2>
 </div>
-<!-- methods r.20191122 -->
+<!-- methods r.20191124 -->
 <div class="doc-container" id="Method--isSoapRequest">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isSoapRequest</b></span>&nbsp;(
 		
@@ -821,16 +835,26 @@ For using with Smart.Framework URL format can be: http(s)://smart-framework.url/
 	
 </div>
 <!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20191124 -->
 
 <!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20191124 -->
 
 <!-- Sample Code -->
 
 <!-- Summary List -->
 <br>
-<!-- summary r.20191122 -->
-<script>
-// summary r.20191122
+<!-- summary r.20191124 -->
+<script type="text/javascript">
+// summary r.20191124
 function smartHandleDocSelector(obj) {
 	if(!obj) {
 		return;
@@ -852,44 +876,52 @@ function smartHandleDocSelector(obj) {
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
 		<option value="" selected>* PHP Class \SmartModExtLib\Soap\SoapServerRequestHandler # Documentation Index *</option>
 		<optgroup label="Class \SmartModExtLib\Soap\SoapServerRequestHandler">
-			<option value="Class--Summary-">***** Class Definition *****</option>
+			<option value="Class--Summary-">Class definition</option>
 		</optgroup>
 		<optgroup label="Class Methods">
-			<option value="Methods--Summary-">*** Methods summary ***</option>
-									<option value="Method--isSoapRequest">Method: isSoapRequest()</option>
+			<option value="Methods--Summary-">Methods list</option>
+									<option value="Method--isSoapRequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isSoapRequest()</option>
 			
 			
-									<option value="Method--getSoapRequestUrl">Method: getSoapRequestUrl()</option>
+									<option value="Method--getSoapRequestUrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestUrl()</option>
 			
 			
-									<option value="Method--getSoapRequestAction">Method: getSoapRequestAction()</option>
+									<option value="Method--getSoapRequestAction"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestAction()</option>
 			
 			
-									<option value="Method--getSoapRequestXmlStr">Method: getSoapRequestXmlStr()</option>
+									<option value="Method--getSoapRequestXmlStr"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestXmlStr()</option>
 			
 			
-									<option value="Method--getSoapRequestXmlArr">Method: getSoapRequestXmlArr()</option>
+									<option value="Method--getSoapRequestXmlArr"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestXmlArr()</option>
 			
 			
-									<option value="Method--getSoapRequestXmlBodyArr">Method: getSoapRequestXmlBodyArr()</option>
+									<option value="Method--getSoapRequestXmlBodyArr"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestXmlBodyArr()</option>
 			
 			
-									<option value="Method--getSoapResponseXmlEnvelope">Method: getSoapResponseXmlEnvelope()</option>
+									<option value="Method--getSoapResponseXmlEnvelope"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapResponseXmlEnvelope()</option>
 			
 			
-									<option value="Method--getSoapResponseXmlError">Method: getSoapResponseXmlError()</option>
+									<option value="Method--getSoapResponseXmlError"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapResponseXmlError()</option>
 			
 			
 			
 		</optgroup>
-		
-		
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
 		
 	</select>
 </div>
+<!-- summary-selectjs r.20191124 -->
+
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2019-11-22 15:33:45 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2019-11-25 14:23:10 +0000</small>
 <hr>
 <br>
 <!-- # -->

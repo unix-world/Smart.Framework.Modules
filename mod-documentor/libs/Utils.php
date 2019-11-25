@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20191122
+ * @version 	v.20191124
  * @package 	Documentor
  *
  */
@@ -118,7 +118,7 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function indexDocumentationPackages($language, $heading, $mode, $extra) {
+	public static function indexDocumentationPackages($language, $heading, $mode, $extra, $js_path) {
 		//--
 		$test = self::checkRequiredConstants();
 		if($test !== true) {
@@ -187,25 +187,38 @@ final class Utils {
 		$main = (string) \SmartMarkersTemplating::render_file_template(
 			(string) self::$modulePath.'views/packages.mtpl.inc.htm',
 			[
+				'js-path' 		=> (string) $js_path,
+				'language' 		=> (string) $language,
 				'packages' 		=> (array)  $arr_packages,
 				'generated-on' 	=> (string) \date('Y-m-d H:i:s O')
 			]
 		);
 		//-- {{{SYNC-DOCUMENTOR-SAVE-MODE}}}
 		$url_index = '';
-		$url_img   = '';
 		$url_fonts = '';
-		$extdir = '';
+		$url_img   = '';
+		$url_limg  = '';
+		$extdir    = '';
 		if((string)$mode == 'multi') {
 			if((string)$extra != '') {
 				if((string)$extra == '@') {
-					$url_img 	= 'img/sf-logo.svg';
 					$url_fonts 	= 'fonts/';
+					$url_img 	= 'img/sf-logo.svg';
+					if((string)$language == 'php') {
+						$url_limg 	= 'img/php-logo.svg';
+					} elseif(((string)$language == 'js') OR ((string)$language == 'javascript')) {
+						$url_limg 	= 'img/javascript-logo.svg';
+					} //end if else
 				} else {
+					$url_fonts 	= '../fonts/';
 					$url_index = '../index.html';
 					$extdir 	= (string) \SmartFileSysUtils::add_dir_last_slash(\Smart::safe_filename((string)$extra));
 					$url_img 	= '../img/sf-logo.svg';
-					$url_fonts 	= '../fonts/';
+					if((string)$language == 'php') {
+						$url_limg 	= '../img/php-logo.svg';
+					} elseif(((string)$language == 'js') OR ((string)$language == 'javascript')) {
+						$url_limg 	= '../img/javascript-logo.svg';
+					} //end if else
 				} //end if else
 			} //end if
 		} //end if else
@@ -216,6 +229,7 @@ final class Utils {
 				//--
 				'fonts-path' 		=> (string) $url_fonts,
 				'logo-img' 			=> (string) $url_img,
+				'lang-img' 			=> (string) $url_limg,
 				'year' 				=> (string) \date('Y'),
 				//--
 				'title' 			=> (string) \strtoupper((string)$language).' Documentation',
@@ -260,6 +274,15 @@ final class Utils {
 				return 'Cannot find fonts directory Index file for Documentation';
 			} //end if
 			//--
+			if((string)$js_path != '') {
+				if(\SmartFileSystem::dir_copy((string)self::$modulePath.'views/js/', (string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'js/', true) != 1) {
+					return 'Failed to copy files to Documentation js directory';
+				} //end if
+				if(!\SmartFileSystem::is_type_file((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'js/index.html')) {
+					return 'Cannot find js directory Index file for Documentation';
+				} //end if
+			} //end if
+			//--
 			if(!\SmartFileSystem::is_type_dir((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'img/')) {
 				\SmartFileSystem::dir_create((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'img/', true);
 				if(!\SmartFileSystem::is_type_dir((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'img/')) {
@@ -275,9 +298,14 @@ final class Utils {
 			if(!\SmartFileSystem::copy((string)\SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO, (string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'img/'.\SmartFileSysUtils::get_file_name_from_path((string)\SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO), false, true)) {
 				return 'Failed to copy font img Logo to Documentation img directory';
 			} //end if
-			if(!\SmartFileSystem::is_type_file(\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'img/sf-logo.svg')) {
-				return 'Cannot find img Logo file for Documentation';
+
+			if(!\SmartFileSystem::copy('lib/framework/img/php-logo.svg', (string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'img/php-logo.svg', false, true)) {
+				return 'Failed to copy font img PhpLogo to Documentation img directory';
 			} //end if
+			if(!\SmartFileSystem::copy('lib/framework/img/javascript-logo.svg', (string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'img/javascript-logo.svg', false, true)) {
+				return 'Failed to copy font img JsLogo to Documentation img directory';
+			} //end if
+
 			//--
 		} //end if
 		//--
@@ -317,19 +345,30 @@ final class Utils {
 		} //end if
 		//-- {{{SYNC-DOCUMENTOR-SAVE-MODE}}}
 		$url_index = '';
-		$url_img   = '';
 		$url_fonts = '';
-		$extdir = '';
+		$url_img   = '';
+		$url_limg  = '';
+		$extdir    = '';
 		if((string)$mode == 'multi') {
 			$url_index = 'index.html#Package--'.\Smart::create_htmid((string)$package).'-';
 			if((string)$extra != '') {
 				if((string)$extra == '@') {
-					$url_img 	= 'img/sf-logo.svg';
 					$url_fonts 	= 'fonts/';
+					$url_img 	= 'img/sf-logo.svg';
+					if((string)$language == 'php') {
+						$url_limg 	= 'img/php-logo.svg';
+					} elseif(((string)$language == 'js') OR ((string)$language == 'javascript')) {
+						$url_limg 	= 'img/javascript-logo.svg';
+					} //end if else
 				} else {
 					$extdir 	= (string) \SmartFileSysUtils::add_dir_last_slash((string)\Smart::safe_filename((string)$extra));
-					$url_img 	= '../img/sf-logo.svg';
 					$url_fonts 	= '../fonts/';
+					$url_img 	= '../img/sf-logo.svg';
+					if((string)$language == 'php') {
+						$url_limg 	= '../img/php-logo.svg';
+					} elseif(((string)$language == 'js') OR ((string)$language == 'javascript')) {
+						$url_limg 	= '../img/javascript-logo.svg';
+					} //end if else
 				} //end if else
 			} //end if
 		} //end if else
@@ -346,6 +385,7 @@ final class Utils {
 				//--
 				'fonts-path' 		=> (string) $url_fonts,
 				'logo-img' 			=> (string) $url_img,
+				'lang-img' 			=> (string) $url_limg,
 				'year' 				=> (string) \date('Y'),
 				//--
 				'title' 			=> (string) \strtoupper((string)$language).' Documentation for: '.$cls,

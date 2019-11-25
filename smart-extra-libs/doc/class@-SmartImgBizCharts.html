@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20191122 -->
+<!-- Template: Smart.Framework@Documentor v.20191124 -->
 <html>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartImgBizCharts        final class \ SmartImgBizCharts    {   } -&gt;    Class: SmartImgBizCharts - Generates IMG Biz Charts     Language: PHP  Located">
-	<meta name="keywords" content="smartimgbizcharts, final, class, smartimgbizcharts, -, class, -, generates, img, biz, charts, language, php, located, at, modules smart-extra-libs lib charts.php, package, extralibs viewcomponents, namespace, name, version, v, depends, classes, smart, usage, dynamic, object, new, class   - method, this, provides, only, methods, summary, public, function, construct, y type, y title, y arr data, y format, png, mime header, disposition header, y filename, biz-chart, generate, y mode, raw, properties">
+	<meta name="keywords" content="smartimgbizcharts, final, class, smartimgbizcharts, -, class, -, generates, img, biz, charts, language, php, located, at, modules smart-extra-libs lib charts.php, package, extralibs viewcomponents, namespace, name, version, v, depends, classes, smart, usage, dynamic, object, new, class   - method, this, provides, only, methods, public, function, construct, y type, y title, y arr data, y format, png, mime header, disposition header, y filename, biz-chart, generate, y mode, raw, properties">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation: \SmartImgBizCharts">
 	<title>PHP Documentation for: \SmartImgBizCharts</title>
 	<!-- CSS and Fonts -->
@@ -206,7 +206,7 @@
 	[hidden] {
 		display: none !important;
 	}
-	button {
+	button, a.ux-button {
 		/* Structure */
 		display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
 		padding: 7px 15px 7px 15px !important;
@@ -236,13 +236,16 @@
 		user-select: none !important;
 		zoom: 1 !important;
 	}
-	button:hover,
-	button:focus {
+	button *, a.ux-button * {
+		font-weight: bold !important;
+	}
+	button:hover, a.ux-button:hover,
+	button:focus, a.ux-button:focus {
 		border: 1px solid #CCCCCC !important;
 		background-color: #F3F3F3 !important;
 		color: #2069A9 !important;
 	}
-	button:focus {
+	button:focus, a.ux-button:focus {
 		outline: 0 !important;
 	}
 	button[disabled],
@@ -263,7 +266,7 @@
 	nav.ux-navbar {
 		margin: 0;
 		padding: 0;
-		background-color: #3f51b5;
+		background-color: #3c4663;
 	}
 	nav.ux-navbar div#logo {
 		display: block;
@@ -289,7 +292,7 @@
 		margin: 0px;
 		display: inline-block;
 		float: left;
-		background-color: #3f51b5;
+		background-color: #3c4663;
 	}
 	nav.ux-navbar a {
 		display: block;
@@ -300,11 +303,11 @@
 		text-decoration: none;
 	}
 	nav.ux-navbar ul li ul li:hover {
-		background-color: #2e40a4;
+		background-color: #2b3a57;
 	}
 	nav.ux-navbar a:hover {
 		color: #FFFFFF;
-		background-color: #1d3093;
+		background-color: #1a2946;
 	}
 	nav.ux-navbar ul ul {
 		display: none;
@@ -353,7 +356,7 @@
 		}
 		nav.ux-navbar label.toggle {
 			display: block;
-			background-color: #3f51b5;
+			background-color: #3c4663;
 			padding: 0 20px;
 			color: #FFFFFF;
 			font-size: 20px;
@@ -366,7 +369,7 @@
 		}
 		nav.ux-navbar label.toggle:hover {
 			color: #FFFFFF;
-			background-color: #1d3093;
+			background-color: #1a2946;
 		}
 		nav.ux-navbar input[id^=drop]:checked + ul {
 			display: block;
@@ -387,15 +390,15 @@
 		}
 		nav.ux-navbar a:hover {
 			color: #FFFFFF;
-			background-color: #1d3093;
+			background-color: #1a2946;
 		}
 		nav.ux-navbar ul ul ul a {
 			color: #FFFFFF;
-			background-color: #2e40a4;
+			background-color: #2b3a57;
 		}
 		nav.ux-navbar ul li ul li .toggle,
 		nav.ux-navbar ul ul a {
-			background-color: #2e40a4;
+			background-color: #2b3a57;
 		}
 		nav.ux-navbar ul ul {
 			float: none;
@@ -449,15 +452,21 @@
 </head>
 <body>
 <nav class="ux-navbar">
-	<div id="logo"><span>&#9776; </span>Smart.Framework.Modules : PHP Documentation</div>
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework.Modules : PHP Documentation</span>
+	</div>
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20191122 -->
+<!-- class r.20191124 -->
 <!-- Styles -->
-<!-- styles r.20191122 -->
+<!-- styles r.20191124 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -576,6 +585,11 @@ div.doc-summary {
 	background: #343C61;
 	color: #FFFFFF;
 	border: 1px solid #CCCCCC;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
 }
 </style>
 <style type="text/css">
@@ -691,9 +705,9 @@ div.doc-summary {
 <!-- Methods -->
 <br>
 <div class="doc-container" id="Methods--Summary-">
-	<h2 class="doc-header">Methods summary</h2>
+	<h2 class="doc-header">class Methods</h2>
 </div>
-<!-- methods r.20191122 -->
+<!-- methods r.20191124 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
 				<span class="doc-param-name"><b><span title="`$y_type` Parameter is REQUIRED">$y_type</span></b></span>, 
@@ -748,9 +762,9 @@ div.doc-summary {
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
-	<h2 class="doc-header">Properties summary</h2>
+	<h2 class="doc-header">class Properties</h2>
 </div>
-<!-- properties r.20191122 -->
+<!-- properties r.20191124 -->
 <div class="doc-container" id="Property--width">
 	<span class="doc-modifiers">public</span> <b>$width</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
@@ -804,11 +818,16 @@ div.doc-summary {
 	
 </div>
 <!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20191124 -->
 
 <!-- Sample Code -->
 <br>
 <div class="doc-container" id="SAMPLE--Code-">
-	<h2 class="doc-header">Sample Code: PHP</h2>
+	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
 	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
@@ -818,9 +837,9 @@ div.doc-summary {
 </div>
 <!-- Summary List -->
 <br>
-<!-- summary r.20191122 -->
-<script>
-// summary r.20191122
+<!-- summary r.20191124 -->
+<script type="text/javascript">
+// summary r.20191124
 function smartHandleDocSelector(obj) {
 	if(!obj) {
 		return;
@@ -842,73 +861,77 @@ function smartHandleDocSelector(obj) {
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
 		<option value="" selected>* PHP Class \SmartImgBizCharts # Documentation Index *</option>
 		<optgroup label="Class \SmartImgBizCharts">
-			<option value="Class--Summary-">***** Class Definition *****</option>
+			<option value="Class--Summary-">Class definition</option>
 		</optgroup>
 		<optgroup label="Class Methods">
-			<option value="Methods--Summary-">*** Methods summary ***</option>
-									<option value="Method--__construct">Method: __construct()</option>
+			<option value="Methods--Summary-">Methods list</option>
+									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--mime_header">Method: mime_header()</option>
+									<option value="Method--mime_header"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;mime_header()</option>
 			
 			
-									<option value="Method--disposition_header">Method: disposition_header()</option>
+									<option value="Method--disposition_header"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;disposition_header()</option>
 			
 			
-									<option value="Method--generate">Method: generate()</option>
+									<option value="Method--generate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;generate()</option>
 			
-			
-			
-		</optgroup>
-				<optgroup label="Class Properties">
-			<option value="Properties--Summary-">*** Properties summary ***</option>
-									<option value="Property--width">Property: $width</option>
-			
-									<option value="Property--height">Property: $height</option>
-			
-									<option value="Property--axis_x_label">Property: $axis_x_label</option>
-			
-									<option value="Property--axis_y_label">Property: $axis_y_label</option>
-			
-									<option value="Property--labelcolor">Property: $labelcolor</option>
-			
-									<option value="Property--defaultcolor">Property: $defaultcolor</option>
-			
-									<option value="Property--left">Property: $left</option>
-			
-									<option value="Property--top">Property: $top</option>
-			
-									<option value="Property--right">Property: $right</option>
-			
-									<option value="Property--bottom">Property: $bottom</option>
-			
-									<option value="Property--x_mark">Property: $x_mark</option>
-			
-									<option value="Property--y_mark">Property: $y_mark</option>
-			
-									<option value="Property--bgcolor">Property: $bgcolor</option>
-			
-									<option value="Property--framecolor">Property: $framecolor</option>
-			
-									<option value="Property--axiscolor">Property: $axiscolor</option>
-			
-									<option value="Property--markcolor">Property: $markcolor</option>
-			
-									<option value="Property--debug">Property: $debug</option>
 			
 			
 		</optgroup>
-		
-		
-				<optgroup label="Class Sample code">
-			<option value="SAMPLE--Code-">*** Sample code ***</option>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+									<option value="Property--width"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$width</option>
+			
+									<option value="Property--height"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$height</option>
+			
+									<option value="Property--axis_x_label"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$axis_x_label</option>
+			
+									<option value="Property--axis_y_label"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$axis_y_label</option>
+			
+									<option value="Property--labelcolor"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$labelcolor</option>
+			
+									<option value="Property--defaultcolor"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$defaultcolor</option>
+			
+									<option value="Property--left"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$left</option>
+			
+									<option value="Property--top"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$top</option>
+			
+									<option value="Property--right"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$right</option>
+			
+									<option value="Property--bottom"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$bottom</option>
+			
+									<option value="Property--x_mark"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$x_mark</option>
+			
+									<option value="Property--y_mark"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$y_mark</option>
+			
+									<option value="Property--bgcolor"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$bgcolor</option>
+			
+									<option value="Property--framecolor"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$framecolor</option>
+			
+									<option value="Property--axiscolor"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$axiscolor</option>
+			
+									<option value="Property--markcolor"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$markcolor</option>
+			
+									<option value="Property--debug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$debug</option>
+			
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
+				<optgroup label="Class Sample usage">
+			<option value="SAMPLE--Code-">Sample code</option>
 		</optgroup>
 		
 	</select>
 </div>
+<!-- summary-selectjs r.20191124 -->
+
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2019-11-22 15:33:46 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2019-11-25 14:23:11 +0000</small>
 <hr>
 <br>
 <!-- # -->

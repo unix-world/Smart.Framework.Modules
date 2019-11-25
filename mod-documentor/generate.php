@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191122
+ * @version 20191124
  * @ignore
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -63,6 +63,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				'fonts-path' 		=> (string) $this->ControllerGetParam('module-path').'fonts/',
 				'logo-img' 			=> (string) 'lib/framework/img/sf-logo.svg',
+				'lang-img' 			=> (string) '',
 				'year' 				=> (string) date('Y'),
 				//--
 				'title' 			=> (string) 'Documentation Generator for Smart.Framework and Smart.Framework.Modules',

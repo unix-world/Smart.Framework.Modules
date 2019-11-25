@@ -1,10 +1,12 @@
 [%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
-// generate-js r.20191122
+// generate-js r.20191124
 [%%%/COMMENT%%%]
 
 //===== QUnit: START
 
+QUnit.config.uxmAllowRerun = false;
+QUnit.config.uxmHideFilterSearchModules = true;
 smartQUnitStartDelay = 500;
 
 (function() {

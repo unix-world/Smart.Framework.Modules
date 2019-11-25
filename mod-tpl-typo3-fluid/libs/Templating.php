@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.20191111
+ * @version 	v.20191124
  * @package 	modules:TemplatingEngine
  *
  */
@@ -95,7 +95,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			$arr_vars = array();
 		} //end if
 		// allow camelCase keys
-		$arr_vars = (array) self::fix_array_keys($arr_vars, true); // make keys compatible with PHP variable names, LOWER and UPPER (only 1st level, not nested)
+		$arr_vars = (array) $this->fix_array_keys($arr_vars, true); // make keys compatible with PHP variable names, LOWER and UPPER (only 1st level, not nested)
 		//--
 		if((string)\trim((string)$file) == '') {
 			throw new \Exception('Typo3Fluid Templating / Render File / The file name is Empty');

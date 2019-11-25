@@ -1,4 +1,4 @@
-<!-- class r.20191122 -->
+<!-- class r.20191124 -->
 <!-- Styles -->
 [@@@SUB-TEMPLATE:partials/styles.mtpl.inc.htm@@@]
 <!-- Headings -->
@@ -28,22 +28,27 @@
 <!-- Methods -->
 <br>
 <div class="doc-container" id="Methods--Summary-">
-	<h2 class="doc-header">Methods summary</h2>
+	<h2 class="doc-header">[###TYPE|html###] Methods</h2>
 </div>
 [@@@SUB-TEMPLATE:partials/js-methods.mtpl.inc.htm@@@]
 <!-- Properties -->
-[%%%IF:ARR-PROPERTIES:@>0;%%%]
 <br>
 <div class="doc-container" id="Properties--Summary-">
-	<h2 class="doc-header">Properties summary</h2>
+	<h2 class="doc-header">[###TYPE|html###] Properties</h2>
 </div>
 [@@@SUB-TEMPLATE:partials/js-properties.mtpl.inc.htm@@@]
-[%%%/IF:ARR-PROPERTIES%%%]
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">[###TYPE|html###] Constants</h2>
+</div>
+[@@@SUB-TEMPLATE:partials/js-constants.mtpl.inc.htm@@@]
+
 <!-- Sample Code -->
 [%%%IF:DOC-CODE-HTML:!=;%%%]
 <br>
 <div class="doc-container" id="SAMPLE--Code-">
-	<h2 class="doc-header">Sample Code: JavaScript</h2>
+	<h2 class="doc-header">Sample code: JavaScript</h2>
 </div>
 <div class="doc-code">
 	<pre><br><code class="hljs javascript">[###DOC-CODE-HTML###]</code><br></pre>

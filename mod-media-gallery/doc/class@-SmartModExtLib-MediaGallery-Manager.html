@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20191122 -->
+<!-- Template: Smart.Framework@Documentor v.20191124 -->
 <html>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartModExtLib\MediaGallery\Manager        final class \SmartModExtLib\MediaGallery\ Manager    {   } -&gt;    Class: SmartMediaGalleryManager - provides">
-	<meta name="keywords" content="smartmodextlib mediagallery manager, final, class, smartmodextlib mediagallery, manager, -, class, smartmediagallerymanager, -, provides, the, media, gallery, manager., language, php, located, at, modules mod-media-gallery libs manager.php, package, modules viewcomponents, namespace, name, version, v, depends, extensions, gd, extension, w., truecolor, support, optional, executables, imagemagick, utility, can, replace, gd, ffmpeg, for, movies, pd tmlex, pdf, classes, smart, smartutils, smartfilesystem, usage, dynamic, object, new, class   - method, this, only, methods, summary, public, function, construct, y url player mov, draw, string, y title, y dir, optional yes no, y process previews and images, no, y remove originals, optional, y display limit">
+	<meta name="keywords" content="smartmodextlib mediagallery manager, final, class, smartmodextlib mediagallery, manager, -, class, smartmediagallerymanager, -, provides, the, media, gallery, manager., language, php, located, at, modules mod-media-gallery libs manager.php, package, modules viewcomponents, namespace, name, version, v, depends, extensions, gd, extension, w., truecolor, support, optional, executables, imagemagick, utility, can, replace, gd, ffmpeg, for, movies, pd tmlex, pdf, classes, smart, smartutils, smartfilesystem, usage, dynamic, object, new, class   - method, this, only, methods, public, function, construct, y url player mov, draw, string, y title, y dir, optional yes no, y process previews and images, no, y remove originals, optional, y display limit">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 	<title>PHP Documentation for: \SmartModExtLib\MediaGallery\Manager</title>
 	<!-- CSS and Fonts -->
@@ -206,7 +206,7 @@
 	[hidden] {
 		display: none !important;
 	}
-	button {
+	button, a.ux-button {
 		/* Structure */
 		display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
 		padding: 7px 15px 7px 15px !important;
@@ -236,13 +236,16 @@
 		user-select: none !important;
 		zoom: 1 !important;
 	}
-	button:hover,
-	button:focus {
+	button *, a.ux-button * {
+		font-weight: bold !important;
+	}
+	button:hover, a.ux-button:hover,
+	button:focus, a.ux-button:focus {
 		border: 1px solid #CCCCCC !important;
 		background-color: #F3F3F3 !important;
 		color: #2069A9 !important;
 	}
-	button:focus {
+	button:focus, a.ux-button:focus {
 		outline: 0 !important;
 	}
 	button[disabled],
@@ -263,7 +266,7 @@
 	nav.ux-navbar {
 		margin: 0;
 		padding: 0;
-		background-color: #3f51b5;
+		background-color: #3c4663;
 	}
 	nav.ux-navbar div#logo {
 		display: block;
@@ -289,7 +292,7 @@
 		margin: 0px;
 		display: inline-block;
 		float: left;
-		background-color: #3f51b5;
+		background-color: #3c4663;
 	}
 	nav.ux-navbar a {
 		display: block;
@@ -300,11 +303,11 @@
 		text-decoration: none;
 	}
 	nav.ux-navbar ul li ul li:hover {
-		background-color: #2e40a4;
+		background-color: #2b3a57;
 	}
 	nav.ux-navbar a:hover {
 		color: #FFFFFF;
-		background-color: #1d3093;
+		background-color: #1a2946;
 	}
 	nav.ux-navbar ul ul {
 		display: none;
@@ -353,7 +356,7 @@
 		}
 		nav.ux-navbar label.toggle {
 			display: block;
-			background-color: #3f51b5;
+			background-color: #3c4663;
 			padding: 0 20px;
 			color: #FFFFFF;
 			font-size: 20px;
@@ -366,7 +369,7 @@
 		}
 		nav.ux-navbar label.toggle:hover {
 			color: #FFFFFF;
-			background-color: #1d3093;
+			background-color: #1a2946;
 		}
 		nav.ux-navbar input[id^=drop]:checked + ul {
 			display: block;
@@ -387,15 +390,15 @@
 		}
 		nav.ux-navbar a:hover {
 			color: #FFFFFF;
-			background-color: #1d3093;
+			background-color: #1a2946;
 		}
 		nav.ux-navbar ul ul ul a {
 			color: #FFFFFF;
-			background-color: #2e40a4;
+			background-color: #2b3a57;
 		}
 		nav.ux-navbar ul li ul li .toggle,
 		nav.ux-navbar ul ul a {
-			background-color: #2e40a4;
+			background-color: #2b3a57;
 		}
 		nav.ux-navbar ul ul {
 			float: none;
@@ -449,15 +452,21 @@
 </head>
 <body>
 <nav class="ux-navbar">
-	<div id="logo"><span>&#9776; </span>Smart.Framework.Modules : PHP Documentation</div>
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework.Modules : PHP Documentation</span>
+	</div>
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20191122 -->
+<!-- class r.20191124 -->
 <!-- Styles -->
-<!-- styles r.20191122 -->
+<!-- styles r.20191124 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -576,6 +585,11 @@ div.doc-summary {
 	background: #343C61;
 	color: #FFFFFF;
 	border: 1px solid #CCCCCC;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
 }
 </style>
 <style type="text/css">
@@ -691,9 +705,9 @@ div.doc-summary {
 <!-- Methods -->
 <br>
 <div class="doc-container" id="Methods--Summary-">
-	<h2 class="doc-header">Methods summary</h2>
+	<h2 class="doc-header">class Methods</h2>
 </div>
-<!-- methods r.20191122 -->
+<!-- methods r.20191124 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
 				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_url_player_mov` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_url_player_mov</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
@@ -732,9 +746,9 @@ div.doc-summary {
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
-	<h2 class="doc-header">Properties summary</h2>
+	<h2 class="doc-header">class Properties</h2>
 </div>
-<!-- properties r.20191122 -->
+<!-- properties r.20191124 -->
 <div class="doc-container" id="Property--use_secure_links">
 	<span class="doc-modifiers">public</span> <b>$use_secure_links</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
@@ -818,14 +832,19 @@ div.doc-summary {
 	
 </div>
 <!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20191124 -->
 
 <!-- Sample Code -->
 
 <!-- Summary List -->
 <br>
-<!-- summary r.20191122 -->
-<script>
-// summary r.20191122
+<!-- summary r.20191124 -->
+<script type="text/javascript">
+// summary r.20191124
 function smartHandleDocSelector(obj) {
 	if(!obj) {
 		return;
@@ -847,84 +866,88 @@ function smartHandleDocSelector(obj) {
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
 		<option value="" selected>* PHP Class \SmartModExtLib\MediaGallery\Manager # Documentation Index *</option>
 		<optgroup label="Class \SmartModExtLib\MediaGallery\Manager">
-			<option value="Class--Summary-">***** Class Definition *****</option>
+			<option value="Class--Summary-">Class definition</option>
 		</optgroup>
 		<optgroup label="Class Methods">
-			<option value="Methods--Summary-">*** Methods summary ***</option>
-									<option value="Method--__construct">Method: __construct()</option>
+			<option value="Methods--Summary-">Methods list</option>
+									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--draw">Method: draw()</option>
+									<option value="Method--draw"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;draw()</option>
 			
-			
-			
-		</optgroup>
-				<optgroup label="Class Properties">
-			<option value="Properties--Summary-">*** Properties summary ***</option>
-									<option value="Property--use_secure_links">Property: $use_secure_links</option>
-			
-									<option value="Property--secure_download_link">Property: $secure_download_link</option>
-			
-									<option value="Property--secure_download_ctrl_key">Property: $secure_download_ctrl_key</option>
-			
-									<option value="Property--use_styles">Property: $use_styles</option>
-			
-									<option value="Property--preview_formvar">Property: $preview_formvar</option>
-			
-									<option value="Property--preview_formpict">Property: $preview_formpict</option>
-			
-									<option value="Property--preview_description">Property: $preview_description</option>
-			
-									<option value="Property--preview_watermark">Property: $preview_watermark</option>
-			
-									<option value="Property--preview_place_watermark">Property: $preview_place_watermark</option>
-			
-									<option value="Property--preview_width">Property: $preview_width</option>
-			
-									<option value="Property--preview_height">Property: $preview_height</option>
-			
-									<option value="Property--preview_quality">Property: $preview_quality</option>
-			
-									<option value="Property--force_preview_w">Property: $force_preview_w</option>
-			
-									<option value="Property--force_preview_h">Property: $force_preview_h</option>
-			
-									<option value="Property--img_width">Property: $img_width</option>
-			
-									<option value="Property--img_quality">Property: $img_quality</option>
-			
-									<option value="Property--img_watermark">Property: $img_watermark</option>
-			
-									<option value="Property--img_place_watermark">Property: $img_place_watermark</option>
-			
-									<option value="Property--mov_pw_watermark">Property: $mov_pw_watermark</option>
-			
-									<option value="Property--mov_pw_blank">Property: $mov_pw_blank</option>
-			
-									<option value="Property--url_player_mov">Property: $url_player_mov</option>
-			
-									<option value="Property--pict_reloading">Property: $pict_reloading</option>
-			
-									<option value="Property--pict_delete">Property: $pict_delete</option>
-			
-									<option value="Property--gallery_show_counter">Property: $gallery_show_counter</option>
-			
-									<option value="Property--gallery_items">Property: $gallery_items</option>
-			
-									<option value="Property--gallery_img_link_attr">Property: $gallery_img_link_attr</option>
-			
-									<option value="Property--gallery_mov_link_attr">Property: $gallery_mov_link_attr</option>
 			
 			
 		</optgroup>
-		
-		
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+									<option value="Property--use_secure_links"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$use_secure_links</option>
+			
+									<option value="Property--secure_download_link"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$secure_download_link</option>
+			
+									<option value="Property--secure_download_ctrl_key"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$secure_download_ctrl_key</option>
+			
+									<option value="Property--use_styles"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$use_styles</option>
+			
+									<option value="Property--preview_formvar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$preview_formvar</option>
+			
+									<option value="Property--preview_formpict"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$preview_formpict</option>
+			
+									<option value="Property--preview_description"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$preview_description</option>
+			
+									<option value="Property--preview_watermark"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$preview_watermark</option>
+			
+									<option value="Property--preview_place_watermark"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$preview_place_watermark</option>
+			
+									<option value="Property--preview_width"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$preview_width</option>
+			
+									<option value="Property--preview_height"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$preview_height</option>
+			
+									<option value="Property--preview_quality"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$preview_quality</option>
+			
+									<option value="Property--force_preview_w"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$force_preview_w</option>
+			
+									<option value="Property--force_preview_h"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$force_preview_h</option>
+			
+									<option value="Property--img_width"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$img_width</option>
+			
+									<option value="Property--img_quality"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$img_quality</option>
+			
+									<option value="Property--img_watermark"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$img_watermark</option>
+			
+									<option value="Property--img_place_watermark"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$img_place_watermark</option>
+			
+									<option value="Property--mov_pw_watermark"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$mov_pw_watermark</option>
+			
+									<option value="Property--mov_pw_blank"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$mov_pw_blank</option>
+			
+									<option value="Property--url_player_mov"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$url_player_mov</option>
+			
+									<option value="Property--pict_reloading"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$pict_reloading</option>
+			
+									<option value="Property--pict_delete"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$pict_delete</option>
+			
+									<option value="Property--gallery_show_counter"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$gallery_show_counter</option>
+			
+									<option value="Property--gallery_items"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$gallery_items</option>
+			
+									<option value="Property--gallery_img_link_attr"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$gallery_img_link_attr</option>
+			
+									<option value="Property--gallery_mov_link_attr"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$gallery_mov_link_attr</option>
+			
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
 		
 	</select>
 </div>
+<!-- summary-selectjs r.20191124 -->
+
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2019-11-22 15:33:46 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2019-11-25 14:23:10 +0000</small>
 <hr>
 <br>
 <!-- # -->
