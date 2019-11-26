@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: (SocialMedia) SmFacebook r.20191110 #
+# Smart.Framework.Modules: (SocialMedia) SmFacebook r.20191126 #
 
 ## Facebook PHP Graph SDK v.5.7.0 ##
 

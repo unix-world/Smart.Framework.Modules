@@ -37,7 +37,7 @@ final class SmartClasses {
 
 	public static function getJavascriptSfFile() {
 		//--
-		return 'lib/js/framework/smart-framework.js';
+		return 'lib/js/framework/smart-framework.pak.js';
 		//--
 	} //END FUNCTION
 

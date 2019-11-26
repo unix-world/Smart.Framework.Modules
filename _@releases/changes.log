@@ -2,8 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply onlt for for Milestone Releases
 
-November 25, 2019 :: Version 5.2.7 rev.191125
+November 26, 2019 :: Version 5.2.7 rev.191126
 	* New documentation for PHP and Javascript
+	* Renamed lib/js/framework/smart-framework.js to lib/js/framework/smart-framework.pak.js
 
 November 16, 2019 :: Version 5.2.7 rev.191116
 	* Security Fix: Safe Set CA File in several Client Libs
