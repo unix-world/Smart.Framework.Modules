@@ -60,7 +60,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 						'@SUB-TEMPLATES@' => [
 							'%the-tpl%|html' => (string) $tpl
 						],
-						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartComponents::js_code_highlightsyntax('body', ['web','tpl']),
+						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web','tpl']),
 						'HTML-HIGHLIGHT-CUSTOM' => '<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/latte.js"></script>',
 						'TPL-PATH' 				=> (string) $tpl,
 						'TPL-SYNTAX' 			=> 'latte',
@@ -80,7 +80,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 						'@SUB-TEMPLATES@' => [
 							'%the-tpl%|html' => (string) $ptpl
 						],
-						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartComponents::js_code_highlightsyntax('body', ['web','tpl']),
+						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web','tpl']),
 						'HTML-HIGHLIGHT-CUSTOM' => '<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/latte.js"></script>',
 						'TPL-PATH' 				=> (string) $ptpl,
 						'TPL-SYNTAX' 			=> 'latte',

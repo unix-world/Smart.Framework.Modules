@@ -22,7 +22,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	 *
 	 */
 
-	// v.20191110
+	// v.20191126
 
 	public function Run() {
 
@@ -109,7 +109,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						'REPO-NAME' 		=> (string) $repo,
 						'REPO-PATH' 		=> (string) $path,
 						'REVISION' 			=> (string) $rev,
-						'CODE-HIGHLIGHT' 	=> (string) SmartComponents::js_code_highlightsyntax('body', ['web']),
+						'CODE-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web']),
 						'CODE-TYPE' 		=> 'diff',
 						'CODE-HTML' 		=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html((string)\SmartModExtLib\Svn\SvnWebManager::getDiffFile($repo, $path, $rev_old, $rev_new)))
 					]
@@ -142,7 +142,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$title = 'SVN - Web Manager :: Repo: '.$repo.' @ File: '.$path;
 
 				if(\SmartModExtLib\Svn\SvnWebManager::isTextFileByMimeType((string)$fmime[0]) === true) {
-					$highlight_arr = (array) SmartComponents::get_filetype_highlightsyntax((string)$path);
+					$highlight_arr = (array) SmartViewHtmlHelpers::get_highlightsyntax_by_filetype((string)$path);
+					//TODO: if $highlight_arr['type'] does return empty string before fallback to plain text call the similar from mod highlight to try complete
+					if((string)$highlight_arr['type'] == '') {
+						$highlight_arr['type'] = 'plaintext';
+					} //end if
 					$main = (string) SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'web-manager-view-file.inc.htm',
 						[
@@ -150,7 +154,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'REPO-NAME' 		=> (string) $repo,
 							'REPO-PATH' 		=> (string) $path,
 							'REVISION' 			=> (string) $rev,
-							'CODE-HIGHLIGHT' 	=> (string) SmartComponents::js_code_highlightsyntax('body', (array)$highlight_arr['pack']),
+							'CODE-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', (array)$highlight_arr['pack']),
 							'CODE-TYPE' 		=> (string) $highlight_arr['type'],
 							'CODE-HTML' 		=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html((string)\SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev)))
 						]
