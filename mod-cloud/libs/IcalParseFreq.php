@@ -45,7 +45,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @author Michael Kahn (C) 2013
  * @license http://creativecommons.org/licenses/by-sa/2.5/dk/deed.en_GB CC-BY-SA-DK
  *
- * Modified and adapted by unixman (c) 2018-2019
+ * Modified and adapted by unixman, w. fixes for PHP 7.4 (c) 2018-2019
  * @author unix-world.org
  *
  */
@@ -440,7 +440,7 @@ final class IcalParseFreq {
 	 * @return int
 	 */
 	private function ruleByday($rule, $t) {
-		$dir = ($rule{0} == '-') ? -1 : 1;
+		$dir = ($rule[0] == '-') ? -1 : 1; // fix for PHP 7.4
 		$dir_t = ($dir == 1) ? 'next' : 'last';
 		$d = $this->weekdays[\substr($rule, -2)];
 		$s = $dir_t.' '.$d.' '.\date('H:i:s', $t);

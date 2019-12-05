@@ -44,7 +44,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	classes: Typo3Fluid, \SmartModExtLib\TplTypo3Fluid\Templating
- * @version 	v.20191124
+ * @version 	v.20191129
  * @package 	modules:TemplatingEngine
  *
  */

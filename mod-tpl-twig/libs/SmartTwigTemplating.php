@@ -42,8 +42,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	classes: Twig, \SmartModExtLib\TplTwig\Templating
- * @version 	v.20191124
+ * @depends 	extensions: PHP Ctype (optional) ; classes: \SmartModExtLib\Tpl\InterfaceSmartTemplating, \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
+ * @version 	v.20191129
  * @package 	modules:TemplatingEngine
  *
  */
@@ -90,7 +90,7 @@ final class SmartTwigTemplating implements \SmartModExtLib\Tpl\InterfaceSmartTem
 	private static function startEngine() {
 		//--
 		if(self::$engine === null) {
-	//	if((self::$engine === null) OR (\SmartFrameworkRuntime::ifDebug())) { // bug fix: if debug do not reuse the Twig object to avoid crash
+	//	if((self::$engine === null) OR (\SmartFrameworkRuntime::ifDebug())) { // {{{SYNC-TWIG-SMARTFRAMEWORK-DEBUG-BUG}}} # BugFix: if debug do not reuse the Twig object to avoid crash on Twig's internal bug: 'Call to a member function getCurrent() on null' in mod-tpl-twig/libs/Twig/Parser.php ; this bug occurs when includding a twig sub-tpl in a {% for ... %} {% include Tpl_Dir__ ~ 'some-partial.twig.htm' %} {% endfor %}
 			self::$engine = new \SmartModExtLib\TplTwig\Templating();
 		} //end if
 		//--

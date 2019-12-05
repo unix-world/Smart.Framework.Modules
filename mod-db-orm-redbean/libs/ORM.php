@@ -82,8 +82,8 @@ function autoload__RedbeanOrm_SFM($classname) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @access 		PUBLIC
- * @depends 	extensions: classes: \RedbeanOrm\Db
- * @version 	v.20191008
+ * @depends 	extensions: PHP Ctype, PHP PDO ; classes: \RedbeanOrm\Db
+ * @version 	v.20191029
  * @package 	modules:Database:PDO:Redbean-ORM
  *
  */
@@ -94,6 +94,11 @@ final class ORM extends \RedBeanPHP\Facade {
 	private static $conexion = null;
 
 	public static function setup($dsn=null, $username=null, $password=null, $frozen=true, $partialBeans=false) {
+		//--
+		if(!\function_exists('\\ctype_alnum')) {
+			\Smart::raise_error(__METHOD__.'() # PHP Ctype extension is required but not found ...');
+			return;
+		} //end if
 		//--
 		if(self::$conexion) {
 			\Smart::raise_error(__METHOD__.' Already have setup a connection ...');

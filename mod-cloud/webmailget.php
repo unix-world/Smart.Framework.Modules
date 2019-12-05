@@ -377,8 +377,12 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								//--
 								$tmp_downloaded += 1;
 								//--
-								echo '.';
-								if(($i % 200) == 0) {
+								if(($i > 0) AND (($i % 10) == 0)) {
+									echo ' ';
+								} else {
+									echo '.';
+								} //end if else
+								if(($i % 100) == 0) {
 									echo '<br>';
 								} //end if
 								$this->InstantFlush();

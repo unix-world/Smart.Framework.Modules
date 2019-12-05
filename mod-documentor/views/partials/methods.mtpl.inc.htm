@@ -1,4 +1,4 @@
-<!-- methods r.20191124 -->
+<!-- methods r.20191201 -->
 [%%%LOOP:ARR-METHODS%%%]
 [%%%IF:ARR-METHODS.IS-INTERNAL-PRIV:!=1;%%%]
 <div class="doc-container" id="Method--[###ARR-METHODS.NAME|htmid|html###]">
@@ -29,16 +29,17 @@
 				[%%%IF:ARR-METHODS.SUB-METHODS.PARAMS.TYPE:!=;%%%]<i>[###ARR-METHODS.SUB-METHODS.PARAMS.TYPE|html###]</i>&nbsp;[%%%/IF:ARR-METHODS.SUB-METHODS.PARAMS.TYPE%%%]<span class="doc-param-name"><b>[%%%IF:ARR-METHODS.SUB-METHODS.PARAMS.IS-OPTIONAL:==1;%%%]<span class="doc-param-optional" title="`[###ARR-METHODS.SUB-METHODS.PARAMS.NAME|html###]` Parameter is OPTIONAL">[###ARR-METHODS.SUB-METHODS.PARAMS.NAME|html###]</span>[%%%ELSE:ARR-METHODS.SUB-METHODS.PARAMS.IS-OPTIONAL%%%]<span title="`[###ARR-METHODS.SUB-METHODS.PARAMS.NAME|html###]` Parameter is REQUIRED">[###ARR-METHODS.SUB-METHODS.PARAMS.NAME|html###]</span>[%%%/IF:ARR-METHODS.SUB-METHODS.PARAMS.IS-OPTIONAL%%%]</b></span>[%%%IF:ARR-METHODS.SUB-METHODS.PARAMS._-ITERATOR-_:<###ARR-METHODS.SUB-METHODS.PARAMS._-MAXCOUNT-_###;%%%],[%%%|SPACE%%%][%%%/IF:ARR-METHODS.SUB-METHODS.PARAMS._-ITERATOR-_%%%]
 			[%%%/LOOP:ARR-METHODS.SUB-METHODS.PARAMS%%%]
 			)&nbsp;{}&nbsp;[%%%IF:ARR-METHODS.IS-STATIC:==1;%%%]<span title="Static Method"><b>::</b></span>[%%%ELSE:ARR-METHODS.IS-STATIC%%%]<span title="Object Method"><b>-&gt;</b></span>[%%%/IF:ARR-METHODS.IS-STATIC%%%]&nbsp;[###ARR-METHODS.SUB-METHODS.RETURNS|html###]
-			[%%%IF:ARR-METHODS.SUB-METHODS.HAVE-PARAMS-OR-RET:==1;%%%]
 			<div class="doc-method-ret-params">
+			@magic __call()<br>
+			[%%%IF:ARR-METHODS.SUB-METHODS.HAVE-PARAMS-OR-RET:==1;%%%]
 			[%%%IF:ARR-METHODS.SUB-METHODS.RETURNS:!=;%%%]
 				@return {[###ARR-METHODS.SUB-METHODS.RETURNS|html###]}<br>
 			[%%%/IF:ARR-METHODS.SUB-METHODS.RETURNS%%%]
 			[%%%LOOP:ARR-METHODS.SUB-METHODS.PARAMS%%%]
 				@param [%%%IF:ARR-METHODS.SUB-METHODS.PARAMS.TYPE:!=;%%%]{[###ARR-METHODS.SUB-METHODS.PARAMS.TYPE|html###]}[%%%/IF:ARR-METHODS.SUB-METHODS.PARAMS.TYPE%%%] [###ARR-METHODS.SUB-METHODS.PARAMS.NAME|html###]<br>
 			[%%%/LOOP:ARR-METHODS.SUB-METHODS.PARAMS%%%]
-			</div>
 			[%%%/IF:ARR-METHODS.SUB-METHODS.HAVE-PARAMS-OR-RET%%%]
+			</div>
 			[%%%IF:ARR-METHODS.SUB-METHODS.DESC:!=;%%%]
 				<div class="doc-method-comments">[###ARR-METHODS.SUB-METHODS.DESC|html|nl2br|syntaxhtml###]</div>
 			[%%%/IF:ARR-METHODS.SUB-METHODS.DESC%%%]

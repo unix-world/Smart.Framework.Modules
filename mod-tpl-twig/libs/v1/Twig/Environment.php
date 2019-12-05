@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+// modified by unixman
+
 namespace Twig;
 
 use Twig\Cache\CacheInterface;
@@ -167,6 +169,8 @@ class Environment
             }
         }
     }
+
+    protected function smart__getLoadedTemplates() { return $this->loadedTemplates; } // unixman
 
     /**
      * Gets the base template class for compiled templates.

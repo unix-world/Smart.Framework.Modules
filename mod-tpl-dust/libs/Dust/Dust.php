@@ -8,7 +8,7 @@ namespace Dust;
 
 class Dust implements \Serializable {
 
-	const VERSION = 'v.0.1.91-r.20191115.sfm'; // github.com/Bloafer/dust-php
+	const VERSION = 'v.0.1.91-r.20191129.sfm'; // github.com/Bloafer/dust-php
 
 	private $parser;
 

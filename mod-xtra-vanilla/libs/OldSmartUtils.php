@@ -10,7 +10,122 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 class OldSmartUtils {
 
 	// ::
-	// v.20191021 (pre-refactoring)
+	// v.20191203
+
+
+	//================================================================
+	/**
+	 * GET/SET a cache file on the file system ; Cached File will be saved in 'tmp/cache/{prefix}/.../'
+	 * When SET will return the content back
+	 *
+	 * @param STRING 	$y_cache_file_extension		:: File Extension (example: '.ext')
+	 * @param STRING 	$y_cache_prefix				:: prefix dir (at least 3 chars ; max 64 chars) ended by slash (Example: 'prefix')
+	 * @param STRING 	$y_cache_unique_id			:: The Cache ID Unique Key (Ex: some.unique.key)
+	 * @param STRING	$y_content					:: default is FALSE to GET the cached content if exists ; if this is a non-empty string will SET the content into the cache and will return it back
+	 * @param INT 		$y_cache_expire				:: 0=never ; (>0)=seconds
+	 * @param ENUM 		$y_encrypted				:: yes/no to encrypt the file content
+	 * @return STRING								:: cached contents or empty string
+	 */
+	public static function load_cached_file_content($y_cache_file_extension, $y_cache_prefix, $y_cache_unique_id, $y_set_content=false, $y_cache_expire=0, $y_encrypted='no') {
+
+		//--
+		$y_cache_unique_id = (string) $y_cache_unique_id;
+		//--
+		if((string)$y_cache_unique_id == '') {
+			Smart::log_warning('Utils // Load From Cache ... Empty URL ...');
+			return '';
+		} //end if
+		//--
+		$y_cache_file_extension = Smart::safe_validname($y_cache_file_extension);
+		//--
+		$y_cache_expire = Smart::format_number_int($y_cache_expire, '+');
+		//--
+		$y_cache_prefix = (string) Smart::safe_varname($y_cache_prefix);
+		//--
+		if((strlen($y_cache_prefix) >= 3) AND (strlen($y_cache_prefix) <= 64)) {
+			//--
+			$y_cache_prefix = SmartFileSysUtils::add_dir_last_slash($y_cache_prefix); // fix trailing slash
+			//--
+		} else {
+			//--
+			Smart::log_warning('Utils // Load From Cache ... Invalid Cache Prefix ...');
+			$y_cache_prefix = 'default/';
+			//--
+		} //end if
+		//--
+
+		//--
+		$unique_id = (string) SmartHashCrypto::sha1('@@::Smart.Framework::Content::Cache@@'.$y_cache_unique_id);
+		//--
+		$dir = 'tmp/cache/'.$y_cache_prefix.SmartFileSysUtils::prefixed_sha1_path($unique_id);
+		SmartFileSysUtils::raise_error_if_unsafe_path($dir);
+		//--
+		$file = (string) $dir.$unique_id.$y_cache_file_extension;
+		SmartFileSysUtils::raise_error_if_unsafe_path($file);
+		//--
+		if(!SmartFileSystem::is_type_dir($dir)) {
+			SmartFileSystem::dir_create($dir, true); // recursive create
+			if(!SmartFileSystem::is_type_dir($dir)) {
+				Smart::log_warning('Utils // Load From Cache ... Cannot Create Directory Structure: '.$dir);
+				return '';
+			} //end if
+		} // end if
+		//--
+		/* avoid this to avoid overload Inodes !! ('tmp/cache/' is already protected)
+		$protect_file = $dir.'index.html';
+		if(!SmartFileSystem::is_type_file($protect_file)) {
+			SmartFileSystem::write($protect_file, '');
+		} //end if
+		*/
+		//--
+
+		//-- will go through this only if cache expired or no cache
+		if((!SmartFileSystem::is_type_file($file)) OR ((SmartFileSystem::is_type_file($file)) AND ($y_cache_expire > 0) AND ((SmartFileSystem::get_file_mtime($file) + $y_cache_expire) < time()))) {
+			//--
+			//Smart::log_notice('MUST Resave to cache ... '.$y_cache_unique_id);
+			//-- write to cache if not empty (set)
+			if((string)$y_set_content != '') { // If Content Have been Set
+				//--
+				//Smart::log_notice('Resave to cache ... '.$y_cache_unique_id);
+				//-- if required, apply encryption
+				if((string)$y_encrypted == 'yes') {
+					$y_set_content = (string) self::crypto_blowfish_encrypt($y_set_content);
+				} //end if
+				//--
+				SmartFileSystem::write($file, $y_set_content); // save file to cache (safe write is controlled via locks)
+				//--
+			} else {
+				//--
+				$y_set_content = ''; // expired content
+				//--
+				// do not delete file in multi concurrency, simply rewrite ...
+				//--
+			} //end if
+			//--
+			$out = (string) $y_set_content;
+			$y_set_content = ''; // free mem
+			//--
+		} else {
+			//--
+			$out = (string) SmartFileSystem::read($file); // ccahe valid, read from cache
+			//Smart::log_notice(__METHOD__.'() read FS-Cached Content from: '.$file.' @ '.$out);
+			//--
+		} //end if
+		//--
+		if((string)$y_encrypted == 'yes') {
+			if((string)$out != '') {
+				$out = (string) self::crypto_blowfish_decrypt($out);
+			} //end if
+		} //end if
+		//--
+
+		//--
+		return (string) $out;
+		//--
+
+	} //END FUNCTION
+	//================================================================
+
 
 	//================================================================
 	// Used for log arrays

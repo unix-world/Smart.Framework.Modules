@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: JsComponents r.20191126 #
+# Smart.Framework.Modules: JsComponents r.20191129 #
 
 // r.5.2.7 / smart.framework.v.5.2
 

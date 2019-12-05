@@ -42,8 +42,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	classes: Dust, \SmartModExtLib\TplDust\Templating
- * @version 	v.20191124
+ * @depends 	extensions: PHP Ctype ; classes: Dust, \SmartModExtLib\TplDust\Templating
+ * @version 	v.20191129
  * @package 	modules:TemplatingEngine
  *
  */

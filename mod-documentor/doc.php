@@ -36,7 +36,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191124
+ * @version 20191203
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -1063,7 +1063,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 									$havetypeparam = $param->hasType();
 									$deftype = '';
 									if($havetypeparam) {
-										$deftype = $param->getType();
+									//	$deftype = $param->getType();
+										$deftype = $param->getType()->getName(); // fix for PHP 7.4
 									} //end if
 									$cparams[] = [
 										'@definition' 		=> 'class.method.param',
@@ -1416,7 +1417,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 /**
  * Index Area Controller
- * @version 20191124
+ * @version 20191203
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {

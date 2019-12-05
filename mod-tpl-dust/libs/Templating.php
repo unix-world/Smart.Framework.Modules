@@ -46,8 +46,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @access 		PUBLIC
- * @depends 	extensions: classes: Dust
- * @version 	v.20191124
+ * @depends 	extensions: PHP Ctype ; classes: Dust
+ * @version 	v.20191129
  * @package 	modules:TemplatingEngine
  *
  */
@@ -67,6 +67,11 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 
 
 	public function __construct() {
+		//--
+		if(!\function_exists('\\ctype_alnum')) {
+			\Smart::raise_error(__METHOD__.'() # PHP Ctype extension is required but not found ...');
+			return;
+		} //end if
 		//--
 		$this->dir = 'modules/';
 		//--
@@ -140,6 +145,10 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		//--
 		if(\SmartFrameworkRuntime::ifDebug()) {
 			$bench = \microtime(true);
+			$pmu = 0;
+			if(\function_exists('\\memory_get_peak_usage')) {
+				$pmu = (int) @\memory_get_peak_usage(false);
+			} //end if
 		} //end if
 		//--
 		$template = $this->dust->compileFile((string)$the_tpl_file, (string)$dir_of_tpl);
@@ -177,25 +186,30 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			$optim_msg = null;
 			//--
 			$bench = \Smart::format_number_dec((float)(\microtime(true) - (float)$bench), 9, '.', '');
+			if(\function_exists('\\memory_get_peak_usage')) {
+				$pmu = ((int)@\memory_get_peak_usage(false) - (int)$pmu);
+			} //end if
+			//--
 			$dbginf = (array) $this->dust->getTemplates();
 			$dbgarr = [];
 			$dbgarr['dbg-file-name'] = '';
+			$dbgarr['render-time'] = $bench; // sec.
+			$dbgarr['render-mem'] = $pmu; // bytes
 			$dbgarr['tpl-vars'] = [];
 			$dbgarr['sub-tpls'] = [];
 			$found = 0;
 			foreach($dbginf as $key => $val) {
-				if($found) {
-					break;
-				} //end if
 				if((string)$key != '') {
-					if((string)$the_tpl_file == (string)$key) {
-						if((string)$val->filePath != '') {
+					if((string)$val->filePath != '') {
+						if((string)$the_tpl_file == (string)$key) {
 							if((string)$val->filePath == (string)$file) {
-								$found++;
-								$dbgarr['dbg-file-name'] = (string) $val->filePath;
-								$dbgarr = (array) $this->dbgParseDustObjBody($dir_of_tpl, $dbgarr, $key, $val);
+								if(!$found) {
+									$dbgarr['dbg-file-name'] = (string) $val->filePath;
+									$found++;
+								} //end if
 							} //end if
 						} //end if
+						$dbgarr = (array) $this->dbgParseDustObjBody($dir_of_tpl, $dbgarr, $key, $val);
 					} //end if
 				} //end if
 			} //end foreach
@@ -241,12 +255,12 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		//--
 		if((\SmartFileSystem::is_type_file($dbg_tpl['dbg-file-name'])) AND ((string)$dbg_tpl['dbg-file-contents'] != '')) {
 			//-- the hash
-			$hash = \sha1((string)$dbg_tpl['dbg-file-name']);
+			$hash = (string) \sha1((string)$dbg_tpl['dbg-file-name']);
 			//-- get arr dbg data
 			$dbgarr = (array) $this->render_file_template((string)$dbg_tpl['dbg-file-name'], [], true); // need to render before get dbg
 			//-- pre-render vars
-			$tbl_vars = '<table id="'.'__dust__template__debug-tplvars_'.\Smart::escape_html($hash).'" class="ux-table ux-table-striped" cellspacing="0" cellpadding="4" width="500" style="font-size:0.750em!important;">';
-			$tbl_vars .= '<tr align="center"><th>{ Dust TPL variables }</th><th>#&nbsp;('.(int)\Smart::array_size($dbgarr['tpl-vars']).')</th></tr>';
+			$tbl_vars = '<table id="'.'__dust__template__debug-tplvars_'.\Smart::escape_html($hash).'" class="debug-table debug-table-striped" cellspacing="0" cellpadding="4" width="500" style="font-size:0.750em!important;">';
+			$tbl_vars .= '<tr align="center"><th>{ Dust-TPL variables usage, incl. Sub-TPLs }</th><th>#&nbsp;('.(int)\Smart::array_size($dbgarr['tpl-vars']).')</th></tr>';
 			if(\Smart::array_size($dbgarr['tpl-vars']) > 0) {
 				foreach((array)$dbgarr['tpl-vars'] as $key => $val) {
 					if((\strpos((string)$key, '$') !== 0) AND (\strpos((string)$key, '.$') === false)) {
@@ -284,16 +298,33 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			if(\Smart::array_size($dbgarr['sub-tpls']) > 0) {
 				foreach((array)$dbgarr['sub-tpls'] as $key => $val) {
 					$tbl_subs .= '<tr><td align="left">';
-					$tbl_subs .= '<span style="font-size:1.15em!important;"><b><i>Dust-SubTPL Source File:</i> '.\Smart::escape_html((string)$val).'</b></span><br>';
+					$tbl_subs .= '<span style="font-size:1.15em!important;"><b><i>Dust-SubTPL Source File:</i></b> '.\Smart::escape_html((string)$val).'</span><br>';
+					$tbl_subs .= '<span style="color:#778899"><b><i>Dust-SubTPL Cache File:</i></b> php://memory/dustTPL_'.\Smart::escape_html(\sha1((string)$key)).'</span><br>';
+					$tbl_subs .= '<span style="color:#666699"><b><i>Twig-SubTPL PHP-Class:</i></b> \\Dust\\Ast\\Body__'.\Smart::escape_html(\sha1((string)$key)).'{}'.'</span><br>';
 					$tbl_subs .= '</td></tr>';
 				} //end foreach
 			} //end if
+			$tbl_subs .= '<tr><td align="left">';
+			$tbl_subs .= '<hr>';
+			$tbl_subs .= '<pre>'.'Dust-TPL.View'."\n".'└ '.\Smart::escape_html((string)$dbg_tpl['dbg-file-name']);
+			if(\Smart::array_size($dbgarr['sub-tpls']) > 0) {
+				foreach((array)$dbgarr['sub-tpls'] as $key => $val) {
+					$tbl_subs .= "\n".'  └ '.\Smart::escape_html((string)$val);
+				} //end foreach
+			} //end if
+			$tbl_subs .= '</pre>';
+			$tbl_subs .= '<hr>';
+			$tbl_subs .= 'Compile&nbsp;Time:&nbsp;'.\Smart::escape_html((string)\Smart::format_number_dec((float)$dbgarr['render-time'], 9, '.', '')).'&nbsp;seconds<br>';
+			$tbl_subs .= 'Memory&nbsp;Usage:&nbsp;'.\Smart::escape_html((string)(int)$dbgarr['render-mem']).'&nbsp;bytes<br>';
+			$tbl_subs .= '</td></tr>';
 			$tbl_subs .= '</table>';
 			//-- inits
 			$content = '<!-- START: Dust-TPL Debug Analysis @ '.\Smart::escape_html((string)$dbg_tpl['dbg-file-name']).' # -->'."\n";
 			$content .= '<div align="left">';
-			$content .= '<h2 style="display:inline;background:#003366;color:#FFFFFF;padding:3px;">Dust-TPL Debug Analysis</h2>';
-			$content .= '<br><h3 style="display:inline;"><i>Dust-TPL Source File:</i> '.\Smart::escape_html((string)$dbg_tpl['dbg-file-name']).'</h3>';
+			$content .= '<h3 style="display:inline;background:#003366;color:#FFFFFF;padding:3px;">Dust-TPL Debug Analysis</h3>';
+			$content .= '<br><h4 style="display:inline;"><i>Dust-TPL Source File:</i> '.\Smart::escape_html((string)$dbg_tpl['dbg-file-name']).'</h4>';
+			$content .= '<br><h5 style="display:inline; color:#778899;"><i>Twig-TPL Cache File:</i> php://memory/dustTPL_'.\Smart::escape_html($hash).'</h5>';
+			$content .= '<br><h5 style="display:inline; color:#666699;"><i>Twig-TPL PHP-Class:</i> \\Dust\\Ast\\Body__'.\Smart::escape_html($hash).'{}</h5>';
 			$content .= '<hr>';
 			//-- start table
 			$content .= '<table width="99%">';
@@ -361,7 +392,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 							} //end if
 						} //end if else
 						if(\is_a($val->parts[$i]->body, '\\Dust\\Ast\\Body')) {
-							$dbgarr = $this->dbgParseDustObjBody($basePath, $dbgarr, $key, $val->parts[$i]->body, $prefix);
+							$dbgarr = (array) $this->dbgParseDustObjBody($basePath, $dbgarr, $key, $val->parts[$i]->body, $prefix);
 						} //end if
 						if(\strpos($prefix, '.') !== false) {
 							$prefix = (array) \explode('.', (string)$prefix);

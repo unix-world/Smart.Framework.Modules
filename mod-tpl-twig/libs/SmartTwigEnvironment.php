@@ -27,8 +27,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @depends 	extensions: classes: Twig
- * @version 	v.20191124
+ * @depends 	extensions: PHP Ctype (optional) ; classes: \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
+ * @version 	v.20191129
  * @package 	modules:TemplatingEngine
  *
  */
@@ -40,9 +40,9 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 	public function smartSetupCacheDir() {
 		//--
 		if(\SMART_FRAMEWORK_ADMIN_AREA === true) {
-			$the_twig_cache_dir = 'tmp/cache/twig#adm';
+			$the_twig_cache_dir = 'tmp/cache/twig#adm/v'.(int)self::MAJOR_VERSION;
 		} else {
-			$the_twig_cache_dir = 'tmp/cache/twig#idx';
+			$the_twig_cache_dir = 'tmp/cache/twig#idx/v'.(int)self::MAJOR_VERSION;
 		} //end if else
 		if(!\SmartFileSystem::is_type_dir((string)$the_twig_cache_dir)) {
 			if(!\SmartFileSystem::dir_create((string)$the_twig_cache_dir, true)) {
@@ -75,7 +75,11 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 			$the_twig_cache_dir = \SmartFileSysUtils::add_dir_last_slash($the_twig_cache_dir);
 		} //end if
 		//--
-		$arr = (array) $this->loadedTemplates;
+		if(!\method_exists($this, 'smart__getLoadedTemplates')) {
+			\Smart::log_warning('Twig Profiler for Smart.Framework requires a custom method to be implemented in the \\Twig\\Environment class: protected function smart__getLoadedTemplates() { return $this->loadedTemplates; } ...');
+			return array();
+		} //end if
+		$arr = (array) $this->smart__getLoadedTemplates();
 		$dbg_arr = [
 			'sub-tpls' => [],
 			'tpl-vars' => []
@@ -85,7 +89,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 			if($key) {
 				if(\is_object($val)) {
 					//--
-					$hash_key = (string) \SmartHashCrypto::sha256((string)$key); // hash('sha256',$key) :: sync with Twig_Environment->getTemplateClass()
+					$hash_key = (string) \SmartHashCrypto::sha256((string)$key); // hash('sha256',$key) :: sync with \Twig\Environment->getTemplateClass()
 					$real_cache_file = (string) $the_twig_cache_dir.\SmartFileSysUtils::add_dir_last_slash(\substr($hash_key, 0, 2)).$hash_key.'.php';
 					//--
 					$tpl_path = (string) $val->getTemplateName();
@@ -125,8 +129,8 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 		$tmp_vars = (array) $dbg_arr['tpl-vars'];
 		$dbg_arr['tpl-vars'] = array();
 		foreach($tmp_vars as $key => $val) {
-			if((string)\trim((string)$val) != '') {
-				$dbg_arr['tpl-vars'][(string)$val] += 1;
+			if((string)\trim((string)$key) != '') {
+				$dbg_arr['tpl-vars'][(string)$key] += (int)$val;
 			} //end if
 		} //end foreach
 		$tmp_vars = array();
@@ -148,26 +152,33 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 		//--
 		$source = $this->getLoader()->getSourceContext((string)$tplName);
 		$tokens = $this->tokenize($source);
-		$parsed = (new \Twig\Parser($this))->parse($tokens);
-		$collected = [];
-		$this->smartCollectNodes($parsed, $collected);
+	//	$parsed = (new \Twig\Parser($this))->parse($tokens); // {{{SYNC-TWIG-SMARTFRAMEWORK-DEBUG-BUG}}} if using this must re-init twig engine on every parse
+		$parsed = $this->parse($tokens); // this fix seems to work for above bug ...
 		//--
-		return (array) \array_keys($collected);
+		return (array) $this->smartCollectNodes($parsed);
 		//--
 	} //END FUNCTION
 
 
-	private function smartCollectNodes($nodes, array &$collected) {
+	private function smartCollectNodes($nodes, $collected=null) {
+		//--
+		if(!\is_array($collected)) {
+			$collected = [];
+		} //end if
 		//--
 		foreach($nodes as $k => $node) {
 			$childNodes = $node->getIterator()->getArrayCopy();
 			if(!empty($childNodes)) {
-				$this->smartCollectNodes($childNodes, $collected); // recursion
+				$collected = (array) $this->smartCollectNodes($childNodes, $collected); // recursion
 			} elseif($node instanceof \Twig\Node\Expression\NameExpression) {
 				$name = $node->getAttribute('name');
-				$collected[$name] = $node; // ensure unique values
+			//	if(!$node->getAttribute('always_defined')) { // internal twig defined variables
+				$collected[(string)$name] += 1; // get real usage
+			//	} //end if
 			} //end if else
 		} //end foreach
+		//--
+		return (array) $collected;
 		//--
 	} //END FUNCTION
 

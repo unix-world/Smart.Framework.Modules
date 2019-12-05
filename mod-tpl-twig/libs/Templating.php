@@ -46,8 +46,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @access 		PUBLIC
- * @depends 	extensions: classes: \SmartModExtLib\TplTwig\SmartTwigEnvironment, Twig
- * @version 	v.20191124
+ * @depends 	extensions: PHP Ctype (optional) ; classes: \SmartModExtLib\Tpl\AbstractTemplating, \SmartModExtLib\TplTwig\SmartTwigEnvironment, \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
+ * @version 	v.20191129
  * @package 	modules:TemplatingEngine
  *
  */
@@ -205,12 +205,12 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		//--
 		if((\SmartFileSystem::is_type_file($dbg_tpl['dbg-file-name'])) AND ((string)$dbg_tpl['dbg-file-contents'] != '')) {
 			//-- the hash
-			$hash = \sha1((string)$dbg_tpl['dbg-file-name']);
+			$hash = (string) \sha1((string)$dbg_tpl['dbg-file-name']);
 			//-- get arr dbg data
 			$dbgarr = (array) $this->render_file_template((string)$dbg_tpl['dbg-file-name'], [], true); // need to render before get dbg
 			//-- pre-render vars
-			$tbl_vars = '<table id="'.'__twig__template__debug-tplvars_'.\Smart::escape_html($hash).'" class="ux-table ux-table-striped" cellspacing="0" cellpadding="4" width="500" style="font-size:0.750em!important;">';
-			$tbl_vars .= '<tr align="center"><th>{{ Twig TPL variables }}</th><th>#&nbsp;('.(int)\Smart::array_size($dbgarr['tpl-vars']).')</th></tr>';
+			$tbl_vars = '<table id="'.'__twig__template__debug-tplvars_'.\Smart::escape_html($hash).'" class="debug-table debug-table-striped" cellspacing="0" cellpadding="4" width="500" style="font-size:0.750em!important;">';
+			$tbl_vars .= '<tr align="center"><th>{{ Twig-TPL variables usage, incl. Sub-TPLs }}</th><th>#&nbsp;('.(int)\Smart::array_size($dbgarr['tpl-vars']).')</th></tr>';
 			if(\Smart::array_size($dbgarr['tpl-vars']) > 0) {
 				foreach((array)$dbgarr['tpl-vars'] as $key => $val) {
 					if((string)\substr((string)$key, 0, 1) != '_') {
@@ -251,15 +251,15 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			if(\Smart::array_size($dbgarr['sub-tpls']) > 0) {
 				foreach((array)$dbgarr['sub-tpls'] as $key => $val) {
 					if(\is_array($val)) {
-						if((string)$val['tpl'] != (string)$dbg_tpl['dbg-file-name']) {
+						if((string)$val['tpl'] != (string)$dbg_tpl['dbg-file-name']) { // these are sub-classes
 							$tbl_subs .= '<tr><td align="left">';
-							$tbl_subs .= '<span style="font-size:1.15em!important;"><b><i>Twig-SubTPL Source File:</i> '.\Smart::escape_html((string)$val['tpl']).'</b></span><br>';
-							$tbl_subs .= '<span style="color:#778899"><b><i>Twig-SubTPL Cache File:</i> '.\Smart::escape_html((string)$val['cache']).'</b></span><br>';
-							$tbl_subs .= '<span style="color:#666699"><b><i>Twig-SubTPL PHP-Class:</i> '.\Smart::escape_html((string)$key).'{}'.'</b></span><br>';
+							$tbl_subs .= '<span style="font-size:1.15em!important;"><b><i>Twig-SubTPL Source File:</i></b> '.\Smart::escape_html((string)$val['tpl']).'</span><br>';
+							$tbl_subs .= '<span style="color:#778899"><b><i>Twig-SubTPL Cache File:</i></b> '.\Smart::escape_html((string)$val['cache']).'</span><br>';
+							$tbl_subs .= '<span style="color:#666699"><b><i>Twig-SubTPL PHP-Class:</i></b> '.\Smart::escape_html((string)$key).'{}'.'</span><br>';
 							$tbl_subs .= '</td></tr>';
-						} else {
-							$twchemain = (string) \Smart::escape_html((string)$val['cache']);
-							$twclsmain = (string) \Smart::escape_html((string)$key).'{}';
+						} else { // this is main class
+							$twchemain = (string) $val['cache'];
+							$twclsmain = (string) $key.'{}';
 						} //end if
 					} //end if
 				} //end foreach
@@ -270,16 +270,17 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 				$tbl_subs .= '<hr><pre>'.\Smart::escape_html((string)$dumper->dump($this->twprof)).'</pre><hr>';
 				$tbl_subs .= 'Compile&nbsp;Time:&nbsp;'.\Smart::escape_html((string)\Smart::format_number_dec((float)$this->twprof->getDuration(), 9, '.', '')).'&nbsp;seconds<br>';
 				$tbl_subs .= 'Memory&nbsp;Usage:&nbsp;'.\Smart::escape_html((string)(int)$this->twprof->getPeakMemoryUsage()).'&nbsp;bytes<br>';
+				$tbl_subs .= '<hr><b>Twig&nbsp;'.\Smart::escape_html('v.'.(int)\Twig\Environment::MAJOR_VERSION).'</b>&nbsp;::&nbsp;version&nbsp;'.\Smart::escape_html($this->getVersion()).'<br>';
 				$tbl_subs .= '</td></tr>';
 			} //end if
 			$tbl_subs .= '</table>';
 			//-- inits
 			$content = '<!-- START: Twig-TPL Debug Analysis @ '.\Smart::escape_html((string)$dbg_tpl['dbg-file-name']).' # -->'."\n";
 			$content .= '<div align="left">';
-			$content .= '<h2 style="display:inline;background:#003366;color:#FFFFFF;padding:3px;">Twig-TPL Debug Analysis</h2>';
-			$content .= '<br><h3 style="display:inline;"><i>Twig-TPL Source File:</i> '.\Smart::escape_html((string)$dbg_tpl['dbg-file-name']).'</h3>';
-			$content .= '<br><h4 style="display:inline; color:#778899;"><i>Twig-TPL Cache File:</i> '.$twchemain.'</h4>';
-			$content .= '<br><h4 style="display:inline; color:#666699;"><i>Twig-TPL Class:</i> '.$twclsmain.'</h4>';
+			$content .= '<h3 style="display:inline;background:#003366;color:#FFFFFF;padding:3px;">Twig-TPL Debug Analysis</h3>';
+			$content .= '<br><h4 style="display:inline;"><i>Twig-TPL Source File:</i> '.\Smart::escape_html((string)$dbg_tpl['dbg-file-name']).'</h4>';
+			$content .= '<br><h5 style="display:inline; color:#778899;"><i>Twig-TPL Cache File:</i> '.\Smart::escape_html((string)$twchemain).'</h5>';
+			$content .= '<br><h5 style="display:inline; color:#666699;"><i>Twig-TPL PHP-Class:</i> '.\Smart::escape_html((string)$twclsmain).'</h5>';
 			$content .= '<hr>';
 			//-- start table
 			$content .= '<table width="99%">';
@@ -339,19 +340,53 @@ function autoload__TwigTemplating_SFM($classname) {
 	//--
 	$classname = (string) $classname;
 	//--
-	if(\strpos((string)$classname, '\\') !== false) { // if have no namespace
-//		return;
-	} //end if
-	//--
 	$path = '';
 	//--
-	if((string)\substr((string)$classname, 0, 5) === 'Twig_') { // if class name is not starting with Twig_
+	if(!$path) {
+		if((string)\substr((string)$classname, 0, 23) === 'Symfony\\Polyfill\\Ctype\\') { // if class name is starting with Symfony\Polyfill\
+			//--
+			$cls = (array) \explode('\\', (string)$classname);
+			$cls = (string) \end($cls);
+			$cls = (string) \str_replace(array('\\', "\0"), array('', ''), (string)$cls);
+			$cls = (string) \trim((string)$cls);
+			//--
+			if($cls) {
+				$path = 'modules/mod-tpl-twig/libs/polyfill/'.$cls;
+			} //end if
+			//--
+			$cls = '';
+			//--
+		} //end if
+	} //end if
+	//--
+	if(!$path) {
 		//--
-		$path = 'modules/mod-tpl-twig/libs/Twig/-lib/'.\str_replace(array('\\', "\0", '_'), array('', '', '/'), (string)$classname);
+		$twig_version = 'v3';
+	//	if(\version_compare((string)\phpversion(), '7.2.9') < 0) {
+		if(\version_compare((string)\phpversion(), '7.2') < 0) {
+			$twig_version = 'v1';
+		} //end if
 		//--
-	} elseif((string)\substr((string)$classname, 0, 5) === 'Twig\\') { // if class name is not starting with Twig\\
-		//--
-		$path = 'modules/mod-tpl-twig/libs/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
+		if((string)$twig_version == 'v1') {
+			if((string)\substr((string)$classname, 0, 5) === 'Twig\\') { // if class name is starting with Twig\
+				//--
+				$path = 'modules/mod-tpl-twig/libs/v1/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
+				//--
+			} elseif((string)\substr((string)$classname, 0, 5) === 'Twig_') { // if class name is starting with Twig_ (old classes, no namespace)
+				//--
+				$path = 'modules/mod-tpl-twig/libs/v1/Twig/-lib/'.\str_replace(array('\\', "\0", '_'), array('', '', '/'), (string)$classname);
+				//--
+			} //end if
+		} else {
+		//	if(\strpos((string)$classname, '\\') === false) { // if have no namespace
+		//		return;
+		//	} //end if
+			if((string)\substr((string)$classname, 0, 5) === 'Twig\\') { // if class name is starting with Twig\
+				//--
+				$path = 'modules/mod-tpl-twig/libs/v3/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
+				//--
+			} //end if
+		} //end if else
 		//--
 	} //end if
 	//--
@@ -374,6 +409,11 @@ function autoload__TwigTemplating_SFM($classname) {
 \spl_autoload_register('\\SmartModExtLib\\TplTwig\\autoload__TwigTemplating_SFM', true, false); // throw / append
 //--
 
+//--
+if(!\function_exists('\\ctype_alnum')) {
+	require_once('modules/mod-tpl-twig/libs/polyfill/Ctype-bootstrap.php');
+} //end if
+//--
 
 //end of php code
 ?>
