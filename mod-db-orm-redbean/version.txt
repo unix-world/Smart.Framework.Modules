@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: RedBean-ORM r.20191129 #
+# Smart.Framework.Modules: RedBean-ORM r.20191209 #
 ## gabordemooij/redbean 5.4 with some fixes by unixman + update to github head@191129 ##
 
 // r.5.2.7 / smart.framework.v.5.2

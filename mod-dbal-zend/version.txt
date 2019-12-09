@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: Zend-DBAL r.20191126 #
+# Smart.Framework.Modules: Zend-DBAL r.20191209 #
 ## Zend/Db 2.10.0 ; Zend/Stdlib 3.2.1 ##
 
 // r.5.2.7 / smart.framework.v.5.2

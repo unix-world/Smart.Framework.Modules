@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: LangDetect (nGrams) r.20191126 #
+# Smart.Framework.Modules: LangDetect (nGrams) r.20191209 #
 
 // r.5.2.7 / smart.framework.v.5.2
 
