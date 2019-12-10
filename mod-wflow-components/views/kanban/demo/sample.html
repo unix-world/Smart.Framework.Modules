@@ -140,9 +140,9 @@ jQuery(function() {
 	$.get('testdata.json', renderKanban, 'json');
 })();
 */
-(function(){
+jQuery(function() {
 	$.get('../../gantt/demo/testdata.json', function(data){ myKanBan.importData(data); }, 'json');
-})();
+});
 </script>
 </body>
 </html>
