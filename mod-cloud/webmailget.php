@@ -552,15 +552,18 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		echo '<br><hr><br>'."\n";
-	//	echo SmartComponents::refresh_parent('admin.php?op=netofx_mbx_lst&mboxname='.rawurlencode($y_mbx_name).'&mboxsub=inbox'); // aaa
+		echo '<script>'."\n";
+		echo SmartViewHtmlHelpers::js_code_wnd_close_modal_popup(3000)."\n";
+		echo SmartViewHtmlHelpers::js_code_wnd_refresh_parent($this->ControllerGetParam('url-script').'?page='.substr($this->ControllerGetParam('url-page'), 0, -3))."\n";
+		echo '</script>'."\n";
 		$this->InstantFlush();
 		//--
 		if($errors <= 0) {
 			echo SmartComponents::operation_ok('OK: Done').'<br>';
 		//	if((string)$use_next_dir == '') {
-		//		echo SmartComponents::close_window(3000);
+		//		echo SmartViewHtmlHelpers::js_code_wnd_close_modal_popup(3000);
 		//	} else {
-		//		echo SmartComponents::redirect_page('admin.php?op=netofx_mbx_get&mboxname='.rawurlencode($y_mbx_name).'&mboxsub='.rawurlencode($use_next_dir), '3000');
+		//		echo SmartViewHtmlHelpers::js_code_wnd_redirect('admin.php?op=netofx_mbx_get&mboxname='.rawurlencode($y_mbx_name).'&mboxsub='.rawurlencode($use_next_dir), '3000');
 		//	} //end if else
 		//	$this->InstantFlush();
 		} else {

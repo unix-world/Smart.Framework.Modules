@@ -1,0 +1,10 @@
+[%%%LOOP:BOXES%%%]
+	[%%%IF:BOXES._-VAL-_:==###CURRENT-BOX###;%%%]
+	<button class="ux-button ux-button-dark ux-button-xsmall ux-button-noaction" style="width:100%;" onclick="return false;" disabled>[###BOXES._-VAL-_|ucfirst|html###]</button><br>
+	[%%%ELSE:BOXES._-VAL-_%%%]
+	<a class="ux-button ux-button-xsmall" style="width:100%;" href="[###URL-PAGE|html###]&box=[###BOXES._-VAL-_|url|html###]">[###BOXES._-VAL-_|ucfirst|html###]</a><br>
+	[%%%/IF:BOXES._-VAL-_%%%]
+[%%%/LOOP:BOXES%%%]
+<br>
+<br>
+<a class="ux-button ux-button-primary ux-button-xsmall" style="width:100%;" href="[###URL-GET|html###]" data-smart="open.modal">Get New Mail</a><br>

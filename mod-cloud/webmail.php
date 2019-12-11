@@ -23,6 +23,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	private $username;
 	private $userpath;
 	private $pagelink;
+	private $getlink;
 
 
 	public function Run() {
@@ -55,6 +56,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$this->userpath = (string) SmartFileSysUtils::add_dir_last_slash((string)$safe_user_path);
 		//--
 		$this->pagelink = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('url-page');
+		$this->getlink = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('url-page').'get';
 		//--
 
 
@@ -65,8 +67,16 @@ $html_content = '<a id="url_recognition" href="'.$this->pagelink.'&msg='.Smart::
 )).'" target="cloud_webmail_eml_display" data-smart="open.modal">test_uxm_multi_mimes.eml</a>';
 */
 
+$html_content = '';
+$html_vbar = '';
 $mbox = 'iradu@unix-world.org';
-$box = 'inbox';
+
+		$arr_boxes = [ 'inbox', 'junk', 'sent', 'trash' ];
+		$box = $this->RequestVarGet('box', 'inbox', 'string');
+		if(!in_array((string)$box, (array)$arr_boxes)) {
+			$this->PageViewSetErrorStatus(404, 'ERROR: Invalid WebMail Box: '.$box);
+			return 404;
+		} //end if
 
 		//--
 		$op = $this->RequestVarGet('op', '', 'string');
@@ -85,7 +95,7 @@ $box = 'inbox';
 				//--
 				$this->PageViewSetVar(
 					'main',
-					(string) $this->listJsonMailbox($mbox, $ofs, $sortby, $sortdir, $srcby, $src)
+					(string) $this->listJsonMailbox($mbox, $box, $ofs, $sortby, $sortdir, $srcby, $src)
 				);
 				//--
 				return;
@@ -95,7 +105,7 @@ $box = 'inbox';
 				// nothing special
 		} //end switch
 		//--
-
+// $this->pagelink.'&mbox='.Smart::escape_url($mbox)
 $html_content = (string) SmartMarkersTemplating::render_file_template(
 	$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox.mtpl.inc.htm',
 	[
@@ -103,6 +113,17 @@ $html_content = (string) SmartMarkersTemplating::render_file_template(
 		'URL-PAGE' 			=> (string) $this->pagelink,
 		'CURRENT-MBOX' 		=> (string) $mbox,
 		'CURRENT-BOX' 		=> (string) $box
+	]
+);
+$html_vbar = (string) SmartMarkersTemplating::render_file_template(
+	$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox-vbar.mtpl.inc.htm',
+	[
+		'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
+		'URL-PAGE' 			=> (string) $this->pagelink,
+		'URL-GET' 			=> (string) $this->getlink,
+		'CURRENT-MBOX' 		=> (string) $mbox,
+		'CURRENT-BOX' 		=> (string) $box,
+		'BOXES' 			=> (array)  $arr_boxes
 	]
 );
 
@@ -146,7 +167,7 @@ $html_content = (string) SmartMarkersTemplating::render_file_template(
 					[
 						'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
 						'AREA-HTML-TOP' 	=> '<h1>WebMail</h1>',
-						'AREA-HTML-VBAR' 	=> '',
+						'AREA-HTML-VBAR' 	=> (string) $html_vbar,
 						'AREA-HTML-HBAR' 	=> '',
 						'AREA-HTML-CONTENT' => (string) $html_content
 					]
@@ -292,7 +313,7 @@ $html_content = (string) SmartMarkersTemplating::render_file_template(
 	} //END FUNCTION
 
 
-	private function listJsonMailbox($mbox, $ofs, $sortby, $sortdir, $srcby, $src) {
+	private function listJsonMailbox($mbox, $box, $ofs, $sortby, $sortdir, $srcby, $src) {
 		//--
 		$the_mbox_path = $this->mboxPath($mbox);
 		//--
@@ -311,8 +332,8 @@ $html_content = (string) SmartMarkersTemplating::render_file_template(
 				'srcby' => (string) $srcby,
 				'src' 	=> (string) $src
 			],
-			'totalRows' 		=> (int)    $model->listCountRecords((string)$srcby, (string)$src),
-			'rowsList' 			=> (array)  $model->listGetRecords((string)$srcby, (string)$src, (int)$limit, (int)$ofs, (string)$sortdir, (string)$sortby)
+			'totalRows' 		=> (int)    $model->listCountRecords((string)$box, (string)$srcby, (string)$src),
+			'rowsList' 			=> (array)  $model->listGetRecords((string)$box, (string)$srcby, (string)$src, (int)$limit, (int)$ofs, (string)$sortdir, (string)$sortby)
 		];
 		//--
 		unset($model); // close connection

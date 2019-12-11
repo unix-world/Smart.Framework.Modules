@@ -21,7 +21,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class SqWebmail {
 
 	// ->
-	// v.20191109
+	// v.20191210
 
 	private $db;
 
@@ -157,14 +157,14 @@ final class SqWebmail {
 	} //END FUNCTION
 
 
-	public function listCountRecords($srcby, $src) {
+	public function listCountRecords($box, $srcby, $src) {
 		//--
-		return (int) $this->db->count_data('SELECT COUNT(1) FROM `messages`'.$this->buildListWhereCondition($srcby, $src));
+		return (int) $this->db->count_data('SELECT COUNT(1) FROM `messages`'.$this->buildListWhereCondition($box, $srcby, $src));
 		//--
 	} //END FUNCTION
 
 
-	public function listGetRecords($srcby, $src, $limit, $ofs, $sortdir, $sortby) {
+	public function listGetRecords($box, $srcby, $src, $limit, $ofs, $sortdir, $sortby) {
 		//--
 		$limit  = (int) \Smart::format_number_int($limit, '+');
 		if($limit < 1) {
@@ -199,7 +199,7 @@ final class SqWebmail {
 				$sortby = 'id';
 		} //end switch
 		//--
-		return (array) $this->db->read_adata('SELECT *, `from_addr` || \' \' || `from_name` AS `from_all`, `to_addr` || \' \' || `to_name` AS `to_all` FROM `messages`'.$this->buildListWhereCondition($srcby, $src).' ORDER BY `'.$sortby.'` '.$sortdir.' LIMIT '.(int)$limit.' OFFSET '.(int)$ofs);
+		return (array) $this->db->read_adata('SELECT *, `from_addr` || \' \' || `from_name` AS `from_all`, `to_addr` || \' \' || `to_name` AS `to_all` FROM `messages`'.$this->buildListWhereCondition($box, $srcby, $src).' ORDER BY `'.$sortby.'` '.$sortdir.' LIMIT '.(int)$limit.' OFFSET '.(int)$ofs);
 		//--
 	} //END FUNCTION
 
@@ -207,11 +207,11 @@ final class SqWebmail {
 	//===== PRIVATES
 
 
-	private function buildListWhereCondition($srcby, $src) {
+	private function buildListWhereCondition($box, $srcby, $src) {
 		//--
 		$src = (string) trim((string)$src);
 		//--
-		$where = '';
+		$where = ' WHERE (`folder` = \''.$this->db->escape_str((string)$box).'\')';
 		if((string)$src != '') {
 			switch((string)$srcby) {
 				case 'from_addr':
@@ -220,11 +220,11 @@ final class SqWebmail {
 				case 'to_name':
 				case 'msg_subj':
 				case 'date_time':
-					$where = ' WHERE (`'.$srcby.'` LIKE \''.$this->db->escape_str((string)$src).'\')';
+					$where = ' AND (`'.$srcby.'` LIKE \'%'.$this->db->escape_str((string)$src).'%\')';
 					break;
 				case 'keywds':
 				case 'atts':
-					$where = ' WHERE (`'.$srcby.'` LIKE \'%'.$this->db->escape_str((string)$src, 'likes').'%\')';
+					$where = ' AND (`'.$srcby.'` LIKE \'%'.$this->db->escape_str((string)$src, 'likes').'%\')';
 					break;
 				default:
 					// nothing, leave as is set above

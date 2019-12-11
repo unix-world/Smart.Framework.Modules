@@ -64,7 +64,7 @@ jQuery(function() {
 	}
 	function formatter_Atts(row, cell, value, columnDef, dataContext) {
 		value = value || '0';
-		var atts = dataContext['atts'] || '';
+		var atts = 'Attachments: ' + value;
 		if(value != 1) {
 			value = '';
 		} else {
