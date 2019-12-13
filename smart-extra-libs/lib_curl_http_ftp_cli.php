@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP CURL, PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
- * @version 	v.20191113
+ * @version 	v.20191213
  * @package 	extralibs:Network
  *
  */
@@ -41,21 +41,22 @@ final class SmartCurlHttpFtpClient {
 
 	//==============================================
 	//--
-	public $useragent = 'SFM :: PHP.CURL/Robot'; 			// User agent (must have the robot in the name to avoid start un-necessary sessions)
+	public $useragent = 'SFM :: PHP.CURL/Browser'; 			// User agent (must have the robot in the name to avoid start un-necessary sessions)
 	public $connect_timeout = 30;							// Connect timeout in seconds
 	public $exec_timeout = 0;								// Exec timeout in seconds for CURL (0 or 30..300)
 	public $debug = 0;										// DEBUG
 	//--
-	public $rawheaders;										// Array of RawHeaders (to send)
-	public $cookies;										// Array of Cookies (to send)
-	public $postvars;										// Array of PostVars (to send)
-	public $poststring;										// Pre-Built Post String (as alternative to PostVars) ; must not contain unencoded \r\n ; must use the RFC 3986 standard.
-	public $jsonrequest;									// JSON Request (to send) ; must not contain unencoded \r\n but only \n ; hint: can be json-encoded without pretty-print.
-	public $xmlrequest;										// XML Request (to send) ; must not contain \r\n but only \n
+	public $rawheaders;										// Not for FTP ; Array of RawHeaders (to send)
+	public $cookies;										// Not for FTP ; Array of Cookies (to send)
+	public $postvars;										// Not for FTP ; Associative Array of PostVars (to send) as [ var1 => val1, var2 => val2, ... ]. Cannot be combined with post string or json or xml request.
+	public $postfiles; 										// Not for FTP ; Array of PostFiles (to send) ; This can be used only in combination with $postvars ; Example [ 'filename' => 'file.txt', 'content' => 'the contents go here' ]
+	public $poststring;										// Not for FTP ; Pre-Built Post String (as alternative to PostVars) ; must not contain unencoded \r\n ; must use the RFC 3986 standard. Cannot be combined with post vars or post files.
+	public $jsonrequest;									// Not for FTP ; JSON Request (to send) ; must not contain unencoded \r\n but only \n ; hint: can be json-encoded without pretty-print. Cannot be combined with post vars or post files or xml request.
+	public $xmlrequest;										// Not for FTP ; XML Request (to send) ; must not contain \r\n but only \n. Cannot be combined with post vars or post files or json request.
 	//--
 	//============================================== privates
 	//-- set
-	private $protocol = '1.0';								// HTTP Protocol :: 1.0 (default) or 1.1
+	private $protocol = '1.0';								// HTTP Protocol :: 1.0 (default) or 1.1 ; Not for FTP
 	//-- returns
 	private $header;										// Header (answer)
 	private $body;											// Body (answer)
@@ -77,7 +78,7 @@ final class SmartCurlHttpFtpClient {
 
 	//==============================================
 	// [CONSTRUCTOR] :: init object
-	public function __construct($y_protocol='', $y_no_content_if_unauth=true) {
+	public function __construct($y_protocol='1.0', $y_no_content_if_unauth=true) {
 
 		//-- preset debugging
 		$this->debug = 0;
@@ -88,8 +89,8 @@ final class SmartCurlHttpFtpClient {
 			case '1.1':
 				$this->protocol = '1.1'; // for 1.1 the time can be significant LONGER than 1.0
 				break;
-			default:
 			case '1.0':
+			default:
 				$this->protocol = '1.0'; // default is 1.0
 		} //end switch
 		//--
@@ -99,9 +100,11 @@ final class SmartCurlHttpFtpClient {
 		//--
 
 		//-- inits
-		$this->cookies = array();
-		$this->postvars = array();
 		$this->rawheaders = array();
+		$this->cookies = array();
+		$this->poststring = '';
+		$this->postvars = array();
+		$this->postfiles = array();
 		$this->jsonrequest = '';
 		$this->xmlrequest = '';
 		//--
@@ -149,26 +152,23 @@ final class SmartCurlHttpFtpClient {
 
 		//--
 		$this->connect_timeout = (int) $this->connect_timeout;
-		if($this->connect_timeout < 1) {
+		if((int)$this->connect_timeout < 1) {
 			$this->connect_timeout = 1;
-		} //end if
-		if($this->connect_timeout > 120) {
-			$this->connect_timeout = 120;
+		} elseif((int)$this->connect_timeout > 60) {
+			$this->connect_timeout = 60;
 		} //end if
 		//--
 		$this->exec_timeout = (int) $this->exec_timeout;
-		if($this->exec_timeout > 0) {
-			if($this->exec_timeout < 30) {
+		if((int)$this->exec_timeout > 0) {
+			if((int)$this->exec_timeout < 30) {
 				$this->exec_timeout = 30;
-			} //end if
-			if($this->exec_timeout > 300) {
-				$this->exec_timeout = 300;
+			} elseif((int)$this->exec_timeout > 600) {
+				$this->exec_timeout = 600;
 			} //end if
 		} else {
 			$this->exec_timeout = 0;
 		} //end if else
 		//--
-
 
 		//--
 		$this->status = 999;
@@ -371,7 +371,7 @@ final class SmartCurlHttpFtpClient {
 		//--
 
 		//-- auth
-		if((string)$user != '') {
+		if(((string)$user != '') AND ((string)$pwd != '')) {
 			//--
 			if($this->debug) {
 				$this->log .= '[INF] Authentication will be attempted for USERNAME = \''.$user.'\' ; PASSWORD('.strlen($pwd).') *****'."\n";
@@ -446,83 +446,111 @@ final class SmartCurlHttpFtpClient {
 		@curl_setopt($this->curl, CURLOPT_HEADER, true);
 		@curl_setopt($this->curl, CURLOPT_COOKIESESSION, true);
 		@curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
+		@curl_setopt($this->curl, CURLOPT_MAXREDIRS, 10);
 		@curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
 		//--
 
 		//--
-		if(Smart::array_size($this->cookies) > 0) {
-			$send_cookies = '';
-			foreach($this->cookies as $key => $value) {
-				if((string)$key != '') {
-					if((string)$value != '') {
-						$send_cookies .= (string) SmartHttpUtils::encode_var_cookie($key, $value);
+		if($is_ftp !== true) {
+			//--
+			if(Smart::array_size($this->cookies) > 0) {
+				$send_cookies = '';
+				foreach($this->cookies as $key => $value) {
+					if((string)$key != '') {
+						if((string)$value != '') {
+							$send_cookies .= (string) SmartHttpUtils::encode_var_cookie($key, $value);
+						} //end if
 					} //end if
+				} //end foreach
+				if((string)$send_cookies != '') {
+					$this->raw_headers[] = (string) 'Cookie: '.$send_cookies;
 				} //end if
-			} //end foreach
-			if((string)$send_cookies != '') {
-				$this->raw_headers[] = (string) 'Cookie: '.$send_cookies;
+				$send_cookies = '';
 			} //end if
-			$send_cookies = '';
-		} //end if
-		//--
-		$have_post_vars = false;
-		if(Smart::array_size($this->postvars) > 0) {
+			//--
+			$have_post_vars = false;
+			$have_post_files = false;
+			if(((string)$this->poststring != '') OR (Smart::array_size($this->postvars) > 0)) {
+				$have_post_vars = true;
+			} elseif(Smart::array_size($this->postfiles) > 0) {
+				$have_post_files = true;
+			} //end if
+			//--
 			$post_string = '';
-			foreach((array)$this->postvars as $key => $val) {
-				$post_string .= (string) SmartHttpUtils::encode_var_post($key, $val);
-			} //end foreach
-			if((string)$post_string != '') {
-				if((string)$this->method == 'GET') {
+			if((string)$this->poststring != '') {
+				$post_string = (string) $this->poststring; // send raw post string
+			} elseif(Smart::array_size($this->postfiles) > 0) { // build multipart form data with/without extra post vars (files have anyway)
+				$boundary = (string) SmartHttpUtils::http_multipart_form_delimiter();
+				$post_string = (string) SmartHttpUtils::http_multipart_form_build($boundary, $this->postvars, $this->postfiles);
+				$this->raw_headers[] = 'Content-Type: multipart/form-data; boundary='.$boundary;
+				$this->raw_headers[] = 'Content-Length: '.(int)strlen($post_string);
+			} elseif(Smart::array_size($this->postvars) > 0) { // build post string from array
+				$post_string = '';
+				foreach($this->postvars as $key => $value) {
+					$post_string .= (string) SmartHttpUtils::encode_var_post($key, $value);
+				} //end foreach
+			} //end if else
+			if((string)$this->method == 'POST') {
+				if((string)$post_string == '') { // if have post vars force POST if GET
+					$this->method = 'GET';
+				} //end if
+			} elseif((string)$this->method == 'GET') {
+				if((string)$post_string != '') { // if have post vars force POST if GET
 					$this->method = 'POST';
 				} //end if
-				$have_post_vars = true;
-				@curl_setopt($this->curl, CURLOPT_POSTFIELDS, (string)$post_string);
 			} //end if
-			$post_string = '';
-		} elseif((string)$this->poststring != '') {
-			if((string)$this->method == 'GET') {
-				$this->method = 'POST';
+			//--
+			if($have_post_vars !== true) {
+				if((string)$this->jsonrequest != '') {
+					if((string)$this->method == 'GET') {
+						$this->method = 'PUT';
+					} //end if
+					$this->raw_headers[] = 'Content-Type: application/json';
+					$this->raw_headers[] = 'Content-Length: '.strlen($this->jsonrequest);
+					@curl_setopt($this->curl, CURLOPT_POSTFIELDS, (string)$this->jsonrequest);
+				} elseif((string)$this->xmlrequest != '') {
+					if((string)$this->method == 'GET') {
+						$this->method = 'PUT';
+					} //end if
+					$this->raw_headers[] = 'Content-Type: application/xml';
+					$this->raw_headers[] = 'Content-Length: '.strlen($this->xmlrequest);
+					@curl_setopt($this->curl, CURLOPT_POSTFIELDS, (string)$this->xmlrequest);
+				} //end if else
 			} //end if
-			$have_post_vars = true;
-			@curl_setopt($this->curl, CURLOPT_POSTFIELDS, (string)$this->poststring);
-		} //end if
-		if((string)$this->jsonrequest != '') {
-			if((string)$this->method == 'GET') {
-				$this->method = 'PUT';
+			//--
+			switch((string)$this->method) {
+				case 'HEAD':
+				case 'GET':
+					break;
+				case 'POST':
+					@curl_setopt($this->curl, CURLOPT_POSTFIELDS, (string)$post_string);
+					@curl_setopt($this->curl, CURLOPT_POST, true);
+					break;
+				case 'PUT':
+				case 'DELETE':
+				default:
+					@curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, (string)$this->method);
+			} //end switch
+			//--
+			if(Smart::array_size($this->raw_headers) > 0) { // request headers are constructed above
+				@curl_setopt($this->curl, CURLOPT_HTTPHEADER, (array)$this->raw_headers);
 			} //end if
-			$this->raw_headers[] = 'Content-Type: application/json';
-			$this->raw_headers[] = 'Content-Length: '.strlen($this->jsonrequest);
-			@curl_setopt($this->curl, CURLOPT_POSTFIELDS, (string)$this->jsonrequest);
-		} elseif((string)$this->xmlrequest != '') {
-			if((string)$this->method == 'GET') {
-				$this->method = 'PUT';
-			} //end if
-			$this->raw_headers[] = 'Content-Type: application/xml';
-			$this->raw_headers[] = 'Content-Length: '.strlen($this->xmlrequest);
-			@curl_setopt($this->curl, CURLOPT_POSTFIELDS, (string)$this->xmlrequest);
+			//--
+		} else {
+			//--
+			switch((string)$this->method) {
+				case 'HEAD':
+				case 'GET':
+					break;
+				case 'POST':
+					break;
+				case 'PUT':
+				case 'DELETE':
+				default:
+					@curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, (string)$this->method);
+			} //end switch
+			//--
 		} //end if else
-		//--
-		switch((string)$this->method) {
-			case 'HEAD':
-			case 'GET':
-				break;
-			case 'POST':
-				if($have_post_vars) {
-					@curl_setopt($this->curl, CURLOPT_POST, true);
-				} //end if
-				break;
-			case 'PUT':
-			case 'DELETE':
-			default:
-				if($have_post_vars) {
-					@curl_setopt($this->curl, CURLOPT_POST, true);
-				} //end if
-				@curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, (string)$this->method);
-		} //end switch
-		//--
-		if(Smart::array_size($this->raw_headers) > 0) { // request headers are constructed above
-			@curl_setopt($this->curl, CURLOPT_HTTPHEADER, (array)$this->raw_headers);
-		} //end if
 		//--
 
 		//-- Execute a Curl request
@@ -531,7 +559,7 @@ final class SmartCurlHttpFtpClient {
 		@curl_setopt($this->curl, CURLOPT_FORBID_REUSE, true);
 		@curl_setopt($this->curl, CURLOPT_URL, (string)$url);
 		//--
-		if(!$this->curl) {
+		if(!$this->curl) { // check if URL is valid after set above
 			//--
 			if($this->debug) {
 				$this->log .= '[ERR] CURL Aborted before Execution'."\n";
@@ -555,13 +583,14 @@ final class SmartCurlHttpFtpClient {
 
 		//-- eval results
 		$bw_info = array();
+		$is_unauth = false;
 		$is_ok = 0;
 		//--
 		if($results) {
 			//--
 			$is_ok = 1;
 			//--
-			$bw_info = (array) @curl_getinfo($this->curl);
+			$bw_info = (array) array_change_key_case((array)@curl_getinfo($this->curl), CASE_LOWER);
 			//--
 			if($is_ftp) {
 				//--
@@ -595,13 +624,12 @@ final class SmartCurlHttpFtpClient {
 			//--
 			$results = ''; // free memory
 			//--
-			$is_unauth = false;
 			if((string)$bw_info['http_code'] == '401') {
 				//--
 				$is_unauth = true;
 				//--
 				if($this->debug) {
-					if((string)$user != '') {
+					if(((string)$user != '') AND ((string)$pwd != '')) {
 						$this->log .= '[ERR] HTTP Authentication Failed for URL: [User='.$user.']: '.$url."\n";
 						Smart::log_notice('LibCurlHttp(s)Ftp // GetFromURL // HTTP Authentication Failed for URL: [User='.$user.']: '.$url);
 					} else {
@@ -689,6 +717,7 @@ final class SmartCurlHttpFtpClient {
 			'ssl-ca' 		=> (string) ($this->cafile ? $this->cafile : (defined('SMART_FRAMEWORK_SSL_CA_FILE') ? SMART_FRAMEWORK_SSL_CA_FILE : '')),
 			'auth-user' 	=> (string) $user,
 			'cookies-len' 	=> (int)    Smart::array_size($this->cookies),
+			'post-file' 	=> (string) $this->postfile,
 			'post-vars-len' => (int)    Smart::array_size($this->postvars),
 			'post-str-len' 	=> (int)    strlen($this->poststring),
 			'json-req-len' 	=> (int)    strlen($this->jsonrequest),

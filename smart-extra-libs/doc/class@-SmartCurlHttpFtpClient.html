@@ -692,7 +692,7 @@ It can handle: HEAD / GET / POST / PUT (json/xml/raw) / DELETE</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartCurlHttpFtpClient</span></li>
 		
-		<li><b>Version:</b> v.20191113</li>
+		<li><b>Version:</b> v.20191213</li>
 		<li><b>Depends:</b> extensions:  PHP CURL, PHP OpenSSL (optional, just for HTTPS) ; classes: Smart</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -708,7 +708,7 @@ It can handle: HEAD / GET / POST / PUT (json/xml/raw) / DELETE</div><br>
 <!-- methods r.20191201 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_protocol` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_protocol</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_protocol` Parameter is OPTIONAL, with the Default Value: &quot;1.0&quot;">$y_protocol</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;1.0&quot;</b></span>, 
 			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_no_content_if_unauth` Parameter is OPTIONAL, with the Default Value: true">$y_no_content_if_unauth</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
 	
 	
@@ -775,6 +775,9 @@ It can handle: HEAD / GET / POST / PUT (json/xml/raw) / DELETE</div><br>
 	
 </div><div class="doc-container" id="Property--postvars">
 	<span class="doc-modifiers">public</span> <b>$postvars</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
+	
+</div><div class="doc-container" id="Property--postfiles">
+	<span class="doc-modifiers">public</span> <b>$postfiles</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
 </div><div class="doc-container" id="Property--poststring">
 	<span class="doc-modifiers">public</span> <b>$poststring</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
@@ -852,6 +855,8 @@ function smartHandleDocSelector(obj) {
 			
 									<option value="Property--postvars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$postvars</option>
 			
+									<option value="Property--postfiles"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$postfiles</option>
+			
 									<option value="Property--poststring"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$poststring</option>
 			
 									<option value="Property--jsonrequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$jsonrequest</option>
@@ -871,7 +876,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2019-12-09 09:27:55 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2019-12-13 16:28:18 +0000</small>
 <hr>
 <br>
 <!-- # -->
