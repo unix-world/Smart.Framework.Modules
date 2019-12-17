@@ -21,7 +21,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class SqWebmail {
 
 	// ->
-	// v.20191210
+	// v.20191214
 
 	private $db;
 
@@ -220,11 +220,11 @@ final class SqWebmail {
 				case 'to_name':
 				case 'msg_subj':
 				case 'date_time':
-					$where = ' AND (`'.$srcby.'` LIKE \'%'.$this->db->escape_str((string)$src).'%\')';
+					$where .= ' AND (`'.$srcby.'` LIKE \'%'.$this->db->escape_str((string)$src).'%\')';
 					break;
 				case 'keywds':
 				case 'atts':
-					$where = ' AND (`'.$srcby.'` LIKE \'%'.$this->db->escape_str((string)$src, 'likes').'%\')';
+					$where .= ' AND (`'.$srcby.'` LIKE \'%'.$this->db->escape_str((string)$src, 'likes').'%\')';
 					break;
 				default:
 					// nothing, leave as is set above

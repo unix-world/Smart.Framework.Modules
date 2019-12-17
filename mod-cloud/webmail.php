@@ -58,7 +58,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$this->pagelink = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('url-page');
 		$this->getlink = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('url-page').'get';
 		//--
-
+		$html_content = '';
+		$html_vbar = '';
+		//--
 
 /*
 $html_content = '<a id="url_recognition" href="'.$this->pagelink.'&msg='.Smart::escape_url(SmartMailerMimeParser::encode_mime_fileurl(
@@ -67,8 +69,7 @@ $html_content = '<a id="url_recognition" href="'.$this->pagelink.'&msg='.Smart::
 )).'" target="cloud_webmail_eml_display" data-smart="open.modal">test_uxm_multi_mimes.eml</a>';
 */
 
-$html_content = '';
-$html_vbar = '';
+
 $mbox = 'iradu@unix-world.org';
 
 		$arr_boxes = [ 'inbox', 'junk', 'sent', 'trash' ];
@@ -77,7 +78,6 @@ $mbox = 'iradu@unix-world.org';
 			$this->PageViewSetErrorStatus(404, 'ERROR: Invalid WebMail Box: '.$box);
 			return 404;
 		} //end if
-
 		//--
 		$op = $this->RequestVarGet('op', '', 'string');
 		//--
@@ -105,28 +105,26 @@ $mbox = 'iradu@unix-world.org';
 				// nothing special
 		} //end switch
 		//--
-// $this->pagelink.'&mbox='.Smart::escape_url($mbox)
-$html_content = (string) SmartMarkersTemplating::render_file_template(
-	$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox.mtpl.inc.htm',
-	[
-		'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
-		'URL-PAGE' 			=> (string) $this->pagelink,
-		'CURRENT-MBOX' 		=> (string) $mbox,
-		'CURRENT-BOX' 		=> (string) $box
-	]
-);
-$html_vbar = (string) SmartMarkersTemplating::render_file_template(
-	$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox-vbar.mtpl.inc.htm',
-	[
-		'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
-		'URL-PAGE' 			=> (string) $this->pagelink,
-		'URL-GET' 			=> (string) $this->getlink,
-		'CURRENT-MBOX' 		=> (string) $mbox,
-		'CURRENT-BOX' 		=> (string) $box,
-		'BOXES' 			=> (array)  $arr_boxes
-	]
-);
-
+		$html_content = (string) SmartMarkersTemplating::render_file_template(
+			$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox.mtpl.inc.htm',
+			[
+				'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
+				'URL-PAGE' 			=> (string) $this->pagelink,
+				'CURRENT-MBOX' 		=> (string) $mbox,
+				'CURRENT-BOX' 		=> (string) $box
+			]
+		);
+		$html_vbar = (string) SmartMarkersTemplating::render_file_template(
+			$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox-vbar.mtpl.inc.htm',
+			[
+				'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
+				'URL-PAGE' 			=> (string) $this->pagelink,
+				'URL-GET' 			=> (string) $this->getlink,
+				'CURRENT-MBOX' 		=> (string) $mbox,
+				'CURRENT-BOX' 		=> (string) $box,
+				'BOXES' 			=> (array)  $arr_boxes
+			]
+		);
 		//--
 		$msg = $this->RequestVarGet('msg', '', 'string');
 		$reply = $this->RequestVarGet('reply', '', 'string');
@@ -134,27 +132,26 @@ $html_vbar = (string) SmartMarkersTemplating::render_file_template(
 		if((string)$msg != '') {
 			//--
 			if($reply) {
-
-				// TODO:
+				//--
 				$arr_repl = SmartMailerMimeParser::get_message_data_structure(
 					(string) $msg,
 					(string) $this->secretKey(),
 					'data-reply', // 'data-full' | 'data-reply'
-					$this->pagelink.'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}',
+					$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}',
 					'_self'
 				);
-
-				echo '<h1>Reply ...</h1><pre>';
-				echo Smart::escape_html(SmartUtils::pretty_print_var($arr_repl));
-				echo '</pre>';
-				die();
-
+				//--
+				$this->PageViewSetVar(
+					'main',
+					(string) $this->displayComposer($mbox, 'reply', $arr_repl)
+				);
+				//--
 			} else {
 				//--
 				$id = $this->RequestVarGet('id', '', 'string');
 				//--
 				$this->markMessageAsRead($mbox, $id, $msg);
-				$this->displayMimeMessage($msg);
+				$this->displayMimeMessage($mbox, $msg);
 				//--
 			} //end if else
 			//--
@@ -235,7 +232,7 @@ $html_vbar = (string) SmartMarkersTemplating::render_file_template(
 	} //END FUNCTION
 
 
-	private function displayMimeMessage($msg) {
+	private function displayMimeMessage($mbox, $msg) {
 
 		//--
 		$mode = $this->RequestVarGet('mode', '', 'string');
@@ -245,7 +242,7 @@ $html_vbar = (string) SmartMarkersTemplating::render_file_template(
 		if(((string)$mode == '') AND ((string)$pdf == '')) {
 			// it uses auto sandbox
 			$mime_mode = '';
-			$bttns_area = '<div style="text-align:right; padding-right:10px;"><a href="'.$this->pagelink.'&reply=yes&msg='.Smart::escape_url((string)$msg).'"><img src="lib/core/plugins/img/email/send-reply.svg" alt="Reply" title="Reply" style="cursor:pointer;"></a> &nbsp; <img src="lib/core/plugins/img/email/bttn-pdf.svg" alt="PDF" title="PDF" style="cursor:pointer;" onClick="SmartJS_BrowserUtils.PopUpLink(self.location + \'&print=yes&pdf=yes\', \'webmail-pdf\', null, null, 1);"></div>';
+			$bttns_area = '<div style="text-align:right; padding-right:10px;"><a href="'.$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&reply=yes&msg='.Smart::escape_url((string)$msg).'"><img src="lib/core/plugins/img/email/send-reply.svg" alt="Reply" title="Reply" style="cursor:pointer;"></a> &nbsp; <img src="lib/core/plugins/img/email/bttn-pdf.svg" alt="PDF" title="PDF" style="cursor:pointer;" onClick="SmartJS_BrowserUtils.PopUpLink(self.location + \'&print=yes&pdf=yes\', \'webmail-pdf\', null, null, 1);"></div>';
 		} elseif(((string)$mode == 'print') AND ((string)$pdf == '')) {
 			$use_sandbox = true;
 			$mime_mode = 'print';
@@ -265,12 +262,12 @@ $html_vbar = (string) SmartMarkersTemplating::render_file_template(
 		$main = (string) SmartMailerMimeParser::display_message(
 			(string) $msg,
 			(string) $this->secretKey(),
-			$this->pagelink.'&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
+			$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
 			'_self',
-			'<div align="center"><h1 style="display:inline;">'.Smart::escape_html($mime_ttl).'</h1></div>'.$bttns_area,
+			'<div align="center"><h1 style="display:inline; color:#333333;">'.Smart::escape_html($mime_ttl).'</h1></div>'.$bttns_area,
 			(string) $mime_mode // 'default' | 'print'
 		);
-		//-- sandbox if required (print mode) :: use sandbox iframe if non-print mode ; for print mode use iframe sandbox to ensure safety !
+		//-- sandbox if required (print mode) :: if non-print mode will use automatically ; for print mode must be custom implemented !
 		if($use_sandbox === true) {
 			$main = '<div title="WebMail HTML Safe SandBox / iFrame" style="position:relative;"><img height="16" src="lib/core/plugins/img/email/safe.svg" style="cursor:help; position:absolute; top:3px; left:7px; opacity:0.25;"><iframe name="WebMailMessageSandBox" id="WebMailMessageSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:97vw; min-height:97vh; height:max-content; border:1px solid #EFEFEF;" srcdoc="'.Smart::escape_html('<!DOCTYPE html><html><head><title>'.Smart::escape_html($mime_ttl).'</title><meta charset="'.Smart::escape_html(SMART_FRAMEWORK_CHARSET).'">'.SmartFileSystem::read('lib/core/templates/base-html-styles.inc.htm').'</head><body>'.$main.'<script>alert(\'If you can see this alert the WebMail iFrame Sandbox is unsafe ...\');</script></body></html>').'" sandbox></iframe></div>';
 		} //end if
@@ -349,6 +346,50 @@ $html_vbar = (string) SmartMarkersTemplating::render_file_template(
 		} //end for
 		//--
 		return (string) Smart::json_encode((array)$data);
+		//--
+	} //END FUNCTION
+
+
+	private function displayComposer($mbox, $mode, $msg_arr=[]) {
+		//--
+		if((string)$mode == 'reply') {
+			$composer_title = 'Reply to Message';
+			$composer_to = (string) trim((string)$msg_arr['from']);
+			$composer_subject = (string) trim((string)$msg_arr['subject']);
+			if(stripos((string)$composer_subject, 'Re:') !== 0) {
+				$composer_subject = 'Re: '.$composer_subject;
+			} //end if
+			$composer_msg = '<div style="background:#FFFFFF; color:#111111; padding:5px;"><br><br><br><hr><div style="color:#777777; font-style:italic; margin-left:10px;">in reply for message `<b>'.Smart::escape_html($msg_arr['subject']).'</b>`'.'<br>to &lt;<b>'.Smart::escape_html($msg_arr['to']).'</b>&gt;'.' on '.Smart::escape_html($msg_arr['date']).'<br>from &lt;<b>'.Smart::escape_html($msg_arr['from']).'</b>&gt;'.' wrote:'.'</div><hr><br><div style="margin-left:10px; padding-left:10px; border-left:3px solid #CCCCCC;">'.$msg_arr['message'].'</div></div><br><br>';
+		} else {
+			$msg_arr = [];
+			$composer_title = 'New Message';
+			$composer_to = '';
+			$composer_subject = '';
+			$composer_msg = '';
+		} //end if else
+		//--
+		return (string) SmartMarkersTemplating::render_file_template(
+			$this->ControllerGetParam('module-view-path').'webmail-composer.mtpl.inc.htm',
+			[
+				'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
+				'URL-PAGE' 			=> (string) $this->pagelink,
+				'CURRENT-MBOX' 		=> (string) $mbox,
+				'COMPOSER-TITLE' 	=> (string) $composer_title,
+				'COMPOSER-TO' 		=> (string) $composer_to,
+				'COMPOSER-SUBJECT' 	=> (string) $composer_subject,
+				'HTMLAREA-INIT' 	=> (string) SmartViewHtmlHelpers::html_jsload_htmlarea(
+					'',
+					'lib/js/jsedithtml/cleditor/jquery.cleditor.smartframeworkcomponents-simple.css'
+				),
+				'HTMLAREA-DISPLAY' 	=> (string) SmartViewHtmlHelpers::html_js_htmlarea(
+					'webmail-html-composer',
+					'webmail[htmlbody]',
+					(string) $composer_msg,
+					'97vw',
+					'70vh'
+				) //.'<pre>'.Smart::escape_html(print_r($msg_arr,1)).'</pre>'
+			]
+		);
 		//--
 	} //END FUNCTION
 

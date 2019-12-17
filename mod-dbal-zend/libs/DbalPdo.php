@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * If you wish to use the PDO drivers in your projects instead of the direct ones supported directly by Smart.Framework this is a good solution.
  *
-* <code>
+ * <code>
  *
  * $conf_driver = [
  *		'driver'   => 'PDO_SQLITE',
@@ -90,7 +90,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @access 		PUBLIC
- * @depends 	extensions: classes: \Zend\Db
+ * @depends 	extensions: PHP PDO ; classes: \Zend\Db
  * @version 	v.20191021
  * @package 	modules:Database:PDO:Zend-Dbal
  *

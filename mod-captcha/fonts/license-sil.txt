@@ -1,6 +1,7 @@
 
 =================================================================================
 This license (SIL OPEN FONT LICENSE Version 1.1) aplies for the following fonts:
+* Barrio					https://fonts.google.com/attribution
 * Codystar					https://fonts.google.com/attribution
 * Ewert 					https://fonts.google.com/attribution
 * Finger Paint 				https://fonts.google.com/attribution
@@ -11,6 +12,9 @@ This license (SIL OPEN FONT LICENSE Version 1.1) aplies for the following fonts:
 * Plaster 					https://fonts.google.com/attribution
 * Ribeye Marrow 			https://fonts.google.com/attribution
 =================================================================================
+
+Font: Barrio
+Copyright 2016 The Barrio Project Authors (omnibus.type@gmail.com)
 
 Font: Codystar
 Copyright (c) 2012 by Font Diner, Inc DBA Neapolitan (diner@fontdiner.com)

@@ -21,7 +21,7 @@ require_once('modules/smart-extra-libs/version.php'); // extra libs version
  * @access 		private
  * @internal
  *
- * @version 	20191110
+ * @version 	20191216
  *
  */
 function autoload__SmartFrameworkModulesExtraLibs($classname) {
@@ -61,12 +61,17 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 		case 'SmartImportFromOpenOffice':
 			require_once('modules/smart-extra-libs/lib_export_import_ooffice.php'); // ooffice export / import
 			break;
-		//--
+		//-- calendar
+		case 'SmartCalendarComponent':
+		case 'SmartHTMLCalendar':
+			require_once('modules/smart-extra-libs/lib_calendar.php');				// calendar component (html)
+			break;
+		//-- charts
 		case 'SmartImgBizCharts':
 		case 'SmartImgGfxCharts':
 			require_once('modules/smart-extra-libs/lib_charts.php'); 				// gd charts
 			break;
-		//--
+		//-- lang id
 		case 'SmartLangIdClient':
 			require_once('modules/smart-extra-libs/lib_langid_cli.php'); 			// langid client
 			break;

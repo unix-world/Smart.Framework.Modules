@@ -15,7 +15,7 @@ require_once('modules/smart-extra-libs/version.php'); 						// extra libs versio
 //--
 
 //--
-// StaticLoad Extra Libs from (Smart.Framework.Modules), v.20190103
+// StaticLoad Extra Libs from (Smart.Framework.Modules), v.20191216
 //--
 require_once('modules/smart-extra-libs/lib_templating_ext.php'); 			// extended templating
 //--
@@ -27,6 +27,7 @@ require_once('modules/smart-extra-libs/lib_db_solr.php'); 					// solr db connec
 require_once('modules/smart-extra-libs/lib_export_zip.php');				// zip archive
 require_once('modules/smart-extra-libs/lib_export_import_ooffice.php'); 	// ooffice export
 //--
+require_once('modules/smart-extra-libs/lib_calendar.php');					// calendar component (html)
 require_once('modules/smart-extra-libs/lib_charts.php'); 					// gd charts
 //--
 require_once('modules/smart-extra-libs/lib_langid_cli.php'); 				// langid client

@@ -118,9 +118,8 @@ final class SmartClasses {
 			'\\SmartMarkdownToHTML',
 			'\\SmartArchiverLZS',
 			'\\SmartImageGdProcess',
-			'\\SmartBarcode1D',
-			'\\SmartBarcode2D',
-			'\\SmartCaptchaFormCheck',
+			'\\SmartCaptcha',
+			'\\SmartSVGCaptcha',
 			'\\SmartViewHtmlHelpers',
 			'\\SmartHTMLCalendar',
 			'\\SmartCalendarComponent',
@@ -157,6 +156,11 @@ final class SmartClasses {
 			'\\SmartModExtLib\\Webdav\\ControllerAdmDavFs',
 			'\\SmartModExtLib\\Webdav\\ControllerAdmCalDavFs',
 			'\\SmartModExtLib\\Webdav\\ControllerAdmCardDavFs',
+			//--
+			'\\SmartModExtLib\\Barcodes\\SmartBarcodes1D',
+			'\\SmartModExtLib\\Barcodes\\SmartBarcodes2D',
+			//--
+			'\\SmartModExtLib\\Captcha\\SmartImageCaptcha',
 			//--
 			'\\SmartModExtLib\\HighlightSyntax\\Highlighter',
 			//--

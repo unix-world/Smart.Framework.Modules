@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: UI Fonts r.20191110 #
+# Smart.Framework.Modules: UI Fonts r.20191216 #
 
 // r.5.2.7 / smart.framework.v.5.2
 
