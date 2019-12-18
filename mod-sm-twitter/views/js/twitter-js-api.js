@@ -422,7 +422,7 @@ var TwitterApiHandler = new function() { // START CLASS
 		//--
 		if(archive) {
 			if(value) {
-				value = String(SmartJS_Archiver_LZS.decompressFromBase64(String(value)));
+				value = String(SmartJS_Base64.decode(String(value)));
 			} //end if
 		} //end if
 		//--
@@ -435,7 +435,7 @@ var TwitterApiHandler = new function() { // START CLASS
 		//--
 		if(archive) {
 			if(value) {
-				value = String(SmartJS_Archiver_LZS.compressToBase64(String(value)));
+				value = String(SmartJS_Base64.encode(String(value)));
 			} //end if
 		} //end if
 		//--

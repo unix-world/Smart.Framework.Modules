@@ -2,6 +2,13 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply onlt for for Milestone Releases
 
+December 18, 2019 :: Version 5.2.7 rev.191218
+	* SmartArchiverLZS (PHP) and SmartJS_Archiver_LZS (Js) moved to modules
+
+December 17, 2019 :: Version 5.2.7 rev.191217
+	* Barcodes moved to mod-barcodes
+	* Captcha completely rewritten to support plugins (default uses SVG captcha) ; captcha image + fonts moved to mod-captcha
+
 December 05, 2019 :: Version 5.2.7 rev.191205
 	* PHP 7.4 ready
 

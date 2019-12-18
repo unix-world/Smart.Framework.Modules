@@ -4,7 +4,7 @@
 // v.20191109
 
 // Depends on: jQuery
-// Depends on: SmartJS_Base64, SmartJS_Archiver_LZS, SmartJS_BrowserUtils
+// Depends on: SmartJS_Base64, SmartJS_BrowserUtils
 
 var FacebookApiHandler = new function() { // START CLASS
 
@@ -312,7 +312,7 @@ var FacebookApiHandler = new function() { // START CLASS
 		//--
 		if(archive) {
 			if(value) {
-				value = String(SmartJS_Archiver_LZS.decompressFromBase64(String(value)));
+				value = String(SmartJS_Base64.decode(String(value)));
 			} //end if
 		} //end if
 		//--
@@ -325,7 +325,7 @@ var FacebookApiHandler = new function() { // START CLASS
 		//--
 		if(archive) {
 			if(value) {
-				value = String(SmartJS_Archiver_LZS.compressToBase64(String(value)));
+				value = String(SmartJS_Base64.encode(String(value)));
 			} //end if
 		} //end if
 		//--

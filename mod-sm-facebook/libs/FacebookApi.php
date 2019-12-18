@@ -92,7 +92,7 @@ final class FacebookApi {
 			return (array) $this->usrdata;
 		} //end if
 		//--
-		$jsdata = (string) \SmartArchiverLZS::decompressFromBase64((string)$_COOKIE['smartfbookjsapi_data']);
+		$jsdata = (string) base64_decode((string)$_COOKIE['smartfbookjsapi_data']);
 		if((string)$jsdata != '') {
 			$jsdata = \Smart::json_decode((string)$jsdata);
 		} else {

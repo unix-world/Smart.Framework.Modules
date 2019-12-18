@@ -50,7 +50,6 @@ final class SmartClasses {
 			'SmartJS_Base64' 			=> 'lib/js/framework/src/crypt_utils.js',
 			'SmartJS_CryptoHash' 		=> 'lib/js/framework/src/crypt_utils.js',
 			'SmartJS_CryptoBlowfish' 	=> 'lib/js/framework/src/crypt_utils.js',
-			'SmartJS_Archiver_LZS' 		=> 'lib/js/framework/src/arch_utils.js',
 			'SmartJS_ModalBox' 			=> 'lib/js/framework/src/ifmodalbox.js',
 			'SmartJS_BrowserUtils' 		=> 'lib/js/framework/src/browser_utils.js',
 			'Test_Browser_Compliance' 	=> 'lib/js/framework/src/browser_check.js'
@@ -116,7 +115,6 @@ final class SmartClasses {
 			'\\SmartXmlComposer',
 			'\\SmartHtmlParser',
 			'\\SmartMarkdownToHTML',
-			'\\SmartArchiverLZS',
 			'\\SmartImageGdProcess',
 			'\\SmartCaptcha',
 			'\\SmartSVGCaptcha',

@@ -1,5 +1,5 @@
 <?php
-// Semacode DataMatrix Barcode 2D for Smart.Framework
+// SemaCode DataMatrix Barcode 2D for Smart.Framework
 // Module Library
 // (c) 2006-2019 unix-world.org - all rights reserved
 // r.5.2.7 / smart.framework.v.5.2

@@ -56,6 +56,10 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 		case 'SmartZipArchive':
 			require_once('modules/smart-extra-libs/lib_export_zip.php');			// zip archive
 			break;
+		//-- lzs archive
+		case 'SmartArchiverLZS':
+			require_once('modules/smart-extra-libs/lib_archlzs.php');				// lzs archive
+			break;
 		//-- ooffice export
 		case 'SmartExportToOpenOffice':
 		case 'SmartImportFromOpenOffice':

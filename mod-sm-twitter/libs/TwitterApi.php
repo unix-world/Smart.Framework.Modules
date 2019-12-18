@@ -88,7 +88,7 @@ final class TwitterApi {
 			return (array) $this->usrdata;
 		} //end if
 		//--
-		$jsdata = (string) \SmartArchiverLZS::decompressFromBase64((string)$_COOKIE['smarttwittjsapi_data']);
+		$jsdata = (string) base64_decode((string)$_COOKIE['smarttwittjsapi_data']);
 		if((string)$jsdata != '') {
 			$jsdata = \Smart::json_decode((string)$jsdata);
 		} else {
