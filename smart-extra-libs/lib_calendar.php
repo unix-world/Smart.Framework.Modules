@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @depends 	classes: Smart
  * @version 	v.20191111
- * @package 	Plugins:ViewComponents
+ * @package 	extralibs:ViewComponents
  *
  */
 final class SmartCalendarComponent {

@@ -5,10 +5,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
-	<meta name="description" content="\SmartModExtLib\SmFacebook\FacebookApi        final class \SmartModExtLib\SmFacebook\ FacebookApi    {   } -&gt;    Provides a PHP connector for Facebook">
-	<meta name="keywords" content="smartmodextlib smfacebook facebookapi, final, class, smartmodextlib smfacebook, facebookapi, -, provides, a, php, connector, for, facebook, graph, api, default, to, inside, the, smart.framework., language, located, at, modules mod-sm-facebook libs facebookapi.php, package, modules socialmedia, namespace, name, version, v, depends, extensions, classes, usage, dynamic, object, new, class   - method, -, this, only">
-	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
-	<title>PHP Documentation for: \SmartModExtLib\SmFacebook\FacebookApi</title>
+	<meta name="description" content="\SmartArchiverLZS        final class \ SmartArchiverLZS    {   } ::    Class: SmartArchiverLZS - Compress or Decompress a LZS archive. This is very slow">
+	<meta name="keywords" content="smartarchiverlzs, final, class, smartarchiverlzs, class, -, compress, or, decompress, a, lzs, archive., this, is, very, slow, with, large, strings, ., extremely, should, be, used, only, small, language, php, located, at, modules smart-extra-libs lib archlzs.php, package, extralibs archivers, namespace, name, version, v, depends, extensions, mbstring, classes, smart, smarthashcrypto, usage, static, object, class  method, provides, methods, public, function, compresstobas, string, input">
+	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation: \SmartArchiverLZS">
+	<title>PHP Documentation for: \SmartArchiverLZS</title>
 	<!-- CSS and Fonts -->
 		<!-- skip fonts -->
 	
@@ -672,29 +672,31 @@ select#select-summary {
 
 </style>
 <!-- Headings -->
-<h1 title="PHP class: `\SmartModExtLib\SmFacebook\FacebookApi` @ PHP Namespace: `\SmartModExtLib\SmFacebook\`" id="Class--Summary-">
-	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\SmartModExtLib\SmFacebook\</span><span class="doc-name">FacebookApi</span><br>
+<h1 title="PHP class: `\SmartArchiverLZS` @ PHP Namespace: `\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartArchiverLZS</span><br>
 	
 	
 	{
 	
-	}&nbsp;-&gt;
+	}&nbsp;::
 </h1>
 <!-- Description -->
-<div class="doc-comments">Provides a PHP connector for Facebook Graph Api (default to 5.0) inside the Smart.Framework.</div><br>
+<div class="doc-comments">Class: SmartArchiverLZS - Compress or Decompress a LZS archive.<br>
+This is very slow with large strings ... extremely slow !<br>
+Should be used only with very small strings !!</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> modules/mod-sm-facebook/libs/FacebookApi.php</span></li>
-		<li><span class="doc-package"><b>Package:</b> modules:SocialMedia</span></li>
-		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\SmFacebook\</span></li>
-		<li><span class="doc-name"><b>Class Name:</b> FacebookApi</span></li>
+		<li><span class="doc-located"><b>Located at:</b> modules/smart-extra-libs/lib_archlzs.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> extralibs:Archivers</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartArchiverLZS</span></li>
 		
-		<li><b>Version:</b> v.20191110</li>
-		<li><b>Depends:</b> extensions:  classes: Facebook Graph Api</li>
+		<li><b>Version:</b> v.20191203</li>
+		<li><b>Depends:</b> extensions:  PHP MBString ; classes: Smart, SmartHashCrypto</li>
 		
-		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
+		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
 		
 	</ul>
@@ -705,65 +707,37 @@ select#select-summary {
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20191201 -->
-<div class="doc-container" id="Method--__construct">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$app_id` Parameter is REQUIRED">$app_id</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$app_secret` Parameter is REQUIRED">$app_secret</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$api_version` Parameter is OPTIONAL, with the Default Value: &quot;v5.0&quot;">$api_version</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;v5.0&quot;</b></span>
+<div class="doc-container" id="Method--compressToBase64">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>compressToBase64</b></span>&nbsp;(
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$input` Parameter is REQUIRED">$input</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
+			<div class="doc-method-ret-params">@return: {STRING} The Base64 LZS Compressed String<br>
+@param: {STRING} $input: The uncompressed string</div>
 	
-	
-	
-	
-</div><div class="doc-container" id="Method--getApiObject">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getApiObject</b></span>&nbsp;(
-		
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+			<div class="doc-method-comments">Compress a string to LZS + Base64</div>
 	
 	
 	
+</div><div class="doc-container" id="Method--decompressFromBase64">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>decompressFromBase64</b></span>&nbsp;(
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$input` Parameter is REQUIRED">$input</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The uncompressed string<br>
+@param: {STRING} $input: The Base64 LZS Compressed String</div>
+	
+			<div class="doc-method-comments">Decompress a Base64 + LZS compressed string</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--getLastError">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getLastError</b></span>&nbsp;(
-		
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--getUserData">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getUserData</b></span>&nbsp;(
-		
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--validateUserData">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validateUserData</b></span>&nbsp;(
-		
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div>
+</div><!-- Skip Internal-Priv Method: `compressRawLZS()` --><!-- Skip Internal-Priv Method: `decompressRawLZS()` -->
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -779,7 +753,16 @@ select#select-summary {
 <!-- constants r.20191124 -->
 
 <!-- Sample Code -->
-
+<br>
+<div class="doc-container" id="SAMPLE--Code-">
+	<h2 class="doc-header">Sample code: PHP</h2>
+</div>
+<div class="doc-code">
+	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">$myString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">'Some&nbsp;string&nbsp;to&nbsp;archive&nbsp;as&nbsp;LZS'</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;</span><span style="color: #FFFFFF">$archString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">SmartArchiverLZS</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">compressToBase64</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$myString</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;archive&nbsp;the&nbsp;string<br>&nbsp;</span><span style="color: #FFFFFF">$unarchString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">SmartArchiverLZS</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">decompressFromBase64</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$archString</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;unarchive&nbsp;it&nbsp;back<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">if((string)</span><span style="color: #FFFFFF">$unarchString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">!==&nbsp;(string)</span><span style="color: #FFFFFF">$myString</span><span style="color: #FFCC00; font-weight: bold">)&nbsp;{&nbsp;</span><span style="color: #999999">//&nbsp;Test:&nbsp;check&nbsp;if&nbsp;unarchive&nbsp;is&nbsp;the&nbsp;same&nbsp;as&nbsp;archive<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">@</span><span style="color: #FFFFFF">http_response_code</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">500</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;die(</span><span style="color: #5F9CCE">'LZS&nbsp;Archive&nbsp;test&nbsp;Failed&nbsp;!'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;}&nbsp;</span><span style="color: #999999">//end&nbsp;if<br><br></span><span style="color: #FFFFFF">?&gt;</span>
+</span>
+</code><!-- [/@] Smart/HTML.Cleaner --></code></pre>
+</div>
 <!-- Summary List -->
 <br>
 <!-- summary r.20191124 -->
@@ -804,26 +787,21 @@ function smartHandleDocSelector(obj) {
 </script>
 <div class="doc-summary">
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
-		<option value="" selected>* PHP Class \SmartModExtLib\SmFacebook\FacebookApi # Documentation Index *</option>
-		<optgroup label="Class \SmartModExtLib\SmFacebook\FacebookApi">
+		<option value="" selected>* PHP Class \SmartArchiverLZS # Documentation Index *</option>
+		<optgroup label="Class \SmartArchiverLZS">
 			<option value="Class--Summary-">Class definition</option>
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+									<option value="Method--compressToBase64"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;compressToBase64()</option>
 			
 			
-									<option value="Method--getApiObject"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getApiObject()</option>
+									<option value="Method--decompressFromBase64"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decompressFromBase64()</option>
 			
 			
-									<option value="Method--getLastError"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getLastError()</option>
+						
 			
-			
-									<option value="Method--getUserData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getUserData()</option>
-			
-			
-									<option value="Method--validateUserData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validateUserData()</option>
-			
+						
 			
 			
 		</optgroup>
@@ -834,6 +812,9 @@ function smartHandleDocSelector(obj) {
 		<optgroup label="Class Constants">
 			<option value="Constants--Summary-">Constants list</option>
 			
+		</optgroup>
+				<optgroup label="Class Sample usage">
+			<option value="SAMPLE--Code-">Sample code</option>
 		</optgroup>
 		
 	</select>

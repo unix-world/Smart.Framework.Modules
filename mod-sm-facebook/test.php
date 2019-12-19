@@ -64,7 +64,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		if($fb->validateUserData() !== true) {
 			$this->PageViewSetVars([
-				'main' => '<h1>Not Logged in with Facebook ...</h1>'
+				'main' => '<h1>Not Logged in with Facebook ...</h1>'.'<br>'.Smart::escape_html($fb->getLastError())
 			]);
 		} else {
 			$this->PageViewSetVars([

@@ -5,10 +5,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
-	<meta name="description" content="\SmartModExtLib\SmFacebook\FacebookApi        final class \SmartModExtLib\SmFacebook\ FacebookApi    {   } -&gt;    Provides a PHP connector for Facebook">
-	<meta name="keywords" content="smartmodextlib smfacebook facebookapi, final, class, smartmodextlib smfacebook, facebookapi, -, provides, a, php, connector, for, facebook, graph, api, default, to, inside, the, smart.framework., language, located, at, modules mod-sm-facebook libs facebookapi.php, package, modules socialmedia, namespace, name, version, v, depends, extensions, classes, usage, dynamic, object, new, class   - method, -, this, only">
+	<meta name="description" content="\SmartCalendarComponent        final class \ SmartCalendarComponent    {   } ::    Class: SmartCalendarComponent - Easy to use HTML Calendar Component">
+	<meta name="keywords" content="smartcalendarcomponent, final, class, smartcalendarcomponent, class, -, easy, to, use, html, calendar, component, with, without, events ., language, php, located, at, modules smart-extra-libs lib calendar.php, package, extralibs viewcomponents, namespace, name, version, v, depends, classes, smart, usage, static, object, class  method, this, provides, only">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
-	<title>PHP Documentation for: \SmartModExtLib\SmFacebook\FacebookApi</title>
+	<title>PHP Documentation for: \SmartCalendarComponent</title>
 	<!-- CSS and Fonts -->
 		<!-- skip fonts -->
 	
@@ -672,29 +672,29 @@ select#select-summary {
 
 </style>
 <!-- Headings -->
-<h1 title="PHP class: `\SmartModExtLib\SmFacebook\FacebookApi` @ PHP Namespace: `\SmartModExtLib\SmFacebook\`" id="Class--Summary-">
-	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\SmartModExtLib\SmFacebook\</span><span class="doc-name">FacebookApi</span><br>
+<h1 title="PHP class: `\SmartCalendarComponent` @ PHP Namespace: `\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartCalendarComponent</span><br>
 	
 	
 	{
 	
-	}&nbsp;-&gt;
+	}&nbsp;::
 </h1>
 <!-- Description -->
-<div class="doc-comments">Provides a PHP connector for Facebook Graph Api (default to 5.0) inside the Smart.Framework.</div><br>
+<div class="doc-comments">Class: SmartCalendarComponent - Easy to use HTML Calendar Component (with / without Events).</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> modules/mod-sm-facebook/libs/FacebookApi.php</span></li>
-		<li><span class="doc-package"><b>Package:</b> modules:SocialMedia</span></li>
-		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\SmFacebook\</span></li>
-		<li><span class="doc-name"><b>Class Name:</b> FacebookApi</span></li>
+		<li><span class="doc-located"><b>Located at:</b> modules/smart-extra-libs/lib_calendar.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> extralibs:ViewComponents</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartCalendarComponent</span></li>
 		
-		<li><b>Version:</b> v.20191110</li>
-		<li><b>Depends:</b> extensions:  classes: Facebook Graph Api</li>
+		<li><b>Version:</b> v.20191111</li>
+		<li><b>Depends:</b> classes:  Smart</li>
 		
-		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
+		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
 		
 	</ul>
@@ -705,58 +705,30 @@ select#select-summary {
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20191201 -->
-<div class="doc-container" id="Method--__construct">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$app_id` Parameter is REQUIRED">$app_id</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$app_secret` Parameter is REQUIRED">$app_secret</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$api_version` Parameter is OPTIONAL, with the Default Value: &quot;v5.0&quot;">$api_version</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;v5.0&quot;</b></span>
+<div class="doc-container" id="Method--display_html_minicalendar">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>display_html_minicalendar</b></span>&nbsp;(
+				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_sel_date` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_sel_date</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;150&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;150&quot;</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_highlight_selected` Parameter is OPTIONAL, with the Default Value: true">$y_highlight_selected</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_events_arr` Parameter is OPTIONAL, with the Default Value: array()">$y_events_arr</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array()</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--getApiObject">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getApiObject</b></span>&nbsp;(
-		
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
 	
 	
 	
 	
 	
 	
-</div><div class="doc-container" id="Method--getLastError">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getLastError</b></span>&nbsp;(
-		
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
+</div><div class="doc-container" id="Method--display_html_calendar">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>display_html_calendar</b></span>&nbsp;(
+				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_sel_date` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_sel_date</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;100%&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;100%&quot;</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_highlight_selected` Parameter is OPTIONAL, with the Default Value: true">$y_highlight_selected</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_events_arr` Parameter is OPTIONAL, with the Default Value: array()">$y_events_arr</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array()</b></span>
 	
 	
-	
-</div><div class="doc-container" id="Method--getUserData">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getUserData</b></span>&nbsp;(
-		
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--validateUserData">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validateUserData</b></span>&nbsp;(
-		
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
 	
 	
 	
@@ -804,25 +776,16 @@ function smartHandleDocSelector(obj) {
 </script>
 <div class="doc-summary">
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
-		<option value="" selected>* PHP Class \SmartModExtLib\SmFacebook\FacebookApi # Documentation Index *</option>
-		<optgroup label="Class \SmartModExtLib\SmFacebook\FacebookApi">
+		<option value="" selected>* PHP Class \SmartCalendarComponent # Documentation Index *</option>
+		<optgroup label="Class \SmartCalendarComponent">
 			<option value="Class--Summary-">Class definition</option>
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+									<option value="Method--display_html_minicalendar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;display_html_minicalendar()</option>
 			
 			
-									<option value="Method--getApiObject"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getApiObject()</option>
-			
-			
-									<option value="Method--getLastError"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getLastError()</option>
-			
-			
-									<option value="Method--getUserData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getUserData()</option>
-			
-			
-									<option value="Method--validateUserData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validateUserData()</option>
+									<option value="Method--display_html_calendar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;display_html_calendar()</option>
 			
 			
 			
