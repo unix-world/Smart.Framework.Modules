@@ -25,7 +25,6 @@ require_once('modules/smart-extra-libs/lib_db_ext_pgsql.php'); 				// pgsql exte
 require_once('modules/smart-extra-libs/lib_db_solr.php'); 					// solr db connector
 //--
 require_once('modules/smart-extra-libs/lib_export_zip.php');				// zip archive
-require_once('modules/smart-extra-libs/lib_archlzs.php');					// lzs archive
 //--
 require_once('modules/smart-extra-libs/lib_export_import_ooffice.php'); 	// ooffice export
 //--

@@ -5,10 +5,10 @@
 
 namespace SmartModExtLib\Agile;
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
@@ -20,14 +20,14 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 class DBModelImport {
 
 	// ::
-	// v.20190405
+	// v.20191220
 
 
 public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
 
 	// TODO: detect autoincrement !!
 
-	if(!class_exists('SQLite3')) {
+	if(!\class_exists('\\SQLite3')) {
 		throw new \Exception('ERROR: PHP SQLite3 Extension is missing ...');
 		return '';
 	} //end if
@@ -54,7 +54,7 @@ public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
 
 	$db = null;
 	try {
-		$db = @new \SQLite3((string)$y_filepath, SQLITE3_OPEN_READONLY);
+		$db = @new \SQLite3((string)$y_filepath, \SQLITE3_OPEN_READONLY);
 		$db->busyTimeout(5000);
 	} catch (Exception $e) {
 		throw new \Exception('ERROR: Database Connection Failed: '.$e->getMessage());
@@ -85,9 +85,9 @@ public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
 	$y = 25;
 	$tblsnum = 0;
 	$maxpercol = 3;
-	while($tbl = @$tables->fetchArray(SQLITE3_ASSOC)) {
-		if(is_array($tbl)) {
-			if($tbl['tbl_name'] AND (stripos((string)$tbl['tbl_name'], 'sqlite_') !== 0)) {
+	while($tbl = @$tables->fetchArray(\SQLITE3_ASSOC)) {
+		if(\is_array($tbl)) {
+			if($tbl['tbl_name'] AND (\stripos((string)$tbl['tbl_name'], 'sqlite_') !== 0)) {
 				$tblsnum++;
 				$arr[] = '<table x="'.(int)$x.'" y="'.(int)$y.'" name="'.\Smart::escape_html((string)$tbl['tbl_name']).'">';
 				$columns = @$db->query("SELECT * FROM pragma_table_info('".@$db->escapeString((string)$tbl['tbl_name'])."')");
@@ -97,7 +97,7 @@ public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
 				} //end if
 				$num_cols = 0;
 				$pkeys = [];
-				while($col = @$columns->fetchArray(SQLITE3_ASSOC)) {
+				while($col = @$columns->fetchArray(\SQLITE3_ASSOC)) {
 					if($col['name']) {
 						if($col['pk']) {
 							$pkeys[] = [
@@ -106,7 +106,7 @@ public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
 							];
 						} //end if
 						$arr[] = '<row name="'.\Smart::escape_html((string)$col['name']).'" null="'.(int)($col['notnull'] ? 0 : 1).'" autoincrement="0">';
-						$arr[] = '<datatype>'.\Smart::escape_html((string)strtoupper((string)$col['type'])).'</datatype>';
+						$arr[] = '<datatype>'.\Smart::escape_html((string)\strtoupper((string)$col['type'])).'</datatype>';
 						if($col['dflt_value']) {
 							$arr[] = '<default>'.\Smart::escape_html((string)$col['dflt_value']).'</default>';
 						} //end if
@@ -115,7 +115,7 @@ public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
 							throw new \Exception('ERROR: Get Foreign Keys for table \''.$tbl['tbl_name'].'\' column \''.$col['name'].'\' Failed: '.@$db->lastErrorMsg());
 							return '';
 						} //end if
-						while($fkey = @$foreignkeys->fetchArray(SQLITE3_ASSOC)) {
+						while($fkey = @$foreignkeys->fetchArray(\SQLITE3_ASSOC)) {
 							$arr[] = '<relation table="'.\Smart::escape_html((string)$fkey['table']).'" row="'.\Smart::escape_html((string)$fkey['to']).'" />';
 						} //end while
 						$arr[] = '</row>';
@@ -135,7 +135,7 @@ public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
 					return '';
 				} //end if
 				$pkidx = [];
-				while($idx = @$indexes->fetchArray(SQLITE3_ASSOC)) {
+				while($idx = @$indexes->fetchArray(\SQLITE3_ASSOC)) {
 					if($idx['name'] AND ((string)$idx['origin'] == 'c')) { // not primary key: pk / fk (foreign key)
 						$idxinfo = @$db->query("SELECT * FROM pragma_index_info('".@$db->escapeString((string)$idx['name'])."')");
 						if(!$idxinfo) {
@@ -143,7 +143,7 @@ public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
 							return '';
 						} //end if
 						$pkidx[(string)$idx['name']] = [];
-						while($iix = @$idxinfo->fetchArray(SQLITE3_ASSOC)) {
+						while($iix = @$idxinfo->fetchArray(\SQLITE3_ASSOC)) {
 							if($iix['name']) {
 								$pkidx[(string)$idx['name']]['keys'][] = (string) $iix['name'];
 							} //end if
@@ -186,19 +186,19 @@ public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
 	$arr[] = (string) $xml;
 	$arr[] = '</sql>';
 
-	return (string) implode("\n", (array)$arr);
+	return (string) \implode("\n", (array)$arr);
 
 } //END FUNCTION
 
 
 public static function SmartDbModelerPgsqlExportToXml($y_host, $y_port, $y_dbname, $y_username, $y_pass, $y_schema='') {
 
-	if(!function_exists('pg_connect')) {
+	if(!\function_exists('\\pg_connect')) {
 		throw new \Exception('ERROR: PHP PostgreSQL Extension is missing ...');
 		return '';
 	} //end if
 
-	$conn = @pg_connect('host='.$y_host.' port='.(int)$y_port.' dbname='.$y_dbname.' user='.$y_username.' password='.$y_pass.' connect_timeout=30');
+	$conn = @\pg_connect('host='.$y_host.' port='.(int)$y_port.' dbname='.$y_dbname.' user='.$y_username.' password='.$y_pass.' connect_timeout=30');
 	if(!$conn){
 		throw new \Exception('ERROR: Failed to connect to: '.'host='.$y_host.' port='.(int)$y_port.' dbname='.$y_dbname.' user='.$y_username.' password=***** connect_timeout=30');
 		return '';
@@ -243,12 +243,13 @@ ORDER BY pn.nspname ASC, pc.relname ASC, pc.oid ASC
 SQL;
 
 	// list schema: SELECT 'SCHEMA' AS type, oid, NULL AS schemaname, NULL AS relname, nspname AS name FROM pg_catalog.pg_namespace pn WHERE pn.nspname NOT LIKE $_PATERN_$pg_%$_PATERN_$ AND pn.nspname != 'information_schema'
-	$result = pg_query($conn, $qstr);
+	$result = \pg_query($conn, $qstr);
 	if(!$result) {
 		throw new \Exception(__METHOD__.' A query failed: '.$qstr);
 		return '';
 	} //end if
-	while($row = pg_fetch_array($result)) {
+
+	while($row = \pg_fetch_array($result)) {
 
 		$tblschema = $row['schema_name'];
 		if($y_schema && ((string)$y_schema != (string)$tblschema)) {
@@ -278,32 +279,32 @@ SELECT *, col_description({$table_oid},ordinal_position) as column_comment
 ;
 SQL;
 
-		$result2 = pg_query($conn, $qstr);
+		$result2 = \pg_query($conn, $qstr);
 		if(!$result2) {
 			throw new \Exception(__METHOD__.' A query failed: '.$qstr);
 			return '';
 		} //end if
-		while($row = pg_fetch_array($result2)) {
-			//print_r($row);
+		while($row = \pg_fetch_array($result2)) {
+			// \print_r($row);
 			$name = $row['column_name'];
 			$type = $row['data_type'];		// maybe use "udt_name" instead to consider user types
 			if((string)$row['character_maximum_length']) {
 				$type .= '('.$row['character_maximum_length'].')';
-			} elseif(((string)strtoupper((string)$type) == 'NUMERIC') AND (((string)$row['numeric_precision'] != '') OR ((string)$row['numeric_scale'] != ''))) {
+			} elseif(((string)\strtoupper((string)$type) == 'NUMERIC') AND (((string)$row['numeric_precision'] != '') OR ((string)$row['numeric_scale'] != ''))) {
 				$type .= '('.(int)$row['numeric_precision'].','.(int)$row['numeric_scale'].')';
 			} //end if
 			$comment = (isset($row['column_comment']) ? $row['column_comment'] : "");
 			$null = ($row['is_nullable'] == "YES" ? "1" : "0");
 			$def = $row['column_default'];
 			$ai = '0'; // $ai:autoincrement... Not in postgresql, but there are serial classes as nextval
-			if(stripos((string)trim((string)strtolower((string)$def)), 'nextval(') === 0) {
+			if(\stripos((string)\trim((string)\strtolower((string)$def)), 'nextval(') === 0) {
 				$ai = '1'; // just for info ...
 			} //end if
 			if($def == "NULL") {
 				$def = "";
 			} //end if
 			$xml .= '<row name="'.\Smart::escape_html($name).'" null="'.\Smart::escape_html($null).'" autoincrement="'.\Smart::escape_html($ai).'">';
-			$xml .= '<datatype>'.strtoupper($type).'</datatype>';
+			$xml .= '<datatype>'.\strtoupper($type).'</datatype>';
 			$xml .= '<default>'.\Smart::escape_html($def).'</default>';
 			if($comment) {
 				$xml .= '<comment>'.\Smart::escape_html($comment).'</comment>';
@@ -334,12 +335,12 @@ SELECT 	kku.column_name, ccu.table_name AS references_table, ccu.column_name AS 
 		AND kku.column_name = '{$name}'
 ;
 SQL;
-			$result3 = pg_query($conn, $qstr);
+			$result3 = \pg_query($conn, $qstr);
 			if(!$result3) {
 				throw new \Exception(__METHOD__.' A query failed: '.$qstr);
 				return '';
 			} //end if
-			while($row = pg_fetch_array($result3)) {
+			while($row = \pg_fetch_array($result3)) {
 				$xml .= '<relation table="'.\Smart::escape_html($tblschema.'.'.$row['references_table']).'" row="'.\Smart::escape_html($row['references_field']).'" />';
 			} //end while
 			$xml .= '</row>';
@@ -369,14 +370,14 @@ SELECT tc.constraint_name, tc.constraint_type, kcu.column_name
 ;
 SQL;
 
-		$result2 = pg_query($conn, $qstr);
+		$result2 = \pg_query($conn, $qstr);
 		if(!$result2) {
 			throw new \Exception(__METHOD__.' A query failed: '.$qstr);
 			return '';
 		} //end if
 		$keyname1 = '';
 		$reg_keys = [];
-		while($row2 = pg_fetch_array($result2)) {
+		while($row2 = \pg_fetch_array($result2)) {
 			if((string)$row2['constraint_type'] != "CHECK") {
 				$keyname = $row2['constraint_name'];
 				if((string)$keyname != (string)$keyname1) {
@@ -418,15 +419,15 @@ SELECT
 	ORDER BY pa."attnum"
 ;
 SQL;
-		$result2 = pg_query($conn, $qstr);
+		$result2 = \pg_query($conn, $qstr);
 		if(!$result2) {
 			throw new \Exception(__METHOD__.' A query failed: '.$qstr);
 			return '';
 		} //end if
 		$idx = array();
-		while($row2 = pg_fetch_array($result2)) {
+		while($row2 = \pg_fetch_array($result2)) {
 			$name = $row2['INDEX_NAME'];
-			if(array_key_exists($name, $idx)) {
+			if(\array_key_exists($name, $idx)) {
 				$obj = $idx[$name];
 			} else {
 				$t = 'INDEX';
@@ -465,25 +466,25 @@ SQL;
 	$arr[] = (string) $xml;
 	$arr[] = '</sql>';
 
-	return (string) implode("\n", (array)$arr);
+	return (string) \implode("\n", (array)$arr);
 
 } //END FUNCTION
 
 
 public static function SmartDbModelerMySQLExportToXml($y_host, $y_port, $y_dbname, $y_username, $y_pass) {
 
-	if(!function_exists('mysqli_init')) {
+	if(!\function_exists('\\mysqli_init')) {
 		throw new \Exception('ERROR: PHP MySQLi Extension is missing ...');
 		return '';
 	} //end if
 
-	$conn = mysqli_init();
-	mysqli_options($conn, MYSQLI_OPT_LOCAL_INFILE, false);
-	if(!@mysqli_real_connect($conn, (string)$y_host, (string)$y_username, (string)$y_pass, false, (int)$y_port)) {
+	$conn = \mysqli_init();
+	\mysqli_options($conn, \MYSQLI_OPT_LOCAL_INFILE, false);
+	if(!@\mysqli_real_connect($conn, (string)$y_host, (string)$y_username, (string)$y_pass, false, (int)$y_port)) {
 		throw new \Exception('ERROR: Failed to connect to: '.'host='.$y_host.' port='.(int)$y_port.' dbname='.$y_dbname.' user='.$y_username.' password=*****');
 		return '';
 	} //end if
-	if(!is_object($conn)) {
+	if(!\is_object($conn)) {
 		throw new \Exception('ERROR: Connection Dropped to: '.'host='.$y_host.' port='.(int)$y_port.' dbname='.$y_dbname.' user='.$y_username.' password=*****');
 		return '';
 	} //end if
@@ -491,28 +492,28 @@ public static function SmartDbModelerMySQLExportToXml($y_host, $y_port, $y_dbnam
 		throw new \Exception('ERROR: Connection have NO Thread ID for: '.'host='.$y_host.' port='.(int)$y_port.' dbname='.$y_dbname.' user='.$y_username.' password=*****');
 		return '';
 	} //end if
-	mysqli_query($conn, "SET CHARACTER SET 'utf8'", MYSQLI_STORE_RESULT);
-	if(@mysqli_errno($conn) !== 0) {
+	\mysqli_query($conn, "SET CHARACTER SET 'utf8'", \MYSQLI_STORE_RESULT);
+	if(@\mysqli_errno($conn) !== 0) {
 		throw new \Exception(__METHOD__.' Failed to Set Charset to UTF-8');
 		return '';
 	} //end if
-	mysqli_query($conn, "SET COLLATION_CONNECTION = 'utf8_bin'", MYSQLI_STORE_RESULT);
-	if(@mysqli_errno($conn) !== 0) {
+	\mysqli_query($conn, "SET COLLATION_CONNECTION = 'utf8_bin'", \MYSQLI_STORE_RESULT);
+	if(@\mysqli_errno($conn) !== 0) {
 		throw new \Exception(__METHOD__.' Failed to Set Collation for connection to UTF-8');
 		return '';
 	} //end if
 
-	$res = mysqli_select_db($conn, 'information_schema');
+	$res = \mysqli_select_db($conn, 'information_schema');
 	if(!$res) {
 		throw new \Exception(__METHOD__.' Select DB failed for: information_schema');
 		return '';
 	} //end if
-	$db = mysqli_real_escape_string($conn, (string)$y_dbname);
+	$db = \mysqli_real_escape_string($conn, (string)$y_dbname);
 
 	$xml = '';
 
 	$arr = array();
-	//@ $datatypes = file('dbmodel/mysql/datatypes.xml');
+	//@ $datatypes = \file('dbmodel/mysql/datatypes.xml');
 	//$arr[] = $datatypes[0];
 	$arr[] = '<sql db="mysql">';
 	$arr[] = '<meta-info>';
@@ -523,35 +524,35 @@ public static function SmartDbModelerMySQLExportToXml($y_host, $y_port, $y_dbnam
 	//	$arr[] = $datatypes[$i];
 	//} //end for
 
-	$result = mysqli_query($conn, "SELECT * FROM TABLES WHERE TABLE_SCHEMA = '".$db."'", MYSQLI_STORE_RESULT);
-	if(@mysqli_errno($conn) !== 0) {
-		throw new \Exception(__METHOD__.' A query failed (1): '.@mysqli_error($conn));
+	$result = \mysqli_query($conn, "SELECT * FROM TABLES WHERE TABLE_SCHEMA = '".$db."'", \MYSQLI_STORE_RESULT);
+	if(@\mysqli_errno($conn) !== 0) {
+		throw new \Exception(__METHOD__.' A query failed (1): '.@\mysqli_error($conn));
 		return '';
 	} //end if
-	while($row = mysqli_fetch_array($result)) {
+	while($row = \mysqli_fetch_array($result)) {
 		$table = $row['TABLE_NAME'];
 		$xml .= '<table name="'.\Smart::escape_html($table).'">';
 		$comment = (isset($row['TABLE_COMMENT']) ? $row['TABLE_COMMENT'] : '');
 		if($comment) {
 			$xml .= '<comment>'.\Smart::escape_html($comment).'</comment>';
 		} //end if
-		$q = "SELECT * FROM COLUMNS WHERE TABLE_NAME = '".mysqli_real_escape_string($conn, (string)$table)."' AND TABLE_SCHEMA = '".$db."'";
-		$result2 = mysqli_query($conn, $q, MYSQLI_STORE_RESULT);
-		if(@mysqli_errno($conn) !== 0) {
-			throw new \Exception(__METHOD__.' A query failed (2): '.@mysqli_error($conn));
+		$q = "SELECT * FROM COLUMNS WHERE TABLE_NAME = '".\mysqli_real_escape_string($conn, (string)$table)."' AND TABLE_SCHEMA = '".$db."'";
+		$result2 = \mysqli_query($conn, $q, \MYSQLI_STORE_RESULT);
+		if(@\mysqli_errno($conn) !== 0) {
+			throw new \Exception(__METHOD__.' A query failed (2): '.@\mysqli_error($conn));
 			return '';
 		} //end if
-		while($row = mysqli_fetch_array($result2)) {
+		while($row = \mysqli_fetch_array($result2)) {
 			$name  = $row['COLUMN_NAME'];
 			$type  = $row['COLUMN_TYPE'];
 			$comment = (isset($row['COLUMN_COMMENT']) ? $row['COLUMN_COMMENT'] : '');
 			$null = ($row['IS_NULLABLE'] == 'YES' ? '1' : '0');
-			if(preg_match("/binary/i", $row['COLUMN_TYPE'])) {
-				$def = bin2hex($row['COLUMN_DEFAULT']);
+			if(\preg_match("/binary/i", $row['COLUMN_TYPE'])) {
+				$def = \bin2hex($row['COLUMN_DEFAULT']);
 			} else {
 				$def = $row['COLUMN_DEFAULT'];
 			} //end if else
-			$ai = (preg_match('/auto_increment/i', $row['EXTRA']) ? '1' : '0');
+			$ai = (\preg_match('/auto_increment/i', $row['EXTRA']) ? '1' : '0');
 			if($def == 'NULL') {
 				$def = '';
 			} //end if
@@ -568,29 +569,29 @@ public static function SmartDbModelerMySQLExportToXml($y_host, $y_port, $y_dbnam
 				LEFT JOIN TABLE_CONSTRAINTS c
 				ON k.CONSTRAINT_NAME = c.CONSTRAINT_NAME
 				WHERE CONSTRAINT_TYPE = 'FOREIGN KEY'
-				AND c.TABLE_SCHEMA = '".$db."' AND c.TABLE_NAME = '".mysqli_real_escape_string($conn, (string)$table)."'
-				AND k.COLUMN_NAME = '".mysqli_real_escape_string($conn, (string)$name)."'";
-			$result3 = mysqli_query($conn, $q, MYSQLI_STORE_RESULT);
-			if(@mysqli_errno($conn) !== 0) {
-				throw new \Exception(__METHOD__.' A query failed (3): '.@mysqli_error($conn));
+				AND c.TABLE_SCHEMA = '".$db."' AND c.TABLE_NAME = '".\mysqli_real_escape_string($conn, (string)$table)."'
+				AND k.COLUMN_NAME = '".\mysqli_real_escape_string($conn, (string)$name)."'";
+			$result3 = \mysqli_query($conn, $q, \MYSQLI_STORE_RESULT);
+			if(@\mysqli_errno($conn) !== 0) {
+				throw new \Exception(__METHOD__.' A query failed (3): '.@\mysqli_error($conn));
 				return '';
 			} //end if
-			while($row = mysqli_fetch_array($result3)) {
+			while($row = \mysqli_fetch_array($result3)) {
 				$xml .= '<relation table="'.\Smart::escape_html($row["table"]).'" row="'.\Smart::escape_html($row["column"]).'" />';
 			} //end while
 			$xml .= '</row>';
 		} //end while
 		// keys
-		$q = "SELECT * FROM STATISTICS WHERE TABLE_NAME = '".mysqli_real_escape_string($conn, (string)$table)."' AND TABLE_SCHEMA = '".$db."' ORDER BY SEQ_IN_INDEX ASC";
-		$result2 = mysqli_query($conn, $q, MYSQLI_STORE_RESULT);
-		if(@mysqli_errno($conn) !== 0) {
-			throw new \Exception(__METHOD__.' A query failed (4): '.@mysqli_error($conn));
+		$q = "SELECT * FROM STATISTICS WHERE TABLE_NAME = '".\mysqli_real_escape_string($conn, (string)$table)."' AND TABLE_SCHEMA = '".$db."' ORDER BY SEQ_IN_INDEX ASC";
+		$result2 = \mysqli_query($conn, $q, \MYSQLI_STORE_RESULT);
+		if(@\mysqli_errno($conn) !== 0) {
+			throw new \Exception(__METHOD__.' A query failed (4): '.@\mysqli_error($conn));
 			return '';
 		} //end if
 		$idx = array();
-		while($row = mysqli_fetch_array($result2)) {
+		while($row = \mysqli_fetch_array($result2)) {
 			$name = $row['INDEX_NAME'];
-			if(array_key_exists($name, $idx)) {
+			if(\array_key_exists($name, $idx)) {
 				$obj = $idx[$name];
 			} else {
 				$type = $row['INDEX_TYPE'];
@@ -626,7 +627,7 @@ public static function SmartDbModelerMySQLExportToXml($y_host, $y_port, $y_dbnam
 	$arr[] = (string) $xml;
 	$arr[] = '</sql>';
 
-	return (string) implode("\n", (array)$arr);
+	return (string) \implode("\n", (array)$arr);
 
 } //END FUNCTION
 

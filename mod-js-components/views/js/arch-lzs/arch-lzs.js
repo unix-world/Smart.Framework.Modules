@@ -1,7 +1,6 @@
 
 // [LIB - Smart.Framework / JS / LZS Archiver]
 // (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
 
 // DEPENDS: SmartJS_CoreUtils
 
@@ -17,9 +16,12 @@
 //================== [NO:evcode]
 
 /**
- * CLASS :: LZS Archiver / Unarchiver
- *
- * @package Sf.Javascript:Archivers
+ * CLASS :: LZS Archive
+ * Compress or Decompress a LZS archive
+ * This is very slow with large strings ... extremely slow !!!
+ * This is why the max (hardcoded) length of the string it can compress/decompress is 4096 bytes
+ * The purpose of this class is to compress/decompress cookies that can be shared also with PHP
+ * The PHP version of this class is available in modules/mod-js-components/libs/ArchLzs.php
  *
  * @requires		SmartJS_CoreUtils
  *
@@ -27,20 +29,20 @@
  * @author unix-world.org
  * @license BSD
  * @file arch_utils.js
- * @version 20191123
- * @class SmartJS_Archiver_LZS
+ * @version 20191220
+ * @class ArchLzs
  * @static
  *
  * @example
  * var plainStr = 'Some String';
- * var archivedStr = SmartJS_Archiver_LZS.compressToBase64(plainStr);
- * var unArchivedStr = SmartJS_Archiver_LZS.decompressFromBase64(archivedStr);
+ * var archivedStr = ArchLzs.compressToBase64(plainStr);
+ * var unArchivedStr = ArchLzs.decompressFromBase64(archivedStr);
  * if(plainStr !== unArchivedStr) {
  * 	alert('Js LZS Archiver Failed: Plain String is different after Archive/Unarchive operations !');
  * }
  * console.log(plainStr, archivedStr, unArchivedStr);
  */
-var SmartJS_Archiver_LZS = new function() { // START CLASS
+var ArchLzs = new function() { // START CLASS
 
 	// :: static
 
@@ -56,7 +58,7 @@ var SmartJS_Archiver_LZS = new function() { // START CLASS
 	/**
 	 * Compress a string to LZS + Base64
 	 *
-	 * @memberof SmartJS_Archiver_LZS
+	 * @memberof ArchLzs
 	 * @method compressToBase64
 	 * @static
 	 *
@@ -127,7 +129,7 @@ var SmartJS_Archiver_LZS = new function() { // START CLASS
 	/**
 	 * Decompress from Base64 + LZS
 	 *
-	 * @memberof SmartJS_Archiver_LZS
+	 * @memberof ArchLzs
 	 * @method decompressFromBase64
 	 * @static
 	 *
@@ -199,7 +201,7 @@ var SmartJS_Archiver_LZS = new function() { // START CLASS
 	 *
 	 * @private internal development only
 	 *
-	 * @memberof SmartJS_Archiver_LZS
+	 * @memberof ArchLzs
 	 * @method compressRawLZS
 	 * @static
 	 *
@@ -213,6 +215,10 @@ var SmartJS_Archiver_LZS = new function() { // START CLASS
 		} //end if
 		//--
 		uncompressed = String(uncompressed);
+		if(uncompressed.length > 4096) {
+			console.error('ArchLzs # Compressing a string with a length of more than 4096 bytes is not supported');
+			return '';
+		} //end if
 		//--
 		var arch = SmartJS_CoreUtils.bin2hex(uncompressed).toUpperCase();
 		//--
@@ -226,7 +232,7 @@ var SmartJS_Archiver_LZS = new function() { // START CLASS
 	 *
 	 * @private internal development only
 	 *
-	 * @memberof SmartJS_Archiver_LZS
+	 * @memberof ArchLzs
 	 * @method decompressRawLZS
 	 * @static
 	 *
@@ -240,6 +246,10 @@ var SmartJS_Archiver_LZS = new function() { // START CLASS
 		} //end if
 		//--
 		compressed = String(compressed);
+		if(compressed.length > 4096) {
+			console.error('ArchLzs # Decompressing a string with a length of more than 4096 bytes is not supported');
+			return '';
+		} //end if
 		//--
 		var unarch = String(SmartJS_CoreUtils.stringTrim(RawInflate(String(compressed))));
 		var parts = unarch.split('#CHECKSUM-SHA1#');

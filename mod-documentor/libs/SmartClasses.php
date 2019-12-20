@@ -61,7 +61,8 @@ final class SmartClasses {
 	public static function listJavascriptSfmClasses() {
 		//--
 		return [
-			'SmartJS_BrowserUIUtils' 	=> 'lib/js/jquery/jquery.smartframework.ui.js'
+			'SmartJS_BrowserUIUtils' 	=> 'lib/js/jquery/jquery.smartframework.ui.js',
+			'ArchLzs'					=> 'modules/mod-js-components/views/js/arch-lzs/arch-lzs.js'
 		];
 		//--
 	} //END FUNCTION
@@ -134,8 +135,7 @@ final class SmartClasses {
 			'\\SmartSession',
 		//	'\\SmartCustomSession', // custom: require_once('lib/app/custom-session-redis.php');
 			'\\SmartSpreadSheetExport',
-			'\\SmartSpreadSheetImport',
-			'\\SmartPdfExport',
+			'\\SmartSpreadSheetImport'
 			//--
 		];
 		//--
@@ -180,13 +180,17 @@ final class SmartClasses {
 			//--
 			'\\SmartHTMLCalendar',
 			'\\SmartCalendarComponent',
-			'\\SmartArchiverLZS',
 			'\\SmartZipArchive',
 			'\\SmartExportToOpenOffice',
 			'\\SmartImportFromOpenOffice',
 			//--
 			'\\SmartModExtLib\\MediaGallery\\Manager',
 			'\\SmartModExtLib\\JsComponents\\TextEditor',
+			'\\SmartModExtLib\\JsComponents\\ArchLzs',
+			//--
+			'\\SmartModExtLib\\PdfGenerate\\PdfUtils',
+			'\\SmartModExtLib\\PdfGenerate\\HtmlToPdfExport',
+			'\\SmartModExtLib\\PdfGenerate\\HtmlUrlToPdfExport',
 			//--
 			'\\SmartImgGfxCharts',
 			'\\SmartImgBizCharts',

@@ -236,7 +236,7 @@ $mbox = 'iradu@unix-world.org';
 
 		//--
 		$mode = $this->RequestVarGet('mode', '', 'string');
-		$pdf = $this->RequestVarGet('pdf', '', 'string');
+		$pdf = ''; // $pdf = $this->RequestVarGet('pdf', '', 'string'); // TO BE DONE
 		//--
 		$use_sandbox = false;
 		if(((string)$mode == '') AND ((string)$pdf == '')) {
@@ -292,10 +292,12 @@ $mbox = 'iradu@unix-world.org';
 		} else {
 			//--
 			if((string)$pdf != '') {
+				/*
 				$this->PageViewSetCfg('rawpage', true);
 				$this->PageViewSetCfg('rawmime', SmartPdfExport::pdf_mime_header());
 				$this->PageViewSetCfg('rawdisp', SmartPdfExport::pdf_disposition_header('message-'.time().'.pdf', 'inline')); // TODO: since the msg file name is encrypted we need a way to get it
 				$main = SmartPdfExport::generate((string)$main, 'normal', 'auto');
+				*/
 			} else {
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 			} //end if else

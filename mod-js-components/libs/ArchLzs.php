@@ -1,12 +1,15 @@
 <?php
-// [LIB - Smart.Framework / LZS Archiver]
+// Class: \SmartModExtLib\JsComponents\ArchLzs
+// [Smart.Framework.Modules - JsComponents / LZS Archiver]
 // (c) 2006-2019 unix-world.org - all rights reserved
 // r.5.2.7 / smart.framework.v.5.2
 
-//----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.5.2')) {
-	@http_response_code(500);
-	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
+namespace SmartModExtLib\JsComponents;
+
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
@@ -35,15 +38,17 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Original work by Tobias Neeb <tobias.neeb@gmail.com>
 
 /**
- * Class: SmartArchiverLZS - Compress or Decompress a LZS archive.
- * This is very slow with large strings ... extremely slow !
- * Should be used only with very small strings !!
+ * Class: ArchLzs - Compress or Decompress a LZS archive.
+ * This is very slow with large strings ... extremely slow !!!
+ * This is why the max (hardcoded) length of the string it can compress/decompress is 4096 bytes
+ * The purpose of this class is to compress/decompress cookies that can be shared also with Javascript
+ * The Javascript version of this class is available in modules/mod-js-components/views/js/arch-lzs/arch-lzs.js
  *
  * <code>
  * // Usage example:
  * $myString = 'Some string to archive as LZS';
- * $archString = SmartArchiverLZS::compressToBase64($myString); // archive the string
- * $unarchString = SmartArchiverLZS::decompressFromBase64($archString); // unarchive it back
+ * $archString = \SmartModExtLib\JsComponents\ArchLzs::compressToBase64($myString); // archive the string
+ * $unarchString = \SmartModExtLib\JsComponents\ArchLzs::decompressFromBase64($archString); // unarchive it back
  * if((string)$unarchString !== (string)$myString) { // Test: check if unarchive is the same as archive
  *     @http_response_code(500);
  *     die('LZS Archive test Failed !');
@@ -53,12 +58,12 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MBString ; classes: Smart, SmartHashCrypto
- * @version 	v.20191203
- * @package 	extralibs:Archivers
+ * @version 	v.20191220
+ * @package 	modules:Archivers
  *
  */
 
-final class SmartArchiverLZS {
+final class ArchLzs {
 
 	// ::
 
@@ -80,7 +85,7 @@ final class SmartArchiverLZS {
 		//--
 		$input = (string) $input;
 		//--
-		if((string)trim((string)$input) == '') {
+		if((string)\trim((string)$input) == '') {
 			return '';
 		} //end if
 		//--
@@ -96,7 +101,7 @@ final class SmartArchiverLZS {
 		$enc3 = false;
 		$enc4 = false;
 		//--
-		$strlen = SmartUnicode::str_len($input); // must be unicode strlen !
+		$strlen = (int) \SmartUnicode::str_len($input); // must be unicode strlen !
 		//--
 		$i = 0;
 		//--
@@ -141,7 +146,7 @@ final class SmartArchiverLZS {
 				$enc4 = 64;
 			} //end if else
 			//--
-			//var_dump(array(
+			// \var_dump(array(
 			//	$chr1,
 			//	$chr2,
 			//	$chr3,
@@ -174,7 +179,7 @@ final class SmartArchiverLZS {
 		//--
 		$input = (string) $input;
 		//--
-		if((string)trim((string)$input) == '') {
+		if((string)\trim((string)$input) == '') {
 			return '';
 		} //end if
 		//--
@@ -190,13 +195,13 @@ final class SmartArchiverLZS {
 		$enc3 = NULL;
 		$enc4 = NULL;
 		//--
-		$input = (string) trim((string)preg_replace('/[^A-Za-z0-9\+\/\=]/', '', (string)$input));
+		$input = (string) \trim((string)\preg_replace('/[^A-Za-z0-9\+\/\=]/', '', (string)$input));
 		if((string)$input == '') {
 			return '';
 		} //end if
 		//--
 		$i=0;
-		while($i < strlen($input)) { // no unicode strlen !
+		while($i < \strlen($input)) { // no unicode strlen !
 			//-- unixman: fix to avoid the strpos(): Empty needle (v.190115)
 			$needle = '';
 			//--
@@ -207,19 +212,19 @@ final class SmartArchiverLZS {
 			//--
 			$needle = (string) $input[$i++];
 			if((string)$needle != '') {
-				$enc1 = strpos(self::$keyStr, $needle);
+				$enc1 = \strpos(self::$keyStr, $needle);
 			} //end if
 			$needle = (string) $input[$i++];
 			if((string)$needle != '') {
-				$enc2 = strpos(self::$keyStr, $needle);
+				$enc2 = \strpos(self::$keyStr, $needle);
 			} //end if
 			$needle = (string) $input[$i++];
 			if((string)$needle != '') {
-				$enc3 = strpos(self::$keyStr, $needle);
+				$enc3 = \strpos(self::$keyStr, $needle);
 			} //end if
 			$needle = (string) $input[$i++];
 			if((string)$needle != '') {
-				$enc4 = strpos(self::$keyStr, $needle);
+				$enc4 = \strpos(self::$keyStr, $needle);
 			} //end if
 			//--
 			$needle = '';
@@ -280,13 +285,18 @@ final class SmartArchiverLZS {
 	 */
 	public static function compressRawLZS($uncompressed) {
 		//--
-		if((string)trim((string)$uncompressed) == '') {
+		if((string)\trim((string)$uncompressed) == '') {
 			return '';
 		} //end if
 		//--
-		$arch = (string) strtoupper((string)bin2hex((string)$uncompressed));
+		if(strlen((string)$uncompressed) > 4096) {
+			\Smart::log_warning(__CLASS__.' # Compressing a string with a length of more than 4096 bytes is not supported');
+			return '';
+		} //end if
 		//--
-		return (string) self::RawDeflate($arch.'#CHECKSUM-SHA1#'.SmartHashCrypto::sha1($arch)); // add sha1 checksum
+		$arch = (string) \strtoupper((string)\bin2hex((string)$uncompressed));
+		//--
+		return (string) self::RawDeflate($arch.'#CHECKSUM-SHA1#'.\SmartHashCrypto::sha1($arch)); // add sha1 checksum
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -302,22 +312,27 @@ final class SmartArchiverLZS {
 	 */
 	public static function decompressRawLZS($compressed) {
 		//--
-		if((string)trim((string)$compressed) == '') {
+		if((string)\trim((string)$compressed) == '') {
 			return '';
 		} //end if
 		//--
-		$unarch = (string) trim((string)self::RawInflate((string)$compressed));
-		//-- checksum verification
-		$arr = (array) explode('#CHECKSUM-SHA1#', $unarch);
-		$unarch = (string) trim((string)$arr[0]);
-		$checksum = (string) trim((string)$arr[1]);
+		if(strlen((string)$compressed) > 4096) {
+			\Smart::log_warning(__CLASS__.' # Decompressing a string with a length of more than 4096 bytes is not supported');
+			return '';
+		} //end if
 		//--
-		if((string)SmartHashCrypto::sha1($unarch) != (string)$checksum) {
-			Smart::log_notice(__METHOD__.'() :: Checksum Failed');
+		$unarch = (string) \trim((string)self::RawInflate((string)$compressed));
+		//-- checksum verification
+		$arr = (array) \explode('#CHECKSUM-SHA1#', $unarch);
+		$unarch = (string) \trim((string)$arr[0]);
+		$checksum = (string) \trim((string)$arr[1]);
+		//--
+		if((string)\SmartHashCrypto::sha1($unarch) != (string)$checksum) {
+			\Smart::log_notice(__METHOD__.'() :: Checksum Failed');
 			return ''; // string is corrupted, avoid to return
 		} //end if
 		//--
-		return (string) @hex2bin(strtolower($unarch));
+		return (string) @\hex2bin(\strtolower($unarch));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -329,9 +344,9 @@ final class SmartArchiverLZS {
 	//================================================================
 	private static function fromCharCode() {
 		//--
-		$args = func_get_args();
-		//-- var_dump($args[0].': '.array_reduce(func_get_args(),function($a,$b){$a.=self::utf8_chr($b);return $a;}));
-		return array_reduce(func_get_args(), function($a, $b){ $a .= self::utf8_chr($b); return $a; }); // mixed: array or null
+		$args = \func_get_args();
+		//--
+		return \array_reduce(\func_get_args(), function($a, $b){ $a .= self::utf8_chr($b); return $a; }); // mixed: array or null
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -340,7 +355,7 @@ final class SmartArchiverLZS {
 	//================================================================
 	private static function utf8_chr($u) {
 		//--
-		return (string) SmartUnicode::convert_charset('&#'.intval($u).';', 'HTML-ENTITIES', (string)SMART_FRAMEWORK_CHARSET);
+		return (string) \SmartUnicode::convert_charset('&#'.\intval($u).';', 'HTML-ENTITIES', (string)\SMART_FRAMEWORK_CHARSET);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -358,13 +373,13 @@ final class SmartArchiverLZS {
 	//================================================================
 	private static function utf8_ord($ch) {
 		//--
-		$len = strlen($ch);
+		$len = \strlen($ch);
 		//--
 		if($len <= 0) {
 			return false;
 		} //end if
 		//--
-		$h = ord($ch[0]);
+		$h = \ord($ch[0]);
 		//--
 		if($h <= 0x7F) {
 			return $h;
@@ -373,13 +388,13 @@ final class SmartArchiverLZS {
 			return false;
 		} //end if
 		if($h <= 0xDF && $len>1) {
-			return ($h & 0x1F) <<  6 | (ord($ch[1]) & 0x3F);
+			return ($h & 0x1F) <<  6 | (\ord($ch[1]) & 0x3F);
 		} //end if
 		if($h <= 0xEF && $len>2) {
-			return ($h & 0x0F) << 12 | (ord($ch[1]) & 0x3F) << 6 | (ord($ch[2]) & 0x3F);
+			return ($h & 0x0F) << 12 | (\ord($ch[1]) & 0x3F) << 6 | (\ord($ch[2]) & 0x3F);
 		} //end if
 		if($h <= 0xF4 && $len>3) {
-			return ($h & 0x0F) << 18 | (ord($ch[1]) & 0x3F) << 12 | (ord($ch[2]) & 0x3F) << 6 | (ord($ch[3]) & 0x3F);
+			return ($h & 0x0F) << 18 | (\ord($ch[1]) & 0x3F) << 12 | (\ord($ch[2]) & 0x3F) << 6 | (\ord($ch[3]) & 0x3F);
 		} //end if
 		//--
 		return false; // mixed
@@ -391,14 +406,14 @@ final class SmartArchiverLZS {
 	//================================================================
 	private static function utf8_charAt($str, $num) {
 		//--
-		return (string) SmartUnicode::sub_str($str, $num, 1);
+		return (string) \SmartUnicode::sub_str($str, $num, 1);
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	private static function writeBit($value, SmartArchiverObjDataLZS $data) {
+	private static function writeBit($value, ArchLzsObjData $data) {
 		//--
 		$data->val = ($data->val << 1) | $value;
 		//--
@@ -419,9 +434,9 @@ final class SmartArchiverLZS {
 
 
 	//================================================================
-	private static function writeBits($numbits, $value, SmartArchiverObjDataLZS $data) {
+	private static function writeBits($numbits, $value, ArchLzsObjData $data) {
 		//--
-		if(is_string($value)) {
+		if(\is_string($value)) {
 			//--
 			$value = self::charCodeAt($value, 0);
 			//--
@@ -440,12 +455,12 @@ final class SmartArchiverLZS {
 
 
 	//================================================================
-	private static function decrementEnlargeIn(SmartArchiverObjContextLZS $context) {
+	private static function decrementEnlargeIn(ArchLzsObjContext $context) {
 		//--
 		$context->enlargeIn--;
 		//--
 		if($context->enlargeIn === 0) {
-			$context->enlargeIn = pow(2, $context->numBits);
+			$context->enlargeIn = \pow(2, $context->numBits);
 			$context->numBits++;
 		} //end if
 		//--
@@ -454,9 +469,9 @@ final class SmartArchiverLZS {
 
 
 	//================================================================
-	private static function produceW(SmartArchiverObjContextLZS $context) {
+	private static function produceW(ArchLzsObjContext $context) {
 		//--
-		if(array_key_exists($context->w, $context->dictionaryToCreate)) {
+		if(\array_key_exists($context->w, $context->dictionaryToCreate)) {
 			//--
 			if(self::charCodeAt($context->w, 0) < 256) {
 				self::writeBits($context->numBits, 0, $context->data);
@@ -489,20 +504,20 @@ final class SmartArchiverLZS {
 		//--
 		$uncompressed = (string) $uncompressed;
 		//--
-		$context = new SmartArchiverObjContextLZS();
+		$context = new ArchLzsObjContext();
 		//--
-		for($i = 0; $i < strlen($uncompressed); $i++) {
+		for($i = 0; $i < \strlen($uncompressed); $i++) {
 			//--
 			$context->c = self::utf8_charAt($uncompressed, $i);
 			//--
-			if(!array_key_exists($context->c, $context->dictionary)) {
+			if(!\array_key_exists($context->c, $context->dictionary)) {
 				$context->dictionary[$context->c] = $context->dictSize++;
-				$context->dictionaryToCreate[$context->c] = TRUE;
+				$context->dictionaryToCreate[$context->c] = true;
 			} //end if
 			//--
 			$context->wc = $context->w.$context->c;
 			//--
-			if(array_key_exists($context->wc, $context->dictionary)) {
+			if(\array_key_exists($context->wc, $context->dictionary)) {
 				$context->w = $context->wc;
 			} else {
 				self::produceW($context);
@@ -543,7 +558,7 @@ final class SmartArchiverLZS {
 
 
 	//================================================================
-	private static function readBit(SmartArchiverObjDataLZS $data) {
+	private static function readBit(ArchLzsObjData $data) {
 		//--
 		$res = $data->val & $data->position;
 		//--
@@ -555,7 +570,7 @@ final class SmartArchiverLZS {
 			$data->val = self::charCodeAt($data->str, $data->index++);
 			//--
 		} //end if
-		//-- data.val = (data.val << 1); // this was not enabled in original
+		//-- data.val = (data.val << 1); // this was not enabled in the original
 		return $res > 0 ? 1 : 0; // 0/1
 		//--
 	} //END FUNCTION
@@ -563,11 +578,11 @@ final class SmartArchiverLZS {
 
 
 	//================================================================
-	private static function readBits($numBits, SmartArchiverObjDataLZS $data) {
+	private static function readBits($numBits, ArchLzsObjData $data) {
 		//--
 		$res = 0;
 		//--
-		$maxpower = pow(2, $numBits);
+		$maxpower = \pow(2, $numBits);
 		//--
 		$power = 1;
 		//--
@@ -596,17 +611,17 @@ final class SmartArchiverLZS {
 			2 => 2
 		);
 		//--
-		$next = NULL;
+		$next = null;
 		$enlargeIn = 4;
 		$dictSize = 4;
 		$numBits = 3;
 		$entry = '';
 		$result = '';
-		$w = NULL;
-		$c = NULL;
+		$w = null;
+		$c = null;
 		$errorCount = 0;
-		$literal = NULL;
-		$data = new SmartArchiverObjDataLZS();
+		$literal = null;
+		$data = new ArchLzsObjData();
 		//--
 		$data->str = $compressed;
 		$data->val = self::charCodeAt($compressed, 0);
@@ -629,7 +644,7 @@ final class SmartArchiverLZS {
 		//--
 		while(true) {
 			//-- # fix by unixman (this portion was added) based on JS version to avoid Loop Hard Limit
-			if($data->index > strlen($data->str)) {
+			if($data->index > \strlen($data->str)) {
 				return '';
 			} //end if
 			//-- #end fix
@@ -640,7 +655,7 @@ final class SmartArchiverLZS {
 					//--
 					/* fixed above: unixman, and no more necessary because actually this limits the archive size to 10k
 					if($errorCount++ > 10000) { // this is perhaps no more necessary because is catched above with the fix (unixman)
-						Smart::log_warning('ERROR: Archiver/LZS/Decompress: Decode Loop Hard Limit (10.000) ...');
+						\Smart::log_warning('ERROR: Archiver/LZS/Decompress: Decode Loop Hard Limit (10.000) ...');
 						return ''; // null (not null to sync with fixes from javascript)
 					} //end if
 					*/
@@ -668,11 +683,11 @@ final class SmartArchiverLZS {
 			} //end switch
 			//--
 			if($enlargeIn === 0) {
-				$enlargeIn = pow(2, $numBits);
+				$enlargeIn = \pow(2, $numBits);
 				$numBits++;
 			} //end if
 			//--
-			if(array_key_exists($c, $dictionary) && $dictionary[$c] !== false) {
+			if(\array_key_exists($c, $dictionary) && $dictionary[$c] !== false) {
 				//--
 				$entry = $dictionary[$c];
 				//--
@@ -684,7 +699,7 @@ final class SmartArchiverLZS {
 					//--
 				} else {
 					//--
-					//Smart::log_notice('ERROR: Archiver/LZS/Decompress: $c != $dictSize ('.$c.','.$dictSize.')');
+					// \Smart::log_notice('ERROR: Archiver/LZS/Decompress: $c != $dictSize ('.$c.','.$dictSize.')');
 					return null;
 					//--
 				} //end if else
@@ -700,7 +715,7 @@ final class SmartArchiverLZS {
 			$w = $entry;
 			//--
 			if($enlargeIn == 0) {
-				$enlargeIn = pow(2, $numBits);
+				$enlargeIn = \pow(2, $numBits);
 				$numBits++;
 			} //end if
 			//--
@@ -726,15 +741,15 @@ final class SmartArchiverLZS {
 
 
 /**
- * Class Smart Archiver Obj Context LZS
+ * Class LZS Archiver Obj Context
  *
  * @access 		private
  * @internal
  *
- * @version 	v.20191203
+ * @version 	v.20191220
  *
  */
-final class SmartArchiverObjContextLZS {
+final class ArchLzsObjContext {
 	//--
 	// ->
 	//--
@@ -750,7 +765,7 @@ final class SmartArchiverObjContextLZS {
 	//--
 	public function __construct() {
 		//--
-		$this->data = new SmartArchiverObjDataLZS();
+		$this->data = new ArchLzsObjData();
 		//--
 	} //END FUNCTION
 	//--
@@ -768,15 +783,15 @@ final class SmartArchiverObjContextLZS {
 
 
 /**
- * Class Smart Archiver Obj Data LZS
+ * Class LZS Archiver Obj Data
  *
  * @access 		private
  * @internal
  *
- * @version 	v.20191203
+ * @version 	v.20191220
  *
  */
-final class SmartArchiverObjDataLZS {
+final class ArchLzsObjData {
 	//--
 	// ->
 	//--
