@@ -32,14 +32,14 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		} //end if
 		//--
 		if(SMART_FRAMEWORK_TESTUNIT_ALLOW_FILESYSTEM_TESTS !== true) {
-			$this->PageViewSetErrorStatus(503, 'ERROR: PDF Test mode is not active ...');
+			$this->PageViewSetErrorStatus(503, 'NOTICE: PDF Test mode is not active ...');
 			return;
 		} //end if
 		//--
 
 		//--
 		if((!\SmartModExtLib\PdfGenerate\HtmlToPdfExport::is_active()) AND (!\SmartModExtLib\PdfGenerate\HtmlUrlToPdfExport::is_active())) {
-			$this->PageViewSetErrorStatus(500, 'ERROR: PDF Exporters are not active. They must be set in configs ...');
+			$this->PageViewSetErrorStatus(500, 'NOTICE: PDF Exporters are not active. They must be set in configs ...');
 			return;
 		} //end if
 		//--

@@ -11,6 +11,10 @@ input[type=text] {
 	min-width: 170px !important;
 	width: 100%;
 }
+div.atts-file, div.cloned__atts-file {
+	width: 30%;
+	display: inline-block;
+}
 h1, h2, h3, h4, h5, h6 {
 	color: #333333;
 }
@@ -19,14 +23,26 @@ h1, h2, h3, h4, h5, h6 {
 <h1>Webmail Composer :: [###COMPOSER-TITLE|html###]</h1>
 <form class="ux-form" id="webmail-form" name="webmail_form" action="#" method="post" enctype="multipart/form-data">
 <table style="width:97vw;">
-	<tr>
+	<tr valign="top">
 		<td width="70"><label for="webmail-to">To</label></td>
 		<td><input placeholder="To" type="text" id="webmail-to" name="webmail[to]" value="[###COMPOSER-TO|html###]"></td>
 	</tr>
-	<tr>
+	<tr valign="top">
 		<td><label for="webmail-subject">Subject</label></td>
 		<td><input placeholder="Subject" type="text" id="webmail-subject" name="webmail[subject]" value="[###COMPOSER-SUBJECT|html###]"></td>
 	</tr>
+	<tr valign="top">
+		<td><label>Attachments</label></td>
+		<td>
+			<div id="atts-list">
+				<div class="atts-file"><input id="atts-file" class="attachment" type="file" name="webmail[attachments][]"></div>
+			</div>
+			<script type="text/javascript">
+				SmartJS_BrowserUtils.CloneElement('atts-file', 'atts-list', 'file-input', 9);
+			</script>
+		</td>
+	</tr>
+
 	<tr>
 		<td colspan="2">[###HTMLAREA-DISPLAY###]</td>
 	</tr>

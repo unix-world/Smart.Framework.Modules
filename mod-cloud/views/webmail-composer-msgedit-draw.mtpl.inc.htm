@@ -1,0 +1,29 @@
+<style>
+.trumbowyg-box.trumbowyg-editor-visible,
+.trumbowyg-editor {
+	min-width: [###WIDTH|html###] !important;
+	min-height: [###HEIGHT|html###] !important;
+}
+</style>
+<textarea id="[###HTML-ID|htmid###]" name="[###HTML-VAR|html###]" spellcheck="false">[###THE-MSG|html###]</textarea>
+<script>
+jQuery('#[###HTML-ID|htmid|js###]').trumbowyg({
+	tagsToKeep: ['hr', 'img'],
+	tagsToRemove: ['script', 'iframe', 'frame', 'frameset', 'noframes', 'embed', 'object', 'param', 'html', 'head', 'meta', 'body', 'base', 'basefont'],
+	minimalLinks: true,
+	btns: [
+		['fullscreen', 'viewHTML'],
+		['historyUndo', 'historyRedo'], // plugins
+		['formatting'],
+		['strong', 'em', 's'],
+		['superscript', 'subscript'],
+		['fontfamily', 'foreColor', 'backColor'], // plugins
+		['link'],
+		['insertImage'],
+		['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+		['unorderedList', 'orderedList'],
+		['horizontalRule'],
+		['removeformat']
+	]
+})
+</script>

@@ -1,37 +1,15 @@
 
 =================================================================================
 This license (SIL OPEN FONT LICENSE Version 1.1) aplies for the following fonts:
-* Akronim					https://fonts.google.com/attribution
-* Barrio					https://fonts.google.com/attribution
-* Faster One				https://fonts.google.com/attribution
-* Frijole					https://fonts.google.com/attribution
-* Macondo Swash 			https://fonts.google.com/attribution
-* Mystery Quest 			https://fonts.google.com/attribution
+* LibreBarcode39ExtendedText				https://fonts.google.com/attribution
+* LibreBarcode128Text						https://fonts.google.com/attribution
 =================================================================================
 
-Font: Akronim
-Copyright (c) 2012 Grzegorz Klimczewski, Fonty.PL (www.fonty.pl),
-with Reserved Font Name 'Akronim'.
+Font: LibreBarcode39ExtendedText
+Copyright 2017 The Libre Barcode Project Authors (lasse@graphicore.de)
 
-Font: Barrio
-Copyright 2016 The Barrio Project Authors (omnibus.type@gmail.com).
-
-Font: Faster One
-Copyright (c) 2012, Eduardo Tunni (http://www.tipo.net.ar),
-with Reserved Font Name 'Faster'.
-
-Font: Frijole
-Copyright (c) 2011, Sideshow (a DBA of Font Diner, Inc) (www.fontdiner.com),
-with Reserved Font Name 'Frijole'.
-
-Font: Macondo Swash
-Copyright (c) 1997 - 2011, John Vargas Beltran.
-(www.johnvargasbeltran.com|john.vargasbeltran@gmail.com),
-with Reserved Font Name 'Macondo'.
-
-Font: Mystery Quest
-Copyright (c) 2012 by Font Diner, Inc DBA Sideshow (diner@fontdiner.com)
-with Reseved Font Name 'Mystery Quest'.
+Font: LibreBarcode128Text
+Copyright 2017 The Libre Barcode Project Authors (lasse@graphicore.de)
 
 
 =================================================================================
@@ -127,5 +105,3 @@ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
-
-###

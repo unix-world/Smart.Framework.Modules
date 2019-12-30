@@ -253,10 +253,10 @@ $mbox = 'iradu@unix-world.org';
 		} //end if else
 		//--
 		if((string)$mode != 'partial') {
-			$mime_ttl = 'MIME Message';
+			$mime_ttl = 'eMail Message';
 		} else {
 			$use_sandbox = true;
-			$mime_ttl = 'MIME Message Part';
+			$mime_ttl = 'eMail Message Part';
 		} //end if else
 		//--
 		$main = (string) SmartMailerMimeParser::display_message(
@@ -370,6 +370,38 @@ $mbox = 'iradu@unix-world.org';
 			$composer_msg = '';
 		} //end if else
 		//--
+		$html_editor = (bool) !SmartAppInfo::TestIfModuleExists('mod-wflow-components');
+		//--
+		if($html_editor) {
+			$composer_init = (string) SmartViewHtmlHelpers::html_jsload_htmlarea(
+				'',
+				'lib/js/jsedithtml/cleditor/jquery.cleditor.smartframeworkcomponents-simple.css'
+			);
+			$composer_draw = (string) SmartViewHtmlHelpers::html_js_htmlarea(
+				'webmail-html-composer',
+				'webmail[htmlbody]',
+				(string) $composer_msg,
+				'97vw',
+				'70vh'
+			);
+		} else {
+			$composer_init = (string) SmartMarkersTemplating::render_file_template(
+				$this->ControllerGetParam('module-view-path').'webmail-composer-msgedit-init.mtpl.inc.htm',
+				[
+				]
+			);
+			$composer_draw = (string) SmartMarkersTemplating::render_file_template(
+				$this->ControllerGetParam('module-view-path').'webmail-composer-msgedit-draw.mtpl.inc.htm',
+				[
+					'HTML-ID' => 'webmail-html-composer',
+					'HTML-VAR' => 'webmail[htmlbody]',
+					'THE-MSG' => (string) $composer_msg,
+					'WIDTH' => '96vw',
+					'HEIGHT' => '60vh'
+				]
+			);
+		} //end if else
+		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			$this->ControllerGetParam('module-view-path').'webmail-composer.mtpl.inc.htm',
 			[
@@ -379,17 +411,8 @@ $mbox = 'iradu@unix-world.org';
 				'COMPOSER-TITLE' 	=> (string) $composer_title,
 				'COMPOSER-TO' 		=> (string) $composer_to,
 				'COMPOSER-SUBJECT' 	=> (string) $composer_subject,
-				'HTMLAREA-INIT' 	=> (string) SmartViewHtmlHelpers::html_jsload_htmlarea(
-					'',
-					'lib/js/jsedithtml/cleditor/jquery.cleditor.smartframeworkcomponents-simple.css'
-				),
-				'HTMLAREA-DISPLAY' 	=> (string) SmartViewHtmlHelpers::html_js_htmlarea(
-					'webmail-html-composer',
-					'webmail[htmlbody]',
-					(string) $composer_msg,
-					'97vw',
-					'70vh'
-				) //.'<pre>'.Smart::escape_html(print_r($msg_arr,1)).'</pre>'
+				'HTMLAREA-INIT' 	=> (string) $composer_init,
+				'HTMLAREA-DISPLAY' 	=> (string) $composer_draw //.'<pre>'.Smart::escape_html(print_r($msg_arr,1)).'</pre>'
 			]
 		);
 		//--
