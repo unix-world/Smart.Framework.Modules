@@ -1,8 +1,8 @@
 <?php
 // Class: \SmartModExtLib\JsComponents\TextEditor
 // [Smart.Framework.Modules - JsComponents / Text Editor]
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 namespace SmartModExtLib\JsComponents;
 
@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	javascript: CKEditor
- * @version 	v.20191220
+ * @version 	v.20200121
  * @package 	modules:ViewComponents
  *
  */
@@ -128,5 +128,4 @@ public static function html_js_texteditarea_fm_callback($yurl, $is_popup=false) 
 //=====================================================================================
 
 
-//end of php code
-?>
+// end of php code

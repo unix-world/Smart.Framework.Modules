@@ -606,5 +606,4 @@ final class JShrinkMinifier {
 //=====================================================================================
 
 
-//end of php code
-?>
+// end of php code

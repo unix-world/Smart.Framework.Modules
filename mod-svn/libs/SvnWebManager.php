@@ -1,7 +1,7 @@
 <?php
 // [LIB - SmartFramework / Svn / Svn Web Manager]
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 // Class: \SmartModExtLib\Svn\SvnWebManager
 // Type: Module Library
@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SvnWebManager {
 
 	// ::
-	// v.20191110
+	// v.20200121
 
 	private static $svn_cache_dir = 'tmp/cache/svn/'; 		// must have trailing slash :: the svn proc jail root
 
@@ -985,4 +985,3 @@ final class SvnWebManager {
 
 
 // end of php code
-?>

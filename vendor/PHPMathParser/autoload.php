@@ -54,4 +54,3 @@ spl_autoload_register('autoload__VendorPHPMathParser', true, false); // throw / 
 //--
 
 // end of php code
-?>

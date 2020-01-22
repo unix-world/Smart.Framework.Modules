@@ -1,7 +1,7 @@
 
 ###
 
-(c) 2016 - 2019 unix-world.org
+(c) 2016 - 2020 unix-world.org
 
 All the source code in this module: mod-cloud (of Smart.Framework.Modules)
 is licensed under the GPLv3 License (GNU GENERAL PUBLIC LICENSE Version 3).

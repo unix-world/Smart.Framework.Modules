@@ -1,7 +1,7 @@
 <?php
 // Module Lib: \SmartModExtLib\Cloud\vCardParser
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 namespace SmartModExtLib\Cloud;
 
@@ -28,14 +28,14 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * version: 0.4.8.uxm.180220
  *
  * Modified by unixman
- * (c) 2018-2019 unix-world.org
+ * (c) 2018-2020 unix-world.org
  *
 */
 
 
 class vCardParser {
 
-	// r.20191109
+	// r.20200121
 
 	private $mode_ERROR = 'error';
 	private $mode_SINGLE = 'single';
@@ -395,5 +395,4 @@ class vCardParser {
 //=====================================================================================
 
 
-//end of php code
-?>
+// end of php code

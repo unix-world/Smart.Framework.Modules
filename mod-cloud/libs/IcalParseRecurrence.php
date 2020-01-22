@@ -1,7 +1,7 @@
 <?php
 // Module Lib: \SmartModExtLib\Cloud\IcalParseRecurrence # Private class for IcalParser
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 namespace SmartModExtLib\Cloud;
 
@@ -33,13 +33,13 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @author Michael Kahn (C) 2013
  * @license http://creativecommons.org/licenses/by-sa/2.5/dk/deed.en_GB CC-BY-SA-DK
  *
- * Modified and adapted by unixman (c) 2018-2019
+ * Modified and adapted by unixman (c) 2018-2020
  * @author unix-world.org
  *
  */
 final class IcalParseRecurrence {
 
-	// r.20191109
+	// r.20200121
 
 	public $rrule;
 	private $freq;
@@ -282,5 +282,4 @@ final class IcalParseRecurrence {
 //=====================================================================================
 
 
-//end of php code
-?>
+// end of php code

@@ -60,4 +60,3 @@ spl_autoload_register('autoload__VendorPsr', true, false); // throw / append
 //--
 
 // end of php code
-?>

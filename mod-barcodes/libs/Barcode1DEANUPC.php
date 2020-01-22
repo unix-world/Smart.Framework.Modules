@@ -1,8 +1,8 @@
 <?php
 // EAN/UPC Barcode 1D for Smart.Framework
 // Module Library
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //============================================================
 // BarCode 1D:	EAN13 / UPC-A
 // License: GPLv3
-// (c) 2015-2019 unix-world.org
+// (c) 2015-2020 unix-world.org
 //============================================================
 // Class to create EAN / UPC 1D barcodes.
 // Very wide use world-wide, for retail
@@ -50,7 +50,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20191214
+ * @version 	v.20200121
  * @package 	modules:Barcodes1D
  *
  */
@@ -291,5 +291,4 @@ final class Barcode1DEANUPC {
 //=====================================================================================
 
 
-//end of php code
-?>
+// end of php code

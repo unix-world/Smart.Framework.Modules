@@ -73,4 +73,4 @@ class ReedSolomonEncoder
 	}
 }
 
-// #end php code
+// end of php code

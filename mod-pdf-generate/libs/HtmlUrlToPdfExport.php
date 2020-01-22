@@ -1,8 +1,8 @@
 <?php
 // Class: \SmartModExtLib\PdfGenerate\HtmlUrlToPdfExport
 // [Smart.Framework.Modules - PdfGenerate / HTML URL to PDF Export]
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 namespace SmartModExtLib\PdfGenerate;
 
@@ -46,7 +46,7 @@ define('SMART_HTMLTOPDF_DOCUMENT_MODE', 		'color'); 							// PDF mode: `color` 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	executables: WkHtmlToPdf ; classes: Smart, SmartUtils, SmartFileSysUtils
- * @version 	v.20191220
+ * @version 	v.20200121
  * @package 	modules:PDF-Generate
  *
  */
@@ -232,4 +232,3 @@ final class HtmlUrlToPdfExport {
 
 
 // end of php code
-?>

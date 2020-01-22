@@ -4,14 +4,14 @@ namespace SmartModExtLib\EcommCart;
 
 /**
  * Cart: A complex PHP cart library, with support of Product / Services with attributes, formula calculations and multiple currency exchanges
- * Copyright (c) 2018-2019 Radu Ovidiu I. / unix-world.org
+ * Copyright (c) 2018-2020 Radu Ovidiu I. / unix-world.org
  * TODO: add / replace allow no price mode
  *
  */
 
 final class cartManager {
 
-	// r.20190423
+	// r.20200121
 
 	/**
 	 * An unique ID for the cart.
@@ -1427,5 +1427,4 @@ final class cartManager {
 } //END CLASS
 
 
-//end of php code
-?>
+// end of php code

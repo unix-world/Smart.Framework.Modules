@@ -1,8 +1,8 @@
 <?php
 // Redbean ORM for Smart.Framework
 // Module Library
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -83,7 +83,7 @@ function autoload__RedbeanOrm_SFM($classname) {
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype, PHP PDO ; classes: \RedbeanOrm\Db
- * @version 	v.20191029
+ * @version 	v.20200121
  * @package 	modules:Database:PDO:Redbean-ORM
  *
  */
@@ -240,5 +240,4 @@ final class ORM extends \RedBeanPHP\Facade {
 //=====================================================================================
 
 
-//end of php code
-?>
+// end of php code

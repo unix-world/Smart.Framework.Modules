@@ -2,8 +2,8 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Twitter Api Test Sample
 // Route: ?/page/sm-twitter.test (?page=sm-twitter.test)
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -15,7 +15,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
 
 /**
- * Index Controller :: v.20191104
+ * Index Controller :: v.20200121
  *
  * First Test the Js-Api: 				modules/mod-sm-twitter/views/js/demo/sample.html (need to set the {AppId} and {AppSecret} in modules/mod-sm-twitter/views/js/demo/setup.js)
  * Test PHP-Api (run on 127.0.0.1): 	?/page/sm-twitter.test/app_id/{AppId}/app_secret/{AppSecret}
@@ -94,5 +94,4 @@ class SmartAppAdminController extends SmartAppIndexController {
 } //END CLASS
 
 
-//end of php code
-?>
+// end of php code

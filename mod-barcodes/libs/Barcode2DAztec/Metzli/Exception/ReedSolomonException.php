@@ -22,4 +22,4 @@ class ReedSolomonException extends \RuntimeException implements Exception
 {
 }
 
-// #end php code
+// end of php code

@@ -1,8 +1,8 @@
 <?php
 // Controller: Cloud/Webmail
 // Route: admin.php?/page/cloud.webmail
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -370,6 +370,9 @@ $mbox = 'iradu@unix-world.org';
 			$composer_msg = '';
 		} //end if else
 		//--
+		$composer_cc = '';
+		$composer_bcc = '';
+		//--
 		$html_editor = (bool) !SmartAppInfo::TestIfModuleExists('mod-wflow-components');
 		//--
 		if($html_editor) {
@@ -407,9 +410,13 @@ $mbox = 'iradu@unix-world.org';
 			[
 				'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
 				'URL-PAGE' 			=> (string) $this->pagelink,
+				'JS-PAGEAWAY' 		=> (string) SmartViewHtmlHelpers::js_code_init_away_page(),
+				'JS-DPAGEAWAY' 		=> (string) SmartViewHtmlHelpers::js_code_disable_away_page(),
 				'CURRENT-MBOX' 		=> (string) $mbox,
 				'COMPOSER-TITLE' 	=> (string) $composer_title,
 				'COMPOSER-TO' 		=> (string) $composer_to,
+				'COMPOSER-CC' 		=> (string) $composer_cc,
+				'COMPOSER-BCC' 		=> (string) $composer_bcc,
 				'COMPOSER-SUBJECT' 	=> (string) $composer_subject,
 				'HTMLAREA-INIT' 	=> (string) $composer_init,
 				'HTMLAREA-DISPLAY' 	=> (string) $composer_draw //.'<pre>'.Smart::escape_html(print_r($msg_arr,1)).'</pre>'
@@ -422,5 +429,4 @@ $mbox = 'iradu@unix-world.org';
 } //END CLASS
 
 
-//end of php code
-?>
+// end of php code

@@ -2,8 +2,8 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Readbean ORM Test Sample
 // Route: ?/page/db-orm-redbean.test (?page=db-orm-redbean.test)
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 use \SmartModExtLib\DbOrmRedbean\ORM as R;
 
@@ -104,5 +104,4 @@ class SmartAppAdminController extends SmartAppIndexController {
 } //END CLASS
 
 
-//end of php code
-?>
+// end of php code

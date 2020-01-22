@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Plugins / OpenDocument Export]
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.5.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.5.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartZipArchive
- * @version 	v.20190103
+ * @version 	v.20200121
  * @package 	extralibs:ExportAndImport
  *
  */
@@ -45,7 +45,7 @@ private $font_size = '';
 private $mime_ods = '';
 private $open_document_ns = '';
 private $open_document_styles = '';
-private $class_version = 'v.2019.01.03';
+private $class_version = 'v.2020.01.21';
 //=================================================
 
 
@@ -399,7 +399,7 @@ echo $oo->ODS_SpreadSheet('A Table', array('column 1', 'column 2'), array('data 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20190521
+ * @version 	v.20200121
  * @package 	extralibs:ExportAndImport
  *
  */
@@ -534,4 +534,3 @@ final class SmartImportFromOpenOffice {
 
 
 // end of php code
-?>

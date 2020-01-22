@@ -1,8 +1,8 @@
 <?php
 // PHP Syntax Highlight for Smart.Framework
 // Module Library
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -29,7 +29,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 // - 2006-2013, Ivan Sagalaev (maniac@softwaremaniacs.org), highlight.js (original author)
 // - 2013-2019, Geert Bergman (geert@scrivo.nl), highlight.php
 // - 2014       Daniel Lynge, highlight.php (contributor)
-// - 2019       unixman (unix-world.org)
+// - 2019-2020  unixman (unix-world.org)
 // License: BSD
 //
 //----------------------------------------------------------------------
@@ -40,7 +40,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * HighLight Code Syntax using PHP only, compatible with Highlight.Js
  *
  * @depends 	\stdClass, \Exception, \Smart, \SmartUnicode, \SmartModExtLib\HighlightSyntax\Languages, \SmartModExtLib\HighlightSyntax\Language
- * @version 	v.20191117
+ * @version 	v.20200121
  * @package 	modules:HighlightSyntax
  *
  * <code>
@@ -528,5 +528,4 @@ class Highlighter {
 //=====================================================================================
 
 
-//end of php code
-?>
+// end of php code

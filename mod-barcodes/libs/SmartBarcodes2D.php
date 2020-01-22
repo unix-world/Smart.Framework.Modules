@@ -1,8 +1,8 @@
 <?php
 // Class: \SmartModExtLib\Barcodes\SmartBarcodes2D
 // [Smart.Framework.Modules - Barcodes 2D]
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -33,13 +33,9 @@ if(!defined('SMART_FRAMEWORK_BARCODE_2D_OPTS')) {
 // [REGEX-SAFE-OK]
 
 //======================================================
-// BarCodes 2D:
-//		* QRCode
-//		* Aztec
-//		* DataMatrix (SemaCode)
-//		* PDF417
+// BarCodes 2D: QRCode, Aztec, DataMatrix (SemaCode), PDF417
 // License: GPLv3
-// (c) 2015-2019 unix-world.org
+// (c) 2015-2020 unix-world.org
 //======================================================
 
 
@@ -56,7 +52,7 @@ if(!defined('SMART_FRAMEWORK_BARCODE_2D_OPTS')) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	Smart.Framework
- * @version 	v.20191214
+ * @version 	v.20200121
  * @package 	modules:Barcodes
  *
  */
@@ -528,4 +524,3 @@ final class SmartBarcodes2D {
 
 
 // end of php code
-?>

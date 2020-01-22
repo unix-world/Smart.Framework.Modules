@@ -1,7 +1,7 @@
 
-# Smart.Framework.Modules: TplTypo3Fluid r.20191209 #
+# Smart.Framework.Modules: TplTypo3Fluid r.20200121 #
 ## Typo3 Fluid Templating Engine v.github#master@20191115 ##
 
-// r.5.2.7 / smart.framework.v.5.2
+// r.5.7.2 / smart.framework.v.5.7
 
 ###

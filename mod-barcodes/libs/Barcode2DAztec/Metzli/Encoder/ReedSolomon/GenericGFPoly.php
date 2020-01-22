@@ -163,4 +163,4 @@ class GenericGFPoly
 	}
 }
 
-// #end php code
+// end of php code

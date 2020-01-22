@@ -1,7 +1,7 @@
 
 // Twitter JS API Handler
-// (c) 2012 - 2017 Radu I.
-// v.20191109
+// (c) 2012-2020 unix-world.org
+// v.20200121
 
 // Depends on: codebird.js, SmartJS_BrowserUtils
 
@@ -544,4 +544,4 @@ var TwitterApiHandler = new function() { // START CLASS
 } //END CLASS
 
 
-// END
+// #END

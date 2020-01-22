@@ -55,4 +55,3 @@ spl_autoload_register('autoload__VendorMeyFaSvg', true, false); // throw / appen
 //--
 
 // end of php code
-?>

@@ -42,4 +42,3 @@ spl_autoload_register('autoload__VendorMedoo', true, false); // throw / append
 //--
 
 // end of php code
-?>

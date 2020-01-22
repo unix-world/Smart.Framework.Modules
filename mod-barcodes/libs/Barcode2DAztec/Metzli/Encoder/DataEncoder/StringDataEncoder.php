@@ -22,10 +22,11 @@ class StringDataEncoder extends BinaryDataEncoder
 {
 	public function encode($data)
 	{
-		$encoded = iconv('UTF-8', 'ISO-8859-1//IGNORE', $data);
+	//	$encoded = iconv('UTF-8', 'ISO-8859-1//IGNORE', $data);
+		$encoded = \SmartUnicode::utf8_to_iso($data, true);
 
 		return parent::encode($encoded);
 	}
 }
 
-// #end php code
+// end of php code

@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply onlt for for Milestone Releases
 
+January 21, 2020 :: Version 5.7.2
+	* optimizations (req. PHP 7.2 or later)
+
 December 18, 2019 :: Version 5.2.7 rev.191218
 	* SmartArchiverLZS (PHP) and SmartJS_Archiver_LZS (Js) moved to modules
 

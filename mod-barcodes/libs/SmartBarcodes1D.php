@@ -1,8 +1,8 @@
 <?php
 // Class: \SmartModExtLib\Barcodes\SmartBarcodes1D
 // [Smart.Framework.Modules - Barcodes 2D]
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -18,7 +18,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 //======================================================
 // BarCodes 1D: EAN/UPC, Code128, Code93, Code39, RMS
-// DEPENDS: Smart.Framework
+// License: GPLv3
+// (c) 2015-2020 unix-world.org
 //======================================================
 
 //--
@@ -43,7 +44,7 @@ if(!defined('SMART_FRAMEWORK_BARCODE_1D_MODE')) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	Smart.Framework
- * @version 	v.20191214
+ * @version 	v.20200121
  * @package 	modules:Barcodes
  *
  */
@@ -557,4 +558,3 @@ final class SmartBarcodes1D {
 
 
 // end of php code
-?>

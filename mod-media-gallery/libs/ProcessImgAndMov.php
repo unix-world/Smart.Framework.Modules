@@ -2,8 +2,8 @@
 // Class: \SmartModExtLib\MediaGallery\ProcessImgAndMov
 // Media Gallery Process: Images and Movies :: for Smart.Framework
 // Module Library
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -77,7 +77,7 @@ if(!defined('SMART_FRAMEWORK_MEDIAGALLERY_PDF_EXTRACTOR')) {
  * @internal
  *
  * @depends 	extensions: plugins: \SmartModExtLib\MediaGallery\ImgProcImagick:: OR \SmartModExtLib\MediaGallery\ImgProcGd:: ;
- * @version 	v.181019
+ * @version 	v.20200121
  * @package 	Media:Gallery
  *
  */
@@ -616,5 +616,4 @@ public static function mov_pw_process($y_mov_file, $y_mov_img_preview, $y_qualit
 //==================================================================================================
 
 
-//end of php code
-?>
+// end of php code

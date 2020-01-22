@@ -68,4 +68,4 @@ abstract class Token
 	abstract public function appendTo(BitArray $bitArray, array $text);
 }
 
-// #end php code
+// end of php code

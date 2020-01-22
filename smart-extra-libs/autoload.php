@@ -1,7 +1,7 @@
 <?php
 // [Smart.Framework.Modules - ExtraLibs AutoLoad]
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -21,7 +21,7 @@ require_once('modules/smart-extra-libs/version.php'); // extra libs version
  * @access 		private
  * @internal
  *
- * @version 	20191216
+ * @version 	20200121
  *
  */
 function autoload__SmartFrameworkModulesExtraLibs($classname) {
@@ -88,4 +88,3 @@ spl_autoload_register('autoload__SmartFrameworkModulesExtraLibs', true, false); 
 
 
 // end of php code
-?>

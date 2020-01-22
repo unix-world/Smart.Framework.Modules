@@ -59,4 +59,3 @@ spl_autoload_register('autoload__VendorLeague', true, false); // throw / append
 //--
 
 // end of php code
-?>

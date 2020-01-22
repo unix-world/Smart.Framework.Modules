@@ -1,7 +1,7 @@
 <?php
 // Module Lib: \SmartModExtLib\Agile\DBModelImport
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 namespace SmartModExtLib\Agile;
 
@@ -20,7 +20,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 class DBModelImport {
 
 	// ::
-	// v.20191220
+	// v.20200121
 
 
 public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
@@ -640,5 +640,4 @@ public static function SmartDbModelerMySQLExportToXml($y_host, $y_port, $y_dbnam
 //=====================================================================================
 
 
-//end of php code
-?>
+// end of php code

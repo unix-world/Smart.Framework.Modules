@@ -20,12 +20,33 @@ h1, h2, h3, h4, h5, h6 {
 }
 </style>
 [###HTMLAREA-INIT###]
-<h1>Webmail Composer :: [###COMPOSER-TITLE|html###]</h1>
+<script>
+[###JS-PAGEAWAY###]
+</script>
 <form class="ux-form" id="webmail-form" name="webmail_form" action="#" method="post" enctype="multipart/form-data">
 <table style="width:97vw;">
 	<tr valign="top">
+		<td colspan="2">
+			<div style="display:inline-block; width:70%; margin-right:25px;">
+				<h1 style="display:inline-block;">Webmail Compose :: [###COMPOSER-TITLE|html###]</h1>
+			</div>
+			<div style="display:inline-block; width:20%; text-align:right;">
+				<button type="button" class="ux-button" onClick="SmartJS_BrowserUtils.CloseModalPopUp();"><i class="sfi sfi-cancel-circle"></i> &nbsp; Cancel</button>
+				<button type="button" class="ux-button ux-button-primary" onClick="[###JS-DPAGEAWAY|html###] return false;"><i class="sfi sfi-mail2"></i> &nbsp; Send</button>
+			</div>
+		</td>
+	</tr>
+	<tr valign="top">
 		<td width="70"><label for="webmail-to">To</label></td>
 		<td><input placeholder="To" type="text" id="webmail-to" name="webmail[to]" value="[###COMPOSER-TO|html###]"></td>
+	</tr>
+	<tr valign="top">
+		<td width="70"><label for="webmail-cc">Cc</label></td>
+		<td><input placeholder="Cc" type="text" id="webmail-cc" name="webmail[cc]" value="[###COMPOSER-CC|html###]"></td>
+	</tr>
+	<tr valign="top">
+		<td width="70"><label for="webmail-bcc">Bcc</label></td>
+		<td><input placeholder="Bcc" type="text" id="webmail-bcc" name="webmail[bcc]" value="[###COMPOSER-BCC|html###]"></td>
 	</tr>
 	<tr valign="top">
 		<td><label for="webmail-subject">Subject</label></td>

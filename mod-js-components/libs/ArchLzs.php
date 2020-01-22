@@ -1,8 +1,8 @@
 <?php
 // Class: \SmartModExtLib\JsComponents\ArchLzs
 // [Smart.Framework.Modules - JsComponents / LZS Archiver]
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 namespace SmartModExtLib\JsComponents;
 
@@ -34,7 +34,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 // this is intended for on-the-fly archive/unarchive not for storing (where ZLib is a better option)
 // it compatible with Smart.Framework/JS/SmartJS_Archiver_LZS
 // License: BSD
-// (c) 2013-2019 unix-world.org : optimizations, fixes, unicode safe
+// (c) 2013-2020 unix-world.org : optimizations, fixes, unicode safe
 // Original work by Tobias Neeb <tobias.neeb@gmail.com>
 
 /**
@@ -58,7 +58,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MBString ; classes: Smart, SmartHashCrypto
- * @version 	v.20191220
+ * @version 	v.20200121
  * @package 	modules:Archivers
  *
  */
@@ -746,7 +746,7 @@ final class ArchLzs {
  * @access 		private
  * @internal
  *
- * @version 	v.20191220
+ * @version 	v.20200121
  *
  */
 final class ArchLzsObjContext {
@@ -788,7 +788,7 @@ final class ArchLzsObjContext {
  * @access 		private
  * @internal
  *
- * @version 	v.20191220
+ * @version 	v.20200121
  *
  */
 final class ArchLzsObjData {
@@ -813,4 +813,3 @@ final class ArchLzsObjData {
 
 
 // end of php code
-?>

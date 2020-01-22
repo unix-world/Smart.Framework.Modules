@@ -2,8 +2,8 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Typo3 Fluid Templating Test Sample
 // Route: ?/page/tpl-typo3-fluid.test (?page=tpl-typo3-fluid.test)
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -96,7 +96,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		// !!! all templates (but not sub-templates) must start / end with the section ID: Typo3FluidTpl !!!
 		//--
-		$data = [ // v.20191115
+		$data = [ // v.20200121
 			// variables are case sensitive in Typo3Fluid ; array keys that contain - and . will be replaced recursive by _ to make compliant with PHP variable names
 			'version' => (string) \SmartModExtLib\TplTypo3Fluid\Templating::getVersion(),
 			'hello-.world' => '<h1>Demo: Typo3Fluid Templating as module for Smart.Framework</h1>',
@@ -159,5 +159,4 @@ class SmartAppAdminController extends SmartAppIndexController {
 } //END CLASS
 
 
-//end of php code
-?>
+// end of php code

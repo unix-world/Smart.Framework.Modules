@@ -2,8 +2,8 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Dust Templating Test Sample
 // Route: ?/page/tpl-dust.test (?page=tpl-dust.test)
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -94,7 +94,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$data = [ // v.20191115
+		$data = [ // v.20200121
 			// ### variables are case insensitive in controllers on the 1st level ; the template will use all lowercase variables for this instance of Dust ; array keys that contain - and . will be replaced recursive by _ to make compliant with PHP variable names
 			'Version' => (string) \SmartModExtLib\TplDust\Templating::getVersion(),
 			'heLLo-.World' => '<h1>Demo: Dust Templating as module for Smart.Framework</h1>',
@@ -157,5 +157,4 @@ class SmartAppAdminController extends SmartAppIndexController {
 } //END CLASS
 
 
-//end of php code
-?>
+// end of php code

@@ -207,4 +207,4 @@ private function table_flexigrid_build_where($where_field, $where_value, $where_
 
 } //END CLASS
 
-?>
+// end of php code

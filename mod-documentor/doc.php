@@ -2,8 +2,8 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Documentor/Doc (display, save)
 // Route: admin.php?page=documentor.doc{&cls=SomeClass&ref={&action=save{&mode=multi}}}
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -36,7 +36,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20191203
+ * @version 20200121
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -1417,7 +1417,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 /**
  * Index Area Controller
- * @version 20191203
+ * @version 20200121
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {
@@ -1437,5 +1437,4 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 } //END CLASS
 
 
-//end of php code
-?>
+// end of php code

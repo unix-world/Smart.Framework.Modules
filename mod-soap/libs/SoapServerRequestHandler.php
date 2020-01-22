@@ -1,8 +1,8 @@
 <?php
 // Class: \SmartModExtLib\Soap\SoapServerRequestHandler
 // [Smart.Framework.Modules - Soap]
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartXmlParser, PHP DomXML extension (DOMDocument), SmartMarkersTemplating
- * @version 	v.20191109
+ * @version 	v.20200121
  * @package 	modules:Network
  *
  */
@@ -417,5 +417,4 @@ final class SoapServerRequestHandler {
 //=====================================================================================
 
 
-//end of php code
-?>
+// end of php code

@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework.Modules / ExtraLibs / LangID Service Client]
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.5.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.5.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -55,7 +55,7 @@ $configs['langid']['auth-pass']		= '';										// LangId.Py Service Auth Pass
  * @hints		If the DEFAULT settings are not available will simply fallback for not using any service.
  *
  * @depends 	classes: Smart, SmartHttpClient
- * @version 	v.20191109
+ * @version 	v.20200121
  * @package 	extralibs:LanguageDetection
  *
  */
@@ -193,4 +193,3 @@ final class SmartLangIdClient {
 
 
 //end of php code
-?>

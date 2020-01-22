@@ -23,4 +23,4 @@ interface DataEncoderInterface
 	public function encode($data);
 }
 
-// #end php code
+// end of php code

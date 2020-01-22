@@ -1,7 +1,7 @@
 [%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
 [%%%/COMMENT%%%]
-//===== QUnit Tests.Mod.Highlight-Syntax: START :: r.20191118
+//===== QUnit Tests.Mod.Highlight-Syntax: START :: r.20200121
 
 (function() {
 

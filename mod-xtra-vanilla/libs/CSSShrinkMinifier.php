@@ -66,5 +66,4 @@ final class CSSShrinkMinifier {
 //=====================================================================================
 
 
-//end of php code
-?>
+// end of php code

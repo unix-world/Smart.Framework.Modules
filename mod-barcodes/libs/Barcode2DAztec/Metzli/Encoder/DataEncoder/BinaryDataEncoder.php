@@ -47,4 +47,4 @@ class BinaryDataEncoder implements DataEncoderInterface
 	}
 }
 
-// #end php code
+// end of php code

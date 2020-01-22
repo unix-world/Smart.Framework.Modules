@@ -2,8 +2,8 @@
 // Class: \SmartModExtLib\MediaGallery\Players
 // Media Gallery Manager Plugin: Players :: for Smart.Framework
 // Module Library
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -37,7 +37,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP GD Extension (w. TrueColor support) / imageMagick Utility (executable) ; classes: Smart, SmartUtils, SmartFileSystem
- * @version 	v.170518
+ * @version 	v.20200121
  * @package 	MediaGallery
  *
  * @access 		private
@@ -107,5 +107,4 @@ public static function videoPlayer($y_url, $y_title, $y_movie, $y_type, $y_width
 //==================================================================================================
 
 
-//end of php code
-?>
+// end of php code

@@ -1,6 +1,6 @@
 <?php
 
-// Smart.Framework.Modules/vendor/autoload, r.20191022 :: Psr, League, MatthiasMullie, PHPMathParser, MeyFaSvg, Medoo
+// Smart.Framework.Modules/vendor/autoload, r.20200121 :: Psr, League, MatthiasMullie, PHPMathParser, MeyFaSvg, Medoo
 
 define('SMART_FRAMEWORK_MODULES_VENDOR_LOADED', true);
 
@@ -12,4 +12,3 @@ require_once('MeyFaSvg/autoload.php'); // SVG
 require_once('Medoo/autoload.php'); // PDO db class
 
 // end of php code
-?>

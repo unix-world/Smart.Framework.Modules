@@ -2,8 +2,8 @@
 // Class: \SmartModExtLib\LangDetect\LanguageNgrams
 // Ngrams Language Detection :: for Smart.Framework
 // Module Library
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -56,14 +56,11 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @hints		By default will use the 1-3-930 NGrams. To use extended NGrams (Ex: 1-4-15k) see the local code examples.
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSysUtils
- * @version 	v.20191109
+ * @version 	v.20200121
  * @package 	modules:LanguageDetection
  *
  */
 final class LanguageNgrams {
-
-	// v.170623
-
 
 	/**
 	 * @var int
@@ -479,4 +476,3 @@ die('Training DONE for: '.$ngrams_path.'<pre>'.print_r($jsons,1).'</pre>');
 
 
 // end of php code
-?>

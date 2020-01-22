@@ -1,7 +1,7 @@
 <?php
 // [Smart.Framework.Modules - ExtraLibs StaticLoad]
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.5.2.7 / smart.framework.v.5.2
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.5.7.2 / smart.framework.v.5.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -15,7 +15,7 @@ require_once('modules/smart-extra-libs/version.php'); 						// extra libs versio
 //--
 
 //--
-// StaticLoad Extra Libs from (Smart.Framework.Modules), v.20191216
+// StaticLoad Extra Libs from (Smart.Framework.Modules), v.20200121
 //--
 require_once('modules/smart-extra-libs/lib_templating_ext.php'); 			// extended templating
 //--
@@ -35,4 +35,3 @@ require_once('modules/smart-extra-libs/lib_langid_cli.php'); 				// langid clien
 //--
 
 // end of php code
-?>

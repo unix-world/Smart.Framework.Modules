@@ -372,4 +372,4 @@ class Encoder
 	}
 }
 
-// #end php code
+// end of php code

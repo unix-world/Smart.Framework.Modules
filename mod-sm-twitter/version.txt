@@ -1,8 +1,7 @@
 
-# Smart.Framework.Modules: (SocialMedia) SmTwitter r.20191209 #
-
+# Smart.Framework.Modules: (SocialMedia) SmTwitter r.20200121 #
 ## CodeBird PHP Api v.4.0.0-beta.1 w. modif ; CodeBird Js Api v.3.0.0 ##
 
-// r.5.2.7 / smart.framework.v.5.2
+// r.5.7.2 / smart.framework.v.5.7
 
 ###

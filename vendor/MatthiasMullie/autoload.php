@@ -62,4 +62,3 @@ spl_autoload_register('autoload__VendorMatthiasMullie', true, false); // throw /
 //--
 
 // end of php code
-?>

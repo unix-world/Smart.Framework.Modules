@@ -49,4 +49,4 @@ class DivisionResult
 	}
 }
 
-// #end php code
+// end of php code

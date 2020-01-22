@@ -1244,4 +1244,4 @@ foreach($rows AS $row){
 }
 echo json_encode($jsonData);
 
-?>
+// end of php code
