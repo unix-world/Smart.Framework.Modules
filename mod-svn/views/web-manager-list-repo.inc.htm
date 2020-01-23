@@ -61,9 +61,19 @@
 		<h5 style="display:inline;"><span style="color:#FF5500;">Selected Rev.</span> <span style="color:#72C100;">[###REV-CRR|html###]</span> <span style="color:#CCCCCC;">@</span> <span style="color:#778899;">[###REPO-PATH|html###]</span></h5>
 		<div class="ux-grid-row ux-border" style="padding:4px; border-bottom:0px;">
 			<div class="ux-grid-col s4" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+				[%%%IF:TYPE:==file;%%%]
+				<img width="16" height="16" src="modules/mod-webdav/libs/img/ftype-icons/file.svg" alt="file" title="file">
+				&nbsp;
+				<a class="ux-link" href="[###BACK-URL|html###]" title="Go Back">&lt;..&lt;</a>
+				[%%%ELSE:TYPE%%%]
+				<img width="16" height="16" src="modules/mod-webdav/libs/img/ftype-icons/folder.svg" alt="folder" title="folder">
+				&nbsp;
 				<a class="ux-link" href="[###BACK-URL|html###]" title="Level Up">^..^</a>
+				[%%%/IF:TYPE%%%]
 				&nbsp;
 				<a data-smart="open.modal" href="[###COMPARE-URL|html###][###REV-CRR|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/change.svg" alt="View Revision #[###REV-CRR|html###] Log for Current Path: [###REPO-PATH|html###]" title="View Revision #[###REV-CRR|html###] Log for Current Path : [###REPO-NAME|html###][###REPO-PATH|html###]"></a>
+				&nbsp;
+				<a data-smart="open.modal" href="[###PROPS-URL|html###][###REV-CRR|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/props.svg" alt="View Props for Revision #[###REV-CRR|html###] Log for Current Path: [###REPO-PATH|html###]" title="View Props for Revision #[###REV-CRR|html###] Log for Current Path : [###REPO-NAME|html###][###REPO-PATH|html###]"></a>
 				[%%%IF:DOWNLOAD-ARCH-URL:!=;%%%]
 				[%%%IF:DOWNLOAD-ARCH-ALLOW:==yes;%%%]
 				&nbsp;
@@ -95,7 +105,7 @@
 			[%%%LOOP:REPODATA%%%]
 		<div class="div_line" style="height:28px;">
 			<div class="ux-grid-col s4" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
-				<img width="16" height="16" src="[###VIEWS-PATH|html###]img/file[###REPODATA.ICON-SUFFIX|html###].png" alt="file: [###MIMETYPE|html###]" title="file: [###MIMETYPE|html###]">
+				<img width="16" height="16" src="modules/mod-webdav/libs/img/ftype-icons/file[###REPODATA.ICON-SUFFIX|html###].svg" alt="file: [###MIMETYPE|html###]" title="file: [###MIMETYPE|html###]">
 				&nbsp;
 				[%%%IF:DISPLAY-LINK:==;%%%]
 				<span style="font-weight:bold; color:#20639E; cursor:help;" title="file: [###REPODATA.NAME|html###]">[###REPODATA.NAME|html###]</span>
@@ -130,11 +140,11 @@
 		<div class="div_line" style="height:28px;">
 			<div class="ux-grid-col s4" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;" title="[###REPODATA.TYPE|html###]: [###REPODATA.NAME|html###]">
 				[%%%IF:REPODATA.TYPE:==file;%%%]
-					<img width="16" height="16" src="[###VIEWS-PATH|html###]img/file[###REPODATA.ICON-SUFFIX|html###].png" alt="file" title="file">
+					<img width="16" height="16" src="modules/mod-webdav/libs/img/ftype-icons/file[###REPODATA.ICON-SUFFIX|html###].svg" alt="file" title="file">
 					&nbsp;
 					<a class="ux-link" href="[###SELECT-URLBASE|html###][###REPODATA.NAME|url|html###]&type=file&rev=[###REV-CRR|url|html###]"><span style="font-weight:bold;">[###REPODATA.NAME|html###]</span></a>
 				[%%%ELSE:REPODATA.TYPE%%%]
-					<img width="16" height="16" src="[###VIEWS-PATH|html###]img/folder.svg" alt="folder" title="folder">
+					<img width="16" height="16" src="modules/mod-webdav/libs/img/ftype-icons/folder.svg" alt="folder" title="folder">
 					&nbsp;
 					<a class="ux-link" href="[###SELECT-URLBASE|html###][###REPODATA.NAME|url|html###]&type=dir&rev=[###REV-CRR|url|html###]"><span style="font-weight:bold;">[###REPODATA.NAME|html###]</span></a>
 				[%%%/IF:REPODATA.TYPE%%%]

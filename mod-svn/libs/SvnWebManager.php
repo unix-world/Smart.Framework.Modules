@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SvnWebManager {
 
 	// ::
-	// v.20200121
+	// v.20200123
 
 	private static $svn_cache_dir = 'tmp/cache/svn/'; 		// must have trailing slash :: the svn proc jail root
 
@@ -161,10 +161,7 @@ final class SvnWebManager {
 				$the_item_type = (string) \Smart::array_get_by_key_path((array)$tmp_entratt, $i.'.kind', '.');
 				$the_item_icon_suffix = '';
 				if((string)$the_item_type == 'file') {
-					$the_item_icon_suffix = (string) self::getFileTypeIcon($the_item_name);
-					if((string)$the_item_icon_suffix != '') {
-						$the_item_icon_suffix = '-'.$the_item_icon_suffix;
-					} //end if
+					$the_item_icon_suffix = (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$the_item_name);
 				} //end if
 				//--
 				$arr[] = [
@@ -216,6 +213,63 @@ final class SvnWebManager {
 		// \print_r($entry_zero); die();
 		//--
 		return (string) ($entry_zero['revision'] ? (int)$entry_zero['revision'] : '');
+		//--
+	} //END FUNCTION
+	//============================================================
+
+
+	//============================================================ OK
+	public static function getProps($repo, $path, $rev) {
+		//--
+		$repo = (string) \trim((string)$repo);
+		$repos = (array) \Smart::get_from_config('svn.repos');
+		$rdata = (array) $repos[(string)\trim((string)$repo)];
+		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+			return array();
+		} //end if
+		//--
+		$arr = array();
+		//--
+		$tmp_arr = (array) self::execSvnCmd('proplist', (string)$rdata['url'], (string)$path, $rdata['user'], $rdata['pass'], 'xml-arr', [ 'rev' => (string)$rev ]); // OK
+		// \print_r($tmp_arr); die();
+		if(\Smart::array_size($tmp_arr) <= 0) {
+			return array();
+		} //end if
+		//--
+		if(\Smart::array_size($tmp_arr['properties']) <= 0) {
+			return array();
+		} //end if
+		if(\Smart::array_size($tmp_arr['properties'][0]) <= 0) {
+			return array();
+		} //end if
+		if(\Smart::array_size($tmp_arr['properties'][0]['target']) <= 0) {
+			return array();
+		} //end if
+		if(\Smart::array_size($tmp_arr['properties'][0]['target'][0]) <= 0) {
+			return array();
+		} //end if
+		if(\Smart::array_size($tmp_arr['properties'][0]['target'][0]['property|@attributes']) <= 0) {
+			return array();
+		} //end if
+		// \print_r($tmp_arr['properties'][0]['target'][0]['property|@attributes']); die();
+		//--
+		$arr = [];
+		foreach($tmp_arr['properties'][0]['target'][0]['property|@attributes'] as $key => $val) {
+			if(\is_array($val)) {
+				if(\array_key_exists('name', $val)) {
+					$val['name'] = (string) \trim((string)$val['name']);
+					if((string)$val['name'] != '') {
+						$arr[(string)$val['name']] = (string) \Smart::array_get_by_key_path(
+							(array) self::execSvnCmd('propget', (string)$rdata['url'], (string)$path, $rdata['user'], $rdata['pass'], 'xml-arr', [ 'rev' => (string)$rev, 'prop' => (string)$val['name'] ]),
+							'properties.0.target.0.property.0',
+							'.'
+						);
+					} //end if
+				} //end if
+			} //end if
+		} //end foreach
+		//--
+		return (array) $arr;
 		//--
 	} //END FUNCTION
 	//============================================================
@@ -288,10 +342,7 @@ final class SvnWebManager {
 				$tmp_atts = (array) $tmp_arr['path|@attributes'][$i];
 				$the_item_icon_suffix = '';
 				if((string)$tmp_atts['kind'] == 'file') {
-					$the_item_icon_suffix = (string) self::getFileTypeIcon((string) $tmp_arr['path'][$i]);
-					if((string)$the_item_icon_suffix != '') {
-						$the_item_icon_suffix = '-'.$the_item_icon_suffix;
-					} //end if
+					$the_item_icon_suffix = (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$tmp_arr['path'][$i]);
 				} //end if
 				$arr['changes'][] = [
 					'path' 			=> (string) $tmp_arr['path'][$i],
@@ -520,114 +571,6 @@ final class SvnWebManager {
 	//============================================================
 
 
-	//============================================================
-	public static function getFileTypeIcon($path) {
-		//--
-		$file = (string) \SmartFileSysUtils::get_file_name_from_path($path);
-		//--
-		if(\in_array((string)\strtolower((string)$file), [
-			'makefile'
-		])) {
-			return 'shell';
-		} //end if
-		//--
-		if(\in_array((string)\strtolower((string)$file), [
-			'license',
-			'readme'
-		])) {
-			return 'txt';
-		} //end if
-		//--
-		$ext = (string) \SmartFileSysUtils::get_file_extension_from_path($path);
-		$type = '';
-		// TODO: make this based on \SmartFileSysUtils::mime_eval()
-		switch((string)\strtolower((string)$ext)) {
-			case 'cs': // C#
-			case 'c': // C
-			case 'y': // Yacc source code file
-			case 'cpp': // C++
-			case 'ypp': // Bison source code file
-			case 'cxx': // C++
-			case 'yxx': // Bison source code file
-			case 'm': // Objective-C Method
-			case 'go': // GO Language
-				$type = 'c';
-				break;
-			case 'h': // C header
-			case 'hpp': // C++ header
-			case 'hxx': // C++ header
-				$type = 'h';
-				break;
-			case 'txt': // text
-			case 'md': // markdown
-			case 'log': // log file
-				$type = 'txt';
-				break;
-			case 'xhtml':
-			case 'xml':
-			case 'xsl':
-			case 'dtd':
-				$type = 'xml';
-				break;
-			case 'htm':
-			case 'html':
-				$type = 'html';
-				break;
-			case 'css':
-			case 'less':
-			case 'scss':
-			case 'sass':
-				$type = 'css';
-				break;
-			case 'js':
-				$type = 'js';
-				break;
-			case 'php':
-				$type = 'php';
-				break;
-			case 'pl':
-				$type = 'pl';
-				break;
-			case 'py':
-				$type = 'py';
-				break;
-			case 'java':
-				$type = 'java';
-				break;
-			case 'sql':
-				$type = 'db';
-				break;
-			case 'csh': // C-Shell script
-			case 'sh': // shell script
-			case 'awk': // AWK script
-			case 'cmd': // windows command file
-			case 'bat': // windows batch file
-				$type = 'shell';
-				break;
-			case 'svg':
-				$type = 'svg';
-				break;
-			case 'png':
-			case 'gif':
-			case 'jpg':
-			case 'jpe':
-			case 'jpeg':
-			case 'tif':
-			case 'tiff':
-			case 'wmf':
-			case 'bmp':
-				$type = 'photo';
-				break;
-			default:
-				$type = ''; // not recognized or icon n/a
-		} //end if
-		//--
-		return (string) $type;
-		//--
-	} //END FUNCTION
-	//============================================================
-
-
 	//===== PRIVATES
 
 
@@ -765,6 +708,29 @@ final class SvnWebManager {
 					$rev = 'HEAD';
 				} //end if else
 				$cmd = (string) $base_cmd.' --xml ls --revision '.self::escapeCmdArg((string)$rev).' '.self::escapeCmdArg((string)$repo.$path.'@'.(string)$rev);
+				break;
+			case 'proplist':
+				if((string)\trim((string)$options['rev']) != '') {
+					$rev = (string) $options['rev'];
+				} else {
+					$rev = 'HEAD';
+				} //end if else
+				$cmd = (string) $base_cmd.' --xml proplist --revision '.self::escapeCmdArg((string)$rev).' '.self::escapeCmdArg((string)$repo.$path.'@'.(string)$rev);
+				break;
+			case 'propget':
+				if((string)\trim((string)$options['rev']) != '') {
+					$rev = (string) $options['rev'];
+				} else {
+					$rev = 'HEAD';
+				} //end if else
+				if((string)\trim((string)$options['prop']) == '') {
+					\Smart::raise_error(
+						__METHOD__.' #ERR# SVN PropGet: Empty or Invalid Property',
+						'ERR: Invalid Property for SVN PropGet' // msg to display
+					);
+					die(''); // just in case
+				} //end if
+				$cmd = (string) $base_cmd.' --xml propget '.self::escapeCmdArg((string)$options['prop']).' --revision '.self::escapeCmdArg((string)$rev).' '.self::escapeCmdArg((string)$repo.$path.'@'.(string)$rev);
 				break;
 			case 'cat':
 				if((string)\trim((string)$options['rev']) != '') {

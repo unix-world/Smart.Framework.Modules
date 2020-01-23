@@ -16,15 +16,16 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	/*
-	 * TODO/TEST: if returns EMPTY TRY/CATCH TEST, it means selected path was deleted
-	 * FOR DELETED Paths add TEST
-	 *
-	 */
-
-	// v.20200121
+	// v.20200123
 
 	public function Run() {
+
+		//--
+		if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
+			$this->PageViewSetErrorStatus(500, 'ERROR: SVN Manager requires Mod WebDAV ...');
+			return;
+		} //end if
+		//--
 
 		//--
 		if(Smart::array_size($this->ConfigParamGet('svn')) <= 0) {
@@ -73,6 +74,42 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 				break;
 
+			case 'props': // proplist + propget
+
+				$repo = (string) $this->RequestVarGet('repo', '', 'string');
+				$path = (string) $this->RequestVarGet('path', '', 'string');
+				$type = (string) $this->RequestVarGet('type', '', 'string');
+				$rev = (string)  $this->RequestVarGet('rev', 'HEAD', 'string');
+
+				if(((string)$path == '') OR ((string)$path == '/')) {
+					$path = '/';
+				} //end if
+
+				$this->PageViewSetCfg('template-file', 'template-modal.htm'); // the default modal template
+				$title = 'SVN - Web Manager :: Repo: '.$repo.' @ Path: '.$path;
+
+				if((string)$type == 'file') {
+					$icon  = (string) \SmartModExtLib\Webdav\DavUtils::getFileIcon((string)$path);
+					$xicon = (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeIcon((string)$path);
+				} else {
+					$icon  = (string) \SmartModExtLib\Webdav\DavUtils::getFolderIcon((string)$path);
+					$xicon = 'folder';
+				} //end if else
+
+				$main = (string) SmartMarkersTemplating::render_file_template(
+					$this->ControllerGetParam('module-view-path').'web-manager-view-props.inc.htm',
+					[
+						'VIEWS-PATH' 		=> (string) $this->ControllerGetParam('module-view-path'),
+						'REPO-NAME' 		=> (string) $repo,
+						'REPO-PATH' 		=> (string) $path,
+						'THE-ICON' 			=> (string) $icon,
+						'THE-XICON' 		=> (string) $xicon,
+						'REVISION' 			=> (string) $rev,
+						'PROPS-ARR' 		=> (array)  \SmartModExtLib\Svn\SvnWebManager::getProps($repo, $path, $rev)
+					]
+				);
+
+				break;
 
 			case 'diff': // text files only
 
@@ -108,6 +145,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						'VIEWS-PATH' 		=> (string) $this->ControllerGetParam('module-view-path'),
 						'REPO-NAME' 		=> (string) $repo,
 						'REPO-PATH' 		=> (string) $path,
+						'ICON-SUFFIX' 		=> (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$path),
 						'REVISION' 			=> (string) $rev,
 						'CODE-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web']),
 						'CODE-TYPE' 		=> 'diff',
@@ -153,6 +191,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'VIEWS-PATH' 		=> (string) $this->ControllerGetParam('module-view-path'),
 							'REPO-NAME' 		=> (string) $repo,
 							'REPO-PATH' 		=> (string) $path,
+							'ICON-SUFFIX' 		=> (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$path),
 							'REVISION' 			=> (string) $rev,
 							'CODE-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', (array)$highlight_arr['pack']),
 							'CODE-TYPE' 		=> (string) $highlight_arr['type'],
@@ -166,6 +205,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'VIEWS-PATH' 		=> (string) $this->ControllerGetParam('module-view-path'),
 							'REPO-NAME' 		=> (string) $repo,
 							'REPO-PATH' 		=> (string) $path,
+							'ICON-SUFFIX' 		=> (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$path),
 							'REVISION' 			=> (string) $rev,
 							'CODE-HIGHLIGHT' 	=> (string) '',
 							'CODE-TYPE' 		=> (string) '',
@@ -201,6 +241,50 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$this->PageViewSetCfg('rawdisp', 'attachment; filename="'.str_replace(['"'], ['\''], (string)$fname).'"'); // display inline and set the file name for the image
 				$this->PageViewSetVar(
 					'main', (string) \SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev)
+				);
+
+				return; // STOP HERE, it is RAW Page
+
+				break;
+
+			case 'dwarch': // dir paths :: download archive
+
+				$repo = (string) $this->RequestVarGet('repo', '', 'string');
+				$path = (string) $this->RequestVarGet('path', '', 'string');
+				$type = (string) $this->RequestVarGet('type', '', 'string');
+				$rev  = (string)  $this->RequestVarGet('rev', 'HEAD', 'string');
+
+				if((string)$path == '/') {
+					$path = '';
+				} //end if
+
+				$repos = (array) Smart::get_from_config('svn.repos');
+				if(((string)trim((string)$repo) == '') OR (Smart::array_size($repos[(string)trim((string)$repo)]) <= 0)) {
+					$this->PageViewSetErrorStatus(400, 'ERROR: Invalid SVN Repo: ['.$repo.']');
+					return;
+				} //end if
+				if(!$repos[(string)trim((string)$repo)]['allow-download']) {
+					$this->PageViewSetErrorStatus(400, 'ERROR: This SVN Repo cannot be Downloaded: ['.$repo.']');
+					return;
+				} //end if
+
+				if((string)$type == 'file') {
+					$this->PageViewSetErrorStatus(400, 'ERROR: Invalid SVN Path Type: ['.$repo.']');
+					return;
+				} // end if
+				$crr_path = (string) $path.'/';
+
+				$arr = (array) \SmartModExtLib\Svn\SvnWebManager::exportPath((string)$repos[(string)trim((string)$repo)]['allow-download'], $repo, $path, $rev);
+				if(((string)$arr['f-content'] == '') OR ((string)$arr['f-mime'] == '') OR ((string)$arr['f-name'] == '')) {
+					$this->PageViewSetErrorStatus(500, 'ERROR: Invalid SVN Archive Export');
+					return;
+				} //end if
+
+				$this->PageViewSetCfg('rawpage', true);
+				$this->PageViewSetCfg('rawmime', (string)$arr['f-mime']);
+				$this->PageViewSetCfg('rawdisp', 'attachment; filename="'.Smart::safe_filename($arr['f-name']).'"'); // display inline and set the file name for the image
+				$this->PageViewSetVar(
+					'main', (string) $arr['f-content']
 				);
 
 				return; // STOP HERE, it is RAW Page
@@ -318,53 +402,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						'REV-HEAD' 				=> (int) $rev_head,
 						'COMPARE-ROOT-URL' 		=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=compare&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url('/').'&rev=',
 						'COMPARE-URL' 			=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=compare&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($path).'&rev=',
+						'PROPS-URL' 			=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=props&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($path).'&type='.Smart::escape_url($type).'&rev=',
 						'HEAD-ROOT-URL' 		=> 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path=/&rev=' // head revision must go into ROOT folder to avoid errors if the current folder have been deleted and is not available in the HEAD revision !!
 					]
 				);
-
-				break;
-
-			case 'dwarch': // dir paths :: download archive
-
-				$repo = (string) $this->RequestVarGet('repo', '', 'string');
-				$path = (string) $this->RequestVarGet('path', '', 'string');
-				$type = (string) $this->RequestVarGet('type', '', 'string');
-				$rev  = (string)  $this->RequestVarGet('rev', 'HEAD', 'string');
-
-				if((string)$path == '/') {
-					$path = '';
-				} //end if
-
-				$repos = (array) Smart::get_from_config('svn.repos');
-				if(((string)trim((string)$repo) == '') OR (Smart::array_size($repos[(string)trim((string)$repo)]) <= 0)) {
-					$this->PageViewSetErrorStatus(400, 'ERROR: Invalid SVN Repo: ['.$repo.']');
-					return;
-				} //end if
-				if(!$repos[(string)trim((string)$repo)]['allow-download']) {
-					$this->PageViewSetErrorStatus(400, 'ERROR: This SVN Repo cannot be Downloaded: ['.$repo.']');
-					return;
-				} //end if
-
-				if((string)$type == 'file') {
-					$this->PageViewSetErrorStatus(400, 'ERROR: Invalid SVN Path Type: ['.$repo.']');
-					return;
-				} // end if
-				$crr_path = (string) $path.'/';
-
-				$arr = (array) \SmartModExtLib\Svn\SvnWebManager::exportPath((string)$repos[(string)trim((string)$repo)]['allow-download'], $repo, $path, $rev);
-				if(((string)$arr['f-content'] == '') OR ((string)$arr['f-mime'] == '') OR ((string)$arr['f-name'] == '')) {
-					$this->PageViewSetErrorStatus(500, 'ERROR: Invalid SVN Archive Export');
-					return;
-				} //end if
-
-				$this->PageViewSetCfg('rawpage', true);
-				$this->PageViewSetCfg('rawmime', (string)$arr['f-mime']);
-				$this->PageViewSetCfg('rawdisp', 'attachment; filename="'.Smart::safe_filename($arr['f-name']).'"'); // display inline and set the file name for the image
-				$this->PageViewSetVar(
-					'main', (string) $arr['f-content']
-				);
-
-				return; // STOP HERE, it is RAW Page
 
 				break;
 
