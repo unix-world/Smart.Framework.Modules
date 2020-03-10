@@ -387,6 +387,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								} //end if
 								$this->InstantFlush();
 								//--
+								$tmp_message_file = '';
 								$tmp_stor_result = 0;
 								$tmp_wr_result = 0;
 								$rd_err = '';
@@ -402,73 +403,29 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								//--
 								$tmp_message_error = (string) $mailget->error;
 								//--
-								if(strlen($tmp_message_error) > 0) {
+								if((string)$tmp_message_error != '') {
 									$errors += 1;
 									$rd_err = 'Retrieve Failed for Message ('.$i.'): '.$tmp_message_error;
 								} else {
-									$tmp_message_size = strlen($tmp_message_content); // $mailget->size($i); since this cannot be done by UUID, we do it differently
+									$tmp_message_size = (int) strlen((string)$tmp_message_content); // $mailget->size($i); since this cannot be done by UUID, we do it differently
 								} //end if
 								//--
-								if((strlen($tmp_message_error) <= 0) AND (($quota_max <= 0) OR (($quota_max > 0) AND ($quota_max >= ($quota_used + $tmp_message_size))))) {
+								if(((string)$tmp_message_error == '') AND (($quota_max <= 0) OR (($quota_max > 0) AND ($quota_max >= ($quota_used + $tmp_message_size))))) {
 									//--
-									$eml = new SmartMailerMimeDecode();
-									$tmp_msg_head = $eml->get_header(SmartUnicode::sub_str($tmp_message_content, 0, 16384)); // we only do a fast decode ... later they can be updated
-									//--
-									$fldr_y = date('Y', @strtotime($tmp_msg_head['date']));
-									$fldr_m = date('Y-m', @strtotime($tmp_msg_head['date']));
-									$fldr_d = date('Y-m-d', @strtotime($tmp_msg_head['date']));
-									//--
-									$tmp_message_sh_folder = (string) Smart::safe_filename($use_the_dir); // this may vary as INBOX or SPAM
-									$tmp_message_fname = (string) Smart::safe_filename(substr((string)$use_the_dir, 0, 2).'__'.date('Y_m_d__H_i_s', @strtotime($tmp_msg_head['date'])).'__'.sha1($tmp_cfg_arr['settings_host'].$crr_uid).'.eml');
-									$tmp_message_folder = SmartFileSysUtils::add_dir_last_slash($the_mbox_path.$tmp_message_sh_folder);
-									//$tmp_message_folder .= $fldr_y.'/'.$fldr_m.'/'.$fldr_d.'/';
-									SmartFileSystem::dir_create($tmp_message_folder, true);
-									$tmp_message_file = Smart::safe_pathname($tmp_message_folder.$tmp_message_fname);
-									//--
-									if(strlen($tmp_message_content) > 0) {
-										//-- STORE MESSAGE TO FILE
-										$tmp_stor_result = SmartFileSystem::write($tmp_message_file, 'Message-Server: '.Smart::normalize_spaces($tmp_cfg_arr['settings_host'].':'.$tmp_cfg_arr['settings_port'])."\r\n".'Message-UID: '.Smart::normalize_spaces($crr_uid)."\r\n".'Message-Size: '.Smart::normalize_spaces($tmp_message_size)."\r\n".'NetOffice-Account: '.Smart::normalize_spaces($this->username)."\r\n".'NetVision-MetaData: #END'."\r\n".$tmp_message_content);
-										//-- RECORD UID TO DB
-										if(($tmp_stor_result == 1) AND (is_file($tmp_message_file))) {
-											//--
-											$arr_write 					= array();
-											$arr_write['id'] 			= (string) $tmp_message_fname;
-											$arr_write['stat_uid'] 		= (string) $crr_uid;
-											$arr_write['stat_read'] 	= (int)    $use_mark_read;
-											$arr_write['stat_del'] 		= 0;
-											$arr_write['date_time'] 	= (string) date('Y-m-d H:i:s', @strtotime($tmp_msg_head['date']));
-											$arr_write['folder'] 		= (string) $tmp_message_sh_folder;
-											$arr_write['size_kb'] 		= (string) Smart::format_number_dec((@filesize($tmp_message_file) / 1000), 2, '.', '');
-											$arr_write['m_priority'] 	= (int) Smart::format_number_int($tmp_msg_head['priority'], '+');
-											$arr_write['have_atts'] 	= (int) Smart::format_number_int($tmp_msg_head['attachments']);
-											$arr_write['msg_id'] 		= (string) $tmp_msg_head['message-id'];
-											$arr_write['msg_inreply'] 	= (string) $tmp_msg_head['in-reply-to'];
-											$arr_write['msg_subj'] 		= (string) $tmp_msg_head['subject'];
-											$arr_write['from_addr'] 	= (string) $tmp_msg_head['from_addr'];
-											$arr_write['from_name'] 	= (string) $tmp_msg_head['from_name'];
-											$arr_write['to_addr'] 		= (string) $tmp_msg_head['to_addr'];
-											$arr_write['to_name'] 		= (string) $tmp_msg_head['to_name'];
-											$arr_write['cc_addr'] 		= (string) $tmp_msg_head['cc_addr'];
-											$arr_write['cc_name'] 		= (string) $tmp_msg_head['cc_name'];
-											$arr_write['addrss'] 		= ''; // to be updated on first read
-											$arr_write['atts'] 			= ''; // to be updated on first read
-											$arr_write['keywds'] 		= ''; // to be updated on first read
-											//-- OK
-											$tmp_wr_result = (array) $db->insertOneMessage((array)$arr_write);
-											//--
-											$arr_write = array();
-											//--
-										} else {
-											$errors += 1;
-											$rd_err = 'Failed to store message on disk: '.$i.' / '.$tmp_message_file;
-										} //end if
-										//--
+									$arr_msg_store = (array) \SmartModExtLib\Cloud\webmailUtils::storeMessage($this->username, $db, $use_mark_read, $crr_uid, $tmp_message_content, $use_the_dir, $the_mbox_path, $tmp_cfg_arr); // the full message string must be passed here as it must be stored on disk
+									$tmp_message_file = (string) $arr_msg_store['message_file'];
+									$tmp_stor_result = (int) $arr_msg_store['stor_result'];
+									$tmp_wr_result = (int) $arr_msg_store['wr_result'];
+									$arr_msg_store = array();
+									if(((string)$tmp_message_file == '') OR ($tmp_stor_result != 1)) {
+										$errors += 1;
+										$rd_err = 'Failed to store message on disk: '.$i.' / '.$tmp_message_file;
 									} //end if
 									//--
 								} else {
 									//--
 									$errors += 1;
-									if(strlen($tmp_message_error) <= 0) { // avoid rewrite error message if any
+									if((string)$tmp_message_error == '') { // avoid rewrite error message if any
 										$rd_err = 'Message too Big ('.$i.') ! Your Quota has been Reached: '.Smart::format_number_dec(($quota_used / 1000 / 1000), 2, '.', '').'MB'.' of '.Smart::format_number_dec(($quota_max / 1000 / 1000), 2, '.', '').'MB';
 									} //end if else
 									//--
@@ -477,7 +434,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								$tmp_message_content = ''; // cleanup
 								$tmp_message_size = 0;
 								//--
-								if(($tmp_wr_result[1] == 1) AND ($tmp_stor_result == 1)) { // OK
+								if(($tmp_wr_result == 1) AND ($tmp_stor_result == 1)) { // OK
 									//-- CHECK IF MESSAGES DELETION IS SET TO IMMEDIATELY DELETE FROM SERVER !
 									if((string)$tmp_retr_mode == 'all-imap4') {
 										//$mailget->delete($num_uid, true); // delete this message from server by UID
@@ -487,7 +444,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 									//-- WARNING: check if need to delete on IMAP4 !!!
 								} //end if
 								//--
-								if(strlen($rd_err) > 0) {
+								if((string)$rd_err != '') {
 									echo '<br><font color="#FF0000">'.Smart::escape_html($rd_err).'</font>';
 									$this->InstantFlush();
 								} //end if

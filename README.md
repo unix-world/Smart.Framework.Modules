@@ -30,6 +30,7 @@
 	* SocialMedia Facebook: Js + PHP API
 	* SocialMedia Twitter: Js + PHP API
 	* SVN (manager): a web based SVN (subversion) manager
+	* DB Admin (manager): a web based DataBase administrator (currently supports just MongoDB)
 
 ### Extra App Modules (GPLv3 licensed ; can be used with Smart.Framework licensed under GPLv3 license only):
 	* Documentor: a PHP and JavaScript documentation generator
