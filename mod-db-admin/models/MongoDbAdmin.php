@@ -20,6 +20,32 @@ final class MongoDbAdmin {
 	private static $config = [];
 
 
+	public static function getServerBuildInfo() {
+		//--
+		$mongo = self::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return array();
+		} //end if
+		//--
+		$result = (array) $mongo->command(
+			[
+				'buildInfo' => 1
+			]
+		);
+		//--
+		if(!$mongo->is_command_ok($result)) {
+			return array();
+		} //end if
+		//--
+		$result = (array) $result[0];
+		unset($result['ok']);
+		//--
+		return (array) $result;
+		//--
+	} //END FUNCTION
+
+
 	public static function getDbName() {
 		//--
 		$mongo = self::getInstance();
@@ -33,7 +59,33 @@ final class MongoDbAdmin {
 	} //END FUNCTION
 
 
-	public static function getRecordsCount($query) {
+	public static function getDbHost() {
+		//--
+		$mongo = self::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return '';
+		} //end if
+		//--
+		return (string) self::$config['server-host'];
+		//--
+	} //END FUNCTION
+
+
+	public static function getDbPort() {
+		//--
+		$mongo = self::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return '';
+		} //end if
+		//--
+		return (string) self::$config['server-port'];
+		//--
+	} //END FUNCTION
+
+
+	public static function getDbCollections() {
 		//--
 		$mongo = self::getInstance();
 		if(!$mongo) {
@@ -41,15 +93,53 @@ final class MongoDbAdmin {
 			return array();
 		} //end if
 		//--
+		$result = (array) $mongo->command(
+			[
+				'listCollections' => 1 // 'listDatabases' => 1 (to get databases list ; req to be connected to `admin` db)
+			]
+		);
+		//--
+		return (array) $result;
+		//--
+	} //END FUNCTION
+
+
+	public static function getDbCollectionIndexes($collection) {
+		//--
+		$mongo = self::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return array();
+		} //end if
+		//--
+		$result = (array) $mongo->command(
+			[
+				'listIndexes' => (string) $collection
+			]
+		);
+		//--
+		return (array) $result;
+		//--
+	} //END FUNCTION
+
+
+	public static function getRecordsCount($collection, $query) {
+		//--
+		$mongo = self::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return 0;
+		} //end if
+		//--
 		return (int) $mongo->count(
-			(string) self::getCollection(),
+			(string) $collection,
 			(array)  $query // filter
 		);
 		//--
 	} //END FUNCTION
 
 
-	public static function getRecordsData($query, $offset=0, $limit=10, $sorting=[]) {
+	public static function getRecordsData($collection, $query, $offset=0, $limit=10, $sorting=[]) {
 		//--
 		$mongo = self::getInstance();
 		if(!$mongo) {
@@ -78,7 +168,7 @@ final class MongoDbAdmin {
 		} //end if
 		//--
 		return (array) $mongo->find(
-			(string) self::getCollection(),
+			(string) $collection,
 			(array)  $query, // filter
 			(array)  [],     // no projection
 			(array)  $arrOptions
@@ -87,7 +177,7 @@ final class MongoDbAdmin {
 	} //END FUNCTION
 
 
-	final public static function insertRecord($doc) {
+	final public static function insertRecord($collection, $doc) {
 		//--
 		$doc = \Smart::json_decode((string)$doc);
 		if(\Smart::array_size($doc) <= 0) {
@@ -105,7 +195,7 @@ final class MongoDbAdmin {
 		$result = array();
 		try {
 			$result = (array) $mongo->insert(
-				(string) self::getCollection(),
+				(string) $collection,
 				(array)  $doc
 			);
 		} catch(\Exception $err) {
@@ -119,7 +209,7 @@ final class MongoDbAdmin {
 	} //END FUNCTION
 
 
-	final public static function deleteRecord($id) {
+	final public static function deleteRecord($collection, $id) {
 		//--
 		$mongo = self::getInstance();
 		if(!$mongo) {
@@ -128,7 +218,7 @@ final class MongoDbAdmin {
 		} //end if
 		//--
 		$result = (array) $mongo->delete(
-			(string) self::getCollection(),
+			(string) $collection,
 			[
 				'_id' => (string) $id
 			] // filter
@@ -160,15 +250,6 @@ final class MongoDbAdmin {
 		} //end if
 		//--
 		return self::$mongo; // mixed
-		//--
-	} //END FUNCTION
-
-
-	private static function getCollection() {
-		//--
-		$collection = 'startup_log'; // must be get from cookies
-		//--
-		return (string) $collection;
 		//--
 	} //END FUNCTION
 

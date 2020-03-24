@@ -24,6 +24,80 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
+		if(Smart::array_size(Smart::get_from_config('mongodb')) <= 0) {
+			$this->PageViewSetErrorStatus(500, 'MongoDB Server: Not Configured ...');
+			return;
+		} //end if
+		//--
+
+		//--
+		$the_base_url = 'admin.php?page='.$this->ControllerGetParam('controller');
+		$the_cookiename_collection = 'SmartDbAdminMongoCollection';
+		//--
+
+		//--
+		$the_collection = (string) trim((string)$this->CookieVarGet((string)$the_cookiename_collection));
+		//--
+		$collections_list = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbCollections();
+		$collection_exists = null;
+		if((string)$the_collection != '') {
+			$collection_exists = false;
+			for($i=0; $i<Smart::array_size($collections_list); $i++) {
+				if(is_array($collections_list[$i])) {
+					if((string)$collections_list[$i]['name'] === (string)$the_collection) {
+						$collection_exists = true;
+						break;
+					} //end if
+				} //end if
+			} //end for
+		} //end if
+		//--
+	//	if($collection_exists !== true) {
+	//		$the_collection = '';
+	//	} //end if
+		//--
+
+		//--
+		if((string)$the_collection == '') {
+			$build_info = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getServerBuildInfo();
+			if(Smart::array_size($build_info) <= 0) {
+				$this->PageViewSetErrorStatus(500, 'MongoDB Server: Cannot Get Build Info ...');
+				return;
+			} //end if
+			$this->PageViewSetVars([
+				'title' => 'DB Admin :: MongoDB',
+				'main'  => (string) SmartMarkersTemplating::render_file_template(
+					$this->ControllerGetParam('module-view-path').'mongodb-buildinfo.mtpl.htm',
+					[
+						'DATABASE' 				=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName(),
+						'HOST' 					=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost(),
+						'PORT' 					=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort(),
+						'COLLECTION' 			=> (string) '', // this must be empty here !
+						'COLLECTIONS' 			=> (array)  $collections_list,
+						'BUILD-INFO' 			=> (string) SmartUtils::pretty_print_var($build_info),
+						'PAGE-LIST-URL' 		=> (string) $the_base_url,
+						'COOKIENAME-COLLECTION' => (string) $the_cookiename_collection
+					]
+				)
+			]);
+			return;
+		} //end if
+		//--
+
+		//--
+		$collection_indexes = [];
+		if($collection_exists === true) {
+			$tmp_indexes = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbCollectionIndexes((string)$the_collection);
+			for($i=0; $i<Smart::array_size($tmp_indexes); $i++) {
+				if(Smart::array_size($tmp_indexes[$i]) > 0) {
+					$collection_indexes[(string)$tmp_indexes[$i]['name']] = (array) $tmp_indexes[$i]['key'];
+				} //end if
+			} //end for
+			$tmp_indexes = array();
+		} //end if
+		//--
+
+		//--
 		$mode = $this->RequestVarGet('mode', 'raw', ['raw','visual']);
 		//--
 		$ofs = (int) $this->RequestVarGet('ofs', 0, 'integer+');
@@ -57,14 +131,14 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$error = '';
 		try {
-			$count = (int) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsCount((array)$query);
+			$count = (int) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsCount((string)$the_collection, (array)$query);
 		} catch(Exception $e) {
 			$error = (string) $e->getMessage();
 			$query = [];
-			$count = (int) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsCount((array)$query);
+			$count = 0;
 		} //end try catch
 		$time = microtime(true);
-		$data = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsData((array)$query, (int)$ofs, (int)$limit, (array)$sorting);
+		$data = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsData((string)$the_collection, (array)$query, (int)$ofs, (int)$limit, (array)$sorting);
 		$time = microtime(true) - $time;
 		//--
 		$records = [];
@@ -130,7 +204,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 		$arr_url_params = [];
 		$arr_url_ok_params['ofs'] = '{{{offset}}}';
-		$navbox_url = (string) Smart::url_add_params('admin.php?page='.$this->ControllerGetParam('controller'), (array)$arr_url_ok_params);
+		$navbox_url = (string) Smart::url_add_params((string)$the_base_url, (array)$arr_url_ok_params);
 		$arr_url_ok_params = [];
 		//--
 
@@ -140,21 +214,26 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			'main'  => (string) SmartMarkersTemplating::render_file_template(
 				$this->ControllerGetParam('module-view-path').'mongodb-list.mtpl.htm',
 				[
-					'QMODE' 			=> (string) $mode, // raw | visual
-					'LANG' 				=> (string) $this->ControllerGetParam('lang'), // codeMirror
-					'CSS-THEME' 		=> (string) 'github', // highlightJs
-					'PAGE-URL' 			=> (string) 'admin.php?page='.$this->ControllerGetParam('controller'),
-					'DATABASE' 			=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName(),
-					'COLLECTION' 		=> 'installer_log',
-					'EXECUTION-TIME' 	=> (string) Smart::format_number_dec($time, 10, '.', ''),
-					'ERROR' 			=> (string) $error,
-					'QUERY' 			=> (string) (Smart::array_size($query_) > 0) ? Smart::json_encode((array)$query_, true, true, false) : '{'."\n\n".'}',
-					'SORT-MAX' 			=> (int) $sort_max,
-					'OFFSET' 			=> (int) (ceil((int)$ofs / (int)$limit) + 1),
-					'PAGES' 			=> (int) ceil((int)$count / (int)$limit),
-					'FILTER-ID_' 		=> (string) $id_,
-					'SORTING' 			=> (array) $html_sorting,
-					'NAV-PAGER-HTML' 	=> SmartViewHtmlHelpers::html_navpager(
+					'QMODE' 				=> (string) $mode, // raw | visual
+					'LANG' 					=> (string) $this->ControllerGetParam('lang'), // codeMirror
+					'CSS-THEME' 			=> (string) 'github', // highlightJs
+					'PAGE-URL' 				=> (string) $the_base_url,
+					'COOKIENAME-COLLECTION' => (string) $the_cookiename_collection,
+					'HOST' 					=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost(),
+					'PORT' 					=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort(),
+					'DATABASE' 				=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName(),
+					'COLLECTIONS' 			=> (array)  $collections_list,
+					'COLLECTION' 			=> (string) $the_collection,
+					'COLLINDEXES' 			=> (string) SmartUtils::pretty_print_var($collection_indexes),
+					'EXECUTION-TIME' 		=> (string) Smart::format_number_dec($time, 10, '.', ''),
+					'ERROR' 				=> (string) $error,
+					'QUERY' 				=> (string) (Smart::array_size($query_) > 0) ? Smart::json_encode((array)$query_, true, true, false) : '{'."\n\n".'}',
+					'SORT-MAX' 				=> (int)    $sort_max,
+					'OFFSET' 				=> (int)    (ceil((int)$ofs / (int)$limit) + 1),
+					'PAGES' 				=> (int)    ceil((int)$count / (int)$limit),
+					'FILTER-ID_' 			=> (string) $id_,
+					'SORTING' 				=> (array)  $html_sorting,
+					'NAV-PAGER-HTML' 		=> (string) SmartViewHtmlHelpers::html_navpager(
 						(string) $navbox_url,
 						(int) $count,
 						(int) $limit,
@@ -166,8 +245,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'show-last' => true
 						]
 					),
-					'NUM-RECORDS' 		=> (int) Smart::array_size($records),
-					'RECORDS' 			=> (array) $records
+					'NUM-RECORDS' 			=> (int) Smart::array_size($records),
+					'RECORDS' 				=> (array) $records
 				]
 			)
 		]);

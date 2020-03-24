@@ -64,6 +64,16 @@ jQuery(function() {
 label {
 	font-weight: bold;
 }
+#indexes-info {
+	background: #FCFCFC;
+	border: 1px solid #ECECEC;
+	padding: 10px;
+}
+#indexes-info pre {
+	overflow: auto;
+	min-width: 250px;
+	height: 100px;
+}
 </style>
 <script>
 jQuery(function() {
@@ -91,12 +101,22 @@ jQuery(function() {
 </script>
 <script>
 var jsonEditor;
-var theCurrentLocation = '[###PAGE-URL|js###]';
+var theListLocation = '[###PAGE-URL|js###]';
+var theCookieNameCollection = '[###COOKIENAME-COLLECTION|js###]';
 var theDisplayMode = '[###QMODE|js###]';
 var sortMax = [###SORT-MAX|int###];
 
+function selectCollection() {
+	var selected = jQuery('#collections-list').val();
+	if(!selected) {
+		selected = '';
+	}
+	SmartJS_BrowserUtils.setCookie(String(theCookieNameCollection), String(selected));
+	self.location = String(theListLocation);
+}
+
 function handleButtonSelectById() {
-	var theLocation = String(theCurrentLocation);
+	var theLocation = String(theListLocation);
 	var theID = jQuery('#filter-_id').val();
 	if (theID) {
 		theLocation = theLocation + '&id_=' + SmartJS_CoreUtils.escape_url(theID);
@@ -106,18 +126,19 @@ function handleButtonSelectById() {
 
 function handleButtonQuery() {
 	jQuery('#query-error').empty().text('');
-	var theLocation = String(theCurrentLocation);
+	var theLocation = String(theListLocation);
+	var theQueryStr = '';
 	[%%%IF:QMODE:==visual;%%%]
 	if(!jsonEditor) {
 		alert('ERROR: JSON Editor not found !');
 		return;
 	}
-	var theQueryStr = JSON.stringify(jsonEditor.get(), null, 2);
+	theQueryStr = JSON.stringify(jsonEditor.get(), null, 2);
 	[%%%ELSE:QMODE%%%]
-	var theQueryStr = jQuery('#filter-query').val();
+	theQueryStr = jQuery('#filter-query').val();
 	[%%%/IF:QMODE%%%]
 	if(!theQueryStr) {
-		return;
+		theQueryStr = '{}';
 	}
 	var testJSON = null;
 	try {
@@ -126,9 +147,9 @@ function handleButtonQuery() {
 		jQuery('#query-error').empty().text('Invalid Query JSON Format' + '\n' + err);
 		return;
 	}
-	if((!testJSON) || (jQuery.type(testJSON) !== 'object') || (jQuery.isEmptyObject(testJSON))) {
-		return;
-	}
+//	if((!testJSON) || (jQuery.type(testJSON) !== 'object') || (jQuery.isEmptyObject(testJSON))) {
+//		return;
+//	}
 	testJSON = null;
 	var sortingArr = {};
 	var valFld, varSelBox;
@@ -154,8 +175,8 @@ function handleButtonQuery() {
 	theLocation = theLocation + '&mode=' + SmartJS_CoreUtils.escape_url(theDisplayMode) + '&query_=' + SmartJS_CoreUtils.escape_url(theQueryStr) + urlParamSorting;
 	self.location = String(theLocation);
 }
-
 [%%%IF:QMODE:==visual;%%%]
+
 function handleButtonShowJson() {
 	if(!jsonEditor) {
 		alert('ERROR: JSON Editor not found !');
@@ -171,8 +192,8 @@ function handleButtonShowJson() {
 }
 [%%%/IF:QMODE%%%]
 </script>
-<img src="lib/core/img/db/mongodb-logo.svg" width="48" height="48" align="right" style="margin-right:5px;">
-<h2>MongoDB: <span style="color:#778899">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection: <span style="color:#666699">[###COLLECTION|html###]</span></h2>
+<img src="lib/core/img/db/mongodb-logo.svg" width="48" height="48" align="right" style="margin-right:5px; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|html###]">
+<h2><span style="color:#778899;">MongoDB :: </span>Database:&nbsp;<span style="color:#666699">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;[@@@SUB-TEMPLATE:partials/mongodb-collections.mtpl.inc.htm@@@]</h2>
 <div class="query-builder">
 	<b>_id:</b> <input id="filter-_id" name="filter[_id]" type="text" maxlength="255" size="65" class="ux-field" value="[###FILTER-ID_|html###]"> <button class="ux-button ux-button-small ux-button-dark" onClick="handleButtonSelectById();">Select by ID</button>
 	<table>
@@ -184,7 +205,12 @@ function handleButtonShowJson() {
 				<div id="filter-query" data-mode="visual" style="width:350px !important; height:200px !important;"></div>
 				<script>
 					(function(){
-						var json = [###QUERY|json###];
+						var json;
+						try {
+							json = JSON.parse('[###QUERY|js###]');
+						} catch(err) {
+							json = {};
+						}
 						var options = {
 							mode: 'tree',
 							search: false
@@ -217,11 +243,16 @@ function handleButtonShowJson() {
 				<br>
 				<br>
 				<br>
-				<button class="ux-button ux-button-small ux-button-primary" onClick="handleButtonQuery();">Submit Query</button>
 				[%%%IF:QMODE:==visual;%%%]
-				&nbsp;
-				<button class="ux-button ux-button-small" onClick="handleButtonShowJson();">Display Raw Query JSON</button>
+				<button class="ux-button ux-button-small" onClick="handleButtonShowJson();">Raw Query JSON</button>
+				<br>
 				[%%%/IF:QMODE%%%]
+				<button class="ux-button ux-button-small ux-button-primary" onClick="handleButtonQuery();">Submit Query</button>
+			</td>
+			<td>&nbsp;</td>
+			<td id="indexes-info">
+				<b>Indexes:</b><br>
+				<pre style="width:">[###COLLINDEXES|html###]</pre>
 			</td>
 		</tr>
 	</table>
