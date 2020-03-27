@@ -1,6 +1,6 @@
 ### START
 item:
-    version: 'Roof Panels v.20190312.1729'
+    version: 'Roof Panels v.20200325.1515'
     id: SAMPLE-01 # SKU
     type: p # s = Service | p = Product
     name: 'Sample: Roof Pannels'
@@ -8,9 +8,9 @@ item:
     price: 52.55
     tax: 19 # Sales Tax %, 0..99.99
     discounts:
-        10%
-        12.5%
-        15%
+        p1: 10%
+        p2: 12.5%
+        p3: 15%
     pak:
         um: sqm # unit of measure
         umtype: dec # U.M. Type: dec = decimal ; int = integer

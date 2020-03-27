@@ -1,0 +1,16 @@
+<!-- cart sortable r.20200325 -->
+<link href="lib/js/jquery/jquery.sortable.css" rel="stylesheet">
+<script src="lib/js/jquery/jquery.sortable.js"></script>
+<script>
+jQuery(document).ready(function(){
+
+	jQuery('table#cart-table').sortable({
+		containerSelector: 'table',
+		itemPath: '> tbody',
+		itemSelector: 'tr.cart-row',
+		pullPlaceholder: false,
+	});
+
+});
+</script>
+<!-- cart sortable #end -->

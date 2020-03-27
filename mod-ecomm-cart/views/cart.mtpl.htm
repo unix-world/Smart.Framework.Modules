@@ -1,4 +1,5 @@
 [@@@SUB-TEMPLATE:partials/base.inc.mtpl.htm@@@]
+<!-- cart r.20200325 -->
 <script>
 jQuery('#btn-goto-cart').hide();
 </script>
@@ -16,7 +17,12 @@ table#cart-table tbody tr td {
 	border-bottom: 1pt dotted #CCCCCC;
 	padding-top: 3px;
 	padding-bottom: 2px;
+	[%%%IF:CART-MODE:?sales|inventory;%%%]
 	cursor: move;
+	[%%%/IF:CART-MODE%%%]
+}
+table#cart-table tbody tr td table tr td {
+	border-bottom: 0;
 }
 table#cart-table .cart-item-num {
 	font-size: 0.875rem;
@@ -30,6 +36,11 @@ table#cart-table .cart-item-sku {
 }
 table#cart-table .cart-item-attributes {
 	color: #555555;
+}
+table#cart-table .cart-discount {
+	color:#FF3300 !important;
+	font-weight: bold;
+	font-size: 0.75rem;
 }
 table#cart-table .cart-tax {
 	color:#555555 !important;
@@ -67,65 +78,79 @@ table#cart-table .cart-icon {
 	margin-right: 5px;
 }
 </style>
-<link href="lib/js/jquery/jquery.sortable.css" rel="stylesheet">
-<script src="lib/js/jquery/jquery.sortable.js"></script>
 <form class="ux-form" name="Form_Cart" id="Form_Cart" method="post" action="#" onsubmit="return false;" autocomplete="off">
 <input id="cart" type="hidden" name="frm[cart]" value="@cart">
 <br>
 <table id="cart-table" class="ux-grid-col nofloat c12 table table-striped table-hover">
 	<thead>
 		<tr class="dark-row">
-			<th class="ux-grid-col nofloat c1" align="right"><i>#</i></th>
 			<th class="ux-grid-col nofloat c5"><i>Description</i></th>
-			<th class="ux-grid-col nofloat c1" align="center"><i>U.M.</i></th>
+			<th class="ux-grid-col nofloat c2" align="center"><i>U.M.</i></th>
 			<th class="ux-grid-col nofloat c2" align="center"><i>Quantity</i></th>
+			[%%%IF:CART-NOPRICE:!=yes;%%%]
 			<th class="ux-grid-col nofloat c1" align="right"><i>Unit Price</i></th>
 			<th class="ux-grid-col nofloat c1" align="right"><i>Amount</i></th>
 			<th class="ux-grid-col nofloat c1" align="right"><i>Tax</i></th>
+			[%%%/IF:CART-NOPRICE%%%]
 		</tr>
 	</thead>
 	<tbody>
 		[%%%LOOP:CART-ITEMS%%%]
-		<tr valign="top">
-			<td align="right">
-				<div class="cart-item-num">
-					[###CART-ITEMS.-_INDEX_-|html###].
-				</div>
-			</td>
+		<tr valign="top" class="cart-row">
 			<td><div style="position:relative;">
 				<div class="cart-item-name">
-					<b>[###CART-ITEMS.NAME|html###]</b>
+					<b>[###CART-ITEMS.-_INDEX_-|html###]. [###CART-ITEMS.NAME|html###]</b>
 				</div>
 				<div><small>
 				<span class="cart-item-sku">SKU:&nbsp;<b>[###CART-ITEMS.ID|html###]</b></span><br>
 				[%%%IF:CART-ITEMS.ATTRIBUTES:@>0;%%%]
+				<!-- visible attributes -->
+				<table [%%%IF:CART-MODE:?sales|inventory;%%%]width="100%" [%%%/IF:CART-MODE%%%]cellpadding="0" cellspacing="0">
 				[%%%LOOP:CART-ITEMS.ATTRIBUTES%%%]
 					[%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_:@>0;%%%]
 						[%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.DISPLAY:!=no;%%%]
-						<span title="[###CART-ITEMS.ATTRIBUTES._-KEY-_|html###]" class="cart-item-attributes">[###CART-ITEMS.ATTRIBUTES._-VAL-_.NAME|html###]:
+						<tr>
+							<!-- Info and Name -->
+							[%%%IF:CART-MODE:?sales|inventory;%%%]
+							<td width="5%">
+								<span class="help-area" title="[%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.VALIDHINT:!=;%%%][###CART-ITEMS.ATTRIBUTES._-VAL-_.VALIDHINT|html###][%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.VALIDHINT%%%][%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.MIN:!=;%%%] Min=[###CART-ITEMS.ATTRIBUTES._-VAL-_.MIN|html###][%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.MIN%%%][%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.MAX:!=;%%%] Max=[###CART-ITEMS.ATTRIBUTES._-VAL-_.MAX|html###][%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.MAX%%%][%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.MINLEN:>0;%%%] MinLen=[###CART-ITEMS.ATTRIBUTES._-VAL-_.MINLEN|int###][%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.MINLEN%%%][%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.MINVAL:!=;%%%] MinVal=`[###CART-ITEMS.ATTRIBUTES._-VAL-_.MINVAL|html###]`[%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.MINVAL%%%][%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.MAXVAL:!=;%%%] MaxVal=`[###CART-ITEMS.ATTRIBUTES._-VAL-_.MAXVAL|html###]`[%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.MAXVAL%%%][%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.MAXLEN:>0;%%%] MaxLen=[###CART-ITEMS.ATTRIBUTES._-VAL-_.MAXLEN|int###][%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.MAXLEN%%%][%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.VALIDATION:^~decimal;%%%][%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.DECIMALS:>0;(1)%%%][%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.DECIMALS:<=4;(2)%%%] ; Decimals=[###CART-ITEMS.ATTRIBUTES._-VAL-_.DECIMALS|int###][%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.DECIMALS(2)%%%][%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.DECIMALS(1)%%%][%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.VALIDATION%%%]"><i class="sfi sfi-info item-light-text"></i></span>
+							</td>
+							[%%%/IF:CART-MODE%%%]
+							<td width="50%">
+								<span title="[###CART-ITEMS.ATTRIBUTES._-KEY-_|html###]" class="cart-item-attributes">[###CART-ITEMS.ATTRIBUTES._-VAL-_.NAME|html###]:</span>
+								[%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL:==inventory;(1)%%%]
+								<span title="Optional: [###CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL|html###]" class="help-area"><i class="sfi sfi-fa-certificate item-att-opt-inventory"></i></span>
+								[%%%ELSE:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL(1)%%%]
+									[%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL:!=;(2)%%%]
+									<span title="[%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL:==validation;(3)%%%]Required[%%%ELSE:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL(3)%%%]Optional[%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL(3)%%%]: [###CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL|html###]" class="help-area"><i class="sfi [%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL:==validation;(3)%%%]sfi-command item-att-opt-validation[%%%ELSE:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL(3)%%%]sfi-fa-certificate item-att-opt-all[%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL(3)%%%]"></i></span>
+									[%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL(2)%%%]
+								[%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL(1)%%%]
+							</td>
+							<td width="40%">
 							[%%%IF:CART-MODE:?sales|inventory;%%%]
 							<!-- Editable -->
-							<input type="text" id="edit-att-[###CART-ITEMS.HASH|html###]" name="frm[[###CART-ITEMS.HASH|html###]][att][[###CART-ITEMS.ATTRIBUTES._-KEY-_|html###]]" value="[###CART-ITEMS.ATTRIBUTES._-VAL-_.VALUE|html###]" class="form-control" readonly>
+							<input type="text" id="edit-att-[###CART-ITEMS.HASH|html###]" name="frm[[###CART-ITEMS.HASH|html###]][att][[###CART-ITEMS.ATTRIBUTES._-KEY-_|html###]]" value="[###CART-ITEMS.ATTRIBUTES._-VAL-_.VALUE|html###]" class="form-control" style="width:100%;" readonly>
 							[%%%ELSE:CART-MODE%%%]
 							<!-- Display Only -->
 							<b>[###CART-ITEMS.ATTRIBUTES._-VAL-_.VALUE|html###]</b>
 							[%%%/IF:CART-MODE%%%]
-							[%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL:==inventory;(1)%%%]
-							<span title="optional:[###CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL|html###]" class="help-area">**</span>
-							[%%%ELSE:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL(1)%%%]
-								[%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL:!=;(2)%%%]
-								<span title="optional:[###CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL|html###]" class="help-area">*</span>
-								[%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL(2)%%%]
-							[%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.OPTIONAL(1)%%%]
-						</span>
-						<br>
-						[%%%ELSE:CART-ITEMS.ATTRIBUTES._-VAL-_.DISPLAY%%%]
+							</td>
+						</tr>
+						[%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.DISPLAY%%%]
+					[%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_%%%]
+				[%%%/LOOP:CART-ITEMS.ATTRIBUTES%%%]
+				</table>
+				<!-- invisible attributes -->
+				[%%%LOOP:CART-ITEMS.ATTRIBUTES%%%]
+					[%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_:@>0;%%%]
+						[%%%IF:CART-ITEMS.ATTRIBUTES._-VAL-_.DISPLAY:==no;%%%]
 							[%%%IF:CART-MODE:?sales|inventory;%%%]
 							<input type="hidden" id="hidden-att-[###CART-ITEMS.HASH|html###]" name="frm[[###CART-ITEMS.HASH|html###]][att][[###CART-ITEMS.ATTRIBUTES._-KEY-_|html###]]" value="[###CART-ITEMS.ATTRIBUTES._-VAL-_.VALUE|html###]">
 							[%%%/IF:CART-MODE%%%]
 						[%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_.DISPLAY%%%]
 					[%%%/IF:CART-ITEMS.ATTRIBUTES._-VAL-_%%%]
 				[%%%/LOOP:CART-ITEMS.ATTRIBUTES%%%]
+				<!-- modify atts -->
 				[%%%IF:CART-MODE:?sales|inventory;%%%]
 					<div id="item-inventory-buttons" style="position:absolute; top:0px; right:0px;">
 						<button class="ux-button ux-button-highlight ux-button-xsmall btn-replace" data-click="" data-hash="[###CART-ITEMS.HASH|html###]" title="Update Item Attributes"><i class="sfi sfi-pencil"></i></button>
@@ -134,9 +159,11 @@ table#cart-table .cart-icon {
 				[%%%/IF:CART-ITEMS.ATTRIBUTES%%%]
 				</small></div>
 			</div></td>
+			<!-- um -->
 			<td align="center">
 				<b>[###CART-ITEMS.UM|html###]</b>
 			</td>
+			<!-- qty -->
 			<td align="center">
 				<div class="form-group">
 					<span id="item-buttons">
@@ -150,32 +177,46 @@ table#cart-table .cart-icon {
 					<input title="[%%%IF:CART-ITEMS.UMMIN:>0;%%%]Min-Qty=[###CART-ITEMS.UMMIN|html###] [%%%/IF:CART-ITEMS.UMMIN%%%][%%%IF:CART-ITEMS.QTYERG:>0;%%%]Erg-Qty=[###CART-ITEMS.QTYERG|html###] [%%%/IF:CART-ITEMS.QTYERG%%%][%%%IF:CART-ITEMS.UMERG:!=###CART-ITEMS.QTYERG###;%%%]Um-Erg=[###CART-ITEMS.UMERG|html###][%%%/IF:CART-ITEMS.UMERG%%%]" id="item-qty-[###CART-ITEMS.HASH|html###]" type="text" class="form-control form-quantity" name="frm[[###CART-ITEMS.HASH|html###]][qty]" value="[###CART-ITEMS.QUANTITY|html###]" class="form-control quantity">
 				</div>
 			</td>
+			[%%%IF:CART-NOPRICE:!=yes;%%%]
+			<!-- unit price -->
 			<td align="right">
 				[%%%IF:CART-MODE:?sales|inventory;%%%]
 					<!-- Editable -->
 					[%%%IF:CART-ITEMS.PRICE_:!=;%%%]
-						<span title="Original-Price=[###CART-ITEMS.PRICE_|html###]&nbsp;[###CART-ITEMS.CURRENCY|html###]" class="help-area"><i class="sfi sfi-price-tags cart-icon"></i></span>
+						<span title="Original-Price=[###CART-ITEMS.PRICE_|html###]&nbsp;[###CART-ITEMS.CURRENCY|html###][%%%IF:CART-ITEMS.DISCOUNT_:!=;%%%]&nbsp;;&nbsp;Original-Discount=[###CART-ITEMS.DISCOUNT_|html###][%%%/IF:CART-ITEMS.DISCOUNT_%%%]" class="help-area"><i class="sfi sfi-price-tags cart-icon"></i></span>
 					[%%%/IF:CART-ITEMS.PRICE_%%%]
 					<input title="[%%%IF:CART-ITEMS._EXCHRATE:!=1;%%%]Item-Price=[###CART-ITEMS._PRICE|html###]&nbsp;[###CART-ITEMS._CURRENCY|html###] ; Exchange-Rate=[###CART-ITEMS._EXCHRATE|html###][%%%/IF:CART-ITEMS._EXCHRATE%%%]" id="item-price-[###CART-ITEMS.HASH|html###]" type="text" class="form-control form-price" name="frm[[###CART-ITEMS.HASH|html###]][price]" value="[###CART-ITEMS.PRICE|html###]" class="form-control price"><b>&nbsp;[###CART-ITEMS.CURRENCY|html###]</b>
 				[%%%ELSE:CART-MODE%%%]
 					<!-- Display Only -->
 					<span [%%%IF:CART-ITEMS._EXCHRATE:!=1;%%%]title="Item-Price=[###CART-ITEMS._PRICE|html###]&nbsp;[###CART-ITEMS._CURRENCY|html###] ; Exchange-Rate=[###CART-ITEMS._EXCHRATE|html###]" class="help-area"[%%%/IF:CART-ITEMS._EXCHRATE%%%]><b>[###CART-ITEMS.PRICE|html###]&nbsp;[###CART-ITEMS.CURRENCY|html###]</b></span>
 				[%%%/IF:CART-MODE%%%]
+				[%%%IF:CART-ITEMS.DISCOUNT_:!=;%%%]
+					<!-- Discount -->
+					[%%%IF:CART-ITEMS.PRICE_:!=;%%%]
+					<!-- No Discount on Custom Price -->
+					[%%%ELSE:CART-ITEMS.PRICE_%%%]
+					<br><span class="cart-discount" title="Price-Discount: [###CART-ITEMS._DISCOUNT|html###]">Discount: [###CART-ITEMS.DISCOUNT_|html###]</span>
+					[%%%/IF:CART-ITEMS.PRICE_%%%]
+				[%%%/IF:CART-ITEMS.DISCOUNT_%%%]
 			</td>
+			<!-- amount -->
 			<td align="right">
 				<b>[###CART-ITEMS.TOT-PRICE-NOTAX|html###]&nbsp;[###CART-ITEMS.CURRENCY|html###]</b>
 			</td>
+			<!-- tax -->
 			<td align="right" class="cart-tax">
 				<b>[###CART-ITEMS.TOT-PRICE-TAX|html###]&nbsp;[###CART-ITEMS.CURRENCY|html###]</b>
 				<br>
 				<small><i>[###CART-ITEMS.TAX|html###]&nbsp;%</i></small>
 			</td>
+			[%%%/IF:CART-NOPRICE%%%]
 		</tr>
 		[%%%/LOOP:CART-ITEMS%%%]
 	</tbody>
 	<tfoot>
+		[%%%IF:CART-NOPRICE:!=yes;%%%]
 		<tr>
-			<td colspan="5" align="right" class="cart-subtotal">
+			<td colspan="4" align="right" class="cart-subtotal">
 				SubTotal
 			</td>
 			<td align="right" class="cart-subtotal">
@@ -185,16 +226,26 @@ table#cart-table .cart-icon {
 				[###CART-TOTAL-TAX|html###]&nbsp;[###CART-CURRENCY|html###]
 			</td>
 		</tr>
+		[%%%/IF:CART-NOPRICE%%%]
 		<tr>
-			<td colspan="5" align="right" class="cart-grandtotal">
+			<td colspan="1" align="left" class="cart-grandtotal">
+				[%%%IF:CART-MODE:?sales|inventory;(1)%%%]<i class="sfi [%%%IF:CART-MODE:==inventory;(2)%%%]sfi-library[%%%ELSE:CART-MODE(2)%%%]sfi-power[%%%/IF:CART-MODE(2)%%%] help-area" title="Cart Mode: [###CART-MODE|html###]"></i>[%%%ELSE:CART-MODE(1)%%%]&nbsp;[%%%/IF:CART-MODE(1)%%%]
+			</td>
+			[%%%IF:CART-NOPRICE:!=yes;%%%]
+			<td colspan="3" align="right" class="cart-grandtotal">
 				Total
 			</td>
 			<td colspan="2" align="center" class="cart-grandtotal">
 				[###CART-GRAND-TOTAL|html###]&nbsp;[###CART-CURRENCY|html###]
 			</td>
+			[%%%ELSE:CART-NOPRICE%%%]
+			<td colspan="2" align="right" class="cart-grandtotal">
+				<i class="sfi sfi-price-tag"></i>
+			</td>
+			[%%%/IF:CART-NOPRICE%%%]
 		</tr>
 		<tr class="dark-row">
-			<th colspan="7">&nbsp;</th>
+			<th colspan="[%%%IF:CART-NOPRICE:!=yes;%%%]6[%%%ELSE:CART-NOPRICE%%%]3[%%%/IF:CART-NOPRICE%%%]">&nbsp;</th>
 		</tr>
 	</tfoot>
 </table>
@@ -222,22 +273,7 @@ table#cart-table .cart-icon {
 <script>
 jQuery(document).ready(function(){
 
-	jQuery('table#cart-table').sortable({
-		containerSelector: 'table',
-		itemPath: '> tbody',
-		itemSelector: 'tr',
-		pullPlaceholder: false,
-	});
-
-	jQuery('.btn-remove').on('click', function(e){
-		e.preventDefault();
-		var $btn = jQuery(this);
-		var hash = $btn.attr('data-hash');
-		var id = jQuery('#item-id-' + String(hash)).val();
-		var url = '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=remove'+'&frm[id]=' + SmartJS_CoreUtils.escape_url(id) + '&frm[hash]=' + SmartJS_CoreUtils.escape_url(hash);
-		SmartJS_BrowserUtils.confirm_Dialog('Are you sure you want to delete this item from the cart ?', function(){ if(url) { SmartJS_BrowserUtils.Submit_Form_By_Ajax(false, String(url), true); } }, 'Delete item from Cart', 500, 155);
-		return false;
-	});
+[%%%IF:CART-MODE:?sales|inventory;%%%]
 
 	jQuery('.btn-replace').on('click', function(e){
 		e.preventDefault();
@@ -262,6 +298,8 @@ jQuery(document).ready(function(){
 		return false;
 	});
 
+[%%%ELSE:CART-MODE%%%]
+
 	jQuery('.btn-update').on('click', function(e){
 		e.preventDefault();
 		var $btn = jQuery(this);
@@ -270,6 +308,18 @@ jQuery(document).ready(function(){
 		var qty = jQuery('#item-qty-' + String(hash)).val();
 		var url = '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=update' + '&frm[id]=' + SmartJS_CoreUtils.escape_url(id) + '&frm[hash]=' + SmartJS_CoreUtils.escape_url(hash) + '&frm[qty]=' + SmartJS_CoreUtils.escape_url(qty);
 		SmartJS_BrowserUtils.Submit_Form_By_Ajax(false, String(url), true);
+		return false;
+	});
+
+[%%%/IF:CART-MODE%%%]
+
+	jQuery('.btn-remove').on('click', function(e){
+		e.preventDefault();
+		var $btn = jQuery(this);
+		var hash = $btn.attr('data-hash');
+		var id = jQuery('#item-id-' + String(hash)).val();
+		var url = '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=remove'+'&frm[id]=' + SmartJS_CoreUtils.escape_url(id) + '&frm[hash]=' + SmartJS_CoreUtils.escape_url(hash);
+		SmartJS_BrowserUtils.confirm_Dialog('Are you sure you want to delete this item from the cart ?', function(){ if(url) { SmartJS_BrowserUtils.Submit_Form_By_Ajax(false, String(url), true); } }, 'Delete item from Cart', 500, 155);
 		return false;
 	});
 
@@ -287,6 +337,9 @@ jQuery(document).ready(function(){
 
 });
 </script>
+[%%%IF:CART-MODE:?sales|inventory;%%%]
+[@@@SUB-TEMPLATE:partials/cart-sortable.inc.mtpl.htm@@@]
+[%%%/IF:CART-MODE%%%]
 [%%%ELSE:CART-ITEMS%%%]
 <div id="operation_notice">
 	<h3>There are no items in the cart.</h3>

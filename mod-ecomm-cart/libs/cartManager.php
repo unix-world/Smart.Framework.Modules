@@ -5,13 +5,13 @@ namespace SmartModExtLib\EcommCart;
 /**
  * Cart: A complex PHP cart library, with support of Product / Services with attributes, formula calculations and multiple currency exchanges
  * Copyright (c) 2018-2020 Radu Ovidiu I. / unix-world.org
- * TODO: add / replace allow no price mode
+ * TODO: implement real currency exchange rates
  *
  */
 
 final class cartManager {
 
-	// r.20200121
+	// r.20200325
 
 	/**
 	 * An unique ID for the cart.
@@ -57,7 +57,9 @@ final class cartManager {
 
 	private $cartCurrency = 'US$';
 	private $cartShowEmptyAtts = false; // display or not in cart empty attributes
+	private $cartNoPriceMode = false; // special operating mode with no prices
 	private $cartMode = 'customer'; // customer | sales | inventory
+	private $cartDiscountLevel = 'p1';
 
 	/**
 	 * Initialize cart.
@@ -66,12 +68,12 @@ final class cartManager {
 	 */
 	public function __construct($options=[]) {
 		//--
-		if(!class_exists('\\PHPMathParser\\Math')) {
+		if(!\class_exists('\\PHPMathParser\\Math')) {
 			\Smart::raise_error(__METHOD__.'() :: eComm Cart Requires the \\PHPMathParser\\Math class ...');
 			return;
 		} //end if
 		//--
-		if(!is_array($options)) {
+		if(!\is_array($options)) {
 			$options = array();
 		} //end if
 		//--
@@ -91,14 +93,17 @@ final class cartManager {
 					// invalid mode, don't set
 			} //end switch
 		} //end if
+		if(isset($options['noPrice'])) {
+			$this->cartNoPriceMode = (bool) $options['noPrice'];
+		} //end if
 		//--
-		if(isset($options['cartId']) && ((string)$options['cartId'] != '') && (preg_match('/^[a-zA-Z0-9_]+$/', (string)$options['cartId']))) {
+		if(isset($options['cartId']) && ((string)$options['cartId'] != '') && (\preg_match('/^[a-zA-Z0-9_]+$/', (string)$options['cartId']))) {
 			$this->cartId = (string) $options['cartId'];
 		} //end if
-		if(isset($options['cartMaxItem']) && preg_match('/^\d+$/', $options['cartMaxItem'])) {
+		if(isset($options['cartMaxItem']) && \preg_match('/^\d+$/', $options['cartMaxItem'])) {
 			$this->cartMaxItem = \Smart::format_number_int($options['cartMaxItem'],'+');
 		} //end if
-		if(isset($options['itemMaxQuantity']) && preg_match('/^\d+$/', $options['itemMaxQuantity'])) {
+		if(isset($options['itemMaxQuantity']) && \preg_match('/^\d+$/', $options['itemMaxQuantity'])) {
 			$this->itemMaxQuantity = $options['itemMaxQuantity'];
 		} //end if
 		if(isset($options['useCookie']) && $options['useCookie']) {
@@ -106,7 +111,7 @@ final class cartManager {
 		} //end if
 		//--
 		if((string)$options['cartCurrency'] != '') {
-			if(preg_match('/^[A-Z\$]{3}$/', (string)$options['cartCurrency'])) { // {{{SYNC-VALIDATE-CART-CURRENCY}}}
+			if(\preg_match('/^[A-Z\$]{3}$/', (string)$options['cartCurrency'])) { // {{{SYNC-VALIDATE-CART-CURRENCY}}}
 				$this->cartCurrency = (string) $options['cartCurrency'];
 			} //end if
 		} //end if
@@ -207,6 +212,20 @@ final class cartManager {
 	} //END FUNCTION
 
 
+	public function getCartNoPriceMode() {
+		//--
+		return (bool) $this->cartNoPriceMode;
+		//--
+	} //END FUNCTION
+
+
+	public function getCartDiscountLevel() {
+		//--
+		return (string) $this->cartDiscountLevel;
+		//--
+	} //END FUNCTION
+
+
 	public function getCartCurrency() {
 		//--
 		return (string) $this->cartCurrency;
@@ -220,6 +239,12 @@ final class cartManager {
 			return 1;
 		} //end if
 		//--
+		// TODO: implement real currency exchange rates
+		if(((string)$currency == 'US$') && ((string)$this->cartCurrency == 'EUR')) {
+			return 0.9;
+		} elseif(((string)$currency == 'EUR') && ((string)$this->cartCurrency == 'US$')) {
+			return 1.1;
+		} //end if
 		throw new \Exception('Currency Exchange Rates not yet implemented for: '.$currency);
 		return 0;
 		//--
@@ -246,10 +271,10 @@ final class cartManager {
 		//--
 		$attributes = array();
 		//--
-		if(is_array($attribs)) {
+		if(\is_array($attribs)) {
 			foreach($attribs as $k => $v) {
 				//--
-				if(is_array($v)) {
+				if(\is_array($v)) {
 					//--
 					$attvalues = array();
 					//--
@@ -264,7 +289,7 @@ final class cartManager {
 							if((string)$v['@ref-val'] != '') {
 								$attvalues['@ref-val'] = (string) $v['@ref-val'];
 							} else {
-								$attvalues['@ref-val'] = (string) date('Y-m-d H:i:s O');
+								$attvalues['@ref-val'] = (string) \date('Y-m-d H:i:s O');
 							} //end if else
 							break;
 						case 'free':
@@ -303,8 +328,8 @@ final class cartManager {
 					if(\Smart::array_size($v['validation']) > 0) { // validation is array, must pick a value from that array
 						$attvalues['validation'] = array();
 						foreach($v['validation'] as $kk => $vv) {
-							if(is_array($vv)) {
-								$vv['id'] = (string) trim((string)$vv['id']);
+							if(\is_array($vv)) {
+								$vv['id'] = (string) \trim((string)$vv['id']);
 								if((string)$vv['id'] != '') {
 									// {{{SYNC-CART-ATT-VALIDATION-ARR}}}
 									if($displaymode === true) {
@@ -342,21 +367,21 @@ final class cartManager {
 									$attvalues['maxlen'] = (int) $v['maxlen'];
 								} //end if
 							} //end if
-							if((string)trim((string)$v['minval']) != '') {
-								$attvalues['minval'] = (string) trim((string)$v['minval']);
+							if((string)\trim((string)$v['minval']) != '') {
+								$attvalues['minval'] = (string) \trim((string)$v['minval']);
 							} //end if
-							if((string)trim((string)$v['maxval']) != '') {
-								$attvalues['maxval'] = (string) trim((string)$v['maxval']);
+							if((string)\trim((string)$v['maxval']) != '') {
+								$attvalues['maxval'] = (string) \trim((string)$v['maxval']);
 							} //end if
 						} //end if else
 					} //end if
 					//--
-					if((string)trim((string)$v['validhint']) != '') {
-						$attvalues['validhint'] = (string) trim((string)$v['validhint']);
+					if((string)\trim((string)$v['validhint']) != '') {
+						$attvalues['validhint'] = (string) \trim((string)$v['validhint']);
 					} //end if
 					//--
 					if($displaymode === true) { // get by select language or non-empty as ???
-						if(is_array($v['style'])) {
+						if(\is_array($v['style'])) {
 							$attvalues['style'] = (array) $v['style'];
 						} else {
 							$attvalues['style'] = (string) $v['style'];
@@ -408,10 +433,10 @@ final class cartManager {
 	 */
 	public function getItems() {
 		//--
-		if(is_array($this->items)) {
+		if(\is_array($this->items)) {
 			foreach($this->items as $key => $items) {
 				//--
-				if(is_array($items)) {
+				if(\is_array($items)) {
 					foreach($items as $kk => $item) {
 						//--
 						$id = (string) $key;
@@ -440,7 +465,7 @@ final class cartManager {
 	 */
 	public function isEmpty() {
 		//--
-		return (bool) empty(array_filter($this->items));
+		return (bool) empty(\array_filter($this->items));
 		//--
 	} //END FUNCTION
 
@@ -454,12 +479,12 @@ final class cartManager {
 		//--
 		$total = 0;
 		//--
-		if(!is_array($this->items)) {
+		if(!\is_array($this->items)) {
 			$this->items = array();
 		} //end if
 		//--
 		foreach($this->items as $key => $items) {
-			if(is_array($items)) {
+			if(\is_array($items)) {
 				foreach($items as $kk => $item) {
 					$total++;
 				} //end foreach
@@ -478,7 +503,7 @@ final class cartManager {
 	 */
 	public function calculateHash($id, $attributes) {
 		//--
-		return (string) 'ecomm_uuid_'.sha1($id.':'.\Smart::json_encode($attributes, false, true, false));
+		return (string) 'ecomm_uuid_'.\sha1($id.':'.\Smart::json_encode($attributes, false, true, false));
 		//--
 	} //END FUNCTION
 
@@ -498,17 +523,17 @@ final class cartManager {
 		} //end if
 		//--
 		$id = (string) $id;
-		if((string)trim((string)$id) == '') {
+		if((string)\trim((string)$id) == '') {
 			return false;
 		} //end if
 		//--
-		if(is_array($attributes)) { // must test is array not array size > 0
+		if(\is_array($attributes)) { // must test is array not array size > 0
 			$hash = (string) $this->calculateHash($id, $attributes);
 		} else {
 			$hash = (string) $attributes;
 			$attributes = [];
 		} //end if else
-		if((string)trim((string)$hash) == '') {
+		if((string)\trim((string)$hash) == '') {
 			return false;
 		} //end if
 		//--
@@ -559,9 +584,9 @@ final class cartManager {
 	/*
 	public function getValueByLanguage($value, $empty='???') {
 		//--
-		$empty = (string) trim((string)$empty);
+		$empty = (string) \trim((string)$empty);
 		//--
-		if(!is_array($value)) {
+		if(!\is_array($value)) {
 			//--
 			$text = (string) $value;
 			//--
@@ -579,8 +604,8 @@ final class cartManager {
 			} //end if
 			if(!$text) { // fallback to any language available
 				foreach($value as $k => $v) {
-					if(strlen((string)$k) == 2) {
-						if((string)trim((string)$v) != '') {
+					if(\strlen((string)$k) == 2) {
+						if((string)\trim((string)$v) != '') {
 							$text = (string) $v;
 							break;
 						} //end if
@@ -591,7 +616,7 @@ final class cartManager {
 		} //end if else
 		//--
 		if((string)$empty != '') {
-			if((string)trim((string)$text) == '') {
+			if((string)\trim((string)$text) == '') {
 				$text = (string) $empty;
 			} //end if
 		} //end if
@@ -627,24 +652,24 @@ final class cartManager {
 		} //end if
 		//--
 		$id = (string) $product['id'];
-		if((string)trim((string)$id) == '') {
+		if((string)\trim((string)$id) == '') {
 			return false;
 		} //end if
-		if(strlen((string)$id) > 25) { // id must be between 1 and 25 chars
+		if(\strlen((string)$id) > 25) { // id must be between 1 and 25 chars
 			return false;
 		} //end if else
 		//--
-		if(!is_array($attributes)) {
+		if(!\is_array($attributes)) {
 			$attributes = array();
 		} //end if
 		$raw_atts = (array) $attributes;
 		$attributes = array();
 		foreach($raw_atts as $key => $val) {
-			$key = (string) trim((string)$key);
-			$val = (string) trim((string)$val);
+			$key = (string) \trim((string)$key);
+			$val = (string) \trim((string)$val);
 			if((string)$key != '') {
-				if(strlen((string)$val) <= 100) {
-					$attributes[(string)$key] = (string) $val; // allow max 100 chars per attribute to avoid large indexes
+				if(\strlen((string)$val) <= 255) { // {{{SYNC-ECART-ATT-MAX-LEN}}}
+					$attributes[(string)$key] = (string) $val; // allow max 255 chars per attribute to avoid large indexes
 				} //end if
 			} //end if
 		} // end foreach
@@ -655,7 +680,7 @@ final class cartManager {
 			$position = (int) ($this->getNumberOfItems() + 1);
 		} //end if
 		//--
-		if(!is_array($product['pak'])) {
+		if(!\is_array($product['pak'])) {
 			$product['pak'] = array();
 		} //end if
 		//--
@@ -665,13 +690,26 @@ final class cartManager {
 		$data['pak'] 		= array(
 			'um' 		=> (string) $product['pak']['um'],
 			'umtype' 	=> (string) $product['pak']['umtype'],
-			'umerg' 	=> (string) ((strpos((string)$product['pak']['umerg'], 'formula:') !== 0) ? \Smart::format_number_dec($product['pak']['umerg'], 4, '.', '') : $product['pak']['umerg']), // can be formula string or number
+			'umerg' 	=> (string) ((\strpos((string)$product['pak']['umerg'], 'formula:') !== 0) ? \Smart::format_number_dec($product['pak']['umerg'], 4, '.', '') : $product['pak']['umerg']), // can be formula string or number
 			'ummin' 	=> (string) \Smart::format_number_dec($product['pak']['ummin'], 4, '.', '')
 		);
-		$data['currency'] 	= (string) $product['currency']; 	// the original currency
-		$data['price'] 		= (string) \Smart::format_number_dec($product['price'], 2, '.', ''); // the original price
-		$data['tax'] 		= (string) \Smart::format_number_dec($product['tax'], 2, '.', ''); // the original sales tax
-		$data['discounts'] 	= (array)  $product['discounts'];	// the sales discounts
+		$data['currency'] 	= (string) $product['currency'];  // the original currency
+		if($this->cartNoPriceMode === true) {
+			$data['price'] 		= '0.00';
+			$data['tax'] 		= '0.00';
+			$data['discounts'] 	= array();
+		} else {
+			$data['price'] 		= (string) \Smart::format_number_dec($product['price'], 2, '.', ''); // the original price
+			$data['tax'] 		= (string) \Smart::format_number_dec($product['tax'], 2, '.', ''); // the original sales tax
+			$data['discounts'] 	= array();
+			foreach((array)$product['discounts'] as $key => $val) {
+				$key = (string) \trim((string)$key);
+				$xval = (string) $this->fixPercentDiscountAsNumeric((string)$val);
+				if(((string)$key != '') AND ($xval > 0) AND ($xval < 100)) {
+					$data['discounts'][(string)$key] = (string) $xval.'%';
+				} //end if
+			} //end foreach
+		} //end if else
 		if((string)$replace != '') {
 			$data['atts'] 		= (array)  $product['atts'];
 		} else {
@@ -711,7 +749,7 @@ final class cartManager {
 		$hash = $this->calculateHash($id, $attributes);
 		//--
 		if((string)$replace != '') {
-			if(is_array($this->items[$id])) {
+			if(\is_array($this->items[$id])) {
 				foreach($this->items[$id] as $index => $item) {
 					if((string)$item['hash'] == (string)$replace) {
 						unset($this->items[$id][$index]);
@@ -719,7 +757,7 @@ final class cartManager {
 				} //end foreach
 			} //end if
 		} else {
-			if(is_array($this->items[$id])) {
+			if(\is_array($this->items[$id])) {
 				foreach($this->items[$id] as $index => $item) {
 					if((string)$item['hash'] == (string)$hash) {
 						$this->items[$id][$index]['quantity'] += $quantity;
@@ -730,9 +768,10 @@ final class cartManager {
 			} //end if
 		} //end if
 		//--
-		$item_key = (string) sha1((string)$hash); // TODO: make this ATT: att1|att2|...|attn
+		$item_key = (string) \sha1((string)$hash); // TODO: make this ATT: att1|att2|...|attn
 		$this->items[$id][(string)$item_key] = [
-			'dtime'      => (string) date('Y-m-d H:i:s O'),
+			// {{{SYNC-ECART-ITEM-PROPS}}}
+			'dtime'      => (string) \date('Y-m-d H:i:s O'),
 			'hash'       => (string) $hash,
 			'id'         => (string) $id,
 			'attributes' => (array)  $attributes,
@@ -743,6 +782,8 @@ final class cartManager {
 			'tax'        => (string) $fix_tax, // tax % (ex: 19)
 			'price_'     => (string) '', // keep original calculated price using exchange rate if using a custom price (if this is non empty string it means the price is custom !)
 			'_price'     => (string) $fix_price, // keep original price as calculated by attributes in the original item _currency
+			'discount_'  => (string) $data['discounts'][(string)$this->cartDiscountLevel], // keep original discount as percent
+			'_discount'  => (string) \Smart::format_number_dec(($this->fixPercentDiscountAsNumeric($data['discounts'][(string)$this->cartDiscountLevel]) / 100), 2, '.', ''),
 			'_currency'  => (string) $fix_currency, // keep original item currency
 			'_exchrate'  => (string) $fix_exchrate, // the exchage rate as: item-currency / cart-currency
 			'data'       => (array)  $data,
@@ -772,12 +813,12 @@ final class cartManager {
 		} //end if
 		//--
 		$id = (string) $id;
-		if((string)trim((string)$id) == '') {
+		if((string)\trim((string)$id) == '') {
 			return false;
 		} //end if
 		//--
 		$hash = (string) $hash;
-		if((string)trim((string)$hash) == '') {
+		if((string)\trim((string)$hash) == '') {
 			return false;
 		} //end if
 		//--
@@ -786,7 +827,7 @@ final class cartManager {
 			return false;
 		} //end if
 		//--
-		if(!is_array($attributes)) {
+		if(!\is_array($attributes)) {
 			return false;
 		} //end if
 		//--
@@ -796,10 +837,12 @@ final class cartManager {
 				if((string)$item['id'] == (string)$id) {
 					if((string)$item['hash'] == (string)$hash) {
 						if((array)$item['attributes'] === (array)$attributes) {
+							$this->errmsg = ''; // FIX: avoid transmit err message for other items in cart in this case
 							return true; // item not changed
-						} elseif(is_array($item['data'])) { // only if attributes changed
-							return (bool) $this->doAdd(
-								(array)  array_merge(['id' => (string)$item['id']], (array)$item['data']),
+						} elseif(\is_array($item['data'])) { // only if attributes changed
+							$this->errmsg = ''; // FIX: clear err msg before validating to avoid transmit err message for other items in cart in this case
+							return (bool) $this->doAdd( // here the err msg will come from validating this item only
+								(array)  \array_merge(['id' => (string)$item['id']], (array)$item['data']),
 								(array)  $attributes,
 								(string) $quantity,
 								(string) $hash, // replace
@@ -830,7 +873,7 @@ final class cartManager {
 	private function doUpdate($id, $attributes, $quantity=1, $position=-1, $price='', $write=true) {
 		//--
 		$id = (string) $id;
-		if((string)trim((string)$id) == '') {
+		if((string)\trim((string)$id) == '') {
 			return false;
 		} //end if
 		//--
@@ -850,18 +893,22 @@ final class cartManager {
 			$price = '';
 		} //end if
 		//--
+		if($this->cartNoPriceMode === true) {
+			$price = '0.00';
+		} //end if
+		//--
 		if(\Smart::array_size($this->items[(string)$id]) > 0) {
-			if(is_array($attributes)) { // must test is array not array size > 0
+			if(\is_array($attributes)) { // must test is array not array size > 0
 				$hash = (string) $this->calculateHash($id, $attributes);
 			} else {
 				$hash = (string) $attributes;
 				$attributes = [];
 			} //end if else
-			if((string)trim((string)$hash) == '') {
+			if((string)\trim((string)$hash) == '') {
 				return false;
 			} //end if
 			foreach($this->items[$id] as $index => $item) {
-				if(is_array($item)) {
+				if(\is_array($item)) {
 					//--
 					if((string)$item['hash'] == (string)$hash) {
 						//--
@@ -888,15 +935,20 @@ final class cartManager {
 						$this->items[$id][$index]['quantity'] = $quantity;
 						$this->items[$id][$index]['quantity'] = ($this->itemMaxQuantity < $this->items[$id][$index]['quantity'] && $this->itemMaxQuantity != 0) ? $this->itemMaxQuantity : $this->items[$id][$index]['quantity'];
 						//--
-						if($price >= 0) {
-							// \Smart::log_notice('Price='.$price.' / Price_='.$this->items[$id][$index]['price_']);
-							if((string)$price == (string)$this->items[$id][$index]['price_']) {
-								$this->items[$id][$index]['price'] = (string) \Smart::format_number_dec(($this->items[$id][$index]['_price'] * $this->items[$id][$index]['_exchrate']), 2, '.', ''); // {{{SYNC-CALC-PRICE-BY-EXCHRATE}}} ; restore
-								$this->items[$id][$index]['price_'] = ''; // reset
-							} elseif((string)$price != (string)$this->items[$id][$index]['price']) {
-								$this->items[$id][$index]['price_'] = (string) \Smart::format_number_dec(($this->items[$id][$index]['_price'] * $this->items[$id][$index]['_exchrate']), 2, '.', ''); // {{{SYNC-CALC-PRICE-BY-EXCHRATE}}} ; set
-								$this->items[$id][$index]['price'] = (string) $price; // use a custom  price
-							} //end if else
+						$this->items[$id][$index]['discount_'] = (string) $data['discounts'][(string)$this->cartDiscountLevel];
+						$this->items[$id][$index]['_discount'] = (string) \Smart::format_number_dec(($this->fixPercentDiscountAsNumeric($data['discounts'][(string)$this->cartDiscountLevel]) / 100), 2, '.', '');
+						//--
+						if((string)$price != '') {
+							if($price >= 0) {
+								// \Smart::log_notice('Price='.$price.' / Price_='.$this->items[$id][$index]['price_']);
+								if((string)$price == (string)$this->items[$id][$index]['price_']) {
+									$this->items[$id][$index]['price'] = (string) \Smart::format_number_dec(($this->items[$id][$index]['_price'] * $this->items[$id][$index]['_exchrate']), 2, '.', ''); // {{{SYNC-CALC-PRICE-BY-EXCHRATE}}} ; restore
+									$this->items[$id][$index]['price_'] = ''; // reset
+								} elseif((string)$price != (string)$this->items[$id][$index]['price']) {
+									$this->items[$id][$index]['price_'] = (string) \Smart::format_number_dec(($this->items[$id][$index]['_price'] * $this->items[$id][$index]['_exchrate']), 2, '.', ''); // {{{SYNC-CALC-PRICE-BY-EXCHRATE}}} ; set
+									$this->items[$id][$index]['price'] = (string) $price; // use a custom  price
+								} //end if else
+							} //end if
 						} //end if
 						//--
 						if($write) {
@@ -989,11 +1041,11 @@ final class cartManager {
 		//--
 		$id = (string) $id;
 		//--
-		if(!is_array($this->items[$id])) {
+		if(!\is_array($this->items[$id])) {
 			return false;
 		} //end if
 		//--
-		if(is_array($attributes)) { // must test is array not array size > 0
+		if(\is_array($attributes)) { // must test is array not array size > 0
 			if(empty($attributes)) {
 				unset($this->items[$id]);
 				$this->write();
@@ -1032,7 +1084,7 @@ final class cartManager {
 			$this->items = \SmartSession::get((string)$this->cartId);
 		} //end if else
 		//--
-		if(!is_array($this->items)) {
+		if(!\is_array($this->items)) {
 			$this->items = [];
 		} //end if
 		//--
@@ -1047,7 +1099,7 @@ final class cartManager {
 	private function write() {
 		//--
 		if($this->useCookie) {
-			return (bool) \SmartUtils::set_cookie($this->cartId, (string)\SmartUtils::data_archive((string)\Smart::json_encode((array)$this->items)), time() + 604800);
+			return (bool) \SmartUtils::set_cookie($this->cartId, (string)\SmartUtils::data_archive((string)\Smart::json_encode((array)$this->items)), \time() + 604800);
 		} else {
 			return (bool) \SmartSession::set((string)$this->cartId, (array)$this->items);
 		} //end if else
@@ -1071,33 +1123,33 @@ final class cartManager {
 			return '(012) Invalid Item Props / Type: '.$id;
 		} //end if
 		//--
-		if((string)trim((string)$data['name']) == '') {
+		if((string)\trim((string)$data['name']) == '') {
 			return '(013) Invalid Item Props / Name: '.$id;
 		} //end if
-		if(strlen((string)$data['name']) > 150) {
+		if(\strlen((string)$data['name']) > 150) {
 			return '(014) Invalid Item Props / Name is too long: '.$id;
 		} //end if
 		//--
 		if(\Smart::array_size($data['pak']) <= 0) {
 			return '(021) Empty Item Props / Package: '.$id;
 		} //end if
-		if((string)trim((string)$data['pak']['um']) == '') {
+		if((string)\trim((string)$data['pak']['um']) == '') {
 			return '(022) Empty Item Props / Package / UM: '.$id;
 		} //end if
-		if(strlen((string)$data['pak']['um']) > 15) {
+		if(\strlen((string)$data['pak']['um']) > 15) {
 			return '(023) Invalid Item Props / Package / UM is too long: '.$id;
 		} //end if
 		if(((string)$data['pak']['umtype'] != 'int') AND ((string)$data['pak']['umtype'] != 'dec')) {
 			return '(024) Invalid Item Props / Package / UMType: '.$id;
 		} //end if
-		if((strpos((string)$data['pak']['umerg'], 'formula:') !== 0) AND ((float)$data['pak']['umerg'] < 0)) {
+		if((\strpos((string)$data['pak']['umerg'], 'formula:') !== 0) AND ((float)$data['pak']['umerg'] < 0)) {
 			return '(025) Invalid Item Props / Package / UMErg: '.$id;
 		} //end if
 		if((float)$data['pak']['ummin'] < 0) {
 			return '(026) Invalid Item Props / Package / UMMin: '.$id;
 		} //end if
 		//--
-		if(!preg_match('/^[A-Z\$]{3}$/', (string)$data['currency'])) { // {{{SYNC-VALIDATE-CART-CURRENCY}}}
+		if(!\preg_match('/^[A-Z\$]{3}$/', (string)$data['currency'])) { // {{{SYNC-VALIDATE-CART-CURRENCY}}}
 			return '(027) Invalid Item Currency format: '.$id;
 		} //end if
 		if(((float)$data['price'] < 0) OR ((float)$data['price'] > 999999999)) {
@@ -1106,11 +1158,11 @@ final class cartManager {
 		if(((float)$data['tax'] < 0) OR ((float)$data['tax'] >= 100)) {
 			return '(029) Invalid Item Tax: '.$id;
 		} //end if
-		if(!is_array($data['discounts'])) {
+		if(!\is_array($data['discounts'])) {
 			return '(030) Invalid Item Discounts format: '.$id;
 		} //end if
 		//--
-		if(!is_array($data['atts'])) {
+		if(!\is_array($data['atts'])) {
 			return '(031) Invalid Item Attributes format: '.$id;
 		} //end if
 		//--
@@ -1128,21 +1180,32 @@ final class cartManager {
 		$data = (array) $data;
 		$attributes = (array) $attributes;
 		//--
-		if(!is_array($data['atts'])) {
-			return '(101) Item Attribute Invalid Format: '.$id.' / '.$key;
+		if(!\is_array($data['atts'])) {
+			return '(100) Item Attribute Invalid Format: '.$id;
 		} //end if
+		//--
 		foreach($data['atts'] as $key => $val) {
-			if(is_array($val)) {
+			//--
+			if((!\is_array($val)) OR ((string)\trim((string)$key) == '')) {
 				//--
-				$tmp_val = (string) trim((string)$attributes[(string)$key]);
+				return '(101) Item Attribute Invalid Format: '.$id.' / '.$key;
+				//--
+			} else {
+				//--
+				$tmp_name = (string) \trim((string)$val['name']);
+				if((string)$tmp_name == '') {
+					$tmp_name = (string) \trim((string)$key);
+				} //end if
+				//--
+				$tmp_val = (string) \trim((string)$attributes[(string)$key]);
 				//--
 				$is_optional = false;
 				switch((string)$val['optional']) {
 					case 'validation':
-						if(is_array($val['validation'])) {
-							return '(102) Item Attribute is Empty: '.$id.' / '.$key;
-						} elseif(strpos((string)$val['validation'], 'regex:') !== 0) {
-							return '(103) Item Attribute is Empty: '.$id.' / '.$key;
+						if(\is_array($val['validation'])) {
+							return '(102) Item Attribute is Empty: '.$id.' / '.$tmp_name;
+						} elseif(\strpos((string)$val['validation'], 'regex:') !== 0) {
+							return '(103) Item Attribute is Empty: '.$id.' / '.$tmp_name;
 						} //end if else
 						break;
 					case 'all':
@@ -1151,7 +1214,7 @@ final class cartManager {
 					case 'inventory':
 						if((string)$this->getCartMode() == 'inventory') {
 							if((string)$tmp_val == '') {
-								return '(104) Item Attribute is Empty: '.$id.' / '.$key;
+								return '(104) Item Attribute is Empty: '.$id.' / '.$tmp_name;
 							} //end if
 						} else {
 							$is_optional = true;
@@ -1159,17 +1222,17 @@ final class cartManager {
 						break;
 					default:
 						if((string)$tmp_val == '') {
-							return '(105) Item Attribute is Empty: '.$id.' / '.$key;
+							return '(105) Item Attribute is Empty: '.$id.' / '.$tmp_name;
 						} //end if
 				} //end switch
 				//--
 				if(($is_optional === false) OR (($is_optional === true) AND ((string)$tmp_val != ''))) {
 					//print_r($val);
 					//--
-					if(is_array($val['validation'])) {
+					if(\is_array($val['validation'])) {
 						$found = false;
 						foreach($val['validation'] as $kk => $vv) { // {{{SYNC-CART-ATT-VALIDATION-ARR}}}
-							if(((string)trim((string)$kk) != '') AND is_array($vv)) {
+							if(((string)\trim((string)$kk) != '') AND \is_array($vv)) {
 								if((string)$kk == (string)$tmp_val) {
 									$found = true;
 									break;
@@ -1177,44 +1240,44 @@ final class cartManager {
 							} //end if
 						} //end foreach
 						if(!$found) {
-							return '(111) Item Attribute Contains an Invalid Value (not in the list): '.$id.' / '.$key.': `'.$tmp_val.'`';
+							return '(111) Item Attribute Contains an Invalid Value (not in the list): '.$id.' / '.$tmp_name.': `'.$tmp_val.'`';
 						} //end if
-					} elseif(strpos((string)$val['validation'], 'regex:') === 0) {
-						$regex = (string) substr((string)$val['validation'], (int)strlen('regex:'));
+					} elseif(\strpos((string)$val['validation'], 'regex:') === 0) {
+						$regex = (string) \substr((string)$val['validation'], (int)\strlen('regex:'));
 						if($regex) {
 							foreach($attributes as $akey => $aval) {
-								$regex = (string) str_replace('[[[@'.$akey.']]]', (string)preg_quote($aval), (string)$regex);
+								$regex = (string) \str_replace('[[[@'.$akey.']]]', (string)\preg_quote($aval), (string)$regex);
 							} //end foreach
 						} //end if
 						//\Smart::log_notice($regex);
 						if(!$regex) {
-							return '(112) Item Attribute Contains an Invalid Value: '.$id.' / '.$key.': `'.$tmp_val.'` ; Empty Regex';
+							return '(112) Item Attribute Contains an Invalid Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'` ; Empty Regex';
 						} //end if
-						if(!preg_match((string)$regex, (string)$tmp_val)) {
-							return '(113) Item Attribute Contains an Invalid Value: '.$id.' / '.$key.': `'.$tmp_val.'` ; Regex: `'.$regex.'`';
+						if(!\preg_match((string)$regex, (string)$tmp_val)) {
+							return '(113) Item Attribute Contains an Invalid Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'` ; Regex: `'.$regex.'`';
 						} //end if
-					} elseif(strpos((string)$val['validation'], 'serial:') === 0) {
+					} elseif(\strpos((string)$val['validation'], 'serial:') === 0) {
 						// Reserved ERR: 114, 115
 					} else {
 						switch((string)$val['validation']) {
 							case 'integer+':
-								if(!preg_match('/^([0-9]+)$/', (string)$tmp_val)) {
-									return '(116) Item Attribute Contains an Invalid Integer+ Value: '.$id.' / '.$key.': `'.$tmp_val.'`';
+								if(!\preg_match('/^([0-9]+)$/', (string)$tmp_val)) {
+									return '(116) Item Attribute Contains an Invalid Integer+ Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'`';
 								} //end if
 								break;
 							case 'integer':
-								if(!preg_match('/^((\-)?[0-9]+)$/', (string)$tmp_val)) {
-									return '(117) Item Attribute Contains an Invalid Integer Value: '.$id.' / '.$key.': `'.$tmp_val.'`';
+								if(!\preg_match('/^((\-)?[0-9]+)$/', (string)$tmp_val)) {
+									return '(117) Item Attribute Contains an Invalid Integer Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'`';
 								} //end if
 								break;
 							case 'decimal+':
-								if(!preg_match('/^([0-9\.]+)$/', (string)$tmp_val)) {
-									return '(118) Item Attribute Contains an Invalid Decimal+ Value: '.$id.' / '.$key.': `'.$tmp_val.'`';
+								if(!\preg_match('/^([0-9\.]+)$/', (string)$tmp_val)) {
+									return '(118) Item Attribute Contains an Invalid Decimal+ Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'`';
 								} //end if
 								break;
 							case 'decimal':
-								if(!preg_match('/^((\-)?[0-9\.]+)$/', (string)$tmp_val)) {
-									return '(119) Item Attribute Contains an Invalid Decimal Value: '.$id.' / '.$key.': `'.$tmp_val.'`';
+								if(!\preg_match('/^((\-)?[0-9\.]+)$/', (string)$tmp_val)) {
+									return '(119) Item Attribute Contains an Invalid Decimal Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'`';
 								} //end if
 								break;
 						} //end switch
@@ -1222,67 +1285,68 @@ final class cartManager {
 					//--
 					if(((string)$val['validation'] == 'decimal+') OR ((string)$val['validation'] == 'decimal')) {
 						if(((int)$val['decimals'] > 0) AND ((int)$val['decimals'] <= 4)) {
-							if((int)strrpos((string)strrev((string)$tmp_val), '.') != (int)$val['decimals']) {
-								return '(120) Item Attribute Must Contain '.(int)$val['decimals'].' Decimals: '.$id.' / '.$key.': `'.$tmp_val.'`';
+							if((int)\strrpos((string)\strrev((string)$tmp_val), '.') != (int)$val['decimals']) {
+								return '(120) Item Attribute Must Contain '.(int)$val['decimals'].' Decimals: '.$id.' / '.$tmp_name.': `'.$tmp_val.'`';
 							} //end if
 						} //end if
 					} //end if
 					//--
 					if($val['min']) {
 						if($tmp_val < $val['min']) {
-							return '(121) Item Attribute Contains an Invalid Min. Value: '.$id.' / '.$key.': `'.$tmp_val.'` ; Min. is: `'.$val['min'].'`';
+							return '(121) Item Attribute Contains an Invalid Min. Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'` ; Min. is: `'.$val['min'].'`';
 						} //end if
 					} //end if
 					if($val['max']) {
 						if($tmp_val > $val['max']) {
-							return '(122) Item Attribute Contains an Invalid Max. Value: '.$id.' / '.$key.': `'.$tmp_val.'` ; Max. is: `'.$val['max'].'`';
+							return '(122) Item Attribute Contains an Invalid Max. Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'` ; Max. is: `'.$val['max'].'`';
 						} //end if
 					} //end if
 					if((int)$val['length']) {
-						if((int)strlen((string)$tmp_val) != (int)$val['length']) {
-							return '(123) Item Attribute Contains an Invalid Length Value: '.$id.' / '.$key.': `'.$tmp_val.'` ; Length is: `'.(int)$val['length'].'`';
+						if((int)\strlen((string)$tmp_val) != (int)$val['length']) {
+							return '(123) Item Attribute Contains an Invalid Length Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'` ; Length is: `'.(int)$val['length'].'`';
 						} //end if
 					} else {
 						if((int)$val['minlen']) {
-							if((int)strlen((string)$tmp_val) < (int)$val['minlen']) {
-								return '(124) Item Attribute Contains an Invalid Min.Length Value: '.$id.' / '.$key.': `'.$tmp_val.'` ; Min.Length is: `'.(int)$val['minlen'].'`';
+							if((int)\strlen((string)$tmp_val) < (int)$val['minlen']) {
+								return '(124) Item Attribute Contains an Invalid Min.Length Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'` ; Min.Length is: `'.(int)$val['minlen'].'`';
 							} //end if
 						} //end if
 						if((int)$val['maxlen']) {
-							if((int)strlen((string)$tmp_val) > (int)$val['maxlen']) {
-								return '(125) Item Attribute Contains an Invalid Max.Length Value: '.$id.' / '.$key.': `'.$tmp_val.'` ; Max.Length is: `'.(int)$val['maxlen'].'`';
+							if((int)\strlen((string)$tmp_val) > (int)$val['maxlen']) {
+								return '(125) Item Attribute Contains an Invalid Max.Length Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'` ; Max.Length is: `'.(int)$val['maxlen'].'`';
 							} //end if
 						} //end if
 					} //end if
 					//-- aaa: !? check minval / maxval if inventory or sales ?? if((string)$this->getCartMode() != 'customer') {
 					if((string)$val['minval'] != '') {
-						if(strpos((string)$val['minval'], 'date:') === 0) {
-							$val['minval'] = date('Y-m-d', @strtotime((string)substr((string)$val['minval'], (int)strlen('date:')), @strtotime((string)$val['@ref-val'])));
-						} elseif(strpos((string)$val['minval'], 'time:') === 0) {
-							$val['minval'] = date('HH:ii', @strtotime((string)substr((string)$val['minval'], (int)strlen('time:')), @strtotime((string)$val['@ref-val'])));
+						if(\strpos((string)$val['minval'], 'date:') === 0) {
+							$val['minval'] = \date('Y-m-d', @\strtotime((string)substr((string)$val['minval'], (int)\strlen('date:')), @\strtotime((string)$val['@ref-val'])));
+						} elseif(\strpos((string)$val['minval'], 'time:') === 0) {
+							$val['minval'] = \date('HH:ii', @\strtotime((string)substr((string)$val['minval'], (int)\strlen('time:')), @\strtotime((string)$val['@ref-val'])));
 						} //end if
 						if((string)$tmp_val < (string)$val['minval']) {
-							return '(126) Item Attribute Contains an Invalid Min.Val Value: '.$id.' / '.$key.': `'.$tmp_val.'` ; Min.Val is: `'.(string)$val['minval'].'`';
+							return '(126) Item Attribute Contains an Invalid Min.Val Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'` ; Min.Val is: `'.(string)$val['minval'].'`';
 						} //end if
 					} //end if
 					if((string)$val['maxval'] != '') {
-						if(strpos((string)$val['maxval'], 'date:') === 0) {
-							$val['maxval'] = date('Y-m-d', @strtotime((string)substr((string)$val['maxval'], (int)strlen('date:')), @strtotime((string)$val['@ref-val'])));
-						} elseif(strpos((string)$val['maxval'], 'time:') === 0) {
-							$val['maxval'] = date('HH:ii', @strtotime((string)substr((string)$val['maxval'], (int)strlen('time:')), @strtotime((string)$val['@ref-val'])));
+						if(\strpos((string)$val['maxval'], 'date:') === 0) {
+							$val['maxval'] = \date('Y-m-d', @\strtotime((string)substr((string)$val['maxval'], (int)\strlen('date:')), @\strtotime((string)$val['@ref-val'])));
+						} elseif(\strpos((string)$val['maxval'], 'time:') === 0) {
+							$val['maxval'] = \date('HH:ii', @\strtotime((string)substr((string)$val['maxval'], (int)\strlen('time:')), @\strtotime((string)$val['@ref-val'])));
 						} //end if
 						if((string)$tmp_val > (string)$val['maxval']) {
-							return '(127) Item Attribute Contains an Invalid Max.Val Value: '.$id.' / '.$key.': `'.$tmp_val.'` ; Max.Val is: `'.(string)$val['maxval'].'`';
+							return '(127) Item Attribute Contains an Invalid Max.Val Value: '.$id.' / '.$tmp_name.': `'.$tmp_val.'` ; Max.Val is: `'.(string)$val['maxval'].'`';
 						} //end if
 					} //end if
 					//--
 				} //end if
 				//--
-				if((int)strlen((string)$tmp_val) > 255) {
-					return '(128) Item Attribute is Too Large (must be <= 255 characters)';
+				if((int)\strlen((string)$tmp_val) > 255) {
+					return '(128) Item Attribute is Too Large (must be <= 255 characters)'; // {{{SYNC-ECART-ATT-MAX-LEN}}}
 				} //end if
 				//--
 			} //end if
+			//--
 		} //end foreach
 		//--
 		return '';
@@ -1302,8 +1366,8 @@ final class cartManager {
 		//--
 		if(\Smart::array_size($data['atts']) > 0) {
 			foreach($attributes as $key => $val) {
-				if((string)trim((string)$key) != '') {
-					if((string)trim((string)$val) != '') {
+				if((string)\trim((string)$key) != '') {
+					if((string)\trim((string)$val) != '') {
 						if(\Smart::array_size($data['atts'][(string)$key]) > 0) {
 							if(\Smart::array_size($data['atts'][(string)$key]['validation']) > 0) {
 								if(\Smart::array_size($data['atts'][(string)$key]['validation'][(string)$val]) > 0) {
@@ -1334,7 +1398,7 @@ final class cartManager {
 	 */
 	private function fixErgQty($y_qty_erg, $attributes) {
 		//--
-		$y_qty_erg = (string) trim((string)$y_qty_erg);
+		$y_qty_erg = (string) \trim((string)$y_qty_erg);
 		$attributes = (array) $attributes;
 		//--
 		$qty_erg = (string) $y_qty_erg;
@@ -1343,21 +1407,24 @@ final class cartManager {
 			return 0;
 		} //end if
 		//--
-		if(strpos((string)$qty_erg, 'formula:') !== 0) {
+		if(\strpos((string)$qty_erg, 'formula:') !== 0) {
 			return (float) $qty_erg;
 		} //end if
 		//--
-		$qty_erg = (string) substr((string)$qty_erg, (int)strlen('formula:'));
+		$qty_erg = (string) \substr((string)$qty_erg, (int)\strlen('formula:'));
 		if(!$qty_erg) {
 			return 0;
 		} //end if
 		foreach($attributes as $akey => $aval) {
-			$qty_erg = (string) str_replace('[[[@'.$akey.']]]', (float)$aval, (string)$qty_erg);
+			$qty_erg = (string) \str_replace('[[[@'.$akey.']]]', (float)$aval, (string)$qty_erg);
 		} //end foreach
 		if(!$qty_erg) {
 			return 0;
 		} //end if
 		//--
+		if(!\class_exists('\\PHPMathParser\\Math')) {
+			throw new \Exception('PHPMathParser/Math class is missing ...');
+		} //end if
 		$math = new \PHPMathParser\Math();
 		$result = 0;
 		try {
@@ -1385,9 +1452,9 @@ final class cartManager {
 			//--
 		} else { // int
 			//--
-			$y_qty_cart = (int) ceil((float)$y_qty_cart);
-			$y_qty_erg = (int) ceil((float)$y_qty_erg);
-			$y_qty_min = (int) ceil((float)$y_qty_min);
+			$y_qty_cart = (int) \ceil((float)$y_qty_cart);
+			$y_qty_erg = (int) \ceil((float)$y_qty_erg);
+			$y_qty_min = (int) \ceil((float)$y_qty_min);
 			//--
 		} //end if else
 		//-- fix positive qty
@@ -1403,7 +1470,7 @@ final class cartManager {
 		//-- fix erg qty
 		if($y_qty_erg > 0) {
 			if($y_qty_cart > $y_qty_erg) {
-				$y_qty_cart = (float) (ceil($y_qty_cart / $y_qty_erg) * $y_qty_erg);
+				$y_qty_cart = (float) (\ceil($y_qty_cart / $y_qty_erg) * $y_qty_erg);
 			} else {
 				$y_qty_cart = $y_qty_erg;
 			} //end if else
@@ -1416,10 +1483,21 @@ final class cartManager {
 		if((string)$y_qty_type == 'dec') {
 			$y_qty_cart = (string) \Smart::format_number_dec((float)$y_qty_cart, 4, '.', '');
 		} else { // int
-			$y_qty_cart = (string) \Smart::format_number_int((int)ceil((float)$y_qty_cart));
+			$y_qty_cart = (string) \Smart::format_number_int((int)\ceil((float)$y_qty_cart));
 		} //end if
 		//-- cast as string to preserve zeroes
 		return (string) $y_qty_cart;
+		//--
+	} //END FUNCTION
+
+
+	private function fixPercentDiscountAsNumeric($y_discount_with_percent) {
+		//--
+		$y_discount_with_percent = (string) \Smart::normalize_spaces((string)$y_discount_with_percent);
+		$y_discount_with_percent = (string) \str_replace([' ', '%'], '', (string)$y_discount_with_percent);
+		$y_discount_with_percent = (string) \trim((string)$y_discount_with_percent);
+		//--
+		return (string) \Smart::format_number_dec((string)$y_discount_with_percent, 2, '.', '');
 		//--
 	} //END FUNCTION
 

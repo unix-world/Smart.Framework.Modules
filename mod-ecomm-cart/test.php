@@ -24,6 +24,8 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 	public function Run() {
 
+		// r.20200325
+
 		//-- dissalow run this sample if not test mode enabled
 		if(!defined('SMART_FRAMEWORK_TEST_MODE') OR (SMART_FRAMEWORK_TEST_MODE !== true)) {
 			$this->PageViewSetErrorStatus(503, 'ERROR: Test mode is disabled ...');
@@ -53,6 +55,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			'itemMaxQuantity' 	=> 50, // Maximum quantity of a item can be added to cart, 0 = Unlimited
 			'cartCurrency' 		=> 'US$',
 		//	'cartShowEmptyAtts' => true, // debug only
+		//	'noPrice' 			=> true, // special operating mode with no prices
 			'cartMode' 			=> 'sales' // inventory | sales | customer (default)
 		]);
 		//--
@@ -205,6 +208,8 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				'PAGE-URL' 			=> (string) $this->ControllerGetParam('controller'),
 				'DATE-TIME' 		=> (string) date('Y-m-d H:i:s'),
 				'CART-MODE' 		=> (string) $cmode,
+				'CART-NOPRICE' 		=> (string) ($cart->getCartNoPriceMode() ? 'yes' : 'no'),
+				'CART-DISCOUNT-LVL' => (string) $cart->getCartDiscountLevel(),
 				'CART-CURRENCY' 	=> (string) $cart->getCartCurrency(),
 				'CART-TOTAL-NOTAX' 	=> (string) $totals['total-notax'],
 				'CART-TOTAL-TAX' 	=> (string) $totals['total-tax'],
@@ -258,6 +263,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				'PAGE-URL' 			=> (string) $this->ControllerGetParam('controller'),
 				'DATE-TIME' 		=> (string) date('Y-m-d H:i:s'),
 				'CART-MODE' 		=> (string) $cart->getCartMode(),
+				'CART-NOPRICE' 		=> (string) ($cart->getCartNoPriceMode() ? 'yes' : 'no'),
 				'PRODUCTS-ARR' 		=> (array) $arr
 			];
 			//--

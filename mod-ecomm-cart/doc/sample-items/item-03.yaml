@@ -1,10 +1,10 @@
 ### START
 item:
-    version: 'Sample: No Atts v.20190312.1603'
+    version: 'Sample: No Atts v.20200325.1515'
     id: SAMPLE-03 # SKU
     type: s # s = Service | p = Product
     name: 'Sample: No Atts'
-    currency: US$
+    currency: EUR
     price: 100.00
     tax: 0 # Sales Tax %, 0..99.99
     pak:
