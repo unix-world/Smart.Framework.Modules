@@ -22,7 +22,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
-		$version = 'r.20200121';
+		$version = 'r.20200401';
 		//--
 
 		//--
@@ -45,13 +45,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		if(!SmartFileSystem::is_type_file('wpub/cloud/.htaccess')) {
-			SmartFileSystem::write('wpub/cloud/.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n");
-			if(!SmartFileSystem::is_type_file('wpub/cloud/.htaccess')) {
-				$this->PageViewSetErrorStatus(500, 'ERROR: DAV .htaccess is missing ...');
-				return;
-			} //end if
-		} //end if
+		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--
 
 		//--

@@ -4,13 +4,13 @@
 /*
 (c) 2019 unix-world.org
 License: GPLv3
-Version: 20190219
+Version: 20200402
 */
 
 /*
  * file: bpmn-font.css
- * version: v3.2.1
- * (c) 2014-2019, camunda Services GmbH @ see LICENSE
+ * version: v3.2.1, with font update from github
+ * (c) 2014-2020, camunda Services GmbH @ see LICENSE
  * https://github.com/bpmn-io/bpmn-js # https://unpkg.com/bpmn-js@3.2.1/dist/
  */
 
@@ -165,6 +165,7 @@ Version: 20190219
 .bpmn-icon-data-output:before { content: '\e867'; } /* '' */
 .bpmn-icon-hand-tool:before { content: '\e868'; } /* '' */
 .bpmn-icon-transaction:before { content: '\e8c4'; } /* '' */
+.bpmn-icon-group:before { content: '\e869'; } /* '' */
 
 [class^="bpmn-xtra-icon-"]:before,
 [class*=" bpmn-xtra-icon-"]:before {

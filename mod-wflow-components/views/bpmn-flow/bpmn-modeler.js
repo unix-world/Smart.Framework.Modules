@@ -3,9 +3,9 @@
 // depends on: SmartJS_CoreUtils
 
 /*
-(c) 2019 unix-world.org
+(c) 2019-2020 unix-world.org
 License: GPLv3
-Version: 20190219
+Version: 20200403
 IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BPMN.IO LOGO (see original bpmn.io LICENSE)
 */
 
@@ -15581,19 +15581,6 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 					pointerEvents: 'none'
 				});
 
-				var categoryValueRef = semantic.categoryValueRef || {};
-
-				if (categoryValueRef.value) {
-					var box = di.label ? di.label.bounds : element;
-
-					renderLabel(parentGfx, categoryValueRef.value, {
-						box: box,
-						style: {
-							fill: getStrokeColor(element, defaultStrokeColor)
-						}
-					});
-				}
-
 				return group;
 			},
 			'label': function(parentGfx, element) {
@@ -18500,11 +18487,13 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 		else if (is$1(di, 'bpmndi:BPMNShape')) {
 
 			var collapsed = !isExpanded(semantic);
+			var isFrame = !!is$1(semantic, 'bpmn:Group');
 			hidden = parentElement && (parentElement.hidden || parentElement.collapsed);
 
 			var bounds = semantic.di.bounds;
 
 			element = this._elementFactory.createShape(elementData(semantic, {
+				isFrame: isFrame,
 				collapsed: collapsed,
 				hidden: hidden,
 				x: Math.round(bounds.x),
@@ -32958,13 +32947,18 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 				case 'white':
 				case 'default':
 				default:
-					hexColor = '#FFFFFF';
+					var regex = /^#([A-Fa-f0-9]{6})$/;
+					if(color.match(regex)) {
+						hexColor = String(color);
+					} else {
+						hexColor = '#FFFFFF';
+					} //end if else
 			} //end switch
 			return String(hexColor);
 		} //END FUNCTION
 		//--
 		function changeElementColor() {
-			var question = 'Element Color:\nred, pink,\nblue, green,\nyellow, brown,\ngrey, white (default)';
+			var question = 'Element Color:\nred, pink,\nblue, green,\nyellow, brown,\ngrey, white (default),\n#FF3300 (or other hex)';
 			if(jQuery.alertable) {
 				var color = '';
 				jQuery.alertable.prompt(question).then(function(data) {
@@ -32985,7 +32979,7 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 			} //end if else
 		} //END FUNCTION
 		//--
-		if(is$1(businessObject, 'bpmn:FlowNode')) {
+		if(is$1(businessObject, 'bpmn:FlowNode') || is$1(businessObject, 'bpmn:DataStoreReference') || is$1(businessObject, 'bpmn:DataObjectReference')) {
 			assign(actions, {
 				'adnotate': {
 					group: 'connect', // edit
@@ -39319,6 +39313,11 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 	 */
 	function canDrop(element, target, position) {
 
+		// group can drop just in the 1st level
+		if (is$1(element, 'bpmn:Group')) {
+			return is$1(target, 'bpmn:Process') || is$1(target, 'bpmn:Collaboration');
+		}
+
 		// can move labels everywhere
 		if (isLabel(element)) {
 			return true;
@@ -39640,6 +39639,10 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 			return !newBounds || (newBounds.width >= 250 && newBounds.height >= 50);
 		}
 
+		if (is$1(shape, 'bpmn:Group')) {
+			return !newBounds || (newBounds.width >= 100 && newBounds.height >= 100);
+		}
+
 		if (isTextAnnotation(shape)) {
 			return true;
 		}
@@ -39915,6 +39918,7 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 			},
 			{ type: 'bpmn:BoundaryEvent', order: { level: 8 } },
 			{ type: 'bpmn:FlowElement', order: { level: 5 } },
+			{ type: 'bpmn:Group', order: { level: -3 } },
 			{ type: 'bpmn:Participant', order: { level: -2 } },
 			{ type: 'bpmn:Lane', order: { level: -1 } }
 		];
@@ -43129,6 +43133,10 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 
 		if (is$1(semantic, 'bpmn:Event')) {
 			return { width: 36, height: 36 };
+		}
+
+		if (is$1(semantic, 'bpmn:Group')) {
+			return { width: 300, height: 300 };
 		}
 
 		if (is$1(semantic, 'bpmn:Participant')) {
@@ -49348,7 +49356,11 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 					dragstart: createParticipant,
 					click: createParticipant
 				}
-			}
+			},
+			'create.group': createAction(
+			  'bpmn:Group', 'artifact', 'bpmn-icon-group',
+			  translate('Create Group')
+			)
 		});
 
 		return actions;
@@ -49498,8 +49510,8 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 	 * @return {Number} the value we snapped to or null, if none snapped
 	 */
 	function snapTo(value, values, tolerance) {
-		tolerance = tolerance === undefined ? 10 : tolerance;
-
+	//	tolerance = tolerance === undefined ? 10 : tolerance;
+		tolerance = 1; // uxm: fix snap tolerance to 1
 		var idx, snapValue;
 
 		for (idx = 0; idx < values.length; idx++) {

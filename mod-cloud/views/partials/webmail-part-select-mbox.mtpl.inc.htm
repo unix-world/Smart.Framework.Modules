@@ -1,0 +1,10 @@
+<h2>Select or create a new MailBox</h2>
+<br>
+<br>
+[%%%LOOP:ARR-MBOXES%%%]
+	<a class="ux-button ux-button-dark" style="min-width:500px;" title="Select MailBox: [###ARR-MBOXES._-VAL-_|html###]" href="[###URL-PAGE|html###]&mbox=[###ARR-MBOXES._-VAL-_|url|html###]">[###ARR-MBOXES._-VAL-_|html###]</a>
+	<a class="ux-button ux-button-highlight" style="width:50px;" title="MailBox Configuration: [###ARR-MBOXES._-VAL-_|html###]" href="#"><i class="sfi sfi-cog"></i></a>
+	<a class="ux-button ux-button-special" style="width:50px;" title="Delete MailBox: [###ARR-MBOXES._-VAL-_|html###]" href="#"><i class="sfi sfi-bin2"></i></a>
+	<br>
+	<br>
+[%%%/LOOP:ARR-MBOXES%%%]

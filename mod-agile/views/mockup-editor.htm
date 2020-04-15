@@ -36,22 +36,30 @@
 	margin: 0px;
 	width: calc(100vw - 100px) !important;
 	height: calc(100vh - 175px) !important;
-	overflow: scroll;
+	overflow: hidden;
 	display: flex;
 	text-align: left;
 }
 #canvasWrap {
-	margin: 0px;
+	margin: 0;
 	padding: 0px;
 	flex: 1 1 100%;
 	position: relative;
 	background-color: #333333;
+	overflow: auto;
 }
 #canvas {
 	background: white url("[###VIEWS-PATH|html###]img/back.svg");
 	background-size: 250px 250px;
 	background-repeat: repeat;
 	border: 0px !important;
+}
+#widgetsArea {
+	width: 350px !important;
+	height: calc(100vh - 175px) !important;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin-right: 1px;
 }
 </style>
 <div id="mockupContainer">

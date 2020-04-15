@@ -39,7 +39,7 @@ final class cartManager {
 	 *
 	 * @var bool
 	 */
-	private $useCookie = false;
+	private $useCookie = true;
 
 	/**
 	 * A collection of cart items.
@@ -644,6 +644,9 @@ final class cartManager {
 	private function doAdd($product, $attributes, $quantity=1, $replace='', $position=0) {
 		//--
 		if(($this->cartMaxItem > 0) AND ($this->getNumberOfItems() >= $this->cartMaxItem)) {
+			if(!$this->errmsg) {
+				$this->errmsg = 'Max Cart Items is: '.(int)$this->cartMaxItem;
+			} //end if
 			return false;
 		} //end if
 		//--
@@ -1099,7 +1102,15 @@ final class cartManager {
 	private function write() {
 		//--
 		if($this->useCookie) {
-			return (bool) \SmartUtils::set_cookie($this->cartId, (string)\SmartUtils::data_archive((string)\Smart::json_encode((array)$this->items)), \time() + 604800);
+			$data = (string) (string)\SmartUtils::data_archive((string)\Smart::json_encode((array)$this->items));
+			$size = (int) \strlen((string)$data);
+			if((int)$size > (int)\SmartUtils::cookie_size_max()) {
+				if(!$this->errmsg) {
+					$this->errmsg = 'Max Cart Size limit reached ('.(int)$size.'/'.(int)\SmartUtils::cookie_size_max().')';
+				} //end if
+				return false;
+			} //end if
+			return (bool) \SmartUtils::set_cookie($this->cartId, (string)$data, \time() + 604800);
 		} else {
 			return (bool) \SmartSession::set((string)$this->cartId, (array)$this->items);
 		} //end if else

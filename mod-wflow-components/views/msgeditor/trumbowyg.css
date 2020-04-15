@@ -506,11 +506,11 @@ body.trumbowyg-body-fullscreen {
 .trumbowyg-editor embed,
 .trumbowyg-editor video,
 .trumbowyg-editor img {
-	max-width: 100%;
+/*	max-width: 100%; */
 }
 .trumbowyg-editor video,
 .trumbowyg-editor img {
-	height: auto;
+/*	height: auto; */
 }
 .trumbowyg-editor img {
 	cursor: move;

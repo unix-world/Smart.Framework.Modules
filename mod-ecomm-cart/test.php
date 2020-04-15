@@ -51,7 +51,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$cart = new \SmartModExtLib\EcommCart\cartManager([
 			'cartId' 			=> 'eCommCart',
-			'cartMaxItem' 		=> 10, // Maximum item can added to cart, 0 = Unlimited
+			'cartMaxItem' 		=> 20, // Maximum item can added to cart, 0 = Unlimited
 			'itemMaxQuantity' 	=> 50, // Maximum quantity of a item can be added to cart, 0 = Unlimited
 			'cartCurrency' 		=> 'US$',
 		//	'cartShowEmptyAtts' => true, // debug only

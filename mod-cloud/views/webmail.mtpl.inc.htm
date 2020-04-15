@@ -14,10 +14,24 @@
 		SmartCloud_DynLayout_Vertical_DynamicBar.restoreWidth();
 	});
 </script>
+<style>
+#mainTable * {
+	-webkit-user-select: none;
+	-moz-user-select: none !important;
+	-ms-user-select: none;
+	user-select: none !important;
+}
+</style>
 <!-- start page -->
-<div style="width:98vw!important; height:85vh!important;">
-[###AREA-HTML-TOP###]
-<table id="mainTable" bgcolor="#FFFFFF" style="width:100%; height:100%; border:1px solid #CCCCCC; display:none;">
+<div style="background:background:#FFFFFF; width:98vw!important; height:98vh!important;">
+	<h1 style="display:inline-block;">
+		<a href="[%%%IF:CLOUD-MAILBOX:!=;%%%]admin.php?page=cloud.webmail[%%%ELSE:CLOUD-MAILBOX%%%]admin.php?page=cloud.welcome[%%%/IF:CLOUD-MAILBOX%%%]" title="Cloud.WebMail" style="margin-right:8px;">
+			<img height="48" src="[###MODULE-PATH|html###]views/img/webmail.svg" align="left">
+		</a>
+	WebMail &nbsp; </h1><h4 style="display:inline-block;"><span style="color:#FF3300;">{[###CLOUD-USERNAME|html###]}:</span>&nbsp;<span style="color:#778899;">&lt;[%%%IF:CLOUD-MAILBOX:!=;%%%][###CLOUD-MAILBOX|html###][%%%ELSE:CLOUD-MAILBOX%%%]#[%%%/IF:CLOUD-MAILBOX%%%]&gt;</span></h4>
+<br>
+<div align="center">[%%%IF:AREA-HTML-HBAR:!=;%%%][###AREA-HTML-HBAR###][%%%ELSE:AREA-HTML-HBAR%%%]&nbsp;[%%%/IF:AREA-HTML-HBAR%%%]</div>
+<table id="mainTable" style="width:100%; height:calc(100% - 90px); border:1px solid #CCCCCC; display:none;">
 <tr valign="top">
 	<td>
 		<table border="0" width="100%" height="100%" style="height:100%">
@@ -49,7 +63,6 @@
 					&nbsp;
 				</td>
 				<td id="mainArea" width="99%" align="left">
-					[###AREA-HTML-HBAR###]
 					[###AREA-HTML-CONTENT###]
 				</td>
 				<!-- end body -->

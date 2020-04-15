@@ -7,13 +7,22 @@ label {
 	line-height: 1.2rem;
 	color: #333333;
 }
-input[type=text] {
+input[type=text].webmail-input, textarea.webmail-textarea {
 	min-width: 170px !important;
 	width: 100%;
+}
+textarea.webmail-textarea {
+	min-height: 32px !important;
+	height: 32px;
 }
 div.atts-file, div.cloned__atts-file {
 	width: 30%;
 	display: inline-block;
+	padding-right: 20px;
+	overflow: hidden;
+}
+div.atts-file input[type=file], div.cloned__atts-file input[type=file] {
+	max-width: 85% !important;
 }
 h1, h2, h3, h4, h5, h6 {
 	color: #333333;
@@ -23,7 +32,39 @@ h1, h2, h3, h4, h5, h6 {
 <script>
 [###JS-PAGEAWAY###]
 </script>
+<script>
+function sendMessage() {
+	var overlay = SmartJS_BrowserUtils.Overlay_Show();
+	var ajax = SmartJS_BrowserUtils.Ajax_XHR_GetByForm('webmail-form', 'admin.php?page=cloud.webmail&mbox=[###CURRENT-MBOX|url|js###]&op=send-json-msg', 'json');
+	ajax.done(function(msg) {
+		if((msg.hasOwnProperty('completed')) && (msg.completed === 'DONE') && (msg.hasOwnProperty('status')) && (msg.hasOwnProperty('title')) && (msg.hasOwnProperty('message')) && (msg.hasOwnProperty('js_evcode')) && (msg.hasOwnProperty('redirect'))) {
+			if(msg.status === 'OK') {
+				SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(msg.title), SmartJS_CoreUtils.escape_html(msg.message), '', 5000, false, 'gritter-green');
+				if(msg.js_evcode) {
+					try {
+						eval('(function(){ ' + msg.js_evcode + ' })();'); // sandbox
+					} catch(err) {
+						console.error('sendMessage Eval Code FAILED: ' + err);
+					}
+				}
+				setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 7500);
+			} else {
+				SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(msg.title), SmartJS_CoreUtils.escape_html(msg.message), '', 7500, false, 'gritter-red');
+				setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
+			}
+		} else {
+			SmartJS_BrowserUtils.GrowlNotificationAdd('ERROR', 'Invalid JSON Answer', '', 7500, false, 'gritter-red');
+			setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
+		}
+	}).fail(function (msg) {
+		SmartJS_BrowserUtils.alert_Dialog(SmartJS_CoreUtils.escape_html(msg.responseText), 'SmartJS_BrowserUtils.Overlay_Hide();', 'ERROR: Invalid Server Response ', 720, 400);
+	});
+}
+</script>
 <form class="ux-form" id="webmail-form" name="webmail_form" action="#" method="post" enctype="multipart/form-data">
+<input type="hidden" name="webmail[mode]" value="[###COMPOSER-MODE|html###]">
+<input type="hidden" name="webmail[replytoaddr]" value="[###COMPOSER-REPLYTOADDR|html###]">
+<input type="hidden" name="webmail[inreplyto]" value="[###COMPOSER-INREPLYTO|html###]">
 <table style="width:97vw;">
 	<tr valign="top">
 		<td colspan="2">
@@ -31,41 +72,53 @@ h1, h2, h3, h4, h5, h6 {
 				<h1 style="display:inline-block;">Webmail Compose :: [###COMPOSER-TITLE|html###]</h1>
 			</div>
 			<div style="display:inline-block; width:20%; text-align:right;">
-				<button type="button" class="ux-button" onClick="SmartJS_BrowserUtils.CloseModalPopUp();"><i class="sfi sfi-cancel-circle"></i> &nbsp; Cancel</button>
-				<button type="button" class="ux-button ux-button-primary" onClick="[###JS-DPAGEAWAY|html###] return false;"><i class="sfi sfi-mail2"></i> &nbsp; Send</button>
+				[%%%IF:BACK-URL:!=;%%%]
+				<button type="button" class="ux-button" onClick="self.location='[###BACK-URL|js|html###]'; return false;"><i class="sfi sfi-undo"></i> &nbsp; Back</button>
+				[%%%/IF:BACK-URL%%%]
+				<button type="button" class="ux-button ux-button-primary" onClick="sendMessage(); return false;"><i class="sfi sfi-mail3"></i> &nbsp; Send</button>
+				<button type="button" class="ux-button ux-button-highlight" onClick="SmartJS_BrowserUtils.CloseModalPopUp();"><i class="sfi sfi-cancel-circle"></i> &nbsp; Close</button>
 			</div>
 		</td>
 	</tr>
 	<tr valign="top">
 		<td width="70"><label for="webmail-to">To</label></td>
-		<td><input placeholder="To" type="text" id="webmail-to" name="webmail[to]" value="[###COMPOSER-TO|html###]"></td>
+		<td><textarea maxlength="65535" class="webmail-textarea" placeholder="To" id="webmail-to" name="webmail[to]" autocomplete="off" spellcheck="false">[###COMPOSER-TO|html###]</textarea></td>
 	</tr>
 	<tr valign="top">
 		<td width="70"><label for="webmail-cc">Cc</label></td>
-		<td><input placeholder="Cc" type="text" id="webmail-cc" name="webmail[cc]" value="[###COMPOSER-CC|html###]"></td>
+		<td><textarea maxlength="65535" class="webmail-textarea" placeholder="Cc" id="webmail-cc" name="webmail[cc]" autocomplete="off" spellcheck="false">[###COMPOSER-CC|html###]</textarea></td>
 	</tr>
 	<tr valign="top">
 		<td width="70"><label for="webmail-bcc">Bcc</label></td>
-		<td><input placeholder="Bcc" type="text" id="webmail-bcc" name="webmail[bcc]" value="[###COMPOSER-BCC|html###]"></td>
+		<td><input maxlength="128" class="webmail-input" placeholder="Bcc" type="text" id="webmail-bcc" name="webmail[bcc]" value="[###COMPOSER-BCC|html###]" autocomplete="off" spellcheck="false"></td>
 	</tr>
 	<tr valign="top">
 		<td><label for="webmail-subject">Subject</label></td>
-		<td><input placeholder="Subject" type="text" id="webmail-subject" name="webmail[subject]" value="[###COMPOSER-SUBJECT|html###]"></td>
+		<td><input maxlength="127" class="webmail-input" placeholder="Subject" type="text" id="webmail-subject" name="webmail[subject]" value="[###COMPOSER-SUBJECT|html###]" autocomplete="off" spellcheck="false"></td>
 	</tr>
 	<tr valign="top">
 		<td><label>Attachments</label></td>
 		<td>
+		[%%%IF:COMPOSER-ATTS:@>0;%%%]
 			<div id="atts-list">
-				<div class="atts-file"><input id="atts-file" class="attachment" type="file" name="webmail[attachments][]"></div>
+			[%%%LOOP:COMPOSER-ATTS%%%]
+			<div style="padding-top:10px;">
+				<input type="hidden" name="webmail[attachments][]" value="[###COMPOSER-ATTS.CHK|html###]|[###COMPOSER-ATTS.FILE|html###]|[###COMPOSER-ATTS.NAME|html###]">
+				<i class="sfi sfi-attachment"></i>&nbsp;&nbsp;&nbsp;<b>[###COMPOSER-ATTS.NAME|html###]</b>
 			</div>
+			[%%%/LOOP:COMPOSER-ATTS%%%]
+			</div>
+		[%%%ELSE:COMPOSER-ATTS%%%]
+			<div id="atts-list"><div class="atts-file"><input id="atts-file" class="attachment" type="file" name="webmail_attachments[]"></div></div>
 			<script type="text/javascript">
 				SmartJS_BrowserUtils.CloneElement('atts-file', 'atts-list', 'file-input', 9);
 			</script>
+		[%%%/IF:COMPOSER-ATTS%%%]
 		</td>
 	</tr>
-
 	<tr>
 		<td colspan="2">[###HTMLAREA-DISPLAY###]</td>
 	</tr>
 </table>
 </form>
+[###EXTRA-HTML###]

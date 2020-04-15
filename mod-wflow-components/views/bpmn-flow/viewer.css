@@ -1,13 +1,17 @@
 
 /*
 Extra Viewer (and Modeler) Styles for Notes, by unixman
-v.20190219
+*
+(c) 2019-2020 unix-world.org
+License: GPLv3
+Version: 20200403
 */
 
 /* unixman */
 
 .djs-xtra-elem-note {
 	background-color: rgba(66, 180, 21, 0.85);
+	border: 1px solid #FFCC00;
 	color: #FFFFFF;
 	border-radius: 3px;
 	font-size: 12px !important;
@@ -22,11 +26,13 @@ v.20190219
 	text-overflow: ellipsis;
 	cursor: context-menu;
 	margin-left: -5px;
-	margin-top: 3px;
+	margin-top: -1px;
 }
 
+/*
 .djs-xtra-annotation-note:not(.djs-connection) .djs-visual > :nth-child(1) {
 	stroke: rgba(66, 180, 21, 0.95) !important;
 }
+*/
 
 /* END */

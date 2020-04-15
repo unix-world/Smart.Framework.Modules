@@ -7,15 +7,123 @@
 <script type="text/javascript" src="lib/js/jquery/slickgrid/slick.grid.js"></script>
 <script type="text/javascript" src="lib/js/jquery/slickgrid/slick.editors.js"></script>
 <script type="text/javascript" src="lib/js/jquery/slickgrid/smart-grid.js"></script>
+<style>
+.smartGrid_Default {
+}
+.smartGrid_DefaultCenter {
+	text-align: center !important;
+}
+.smartGrid_DefaultRight {
+	text-align: right !important;
+}
+</style>
 <script type="text/javascript">
 	//--
-	var IdOfGrid = 'webmailGrid';
+	var iconColorForMsgDeleteDialog = '#333333';
+	var iconForMsgDeleteDialog = 'sfi-warning';
+	var msgForButtonRestore = '???';
+	var msgForBtnDelete = '???';
+	var msgExtraDelete = '';
+	[%%%IF:CURRENT-BOX:==trash;%%%]
+	iconColorForMsgDeleteDialog = '#F2891F';
+	iconForMsgDeleteDialog = 'sfi-bin2';
+	msgForButtonRestore = 'Restore Selected Message(s) to Inbox or Sent';
+	msgForBtnDelete = 'Permanent Delete Selected Message(s)';
+	msgExtraDelete = 'If the messages are permenent deleted from WebMail are deleted also or on the Mail Server so they cannot be restored anymore.';
+	[%%%ELSE:CURRENT-BOX%%%]
+	iconForMsgDeleteDialog = 'sfi-bin';
+	msgForBtnDelete = 'Move Selected Message(s) to Trash';
+	[%%%/IF:CURRENT-BOX%%%]
+	//--
+	var IdOfGrid = 'webmailGrid_[###CURRENT-BOX|jsvar|js###]';
 	var TheGrid = new Smart_Grid(IdOfGrid, 'infoTotalRows', '[###URL-PAGE|js###]&op=list-json-mbox&mbox=[###CURRENT-MBOX|url|js###]&box=[###CURRENT-BOX|url|js###]', 'webmailSlickGrdList__[###CURRENT-BOX|slug|js###]__[###CURRENT-MBOX|slug|js###]', 'date_time', 'DESC', '', 'filtering');
+	//--
+	function getGridSelectedRows() {
+		var rowsSelected = TheGrid.grid.getSelectedRows();
+		var rowsDataSelected = [];
+		if((!rowsSelected) || (rowsSelected.length <= 0)) {
+			return rowsDataSelected;
+		}
+		for(var i=0; i<rowsSelected.length; i++) {
+			if(rowsSelected[i] >= 0) {
+				var theRow = TheGrid.data[rowsSelected[i]];
+				if(theRow && theRow['id']) {
+					rowsDataSelected.push(theRow['id']);
+				}
+			} //end if
+		} //end for
+		//console.log(JSON.stringify(rowsDataSelected, null, 2));
+		return rowsDataSelected;
+	}
+	function moveOrDeleteSelectedMessages(action, messagesArr) {
+		//console.log(JSON.stringify(messagesArr, null, 2));
+		var urlAction = '[###URL-PAGE|js###]&op=msgs-sel-action&action=' + SmartJS_CoreUtils.escape_url(action) + '&mbox=[###CURRENT-MBOX|url|js###]&box=[###CURRENT-BOX|url|js###]';
+		var urlData = '';
+		for(var i=0; i<messagesArr.length; i++) {
+			urlData += '&sel[]=' + SmartJS_CoreUtils.escape_url(messagesArr[i]);
+		} //end for
+		var overlay = SmartJS_BrowserUtils.Overlay_Show();
+		var ajax = SmartJS_BrowserUtils.Ajax_XHR_Request_From_URL(urlAction, 'POST', 'json', urlData);
+		ajax.done(function(msg) {
+			if((msg.hasOwnProperty('completed')) && (msg.completed === 'DONE') && (msg.hasOwnProperty('status')) && (msg.hasOwnProperty('title')) && (msg.hasOwnProperty('message')) && (msg.hasOwnProperty('js_evcode')) && (msg.hasOwnProperty('redirect'))) {
+				if(msg.status === 'OK') {
+					SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(msg.title), SmartJS_CoreUtils.escape_html(msg.message), '', 5000, false, 'gritter-green');
+					setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
+					TheGrid.loadGridData(0);
+				} else {
+					SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(msg.title), SmartJS_CoreUtils.escape_html(msg.message), '', 7500, false, 'gritter-red');
+					setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
+					TheGrid.loadGridData(0);
+				}
+			} else {
+				SmartJS_BrowserUtils.GrowlNotificationAdd('ERROR', 'Invalid JSON Answer', '', 7500, false, 'gritter-red');
+				setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
+				TheGrid.loadGridData(0);
+			}
+		}).fail(function (msg) {
+			SmartJS_BrowserUtils.alert_Dialog(SmartJS_CoreUtils.escape_html(msg.responseText), 'SmartJS_BrowserUtils.Overlay_Hide();', 'ERROR: Invalid Server Response ', 720, 400);
+			TheGrid.loadGridData(0);
+		});
+	}
+	function handleSelectedMessages(action) {
+		//--
+		action = String(action);
+		//--
+		var messagesArr = getGridSelectedRows();
+		if((!messagesArr) || (messagesArr.length <= 0)) {
+			SmartJS_BrowserUtils.alert_Dialog('<h3>No Messages Selected ...</h3>', null, 'Select Message(s)', 500, 175);
+			return;
+		} //end if
+		//--
+		switch(action) {
+			case 'delete':
+				SmartJS_BrowserUtils.confirm_Dialog('<div style="position:absolute; right:10px; top:0; color:' + SmartJS_CoreUtils.escape_html(iconColorForMsgDeleteDialog) + '; opacity:0.9;"><i class="sfi ' + SmartJS_CoreUtils.escape_html(iconForMsgDeleteDialog) + ' sfi-2x"></i></div><h3>' + SmartJS_CoreUtils.escape_html(msgForBtnDelete) + '&nbsp;?</h3>' + (msgExtraDelete ? '<div style="font-size:0.825rem!important; color:#F2891F;"><i class="sfi sfi-notification"></i> &nbsp; <b>' + SmartJS_CoreUtils.escape_html(msgExtraDelete)  + '</b></div>' : ''), function(){ moveOrDeleteSelectedMessages(action, messagesArr) }, 'Selected Message(s): ' + String(messagesArr.length), 550, 200);
+				break;
+			case 'restore':
+				SmartJS_BrowserUtils.confirm_Dialog('<div style="position:absolute; right:10px; top:0; color:#333333; opacity:0.9;"><i class="sfi sfi-folder-upload sfi-2x"></i></div><h3>' + SmartJS_CoreUtils.escape_html(msgForButtonRestore) + '&nbsp;?</h3>' + '<div style="font-size:0.825rem!important; color:#F2891F;"><i class="sfi sfi-notification"></i> &nbsp; If there are selected <b>messages</b> that are <b>marked with the Trash icon</b> they <b>cannot be restored</b> as they have an unknown origin. <i>Only the messages that have been moved to Trash from the WebMail\'s Inbox or Sent folders can be restored back and they are marked with a different icon</i>.</div>', function(){ moveOrDeleteSelectedMessages(action, messagesArr) }, 'Selected Message(s): ' + String(messagesArr.length), 550, 250);
+				break;
+			default:
+				var warnMsg = 'Invalid Select Action: ' + action;
+				if(jQuery.alertable) {
+					jQuery.alertable.alert(warnMsg).always(function(){});
+				} else {
+					alert(warnMsg);
+				} //end if else
+				return;
+		} //end switch
+		//--
+	}
 	//--
 </script>
 <form id="filtering" name="filtering" class="ux-form">
 	<table class="ux-reflow-table">
 		<tr>
+			<td>
+				[%%%IF:CURRENT-BOX:==trash;%%%]
+				<button type="button" class="ux-button ux-button-highlight" onClick="handleSelectedMessages('restore');" title="Restore Selected Messages (back to Inbox or Sent)"><i class="sfi sfi-folder-upload"></i></button>
+				[%%%/IF:CURRENT-BOX%%%]
+				<button type="button" class="ux-button ux-button-[%%%IF:CURRENT-BOX:==trash;%%%]special[%%%ELSE:CURRENT-BOX%%%]highlight[%%%/IF:CURRENT-BOX%%%]" onClick="handleSelectedMessages('delete');" title="[%%%IF:CURRENT-BOX:==trash;%%%]Delete Selected Messages[%%%ELSE:CURRENT-BOX%%%]Move Selected Messages to Trash[%%%/IF:CURRENT-BOX%%%]"><i class="sfi sfi-[%%%IF:CURRENT-BOX:==trash;%%%]bin2[%%%ELSE:CURRENT-BOX%%%]bin[%%%/IF:CURRENT-BOX%%%]"></i></button>
+			</td>
 			<td>
 			<select name="srcby" id="filter-srcby" class="ux-input-def ux-input-1-4">
 				<option value="" title="Select from below">* Filter By: *:</option>
@@ -42,25 +150,50 @@
 				<div style="width:32px;">&nbsp;</div>
 			</td>
 			<td>
-				<span style="color:#778899; font-size:16px; font-weight:bold;">[###CURRENT-MBOX|html###]/[###CURRENT-BOX|ucfirst|html###]<br>Messages List :: <span id="infoTotalRows"># / # @</span></span>
+				<span style="color:#333333; font-size:16px; font-weight:bold;">[###CURRENT-BOX|ucfirst|html###]&nbsp;/&nbsp;[###CURRENT-MBOX|html###]<br><span style="color:#778899;">Messages List :: <span id="infoTotalRows"># / # @</span></span></span>
 			</td>
 		</tr>
 	</table>
 </form>
 <div id="webmailNavPager"></div>
-<form class="ux-form"><div id="webmailGrid" class="slickgrid-table" style="width:100%;height:10px;"></div></form>
+<form class="ux-form"><div id="webmailGrid_[###CURRENT-BOX|jsvar|html###]" class="slickgrid-table" style="width:100%;height:10px;"></div></form>
 <script type="text/javascript">
 jQuery(function() {
 
 	// Formatters
 	function formatter_ID(row, cell, value, columnDef, dataContext) {
 		value = value || '#';
-		var color = '#777777';
-		var rcolor = '#333333';
+		var color = '#333333';
+		var rcolor = '#777777';
 		if(dataContext['stat_read'] <= 0) {
 			color = '#FF5500';
 		} //end if else
-		return '<button title="Display Message" style="margin:0px; margin-top:-2px;" class="ux-button ux-button-xsmall" onClick="jQuery(this).children().first().css({\'color\':\'' + SmartJS_CoreUtils.escape_js(rcolor) + '\'}); SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(value) +'\', \'webmail_view_msg\'); return false;"><i class="sfi sfi-envelop" style="color:' + SmartJS_CoreUtils.escape_html(color) + ';"></i></button>';
+		return '<button title="Display Message" style="margin:0px; margin-top:-2px;" class="ux-button ux-button-xsmall" onClick="jQuery(this).children().first().css({\'color\':\'' + SmartJS_CoreUtils.escape_js(rcolor) + '\'}); SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(value) +'\', \'webmail_view_msg\'); return false;"><i class="sfi sfi-mail" style="color:' + SmartJS_CoreUtils.escape_html(color) + ';"></i></button>';
+	}
+	function formatter_Box(row, cell, value, columnDef, dataContext) {
+		var iFolderIcon = 'sfi sfi-warning';
+		var iFolderDesc = '?';
+		var iFolderColor = '#000000';
+		switch(dataContext['ifolder']) {
+			case 'inbox':
+				iFolderIcon = 'sfi sfi-download2';
+				iFolderDesc = '&darr; INBOX';
+				iFolderColor = '#337AB7';
+				break;
+			case 'sent':
+				iFolderIcon = 'sfi sfi-upload2';
+				iFolderDesc = '&uarr; Sent';
+				iFolderColor = '#AAAAAA';
+				break;
+			case 'trash':
+				iFolderIcon = 'sfi sfi-bin';
+				iFolderDesc = '&rarr; Trash';
+				iFolderColor = '#778899';
+				break;
+			default:
+				// invalid folder icon
+		} //end switch
+		return '<div align="center" title="' + iFolderDesc + '" style="cursor:help; color:' + SmartJS_CoreUtils.escape_html(iFolderColor) + ';"><i class="' + SmartJS_CoreUtils.escape_html(iFolderIcon) + '"></i></div>';
 	}
 	function formatter_Atts(row, cell, value, columnDef, dataContext) {
 		value = value || '0';
@@ -68,19 +201,21 @@ jQuery(function() {
 		if(value != 1) {
 			value = '';
 		} else {
-			value = '<div align="center" title="' + SmartJS_CoreUtils.escape_html(atts) + '" style="cursor:help;"><img src="lib/core/plugins/img/email/attachment.svg" width="16" style="margin-top:3px;"></div>';
+			value = '<div align="center" title="' + SmartJS_CoreUtils.escape_html(atts) + '" style="cursor:help;"><i class="sfi sfi-attachment"></i></div>';
 		} //end
 		return String(value);
 	}
 
 	// Grid Data Defs
 	var columns = [
-		{id:'@link', field:'@link', name:'', sortable:true, width:20, cssClass:'smartGrid_AlignCenter', formatter:formatter_ID},
-		{id:'have_atts', field:'have_atts', name:'A.', sortable:true, width:20, formatter:formatter_Atts},
+		{id:'@link', field:'@link', name:'', sortable:false, width:20, cssClass:'smartGrid_AlignCenter', formatter:formatter_ID}, // unselectable:true
+		{id:'@box', field:'@box', name:'F.', sortable:false, width:20, cssClass:'smartGrid_AlignCenter', formatter:formatter_Box},
+		{id:'have_atts', field:'have_atts', name:'At.', sortable:true, width:20, formatter:formatter_Atts},
 		{id:'from_all', field:'from_all', name:'From', sortable:true, width:100, cssClass:'smartGrid_Important', editor:TextCellSelector},
 		{id:'to_all', field:'to_all', name:'To', sortable:true, width:100, cssClass:'smartGrid_Important', editor:TextCellSelector},
-		{id:'msg_subj', field:'msg_subj', name:'Subject', sortable:true, width:200, cssClass:'smartGrid_Default', editor:TextCellSelector},
-		{id:'date_time', field:'date_time', name:'DateTime', sortable:true, width:100, cssClass:'smartGrid_Default', editor:TextCellSelector},
+		{id:'msg_subj', field:'msg_subj', name:'Subject', sortable:true, width:230, cssClass:'smartGrid_Default', editor:TextCellSelector},
+		{id:'date_time', field:'date_time', name:'DateTime', sortable:true, width:100, cssClass:'smartGrid_DefaultCenter', editor:TextCellSelector},
+		{id:'size_kb', field:'size_kb', name:'Size KB', sortable:true, width:70, cssClass:'smartGrid_DefaultRight', editor:TextCellSelector},
 	];
 
 	//-- Grid Options

@@ -17,7 +17,7 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
 
 
 /**
- * Admin Controller
+ * Admin Controller r.20200415
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
@@ -35,6 +35,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			die(SmartComponents::http_message_403_forbidden('ERROR: WebMail Invalid Auth ...'));
 			return;
 		} //end if
+		//--
+		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--
 		$this->username = (string) SmartAuth::get_login_id();
 		//--
@@ -67,6 +69,19 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$this->userpath = (string) SmartFileSysUtils::add_dir_last_slash((string)$safe_user_path);
 		//--
 
+		//-- {{{SYNC-CLOUD-MAIL-CHK-MBOX}}}
+		$mbox = (string) trim((string)$this->RequestVarGet('mbox', '', 'string'));
+		if((string)$mbox == '') {
+			die(SmartComponents::http_message_500_internalerror('ERROR: No WebMail selected for User: '.$this->username));
+			return;
+		} //end if
+		//--
+		if(SmartFileSystem::is_type_dir((string)$this->userpath.$mbox) !== true) {
+			die(SmartComponents::http_message_500_internalerror('ERROR: Invalid WebMail MailBox ('.$mbox.') selected for User: '.$this->username));
+			return;
+		} //end if
+		//--
+
 		//--
 		echo SmartMarkersTemplating::render_file_template(
 			$this->ControllerGetParam('module-view-path').'webmailget-start.mtpl.htm',
@@ -74,9 +89,18 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		);
 		$this->InstantFlush();
 		//--
-		$log = (string) $this->get_from_server('iradu@unix-world.org', 'inbox'); // echoes
+
 		//--
-		if((string)SMART_FRAMEWORK_DEBUG_MODE == 'yes') {
+		$arr_boxes = [ 'inbox', 'sent', 'trash' ];
+		$box = $this->RequestVarGet('box', 'inbox', 'string');
+		if(!in_array((string)$box, (array)$arr_boxes)) {
+			die(SmartComponents::http_message_400_badrequest('ERROR: Invalid WebMail Box ('.$box.')'));
+			return;
+		} //end if
+		//--
+		$log = (string) $this->get_from_server((string)$mbox, (string)$box); // echoes
+		//--
+		if($this->IfDebug()) {
 			echo '<br><hr><br>'.Smart::nl_2_br(Smart::escape_html($log));
 			$this->InstantFlush();
 		} //end if
@@ -91,77 +115,173 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	} //END FUNCTION
 
 
-	private function get_from_server($y_mbx_name, $y_mbx_dir='inbox') {
+	private function print_msg_ok($msg) {
+		//--
+		if((string)trim((string)$msg == '')) {
+			$msg = 'Empty Message OK !...';
+		} //end if
+		//--
+		echo SmartComponents::operation_ok($msg, '96%');
+		//--
+	} //END FUNCTION
+
+
+	private function print_msg_notice($msg) {
+		//--
+		if((string)trim((string)$msg == '')) {
+			$msg = 'Empty Message Notice !...';
+		} //end if
+		//--
+		echo SmartComponents::operation_notice($msg, '96%');
+		//--
+	} //END FUNCTION
+
+
+	private function print_msg_warn($msg) {
+		//--
+		if((string)trim((string)$msg == '')) {
+			$msg = 'Empty Message Warn !...';
+		} //end if
+		//--
+		echo SmartComponents::operation_warn($msg, '96%');
+		//--
+	} //END FUNCTION
+
+
+	private function print_fatal_err($err) {
+		//--
+		if((string)trim((string)$err == '')) {
+			$err = 'Empty Fatal Error !...';
+		} //end if
+		//--
+		echo SmartComponents::operation_error($err, '96%');
+		//--
+	} //END FUNCTION
+
+
+	private function print_err($err) {
+		//--
+		if((string)trim((string)$err == '')) {
+			$err = 'Empty Error !...';
+		} //end if
+		//--
+		echo '<br><font color="#FF0000">'.Smart::escape_html((string)$err).'</font>';
+		//--
+	} //END FUNCTION
+
+
+	private function get_from_server($y_mbx_name, $y_mbx_dir) {
 
 		//--
 		if(!SmartFileSystem::is_type_dir((string)$this->userpath)) {
-			echo SmartComponents::operation_error('#User Mail Dir is Missing !');
+			$this->print_fatal_err('#User Mail Dir is Missing !');
 			return '';
 		} //end if
 		//--
 		if((string)trim((string)$y_mbx_name) == '') {
-			echo SmartComponents::operation_error('#Empty MailBox Name !');
+			$this->print_fatal_err('#Empty MailBox Name !');
 			return '';
 		} //end if
 		$y_mbx_name = Smart::safe_validname($y_mbx_name, '_'); // OK
 		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name($y_mbx_name)) {
-			echo SmartComponents::operation_error('#Invalid MailBox Name !');
+			$this->print_fatal_err('#Invalid MailBox Name !');
 			return '';
 		} //end if
 		//--
 		$the_mbox_path = (string) SmartFileSysUtils::add_dir_last_slash($this->userpath.$y_mbx_name);
 		//--
 		if(!SmartFileSysUtils::check_if_safe_path($the_mbox_path)) {
-			echo SmartComponents::operation_error('#Unsafe MailBox Path !');
+			$this->print_fatal_err('#Unsafe MailBox Path !');
 			return '';
 		} //end if
 		if(!SmartFileSystem::is_type_dir($the_mbox_path)) {
-			echo SmartComponents::operation_error('Selected MailBox Dir is Missing !');
+			$this->print_fatal_err('Selected MailBox Dir is Missing !');
 			return '';
 		} //end if
 		//--
 
 		//--
-		switch(strtolower((string)$y_mbx_dir)) {
-			/* do not sync trash !!!
-			case 'trash':
-				$use_the_dir = 'trash';
-				$use_next_dir = '';
-				$img_get = 'folder-trash.svg';
-				break;
-			*/
-			case 'sent':
-				$use_the_dir = 'sent';
-				$use_next_dir = ''; // 'trash';
-				$use_mark_read = '1';
-				$img_get = 'folder-sent.svg';
-				break;
+		$tmp_cfg_arr = \SmartModExtLib\Cloud\webmailUtils::parseMboxConfig($the_mbox_path, $y_mbx_name); // return mixed: err string or array config
+		if(!is_array($tmp_cfg_arr)) {
+			$this->print_fatal_err('MailBox Config: '.$tmp_cfg_arr);
+			return '';
+		} //end if
+		//--
+		$tmp_cfg_send_arr = (array) $tmp_cfg_arr['send'];
+		$tmp_cfg_get_arr = (array) $tmp_cfg_arr['get'];
+		//--
+		$tmp_cfg_arr = array();
+		//--
+
+		//--
+		$mailbox_enable_send = false;
+		if(Smart::array_size($tmp_cfg_send_arr) > 0) {
+			$mailbox_enable_send = true;
+		} //end if
+		//--
+
+		//--
+		switch((string)strtolower((string)$y_mbx_dir)) { // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
 			case 'inbox':
-			default:
+				$srv_folder_name = 'INBOX'; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}} :: using it all upercase is safer as a convention to select the inbox if named differently
+				$srv_allow_create = false; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}} :: this should exist on server, do not allow create
 				$use_the_dir = 'inbox';
-				$use_next_dir = 'sent';
+				if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
+					if($mailbox_enable_send === true) {
+						$use_next_dir = 'sent';
+					} else {
+						$use_next_dir = 'trash';
+					} //end if else
+				} else {
+					$use_next_dir = ''; // after this, stop (for POP3)
+				} //end if else
 				$use_mark_read = '0';
-				$img_get = 'folder-inbox.svg';
+				break;
+			case 'sent': // sync just on IMAP4, but NOT on POP3
+				if(((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') AND ($mailbox_enable_send === true)) {
+					$srv_folder_name = 'Sent'; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+					$srv_allow_create = true; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+					$use_the_dir = 'sent';
+					$use_next_dir = 'trash';
+					$use_mark_read = '1';
+				} else {
+					$this->print_fatal_err('Invalid Folder: '.$y_mbx_dir);
+					return '';
+				} //end if else
+				break;
+			case 'trash':
+				if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
+					$srv_folder_name = 'Trash'; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+					$srv_allow_create = true; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+					$use_the_dir = 'trash';
+					$use_next_dir = ''; // after this, stop
+					$use_mark_read = '1';
+				} else {
+					$this->print_fatal_err('Invalid Folder: '.$y_mbx_dir);
+					return '';
+				} //end if else
+				break;
+			default:
+				$this->print_fatal_err('Invalid Folder: '.$y_mbx_dir);
+				return '';
 		} //end switch
 		//--
-		$spam_dir = 'junk';
+		if((string)trim((string)$srv_folder_name) == '') {
+			$this->print_fatal_err('Invalid Server Folder: '.$y_mbx_dir);
+			return '';
+		} //end if
 		//--
 
 		//--
 		if(!is_dir($the_mbox_path.$use_the_dir)) {
-			echo SmartComponents::operation_error('Inbox MailBox Sub-Dir is Missing !');
-			return '';
-		} //end if
-		//--
-		if(!is_dir($the_mbox_path.$spam_dir)) {
-			echo SmartComponents::operation_error('Spam MailBox Sub-Dir is Missing !');
+			$this->print_fatal_err('Inbox MailBox Sub-Dir is Missing !');
 			return '';
 		} //end if
 		//--
 
 		//--
 		echo '<br>';
-		echo '<table title="'.Smart::escape_html($the_mbox_path.$use_the_dir).'"><tr><td><span style="font-size:1.5rem;"><b>'.Smart::escape_html($y_mbx_name).'&nbsp;&nbsp;/&nbsp;&nbsp;'.Smart::escape_html(ucfirst($use_the_dir)).'</b></span></td><td>&nbsp;</td><td align="center" id="img-loader" width="64"><img width="32" height="32" src="lib/framework/img/loading-spin.svg"></td><td align="right" width="64"><img width="64" height="64" src="lib/core/plugins/img/email/'.$img_get.'"></td></tr></table>';
+		echo '<table title="'.Smart::escape_html($the_mbox_path.$use_the_dir).'"><tr><td><span style="font-size:1.5rem;"><b>'.Smart::escape_html($y_mbx_name).'&nbsp;&nbsp;/&nbsp;&nbsp;'.Smart::escape_html($srv_folder_name).'</b></span></td><td>&nbsp;</td><td align="center" id="img-loader" width="64"><img width="32" height="32" src="lib/framework/img/loading-spin.svg"></td><td align="right" width="64"><img width="64" height="64" src="modules/mod-cloud/views/img/email/folder-'.Smart::escape_html($use_the_dir).'.svg"></td></tr></table>';
 		$this->InstantFlush();
 		sleep(2);
 		//--
@@ -182,123 +302,111 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(($quota_max <= 0) OR (($quota_max > 0) AND ($quota_max >= $quota_used))) {
 			// OK
 		} else {
-			echo SmartComponents::operation_warn('Your Quota has been reached: '.Smart::escape_html($quota_used).' of '.Smart::escape_html($quota_max));
+			$this->print_msg_warn('Your Quota has been reached: '.Smart::escape_html($quota_used).' of '.Smart::escape_html($quota_max));
 			return '';
 		} //end if else
 		//--
 
 		//--
-		$file_mbx_cfg = (string) $the_mbox_path.'mailbox.json';
-		if(!SmartFileSystem::is_type_file($file_mbx_cfg)) {
-			echo SmartComponents::operation_error('The MailBox Config is Missing !');
+		$tmp_cfg_get_arr['settings_type'] = (string) $tmp_cfg_get_arr['settings_type'];
+		//--
+		$tmp_cfg_get_arr['settings_host'] = (string) $tmp_cfg_get_arr['settings_host'];
+		if((string)trim((string)$tmp_cfg_get_arr['settings_host']) == '') {
+			$this->print_fatal_err('Invalid Settings: Empty Server Host');
 			return '';
 		} //end if
-		$tmp_cfg_arr = Smart::json_decode(SmartFileSystem::read($file_mbx_cfg));
-		//--
-		if(Smart::array_size($tmp_cfg_arr) <= 0) {
-			echo SmartComponents::operation_error('Invalid MailBox Config !');
+		$tmp_cfg_get_arr['settings_port'] = Smart::format_number_int($tmp_cfg_get_arr['settings_port'], '+');
+		if(($tmp_cfg_get_arr['settings_port'] <= 0) OR ($tmp_cfg_get_arr['settings_port'] > 65535)) {
+			$this->print_fatal_err('Invalid Settings: Server Port: '.(int)$tmp_cfg_get_arr['settings_port']);
 			return '';
 		} //end if
+		$tmp_cfg_get_arr['settings_tls'] = (string) $tmp_cfg_get_arr['settings_tls'];
 		//--
-
-		//--
-		$tmp_cfg_arr['settings_type'] = (string) $tmp_cfg_arr['settings_type'];
-		//--
-		$tmp_cfg_arr['settings_host'] = (string) $tmp_cfg_arr['settings_host'];
-		if((string)trim((string)$tmp_cfg_arr['settings_host']) == '') {
-			echo SmartComponents::operation_error('Invalid Settings: Empty Server Host');
-			return '';
-		} //end if
-		$tmp_cfg_arr['settings_port'] = Smart::format_number_int($tmp_cfg_arr['settings_port'], '+');
-		if(($tmp_cfg_arr['settings_port'] <= 0) OR ($tmp_cfg_arr['settings_port'] > 65535)) {
-			echo SmartComponents::operation_error('Invalid Settings: Server Port: '.(int)$tmp_cfg_arr['settings_port']);
-			return '';
-		} //end if
-		$tmp_cfg_arr['settings_tls'] = (string) $tmp_cfg_arr['settings_tls'];
-		//--
-		$tmp_cfg_arr['settings_auth_username'] = (string) $tmp_cfg_arr['settings_auth_username'];
-		$tmp_cfg_arr['settings_auth_password'] = (string) SmartUtils::crypto_blowfish_decrypt((string)$tmp_cfg_arr['settings_auth_password']);
-		if((string)trim((string)$tmp_cfg_arr['settings_auth_password']) == '') {
-			echo SmartComponents::operation_error('Invalid Settings: Empty Password');
+		$tmp_cfg_get_arr['settings_auth_username'] = (string) $tmp_cfg_get_arr['settings_auth_username'];
+		$tmp_cfg_get_arr['settings_auth_password'] = (string) SmartUtils::crypto_blowfish_decrypt((string)$tmp_cfg_get_arr['settings_auth_password']);
+		if((string)trim((string)$tmp_cfg_get_arr['settings_auth_password']) == '') {
+			$this->print_fatal_err('Invalid Settings: Empty Password');
 			return '';
 		} //end if
 		//--
-		$tmp_cfg_arr['settings_auth_mode'] = (string) $tmp_cfg_arr['settings_auth_mode'];
+		$tmp_cfg_get_arr['settings_auth_mode'] = (string) $tmp_cfg_get_arr['settings_auth_mode'];
 		//--
-		$tmp_cfg_arr['settings_limit_per_session'] = Smart::format_number_int($tmp_cfg_arr['settings_limit_per_session'], '+');
-		if($tmp_cfg_arr['settings_limit_per_session'] < 0) {
-			$tmp_cfg_arr['settings_limit_per_session'] = 0;
+		$tmp_cfg_get_arr['settings_limit_per_session'] = Smart::format_number_int($tmp_cfg_get_arr['settings_limit_per_session'], '+');
+		if($tmp_cfg_get_arr['settings_limit_per_session'] < 0) {
+			$tmp_cfg_get_arr['settings_limit_per_session'] = 0;
 		} //end if
-		if($tmp_cfg_arr['settings_limit_per_session'] > 1000) {
-			$tmp_cfg_arr['settings_limit_per_session'] = 1000; // hard limit
+		if($tmp_cfg_get_arr['settings_limit_per_session'] > 1000) {
+			$tmp_cfg_get_arr['settings_limit_per_session'] = 1000; // hard limit
 		} //end if
 		//--
 
 		//### check if POP3 or IMAP4
 
+		// TODO: delete old (stat_cloud > 0) if more than 1 year old
+
 		//-- open pop3 connection
-		if((string)$tmp_cfg_arr['settings_type'] == 'imap4') {
+		if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
 			$mailget = new SmartMailerImap4Client();
-		} elseif((string)$tmp_cfg_arr['settings_type'] == 'pop3') {
+		} elseif((string)$tmp_cfg_get_arr['settings_type'] == 'pop3') {
 			$use_next_dir = '';
 			$mailget = new SmartMailerPop3Client();
 		} else {
-			echo SmartComponents::operation_error('Invalid Settings: Server Type: '.Smart::escape_html($tmp_cfg_arr['settings_type']));
+			$this->print_fatal_err('Invalid Settings: Server Type: '.Smart::escape_html($tmp_cfg_get_arr['settings_type']));
 			return '';
 		} //end if
 		//--
-		if((string)SMART_FRAMEWORK_DEBUG_MODE == 'yes') {
+		if($this->IfDebug()) {
 			$mailget->debug = true;
 		} else {
 			$mailget->debug = false;
 		} //end if else
 		//--
-		if((string)$tmp_cfg_arr['settings_tls'] == 'unsecure') {
-			$tmp_cfg_arr['settings_tls'] = '';
+		if((string)$tmp_cfg_get_arr['settings_tls'] == 'unsecure') {
+			$tmp_cfg_get_arr['settings_tls'] = '';
 		} //end if
-		$connect = $mailget->connect($tmp_cfg_arr['settings_host'], $tmp_cfg_arr['settings_port'], $tmp_cfg_arr['settings_tls']);
+		$connect = $mailget->connect($tmp_cfg_get_arr['settings_host'], $tmp_cfg_get_arr['settings_port'], $tmp_cfg_get_arr['settings_tls']);
 		//--
 		if($connect) {
 			//--
-			$login = $mailget->login($tmp_cfg_arr['settings_auth_username'], $tmp_cfg_arr['settings_auth_password'], $tmp_cfg_arr['settings_auth_mode']);
+			$login = $mailget->login($tmp_cfg_get_arr['settings_auth_username'], $tmp_cfg_get_arr['settings_auth_password'], $tmp_cfg_get_arr['settings_auth_mode']);
 			//--
-			if($login) {
+			if($login AND $mailget->is_connected_and_logged_in()) {
 				//--
-				$db = new \SmartModDataModel\Cloud\SqWebmail($the_mbox_path);
+				$db = \SmartModExtLib\Cloud\webmailUtils::getDBStorageObject($the_mbox_path);
 				//--
-				if((string)$tmp_cfg_arr['settings_type'] == 'imap4') {
+				if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
 					//--
-					$mailget->select_mailbox(ucfirst($use_the_dir), false); // do not create if does not exists
+					$mailget->select_mailbox((string)$srv_folder_name, (bool)$srv_allow_create);
 					//--
-					if(strlen($mailget->error) > 0) {
-						$mailget->select_mailbox(ucfirst($use_the_dir), true); // create if does not exists
-						if(strlen($mailget->error) > 0) {
-							echo SmartComponents::operation_error('MAILGET ERROR [NOOP]: '.$mailget->error);
-							return (string) $mailget->log;
-						} //end if
+					if(((string)$mailget->error != '') OR ((string)$mailget->get_selected_mailbox() != (string)$srv_folder_name)) {
+						$mailget->quit();
+						$this->print_fatal_err('MAILGET ERROR [SELECTED = '.$mailget->get_selected_mailbox().']: '.$mailget->error);
+						return (string) $mailget->log;
 					} //end if
 					//--
 				} //end if
 				//--
 				$mailget->noop();
-				if(strlen($mailget->error) > 0) {
-					echo SmartComponents::operation_error('MAILGET ERROR [NOOP]: '.$mailget->error);
+				if((string)$mailget->error != '') {
+					$mailget->quit();
+					$this->print_fatal_err('MAILGET ERROR [NOOP]: '.$mailget->error);
 					return (string) $mailget->log;
 				} //end if
 				//--
 				$arr_count = array();
 				$arr_count = $mailget->count();
-				if(strlen($mailget->error) > 0) {
-					echo SmartComponents::operation_error('MAILGET ERROR [COUNT]: '.$mailget->error);
+				if((string)$mailget->error != '') {
+					$mailget->quit();
+					$this->print_fatal_err('MAILGET ERROR [COUNT]: '.$mailget->error);
 					return (string) $mailget->log;
 				} //end if
 				//--
 				$count = Smart::format_number_int($arr_count['count'], '+');
 				$size = Smart::format_number_int($arr_count['size'], '+');
 				//--
-				echo 'There are #'.SmartTextTranslations::formatAsLocalNumber($count, 0).' messages in the MailBox';
+				echo 'There are <b>#'.Smart::escape_html(SmartTextTranslations::formatAsLocalNumber($count, 0)).' messages</b> in the MailBox';
 				if($size > 0) {
-					echo ' with size of '.SmartUtils::pretty_print_bytes($size);
+					echo ' with a <b>total size of '.Smart::escape_html(SmartUtils::pretty_print_bytes($size, 2)).'</b>';
 				} //end if
 				echo '.<br>';
 				$this->InstantFlush();
@@ -311,12 +419,12 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$cnt_max_get = (int) $count;
 					//-- limit get if set
 					$cnt_max_limit = $cnt_max_get;
-					if((int) $tmp_cfg_arr['settings_limit_per_session'] > 0) {
-						if((int) $tmp_cfg_arr['settings_limit_per_session'] < $cnt_max_get) {
-							$cnt_max_limit = (int) $tmp_cfg_arr['settings_limit_per_session'];
+					if((int) $tmp_cfg_get_arr['settings_limit_per_session'] > 0) {
+						if((int) $tmp_cfg_get_arr['settings_limit_per_session'] < $cnt_max_get) {
+							$cnt_max_limit = (int) $tmp_cfg_get_arr['settings_limit_per_session'];
 						} //end if
 					} else {
-						if((string)$tmp_cfg_arr['settings_type'] == 'imap4') {
+						if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
 							$cnt_max_limit = 0;
 						} else {
 							$cnt_max_limit = 1000; // for POP3 we use a hard limit
@@ -329,63 +437,122 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						$cnt_max_limit = 0; // can't be lower than 0
 					} //end if
 					//--
-					if(((string)$tmp_cfg_arr['settings_type'] == 'imap4') AND ($cnt_max_limit == 0)) {
+					if(((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') AND ($cnt_max_limit == 0)) {
 						//--
 						$tmp_retr_text = 'Retrieving All-at-Once ...';
 						$tmp_retr_mode = 'all-imap4';
 						//--
-						$tmp_txt_uids = (string) $mailget->uid();
-						$tmp_all_uids = (array) $mailget->parse_uidls($tmp_txt_uids);
+						$tmp_txt_uids = (string) $mailget->uid(); // TODO: parse this with foreach as is not safe to use array values of parse_uidls()
+						$tmp_all_uids = (array) $mailget->parse_uidls($tmp_txt_uids); // convert to non-associative array
+						//--
+						if((int)$count !== (int)Smart::array_size($tmp_all_uids)) {
+							$mailget->quit();
+							$this->print_fatal_err('MAILGET ERROR [INVALID MAILBOX UIDL COUNT = '.(int)Smart::array_size($tmp_all_uids).'] / TotalCount = '.(int)$count);
+							return (string) $mailget->log;
+						} //end if
 						//--
 						$cnt_max_get = Smart::array_size($tmp_all_uids);
 						//--
 					} else {
 						//--
-						$tmp_retr_text = 'Retrieving One-by-One  / Max-Per-Session: '.(int)$cnt_max_limit.' ...';
+						$tmp_retr_text = 'Retrieving One-by-One / Max-Per-Session: '.(int)$cnt_max_limit.' ...';
 						$tmp_retr_mode = 'each';
 						//--
 						$tmp_txt_uids = '';
 						$tmp_all_uids = array();
 						//--
+						for($i=1; $i<=$cnt_max_get; $i++) { // start at 1 as this is the first Message ID on POP3 or IMAP4 {{{SYNC-IMAP4-POP3-FIRST-MSG-NUM}}}
+							$tmp_all_uids[$i] = $i;
+						} //end for
+						//--
 					} //end if
 					//--
-					echo '<span style="font-size:15px;"><b>'.Smart::escape_html($tmp_retr_text).'</b></span><br>';
+					echo '<div><h4 style="display:inline-block;">'.Smart::escape_html($tmp_retr_text).'</h4></div>';
 					$this->InstantFlush();
 					//--
-					for($i=1; $i<=$cnt_max_get; $i++) { // we start at 1 as this is the first MessageID
+					$cnt_crr = 0;
+					foreach($tmp_all_uids as $key => $val) {
+						//--
+						// $key is the message num ; $val is the message UID (or message num, depends on how it manages)
+						//--
+						$cnt_crr++; // be sure to increment here (at the begining of loop) to real start at 1 (was init with zero) as this should be the first Message ID on POP3 or IMAP4 {{{SYNC-IMAP4-POP3-FIRST-MSG-NUM}}}
+						//--
+						if(!$mailget->is_connected_and_logged_in()) {
+							$errors += 1;
+							$rd_err = 'Server Connection Dropped ...';
+							$this->print_err($rd_err);
+							break;
+						} //end if
+						//--
+						if((string)$mailget->get_selected_mailbox() != (string)$srv_folder_name) {
+							$errors += 1;
+							$rd_err = 'Invalid Server MailBox Selected for ['.$srv_folder_name.']: '.$mailget->get_selected_mailbox();
+							$this->print_err($rd_err);
+							break;
+						} //end if
 						//--
 						if((string)$tmp_retr_mode == 'all-imap4') {
 							//--
-							$crr_uid = (string) $tmp_all_uids[$i-1];
-							$tmp_xuid = (array) explode('-UID-', $crr_uid);
-							$num_uid = (string) trim((string)$tmp_xuid[1]);
-							$tmp_xuid = array();
+							$crr_uid = (string) $val; // uid from list
 							//--
 						} else {
 							//--
-							$crr_uid = (string) $mailget->uid($i); // uid for message
-							$tmp_xuid = array();
-							$num_uid = '[none]';
+							$crr_uid = (string) $mailget->uid($key); // get uid for message num
+							if((string)$mailget->error != '') {
+								$errors += 1;
+								$rd_err = 'Server Error: '.$mailget->error;
+								$this->print_err($rd_err);
+								break; // perthaps UID out of range
+							} //end if
 							//--
 						} //end if else
 						//--
-						if(((string)$crr_uid != '') AND ((string)$num_uid != '')) { // we can't support messages without UIDs
+						$real_uid = (string) \SmartModExtLib\Cloud\webmailUtils::getMessageRealUid($crr_uid, $tmp_cfg_get_arr['settings_type']);
+						//--
+						if(((string)$crr_uid != '') AND ((string)trim((string)$real_uid) != '')) { // we can't support messages without UIDs
 							//--
-							$tmp_rd_arr = (array) $db->getOneMessageByUid($crr_uid);
+							$tmp_rd_arr = (array) $db->getOneMessageByUid($crr_uid, $use_the_dir);
 							//--
-							if(((string)$tmp_rd_arr['id'] == '') AND ((string)$tmp_rd_arr['stat_uid'] == '')) { // if message is not yet downloaded, download it
+							if(Smart::array_size($tmp_rd_arr) > 0) {
+								//--
+								if($tmp_rd_arr['stat_cloud'] == 1) { // marked as deleted on WebMail and the UID is in sync, delete also on Server
+									//-- {{{SYNC-WEBMAIL-DELETE-MARK-DELETED}}}
+									echo ' <i class="sfi sfi-bin2" style="color:#FF3300;"></i> ';
+									if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
+										$mailget->delete((string)$real_uid, true); // delete by UID on IMAP4, because after deletion numbering sequence changes instant !!
+									} else {
+										$mailget->delete($key); // delete this message from server by number
+									} //end if else
+									$mailget->clear_last_error();
+								} //end if
+								//--
+								// CHECK IF MESSAGES DELETION IS SET TO IMMEDIATELY DELETE FROM SERVER !
+								// #OR#
+								// CHECK IF MESSAGE NEED TO BE DELETED, DELETE IT.
+								// check by delete status as of $tmp_rd_arr['stat_cloud']
+								/*
+								if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
+									$mailget->delete($real_uid, true); // delete this message from server by UID
+								} else {
+									$mailget->delete($key); // delete this message from server by number
+								} //end if else
+								*/
+								//-- WARNING: check if need to delete on IMAP4 !!!
+								//echo '.';
+								//echo ' <font color="#778899"><b>[EXISTS]</b></font>';
+								//--
+							} else { // if message is not yet downloaded, download it
 								//--
 								$tmp_downloaded += 1;
 								//--
-								if(($i > 0) AND (($i % 10) == 0)) {
+								if(($cnt_crr > 0) AND (($cnt_crr % 10) == 0)) {
 									echo ' ';
 								} else {
-									echo '.';
+									echo '<i class="sfi sfi-mail2" style="color:#555555; margin-right:3px;"></i>';
 								} //end if else
-								if(($i % 100) == 0) {
+								if(($cnt_crr % 100) == 0) {
 									echo '<br>';
 								} //end if
-								$this->InstantFlush();
 								//--
 								$tmp_message_file = '';
 								$tmp_stor_result = 0;
@@ -395,38 +562,121 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								$tmp_message_error = '';
 								$tmp_message_size = 0;
 								//--
-								if((string)$tmp_retr_mode == 'all-imap4') {
-									$tmp_message_content = $mailget->read($num_uid, true); // on imap4 we can get a message by UID
+								if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
+									$tmp_message_content = $mailget->read($real_uid, true); // on imap4 we can get a message by UID
 								} else {
-									$tmp_message_content = $mailget->read($i); // default retrieve by number
+									$tmp_message_content = $mailget->read($key); // default retrieve by number
 								} //end if else
 								//--
 								$tmp_message_error = (string) $mailget->error;
 								//--
 								if((string)$tmp_message_error != '') {
 									$errors += 1;
-									$rd_err = 'Retrieve Failed for Message ('.$i.'): '.$tmp_message_error;
+									$rd_err = 'Retrieve Failed for Message ('.$key.'): '.$tmp_message_error;
+									$this->print_err($rd_err);
+									$tmp_message_content = ''; // be sure to clear for safety, it may be a message part only ... if error
 								} else {
-									$tmp_message_size = (int) strlen((string)$tmp_message_content); // $mailget->size($i); since this cannot be done by UUID, we do it differently
+									$tmp_message_size = (int) strlen((string)$tmp_message_content); // $mailget->size($key); since this cannot be done by UUID, we do it differently
 								} //end if
 								//--
-								if(((string)$tmp_message_error == '') AND (($quota_max <= 0) OR (($quota_max > 0) AND ($quota_max >= ($quota_used + $tmp_message_size))))) {
+								if(((string)$tmp_message_error == '') AND ((string)trim((string)$tmp_message_content) != '') AND (($quota_max <= 0) OR (($quota_max > 0) AND ($quota_max >= ($quota_used + $tmp_message_size))))) {
+									//-- check for store duplicates as if another email client will move a message from a inbox to trash and back the UID will change ; in this case avoid duplicates (apply also for other unattended messages move on server from a other boxes to another and back)
+									$arr_msg_store = (array) \SmartModExtLib\Cloud\webmailUtils::storeMessage($this->username, true, $db, $use_mark_read, $crr_uid, $tmp_message_content, $use_the_dir, $the_mbox_path, $tmp_cfg_get_arr); // the full message string must be passed here as it must be stored on disk
 									//--
-									$arr_msg_store = (array) \SmartModExtLib\Cloud\webmailUtils::storeMessage($this->username, $db, $use_mark_read, $crr_uid, $tmp_message_content, $use_the_dir, $the_mbox_path, $tmp_cfg_arr); // the full message string must be passed here as it must be stored on disk
+									$tmp_is_sync_mode = (bool) $arr_msg_store['sync_mode'];
+									$tmp_action_on_server = (string) $arr_msg_store['action_on_server'];
+									$tmp_message_id = (string) $arr_msg_store['message_id'];
 									$tmp_message_file = (string) $arr_msg_store['message_file'];
 									$tmp_stor_result = (int) $arr_msg_store['stor_result'];
+									$tmp_err_result = (string) $arr_msg_store['error'];
 									$tmp_wr_result = (int) $arr_msg_store['wr_result'];
+									//--
 									$arr_msg_store = array();
-									if(((string)$tmp_message_file == '') OR ($tmp_stor_result != 1)) {
+									//--
+									if(((bool)$tmp_is_sync_mode === true) AND ((string)$tmp_action_on_server != '')) {
+										//--
+										$tmp_arr_srv_act = (array) explode(':', (string)trim((string)$tmp_action_on_server));
+										if((string)$tmp_arr_srv_act[0] == 'sync') {
+											switch((string)$tmp_arr_srv_act[1]) {
+												case 'server':
+													if((string)$tmp_arr_srv_act[2] == 'delete') { // [sync:server:delete:do] ; {{{SYNC-WEBMAIL-DELETE-MARK-DELETED}}}
+														echo ' <i class="sfi sfi-cross" style="color:#FF3300;"></i> '; // marked as deleted on WebMail and the UID is NOT in sync, delete also on Server
+														if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
+															$mailget->delete((string)$real_uid, true); // delete by UID on IMAP4, because after deletion numbering sequence changes instant !!
+														} else {
+															$mailget->delete($key); // delete this message from server by number
+														} //end if else
+														$mailget->clear_last_error();
+													} elseif((string)$tmp_arr_srv_act[2] == 'move') { // ['sync:server:move:%folder%']
+														if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
+															echo ' <i class="sfi sfi-loop" style="color:#FF9900;"></i> ';
+															if(\in_array((string)$tmp_arr_srv_act[3], [ 'inbox', 'sent', 'trash' ])) { // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+																if($mailget->copy((string)$real_uid, (string)\SmartModExtLib\Cloud\webmailUtils::getServerBoxByFolder($tmp_arr_srv_act[3]), true)) { // copy UID !!! (required on IMAP4)
+																	$mailget->clear_last_error();
+																	$mailget->delete((string)$real_uid, true); // delete by UID on IMAP4, because after deletion numbering sequence changes instant !!
+																} //end if
+																$mailget->clear_last_error();
+															} else {
+																$errors += 1;
+																$rd_err = 'Invalid Server Sync Folder: ['.$tmp_arr_srv_act[3].'] for Action: ['.$tmp_arr_srv_act[2].'] for Realm: ['.$tmp_arr_srv_act[1].'] for: '.$key;
+																$this->print_err($rd_err);
+															} //end if else
+														} else {
+															$errors += 1;
+															$rd_err = 'Unsupported ['.strtoupper((string)$tmp_cfg_get_arr['settings_type']).'] Server Sync Action: ['.$tmp_arr_srv_act[2].'] for Realm: ['.$tmp_arr_srv_act[1].'] for: '.$key;
+															$this->print_err($rd_err);
+														} //end if else
+													} else {
+														$errors += 1;
+														$rd_err = 'Invalid Server Sync Action: ['.$tmp_arr_srv_act[2].'] for Realm: ['.$tmp_arr_srv_act[1].'] for: '.$key;
+														$this->print_err($rd_err);
+													} //end if else
+													break;
+												case 'local':
+													if((string)$tmp_arr_srv_act[2] == 'update') {
+														if((string)$tmp_arr_srv_act[3] == 'uid') {
+															echo ' <i class="sfi sfi-loop2" style="color:#337AB7;"></i> ';
+															// OK: nothing to do, was synced [sync:local:update:uid]
+														} else {
+															$errors += 1;
+															$rd_err = 'Invalid Local Sync Result: ['.$tmp_arr_srv_act[3].'] for Action: ['.$tmp_arr_srv_act[2].'] for Realm: ['.$tmp_arr_srv_act[1].'] for: '.$key;
+															$this->print_err($rd_err);
+														} //end if else
+													} else {
+														$errors += 1;
+														$rd_err = 'Invalid Local Sync Action: ['.$tmp_arr_srv_act[2].'] for Realm: ['.$tmp_arr_srv_act[1].'] for: '.$key;
+														$this->print_err($rd_err);
+													} //end if else
+													break;
+												default:
+													$errors += 1;
+													$rd_err = 'Invalid Sync Realm: ['.$tmp_arr_srv_act[1].'] for: '.$key;
+													$this->print_err($rd_err);
+											} //end switch
+										} else {
+											$errors += 1;
+											$rd_err = 'Invalid Server Action: ['.$tmp_arr_srv_act[0].'] for: '.$key;
+											$this->print_err($rd_err);
+										} //end if else
+										//--
+										$tmp_arr_srv_act = array();
+										//--
+									} elseif(((string)$tmp_message_id != '') AND ((string)$tmp_message_file != '') AND ((int)$tmp_stor_result == 1) AND ((string)$tmp_err_result == '')) {
+										//--
+										// OK
+										//--
+									} else {
 										$errors += 1;
-										$rd_err = 'Failed to store message on disk: '.$i.' / '.$tmp_message_file;
+										$rd_err = 'Failed to store message on disk: '.$key.' / (ERR='.$tmp_stor_result.' @ '.$tmp_err_result.') '.$tmp_message_file;
+										$this->print_err($rd_err);
 									} //end if
 									//--
-								} else {
+								} else { // TODO: Check also message $mailget->size()
 									//--
 									$errors += 1;
 									if((string)$tmp_message_error == '') { // avoid rewrite error message if any
-										$rd_err = 'Message too Big ('.$i.') ! Your Quota has been Reached: '.Smart::format_number_dec(($quota_used / 1000 / 1000), 2, '.', '').'MB'.' of '.Smart::format_number_dec(($quota_max / 1000 / 1000), 2, '.', '').'MB';
+										$rd_err = 'Message too Big ('.$key.') ! Your Quota has been Reached: '.Smart::format_number_dec(($quota_used / 1000 / 1000), 2, '.', '').'MB'.' of '.Smart::format_number_dec(($quota_max / 1000 / 1000), 2, '.', '').'MB';
+										$this->print_err($rd_err);
 									} //end if else
 									//--
 								} //end if else
@@ -436,53 +686,42 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								//--
 								if(($tmp_wr_result == 1) AND ($tmp_stor_result == 1)) { // OK
 									//-- CHECK IF MESSAGES DELETION IS SET TO IMMEDIATELY DELETE FROM SERVER !
-									if((string)$tmp_retr_mode == 'all-imap4') {
-										//$mailget->delete($num_uid, true); // delete this message from server by UID
+									/*
+									if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
+										$mailget->delete($real_uid, true); // delete this message from server by UID
 									} else {
-										//$mailget->delete($i); // delete this message from server by number
+										$mailget->delete($key); // delete this message from server by number
 									} //end if else
+									*/
 									//-- WARNING: check if need to delete on IMAP4 !!!
 								} //end if
 								//--
-								if((string)$rd_err != '') {
-									echo '<br><font color="#FF0000">'.Smart::escape_html($rd_err).'</font>';
-									$this->InstantFlush();
-								} //end if
-								//--
-							} else {
-								//--
-								// CHECK IF MESSAGE NEED TO BE DELETED, DELETE IT.
-								// check by delete status as of $tmp_rd_arr['stat_del']
-								if((string)$tmp_retr_mode == 'all-imap4') {
-									//$mailget->delete($num_uid, true); // delete this message from server by UID
-								} else {
-									//$mailget->delete($i); // delete this message from server by number
-								} //end if else
-								//-- WARNING: check if need to delete on IMAP4 !!!
-								//echo '.';
-								//echo ' <font color="#778899"><b>[EXISTS]</b></font>';
-								$this->InstantFlush();
-								//--
-							} //end if
+							} //end if else
 							//--
 						} else {
 							//--
 							$errors += 1;
-							echo '<br><font color="#FF0000">'.'Message #'.(int)$i.' have NO UID !'.'</font>';
+							echo '<br><font color="#FF0000">'.'Message #'.(int)$key.' have NO / VALID UID !'.'</font><br>';
+							//-- CHECK IF MESSAGES DELETION IS SET TO IMMEDIATELY DELETE FROM SERVER !
+							/*
+							$mailget->delete($key); // delete this message from server by number
+							*/
+							//-- WARNING: check if need to delete on IMAP4 !!!
 							//--
 						} //end if
 						//--
 						if($cnt_max_limit > 0) { // if a limit is used
 							if($tmp_downloaded >= $cnt_max_limit) {
-								$i++;
 								break;
 							} //end if
 						} //end if
 						//--
-					} //end for
+						$this->InstantFlush();
+						//--
+					} //end foreach
 					//--
-					if($i > 0) {
-						echo '<br><b>['.(int)($i - 1).']</b><br>';
+					if($cnt_crr > 0) {
+						echo '<br><b>['.(int)$cnt_crr.']</b><br>';
 						$this->InstantFlush();
 					} //end if
 					//--
@@ -492,14 +731,16 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 			} else {
 				//--
-				echo SmartComponents::operation_error('ERROR: Could NOT Login !');
+				$mailget->quit();
+				$this->print_fatal_err('ERROR: Could NOT Login !');
 				return (string) $mailget->log;
 				//--
 			} //end if
 			//--
 		} else {
 			//--
-			echo SmartComponents::operation_error('ERROR: Could NOT Connect !'.'<hr><small>'.Smart::escape_html($mailget->error).'</small>', '650');
+			$mailget->quit();
+			$this->print_fatal_err('ERROR: Could NOT Connect !'.'<hr><small>'.Smart::escape_html($mailget->error).'</small>');
 			return (string) $mailget->log;
 			//--
 		} //end if
@@ -509,24 +750,25 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		echo '<br><hr><br>'."\n";
-		echo '<script>'."\n";
-		echo SmartViewHtmlHelpers::js_code_wnd_close_modal_popup(3000)."\n";
-		echo SmartViewHtmlHelpers::js_code_wnd_refresh_parent($this->ControllerGetParam('url-script').'?page='.substr($this->ControllerGetParam('url-page'), 0, -3))."\n";
-		echo '</script>'."\n";
 		$this->InstantFlush();
 		//--
 		if($errors <= 0) {
-			echo SmartComponents::operation_ok('OK: Done').'<br>';
-		//	if((string)$use_next_dir == '') {
-		//		echo SmartViewHtmlHelpers::js_code_wnd_close_modal_popup(3000);
-		//	} else {
-		//		echo SmartViewHtmlHelpers::js_code_wnd_redirect('admin.php?op=netofx_mbx_get&mboxname='.rawurlencode($y_mbx_name).'&mboxsub='.rawurlencode($use_next_dir), '3000');
-		//	} //end if else
-		//	$this->InstantFlush();
+			if(!$this->IfDebug()) {
+				echo '<script>'."\n";
+				if((string)$use_next_dir == '') {
+					echo SmartViewHtmlHelpers::js_code_wnd_close_modal_popup(3000)."\n";
+					echo SmartViewHtmlHelpers::js_code_wnd_refresh_parent($this->ControllerGetParam('url-script').'?page='.Smart::escape_url(substr($this->ControllerGetParam('url-page'), 0, -3)).'&mbox='.Smart::escape_url($y_mbx_name))."\n";
+				} else {
+					echo SmartViewHtmlHelpers::js_code_wnd_redirect($this->ControllerGetParam('url-script').'?page='.Smart::escape_url($this->ControllerGetParam('url-page')).'&mbox='.Smart::escape_url($y_mbx_name).'&box='.Smart::escape_url($use_next_dir), 3000)."\n";
+				} //end if else
+				echo '</script>'."\n";
+			} //end if
+			$this->print_msg_ok('OK: Done');
 		} else {
-			echo SmartComponents::operation_notice('There are some Warnings (see the log for details) ...').'<br>';
-		} //end if
+			$this->print_msg_notice('There are some Errors / Warnings (see the log for details) ...');
+		} //end if else
 		//--
+		echo '<br>';
 		$this->InstantFlush();
 		//--
 

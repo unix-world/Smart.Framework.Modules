@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 
 /**
- * Admin Controller
+ * Admin Controller r.20200415
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
@@ -33,6 +33,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$this->PageViewSetErrorStatus(403, 'ERROR: WebMail Invalid Auth ...');
 			return;
 		} //end if
+		//--
+		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--
 		$this->username = (string) SmartAuth::get_login_id();
 		//--
@@ -54,25 +56,102 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 		//--
 		$this->userpath = (string) SmartFileSysUtils::add_dir_last_slash((string)$safe_user_path);
+		if(!SmartFileSystem::is_type_file($this->userpath.'.htaccess')) {
+			SmartFileSystem::write($this->userpath.'.htaccess', '### Smart.Framework // Cloud.WebMail @ HtAccess Data Protection ###'."\n\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n");
+			if(!SmartFileSystem::is_type_file($this->userpath.'.htaccess')) {
+				$this->PageViewSetErrorStatus(500, 'ERROR: WebMail HTAccess does not exists and could not be created ...');
+				return;
+			} //end if
+		} //end if
+		//--
+
 		//--
 		$this->pagelink = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('url-page');
 		$this->getlink = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('url-page').'get';
 		//--
-		$html_content = '';
-		$html_vbar = '';
+
+		//-- Main Screen (select a mailbox) {{{SYNC-CLOUD-MAIL-CHK-MBOX}}}
+		$mbox = (string) trim((string)$this->RequestVarGet('mbox', '', 'string'));
+		if((string)$mbox == '') {
+			//--
+			$storage = new SmartGetFileSystem(true);
+			$arr_storage = $storage->get_storage($this->userpath, false);
+			$arr_mboxes = [];
+			for($i=0; $i<Smart::array_size($arr_storage['list-dirs']); $i++) {
+				if(strpos((string)$arr_storage['list-dirs'][$i], '@') !== false) {
+					$arr_mboxes[] = (string) $arr_storage['list-dirs'][$i];
+				} //end if
+			} //end for
+			$arr_storage = [];
+			$storage = null;
+			//--
+			$this->PageViewSetVars([
+				'title' => 'WebMail',
+				'main' => (string) SmartMarkersTemplating::render_file_template(
+					$this->ControllerGetParam('module-view-path').'webmail.mtpl.inc.htm',
+					[
+						'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
+						'CLOUD-USERNAME' 	=> (string) $this->username,
+						'CLOUD-MAILBOX' 	=> (string) '',
+						'AREA-HTML-HBAR' 	=> '',
+						'AREA-HTML-VBAR' 	=> (string) SmartMarkersTemplating::render_file_template(
+							$this->ControllerGetParam('module-view-path').'partials/webmail-part-select-mbox-vbar.mtpl.inc.htm',
+							[
+								'MODULE-PATH' => (string) $this->ControllerGetParam('module-path')
+							]
+						),
+						'AREA-HTML-CONTENT' => (string) SmartMarkersTemplating::render_file_template(
+							$this->ControllerGetParam('module-view-path').'partials/webmail-part-select-mbox.mtpl.inc.htm',
+							[
+								'MODULE-PATH' => (string) $this->ControllerGetParam('module-path'),
+								'URL-PAGE' => (string) $this->pagelink,
+								'ARR-MBOXES' => (array) $arr_mboxes
+							]
+						)
+					]
+				)
+			]);
+			//--
+			return;
+			//--
+		} //end if
+		//--
+		if(SmartFileSystem::is_type_dir((string)$this->userpath.$mbox) !== true) {
+			die(SmartComponents::http_message_500_internalerror('ERROR: Invalid WebMail MailBox ('.$mbox.') selected for User: '.$this->username));
+			return;
+		} //end if
 		//--
 
-/*
-$html_content = '<a id="url_recognition" href="'.$this->pagelink.'&msg='.Smart::escape_url(SmartMailerMimeParser::encode_mime_fileurl(
-	(string) $this->userpath.'inbox/test_uxm_multi_mimes.eml',
-	(string) $this->secretKey()
-)).'" target="cloud_webmail_eml_display" data-smart="open.modal">test_uxm_multi_mimes.eml</a>';
-*/
+		//--
+		$tmp_cfg_arr = \SmartModExtLib\Cloud\webmailUtils::parseMboxConfig($this->userpath.$mbox, $mbox); // return mixed: err string or array config
+		if(!is_array($tmp_cfg_arr)) {
+			die(SmartComponents::http_message_500_internalerror('ERROR: Invalid WebMail MailBox Configuration for ('.$mbox.') selected for User: '.$this->username.' # '.$tmp_cfg_arr));
+			return;
+		} //end if
+		//--
+		$tmp_cfg_get_arr = (array) $tmp_cfg_arr['get'];
+		if(Smart::array_size($tmp_cfg_get_arr) <= 0) {
+			die(SmartComponents::http_message_500_internalerror('ERROR: Invalid WebMail MailBox Configuration [GET] for ('.$mbox.') selected for User: '.$this->username));
+			return;
+		} //end if
+		//--
+		$tmp_cfg_send_arr = (array) $tmp_cfg_arr['send'];
+		$mailbox_enable_send = false;
+		if(Smart::array_size($tmp_cfg_send_arr) > 0) {
+			$mailbox_enable_send = true;
+		} //end if
+		//--
+		// TODO: deep check ths configuration for get / *send (if defined)
+		//--
+		$tmp_cfg_arr = array();
+		//--
 
-
-$mbox = 'iradu@unix-world.org';
-
-		$arr_boxes = [ 'inbox', 'junk', 'sent', 'trash' ];
+		//--
+		if($mailbox_enable_send === true) {
+			$arr_boxes = [ 'inbox', 'sent', 'trash' ];
+		} else {
+			$arr_boxes = [ 'inbox', 'trash' ];
+		} //end if else
 		$box = $this->RequestVarGet('box', 'inbox', 'string');
 		if(!in_array((string)$box, (array)$arr_boxes)) {
 			$this->PageViewSetErrorStatus(404, 'ERROR: Invalid WebMail Box: '.$box);
@@ -82,6 +161,97 @@ $mbox = 'iradu@unix-world.org';
 		$op = $this->RequestVarGet('op', '', 'string');
 		//--
 		switch((string)$op) {
+			case 'msgs-sel-action':
+				//--
+				$action = $this->RequestVarGet('action', '', 'string');
+				$sel = $this->RequestVarGet('sel', [], 'array');
+				if(!is_array($sel)) {
+					$sel = [];
+				} //end if
+				//--
+				$this->PageViewSetCfg('rawpage', true);
+				$this->PageViewSetCfg('rawmime', 'application/json');
+				//--
+				$ajx_title = (string) strtoupper((string)$action).' Selected Messages: #'.Smart::array_size($sel);
+				//--
+				$err_sel = '';
+				//--
+				if(!$err_sel) {
+					if(Smart::array_size($sel) <= 0) {
+						$err_sel = 'No Messages Selected';
+					} //end if
+				} //end if
+				//--
+				if(!$err_sel) {
+					switch((string)$action) { // {{{SYNC-WEBMAIL-ACTION}}}
+						case 'delete':
+							break;
+						case 'restore':
+							if((string)$box != 'trash') {
+								$err_sel = 'Cannot Restore from: '.$box;
+							} //end if
+							break;
+						default:
+							$err_sel = 'Invalid Action Selected: '.$action;
+					} //end switch
+				} //end if
+				//--
+				if(!$err_sel) {
+					$err_sel = (string) \SmartModExtLib\Cloud\webmailUtils::handleSelectedMessages($sel, $this->username, $this->userpath, $mbox, $box, $action);
+				} //end if
+				//--
+				if(!$err_sel) {
+					$ajx_status = 'OK';
+					$ajx_message = 'Operation Completed';
+				} else {
+					$ajx_status = 'ERROR';
+					$ajx_message = 'Warning: '.$err_sel;
+				} //end if else
+				//--
+				$this->PageViewSetVar(
+					'main',
+					(string) SmartViewHtmlHelpers::js_ajax_replyto_html_form(
+						(string) $ajx_status,
+						(string) $ajx_title,
+						(string) $ajx_message
+					)
+				);
+				return;
+				//--
+				break;
+			case 'send-json-msg':
+				//--
+				$this->PageViewSetCfg('rawpage', true);
+				$this->PageViewSetCfg('rawmime', 'application/json');
+				$form = $this->RequestVarGet('webmail', [], 'array');
+				//--
+				$err_send = (string) \SmartModExtLib\Cloud\webmailUtils::sendEmail($this->username, $this->userpath, $mbox, $form);
+				//--
+				$ajx_title = 'Send Message: <'.$mbox.'>';
+				if((string)$err_send == '') {
+					$ajx_status = 'OK';
+					$ajx_message = 'Message Sent';
+					$ajx_jseval = (string) SmartViewHtmlHelpers::js_code_disable_away_page().' '.SmartViewHtmlHelpers::js_code_wnd_refresh_parent($this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box=sent').' '.SmartViewHtmlHelpers::js_code_wnd_close_modal_popup(5000);
+				} else {
+					$ajx_status = 'ERROR';
+					$ajx_message = 'Message Send ERROR: '.$err_send;
+					$ajx_jseval = '';
+				} //end if else
+				//--
+				$this->PageViewSetVar(
+					'main',
+					(string) SmartViewHtmlHelpers::js_ajax_replyto_html_form(
+						(string) $ajx_status,
+						(string) $ajx_title,
+						(string) $ajx_message,
+						'', // redirect
+						'', '',
+						(string) $ajx_jseval
+					)
+				);
+				return;
+				//--
+				break;
 			case 'list-json-mbox':
 				//--
 				$this->PageViewSetCfg('rawpage', true);
@@ -102,76 +272,122 @@ $mbox = 'iradu@unix-world.org';
 				//--
 				break;
 			default:
-				// nothing special
+				//--
+				// nothing to do, go below
+				//--
 		} //end switch
 		//--
-		$html_content = (string) SmartMarkersTemplating::render_file_template(
-			$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox.mtpl.inc.htm',
-			[
-				'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
-				'URL-PAGE' 			=> (string) $this->pagelink,
-				'CURRENT-MBOX' 		=> (string) $mbox,
-				'CURRENT-BOX' 		=> (string) $box
-			]
-		);
-		$html_vbar = (string) SmartMarkersTemplating::render_file_template(
-			$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox-vbar.mtpl.inc.htm',
-			[
-				'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
-				'URL-PAGE' 			=> (string) $this->pagelink,
-				'URL-GET' 			=> (string) $this->getlink,
-				'CURRENT-MBOX' 		=> (string) $mbox,
-				'CURRENT-BOX' 		=> (string) $box,
-				'BOXES' 			=> (array)  $arr_boxes
-			]
-		);
+
 		//--
 		$msg = $this->RequestVarGet('msg', '', 'string');
-		$reply = $this->RequestVarGet('reply', '', 'string');
 		//--
 		if((string)$msg != '') {
 			//--
-			if($reply) {
+			$id = $this->RequestVarGet('id', '', 'string');
+			$reply = $this->RequestVarGet('reply', '', 'string');
+			//--
+			if($reply) { // Reply to Message
 				//--
-				$arr_repl = SmartMailerMimeParser::get_message_data_structure(
+				$arr_repl = (array) SmartMailerMimeParser::get_message_data_structure(
 					(string) $msg,
 					(string) $this->secretKey(),
 					'data-reply', // 'data-full' | 'data-reply'
-					$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}',
-					'_self'
+					$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
+					'_self',
+					'print' // need to be print to avoid re-linking with real-links
 				);
 				//--
 				$this->PageViewSetVar(
 					'main',
-					(string) $this->displayComposer($mbox, 'reply', $arr_repl)
+					(string) $this->displayComposer((string)$mbox, 'reply', (array)$arr_repl, (string)$id, (string)$msg)
 				);
 				//--
-			} else {
+			} else { // Display or Forward Message
 				//--
-				$id = $this->RequestVarGet('id', '', 'string');
+				$forward = $this->RequestVarGet('forward', '', 'string');
 				//--
-				$this->markMessageAsRead($mbox, $id, $msg);
-				$this->displayMimeMessage($mbox, $msg);
+				if($forward) { // Forward Message
+					//--
+					$arr_repl = (array) SmartMailerMimeParser::get_message_data_structure(
+						(string) $msg,
+						(string) $this->secretKey(),
+						'data-full', // 'data-full' | 'data-reply'
+						$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
+						'_self',
+						'print' // need to be print to avoid re-linking with real-links
+					);
+					//--
+					$this->PageViewSetVar(
+						'main',
+						(string) $this->displayComposer((string)$mbox, 'forward', (array)$arr_repl, (string)$id, (string)$msg)
+					);
+					//--
+				} else { // Display Message
+					//--
+					$this->markMessageAsRead($mbox, $msg, $id);
+					$this->displayMimeMessage($mbox, $msg, $id);
+					//--
+				} //end if else
 				//--
 			} //end if else
 			//--
 		} else {
 			//--
-			$this->PageViewSetVars([
-				'title' => 'WebMail',
-				'main' => (string) SmartMarkersTemplating::render_file_template(
-					$this->ControllerGetParam('module-view-path').'webmail.mtpl.inc.htm',
-					[
-						'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
-						'AREA-HTML-TOP' 	=> '<h1>WebMail</h1>',
-						'AREA-HTML-VBAR' 	=> (string) $html_vbar,
-						'AREA-HTML-HBAR' 	=> '',
-						'AREA-HTML-CONTENT' => (string) $html_content
-					]
-				)
-			]);
+			$compose = $this->RequestVarGet('compose', '', 'string');
+			//--
+			if($compose) { // compose new message
+				//--
+				$this->PageViewSetVar(
+					'main',
+					(string) $this->displayComposer($mbox, 'compose')
+				);
+				//--
+			} else { // list the folder
+				//--
+				$the_mbox_path = $this->mboxPath($mbox);
+				$db = new \SmartModDataModel\Cloud\SqWebmail($the_mbox_path); // open connection / initialize
+				//--
+				$this->PageViewSetVars([
+					'title' => 'WebMail',
+					'main' => (string) SmartMarkersTemplating::render_file_template(
+						$this->ControllerGetParam('module-view-path').'webmail.mtpl.inc.htm',
+						[
+							'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
+							'CLOUD-USERNAME' 	=> (string) $this->username,
+							'CLOUD-MAILBOX' 	=> (string) $mbox,
+							'ENABLE-SEND' 		=> (string) (($mailbox_enable_send === true) ? 'yes' : 'no'),
+							'AREA-HTML-HBAR' 	=> '',
+							'AREA-HTML-VBAR' 	=> (string) SmartMarkersTemplating::render_file_template(
+								$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox-vbar.mtpl.inc.htm',
+								[
+									'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
+									'URL-PAGE' 			=> (string) $this->pagelink,
+									'URL-GET' 			=> (string) $this->getlink,
+									'ENABLE-SEND' 		=> (string) (($mailbox_enable_send === true) ? 'yes' : 'no'),
+									'CURRENT-MBOX' 		=> (string) $mbox,
+									'CURRENT-BOX' 		=> (string) $box,
+									'BOXES' 			=> (array)  $arr_boxes,
+									'SIZE-KB-HTML' 		=> (string) SmartUtils::pretty_print_bytes((int)$db->listSizeAllRecords($box), 2, '&nbsp;')
+								]
+							),
+							'AREA-HTML-CONTENT' => (string) SmartMarkersTemplating::render_file_template(
+								$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox.mtpl.inc.htm',
+								[
+									'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
+									'URL-PAGE' 			=> (string) $this->pagelink,
+									'ENABLE-SEND' 		=> (string) (($mailbox_enable_send === true) ? 'yes' : 'no'),
+									'CURRENT-MBOX' 		=> (string) $mbox,
+									'CURRENT-BOX' 		=> (string) $box
+								]
+							)
+						]
+					)
+				]);
+				//--
+			} //end if else
 			//--
 		} //end if else
+		//--
 
 	} //END FUNCTION
 
@@ -195,7 +411,17 @@ $mbox = 'iradu@unix-world.org';
 	} //END FUNCTION
 
 
-	private function markMessageAsRead($mbox, $id, $msg) {
+	private function markMessageAsRead($mbox, $msg, $id) {
+		//--
+		if((string)$mbox == '') {
+			return;
+		} //end if
+		if((string)$msg == '') {
+			return;
+		} //end if
+		if((string)$id == '') {
+			return;
+		} //end if
 		//--
 		$the_mbox_path = $this->mboxPath($mbox);
 		//--
@@ -203,9 +429,9 @@ $mbox = 'iradu@unix-world.org';
 		//--
 		$wr = $model->markOneMessageAsReadById($id);
 		//--
-		if($wr[1] == 1) { // update just on first read
+		if($wr[1] == 1) { // update the rest just on first read
 				//--
-				$arr_msg = SmartMailerMimeParser::get_message_data_structure(
+				$arr_msg = (array) SmartMailerMimeParser::get_message_data_structure(
 					(string) $msg,
 					(string) $this->secretKey(),
 					'data-full'
@@ -215,7 +441,7 @@ $mbox = 'iradu@unix-world.org';
 					$model->updOneMessageAttsById($id, (int)$arr_msg['atts_num'], (string)$arr_msg['atts_lst']);
 				} //end if
 				//--
-				$arr_msg = SmartMailerMimeParser::get_message_data_structure(
+				$arr_msg = (array) SmartMailerMimeParser::get_message_data_structure(
 					(string) $msg,
 					(string) $this->secretKey(),
 					'data-reply'
@@ -232,17 +458,30 @@ $mbox = 'iradu@unix-world.org';
 	} //END FUNCTION
 
 
-	private function displayMimeMessage($mbox, $msg) {
-
+	private function displayMimeMessage($mbox, $msg, $id='') {
+		//--
+		if((string)$mbox == '') {
+			return;
+		} //end if
+		if((string)$msg == '') {
+			return;
+		} //end if
 		//--
 		$mode = $this->RequestVarGet('mode', '', 'string');
-		$pdf = ''; // $pdf = $this->RequestVarGet('pdf', '', 'string'); // TO BE DONE
+		$pdf = $this->RequestVarGet('pdf', '', 'string');
 		//--
 		$use_sandbox = false;
 		if(((string)$mode == '') AND ((string)$pdf == '')) {
 			// it uses auto sandbox
 			$mime_mode = '';
-			$bttns_area = '<div style="text-align:right; padding-right:10px;"><a href="'.$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&reply=yes&msg='.Smart::escape_url((string)$msg).'"><img src="lib/core/plugins/img/email/send-reply.svg" alt="Reply" title="Reply" style="cursor:pointer;"></a> &nbsp; <img src="lib/core/plugins/img/email/bttn-pdf.svg" alt="PDF" title="PDF" style="cursor:pointer;" onClick="SmartJS_BrowserUtils.PopUpLink(self.location + \'&print=yes&pdf=yes\', \'webmail-pdf\', null, null, 1);"></div>';
+			$bttns_area = (string) SmartMarkersTemplating::render_file_template(
+				$this->ControllerGetParam('module-view-path').'partials/webmail-display-actions.mtpl.inc.htm',
+				[
+					'ACTION-REPLY' 		=> (string) $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&reply=yes&id='.Smart::escape_url((string)$id).'&msg='.Smart::escape_url((string)$msg),
+					'ACTION-FORWARD' 	=> (string) $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&forward=yes&id='.Smart::escape_url((string)$id).'&msg='.Smart::escape_url((string)$msg),
+					'PDF-ACTIVE' 		=> (string) ($this->isPdfActive() ? 'yes' : 'no')
+				]
+			);
 		} elseif(((string)$mode == 'print') AND ((string)$pdf == '')) {
 			$use_sandbox = true;
 			$mime_mode = 'print';
@@ -264,7 +503,7 @@ $mbox = 'iradu@unix-world.org';
 			(string) $this->secretKey(),
 			$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
 			'_self',
-			'<div align="center"><h1 style="display:inline; color:#333333;">'.Smart::escape_html($mime_ttl).'</h1></div>'.$bttns_area,
+			'<div align="left"><h1 style="display:inline; color:#333333;">'.Smart::escape_html($mime_ttl).'</h1></div>'.$bttns_area,
 			(string) $mime_mode // 'default' | 'print'
 		);
 		//-- sandbox if required (print mode) :: if non-print mode will use automatically ; for print mode must be custom implemented !
@@ -292,12 +531,15 @@ $mbox = 'iradu@unix-world.org';
 		} else {
 			//--
 			if((string)$pdf != '') {
-				/*
-				$this->PageViewSetCfg('rawpage', true);
-				$this->PageViewSetCfg('rawmime', SmartPdfExport::pdf_mime_header());
-				$this->PageViewSetCfg('rawdisp', SmartPdfExport::pdf_disposition_header('message-'.time().'.pdf', 'inline')); // TODO: since the msg file name is encrypted we need a way to get it
-				$main = SmartPdfExport::generate((string)$main, 'normal', 'auto');
-				*/
+				if($this->isPdfActive()) {
+					$this->PageViewSetCfg('rawpage', true);
+					$this->PageViewSetCfg('rawmime', (string)\SmartModExtLib\PdfGenerate\PdfUtils::pdf_mime_header());
+					$this->PageViewSetCfg('rawdisp', (string)\SmartModExtLib\PdfGenerate\PdfUtils::pdf_disposition_header('message-'.time().'.pdf', 'inline')); // TODO: since the msg file name is encrypted we need a way to get it
+					$main = (string) \SmartModExtLib\PdfGenerate\HtmlToPdfExport::generate((string)$main, 'normal', 'auto'); // auto allow credentials
+				} else {
+					$this->PageViewSetErrorStatus(500, 'ERROR: PDF Generator is missing or not active ...');
+					return;
+				} //end if else
 			} else {
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 			} //end if else
@@ -308,6 +550,20 @@ $mbox = 'iradu@unix-world.org';
 			'main',
 			(string) $main
 		);
+		//--
+	} //END FUNCTION
+
+
+	private function isPdfActive() {
+		//--
+		$is_active_pdf = false;
+		if(SmartAppInfo::TestIfModuleExists('mod-pdf-generate')) {
+			if(\SmartModExtLib\PdfGenerate\HtmlToPdfExport::is_active()) {
+				$is_active_pdf = true;
+			} //end if
+		} //end if else
+		//--
+		return (bool) $is_active_pdf;
 		//--
 	} //END FUNCTION
 
@@ -352,22 +608,74 @@ $mbox = 'iradu@unix-world.org';
 	} //END FUNCTION
 
 
-	private function displayComposer($mbox, $mode, $msg_arr=[]) {
+	private function displayComposer($mbox, $mode, $msg_arr=[], $msg_id='', $msg_url='') {
+		//--
+		$composer_height_htmledit = '70vh';
+		$composer_height_msgedit = '60vh';
 		//--
 		if((string)$mode == 'reply') {
 			$composer_title = 'Reply to Message';
+			$composer_replytoaddr = (string) trim((string)$msg_arr['from']);
+			$composer_inreplyto = (string) trim((string)$msg_arr['message-id']);
 			$composer_to = (string) trim((string)$msg_arr['from']);
 			$composer_subject = (string) trim((string)$msg_arr['subject']);
 			if(stripos((string)$composer_subject, 'Re:') !== 0) {
 				$composer_subject = 'Re: '.$composer_subject;
 			} //end if
-			$composer_msg = '<div style="background:#FFFFFF; color:#111111; padding:5px;"><br><br><br><hr><div style="color:#777777; font-style:italic; margin-left:10px;">in reply for message `<b>'.Smart::escape_html($msg_arr['subject']).'</b>`'.'<br>to &lt;<b>'.Smart::escape_html($msg_arr['to']).'</b>&gt;'.' on '.Smart::escape_html($msg_arr['date']).'<br>from &lt;<b>'.Smart::escape_html($msg_arr['from']).'</b>&gt;'.' wrote:'.'</div><hr><br><div style="margin-left:10px; padding-left:10px; border-left:3px solid #CCCCCC;">'.$msg_arr['message'].'</div></div><br><br>';
+			$composer_arr_atts = [];
+			$composer_msg = '<div style="background:#FFFFFF; color:#111111; padding:5px;"><br><br><br><hr><div style="color:#777777; font-style:italic; margin-left:10px;">in reply for message `<b>'.Smart::escape_html($msg_arr['subject']).'</b>`'.'<br>received by &lt;<b>'.Smart::escape_html($msg_arr['to']).'</b>&gt;'.' on '.Smart::escape_html($msg_arr['date']).'<br>from &lt;<b>'.Smart::escape_html($msg_arr['from']).'</b>&gt;'.', wrote:'.'</div><hr><br><div style="margin-left:10px; padding-left:10px; border-left:3px solid #CCCCCC;">'.$msg_arr['message'].'</div></div><br><br>';
+			$composer_extra = '';
+		} elseif((string)$mode == 'forward') {
+			$composer_title = 'Forward Message';
+			$composer_replytoaddr = '';
+			$composer_inreplyto = '';
+			$composer_to = '';
+			$composer_subject = (string) trim((string)$msg_arr['subject']);
+			if(stripos((string)$composer_subject, 'Fwd:') !== 0) {
+				$composer_subject = 'Fwd: '.$composer_subject;
+			} //end if
+			if(!$msg_url) {
+				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Empty ...', '100%');
+			} //end if
+			$msg_fpath = (array) SmartMailerMimeParser::decode_mime_fileurl(
+				(string) $msg_url,
+				(string) $this->secretKey()
+			);
+			if(Smart::array_size($msg_fpath) <= 0) {
+				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Invalid (1) ...', '100%');
+			} //end if
+			$msg_fpath = (string) $msg_fpath['message-file'];
+			if(!$msg_fpath) {
+				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Invalid (2) ...', '100%');
+			} //end if
+			if((string)substr((string)$msg_fpath, -4, 4) != '.eml') { // {{{SYNC-WEBMAIL-FWD-ALLOWED-FILE-EXTENSION}}}
+				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Invalid (3) ...', '100%');
+			} //end if
+			$fake_att_name = 'forwarded-message.eml';
+			$arr_att_fwd = (array) \SmartModExtLib\Cloud\webmailUtils::createAttachmentComposerData(
+				(string) $fake_att_name,
+				(string) $msg_fpath
+			);
+			if(Smart::array_size($arr_att_fwd) <= 0) { // checks if file path is safe, exists, is a file, is readable
+				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Invalid (4) ...', '100%');
+			} //end if
+			$composer_arr_atts = [
+				(array) $arr_att_fwd
+			];
+			$composer_msg = '<div style="background:#FFFFFF; color:#111111; padding:5px;"><br><br><br><hr><div style="color:#777777; font-style:italic; margin-left:10px;">forwarded message `<b>'.Smart::escape_html($msg_arr['subject']).'</b>`'.'<br>received by &lt;<b>'.Smart::escape_html($msg_arr['to']).'</b>&gt;'.' on '.Smart::escape_html($msg_arr['date']).'<br>from &lt;<b>'.Smart::escape_html($msg_arr['from']).'</b>&gt;'.', attached below'.'</div><hr><br>';
+			$composer_extra = (string) '<div id="fwd-msg-preview"><h3>Preview of `'.Smart::escape_html($fake_att_name).'`:</h3></div>'.$msg_arr['message'];
+			$composer_height_htmledit = '35vh';
+			$composer_height_msgedit = '30vh';
 		} else {
 			$msg_arr = [];
 			$composer_title = 'New Message';
+			$composer_replytoaddr = '';
+			$composer_inreplyto = '';
 			$composer_to = '';
 			$composer_subject = '';
+			$composer_arr_atts = [];
 			$composer_msg = '';
+			$composer_extra = '';
 		} //end if else
 		//--
 		$composer_cc = '';
@@ -385,7 +693,7 @@ $mbox = 'iradu@unix-world.org';
 				'webmail[htmlbody]',
 				(string) $composer_msg,
 				'97vw',
-				'70vh'
+				(string) $composer_height_htmledit
 			);
 		} else {
 			$composer_init = (string) SmartMarkersTemplating::render_file_template(
@@ -400,7 +708,7 @@ $mbox = 'iradu@unix-world.org';
 					'HTML-VAR' => 'webmail[htmlbody]',
 					'THE-MSG' => (string) $composer_msg,
 					'WIDTH' => '96vw',
-					'HEIGHT' => '60vh'
+					'HEIGHT' => (string) $composer_height_msgedit
 				]
 			);
 		} //end if else
@@ -408,22 +716,30 @@ $mbox = 'iradu@unix-world.org';
 		return (string) SmartMarkersTemplating::render_file_template(
 			$this->ControllerGetParam('module-view-path').'webmail-composer.mtpl.inc.htm',
 			[
-				'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
-				'URL-PAGE' 			=> (string) $this->pagelink,
-				'JS-PAGEAWAY' 		=> (string) SmartViewHtmlHelpers::js_code_init_away_page(),
-				'JS-DPAGEAWAY' 		=> (string) SmartViewHtmlHelpers::js_code_disable_away_page(),
-				'CURRENT-MBOX' 		=> (string) $mbox,
-				'COMPOSER-TITLE' 	=> (string) $composer_title,
-				'COMPOSER-TO' 		=> (string) $composer_to,
-				'COMPOSER-CC' 		=> (string) $composer_cc,
-				'COMPOSER-BCC' 		=> (string) $composer_bcc,
-				'COMPOSER-SUBJECT' 	=> (string) $composer_subject,
-				'HTMLAREA-INIT' 	=> (string) $composer_init,
-				'HTMLAREA-DISPLAY' 	=> (string) $composer_draw //.'<pre>'.Smart::escape_html(print_r($msg_arr,1)).'</pre>'
+				'MODULE-PATH' 			=> (string) $this->ControllerGetParam('module-path'),
+				'URL-PAGE' 				=> (string) $this->pagelink,
+				'JS-PAGEAWAY' 			=> (string) SmartViewHtmlHelpers::js_code_init_away_page(),
+				'JS-DPAGEAWAY' 			=> (string) SmartViewHtmlHelpers::js_code_disable_away_page(),
+				'CURRENT-MBOX' 			=> (string) $mbox,
+				'CURRENT-MSG' 			=> (string) $msg_id,
+				'BACK-URL' 				=> (string) (($msg_id && $msg_url) ? $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&id='.Smart::escape_url($msg_id).'&msg='.Smart::escape_url($msg_url) : ''),
+				'COMPOSER-MODE' 		=> (string) $mode,
+				'COMPOSER-TITLE' 		=> (string) $composer_title,
+				'COMPOSER-REPLYTOADDR' 	=> (string) $composer_replytoaddr,
+				'COMPOSER-INREPLYTO' 	=> (string) $composer_inreplyto,
+				'COMPOSER-TO' 			=> (string) $composer_to,
+				'COMPOSER-CC' 			=> (string) $composer_cc,
+				'COMPOSER-BCC' 			=> (string) $composer_bcc,
+				'COMPOSER-SUBJECT' 		=> (string) $composer_subject,
+				'COMPOSER-ATTS' 		=> (array)  $composer_arr_atts,
+				'HTMLAREA-INIT' 		=> (string) $composer_init,
+				'HTMLAREA-DISPLAY' 		=> (string) $composer_draw,
+				'EXTRA-HTML' 			=> (string) $composer_extra
 			]
 		);
 		//--
 	} //END FUNCTION
+
 
 
 } //END CLASS

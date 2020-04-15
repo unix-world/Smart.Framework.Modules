@@ -28,6 +28,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
+		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
+		//--
 		$safe_user_dir = (string) Smart::safe_username(SmartAuth::get_login_id());
 		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$safe_user_dir) != '1')) {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebAddressbook Unsafe User Dir ...');

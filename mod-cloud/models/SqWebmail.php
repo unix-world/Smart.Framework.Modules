@@ -21,9 +21,10 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class SqWebmail {
 
 	// ->
-	// v.20200121
+	// r.20200415
 
 	private $db;
+	private $version = 'Smart.Cloud.WebMail#r.2020-04-15';
 
 
 	public function __construct($y_path) {
@@ -70,14 +71,167 @@ final class SqWebmail {
 	} //END FUNCTION
 
 
-	public function getOneMessageByUid($uid) {
+	public function getOneMessageByUid($uid, $folder) {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			throw new \Exception(__METHOD__.': Invalid DB Connection !');
 			return array();
 		} //end if
 		//--
-		return (array) $this->db->read_asdata('SELECT `id`, `stat_uid`, `stat_del`, `date_time` FROM `messages` WHERE ((`stat_uid` IS NOT NULL) AND (`stat_uid` = \''.$this->db->escape_str((string)$uid).'\')) LIMIT 1 OFFSET 0');
+		$uid = (string) \trim((string)$uid);
+		if((string)$uid == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: UID !');
+			return array();
+		} //end if
+		//--
+		$folder = (string) \trim((string)$folder);
+		if((string)$folder == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: Folder !');
+			return array();
+		} //end if
+		//--
+		return (array) $this->db->read_asdata('SELECT * FROM `messages` WHERE (((`stat_uid` != \'\') AND (`stat_uid` = \''.$this->db->escape_str((string)$uid).'\')) AND (`folder` = \''.$this->db->escape_str((string)$folder).'\')) LIMIT 1 OFFSET 0');
+		//--
+	} //END FUNCTION
+
+
+	// get messages by checksum ordered ASC by stat_cloud, DESC by stat_created, WHERE uid != currentUID
+	public function getMessagesByCksum($checksum, $uid) {
+		//--
+		if(!$this->db instanceof \SmartSQliteDb) {
+			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		$checksum = (string) \trim((string)$checksum);
+		if((string)$checksum == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: Checksum !');
+			return array();
+		} //end if
+		//--
+		return (array) $this->db->read_adata('SELECT * FROM `messages` WHERE ((`stat_cksum` != \'\') AND (`stat_cksum` = \''.$this->db->escape_str((string)$checksum).'\') AND (`stat_uid` != \'\') AND (`stat_uid` != \''.$this->db->escape_str((string)$uid).'\')) ORDER BY `stat_cloud` ASC, `stat_created` DESC LIMIT 5 OFFSET 0'); // LIMIT 5 should be enough (for 3 values of stat_cloud) ; must order by stat_cloud ASCENDING to get 1st the default ones, 2nd the deleted ones and only 3rd the duplicates (rest) ; also order DESCENDING by stat_created to get 1st the older one
+		//--
+	} //END FUNCTION
+
+
+	public function updateOneMessageUidById($id, $uid) {
+		//--
+		if(!$this->db instanceof \SmartSQliteDb) {
+			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		$id = (string) \trim((string)$id);
+		if((string)$id == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: ID !');
+			return array();
+		} //end if
+		//--
+		$uid = (string) \trim((string)$uid);
+		if((string)$uid == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: UID !');
+			return array();
+		} //end if
+		//--
+		return (array) $this->db->write_data(
+			'UPDATE `messages` SET `stat_uid` = ?, `stat_updated` = ? WHERE (`id` = ?)',
+			[
+				(string) $uid, 		// upd UID
+				(int)    \time(), 	// upd updated time
+				(string) $id 		// where
+			]
+		);
+		//--
+	} //END FUNCTION
+
+
+	public function getOneMessageById($id) {
+		//--
+		if(!$this->db instanceof \SmartSQliteDb) {
+			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		$id = (string) \trim((string)$id);
+		if((string)$id == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: ID !');
+			return array();
+		} //end if
+		//--
+		return (array) $this->db->read_asdata('SELECT * FROM `messages` WHERE (`id` = \''.$this->db->escape_str((string)$id).'\') LIMIT 1 OFFSET 0');
+		//--
+	} //END FUNCTION
+
+
+	public function deleteOneMessageById($id) {
+		//--
+		if(!$this->db instanceof \SmartSQliteDb) {
+			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		$id = (string) \trim((string)$id);
+		if((string)$id == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: ID !');
+			return array();
+		} //end if
+		//--
+		return (array) $this->db->write_data('DELETE FROM `messages` WHERE (`id` = \''.$this->db->escape_str((string)$id).'\')');
+		//--
+	} //END FUNCTION
+
+
+	public function markDeletedOneMessageById($id) {
+		//--
+		if(!$this->db instanceof \SmartSQliteDb) {
+			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		$id = (string) \trim((string)$id);
+		if((string)$id == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: ID !');
+			return array();
+		} //end if
+		//--
+		return (array) $this->db->write_data('UPDATE `messages` SET `stat_cloud` = 1 WHERE (`id` = \''.$this->db->escape_str((string)$id).'\')');
+		//--
+	} //END FUNCTION
+
+
+	public function moveOneMessageById($id, $folder, $uid) {
+		//--
+		if(!$this->db instanceof \SmartSQliteDb) {
+			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		$id = (string) \trim((string)$id);
+		if((string)$id == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: ID !');
+			return array();
+		} //end if
+		//--
+		$folder = (string) \trim((string)$folder);
+		if((string)$folder == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: Folder !');
+			return array();
+		} //end if
+		//--
+		$uid = (string) \trim((string)$uid); // on message move a new (local, WebMail UID has to be generated since the old UID is no more the same after moving a message out of an IMAP Folder)
+		if((string)$uid == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: UID !');
+			return array();
+		} //end if
+		//--
+		return (array) $this->db->write_data(
+			'UPDATE `messages` SET `stat_uid` = ?, `folder` = ? WHERE (`id` = ?)',
+			[
+				(string) $uid,
+				(string) $folder,
+				(string) $id
+			]
+		);
 		//--
 	} //END FUNCTION
 
@@ -152,7 +306,42 @@ final class SqWebmail {
 			return array();
 		} //end if
 		//--
+		$arr_data['id'] = (string) \trim((string)$arr_data['id']);
+		if((string)$arr_data['id'] == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: DATA[ID] !');
+			return array();
+		} //end if
+		$arr_data['stat_uid'] = (string) \trim((string)$arr_data['stat_uid']);
+		if((string)$arr_data['stat_uid'] == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: DATA[STAT-UID] !');
+			return array();
+		} //end if
+		$arr_data['stat_cksum'] = (string) \trim((string)$arr_data['stat_cksum']);
+		if((string)$arr_data['stat_cksum'] == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: DATA[STAT-CKSUM] !');
+			return array();
+		} //end if
+		$arr_data['folder'] = (string) \trim((string)$arr_data['folder']);
+		if((string)$arr_data['folder'] == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: DATA[FOLDER] !');
+			return array();
+		} //end if
+		$arr_data['ifolder'] = (string) \trim((string)$arr_data['ifolder']);
+		if((string)$arr_data['ifolder'] == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: DATA[IFOLDER] !');
+			return array();
+		} //end if
+		//--
 		return (array) $this->db->write_data('INSERT INTO `messages` '.$this->db->prepare_statement((array)$arr_data, 'insert'));
+		//--
+	} //END FUNCTION
+
+
+	public function listSizeAllRecords($box) {
+		//--
+		$arr = (array) $this->db->read_asdata('SELECT SUM(`size_kb`) as `sum_size_kb` FROM `messages`'.$this->buildListWhereCondition($box, '', ''));
+		//--
+		return (int) \ceil(((float)$arr['sum_size_kb']) * 1000); // bytes
 		//--
 	} //END FUNCTION
 
@@ -211,7 +400,7 @@ final class SqWebmail {
 		//--
 		$src = (string) trim((string)$src);
 		//--
-		$where = ' WHERE (`folder` = \''.$this->db->escape_str((string)$box).'\')';
+		$where = ' WHERE ((`folder` = \''.$this->db->escape_str((string)$box).'\') AND (`stat_cloud` <= 0))';
 		if((string)$src != '') {
 			switch((string)$srcby) {
 				case 'from_addr':
@@ -246,6 +435,7 @@ final class SqWebmail {
 		if($this->db->check_if_table_exists('messages') != 1) { // create table if not exists
 			//--
 			$this->db->write_data('BEGIN');
+			$this->db->write_data('INSERT OR REPLACE INTO `_smartframework_metadata` (`id`, `description`) VALUES (\'smart-cloud-webmail-version\', \''.$this->db->escape_str((string)$this->version).'\')');
 			$this->db->create_table(
 				'messages',
 				(string) $this->messagesTableSchema(),
@@ -273,12 +463,16 @@ final class SqWebmail {
 		//--
 		return '
 			id 				VARCHAR(255) 		PRIMARY KEY NOT NULL,
-			stat_uid 		VARCHAR(255) 		UNIQUE NULL DEFAULT NULL,
+			stat_uid 		VARCHAR(255) 		NOT NULL DEFAULT \'\', -- must not be unique, UID is unique just for a specific folder on IMAP4 / POP3, but sometimes it can get duplicates
+			stat_cksum 		VARCHAR(129) 		NOT NULL DEFAULT \'\',
+			stat_cloud 		INTEGER      		NOT NULL DEFAULT 0, -- 0 = default ; 1 = deleted ; 2 = duplicate
+			stat_created 	INTEGER      		NOT NULL DEFAULT 0, -- time when 1st downloaded from server (to be used by delete old messages)
+			stat_updated 	INTEGER      		NOT NULL DEFAULT 0, -- time updated time, 1st downloaded from server, updated each time the UID changed from the server (to be used for cleanup)
 			stat_read 		INTEGER      		NOT NULL DEFAULT 0,
-			stat_del 		INTEGER      		NOT NULL DEFAULT 0,
 			starred 		INTEGER      		NOT NULL DEFAULT 0,
 			date_time 		VARCHAR(23)  		NOT NULL DEFAULT \'0000-00-00 00:00:00\',
 			folder 			VARCHAR(7)   		NOT NULL DEFAULT \'none\',
+			ifolder 		VARCHAR(7)   		NOT NULL DEFAULT \'none\', -- this should never change
 			size_kb 		DECIMAL(16,2)		NOT NULL DEFAULT 0,
 			m_priority 		INTEGER    	 		NOT NULL DEFAULT 3,
 			have_atts 		INTEGER      		NOT NULL DEFAULT 0,
@@ -302,20 +496,25 @@ final class SqWebmail {
 	private function messagesTableIndexes() {
 		//--
 		return [
-			'idx_mail__id' 			=> 'id DESC',
-			'idx_mail__stat_uid' 	=> 'stat_uid',
-			'idx_mail__starred' 	=> 'starred',
-			'idx_mail__date_time' 	=> 'date_time DESC',
-			'idx_mail__folder' 		=> 'folder ASC',
-			'idx_mail__msg_id' 		=> 'msg_id ASC',
-			'idx_mail__msg_inreply' => 'msg_inreply ASC',
-			'idx_mail__msg_subj' 	=> 'msg_subj',
-			'idx_mail__from_addr' 	=> 'from_addr',
-			'idx_mail__from_name' 	=> 'from_name',
-			'idx_mail__to_addr' 	=> 'to_addr',
-			'idx_mail__to_name' 	=> 'to_name',
-			'idx_mail__cc_addr' 	=> 'cc_addr',
-			'idx_mail__cc_name' 	=> 'cc_name'
+			'idx_mail__id' 				=> 'id DESC',
+			'idx_mail__stat_uid' 		=> 'stat_uid',
+			'idx_mail__stat_cksum' 		=> 'stat_cksum',
+			'idx_mail__stat_cloud' 		=> 'stat_cloud',
+			'idx_mail__stat_created' 	=> 'stat_created',
+			'idx_mail__stat_updated' 	=> 'stat_updated',
+			'idx_mail__stat_read' 		=> 'stat_read',
+			'idx_mail__starred' 		=> 'starred',
+			'idx_mail__date_time' 		=> 'date_time DESC',
+			'idx_mail__folder' 			=> 'folder ASC',
+			'idx_mail__msg_id' 			=> 'msg_id ASC',
+			'idx_mail__msg_inreply' 	=> 'msg_inreply ASC',
+			'idx_mail__msg_subj' 		=> 'msg_subj',
+			'idx_mail__from_addr' 		=> 'from_addr',
+			'idx_mail__from_name' 		=> 'from_name',
+			'idx_mail__to_addr' 		=> 'to_addr',
+			'idx_mail__to_name' 		=> 'to_name',
+			'idx_mail__cc_addr' 		=> 'cc_addr',
+			'idx_mail__cc_name' 		=> 'cc_name'
 		];
 		//--
 	} //END FUNCTION
