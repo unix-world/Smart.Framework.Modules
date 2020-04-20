@@ -24,16 +24,23 @@
 	var msgForButtonRestore = '???';
 	var msgForBtnDelete = '???';
 	var msgExtraDelete = '';
-	[%%%IF:CURRENT-BOX:==trash;%%%]
-	iconColorForMsgDeleteDialog = '#F2891F';
+	var itemType = 'Message';
+[%%%IF:CURRENT-BOX:==notes;%%%]
+	itemType = 'Note';
+	msgExtraDelete = 'If the notes are permanently deleted from WebMail are deleted also or on the Server so they cannot be restored anymore.';
+[%%%/IF:CURRENT-BOX%%%]
+[%%%IF:CURRENT-BOX:?trash|notes;(1)%%%]
 	iconForMsgDeleteDialog = 'sfi-bin2';
+	msgForBtnDelete = 'Permanently Delete Selected ' + itemType + '(s)';
+	iconColorForMsgDeleteDialog = '#F2891F';
+[%%%IF:CURRENT-BOX:==trash;(2)%%%]
+	msgExtraDelete = 'If the messages are permanently deleted from WebMail are deleted also or on the Mail Server so they cannot be restored anymore.';
 	msgForButtonRestore = 'Restore Selected Message(s) to Inbox or Sent';
-	msgForBtnDelete = 'Permanent Delete Selected Message(s)';
-	msgExtraDelete = 'If the messages are permenent deleted from WebMail are deleted also or on the Mail Server so they cannot be restored anymore.';
-	[%%%ELSE:CURRENT-BOX%%%]
+[%%%/IF:CURRENT-BOX(2)%%%]
+[%%%ELSE:CURRENT-BOX(1)%%%]
 	iconForMsgDeleteDialog = 'sfi-bin';
 	msgForBtnDelete = 'Move Selected Message(s) to Trash';
-	[%%%/IF:CURRENT-BOX%%%]
+[%%%/IF:CURRENT-BOX(1)%%%]
 	//--
 	var IdOfGrid = 'webmailGrid_[###CURRENT-BOX|jsvar|js###]';
 	var TheGrid = new Smart_Grid(IdOfGrid, 'infoTotalRows', '[###URL-PAGE|js###]&op=list-json-mbox&mbox=[###CURRENT-MBOX|url|js###]&box=[###CURRENT-BOX|url|js###]', 'webmailSlickGrdList__[###CURRENT-BOX|slug|js###]__[###CURRENT-MBOX|slug|js###]', 'date_time', 'DESC', '', 'filtering');
@@ -91,7 +98,7 @@
 		//--
 		var messagesArr = getGridSelectedRows();
 		if((!messagesArr) || (messagesArr.length <= 0)) {
-			SmartJS_BrowserUtils.alert_Dialog('<h3>No Messages Selected ...</h3>', null, 'Select Message(s)', 500, 175);
+			SmartJS_BrowserUtils.alert_Dialog('<h3>No ' + itemType + 's Selected ...</h3>', null, 'Select ' + itemType + '(s)', 500, 175);
 			return;
 		} //end if
 		//--
@@ -122,7 +129,7 @@
 				[%%%IF:CURRENT-BOX:==trash;%%%]
 				<button type="button" class="ux-button ux-button-highlight" onClick="handleSelectedMessages('restore');" title="Restore Selected Messages (back to Inbox or Sent)"><i class="sfi sfi-folder-upload"></i></button>
 				[%%%/IF:CURRENT-BOX%%%]
-				<button type="button" class="ux-button ux-button-[%%%IF:CURRENT-BOX:==trash;%%%]special[%%%ELSE:CURRENT-BOX%%%]highlight[%%%/IF:CURRENT-BOX%%%]" onClick="handleSelectedMessages('delete');" title="[%%%IF:CURRENT-BOX:==trash;%%%]Delete Selected Messages[%%%ELSE:CURRENT-BOX%%%]Move Selected Messages to Trash[%%%/IF:CURRENT-BOX%%%]"><i class="sfi sfi-[%%%IF:CURRENT-BOX:==trash;%%%]bin2[%%%ELSE:CURRENT-BOX%%%]bin[%%%/IF:CURRENT-BOX%%%]"></i></button>
+				<button type="button" class="ux-button ux-button-[%%%IF:CURRENT-BOX:?trash|notes;%%%]special[%%%ELSE:CURRENT-BOX%%%]highlight[%%%/IF:CURRENT-BOX%%%]" onClick="handleSelectedMessages('delete');" title="[%%%IF:CURRENT-BOX:?trash|notes;%%%]Delete Selected Messages[%%%ELSE:CURRENT-BOX%%%]Move Selected Messages to Trash[%%%/IF:CURRENT-BOX%%%]"><i class="sfi sfi-[%%%IF:CURRENT-BOX:?trash|notes;%%%]bin2[%%%ELSE:CURRENT-BOX%%%]bin[%%%/IF:CURRENT-BOX%%%]"></i></button>
 			</td>
 			<td>
 			<select name="srcby" id="filter-srcby" class="ux-input-def ux-input-1-4">
@@ -162,19 +169,23 @@ jQuery(function() {
 
 	// Formatters
 	function formatter_ID(row, cell, value, columnDef, dataContext) {
-		value = value || '#';
+		value = dataContext['@link'] || '#';
 		var color = '#333333';
 		var rcolor = '#777777';
 		if(dataContext['stat_read'] <= 0) {
 			color = '#FF5500';
 		} //end if else
-		return '<button title="Display Message" style="margin:0px; margin-top:-2px;" class="ux-button ux-button-xsmall" onClick="jQuery(this).children().first().css({\'color\':\'' + SmartJS_CoreUtils.escape_js(rcolor) + '\'}); SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(value) +'\', \'webmail_view_msg\'); return false;"><i class="sfi sfi-mail" style="color:' + SmartJS_CoreUtils.escape_html(color) + ';"></i></button>';
+		var itemType = 'Message';
+		if(String(dataContext['ifolder']) == 'notes') {
+			itemType = 'Note';
+		}
+		return '<button title="Display ' + SmartJS_CoreUtils.escape_html(itemType) + '" style="margin:0px; margin-top:-2px;" class="ux-button ux-button-xsmall" onClick="jQuery(this).children().first().css({\'color\':\'' + SmartJS_CoreUtils.escape_js(rcolor) + '\'}); SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(value) +'\', \'webmail_view_msg\'); return false;"><i class="sfi sfi-mail" style="color:' + SmartJS_CoreUtils.escape_html(color) + ';"></i></button>';
 	}
-	function formatter_Box(row, cell, value, columnDef, dataContext) {
+	function formatter_iFolderBox(row, cell, value, columnDef, dataContext) {
 		var iFolderIcon = 'sfi sfi-warning';
 		var iFolderDesc = '?';
 		var iFolderColor = '#000000';
-		switch(dataContext['ifolder']) {
+		switch(String(dataContext['ifolder'])) {
 			case 'inbox':
 				iFolderIcon = 'sfi sfi-download2';
 				iFolderDesc = '&darr; INBOX';
@@ -190,10 +201,21 @@ jQuery(function() {
 				iFolderDesc = '&rarr; Trash';
 				iFolderColor = '#778899';
 				break;
+			case 'notes':
+				if(dataContext['stat_read'] > 1) {
+					iFolderIcon = 'sfi sfi-files-empty';
+					iFolderDesc = '&searr; Notes (EXPIRED Rev. #' + SmartJS_CoreUtils.escape_html(dataContext['stat_read']) + ')';
+					iFolderColor = '#AAAAAA';
+				} else {
+					iFolderIcon = 'sfi sfi-file-text2';
+					iFolderDesc = '&searr; Notes (HEAD Rev. #' + SmartJS_CoreUtils.escape_html(dataContext['stat_read']) + ')';
+					iFolderColor = '#555555';
+				} //end if else
+				break;
 			default:
 				// invalid folder icon
 		} //end switch
-		return '<div align="center" title="' + iFolderDesc + '" style="cursor:help; color:' + SmartJS_CoreUtils.escape_html(iFolderColor) + ';"><i class="' + SmartJS_CoreUtils.escape_html(iFolderIcon) + '"></i></div>';
+		return '<div align="center" title="' + iFolderDesc + ':' + ' ' + SmartJS_CoreUtils.escape_html(dataContext['msg_id']) + '" style="cursor:help; color:' + SmartJS_CoreUtils.escape_html(iFolderColor) + ';"><i class="' + SmartJS_CoreUtils.escape_html(iFolderIcon) + '"></i></div>';
 	}
 	function formatter_Atts(row, cell, value, columnDef, dataContext) {
 		value = value || '0';
@@ -205,18 +227,60 @@ jQuery(function() {
 		} //end
 		return String(value);
 	}
+	function formatter_FromAll(row, cell, value, columnDef, dataContext) {
+		var addr = value || '';
+		addr = SmartJS_CoreUtils.stringTrim(addr);
+		var name = dataContext['from_name'] || '';
+		name = SmartJS_CoreUtils.stringTrim(name);
+		if(name == addr) {
+			name = '';
+		}
+		return '<b>' + SmartJS_CoreUtils.escape_html(addr ? addr : '?') + '</b>' + (name ? (' <i>' + SmartJS_CoreUtils.escape_html(name) + '</i>') : '');
+	}
+	function formatter_ToAll(row, cell, value, columnDef, dataContext) {
+		var addr = value || '';
+		addr = SmartJS_CoreUtils.stringTrim(addr);
+		var name = dataContext['to_name'] || '';
+		name = SmartJS_CoreUtils.stringTrim(name);
+		if(name == addr) {
+			name = '';
+		}
+		return '<b>' + SmartJS_CoreUtils.escape_html(addr ? addr : '?') + '</b>' + (name ? (' <i>' + SmartJS_CoreUtils.escape_html(name) + '</i>') : '');
+	}
+	function formatter_UUid(row, cell, value, columnDef, dataContext) {
+		var uuid = dataContext['msg_id'] || '';
+		var color = '#111111';
+		if(dataContext['stat_read'] > 1) {
+			color = '#777777';
+		}
+		return uuid ? '<small style="color:' + SmartJS_CoreUtils.escape_html(color) + '">' + SmartJS_CoreUtils.escape_html(uuid) + '</small>' : '';
+	}
 
 	// Grid Data Defs
-	var columns = [
-		{id:'@link', field:'@link', name:'', sortable:false, width:20, cssClass:'smartGrid_AlignCenter', formatter:formatter_ID}, // unselectable:true
-		{id:'@box', field:'@box', name:'F.', sortable:false, width:20, cssClass:'smartGrid_AlignCenter', formatter:formatter_Box},
-		{id:'have_atts', field:'have_atts', name:'At.', sortable:true, width:20, formatter:formatter_Atts},
-		{id:'from_all', field:'from_all', name:'From', sortable:true, width:100, cssClass:'smartGrid_Important', editor:TextCellSelector},
-		{id:'to_all', field:'to_all', name:'To', sortable:true, width:100, cssClass:'smartGrid_Important', editor:TextCellSelector},
+	var columns;
+	[%%%IF:CURRENT-BOX:==notes;%%%]
+	columns = [
+		{id:'msg_inreply', field:'msg_inreply', name:'Id.', sortable:true, width:20, cssClass:'smartGrid_AlignCenter', formatter:formatter_ID}, // unselectable:true (sort is used for message-id)
+		{id:'ifolder', field:'ifolder', name:'Box', sortable:true, width:20, cssClass:'smartGrid_AlignCenter', formatter:formatter_iFolderBox},
+		{id:'have_atts', field:'have_atts', name:'Att', sortable:true, width:20, formatter:formatter_Atts},
+		{id:'from_addr', field:'from_addr', name:'Author', sortable:true, width:75, cssClass:'smartGrid_Default', formatter:formatter_FromAll, editor:TextCellSelector},
+		{id:'msg_id', field:'msg_id', name:'Uuid', sortable:true, width:125, cssClass:'smartGrid_DefaultCenter', formatter:formatter_UUid, editor:TextCellSelector},
 		{id:'msg_subj', field:'msg_subj', name:'Subject', sortable:true, width:230, cssClass:'smartGrid_Default', editor:TextCellSelector},
 		{id:'date_time', field:'date_time', name:'DateTime', sortable:true, width:100, cssClass:'smartGrid_DefaultCenter', editor:TextCellSelector},
 		{id:'size_kb', field:'size_kb', name:'Size KB', sortable:true, width:70, cssClass:'smartGrid_DefaultRight', editor:TextCellSelector},
 	];
+	[%%%ELSE:CURRENT-BOX%%%]
+	columns = [
+		{id:'msg_id', field:'msg_id', name:'Id.', sortable:true, width:20, cssClass:'smartGrid_AlignCenter', formatter:formatter_ID}, // unselectable:true (sort is used for message-id)
+		{id:'ifolder', field:'ifolder', name:'Box', sortable:true, width:20, cssClass:'smartGrid_AlignCenter', formatter:formatter_iFolderBox},
+		{id:'have_atts', field:'have_atts', name:'Att', sortable:true, width:20, formatter:formatter_Atts},
+		{id:'from_addr', field:'from_addr', name:'From', sortable:true, width:100, cssClass:'smartGrid_Default', formatter:formatter_FromAll, editor:TextCellSelector},
+		{id:'to_addr', field:'to_addr', name:'To', sortable:true, width:100, cssClass:'smartGrid_Default', formatter:formatter_ToAll, editor:TextCellSelector},
+		{id:'msg_subj', field:'msg_subj', name:'Subject', sortable:true, width:230, cssClass:'smartGrid_Default', editor:TextCellSelector},
+		{id:'date_time', field:'date_time', name:'DateTime', sortable:true, width:100, cssClass:'smartGrid_DefaultCenter', editor:TextCellSelector},
+		{id:'size_kb', field:'size_kb', name:'Size KB', sortable:true, width:70, cssClass:'smartGrid_DefaultRight', editor:TextCellSelector},
+	];
+	[%%%/IF:CURRENT-BOX%%%]
 
 	//-- Grid Options
 	var options = {

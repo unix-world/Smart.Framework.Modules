@@ -1,0 +1,3 @@
+# This have to be put in the root folder of domain.ext
+Redirect 301 /.well-known/carddav  https://dom.ext/ncloud/admin.php/page/cloud.abook/~
+Redirect 301 /.well-known/caldav   https://dom.ext/ncloud/admin.php/page/cloud.ical/~

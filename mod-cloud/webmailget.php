@@ -17,7 +17,7 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
 
 
 /**
- * Admin Controller r.20200415
+ * Admin Controller r.20200420
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
@@ -91,7 +91,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$arr_boxes = [ 'inbox', 'sent', 'trash' ];
+		$arr_boxes = (array) \SmartModExtLib\Cloud\webmailUtils::getAllowedBoxes(true, true); // allow all, and restrict later {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
 		$box = $this->RequestVarGet('box', 'inbox', 'string');
 		if(!in_array((string)$box, (array)$arr_boxes)) {
 			die(SmartComponents::http_message_400_badrequest('ERROR: Invalid WebMail Box ('.$box.')'));
@@ -170,7 +170,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	} //END FUNCTION
 
 
-	private function get_from_server($y_mbx_name, $y_mbx_dir) {
+	private function get_from_server($mbox, $box) {
 
 		//--
 		if(!SmartFileSystem::is_type_dir((string)$this->userpath)) {
@@ -178,17 +178,16 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return '';
 		} //end if
 		//--
-		if((string)trim((string)$y_mbx_name) == '') {
+		if((string)trim((string)$mbox) == '') {
 			$this->print_fatal_err('#Empty MailBox Name !');
 			return '';
 		} //end if
-		$y_mbx_name = Smart::safe_validname($y_mbx_name, '_'); // OK
-		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name($y_mbx_name)) {
+		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name($mbox)) {
 			$this->print_fatal_err('#Invalid MailBox Name !');
 			return '';
 		} //end if
 		//--
-		$the_mbox_path = (string) SmartFileSysUtils::add_dir_last_slash($this->userpath.$y_mbx_name);
+		$the_mbox_path = (string) SmartFileSysUtils::add_dir_last_slash($this->userpath.$mbox);
 		//--
 		if(!SmartFileSysUtils::check_if_safe_path($the_mbox_path)) {
 			$this->print_fatal_err('#Unsafe MailBox Path !');
@@ -201,7 +200,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$tmp_cfg_arr = \SmartModExtLib\Cloud\webmailUtils::parseMboxConfig($the_mbox_path, $y_mbx_name); // return mixed: err string or array config
+		$tmp_cfg_arr = \SmartModExtLib\Cloud\webmailUtils::parseMboxConfig($the_mbox_path, $mbox); // return mixed: err string or array config
 		if(!is_array($tmp_cfg_arr)) {
 			$this->print_fatal_err('MailBox Config: '.$tmp_cfg_arr);
 			return '';
@@ -210,9 +209,19 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$tmp_cfg_send_arr = (array) $tmp_cfg_arr['send'];
 		$tmp_cfg_get_arr = (array) $tmp_cfg_arr['get'];
 		//--
+		if(Smart::array_size($tmp_cfg_get_arr) <= 0) {
+			$this->print_fatal_err('ERROR: Invalid WebMail MailBox Configuration [GET] for ('.$mbox.') selected for User: '.$this->username);
+			return '';
+		} //end if
+		//--
 		$tmp_cfg_arr = array();
 		//--
 
+		//--
+		$mailbox_enable_notes = false;
+		if($tmp_cfg_get_arr['settings_use_notes'] === true) {
+			$mailbox_enable_notes = true;
+		} //end if
 		//--
 		$mailbox_enable_send = false;
 		if(Smart::array_size($tmp_cfg_send_arr) > 0) {
@@ -221,8 +230,19 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		switch((string)strtolower((string)$y_mbx_dir)) { // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+		$arr_boxes = (array) \SmartModExtLib\Cloud\webmailUtils::getAllowedBoxes($mailbox_enable_send, $mailbox_enable_notes); // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+		//--
+		if(!in_array((string)strtolower((string)$box), (array)$arr_boxes)) {
+			$this->print_fatal_err('Invalid Box: '.$box);
+			return '';
+		} //end if
+		//--
+		$icon_download_item = 'sfi sfi-mail2';
+		$store_sync_mode = true;
+		$cleanup_all_mark_deleted = false; // if this is set to TRUE will force all get at once (ex: Notes)
+		switch((string)strtolower((string)$box)) { // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
 			case 'inbox':
+				$msg_type = 'message';
 				$srv_folder_name = 'INBOX'; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}} :: using it all upercase is safer as a convention to select the inbox if named differently
 				$srv_allow_create = false; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}} :: this should exist on server, do not allow create
 				$use_the_dir = 'inbox';
@@ -235,55 +255,84 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} else {
 					$use_next_dir = ''; // after this, stop (for POP3)
 				} //end if else
-				$use_mark_read = '0';
+				$use_mark_read = '0'; // after read will be 1
 				break;
 			case 'sent': // sync just on IMAP4, but NOT on POP3
+				$msg_type = 'message';
 				if(((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') AND ($mailbox_enable_send === true)) {
 					$srv_folder_name = 'Sent'; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
 					$srv_allow_create = true; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
 					$use_the_dir = 'sent';
 					$use_next_dir = 'trash';
-					$use_mark_read = '1';
+					$use_mark_read = '0'; // after read will be 1
 				} else {
-					$this->print_fatal_err('Invalid Folder: '.$y_mbx_dir);
+					$this->print_fatal_err('Invalid Folder: '.$box);
 					return '';
 				} //end if else
 				break;
 			case 'trash':
+				$msg_type = 'message';
 				if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
 					$srv_folder_name = 'Trash'; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
 					$srv_allow_create = true; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
 					$use_the_dir = 'trash';
-					$use_next_dir = ''; // after this, stop
-					$use_mark_read = '1';
+					if($mailbox_enable_notes === true) {
+						$use_next_dir = 'notes';
+					} else {
+						$use_next_dir = ''; // after this, stop
+					} //end if else
+					$use_mark_read = '0'; // after read will be 1
 				} else {
-					$this->print_fatal_err('Invalid Folder: '.$y_mbx_dir);
+					$this->print_fatal_err('Invalid Folder: '.$box);
+					return '';
+				} //end if else
+				break;
+			case 'notes': // sync just on IMAP4, but NOT on POP3
+				$icon_download_item = 'sfi sfi-file-text';
+				$store_sync_mode = false; // IMPORTANT: never sync Notes as they cannot be moved in other folder than Notes on Server ; if deleted, iOS will delete the note not move to Trash !!
+				$msg_type = 'apple-note';
+				if(((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') AND ($mailbox_enable_notes === true)) {
+					if(((string)trim((string)SmartAuth::get_login_privkey()) == '') OR ((string)trim((string)SmartAuth::get_login_password()) == '')) {
+						$this->print_fatal_err('Empty or Invalid User Account Privacy-Key. The Privacy-Key is REQUIRED for Folder: '.$box);
+						return '';
+					} //end if
+					$cleanup_all_mark_deleted = true; // supported just on IMAP4, after iterating all notes on server and delete all mark as delete, the remaining are no more existing on server thus cleanup also locally
+					$srv_folder_name = 'Notes'; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+					$srv_allow_create = true; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+					$use_the_dir = 'notes';
+					$use_next_dir = '';
+					$use_mark_read = '1'; // use marked read 1 by default to avoid update keywords and other info in DB since Notes are encrypted except subject so avoid leak sensitive information in DB which is not encrypted ; if duplicate by Note Universal-UID will increment this by one
+				} else {
+					$this->print_fatal_err('Invalid Folder: '.$box);
 					return '';
 				} //end if else
 				break;
 			default:
-				$this->print_fatal_err('Invalid Folder: '.$y_mbx_dir);
+				$this->print_fatal_err('Invalid Folder: '.$box);
 				return '';
 		} //end switch
 		//--
 		if((string)trim((string)$srv_folder_name) == '') {
-			$this->print_fatal_err('Invalid Server Folder: '.$y_mbx_dir);
+			$this->print_fatal_err('Invalid Server Folder: '.$box);
 			return '';
 		} //end if
 		//--
 
 		//--
-		if(!is_dir($the_mbox_path.$use_the_dir)) {
-			$this->print_fatal_err('Inbox MailBox Sub-Dir is Missing !');
-			return '';
+		if(!SmartFileSystem::is_type_dir($the_mbox_path.$use_the_dir)) {
+			SmartFileSystem::dir_create($the_mbox_path.$use_the_dir, false); // do not allow recursive
+			if(!SmartFileSystem::is_type_dir($the_mbox_path.$use_the_dir)) {
+				$this->print_fatal_err('Inbox MailBox Sub-Dir is Missing !');
+				return '';
+			} //end if
 		} //end if
 		//--
 
 		//--
 		echo '<br>';
-		echo '<table title="'.Smart::escape_html($the_mbox_path.$use_the_dir).'"><tr><td><span style="font-size:1.5rem;"><b>'.Smart::escape_html($y_mbx_name).'&nbsp;&nbsp;/&nbsp;&nbsp;'.Smart::escape_html($srv_folder_name).'</b></span></td><td>&nbsp;</td><td align="center" id="img-loader" width="64"><img width="32" height="32" src="lib/framework/img/loading-spin.svg"></td><td align="right" width="64"><img width="64" height="64" src="modules/mod-cloud/views/img/email/folder-'.Smart::escape_html($use_the_dir).'.svg"></td></tr></table>';
+		echo '<table title="'.Smart::escape_html($the_mbox_path.$use_the_dir).'"><tr><td><span style="font-size:1.5rem;"><b>'.Smart::escape_html($mbox).'&nbsp;&nbsp;/&nbsp;&nbsp;'.Smart::escape_html($srv_folder_name).'</b></span></td><td>&nbsp;</td><td align="center" id="img-loader" width="64"><img width="32" height="32" src="lib/framework/img/loading-spin.svg"></td><td align="right" width="64"><img width="64" height="64" src="modules/mod-cloud/views/img/email/folder-'.Smart::escape_html($use_the_dir).'.svg"></td></tr></table>';
 		$this->InstantFlush();
-		sleep(2);
+		sleep(1);
 		//--
 
 		//--
@@ -336,7 +385,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$tmp_cfg_get_arr['settings_limit_per_session'] = 0;
 		} //end if
 		if($tmp_cfg_get_arr['settings_limit_per_session'] > 1000) {
-			$tmp_cfg_get_arr['settings_limit_per_session'] = 1000; // hard limit
+			$tmp_cfg_get_arr['settings_limit_per_session'] = 1000; // if have to use a limit then the hard limit is 1000
 		} //end if
 		//--
 
@@ -431,6 +480,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						} //end if else
 					} //end if
 					//--
+					if(((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') AND ($cleanup_all_mark_deleted === true)) {
+						$cnt_max_limit = 0; // notes have to be handled all at once !!!
+					} //end if
+					//--
 					$tmp_downloaded = 0;
 					//--
 					if($cnt_max_limit <= 0) {
@@ -516,7 +569,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							if(Smart::array_size($tmp_rd_arr) > 0) {
 								//--
 								if($tmp_rd_arr['stat_cloud'] == 1) { // marked as deleted on WebMail and the UID is in sync, delete also on Server
-									//-- {{{SYNC-WEBMAIL-DELETE-MARK-DELETED}}}
+									//-- {{{SYNC-WEBMAIL-DELETE-MARK-DELETED}}} ; apply to any: inbox, sent, trash, notes (as marked as deleted is safely managed elsewhere, so is safe here to delete in DB)
+									$db->deleteOneMessageById((string)$tmp_rd_arr['id']); // {{{SYNC-WEBMAIL-DELETE-DO-DELETE}}} :: here we know the ID, so delete it here ...
 									echo ' <i class="sfi sfi-bin2" style="color:#FF3300;"></i> ';
 									if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
 										$mailget->delete((string)$real_uid, true); // delete by UID on IMAP4, because after deletion numbering sequence changes instant !!
@@ -526,7 +580,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 									$mailget->clear_last_error();
 								} //end if
 								//--
-								// CHECK IF MESSAGES DELETION IS SET TO IMMEDIATELY DELETE FROM SERVER !
+								// CHECK IF MESSAGES DELETION IS SET TO IMMEDIATELY DELETE FROM SERVER ! (Notes must NOT be deleted from Server !!!)
 								// #OR#
 								// CHECK IF MESSAGE NEED TO BE DELETED, DELETE IT.
 								// check by delete status as of $tmp_rd_arr['stat_cloud']
@@ -548,9 +602,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								if(($cnt_crr > 0) AND (($cnt_crr % 10) == 0)) {
 									echo ' ';
 								} else {
-									echo '<i class="sfi sfi-mail2" style="color:#555555; margin-right:3px;"></i>';
+									echo '<i class="'.Smart::escape_html($icon_download_item).'" style="color:#555555; margin-right:3px;"></i>';
 								} //end if else
-								if(($cnt_crr % 100) == 0) {
+								if(($cnt_crr % 50) == 0) {
 									echo '<br>';
 								} //end if
 								//--
@@ -581,7 +635,19 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								//--
 								if(((string)$tmp_message_error == '') AND ((string)trim((string)$tmp_message_content) != '') AND (($quota_max <= 0) OR (($quota_max > 0) AND ($quota_max >= ($quota_used + $tmp_message_size))))) {
 									//-- check for store duplicates as if another email client will move a message from a inbox to trash and back the UID will change ; in this case avoid duplicates (apply also for other unattended messages move on server from a other boxes to another and back)
-									$arr_msg_store = (array) \SmartModExtLib\Cloud\webmailUtils::storeMessage($this->username, true, $db, $use_mark_read, $crr_uid, $tmp_message_content, $use_the_dir, $the_mbox_path, $tmp_cfg_get_arr); // the full message string must be passed here as it must be stored on disk
+									$arr_msg_store = (array) \SmartModExtLib\Cloud\webmailUtils::storeMessage(
+										(string) $msg_type,
+										(string) $this->username,
+										(string) $mbox,
+										(bool)   $store_sync_mode, // depends, on Notes do not sync
+										$db,     // db model
+										(int)    $use_mark_read,
+										(string) $crr_uid,
+										(string) $tmp_message_content,
+										(string) $use_the_dir,
+										(string) $the_mbox_path,
+										(array)  $tmp_cfg_get_arr
+									); // the full message string must be passed here as it must be stored on disk
 									//--
 									$tmp_is_sync_mode = (bool) $arr_msg_store['sync_mode'];
 									$tmp_action_on_server = (string) $arr_msg_store['action_on_server'];
@@ -600,6 +666,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 											switch((string)$tmp_arr_srv_act[1]) {
 												case 'server':
 													if((string)$tmp_arr_srv_act[2] == 'delete') { // [sync:server:delete:do] ; {{{SYNC-WEBMAIL-DELETE-MARK-DELETED}}}
+														// $db->deleteOneMessageById() {{{SYNC-WEBMAIL-DELETE-DO-DELETE}}} :: here the message ID is unknown so the deletion will be operated in Utils / store() function that will detect duplicate by checksum
 														echo ' <i class="sfi sfi-cross" style="color:#FF3300;"></i> '; // marked as deleted on WebMail and the UID is NOT in sync, delete also on Server
 														if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
 															$mailget->delete((string)$real_uid, true); // delete by UID on IMAP4, because after deletion numbering sequence changes instant !!
@@ -610,7 +677,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 													} elseif((string)$tmp_arr_srv_act[2] == 'move') { // ['sync:server:move:%folder%']
 														if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
 															echo ' <i class="sfi sfi-loop" style="color:#FF9900;"></i> ';
-															if(\in_array((string)$tmp_arr_srv_act[3], [ 'inbox', 'sent', 'trash' ])) { // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+															if(in_array((string)$tmp_arr_srv_act[3], (array)$arr_boxes)) { // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
 																if($mailget->copy((string)$real_uid, (string)\SmartModExtLib\Cloud\webmailUtils::getServerBoxByFolder($tmp_arr_srv_act[3]), true)) { // copy UID !!! (required on IMAP4)
 																	$mailget->clear_last_error();
 																	$mailget->delete((string)$real_uid, true); // delete by UID on IMAP4, because after deletion numbering sequence changes instant !!
@@ -685,7 +752,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								$tmp_message_size = 0;
 								//--
 								if(($tmp_wr_result == 1) AND ($tmp_stor_result == 1)) { // OK
-									//-- CHECK IF MESSAGES DELETION IS SET TO IMMEDIATELY DELETE FROM SERVER !
+									//-- CHECK IF MESSAGES DELETION IS SET TO IMMEDIATELY DELETE FROM SERVER ! (Notes must NOT be deleted from Server !!!)
 									/*
 									if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') {
 										$mailget->delete($real_uid, true); // delete this message from server by UID
@@ -702,7 +769,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							//--
 							$errors += 1;
 							echo '<br><font color="#FF0000">'.'Message #'.(int)$key.' have NO / VALID UID !'.'</font><br>';
-							//-- CHECK IF MESSAGES DELETION IS SET TO IMMEDIATELY DELETE FROM SERVER !
+							//-- CHECK IF MESSAGES DELETION IS SET TO IMMEDIATELY DELETE FROM SERVER ! (Notes must NOT be deleted from Server !!!)
 							/*
 							$mailget->delete($key); // delete this message from server by number
 							*/
@@ -720,6 +787,14 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						//--
 					} //end foreach
 					//--
+					if(((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') AND ($cleanup_all_mark_deleted === true)) {
+						echo '<br><b>... CLEANUP ALL DELETED: `'.Smart::escape_html($use_the_dir).'` ...';
+						$cleanup_arr = (array) $db->cleanupMarkAsDeletedMessages($use_the_dir); // cleanup mark as deleted notes (they are only stored in Notes and if they marked as deleted in WebMail and not deleted above it means were not existting on server)
+						echo ' [#'.(int)$cleanup_arr[1].']</b><br>';
+						$cleanup_arr = null;
+						$this->InstantFlush();
+					} //end if
+					//--
 					if($cnt_crr > 0) {
 						echo '<br><b>['.(int)$cnt_crr.']</b><br>';
 						$this->InstantFlush();
@@ -727,7 +802,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					//--
 				} //end if
 				//--
-				unset($db);
+				$db = null;
 				//--
 			} else {
 				//--
@@ -757,9 +832,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				echo '<script>'."\n";
 				if((string)$use_next_dir == '') {
 					echo SmartViewHtmlHelpers::js_code_wnd_close_modal_popup(3000)."\n";
-					echo SmartViewHtmlHelpers::js_code_wnd_refresh_parent($this->ControllerGetParam('url-script').'?page='.Smart::escape_url(substr($this->ControllerGetParam('url-page'), 0, -3)).'&mbox='.Smart::escape_url($y_mbx_name))."\n";
+					echo SmartViewHtmlHelpers::js_code_wnd_refresh_parent($this->ControllerGetParam('url-script').'?page='.Smart::escape_url(substr($this->ControllerGetParam('url-page'), 0, -3)).'&mbox='.Smart::escape_url($mbox).'&box=inbox')."\n";
 				} else {
-					echo SmartViewHtmlHelpers::js_code_wnd_redirect($this->ControllerGetParam('url-script').'?page='.Smart::escape_url($this->ControllerGetParam('url-page')).'&mbox='.Smart::escape_url($y_mbx_name).'&box='.Smart::escape_url($use_next_dir), 3000)."\n";
+					echo SmartViewHtmlHelpers::js_code_wnd_redirect($this->ControllerGetParam('url-script').'?page='.Smart::escape_url($this->ControllerGetParam('url-page')).'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($use_next_dir), 3000)."\n";
 				} //end if else
 				echo '</script>'."\n";
 			} //end if

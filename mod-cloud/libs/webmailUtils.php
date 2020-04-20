@@ -19,8 +19,29 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 final class webmailUtils {
 
-	// r.20200415
+	// r.20200420
 	// ::
+
+
+	public static function getAllowedBoxes($allow_sent, $allow_notes, $allow_trash=true) {
+		//--
+		$boxes = [ 'inbox' ];
+		//--
+		if($allow_sent === true) {
+			$boxes[] = 'sent';
+		} //end if
+		//--
+		if($allow_notes === true) {
+			$boxes[] = 'notes';
+		} //end if
+		//--
+		if($allow_trash === true) {
+			$boxes[] = 'trash';
+		} //end if
+		//--
+		return (array) $boxes;
+		//--
+	} //END FUNCTION
 
 
 	public static function getServerBoxByFolder($folder) {
@@ -32,6 +53,9 @@ final class webmailUtils {
 				break;
 			case 'sent':
 				$srvbox = 'Sent';
+				break;
+			case 'notes':
+				$srvbox = 'Notes';
 				break;
 			case 'trash':
 				$srvbox = 'Trash';
@@ -210,6 +234,7 @@ final class webmailUtils {
 			case 'inbox':
 			case 'sent':
 			case 'trash':
+			case 'notes':
 				break;
 			default:
 				return 'handleSelectedMessages (5): Invalid Box Selected: '.$box;
@@ -229,7 +254,7 @@ final class webmailUtils {
 		} //end if
 		//--
 		switch((string)$action) { // {{{SYNC-WEBMAIL-ACTION}}}
-			case 'delete': // from INBOX, Sent or Trash (for Trash remove the message from Disk and from IMAP4 Server)
+			case 'delete': // from INBOX, Sent, Trash or Notes (for Trash or Notes remove the message from Disk and mark deleted in DB ; on 1st sync will be deleted also on server)
 				break;
 			case 'restore': // restore to INBOX or Sent
 				if((string)$box != 'trash') {
@@ -328,7 +353,7 @@ final class webmailUtils {
 					if((\Smart::array_size($the_msg_arr) > 0) AND (\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$the_msg_arr['id'])) AND ((int)$the_msg_arr['stat_cloud'] <= 0) AND ((string)$the_msg_arr['folder'] === (string)$box)) { // if not found in DB or folder is different, just skip with no error, this is req. when running restore with multiple destinations
 						//-- DELETE
 						if(((string)$action == 'delete') AND ((string)$box == 'trash')) { // {{{SYNC-WEBMAIL-ACTION}}}
-							//-- PERMANENT DELETE: Trash + delete
+							//-- PERMANENT DELETE: Trash
 							$tmp_file = (string) \SmartFileSysUtils::add_dir_last_slash($the_mbox_path).'trash/'.$the_msg_arr['id'];
 							if(\SmartFileSystem::is_type_file($tmp_file)) { // if not file (exists), don't register any error ... it's just ok :-)
 								if(\SmartFileSystem::delete($tmp_file)) {
@@ -352,6 +377,31 @@ final class webmailUtils {
 							} //end if
 							$tmp_file = '';
 							//--
+						} elseif(((string)$action == 'delete') AND ((string)$box == 'notes')) { // {{{SYNC-WEBMAIL-ACTION}}}
+							//-- PERMANENT DELETE: Notes
+							$tmp_file = (string) \SmartFileSysUtils::add_dir_last_slash($the_mbox_path).'notes/'.$the_msg_arr['id'];
+							if(\SmartFileSystem::is_type_file($tmp_file)) { // if not file (exists), don't register any error ... it's just ok :-)
+								if(\SmartFileSystem::delete($tmp_file)) {
+									//--
+									$test = array();
+									//--
+									$test = (array) $db->markDeletedOneMessageById($the_msg_arr['id']);
+									//--
+									if($test[1] != 1) {
+										$errors[] = (string) 'Cannot Delete from DB the Note: '.$the_msg_arr['id'];
+									} else {
+										// OK: DELETE SUCCESSFUL
+									} //end if else
+									//--
+									$test = null;
+									//--
+								} else {
+									$errors[] = (string) 'Cannot Delete the Note: '.$the_msg_arr['id'];
+								} //end if
+								//--
+							} //end if
+							$tmp_file = '';
+							//--
 						} elseif( // {{{SYNC-WEBMAIL-ACTION}}}
 							((string)$action == 'delete') // box != 'trash' for delete ... :: comes from condition above
 							OR
@@ -363,12 +413,12 @@ final class webmailUtils {
 								$destfolder = 'trash';
 							} elseif( // action: restore (from Trash) to INBOX or Sent
 								(((string)$action == 'restore') AND ((string)$box == 'trash')) AND
-								(((string)\trim((string)$the_msg_arr['ifolder']) != '') AND (\in_array((string)$the_msg_arr['ifolder'], [ 'inbox', 'sent' ])))
+								(((string)\trim((string)$the_msg_arr['ifolder']) != '') AND (\in_array((string)$the_msg_arr['ifolder'], (array)self::getAllowedBoxes(true, true, false)))) // dissalow trash in arr here :: {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
 							) {
 								$destfolder = (string) $the_msg_arr['ifolder'];
 							} //end if else
 							//--
-							if(((string)\trim((string)$destfolder) != '') AND (\in_array((string)$destfolder, [ 'inbox', 'sent', 'trash' ]))) {
+							if(((string)\trim((string)$destfolder) != '') AND (\in_array((string)$destfolder, (array)self::getAllowedBoxes(true, true)))) { // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
 								//--
 								if($reset_uid === true) {
 									$tmp_new_uuid = (string) self::assignWebmailUid(); // for IMAP4 reset the UID, as it will be moved to another folder also on server and this UID becomes deprecated / may not be used anymore on IMAP4
@@ -432,7 +482,25 @@ final class webmailUtils {
 	} //END FUNCTION
 
 
-	public static function storeMessage($username, $sync_mode, $db, $use_mark_read, $crr_uid, $tmp_message_content, $use_the_dir, $the_mbox_path, $tmp_cfg_get_arr) {
+	public static function storeMessage($msg_type, $username, $mbox, $sync_mode, $db, $use_mark_read, $crr_uid, $tmp_message_content, $use_the_dir, $the_mbox_path, $tmp_cfg_get_arr) {
+
+		//--
+		switch((string)$msg_type) {
+			case 'message':
+			case 'apple-note':
+				break;
+			default:
+				$out_arr['error'] = __METHOD__.' :: Invalid Message Type: '.$msg_type;
+				return (array) $out_arr;
+		} //end switch
+		//--
+
+		//--
+		if(((string)\trim((string)$mbox) == '') OR (strpos((string)\SmartFileSysUtils::add_dir_last_slash($the_mbox_path), (string)'/'.$mbox.'/') === false)) {
+			$out_arr['error'] = __METHOD__.' :: Invalid or Empty MailBox: '.$mbox;
+			return (array) $out_arr;
+		} //end if
+		//--
 
 		//--
 		if($sync_mode !== true) {
@@ -468,7 +536,7 @@ final class webmailUtils {
 			$out_arr['error'] = __METHOD__.' :: The Message Content is Empty !';
 			return (array) $out_arr;
 		} //end if
-		if(((string)\trim((string)$use_the_dir) == '') OR (!\in_array((string)$use_the_dir, [ 'inbox', 'sent', 'trash' ]))) { // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+		if(((string)\trim((string)$use_the_dir) == '') OR (!\in_array((string)$use_the_dir, (array)self::getAllowedBoxes(true, true)))) { // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
 			$out_arr['error'] = __METHOD__.' :: The Folder is Empty or Invalid: '.$use_the_dir;
 			return (array) $out_arr;
 		} //end if
@@ -491,11 +559,11 @@ final class webmailUtils {
 		//--
 		$is_duplicate = false; // initialize ...
 		//--
-		if($sync_mode === true) {
+		if(($sync_mode === true) AND ((string)$use_the_dir != 'notes')) { // NEVER SYNC NOTES, THEY CAN'T LOOSE THE UID AS THEY CAN'T BE MOVED IN OTHER IMAP FOLDERS THAN Notes ; Also If a Note is deleted on server by iOS, keep it in webmail except if explicit deleted (this is a safety measure if deletet by mistake on iOS)
 			//-- find duplicates by checksum (from any folder) ; will return none, one or many
 			$tmp_chk_arr = (array) $db->getMessagesByCksum($tmp_msg_cksum, $crr_uid); // {{{SYNC-MANAGE-DUPLICATES-BY-CHECKSUM}}}
 			//-- if found many, then try to resolve it ...
-			if(((int)\Smart::array_size($tmp_chk_arr) > 0)) { // if found at least one, get the first and process it
+			if((((int)\Smart::array_size($tmp_chk_arr) > 0)) AND ((string)$tmp_chk_1st_arr['folder'] != 'notes') AND ((string)$tmp_chk_1st_arr['ifolder'] != 'notes')) { // if found at least one, get the first and process it
 				//--
 				$tmp_chk_1st_arr = (array) $tmp_chk_arr[0]; // get the first, which is the oldest but with stat_cloud = 0 (if no one found with stat_cloud = 0, then stat_cloud = 1 (if no one found with stat_cloud = 1, then stat_cloud = 2))
 				//--
@@ -523,6 +591,7 @@ final class webmailUtils {
 					case 1: // marked as deleted on WebMail, delete also on Server ... here stat_cloud = 1, is very clear and this is the 1st message in DB as ordered by stat_cloud ASC
 						//--
 						$out_arr['action_on_server'] = 'sync:server:delete:do'; // {{{SYNC-WEBMAIL-DELETE-MARK-DELETED}}}
+						$db->deleteOneMessageById((string)$tmp_chk_1st_arr['id']); // {{{SYNC-WEBMAIL-DELETE-DO-DELETE}}}
 						return (array) $out_arr;
 						//--
 						break;
@@ -545,6 +614,8 @@ final class webmailUtils {
 		$eml = new \SmartMailerMimeDecode();
 		$tmp_msg_head = (array) $eml->get_header(\SmartUnicode::sub_str($tmp_message_content, 0, 16384)); // we only do a fast decode ... later they can be updated
 		//--
+		$fixed_subject = (string) \Smart::text_cut_by_limit((string)$tmp_msg_head['subject'], 255, true, '...'); // cut long subjects for store in DB
+		//--
 		$fldr_y = (string) \date('Y', @\strtotime((string)$tmp_msg_head['date']));
 		$fldr_m = (string) \date('Y-m', @\strtotime((string)$tmp_msg_head['date']));
 		$fldr_d = (string) \date('Y-m-d', @\strtotime((string)$tmp_msg_head['date']));
@@ -556,6 +627,16 @@ final class webmailUtils {
 		//-- STORE MESSAGE TO FILE (IF REQ. SO)
 		$tmp_stor_ok = false;
 		$tmp_stor_size = 0;
+		//--
+
+		//-- if apple note, encrypt before store
+		if((string)$msg_type == 'apple-note') {
+			$tmp_message_content = (string) \SmartMailerNotes::encrypt_eml_message_as_apple_notes($tmp_msg_head['message-uid'], $tmp_msg_head['date'], $tmp_msg_head['from_addr'], $fixed_subject, $tmp_message_content); // store just 255 bytes of subject to avoid leak too many unencrypted words
+			if((string)trim((string)$tmp_message_content) == '') {
+				$out_arr['error'] = __METHOD__.' :: Failed to Encrypt the Apple-Note Message';
+				return (array) $out_arr;
+			} //end if
+		} //end if
 		//--
 
 		//--
@@ -605,19 +686,52 @@ final class webmailUtils {
 			$arr_write['stat_updated'] 	= (int)    \time();
 			$arr_write['date_time'] 	= (string) \date('Y-m-d H:i:s', @\strtotime((string)$tmp_msg_head['date']));
 			$arr_write['folder'] 		= (string) $use_the_dir;
-			$arr_write['ifolder'] 		= (string) $use_the_dir; // this will never change after insert to preserve the original folder on message moves
+			if((string)$use_the_dir == 'trash') { // try to detect if the origin is INBOX or Sent :: {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+				$origin_trash_detected = null;
+				if($origin_trash_detected === null) {
+					if((string)$tmp_msg_head['from_addr'] == (string)$mbox) {
+						if((string)$tmp_msg_head['to_addr'] == (string)$mbox) {
+							// as the To == From and both are the same as MBox, it can't be detected ..., so use trash
+						} else {
+							$origin_trash_detected = 'sent'; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+						} //end if else
+					} else {
+						$origin_trash_detected = 'inbox'; // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+					} //end if
+				} //end if
+				if(($origin_trash_detected !== null) AND (\in_array((string)$origin_trash_detected, (array)self::getAllowedBoxes(true, false, false)))) { // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+					$arr_write['ifolder'] 	= (string) $origin_trash_detected;
+				} else {
+					$arr_write['ifolder'] 	= (string) $use_the_dir;
+				} //end if else
+			} else {
+				$arr_write['ifolder'] 	= (string) $use_the_dir; // this will never change after insert to preserve the original folder on message moves
+			} //end if else
 			$arr_write['size_kb'] 		= (string) \Smart::format_number_dec(((int)$tmp_stor_size / 1000), 2, '.', '');
-			$arr_write['m_priority'] 	= (int)    \Smart::format_number_int($tmp_msg_head['priority'], '+');
-			$arr_write['have_atts'] 	= (int)    \Smart::format_number_int($tmp_msg_head['attachments']);
-			$arr_write['msg_id'] 		= (string) $tmp_msg_head['message-id'];
-			$arr_write['msg_inreply'] 	= (string) $tmp_msg_head['in-reply-to'];
-			$arr_write['msg_subj'] 		= (string) $tmp_msg_head['subject'];
+			$arr_write['msg_subj'] 		= (string) $fixed_subject;
 			$arr_write['from_addr'] 	= (string) $tmp_msg_head['from_addr'];
-			$arr_write['from_name'] 	= (string) $tmp_msg_head['from_name'];
-			$arr_write['to_addr'] 		= (string) $tmp_msg_head['to_addr'];
-			$arr_write['to_name'] 		= (string) $tmp_msg_head['to_name'];
-			$arr_write['cc_addr'] 		= (string) $tmp_msg_head['cc_addr'];
-			$arr_write['cc_name'] 		= (string) $tmp_msg_head['cc_name'];
+			if((string)$msg_type == 'apple-note') { // TODO: change UID of old notes !?
+				$db->incrementMessageNotesReadStatusByMsgId((string)$tmp_msg_head['message-uid'], (string)$fixed_subject); // {{{SYNC-NOTES-MSG-UNIVERSAL-UID}}}
+				$arr_write['from_name'] 	= '';
+				$arr_write['to_addr'] 		= '';
+				$arr_write['to_name'] 		= '';
+				$arr_write['cc_addr'] 		= '';
+				$arr_write['cc_name'] 		= '';
+				$arr_write['m_priority'] 	= 0;
+				$arr_write['have_atts'] 	= 0;
+				$arr_write['msg_id'] 		= (string) $tmp_msg_head['message-uid']; // {{{SYNC-NOTES-MSG-UNIVERSAL-UID}}} for notes this is the real ID that will not change if note edited
+				$arr_write['msg_inreply'] 	= (string) $tmp_msg_head['message-id']; // store this just for records
+			} else { // message
+				$arr_write['from_name'] 	= (string) $tmp_msg_head['from_name'];
+				$arr_write['to_addr'] 		= (string) $tmp_msg_head['to_addr'];
+				$arr_write['to_name'] 		= (string) $tmp_msg_head['to_name'];
+				$arr_write['cc_addr'] 		= (string) $tmp_msg_head['cc_addr'];
+				$arr_write['cc_name'] 		= (string) $tmp_msg_head['cc_name'];
+				$arr_write['m_priority'] 	= (int)    \Smart::format_number_int($tmp_msg_head['priority'], '+');
+				$arr_write['have_atts'] 	= (int)    \Smart::format_number_int($tmp_msg_head['attachments']);
+				$arr_write['msg_id'] 		= (string) $tmp_msg_head['message-id'];
+				$arr_write['msg_inreply'] 	= (string) $tmp_msg_head['in-reply-to'];
+			} //end if else
 			$arr_write['addrss'] 		= ''; // to be updated on first read
 			$arr_write['atts'] 			= ''; // to be updated on first read
 			$arr_write['keywds'] 		= ''; // to be updated on first read
@@ -996,15 +1110,17 @@ final class webmailUtils {
 		$new_gen_uuid = (string) self::assignWebmailUid();
 		//-- do not check for duplicates on message send, store them all !!
 		$arr_msg_store = (array) self::storeMessage(
+			'message',
 			(string) $username,
-			false, // no sync mode, this is only for get mode
-			$db,
-			1, // mark as read
+			(string) $mbox,
+			false,   // no sync mode, this is only for get mode
+			$db,     // db model
+			1,       // mark as read
 			(string) $new_gen_uuid,
 			(string) \trim((string)\str_replace([ "\r", "\n" ], [ '', "\r\n" ], (string)$arr_send['message'])), // {{{SYNC-MAIL-MSG-IMAP4-STORE}}} fix message with str replace to be exact as in imap ->(append) otherwise the checksum will not match after append on server and retrieve back
-			'sent', // store in sent folder
+			'sent',  // store in sent folder
 			(string) $the_mbox_path,
-			(array) $tmp_cfg_get_arr
+			(array)  $tmp_cfg_get_arr
 		);
 		//--
 		if(((string)$arr_msg_store['message_id'] == '') OR ((string)$arr_msg_store['message_file'] == '') OR ($arr_msg_store['stor_result'] != 1) OR ($arr_msg_store['wr_result'] != 1) OR ((string)$arr_msg_store['error'] != '')) {
@@ -1105,7 +1221,7 @@ final class webmailUtils {
 			return (string) __METHOD__.'Cannot Operate Move as missing the new UID the Message ID: '.$id;
 		} //end if
 		//--
-		$arr_allowed_folders = [ 'inbox', 'sent', 'trash' ];
+		$arr_allowed_folders = (array) self::getAllowedBoxes(true, true); // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
 		//--
 		if(!\in_array((string)$old_folder, (array)$arr_allowed_folders)) {
 			return (string) __METHOD__.'Cannot Operate Move as the New Folder ['.$old_folder.'] is Invalid for the Message ID: '.$id;

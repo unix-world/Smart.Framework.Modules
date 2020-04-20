@@ -1,4 +1,4 @@
-<div style="text-align:center; opacity:0.7; margin-bottom:10px; cursor:help;"><img width="96" height="96" src="modules/mod-cloud/views/img/email/folder-[###CURRENT-BOX|html###].svg" title="[###CURRENT-MBOX|html###] / [###CURRENT-BOX|ucfirst|html###]" alt="[###CURRENT-MBOX|html###] / [###CURRENT-BOX|ucfirst|html###]"></div>
+<div style="text-align:center; opacity:0.7; margin-top:10px; margin-bottom:10px; cursor:help;"><img width="96" height="96" src="modules/mod-cloud/views/img/email/folder-[###CURRENT-BOX|html###].svg" title="[###CURRENT-MBOX|html###] / [###CURRENT-BOX|ucfirst|html###]" alt="[###CURRENT-MBOX|html###] / [###CURRENT-BOX|ucfirst|html###]"></div>
 [%%%LOOP:BOXES%%%]
 	[%%%IF:BOXES._-VAL-_:==###CURRENT-BOX###;%%%]
 	<button class="ux-button ux-button-dark ux-button-xsmall ux-button-noaction" style="width:100%;" onclick="return false;" disabled>[###BOXES._-VAL-_|ucfirst|html###]</button><br>
@@ -11,7 +11,7 @@
 <a class="ux-button ux-button-primary ux-button-xsmall" style="width:100%;" href="[###URL-GET|html###]&mbox=[###CURRENT-MBOX|url|html###]" data-smart="open.modal">Get New Messages</a><br>
 <br>
 [%%%IF:ENABLE-SEND:==yes;%%%]
-<a class="ux-button ux-button-info ux-button-xsmall" style="width:100%;" href="[###URL-PAGE|html###]&mbox=[###CURRENT-MBOX|url|html###]&compose=yes" data-smart="open.modal">Compose New Message</a><br>
+<a class="ux-button ux-button-info ux-button-xsmall" style="width:100%;" href="[###URL-PAGE|html###]&mbox=[###CURRENT-MBOX|url|html###]&box=sent&compose=yes" data-smart="open.modal">Compose New Message</a><br>
 <br>
 [%%%/IF:ENABLE-SEND%%%]
 <div style="text-align:center; color:#778899; font-weight:bold; font-size:0.825rem;">Total&nbsp;Size:&nbsp;[###SIZE-KB-HTML###]</div>

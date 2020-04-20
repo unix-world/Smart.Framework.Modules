@@ -1,27 +1,28 @@
 {
-"webmail-version": "2020-04-15",
-"webmail-account": "email@dom.ext",
-"webmail-accname": "FirstName LastName",
-"get": {
-        "settings_type": "imap4",
-        "settings_host": "mail.dom.ext",
-        "settings_port": 993,
-        "settings_tls": "tls",
-        "settings_auth_username": "email@dom.ext",
-        "settings_auth_password": "SmartUtils::crypto_blowfish_encrypt($pass)",
-        "settings_auth_mode": "",
-        "settings_limit_per_session": 0
-    },
-"send": {
-        "settings_type": "smtp",
-        "settings_host": "mail.dom.ext",
-        "settings_port": 587,
-        "settings_tls": "starttls",
-        "settings_auth_username": "email@dom.ext",
-        "settings_auth_password": "SmartUtils::crypto_blowfish_encrypt($pass)",
-        "settings_auth_mode": "",
-        "settings_use_qp_encoding": false,
-        "settings_use_min_enc_subj": false,
-        "settings_use_antispam_rules": true
-    }
+	"webmail-version": "2020-04-20",
+	"webmail-account": "email@dom.ext",
+	"webmail-accname": "FirstName LastName",
+	"get": {
+		"settings_type": "imap4",
+		"settings_host": "mail.dom.ext",
+		"settings_port": 993,
+		"settings_tls": "tls",
+		"settings_auth_username": "email@dom.ext",
+		"settings_auth_password": "SmartUtils::crypto_blowfish_encrypt($pass)",
+		"settings_auth_mode": "",
+		"settings_limit_per_session": 0,
+		"settings_use_notes": false
+	},
+	"send": {
+		"settings_type": "smtp",
+		"settings_host": "mail.dom.ext",
+		"settings_port": 587,
+		"settings_tls": "starttls",
+		"settings_auth_username": "email@dom.ext",
+		"settings_auth_password": "SmartUtils::crypto_blowfish_encrypt($pass)",
+		"settings_auth_mode": "",
+		"settings_use_qp_encoding": false,
+		"settings_use_min_enc_subj": false,
+		"settings_use_antispam_rules": true
+	}
 }

@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 
 /**
- * Admin Controller r.20200415
+ * Admin Controller r.20200420
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
@@ -135,6 +135,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
+		$mailbox_enable_notes = false;
+		if($tmp_cfg_get_arr['settings_use_notes'] === true) {
+			$mailbox_enable_notes = true;
+		} //end if
+		//--
 		$tmp_cfg_send_arr = (array) $tmp_cfg_arr['send'];
 		$mailbox_enable_send = false;
 		if(Smart::array_size($tmp_cfg_send_arr) > 0) {
@@ -147,12 +152,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		if($mailbox_enable_send === true) {
-			$arr_boxes = [ 'inbox', 'sent', 'trash' ];
-		} else {
-			$arr_boxes = [ 'inbox', 'trash' ];
-		} //end if else
-		$box = $this->RequestVarGet('box', 'inbox', 'string');
+		$arr_boxes = (array) \SmartModExtLib\Cloud\webmailUtils::getAllowedBoxes($mailbox_enable_send, $mailbox_enable_notes); // {{{SYNC-WEBMAIL-IMAP4-FOLDERS}}}
+		//--
+		$box = $this->RequestVarGet('box', '', 'string');
 		if(!in_array((string)$box, (array)$arr_boxes)) {
 			$this->PageViewSetErrorStatus(404, 'ERROR: Invalid WebMail Box: '.$box);
 			return 404;
@@ -289,17 +291,18 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			if($reply) { // Reply to Message
 				//--
 				$arr_repl = (array) SmartMailerMimeParser::get_message_data_structure(
+					((string)$box == 'notes') ? 'apple-note' : 'message',
 					(string) $msg,
 					(string) $this->secretKey(),
 					'data-reply', // 'data-full' | 'data-reply'
-					$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
+					$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($box).'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
 					'_self',
 					'print' // need to be print to avoid re-linking with real-links
 				);
 				//--
 				$this->PageViewSetVar(
 					'main',
-					(string) $this->displayComposer((string)$mbox, 'reply', (array)$arr_repl, (string)$id, (string)$msg)
+					(string) $this->displayComposer((string)$mbox, (string)$box, 'reply', (array)$arr_repl, (string)$id, (string)$msg)
 				);
 				//--
 			} else { // Display or Forward Message
@@ -309,23 +312,23 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				if($forward) { // Forward Message
 					//--
 					$arr_repl = (array) SmartMailerMimeParser::get_message_data_structure(
+						((string)$box == 'notes') ? 'apple-note' : 'message',
 						(string) $msg,
 						(string) $this->secretKey(),
 						'data-full', // 'data-full' | 'data-reply'
-						$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
+						$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($box).'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
 						'_self',
 						'print' // need to be print to avoid re-linking with real-links
 					);
 					//--
 					$this->PageViewSetVar(
 						'main',
-						(string) $this->displayComposer((string)$mbox, 'forward', (array)$arr_repl, (string)$id, (string)$msg)
+						(string) $this->displayComposer((string)$mbox, (string)$box, 'forward', (array)$arr_repl, (string)$id, (string)$msg)
 					);
 					//--
 				} else { // Display Message
 					//--
-					$this->markMessageAsRead($mbox, $msg, $id);
-					$this->displayMimeMessage($mbox, $msg, $id);
+					$this->displayMimeMessage($mbox, $box, $msg, $id);
 					//--
 				} //end if else
 				//--
@@ -339,7 +342,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetVar(
 					'main',
-					(string) $this->displayComposer($mbox, 'compose')
+					(string) $this->displayComposer((string)$mbox, (string)$box, 'compose')
 				);
 				//--
 			} else { // list the folder
@@ -356,6 +359,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'CLOUD-USERNAME' 	=> (string) $this->username,
 							'CLOUD-MAILBOX' 	=> (string) $mbox,
 							'ENABLE-SEND' 		=> (string) (($mailbox_enable_send === true) ? 'yes' : 'no'),
+							'ENABLE-NOTES' 		=> (string) (($mailbox_enable_notes === true) ? 'yes' : 'no'),
 							'AREA-HTML-HBAR' 	=> '',
 							'AREA-HTML-VBAR' 	=> (string) SmartMarkersTemplating::render_file_template(
 								$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox-vbar.mtpl.inc.htm',
@@ -364,6 +368,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 									'URL-PAGE' 			=> (string) $this->pagelink,
 									'URL-GET' 			=> (string) $this->getlink,
 									'ENABLE-SEND' 		=> (string) (($mailbox_enable_send === true) ? 'yes' : 'no'),
+									'ENABLE-NOTES' 		=> (string) (($mailbox_enable_notes === true) ? 'yes' : 'no'),
 									'CURRENT-MBOX' 		=> (string) $mbox,
 									'CURRENT-BOX' 		=> (string) $box,
 									'BOXES' 			=> (array)  $arr_boxes,
@@ -376,6 +381,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 									'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
 									'URL-PAGE' 			=> (string) $this->pagelink,
 									'ENABLE-SEND' 		=> (string) (($mailbox_enable_send === true) ? 'yes' : 'no'),
+									'ENABLE-NOTES' 		=> (string) (($mailbox_enable_notes === true) ? 'yes' : 'no'),
 									'CURRENT-MBOX' 		=> (string) $mbox,
 									'CURRENT-BOX' 		=> (string) $box
 								]
@@ -411,27 +417,36 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	} //END FUNCTION
 
 
-	private function markMessageAsRead($mbox, $msg, $id) {
+	private function markMessageAsRead($model, $mbox, $box, $msg, $id) {
+		//--
+		if(!is_a($model, '\\SmartModDataModel\\Cloud\\SqWebmail')) {
+			Smart::log_warning(__METHOD__.' :: Invalid DB Model');
+			return;
+		} //end if
 		//--
 		if((string)$mbox == '') {
+			Smart::log_warning(__METHOD__.' :: Empty MailBox');
+			return;
+		} //end if
+		if((string)$box == '') {
+			Smart::log_warning(__METHOD__.' :: Empty MailBox Box');
 			return;
 		} //end if
 		if((string)$msg == '') {
+			Smart::log_warning(__METHOD__.' :: Empty Message Link');
 			return;
 		} //end if
 		if((string)$id == '') {
+			Smart::log_warning(__METHOD__.' :: Empty MailBox ID');
 			return;
 		} //end if
 		//--
-		$the_mbox_path = $this->mboxPath($mbox);
-		//--
-		$model = new \SmartModDataModel\Cloud\SqWebmail($the_mbox_path); // open connection / initialize
-		//--
-		$wr = $model->markOneMessageAsReadById($id);
+		$wr = (array) $model->markOneMessageAsReadById($id);
 		//--
 		if($wr[1] == 1) { // update the rest just on first read
 				//--
 				$arr_msg = (array) SmartMailerMimeParser::get_message_data_structure(
+					((string)$box == 'notes') ? 'apple-note' : 'message',
 					(string) $msg,
 					(string) $this->secretKey(),
 					'data-full'
@@ -442,6 +457,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if
 				//--
 				$arr_msg = (array) SmartMailerMimeParser::get_message_data_structure(
+					((string)$box == 'notes') ? 'apple-note' : 'message',
 					(string) $msg,
 					(string) $this->secretKey(),
 					'data-reply'
@@ -453,35 +469,72 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 		} //end if
 		//--
-		unset($model); // close connection
-		//--
 	} //END FUNCTION
 
 
-	private function displayMimeMessage($mbox, $msg, $id='') {
+	private function displayMimeMessage($mbox, $box, $msg, $id='') {
 		//--
 		if((string)$mbox == '') {
+			return;
+		} //end if
+		if((string)$box == '') {
 			return;
 		} //end if
 		if((string)$msg == '') {
 			return;
 		} //end if
 		//--
+		$the_mbox_path = $this->mboxPath($mbox);
+		if(!SmartFileSystem::is_type_dir($the_mbox_path)) {
+			return;
+		} //end if
+		//--
 		$mode = $this->RequestVarGet('mode', '', 'string');
 		$pdf = $this->RequestVarGet('pdf', '', 'string');
+		$rawmode = $this->RequestVarGet('rawmode', '', 'string');
+		if((string)$rawmode != 'raw') {
+			$rawmode = '';
+		} //end if
 		//--
 		$use_sandbox = false;
-		if(((string)$mode == '') AND ((string)$pdf == '')) {
-			// it uses auto sandbox
-			$mime_mode = '';
-			$bttns_area = (string) SmartMarkersTemplating::render_file_template(
-				$this->ControllerGetParam('module-view-path').'partials/webmail-display-actions.mtpl.inc.htm',
-				[
-					'ACTION-REPLY' 		=> (string) $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&reply=yes&id='.Smart::escape_url((string)$id).'&msg='.Smart::escape_url((string)$msg),
-					'ACTION-FORWARD' 	=> (string) $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&forward=yes&id='.Smart::escape_url((string)$id).'&msg='.Smart::escape_url((string)$msg),
-					'PDF-ACTIVE' 		=> (string) ($this->isPdfActive() ? 'yes' : 'no')
-				]
-			);
+		$mime_mode = '';
+		$bttns_area = '';
+		//--
+		if(((string)$mode == '') AND ((string)$pdf == '')) { // it uses auto sandbox
+			//--
+			$display_repl_fwd_bttns = true;
+			if((string)$rawmode == '') {
+				//--
+				if((string)$id == '') {
+					return;
+				} //end if
+				//--
+				$model = new \SmartModDataModel\Cloud\SqWebmail($the_mbox_path); // open connection / initialize
+				//--
+				$rd = (array) $model->getOneMessageById($id);
+				if(((int)$rd['stat_read'] <= 0) AND ((string)$rd['ifolder'] != 'notes')) { // do not update messages in notes folder or messages that are already marked as read
+					$this->markMessageAsRead($model, $mbox, $box, $msg, $id);
+				} //end if
+				if((string)$rd['ifolder'] == 'notes') {
+					$display_repl_fwd_bttns = false;
+				} //end if
+				//--
+				$rd = null;
+				$model = null; // close DB connection
+				//--
+			} //end if
+			//--
+			if($display_repl_fwd_bttns !== false) { // hide Reply and Forward buttons if Note
+				$bttns_area = (string) SmartMarkersTemplating::render_file_template(
+					$this->ControllerGetParam('module-view-path').'partials/webmail-display-actions.mtpl.inc.htm',
+					[
+						'ACTION-REPLY' 		=> (string) $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($box).'&reply=yes&id='.Smart::escape_url((string)$id).'&msg='.Smart::escape_url((string)$msg),
+						'ACTION-FORWARD' 	=> (string) $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($box).'&forward=yes&id='.Smart::escape_url((string)$id).'&msg='.Smart::escape_url((string)$msg),
+						'PDF-ACTIVE' 		=> (string) ($this->isPdfActive() ? 'yes' : 'no')
+					]
+				);
+			} //end if
+			//--
 		} elseif(((string)$mode == 'print') AND ((string)$pdf == '')) {
 			$use_sandbox = true;
 			$mime_mode = 'print';
@@ -492,16 +545,17 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if else
 		//--
 		if((string)$mode != 'partial') {
-			$mime_ttl = 'eMail Message';
-		} else {
+			$mime_ttl = ((string)$box == 'notes') ? 'Note' : 'eMail Message';
+		} else { // partial
 			$use_sandbox = true;
-			$mime_ttl = 'eMail Message Part';
+			$mime_ttl = ((string)$box == 'notes') ? 'Note Part' : 'Message Part';
 		} //end if else
 		//--
 		$main = (string) SmartMailerMimeParser::display_message(
+			((string)$box == 'notes') ? 'apple-note' : 'message',
 			(string) $msg,
 			(string) $this->secretKey(),
-			$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
+			$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($box).'&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
 			'_self',
 			'<div align="left"><h1 style="display:inline; color:#333333;">'.Smart::escape_html($mime_ttl).'</h1></div>'.$bttns_area,
 			(string) $mime_mode // 'default' | 'print'
@@ -511,24 +565,36 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$main = '<div title="WebMail HTML Safe SandBox / iFrame" style="position:relative;"><img height="16" src="lib/core/plugins/img/email/safe.svg" style="cursor:help; position:absolute; top:3px; left:7px; opacity:0.25;"><iframe name="WebMailMessageSandBox" id="WebMailMessageSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:97vw; min-height:97vh; height:max-content; border:1px solid #EFEFEF;" srcdoc="'.Smart::escape_html('<!DOCTYPE html><html><head><title>'.Smart::escape_html($mime_ttl).'</title><meta charset="'.Smart::escape_html(SMART_FRAMEWORK_CHARSET).'">'.SmartFileSystem::read('lib/core/templates/base-html-styles.inc.htm').'</head><body>'.$main.'<script>alert(\'If you can see this alert the WebMail iFrame Sandbox is unsafe ...\');</script></body></html>').'" sandbox></iframe></div>';
 		} //end if
 		//-- forwarder for misc email parts
-		$test_rawpage = $this->RequestVarGet('rawmode', '', 'string');
-		if(((string)$test_rawpage == 'raw') AND ((string)$mode != 'partial')) {
+		if(((string)$rawmode == 'raw') AND ((string)$mode != 'partial')) { // msg raw parts such as images (cids)
 			//--
 			$this->PageViewSetCfg('rawpage', true);
 			//--
 			$test_rawmime = $this->RequestVarGet('mime', '', 'string');
+			$enforce_better_detect_mime_and_disp = null;
 			if((string)$test_rawmime != '') {
 				$test_rawmime = (string) SmartUtils::url_hex_decode((string)$test_rawmime);
+				if((string)$test_rawmime == 'image') { // {{{SYNC-BETTER-CID-IMGS-DETECTION-OF-MIMETYPE}}} FIX: SVGs don't function with mime type 'image', they need 'image/svg+xml'
+					$test_img_type = (string) SmartDetectImages::guess_image_extension_by_img_content((string)$main, false); // don't use GD, too expensive
+					if((string)$test_img_type != '') {
+						$test_rawmime = (array) SmartFileSysUtils::mime_eval('mime-image-'.sha1($main).$test_img_type, 'inline');
+						$enforce_better_detect_mime_and_disp = (string) $test_rawmime[1];
+						$test_rawmime = (string) $test_rawmime[0];
+					} //end if
+				} //end if
 				$this->PageViewSetCfg('rawmime', (string)$test_rawmime);
 			} //end if
 			//--
-			$test_rawdisp = $this->RequestVarGet('disp', '', 'string');
-			if((string)$test_rawdisp != '') {
-				$test_rawdisp = (string) SmartUtils::url_hex_decode((string)$test_rawdisp);
-				$this->PageViewSetCfg('rawdisp', (string)$test_rawdisp);
-			} //end if
+			if($enforce_better_detect_mime_and_disp !== null) {
+				$this->PageViewSetCfg('rawdisp', (string)$enforce_better_detect_mime_and_disp);
+			} else {
+				$test_rawdisp = $this->RequestVarGet('disp', '', 'string');
+				if((string)$test_rawdisp != '') {
+					$test_rawdisp = (string) SmartUtils::url_hex_decode((string)$test_rawdisp);
+					$this->PageViewSetCfg('rawdisp', (string)$test_rawdisp);
+				} //end if
+			} //end if else
 			//--
-		} else {
+		} else { // default, partial (but not raw), pdf
 			//--
 			if((string)$pdf != '') {
 				if($this->isPdfActive()) {
@@ -574,6 +640,15 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$model = new \SmartModDataModel\Cloud\SqWebmail($the_mbox_path); // open connection / initialize
 		//--
+		$sort_type = '';
+		switch((string)$sortby) {
+			case 'size_kb':
+				$sort_type = 'numeric';
+				break;
+			default:
+				$sort_type = 'text';
+		} //end switch
+		//--
 		$limit = 25;
 		//--
 		$data = [
@@ -582,7 +657,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			'itemsPerPage' 		=> (int)    $limit,
 			'sortBy' 			=> (string) $sortby,
 			'sortDir' 			=> (string) $sortdir,
-			'sortType' 			=> (string) '', // applies only with clientSort (not used for Server-Side sort)
+			'sortType' 			=> (string) $sort_type, // applies only with clientSort (not used for Server-Side sort)
 			'filter' 			=> [
 				'srcby' => (string) $srcby,
 				'src' 	=> (string) $src
@@ -596,7 +671,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		for($i=0; $i<count($data['rowsList']); $i++) {
 			//--
 			$val = (array) $data['rowsList'][$i];
-			$data['rowsList'][$i]['@link'] = (string) $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&id='.Smart::escape_url($val['id']).'&msg='.Smart::escape_url(SmartMailerMimeParser::encode_mime_fileurl(
+			$data['rowsList'][$i]['@link'] = (string) $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($box).'&id='.Smart::escape_url($val['id']).'&msg='.Smart::escape_url(SmartMailerMimeParser::encode_mime_fileurl(
 				(string) rtrim($the_mbox_path,'/').'/'.rtrim($val['folder'],'/').'/'.ltrim($val['id'],'/'),
 				(string) $this->secretKey()
 			));
@@ -608,7 +683,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	} //END FUNCTION
 
 
-	private function displayComposer($mbox, $mode, $msg_arr=[], $msg_id='', $msg_url='') {
+	private function displayComposer($mbox, $box, $mode, $msg_arr=[], $msg_id='', $msg_url='') {
 		//--
 		$composer_height_htmledit = '70vh';
 		$composer_height_msgedit = '60vh';
@@ -721,8 +796,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				'JS-PAGEAWAY' 			=> (string) SmartViewHtmlHelpers::js_code_init_away_page(),
 				'JS-DPAGEAWAY' 			=> (string) SmartViewHtmlHelpers::js_code_disable_away_page(),
 				'CURRENT-MBOX' 			=> (string) $mbox,
+				'CURRENT-BOX' 			=> (string) $box,
 				'CURRENT-MSG' 			=> (string) $msg_id,
-				'BACK-URL' 				=> (string) (($msg_id && $msg_url) ? $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&id='.Smart::escape_url($msg_id).'&msg='.Smart::escape_url($msg_url) : ''),
+				'BACK-URL' 				=> (string) (($msg_id && $msg_url) ? $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($box).'&id='.Smart::escape_url($msg_id).'&msg='.Smart::escape_url($msg_url) : ''),
 				'COMPOSER-MODE' 		=> (string) $mode,
 				'COMPOSER-TITLE' 		=> (string) $composer_title,
 				'COMPOSER-REPLYTOADDR' 	=> (string) $composer_replytoaddr,

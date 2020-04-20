@@ -21,10 +21,10 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class SqWebmail {
 
 	// ->
-	// r.20200415
+	// r.20200420
 
 	private $db;
-	private $version = 'Smart.Cloud.WebMail#r.2020-04-15';
+	private $version = 'Smart.Cloud.WebMail#r.2020-04-20';
 
 
 	public function __construct($y_path) {
@@ -109,6 +109,12 @@ final class SqWebmail {
 			return array();
 		} //end if
 		//--
+		$uid = (string) \trim((string)$uid);
+		if((string)$uid == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: UID !');
+			return array();
+		} //end if
+		//--
 		return (array) $this->db->read_adata('SELECT * FROM `messages` WHERE ((`stat_cksum` != \'\') AND (`stat_cksum` = \''.$this->db->escape_str((string)$checksum).'\') AND (`stat_uid` != \'\') AND (`stat_uid` != \''.$this->db->escape_str((string)$uid).'\')) ORDER BY `stat_cloud` ASC, `stat_created` DESC LIMIT 5 OFFSET 0'); // LIMIT 5 should be enough (for 3 values of stat_cloud) ; must order by stat_cloud ASCENDING to get 1st the default ones, 2nd the deleted ones and only 3rd the duplicates (rest) ; also order DESCENDING by stat_created to get 1st the older one
 		//--
 	} //END FUNCTION
@@ -181,6 +187,24 @@ final class SqWebmail {
 	} //END FUNCTION
 
 
+	public function cleanupMarkAsDeletedMessages($folder) {
+		//--
+		if(!$this->db instanceof \SmartSQliteDb) {
+			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		$folder = (string) \trim((string)$folder);
+		if((string)$folder == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: Folder !');
+			return array();
+		} //end if
+		//--
+		return (array) $this->db->write_data('DELETE FROM `messages` WHERE ((`stat_cloud` = 1) AND (`folder` = \''.$this->db->escape_str((string)$folder).'\'))');
+		//--
+	} //END FUNCTION
+
+
 	public function markDeletedOneMessageById($id) {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
@@ -236,6 +260,32 @@ final class SqWebmail {
 	} //END FUNCTION
 
 
+	public function incrementMessageNotesReadStatusByMsgId($msgid, $msgsubj) { // {{{SYNC-NOTES-MSG-UNIVERSAL-UID}}} ; update many ; this is just for notes, to mark duplicates
+		//--
+		if(!$this->db instanceof \SmartSQliteDb) {
+			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		$msgid = (string) \trim((string)$msgid);
+		if((string)$msgid == '') {
+			return array(); // don't throw, this can be empty sometimes if message is corrupted ; if empty, stop here !
+		} //end if
+		//--
+		$msgsubj = (string) $msgsubj; // don't check, it can be empty ; sync all related notes to have the same subject in DB (in message will be kept the original one)
+		//--
+		return (array) $this->db->write_data(
+			'UPDATE `messages` SET `msg_subj` = ?, `stat_read` = `stat_read` + 1 WHERE ((`msg_id` = ?) AND (`ifolder` = ?))', // increment by one all notes that have the same message ID
+			[
+				(string) $msgsubj,
+				(string) $msgid,
+				(string) 'notes'
+			]
+		);
+		//--
+	} //END FUNCTION
+
+
 	public function markOneMessageAsReadById($id) {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
@@ -243,8 +293,14 @@ final class SqWebmail {
 			return array();
 		} //end if
 		//--
+		$id = (string) \trim((string)$id);
+		if((string)$id == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: ID !');
+			return array();
+		} //end if
+		//--
 		return (array) $this->db->write_data(
-			'UPDATE `messages` SET `stat_read` = 1 WHERE ((`id` = ?) AND (`stat_read` != 1))',
+			'UPDATE `messages` SET `stat_read` = 1 WHERE ((`id` = ?) AND (`stat_read` <= 0))', // stat_read can be 0 or 1 (but for notes can be 2, 3, ...)
 			[
 				(string) $id
 			]
@@ -257,6 +313,12 @@ final class SqWebmail {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		$id = (string) \trim((string)$id);
+		if((string)$id == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: ID !');
 			return array();
 		} //end if
 		//--
@@ -281,6 +343,12 @@ final class SqWebmail {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			throw new \Exception(__METHOD__.': Invalid DB Connection !');
+			return array();
+		} //end if
+		//--
+		$id = (string) \trim((string)$id);
+		if((string)$id == '') {
+			throw new \Exception(__METHOD__.': Invalid Param: ID !');
 			return array();
 		} //end if
 		//--
@@ -368,13 +436,25 @@ final class SqWebmail {
 		} //end if
 		//--
 		switch((string)$sortby) {
+			case 'stat_read':
+				$sortby = 'stat_read';
+				break;
+			case 'msg_id':
+				$sortby = 'msg_id';
+				break;
+			case 'msg_inreply':
+				$sortby = 'msg_inreply';
+				break;
+			case 'ifolder':
+				$sortby = 'ifolder';
+				break;
 			case 'have_atts':
 				$sortby = 'have_atts';
 				break;
-			case 'from_all':
+			case 'from_addr':
 				$sortby = 'from_addr';
 				break;
-			case 'to_all':
+			case 'to_addr':
 				$sortby = 'to_addr';
 				break;
 			case 'msg_subj':
@@ -383,12 +463,15 @@ final class SqWebmail {
 			case 'date_time':
 				$sortby = 'date_time';
 				break;
+			case 'size_kb':
+				$sortby = 'size_kb';
+				break;
 			case 'id':
 			default:
 				$sortby = 'id';
 		} //end switch
 		//--
-		return (array) $this->db->read_adata('SELECT *, `from_addr` || \' \' || `from_name` AS `from_all`, `to_addr` || \' \' || `to_name` AS `to_all` FROM `messages`'.$this->buildListWhereCondition($box, $srcby, $src).' ORDER BY `'.$sortby.'` '.$sortdir.' LIMIT '.(int)$limit.' OFFSET '.(int)$ofs);
+		return (array) $this->db->read_adata('SELECT * FROM `messages`'.$this->buildListWhereCondition($box, $srcby, $src).' ORDER BY `'.$sortby.'` '.$sortdir.' LIMIT '.(int)$limit.' OFFSET '.(int)$ofs);
 		//--
 	} //END FUNCTION
 

@@ -35,7 +35,7 @@ h1, h2, h3, h4, h5, h6 {
 <script>
 function sendMessage() {
 	var overlay = SmartJS_BrowserUtils.Overlay_Show();
-	var ajax = SmartJS_BrowserUtils.Ajax_XHR_GetByForm('webmail-form', 'admin.php?page=cloud.webmail&mbox=[###CURRENT-MBOX|url|js###]&op=send-json-msg', 'json');
+	var ajax = SmartJS_BrowserUtils.Ajax_XHR_GetByForm('webmail-form', 'admin.php?page=cloud.webmail&mbox=[###CURRENT-MBOX|url|js###]&box=[###CURRENT-BOX|url|js###]&op=send-json-msg', 'json');
 	ajax.done(function(msg) {
 		if((msg.hasOwnProperty('completed')) && (msg.completed === 'DONE') && (msg.hasOwnProperty('status')) && (msg.hasOwnProperty('title')) && (msg.hasOwnProperty('message')) && (msg.hasOwnProperty('js_evcode')) && (msg.hasOwnProperty('redirect'))) {
 			if(msg.status === 'OK') {
