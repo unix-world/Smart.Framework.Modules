@@ -68,7 +68,7 @@
 <a href="#" id="exportBtn">Export Features</a>
 <script type="text/javascript">
 
-// v.20190129
+// v.20200426
 
 function escapeHtml(str) {
 	return str
@@ -85,6 +85,20 @@ var myMap = L.map('myMap')
 	.setView(mapCenter, 18);
 myMap.options.maxZoom = 18;
 myMap.options.minZoom = 3;
+
+var isUxmClickActive = true;
+myMap.on('draw:deletestart', function (e) {
+	isUxmClickActive = false;
+});
+myMap.on('draw:deletestop', function (e) {
+	isUxmClickActive = true;
+});
+myMap.on('draw:editstart', function (e) {
+	isUxmClickActive = false;
+});
+myMap.on('draw:editstop', function (e) {
+	isUxmClickActive = true;
+});
 
 L.control.scale({imperial: false}).addTo(myMap);
 L.control.mousePosition().addTo(myMap);
@@ -130,6 +144,9 @@ var featureGroup = L.geoJson(the_geo_json, {
 			try {
 				this.closePopup();
 			} catch(err){}
+			if(isUxmClickActive != true) {
+				return false;
+			}
 			var newName = prompt('A Title for the Feature', feature.properties.name ? String(feature.properties.name) : '');
 			if(newName !== null) {
 				feature.properties.name = String(newName);
