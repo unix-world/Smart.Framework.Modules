@@ -1,9 +1,12 @@
 
-// (c) 2017-2019 unix-world.org
+// (c) 2017-2020 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20200502
 // unixman changes:
 // (#1) replaced jQuery deprecated $.isArray() with Array.isArray()
+// (#2) fixed the htmlEscape function
+// (#3) fixes all required HTML Escapes
+// (#4) jQuery 3.5.0 ready (fixed XHTML Tags)
 
 /*
  * FullCalendar v3.8.2
@@ -348,7 +351,7 @@ function getIsLeftRtlScrollbars() {
 	return _isLeftRtlScrollbars;
 }
 function computeIsLeftRtlScrollbars() {
-	var el = $('<div><div/></div>')
+	var el = $('<div><div></div></div>')
 		.css({
 		position: 'absolute',
 		top: -1000,
@@ -808,13 +811,21 @@ function firstDefined() {
 	}
 }
 exports.firstDefined = firstDefined;
-function htmlEscape(s) {
-	return (s + '').replace(/&/g, '&amp;')
+function htmlEscape(str) { // fix by unixman
+	if((typeof str == 'undefined') || (str == undefined) || (str == null)) {
+		str = '';
+	} else {
+		str = String(str); // force string
+	} //end if else
+	if(str == '') {
+		return '';
+	} //end if
+	return str.replace(/&/g, '&amp;')
 		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;')
 		.replace(/'/g, '&#039;')
-		.replace(/"/g, '&quot;')
-		.replace(/\n/g, '<br />');
+		.replace(/"/g, '&quot;');
+	//	.replace(/\n/g, '<br>');
 }
 exports.htmlEscape = htmlEscape;
 function stripHtmlEntities(text) {
@@ -6226,8 +6237,8 @@ var DayTableMixin = /** @class */ (function (_super) {
 	DayTableMixin.prototype.renderHeadHtml = function () {
 		var theme = this.view.calendar.theme;
 		return '' +
-			'<div class="fc-row ' + theme.getClass('headerRow') + '">' +
-			'<table class="' + theme.getClass('tableGrid') + '">' +
+			'<div class="fc-row ' + util_1.htmlEscape(theme.getClass('headerRow')) + '">' +
+			'<table class="' + util_1.htmlEscape(theme.getClass('tableGrid')) + '">' +
 			'<thead>' +
 			this.renderHeadTrHtml() +
 			'</thead>' +
@@ -6286,15 +6297,15 @@ var DayTableMixin = /** @class */ (function (_super) {
 			classNames.push('fc-' + util_1.dayIDs[date.day()]); // only add the day-of-week class
 		}
 		return '' +
-			'<th class="' + classNames.join(' ') + '"' +
+			'<th class="' + util_1.htmlEscape(classNames.join(' ')) + '"' +
 			((isDateValid && t.rowCnt) === 1 ?
-				' data-date="' + date.format('YYYY-MM-DD') + '"' :
+				' data-date="' + util_1.htmlEscape(date.format('YYYY-MM-DD')) + '"' :
 				'') +
 			(colspan > 1 ?
-				' colspan="' + colspan + '"' :
+				' colspan="' + util_1.htmlEscape(colspan) + '"' :
 				'') +
 			(otherAttrs ?
-				' ' + otherAttrs :
+				' ' + otherAttrs : // this is html, noyt have to be escaped, but suppose to be valid
 				'') +
 			'>' +
 			(isDateValid ?
@@ -6333,12 +6344,12 @@ var DayTableMixin = /** @class */ (function (_super) {
 		var isDateValid = t.dateProfile.activeUnzonedRange.containsDate(date); // TODO: called too frequently. cache somehow.
 		var classes = t.getDayClasses(date);
 		classes.unshift('fc-day', view.calendar.theme.getClass('widgetContent'));
-		return '<td class="' + classes.join(' ') + '"' +
+		return '<td class="' + util_1.htmlEscape(classes.join(' ')) + '"' +
 			(isDateValid ?
-				' data-date="' + date.format('YYYY-MM-DD') + '"' : // if date has a time, won't format it
+				' data-date="' + util_1.htmlEscape(date.format('YYYY-MM-DD')) + '"' : // if date has a time, won't format it
 				'') +
 			(otherAttrs ?
-				' ' + otherAttrs :
+				' ' + otherAttrs : // this part is HTML, not to be escaped
 				'') +
 			'></td>';
 	};
@@ -6493,10 +6504,16 @@ var FillRenderer = /** @class */ (function () {
 		// custom hooks per-type
 		var classes = props.getClasses ? props.getClasses(seg) : [];
 		var css = util_1.cssToStr(props.getCss ? props.getCss(seg) : {});
-		return '<' + this.fillSegTag +
-			(classes.length ? ' class="' + classes.join(' ') + '"' : '') +
-			(css ? ' style="' + css + '"' : '') +
-			' />';
+		var regex = /[a-zA-Z0-9]+/g;
+		var theTagName = String(this.fillSegTag);
+		if(!theTagName.match(regex)) {
+			console.error('FullCalendar.FillRenderer.buildSegHtml: Invalid HTML Tag: ' + theTagName);
+			return '';
+		} //end if
+		return '<' + theTagName +
+			(classes.length ? ' class="' + util_1.htmlEscape(classes.join(' ')) + '"' : '') +
+			(css ? ' style="' + util_1.htmlEscape(css) + '"' : '') +
+			'></' + theTagName + '>';
 	};
 	// Should return wrapping DOM structure
 	FillRenderer.prototype.attachSegEls = function (type, segs) {
@@ -6797,9 +6814,9 @@ var DayGrid = /** @class */ (function (_super) {
 			classes.push('fc-rigid');
 		}
 		return '' +
-			'<div class="' + classes.join(' ') + '">' +
+			'<div class="' + util_1.htmlEscape(classes.join(' ')) + '">' +
 			'<div class="fc-bg">' +
-			'<table class="' + theme.getClass('tableGrid') + '">' +
+			'<table class="' + util_1.htmlEscape(theme.getClass('tableGrid')) + '">' +
 			this.renderBgTrHtml(row) +
 			'</table>' +
 			'</div>' +
@@ -6854,7 +6871,7 @@ var DayGrid = /** @class */ (function (_super) {
 		var weekCalcFirstDoW;
 		if (!isDayNumberVisible && !this.cellWeekNumbersVisible) {
 			// no numbers in day cell (week number must be along the side)
-			return '<td/>'; //  will create an empty space above events :(
+			return '<td></td>'; //  will create an empty space above events :(
 		}
 		classes = this.getDayClasses(date);
 		classes.unshift('fc-day-top');
@@ -6871,9 +6888,9 @@ var DayGrid = /** @class */ (function (_super) {
 				weekCalcFirstDoW = date._locale.firstDayOfWeek();
 			}
 		}
-		html += '<td class="' + classes.join(' ') + '"' +
+		html += '<td class="' + util_1.htmlEscape(classes.join(' ')) + '"' +
 			(isDateValid ?
-				' data-date="' + date.format() + '"' :
+				' data-date="' + util_1.htmlEscape(date.format()) + '"' :
 				'') +
 			'>';
 		if (this.cellWeekNumbersVisible && (date.day() === weekCalcFirstDoW)) {
@@ -7064,7 +7081,7 @@ var DayGrid = /** @class */ (function (_super) {
 				if (segsBelow.length) {
 					td = cellMatrix[levelLimit - 1][col];
 					moreLink = _this.renderMoreLink(row, col, segsBelow);
-					moreWrap = $('<div/>').append(moreLink);
+					moreWrap = $('<div></div>').append(moreLink);
 					td.append(moreWrap);
 					moreNodes.push(moreWrap[0]);
 				}
@@ -7095,11 +7112,11 @@ var DayGrid = /** @class */ (function (_super) {
 					segMoreNodes = [];
 					// make a replacement <td> for each column the segment occupies. will be one for each colspan
 					for (j = 0; j < colSegsBelow.length; j++) {
-						moreTd = $('<td class="fc-more-cell"/>').attr('rowspan', rowspan);
+						moreTd = $('<td class="fc-more-cell"></td>').attr('rowspan', rowspan);
 						segsBelow = colSegsBelow[j];
 						moreLink = this.renderMoreLink(row, seg.leftCol + j, [seg].concat(segsBelow) // count seg as hidden too
 						);
-						moreWrap = $('<div/>').append(moreLink);
+						moreWrap = $('<div></div>').append(moreLink);
 						moreTd.append(moreWrap);
 						segMoreNodes.push(moreTd[0]);
 						moreNodes.push(moreTd[0]);
@@ -7131,7 +7148,7 @@ var DayGrid = /** @class */ (function (_super) {
 	DayGrid.prototype.renderMoreLink = function (row, col, hiddenSegs) {
 		var _this = this;
 		var view = this.view;
-		return $('<a class="fc-more"/>')
+		return $('<a class="fc-more"></a>')
 			.text(this.getMoreLinkText(hiddenSegs.length))
 			.on('click', function (ev) {
 			var clickOption = _this.opt('eventLimitClick');
@@ -7218,14 +7235,14 @@ var DayGrid = /** @class */ (function (_super) {
 		var view = this.view;
 		var theme = view.calendar.theme;
 		var title = this.getCellDate(row, col).format(this.opt('dayPopoverFormat'));
-		var content = $('<div class="fc-header ' + theme.getClass('popoverHeader') + '">' +
-			'<span class="fc-close ' + theme.getIconClass('close') + '"></span>' +
+		var content = $('<div class="fc-header ' + util_1.htmlEscape(theme.getClass('popoverHeader')) + '">' +
+			'<span class="fc-close ' + util_1.htmlEscape(theme.getIconClass('close')) + '"></span>' +
 			'<span class="fc-title">' +
 			util_1.htmlEscape(title) +
 			'</span>' +
-			'<div class="fc-clear"/>' +
+			'<div class="fc-clear"></div>' +
 			'</div>' +
-			'<div class="fc-body ' + theme.getClass('popoverContent') + '">' +
+			'<div class="fc-body ' + util_1.htmlEscape(theme.getClass('popoverContent')) + '">' +
 			'<div class="fc-event-container"></div>' +
 			'</div>');
 		var segContainer = content.find('.fc-event-container');
@@ -7361,7 +7378,7 @@ var BasicView = /** @class */ (function (_super) {
 		this.el.addClass('fc-basic-view').html(this.renderSkeletonHtml());
 		this.scroller.render();
 		dayGridContainerEl = this.scroller.el.addClass('fc-day-grid-container');
-		dayGridEl = $('<div class="fc-day-grid" />').appendTo(dayGridContainerEl);
+		dayGridEl = $('<div class="fc-day-grid"></div>').appendTo(dayGridContainerEl);
 		this.el.find('.fc-body > tr > td').append(dayGridContainerEl);
 		this.dayGrid.headContainerEl = this.el.find('.fc-head-container');
 		this.dayGrid.setElement(dayGridEl);
@@ -7375,17 +7392,17 @@ var BasicView = /** @class */ (function (_super) {
 	BasicView.prototype.renderSkeletonHtml = function () {
 		var theme = this.calendar.theme;
 		return '' +
-			'<table class="' + theme.getClass('tableGrid') + '">' +
+			'<table class="' + util_1.htmlEscape(theme.getClass('tableGrid')) + '">' +
 			(this.opt('columnHeader') ?
 				'<thead class="fc-head">' +
 					'<tr>' +
-					'<td class="fc-head-container ' + theme.getClass('widgetHeader') + '">&nbsp;</td>' +
+					'<td class="fc-head-container ' + util_1.htmlEscape(theme.getClass('widgetHeader')) + '">&nbsp;</td>' +
 					'</tr>' +
 					'</thead>' :
 				'') +
 			'<tbody class="fc-body">' +
 			'<tr>' +
-			'<td class="' + theme.getClass('widgetContent') + '"></td>' +
+			'<td class="' + util_1.htmlEscape(theme.getClass('widgetContent')) + '"></td>' +
 			'</tr>' +
 			'</tbody>' +
 			'</table>';
@@ -7393,7 +7410,7 @@ var BasicView = /** @class */ (function (_super) {
 	// Generates an HTML attribute string for setting the width of the week number column, if it is known
 	BasicView.prototype.weekNumberStyleAttr = function () {
 		if (this.weekNumberWidth != null) {
-			return 'style="width:' + this.weekNumberWidth + 'px"';
+			return 'style="width:' + Math.ceil(this.weekNumberWidth) + 'px"';
 		}
 		return '';
 	};
@@ -7500,7 +7517,7 @@ function makeDayGridSubclass(SuperClass) {
 			var view = this.view;
 			if (this.colWeekNumbersVisible) {
 				return '' +
-					'<th class="fc-week-number ' + view.calendar.theme.getClass('widgetHeader') + '" ' + view.weekNumberStyleAttr() + '>' +
+					'<th class="fc-week-number ' + util_1.htmlEscape(view.calendar.theme.getClass('widgetHeader')) + '" ' + view.weekNumberStyleAttr() + '>' +
 					'<span>' + // needed for matchCellWidths
 					util_1.htmlEscape(this.opt('weekNumberTitle')) +
 					'</span>' +
@@ -7526,7 +7543,7 @@ function makeDayGridSubclass(SuperClass) {
 		SubClass.prototype.renderBgIntroHtml = function () {
 			var view = this.view;
 			if (this.colWeekNumbersVisible) {
-				return '<td class="fc-week-number ' + view.calendar.theme.getClass('widgetContent') + '" ' +
+				return '<td class="fc-week-number ' + util_1.htmlEscape(view.calendar.theme.getClass('widgetContent')) + '" ' +
 					view.weekNumberStyleAttr() + '></td>';
 			}
 			return '';
@@ -9556,7 +9573,7 @@ var Calendar = /** @class */ (function () {
 			el.toggleClass('fc-ltr', !opts.isRTL);
 			el.toggleClass('fc-rtl', opts.isRTL);
 		});
-		this.contentEl = $("<div class='fc-view-container'/>").prependTo(el);
+		this.contentEl = $('<div class="fc-view-container"></div>').prependTo(el);
 		this.initToolbars();
 		this.renderHeader();
 		this.renderFooter();
@@ -9625,7 +9642,7 @@ var Calendar = /** @class */ (function () {
 					(this.viewsByType[viewType] = this.instantiateView(viewType));
 			this.bindViewHandlers(newView);
 			newView.startBatchRender(); // so that setElement+setDate rendering are joined
-			newView.setElement($("<div class='fc-view fc-" + viewType + "-view' />").appendTo(this.contentEl));
+			newView.setElement($('<div class="fc-view fc-' + util_1.htmlEscape(viewType) + '-view"></div>').appendTo(this.contentEl));
 			this.toolbarsManager.proxyCall('activateButton', viewType);
 		}
 		if (this.view) {
@@ -11373,7 +11390,7 @@ var AgendaView = /** @class */ (function (_super) {
 		this.el.addClass('fc-agenda-view').html(this.renderSkeletonHtml());
 		this.scroller.render();
 		timeGridWrapEl = this.scroller.el.addClass('fc-time-grid-container');
-		timeGridEl = $('<div class="fc-time-grid" />').appendTo(timeGridWrapEl);
+		timeGridEl = $('<div class="fc-time-grid"></div>').appendTo(timeGridWrapEl);
 		this.el.find('.fc-body > tr > td').append(timeGridWrapEl);
 		this.timeGrid.headContainerEl = this.el.find('.fc-head-container');
 		this.timeGrid.setElement(timeGridEl);
@@ -11395,20 +11412,20 @@ var AgendaView = /** @class */ (function (_super) {
 	AgendaView.prototype.renderSkeletonHtml = function () {
 		var theme = this.calendar.theme;
 		return '' +
-			'<table class="' + theme.getClass('tableGrid') + '">' +
+			'<table class="' + util_1.htmlEscape(theme.getClass('tableGrid')) + '">' +
 			(this.opt('columnHeader') ?
 				'<thead class="fc-head">' +
 					'<tr>' +
-					'<td class="fc-head-container ' + theme.getClass('widgetHeader') + '">&nbsp;</td>' +
+					'<td class="fc-head-container ' + util_1.htmlEscape(theme.getClass('widgetHeader')) + '">&nbsp;</td>' +
 					'</tr>' +
 					'</thead>' :
 				'') +
 			'<tbody class="fc-body">' +
 			'<tr>' +
-			'<td class="' + theme.getClass('widgetContent') + '">' +
+			'<td class="' + util_1.htmlEscape(theme.getClass('widgetContent')) + '">' +
 			(this.dayGrid ?
-				'<div class="fc-day-grid"/>' +
-					'<hr class="fc-divider ' + theme.getClass('widgetHeader') + '"/>' :
+				'<div class="fc-day-grid"></div>' +
+					'<hr class="fc-divider ' + util_1.htmlEscape(theme.getClass('widgetHeader')) + '">' :
 				'') +
 			'</td>' +
 			'</tr>' +
@@ -11418,7 +11435,7 @@ var AgendaView = /** @class */ (function (_super) {
 	// Generates an HTML attribute string for setting the width of the axis, if it is known
 	AgendaView.prototype.axisStyleAttr = function () {
 		if (this.axisWidth != null) {
-			return 'style="width:' + this.axisWidth + 'px"';
+			return 'style="width:' + Math.ceil(this.axisWidth) + 'px"';
 		}
 		return '';
 	};
@@ -11589,20 +11606,20 @@ agendaTimeGridMethods = {
 		if (this.opt('weekNumbers')) {
 			weekText = weekStart.format(this.opt('smallWeekFormat'));
 			return '' +
-				'<th class="fc-axis fc-week-number ' + calendar.theme.getClass('widgetHeader') + '" ' + view.axisStyleAttr() + '>' +
+				'<th class="fc-axis fc-week-number ' + util_1.htmlEscape(calendar.theme.getClass('widgetHeader')) + '" ' + view.axisStyleAttr() + '>' +
 				view.buildGotoAnchorHtml(// aside from link, important for matchCellWidths
 				{ date: weekStart, type: 'week', forceOff: this.colCnt > 1 }, util_1.htmlEscape(weekText) // inner HTML
 				) +
 				'</th>';
 		}
 		else {
-			return '<th class="fc-axis ' + calendar.theme.getClass('widgetHeader') + '" ' + view.axisStyleAttr() + '></th>';
+			return '<th class="fc-axis ' + util_1.htmlEscape(calendar.theme.getClass('widgetHeader')) + '" ' + view.axisStyleAttr() + '></th>';
 		}
 	},
 	// Generates the HTML that goes before the bg of the TimeGrid slot area. Long vertical column.
 	renderBgIntroHtml: function () {
 		var view = this.view;
-		return '<td class="fc-axis ' + view.calendar.theme.getClass('widgetContent') + '" ' + view.axisStyleAttr() + '></td>';
+		return '<td class="fc-axis ' + util_1.htmlEscape(view.calendar.theme.getClass('widgetContent')) + '" ' + view.axisStyleAttr() + '></td>';
 	},
 	// Generates the HTML that goes before all other types of cells.
 	// Affects content-skeleton, helper-skeleton, highlight-skeleton for both the time-grid and day-grid.
@@ -11617,7 +11634,7 @@ agendaDayGridMethods = {
 	renderBgIntroHtml: function () {
 		var view = this.view;
 		return '' +
-			'<td class="fc-axis ' + view.calendar.theme.getClass('widgetContent') + '" ' + view.axisStyleAttr() + '>' +
+			'<td class="fc-axis ' + util_1.htmlEscape(view.calendar.theme.getClass('widgetContent')) + '" ' + view.axisStyleAttr() + '>' +
 			'<span>' + // needed for matchCellWidths
 			view.getAllDayHtml() +
 			'</span>' +
@@ -11774,14 +11791,14 @@ var TimeGrid = /** @class */ (function (_super) {
 		var theme = this.view.calendar.theme;
 		this.el.html('<div class="fc-bg"></div>' +
 			'<div class="fc-slats"></div>' +
-			'<hr class="fc-divider ' + theme.getClass('widgetHeader') + '" style="display:none" />');
+			'<hr class="fc-divider ' + util_1.htmlEscape(theme.getClass('widgetHeader')) + '" style="display:none">');
 		this.bottomRuleEl = this.el.find('hr');
 	};
 	TimeGrid.prototype.renderSlats = function () {
 		var theme = this.view.calendar.theme;
 		this.slatContainerEl = this.el.find('> .fc-slats')
 			.html(// avoids needing ::unrenderSlats()
-		'<table class="' + theme.getClass('tableGrid') + '">' +
+		'<table class="' + util_1.htmlEscape(theme.getClass('tableGrid')) + '">' +
 			this.renderSlatRowHtml() +
 			'</table>');
 		this.slatEls = this.slatContainerEl.find('tr');
@@ -11808,7 +11825,7 @@ var TimeGrid = /** @class */ (function (_super) {
 			slotDate = calendar.msToUtcMoment(dateProfile.renderUnzonedRange.startMs).time(slotTime);
 			isLabeled = util_1.isInt(util_1.divideDurationByDuration(slotIterator, this.labelInterval));
 			axisHtml =
-				'<td class="fc-axis fc-time ' + theme.getClass('widgetContent') + '" ' + view.axisStyleAttr() + '>' +
+				'<td class="fc-axis fc-time ' + util_1.htmlEscape(theme.getClass('widgetContent')) + '" ' + view.axisStyleAttr() + '>' +
 					(isLabeled ?
 						'<span>' + // for matchCellWidths
 						//	util_1.htmlEscape(slotDate.format(this.labelFormat)) +
@@ -11817,11 +11834,11 @@ var TimeGrid = /** @class */ (function (_super) {
 						'') +
 					'</td>';
 			html +=
-				'<tr data-time="' + slotDate.format('HH:mm:ss') + '"' +
+				'<tr data-time="' + util_1.htmlEscape(slotDate.format('HH:mm:ss')) + '"' +
 					(isLabeled ? '' : ' class="fc-minor"') +
 					'>' +
 					(!isRTL ? axisHtml : '') +
-					'<td class="' + theme.getClass('widgetContent') + '"/>' +
+					'<td class="' + util_1.htmlEscape(theme.getClass('widgetContent')) + '"></td>' +
 					(isRTL ? axisHtml : '') +
 					'</tr>';
 			slotTime.add(this.slotDuration);
@@ -11838,7 +11855,7 @@ var TimeGrid = /** @class */ (function (_super) {
 		if (this.headContainerEl) {
 			this.headContainerEl.html(this.renderHeadHtml());
 		}
-		this.el.find('> .fc-bg').html('<table class="' + theme.getClass('tableGrid') + '">' +
+		this.el.find('> .fc-bg').html('<table class="' + util_1.htmlEscape(theme.getClass('tableGrid')) + '">' +
 			this.renderBgTrHtml(0) + // row=0
 			'</table>');
 		this.colEls = this.el.find('.fc-day, .fc-disabled-day');
@@ -12321,7 +12338,7 @@ var ListView = /** @class */ (function (_super) {
 		var dayIndex;
 		var daySegs;
 		var i;
-		var tableEl = $('<table class="fc-list-table ' + this.calendar.theme.getClass('tableList') + '"><tbody/></table>');
+		var tableEl = $('<table class="fc-list-table ' + util_1.htmlEscape(this.calendar.theme.getClass('tableList')) + '"><tbody></tbody></table>');
 		var tbodyEl = tableEl.find('tbody');
 		for (dayIndex = 0; dayIndex < segsByDay.length; dayIndex++) {
 			daySegs = segsByDay[dayIndex];
@@ -12352,8 +12369,8 @@ var ListView = /** @class */ (function (_super) {
 	ListView.prototype.dayHeaderHtml = function (dayDate) {
 		var mainFormat = this.opt('listDayFormat');
 		var altFormat = this.opt('listDayAltFormat');
-		return '<tr class="fc-list-heading" data-date="' + dayDate.format('YYYY-MM-DD') + '">' +
-			'<td class="' + this.calendar.theme.getClass('widgetHeader') + '" colspan="3">' +
+		return '<tr class="fc-list-heading" data-date="' + util_1.htmlEscape(dayDate.format('YYYY-MM-DD')) + '">' +
+			'<td class="' + util_1.htmlEscape(this.calendar.theme.getClass('widgetHeader')) + '" colspan="3">' +
 			(mainFormat ?
 				this.buildGotoAnchorHtml(dayDate, { 'class': 'fc-list-heading-main' }, util_1.htmlEscape(dayDate.format(mainFormat)) // inner HTML
 				) :
@@ -12543,7 +12560,7 @@ var Toolbar = /** @class */ (function () {
 		var el = this.el;
 		if (sections) {
 			if (!el) {
-				el = this.el = $("<div class='fc-toolbar " + this.toolbarOptions.extraClasses + "'/>");
+				el = this.el = $('<div class="fc-toolbar ' + util_1.htmlEscape(this.toolbarOptions.extraClasses) + '"></div>');
 			}
 			else {
 				el.empty();
@@ -12551,7 +12568,7 @@ var Toolbar = /** @class */ (function () {
 			el.append(this.renderSection('left'))
 				.append(this.renderSection('right'))
 				.append(this.renderSection('center'))
-				.append('<div class="fc-clear"/>');
+				.append('<div class="fc-clear"></div>');
 		}
 		else {
 			this.removeElement();
@@ -12569,7 +12586,7 @@ var Toolbar = /** @class */ (function () {
 		var theme = calendar.theme;
 		var optionsManager = calendar.optionsManager;
 		var viewSpecManager = calendar.viewSpecManager;
-		var sectionEl = $('<div class="fc-' + position + '"/>');
+		var sectionEl = $('<div class="fc-' + util_1.htmlEscape(position) + '"></div>');
 		var buttonStr = this.toolbarOptions.layout[position];
 		var calendarCustomButtons = optionsManager.get('customButtons') || {};
 		var calendarButtonTextOverrides = optionsManager.overrides.buttonText || {};
@@ -12633,11 +12650,11 @@ var Toolbar = /** @class */ (function () {
 								buttonAriaAttr = '';
 							}
 							else if (buttonIcon) {
-								buttonInnerHtml = "<span class='" + buttonIcon + "'></span>";
-								buttonAriaAttr = ' aria-label="' + buttonName + '"';
+								buttonInnerHtml = '<span class="' + util_1.htmlEscape(buttonIcon) + '"></span>';
+								buttonAriaAttr = ' aria-label="' + util_1.htmlEscape(buttonName) + '"';
 							}
 							buttonEl = $(// type="button" so that it doesn't submit a form
-							'<button type="button" class="' + buttonClasses.join(' ') + '"' +
+							'<button type="button" class="' + util_1.htmlEscape(buttonClasses.join(' ')) + '"' +
 								buttonAriaAttr +
 								'>' + buttonInnerHtml + '</button>')
 								.click(function (ev) {
@@ -12687,7 +12704,7 @@ var Toolbar = /** @class */ (function () {
 						.last().addClass(theme.getClass('cornerRight')).end();
 				}
 				if (groupChildren.length > 1) {
-					groupEl = $('<div/>');
+					groupEl = $('<div></div>');
 					if (isOnlyButtons) {
 						groupEl.addClass(theme.getClass('buttonGroup'));
 					}
@@ -13814,12 +13831,12 @@ var TimeGridEventRenderer = /** @class */ (function (_super) {
 			fullTimeText = this.getTimeText(seg.footprint, 'LT');
 			startTimeText = this.getTimeText(seg.footprint, null, false); // displayEnd=false
 		}
-		return '<a class="' + classes.join(' ') + '"' +
+		return '<a class="' + util_1.htmlEscape(classes.join(' ')) + '"' +
 			(eventDef.url ?
 				' href="' + util_1.htmlEscape(eventDef.url) + '"' :
 				'') +
 			(skinCss ?
-				' style="' + skinCss + '"' :
+				' style="' + util_1.htmlEscape(skinCss) + '"' :
 				'') +
 			'>' +
 			'<div class="fc-content">' +
@@ -13837,15 +13854,15 @@ var TimeGridEventRenderer = /** @class */ (function (_super) {
 					'</div>' :
 				'') +
 			'</div>' +
-			'<div class="fc-bg"/>' +
+			'<div class="fc-bg"></div>' +
 			/* TODO: write CSS for this
 			(isResizableFromStart ?
-			  '<div class="fc-resizer fc-start-resizer" />' :
+			  '<div class="fc-resizer fc-start-resizer"></div>' :
 			  ''
 			  ) +
 			*/
 			(isResizableFromEnd ?
-				'<div class="fc-resizer fc-end-resizer" />' :
+				'<div class="fc-resizer fc-end-resizer"></div>' :
 				'') +
 			'</a>';
 	};
@@ -14173,7 +14190,7 @@ var Popover = /** @class */ (function () {
 	Popover.prototype.render = function () {
 		var _this = this;
 		var options = this.options;
-		this.el = $('<div class="fc-popover"/>')
+		this.el = $('<div class="fc-popover"></div>')
 			.addClass(options.className || '')
 			.css({
 			// position initially to the top left to avoid creating scrollbars
@@ -14332,7 +14349,7 @@ var DayGridEventRenderer = /** @class */ (function (_super) {
 		var colCnt = this.dayGrid.colCnt;
 		var segLevels = this.buildSegLevels(rowSegs); // group into sub-arrays of levels
 		var levelCnt = Math.max(1, segLevels.length); // ensure at least one level
-		var tbody = $('<tbody/>');
+		var tbody = $('<tbody></tbody>');
 		var segMatrix = []; // lookup for which segments are rendered into which level+col cells
 		var cellMatrix = []; // lookup for all <td> elements of the level+col matrix
 		var loneCellMatrix = []; // lookup for <td> elements that only take up a single column
@@ -14352,7 +14369,7 @@ var DayGridEventRenderer = /** @class */ (function (_super) {
 					td.attr('rowspan', parseInt(td.attr('rowspan') || 1, 10) + 1);
 				}
 				else {
-					td = $('<td/>');
+					td = $('<td></td>');
 					tr.append(td);
 				}
 				cellMatrix[i][col] = td;
@@ -14363,7 +14380,7 @@ var DayGridEventRenderer = /** @class */ (function (_super) {
 		for (i = 0; i < levelCnt; i++) {
 			levelSegs = segLevels[i];
 			col = 0;
-			tr = $('<tr/>');
+			tr = $('<tr></tr>');
 			segMatrix.push([]);
 			cellMatrix.push([]);
 			loneCellMatrix.push([]);
@@ -14374,7 +14391,7 @@ var DayGridEventRenderer = /** @class */ (function (_super) {
 					seg = levelSegs[j];
 					emptyCellsUntil(seg.leftCol);
 					// create a container that occupies or more columns. append the event element.
-					td = $('<td class="fc-event-container"/>').append(seg.el);
+					td = $('<td class="fc-event-container"></td>').append(seg.el);
 					if (seg.leftCol !== seg.rightCol) {
 						td.attr('colspan', seg.rightCol - seg.leftCol + 1);
 					}
@@ -14478,12 +14495,12 @@ var DayGridEventRenderer = /** @class */ (function (_super) {
 			'<span class="fc-title">' +
 				(util_1.htmlEscape(eventDef.title || '') || '&nbsp;') + // we always want one line of height
 				'</span>';
-		return '<a class="' + classes.join(' ') + '"' +
+		return '<a class="' + util_1.htmlEscape(classes.join(' ')) + '"' +
 			(eventDef.url ?
 				' href="' + util_1.htmlEscape(eventDef.url) + '"' :
 				'') +
 			(skinCss ?
-				' style="' + skinCss + '"' :
+				' style="' + util_1.htmlEscape(skinCss) + '"' :
 				'') +
 			'>' +
 			'<div class="fc-content">' +
@@ -14493,10 +14510,10 @@ var DayGridEventRenderer = /** @class */ (function (_super) {
 			) +
 			'</div>' +
 			(isResizableFromStart ?
-				'<div class="fc-resizer fc-start-resizer" />' :
+				'<div class="fc-resizer fc-start-resizer"></div>' :
 				'') +
 			(isResizableFromEnd ?
-				'<div class="fc-resizer fc-end-resizer" />' :
+				'<div class="fc-resizer fc-end-resizer"></div>' :
 				'') +
 			'</a>';
 	};
@@ -14544,7 +14561,7 @@ var DayGridHelperRenderer = /** @class */ (function (_super) {
 		// inject each new event skeleton into each associated row
 		this.component.rowEls.each(function (row, rowNode) {
 			var rowEl = $(rowNode); // the .fc-row
-			var skeletonEl = $('<div class="fc-helper-skeleton"><table/></div>'); // will be absolutely positioned
+			var skeletonEl = $('<div class="fc-helper-skeleton"><table></table></div>'); // will be absolutely positioned
 			var skeletonTopEl;
 			var skeletonTop;
 			// If there is an original segment, match the top position. Otherwise, put it at the row's top level
@@ -14577,6 +14594,7 @@ exports.default = DayGridHelperRenderer;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(2);
+var util_1 = __webpack_require__(4);
 var $ = __webpack_require__(3);
 var FillRenderer_1 = __webpack_require__(57);
 var DayGridFillRenderer = /** @class */ (function (_super) {
@@ -14613,16 +14631,16 @@ var DayGridFillRenderer = /** @class */ (function (_super) {
 		else {
 			className = type.toLowerCase();
 		}
-		skeletonEl = $('<div class="fc-' + className + '-skeleton">' +
-			'<table><tr/></table>' +
+		skeletonEl = $('<div class="fc-' + util_1.htmlEscape(className) + '-skeleton">' +
+			'<table><tr></tr></table>' +
 			'</div>');
 		trEl = skeletonEl.find('tr');
 		if (startCol > 0) {
-			trEl.append('<td colspan="' + startCol + '"/>');
+			trEl.append('<td colspan="' + Math.ceil(startCol) + '"></td>');
 		}
 		trEl.append(seg.el.attr('colspan', endCol - startCol));
 		if (endCol < colCnt) {
-			trEl.append('<td colspan="' + (colCnt - endCol) + '"/>');
+			trEl.append('<td colspan="' + Math.ceil(colCnt - endCol) + '"></td>');
 		}
 		this.component.bookendCells(trEl);
 		return skeletonEl;
@@ -14716,20 +14734,20 @@ var ListEventRenderer = /** @class */ (function (_super) {
 		if (url) {
 			classes.push('fc-has-url');
 		}
-		return '<tr class="' + classes.join(' ') + '">' +
+		return '<tr class="' + util_1.htmlEscape(classes.join(' ')) + '">' +
 			(this.displayEventTime ?
-				'<td class="fc-list-item-time ' + theme.getClass('widgetContent') + '">' +
+				'<td class="fc-list-item-time ' + util_1.htmlEscape(theme.getClass('widgetContent')) + '">' +
 					(timeHtml || '') +
 					'</td>' :
 				'') +
-			'<td class="fc-list-item-marker ' + theme.getClass('widgetContent') + '">' +
+			'<td class="fc-list-item-marker ' + util_1.htmlEscape(theme.getClass('widgetContent')) + '">' +
 			'<span class="fc-event-dot"' +
 			(bgColor ?
-				' style="background-color:' + bgColor + '"' :
+				' style="background-color:' + util_1.htmlEscape(bgColor) + '"' :
 				'') +
 			'></span>' +
 			'</td>' +
-			'<td class="fc-list-item-title ' + theme.getClass('widgetContent') + '">' +
+			'<td class="fc-list-item-title ' + util_1.htmlEscape(theme.getClass('widgetContent')) + '">' +
 			'<a' + (url ? ' href="' + util_1.htmlEscape(url) + '"' : '') + '>' +
 			util_1.htmlEscape(eventDef.title || '') +
 			'</a>' +

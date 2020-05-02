@@ -7,6 +7,15 @@
 <script src="../../../../../../lib/js/jquery/jquery.js"></script>
 <link href="../jquery.swipebox.css" rel="stylesheet" type="text/css">
 <script src="../jquery.swipebox.js"></script>
+<style>
+ul {
+	 list-style-type:none;
+}
+li.hidden {
+	list-style:none;
+	display: none;
+}
+</style>
 </head>
 <body>
 <h1>Swipebox Demo</h1>
@@ -19,24 +28,24 @@
 					<img src="https://www.w3schools.com/w3css/img_mountains.jpg" alt="image">
 				</a>
 			</li>
-			<li class="box">
+			<li class="box hidden">
 				<a href="https://www.w3schools.com/w3css/img_lights.jpg" class="swipebox" title="Lights">
 					<img src="https://www.w3schools.com/w3css/img_lights.jpg" alt="image">
 				</a>
 			</li>
-			<li class="box">
+			<li class="box hidden">
 				<a href="https://www.w3schools.com/w3css/img_fjords.jpg" class="swipebox" title="Fjords">
 					<img src="https://www.w3schools.com/w3css/img_fjords.jpg" alt="image">
 				</a>
 			</li>
-			<li class="box">
+			<li class="box hidden">
 				<a href="https://www.w3schools.com/w3css/img_forest.jpg" class="swipebox" title="Forest">
 					<img src="https://www.w3schools.com/w3css/img_forest.jpg" alt="image">
 				</a>
 			</li>
 		</ul>
+		<a class="swipebox-video" href="http://vimeo.com/29193046">Sample Video</a>
 	</div>
-	<a class="swipebox-video" href="http://vimeo.com/29193046">My Video</a>
 </section>
 
 <script type="text/javascript">
@@ -48,6 +57,7 @@ $(document).ready(function() {
 		selector: '.swipebox',
 		hideBarsDelay: 0
 	});
+	$('.swipebox-video').swipebox();
 /*	$('.swipebox').each(function(index) {
 		if(index === 0) {
 			$(this).trigger('click');

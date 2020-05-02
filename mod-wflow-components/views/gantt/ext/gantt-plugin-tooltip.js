@@ -3,9 +3,9 @@
 // (c) 2015 Dinamenta, UAB.
 // License: GPLv2
 
-// (c) 2017-2019 unix-world.org
+// (c) 2017-2020 unix-world.org
 // License: GPLv3
-// v.20190307 (stable)
+// v.20200502 (stable)
 /*
 modified by unixman:
 	- changed text: Title instead of Task
@@ -20,8 +20,8 @@ function SmartGanttPluginTooltip(gantt) {
 	gantt._tooltip = {};
 	gantt._tooltip_class = "gantt_tooltip";
 	gantt.config.tooltip_timeout = 30;
-	gantt.config.tooltip_offset_y = -5;
-	gantt.config.tooltip_offset_x = 10;
+	gantt.config.tooltip_offset_y = 50;
+	gantt.config.tooltip_offset_x = -25;
 		// timeout_to_hide: 50,
 		// delta_x: 15,
 		// delta_y: -20

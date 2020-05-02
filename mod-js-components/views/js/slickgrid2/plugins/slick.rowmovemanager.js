@@ -1,3 +1,9 @@
+
+// (c) 2017-2020 unix-world.org
+// SlickGrid v2.3.uxm20200502
+// Fixes by unixman:
+// 	- jQuery 3.5.0 ready (fixed XHTML Tags)
+
 (function ($) {
 	// register namespace
 	$.extend(true, window, {
@@ -61,14 +67,14 @@
 
 			dd.selectedRows = selectedRows;
 
-			dd.selectionProxy = $("<div class='slick-reorder-proxy'/>")
+			dd.selectionProxy = $("<div class='slick-reorder-proxy'></div>")
 					.css("position", "absolute")
 					.css("zIndex", "99999")
 					.css("width", $(_canvas).innerWidth())
 					.css("height", rowHeight * selectedRows.length)
 					.appendTo(_canvas);
 
-			dd.guide = $("<div class='slick-reorder-guide'/>")
+			dd.guide = $("<div class='slick-reorder-guide'></div>")
 					.css("position", "absolute")
 					.css("zIndex", "99998")
 					.css("width", $(_canvas).innerWidth())
@@ -136,3 +142,5 @@
 		});
 	}
 })(jQuery);
+
+// #END

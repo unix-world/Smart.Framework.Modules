@@ -1,7 +1,8 @@
 
-// (c) 2019 unix-world.org
+// (c) 2019-2020 unix-world.org
 // License: GPLv3
-// v.20190405
+// v.20200501
+// modified by unixman
 
 // Copyright 2013-2019 Alan Hong. and other contributors
 // License: MIT
@@ -46,7 +47,7 @@
 			// special characters data set
 			var specialCharDataSet = [
 				'&quot;', '&amp;', '&lt;', '&gt;', '&iexcl;', '&cent;',
-				'&pound;', '&curren;', '&yen;', '&brvbar;', '&sect;',
+				'&euro;', '&pound;', '&yen;', '&curren;', '&brvbar;', '&sect;',
 				'&uml;', '&copy;', '&ordf;', '&laquo;', '&not;',
 				'&reg;', '&macr;', '&deg;', '&plusmn;', '&sup2;',
 				'&sup3;', '&acute;', '&micro;', '&para;', '&middot;',
@@ -56,7 +57,7 @@
 				'&lsquo;', '&rsquo;', '&sbquo;', '&ldquo;', '&rdquo;',
 				'&bdquo;', '&dagger;', '&Dagger;', '&bull;', '&hellip;',
 				'&permil;', '&prime;', '&Prime;', '&lsaquo;', '&rsaquo;',
-				'&oline;', '&frasl;', '&euro;', '&image;', '&weierp;',
+				'&oline;', '&frasl;', '&image;', '&weierp;',
 				'&real;', '&trade;', '&alefsym;', '&larr;', '&uarr;',
 				'&rarr;', '&darr;', '&harr;', '&crarr;', '&lArr;',
 				'&uArr;', '&rArr;', '&dArr;', '&hArr;', '&forall;',
@@ -68,8 +69,8 @@
 				'&equiv;', '&le;', '&ge;', '&sub;', '&sup;',
 				'&nsub;', '&sube;', '&supe;', '&oplus;', '&otimes;',
 				'&perp;', '&sdot;', '&lceil;', '&rceil;', '&lfloor;',
-				'&rfloor;', '&loz;', '&spades;', '&clubs;', '&hearts;',
-				'&diams;',
+				'&rfloor;', '&oelig;', '&OElig;',
+				'&loz;', '&spades;', '&clubs;', '&hearts;', '&diams;',
 			];
 
 			context.memo('button.specialchars', function() {
@@ -91,10 +92,10 @@
 			 * @return {jQuery}
 			 */
 			this.makeSpecialCharSetTable = function() {
-				var $table = $('<table/>');
+				var $table = $('<table></table>');
 				$.each(specialCharDataSet, function(idx, text) {
-					var $td = $('<td/>').addClass('note-specialchar-node');
-					var $tr = (idx % COLUMN_LENGTH === 0) ? $('<tr/>') : $table.find('tr').last();
+					var $td = $('<td></td>').addClass('note-specialchar-node');
+					var $tr = (idx % COLUMN_LENGTH === 0) ? $('<tr></tr>') : $table.find('tr').last();
 
 					var $button = ui.button({
 						callback: function($node) {

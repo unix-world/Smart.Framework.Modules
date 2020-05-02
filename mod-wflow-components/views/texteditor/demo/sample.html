@@ -16,7 +16,7 @@
 <script src="../summernote-lite.js"></script>
 <script src="../plugins/summernote-paper-size.js"></script>
 <script src="../plugins/summernote-ext-print.js"></script>
-<!-- <script src="../plugins/summernote-cleaner.js"></script> not necessary -->
+<!-- <script src="../plugins/summernote-cleaner.js"></script> not necessary at the moment ... -->
 <link href="../plugins/summernote-pagebreak.css" rel="stylesheet">
 <script src="../plugins/summernote-pagebreak.js"></script>
 <script src="../plugins/summernote-table-headers.js"></script>
@@ -84,7 +84,7 @@
 	&lt;p&gt;&lt;i&gt;The Management&lt;/i&gt;&lt;/p&gt;
 </textarea>
 <script>
-// v.20190225
+// v.20200501
 /*
 $.extend($.summernote.plugins, {
 	'brenter': function (context) {
@@ -113,22 +113,24 @@ $.extend($.summernote.plugins, {
 		tabsize: 2,
 		height: 'calc(100vh - 50px)',
 		toolbar:[
-			['paperSize',['paperSize']],
+			['paperSize', ['paperSize']],
 			['print', ['print', 'pagebreak']],
-			['cleaner',['cleaner']],
+			['cleaner', ['cleaner']],
 			//--
-			['style',['clear','style']], // , 'addclass'
-			['font',['bold','italic','underline']],
-			['fontstyleextra', ['strikethrough', 'underline', 'superscript', 'subscript']],
-			['color',['color']], // 'fontname'
-			['para',['ul','ol','paragraph']],
-			['height',['height']],
-			['table',['table']],
-			['insert',['media','link','hr','picture','specialchars']], // ,'video'
-			['misc', ['findnreplace','undo', 'redo']], // 'imageAttributes'
+			['style', ['clear', 'style']], // , 'addclass'
+			['font', ['fontname', 'fontsize', 'bold', 'italic', 'underline']],
+			['fontstyleextra', ['strikethrough', 'superscript', 'subscript']],
+			['color', ['color']], // 'fontname'
+			['para', ['ul', 'ol', 'paragraph']],
+			['height', ['height']],
+			['table', ['table']],
+			['insert', ['media', 'link', 'hr', 'picture', 'specialchars']], // ,'video'
+			['misc', ['findnreplace', 'undo', 'redo']], // 'imageAttributes'
 			['view',['codeview']], // 'fullscreen'
 			['help',['help']]
 		],
+		fontSizes: [ '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '24', '28', '32', '36', '40', '48', '60', '72' ], // list of values as string
+		fontNames: [ 'Serif', 'Sans', 'IBM Plex Sans', 'IBM Plex Serif', 'IBM Plex Mono', 'Open Sans', 'Lucida Grande', 'Courier' ],
 		popover: {
 			table: [
 				['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
@@ -154,6 +156,7 @@ $.extend($.summernote.plugins, {
 		callbacks: {
 			onInit: function(){
 				summertnotePaperSize_A4(); // autoselect A4
+				$('button.note-btn').filter('.btn-codeview').click().click(); // togle on/of codeView one time to invoke codeview.purify
 			}
 		}
 	});

@@ -7513,7 +7513,7 @@ function errorHTML(e, rootHref) {
 		content += 'on line ' + e.line + ', column ' + (e.column + 1) + ':</p>' +
 			'<ul>' + errors.join('') + '</ul>';
 	} else if (e.stack) {
-		content += '<br/>' + e.stack.split('\n').slice(1).join('<br/>');
+		content += '<br>' + e.stack.split('\n').slice(1).join('<br>');
 	}
 	elem.innerHTML = content;
 

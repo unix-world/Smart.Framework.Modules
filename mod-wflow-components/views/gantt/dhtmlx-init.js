@@ -3,9 +3,9 @@
 // License: GPLv2
 // (c) 2015 Dinamenta, UAB.
 
-// (c) 2017-2019 unix-world.org
+// (c) 2017-2020 unix-world.org
 // License: GPLv3
-// v.20190307 (stable)
+// v.20200502 (stable)
 /*
 modified by unixman:
 	- separed the dhtmlx object and functions from gantt (init) object

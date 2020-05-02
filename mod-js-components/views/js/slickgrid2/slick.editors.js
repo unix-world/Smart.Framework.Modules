@@ -4,6 +4,11 @@
  * @namespace Slick
  */
 
+// (c) 2017-2020 unix-world.org
+// SlickGrid v2.3.uxm20200502
+// Fixes by unixman:
+// 	- jQuery 3.5.0 ready (fixed XHTML Tags)
+
 (function ($) {
 	// register namespace
 	$.extend(true, window, {
@@ -459,14 +464,14 @@
 		var scope = this;
 
 		this.init = function () {
-			$input = $("<INPUT type=text class='editor-percentcomplete' />");
+			$input = $('<input type="text" class="editor-percentcomplete">');
 			$input.width($(args.container).innerWidth() - 25);
 			$input.appendTo(args.container);
 
-			$picker = $("<div class='editor-percentcomplete-picker' />").appendTo(args.container);
-			$picker.append("<div class='editor-percentcomplete-helper'><div class='editor-percentcomplete-wrapper'><div class='editor-percentcomplete-slider' /><div class='editor-percentcomplete-buttons' /></div></div>");
+			$picker = $("<div class='editor-percentcomplete-picker'></div>").appendTo(args.container);
+			$picker.append("<div class='editor-percentcomplete-helper'><div class='editor-percentcomplete-wrapper'><div class='editor-percentcomplete-slider'></div><div class='editor-percentcomplete-buttons'></div></div></div>");
 
-			$picker.find(".editor-percentcomplete-buttons").append("<button val=0>Not started</button><br/><button val=50>In Progress</button><br/><button val=100>Complete</button>");
+			$picker.find(".editor-percentcomplete-buttons").append("<button val=0>Not started</button><br><button val=50>In Progress</button><br><button val=100>Complete</button>");
 
 			$input.focus().select();
 
@@ -541,13 +546,13 @@
 		this.init = function () {
 			var $container = $("body");
 
-			$wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+			$wrapper = $("<div style='z-index:10000;position:absolute;background:white;padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'></div>")
 					.appendTo($container);
 
-			$input = $("<TEXTAREA hidefocus rows=5 style='background:white;width:250px;height:80px;border:0;outline:0'>")
+			$input = $('<textarea hidefocus rows="5" style="background:white;width:250px;height:80px;border:0;outline:0"></textarea>')
 					.appendTo($wrapper);
 
-			$("<DIV style='text-align:right'><BUTTON>Save</BUTTON><BUTTON>Cancel</BUTTON></DIV>")
+			$("<div style='text-align:right'><button>Save</button><button>Cancel</button></div>")
 					.appendTo($wrapper);
 
 			$wrapper.find("button:first").on("click", this.save);

@@ -1,4 +1,11 @@
 
+// (c) 2017-2020 unix-world.org
+// License: GPLv3
+// v.20200502
+// unixman changes:
+// (#1) fixes all required HTML Escapes
+// (#2) jQuery 3.5.0 ready (fixed XHTML Tags)
+
 /*
  * FullCalendar Scheduler v1.9.3 (requires FullCalendar v3.8.x)
  * License: GPLv3
@@ -632,8 +639,8 @@ var TimelineView = /** @class */ (function (_super) {
 		this.timeBodyScroller.el.appendTo(this.timeBodyEl);
 		this.isTimeBodyScrolled = false; // because if the grid has been rerendered, it will get a zero scroll
 		this.timeBodyScroller.on('scroll', fullcalendar_1.proxy(this, 'handleTimeBodyScrolled'));
-		this.slatContainerEl = $('<div class="fc-slats"/>').appendTo(this.timeBodyScroller.canvas.bgEl);
-		this.segContainerEl = $('<div class="fc-event-container"/>').appendTo(this.timeBodyScroller.canvas.contentEl);
+		this.slatContainerEl = $('<div class="fc-slats"></div>').appendTo(this.timeBodyScroller.canvas.bgEl);
+		this.segContainerEl = $('<div class="fc-event-container"></div>').appendTo(this.timeBodyScroller.canvas.contentEl);
 		this.bgSegContainerEl = this.timeBodyScroller.canvas.bgEl;
 		this.timeBodyBoundCache = new fullcalendar_1.CoordCache({
 			els: this.timeBodyScroller.canvas.el,
@@ -783,11 +790,11 @@ var TimelineView = /** @class */ (function (_super) {
 		}
 		var isChrono = labelInterval > this.slotDuration;
 		var isSingleDay = this.slotDuration.as('days') === 1;
-		var html = '<table class="' + theme.getClass('tableGrid') + '">';
+		var html = '<table class="' + fullcalendar_1.htmlEscape(theme.getClass('tableGrid')) + '">';
 		html += '<colgroup>';
 		for (var _a = 0, slotDates_2 = slotDates; _a < slotDates_2.length; _a++) {
 			date = slotDates_2[_a];
-			html += '<col/>';
+			html += '<col>'; // <col> have no ending tag
 		}
 		html += '</colgroup>';
 		html += '<tbody>';
@@ -806,9 +813,9 @@ var TimelineView = /** @class */ (function (_super) {
 					);
 				}
 				html +=
-					'<th class="' + headerCellClassNames.join(' ') + '"' +
-						' data-date="' + cell.date.format() + '"' +
-						(cell.colspan > 1 ? ' colspan="' + cell.colspan + '"' : '') +
+					'<th class="' + fullcalendar_1.htmlEscape(headerCellClassNames.join(' ')) + '"' +
+						' data-date="' + fullcalendar_1.htmlEscape(cell.date.format()) + '"' +
+						(cell.colspan > 1 ? ' colspan="' + Math.ceil(cell.colspan) + '"' : '') +
 						'>' +
 						'<div class="fc-cell-content">' +
 						cell.spanHtml +
@@ -818,11 +825,11 @@ var TimelineView = /** @class */ (function (_super) {
 			html += '</tr>';
 		}
 		html += '</tbody></table>';
-		var slatHtml = '<table class="' + theme.getClass('tableGrid') + '">';
+		var slatHtml = '<table class="' + fullcalendar_1.htmlEscape(theme.getClass('tableGrid')) + '">';
 		slatHtml += '<colgroup>';
 		for (var _c = 0, slotCells_1 = slotCells; _c < slotCells_1.length; _c++) {
 			cell = slotCells_1[_c];
-			slatHtml += '<col/>';
+			slatHtml += '<col>'; // <col> have no ending tag
 		}
 		slatHtml += '</colgroup>';
 		slatHtml += '<tbody><tr>';
@@ -862,9 +869,9 @@ var TimelineView = /** @class */ (function (_super) {
 		if (isEm) {
 			classes.push('fc-em-cell');
 		}
-		return '<td class="' + classes.join(' ') + '"' +
-			' data-date="' + date.format() + '"' +
-			'><div /></td>';
+		return '<td class="' + fullcalendar_1.htmlEscape(classes.join(' ')) + '"' +
+			' data-date="' + fullcalendar_1.htmlEscape(date.format()) + '"' +
+			'><div></div></td>';
 	};
 	// Business Hours
 	// ------------------------------------------------------------------------------------------------------------------
@@ -890,10 +897,10 @@ var TimelineView = /** @class */ (function (_super) {
 			var css = this.isRTL ?
 				{ right: -coord } :
 				{ left: coord };
-			nodes.push($("<div class='fc-now-indicator fc-now-indicator-arrow'></div>")
+			nodes.push($('<div class="fc-now-indicator fc-now-indicator-arrow"></div>')
 				.css(css)
 				.appendTo(this.timeHeadScroller.canvas.el)[0]);
-			nodes.push($("<div class='fc-now-indicator fc-now-indicator-line'></div>")
+			nodes.push($('<div class="fc-now-indicator fc-now-indicator-line"></div>')
 				.css(css)
 				.appendTo(this.timeBodyScroller.canvas.el)[0]);
 		}
@@ -1466,7 +1473,7 @@ var TimelineEventRenderer = /** @class */ (function (_super) {
 		var classes = this.getSegClasses(seg, isDraggable, isResizableFromStart || isResizableFromEnd);
 		classes.unshift('fc-timeline-event', 'fc-h-event');
 		var timeText = this.getTimeText(seg.footprint);
-		return '<a class="' + classes.join(' ') + '" style="' + fullcalendar_1.cssToStr(this.getSkinCss(seg.footprint.eventDef)) + '"' +
+		return '<a class="' + fullcalendar_1.htmlEscape(classes.join(' ')) + '" style="' + fullcalendar_1.htmlEscape(fullcalendar_1.cssToStr(this.getSkinCss(seg.footprint.eventDef))) + '"' +
 			(eventDef.url ?
 				' href="' + fullcalendar_1.htmlEscape(eventDef.url) + '"' :
 				'') +
@@ -1482,7 +1489,7 @@ var TimelineEventRenderer = /** @class */ (function (_super) {
 			(eventDef.title ? fullcalendar_1.htmlEscape(eventDef.title) : '&nbsp;') +
 			'</span>' +
 			'</div>' +
-			'<div class="fc-bg" />' +
+			'<div class="fc-bg"></div>' +
 			(isResizableFromStart ?
 				'<div class="fc-resizer fc-start-resizer"></div>' :
 				'') +
@@ -1732,7 +1739,7 @@ var RowParent = /** @class */ (function (_super) {
 				// build the TR and record it
 				// assign before calling the render methods, because they might rely
 				var tbody = this.view.tbodyHash[type];
-				var tr = $('<tr/>');
+				var tr = $('<tr></tr>');
 				this.trHash[type] = tr;
 				trNodes.push(tr[0]);
 				// call the subclass' render method for this row type (if available)
@@ -2206,12 +2213,12 @@ var ResourceDayTableMixin = /** @class */ (function (_super) {
 	ResourceDayTableMixin.prototype.renderHeadResourceCellHtml = function (resource, date, colspan) {
 		if (colspan === void 0) { colspan = 1; }
 		return '<th class="fc-resource-cell"' +
-			' data-resource-id="' + resource.id + '"' +
+			' data-resource-id="' + fullcalendar_1.htmlEscape(resource.id) + '"' +
 			(date ?
-				' data-date="' + date.format('YYYY-MM-DD') + '"' :
+				' data-date="' + fullcalendar_1.htmlEscape(date.format('YYYY-MM-DD')) + '"' :
 				'') +
 			(colspan > 1 ?
-				' colspan="' + colspan + '"' :
+				' colspan="' + Math.ceil(colspan) + '"' :
 				'') +
 			'>' +
 			fullcalendar_1.htmlEscape(this.view.getResourceText(resource)) +
@@ -2220,7 +2227,7 @@ var ResourceDayTableMixin = /** @class */ (function (_super) {
 	// given a date and a required resource
 	ResourceDayTableMixin.prototype.renderHeadResourceDateCellHtml = function (date, resource, colspan) {
 		if (colspan === void 0) { colspan = 1; }
-		return this.renderHeadDateCellHtml(date, colspan, 'data-resource-id="' + resource.id + '"');
+		return this.renderHeadDateCellHtml(date, colspan, 'data-resource-id="' + fullcalendar_1.htmlEscape(resource.id) + '"');
 	};
 	// given a container with already rendered resource cells
 	ResourceDayTableMixin.prototype.processHeadResourceEls = function (containerEl) {
@@ -2265,7 +2272,7 @@ var ResourceDayTableMixin = /** @class */ (function (_super) {
 		return htmls.join(''); // already accounted for RTL
 	};
 	ResourceDayTableMixin.prototype.renderResourceBgCellHtml = function (date, resource) {
-		return this.renderBgCellHtml(date, 'data-resource-id="' + resource.id + '"');
+		return this.renderBgCellHtml(date, 'data-resource-id="' + fullcalendar_1.htmlEscape(resource.id) + '"');
 	};
 	// Rendering Utils
 	// ----------------------------------------------------------------------------------------------
@@ -2395,7 +2402,7 @@ var ClippedScroller = /** @class */ (function (_super) {
 	}
 	ClippedScroller.prototype.renderEl = function () {
 		var scrollEl = _super.prototype.renderEl.call(this);
-		return $('<div class="fc-scroller-clip" />').append(scrollEl); // return value
+		return $('<div class="fc-scroller-clip"></div>').append(scrollEl); // return value
 	};
 	ClippedScroller.prototype.updateSize = function () {
 		var scrollEl = this.scrollEl;
@@ -2935,7 +2942,7 @@ var TimelineFillRenderer = /** @class */ (function (_super) {
 			}
 			// making a new container each time is OKAY
 			// all types of segs (background or business hours or whatever) are rendered in one pass
-			var containerEl = $('<div class="fc-' + className + '-container" />')
+			var containerEl = $('<div class="fc-' + fullcalendar_1.htmlEscape(className) + '-container"></div>')
 				.appendTo(this.component.bgSegContainerEl);
 			for (var _i = 0, segs_1 = segs; _i < segs_1.length; _i++) {
 				var seg = segs_1[_i];
@@ -2989,7 +2996,7 @@ var TimelineHelperRenderer = /** @class */ (function (_super) {
 				seg.el.css('top', 0);
 			}
 		}
-		var helperContainerEl = $('<div class="fc-event-container fc-helper-container"/>')
+		var helperContainerEl = $('<div class="fc-event-container fc-helper-container"></div>')
 			.appendTo(this.component.innerEl);
 		helperNodes.push(helperContainerEl[0]);
 		for (var _a = 0, segs_2 = segs; _a < segs_2.length; _a++) {
@@ -3123,7 +3130,7 @@ var ResourceTimelineView = /** @class */ (function (_super) {
 		// TODO: look into better solution
 		this.segContainerEl.remove();
 		this.segContainerEl = null;
-		var timeBodyContainerEl = $("<div class=\"fc-rows\"> <table class=\"" + theme.getClass('tableGrid') + "\"> <tbody/> </table> </div>").appendTo(this.timeBodyScroller.canvas.contentEl);
+		var timeBodyContainerEl = $("<div class=\"fc-rows\"> <table class=\"" + theme.getClass('tableGrid') + "\"> <tbody></tbody> </table> </div>").appendTo(this.timeBodyScroller.canvas.contentEl);
 		this.timeBodyTbodyEl = timeBodyContainerEl.find('tbody');
 		this.tbodyHash = {
 			spreadsheet: this.spreadsheet.tbodyEl,
@@ -3749,7 +3756,7 @@ var VRowGroup = /** @class */ (function (_super) {
 		if (this.rowspan) {
 			// ensure the TD element
 			if (!this.groupTd) {
-				this.groupTd = $('<td class="' + theme.getClass('widgetContent') + '"/>')
+				this.groupTd = $('<td class="' + fullcalendar_1.htmlEscape(theme.getClass('widgetContent')) + '"></td>')
 					.append(this.renderGroupContentEl());
 			}
 			this.groupTd.attr('rowspan', this.rowspan);
@@ -3827,7 +3834,7 @@ var RowGroup = /** @class */ (function (_super) {
 	Renders the content wrapper element that will be inserted into this row's TD cell
 	*/
 	RowGroup.prototype.renderGroupContentEl = function () {
-		var contentEl = $('<div class="fc-cell-content" />')
+		var contentEl = $('<div class="fc-cell-content"></div>')
 			.append(this.renderGroupTextEl());
 		var filter = this.groupSpec.render;
 		if (typeof filter === 'function') {
@@ -3845,7 +3852,7 @@ var RowGroup = /** @class */ (function (_super) {
 		if (typeof filter === 'function') {
 			text = filter(text) || text;
 		}
-		return $('<span class="fc-cell-text" />').text(text);
+		return $('<span class="fc-cell-text"></span>').text(text);
 	};
 	return RowGroup;
 }(RowParent_1.default));
@@ -3870,7 +3877,7 @@ var EventRow = /** @class */ (function (_super) {
 	}
 	EventRow.prototype.renderEventSkeleton = function (tr) {
 		var theme = this.view.calendar.theme;
-		tr.html("<td class=\"" + theme.getClass('widgetContent') + "\"> <div> <div class=\"fc-event-container\" /> </div> </td>");
+		tr.html("<td class=\"" + theme.getClass('widgetContent') + "\"> <div> <div class=\"fc-event-container\"></div> </div> </td>");
 		this.segContainerEl = tr.find('.fc-event-container');
 		this.innerEl = (this.bgSegContainerEl = tr.find('td > div'));
 	};
@@ -4593,7 +4600,7 @@ var Spreadsheet = /** @class */ (function () {
 		this.bodyScroller = new ClippedScroller_1.default({ overflowY: 'clipped-scroll' });
 		this.bodyScroller.canvas = new ScrollerCanvas_1.default();
 		this.bodyScroller.render();
-		this.bodyScroller.canvas.contentEl.html("<div class=\"fc-rows\"> <table class=\"" + theme.getClass('tableGrid') + "\">" + this.colGroupHtml + "<tbody/> </table> </div>"); // colGroupHtml hack
+		this.bodyScroller.canvas.contentEl.html("<div class=\"fc-rows\"> <table class=\"" + theme.getClass('tableGrid') + "\">" + this.colGroupHtml + "<tbody></tbody> </table> </div>"); // colGroupHtml hack
 		this.tbodyEl = this.bodyScroller.canvas.contentEl.find('tbody');
 		this.el.append(this.bodyScroller.el);
 		this.scrollJoiner = new ScrollJoiner_1.default('horizontal', [this.headScroller, this.bodyScroller]);
@@ -4609,15 +4616,15 @@ var Spreadsheet = /** @class */ (function () {
 	Spreadsheet.prototype.renderHeadHtml = function () {
 		var theme = this.view.calendar.theme;
 		var colSpecs = this.view.colSpecs;
-		var html = '<table class="' + theme.getClass('tableGrid') + '">';
+		var html = '<table class="' + fullcalendar_1.htmlEscape(theme.getClass('tableGrid')) + '">';
 		var colGroupHtml = '<colgroup>';
 		for (var _i = 0, colSpecs_1 = colSpecs; _i < colSpecs_1.length; _i++) {
 			var o = colSpecs_1[_i];
 			if (o.isMain) {
-				colGroupHtml += '<col class="fc-main-col"/>';
+				colGroupHtml += '<col class="fc-main-col">'; // <col> have no ending tag
 			}
 			else {
-				colGroupHtml += '<col/>';
+				colGroupHtml += '<col>'; // <col> have no ending tag
 			}
 		}
 		colGroupHtml += '</colgroup>';
@@ -4627,7 +4634,7 @@ var Spreadsheet = /** @class */ (function () {
 		if (this.view.superHeaderText) {
 			html +=
 				'<tr class="fc-super">' +
-					'<th class="' + theme.getClass('widgetHeader') + '" colspan="' + colSpecs.length + '">' +
+					'<th class="' + fullcalendar_1.htmlEscape(theme.getClass('widgetHeader')) + '" colspan="' + Math.ceil(colSpecs.length) + '">' +
 					'<div class="fc-cell-content">' +
 					'<span class="fc-cell-text">' +
 					fullcalendar_1.htmlEscape(this.view.superHeaderText) +
@@ -4929,11 +4936,11 @@ var ResourceRow = /** @class */ (function (_super) {
 			if (typeof colSpec.render === 'function') {
 				contentEl = colSpec.render(resource, contentEl, input) || contentEl;
 			}
-			var td = $('<td class="' + theme.getClass('widgetContent') + '"/>')
+			var td = $('<td class="' + fullcalendar_1.htmlEscape(theme.getClass('widgetContent')) + '"></td>')
 				.append(contentEl);
 			// the first cell of the row needs to have an inner div for setTrInnerHeight
 			if (colSpec.isMain) {
-				td.wrapInner('<div/>');
+				td.wrapInner('<div></div>');
 			}
 			tr.append(td);
 		}
@@ -4947,7 +4954,7 @@ var ResourceRow = /** @class */ (function (_super) {
 		var html = '';
 		var depth = this.depth;
 		for (var i = 0; i < depth; i++) {
-			html += '<span class="fc-icon"/>';
+			html += '<span class="fc-icon"></span>';
 		}
 		html +=
 			'<span class="fc-expander-space">' +
@@ -4989,9 +4996,9 @@ var HRowGroup = /** @class */ (function (_super) {
 		contentEl.prepend('<span class="fc-expander">' +
 			'<span class="fc-icon"></span>' +
 			'</span>');
-		return $('<td class="fc-divider" />')
+		return $('<td class="fc-divider"></td>')
 			.attr('colspan', this.view.colSpecs.length) // span across all columns
-			.append($('<div/>').append(contentEl) // needed by setTrInnerHeight
+			.append($('<div></div>').append(contentEl) // needed by setTrInnerHeight
 		)
 			.appendTo(tr);
 	};
@@ -5001,7 +5008,7 @@ var HRowGroup = /** @class */ (function (_super) {
 	HRowGroup.prototype.renderEventSkeleton = function (tr) {
 		// insert a single cell, with a single empty <div> (needed by setTrInnerHeight).
 		// there will be no content
-		return tr.append("<td class=\"fc-divider\"> <div/> </td>");
+		return tr.append("<td class=\"fc-divider\"> <div></div> </td>");
 	};
 	return HRowGroup;
 }(RowGroup_1.default));

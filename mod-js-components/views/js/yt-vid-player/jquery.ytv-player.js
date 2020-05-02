@@ -4,6 +4,11 @@
 // License: MIT
 // v.20190321
 
+// (c) 2017-2020 unix-world.org
+// r.20200502
+// Fixes by unixman:
+// 	- jQuery 3.5.0 ready (fixed XHTML Tags)
+
 var YTdeferred = jQuery.Deferred();
 
 window.onYouTubeIframeAPIReady = function() {
@@ -21,7 +26,7 @@ window.onYouTubeIframeAPIReady = function() {
 	$.fn.simplePlayer = function() {
 
 		var	video = $(this);
-		var play = $('<div />', {
+		var play = $('<div></div>', {
 			id: 'play'
 		}).hide();
 		var defaults = {
@@ -59,7 +64,7 @@ window.onYouTubeIframeAPIReady = function() {
 
 		play.bind('click', function () {
 			if(!$('#player' ).length) {
-				$('<iframe />', {
+				$('<iframe></iframe>', {
 					id: 'player',
 					src: 'https://www.youtube.com/embed/' + video.data('video') + '?' + $.param(defaults)
 				})

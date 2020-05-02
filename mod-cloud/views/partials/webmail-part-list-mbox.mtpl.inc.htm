@@ -1,12 +1,12 @@
 <!-- smart grid -->
-<link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/simplePagination.css">
-<script type="text/javascript" src="lib/js/jquery/pager/jquery.simplePagination.js"></script>
 <script type="text/javascript" src="lib/js/jquery/jquery.simulate.js"></script>
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid.css">
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid-fixes.css">
 <script type="text/javascript" src="lib/js/jquery/slickgrid/slick.grid.js"></script>
 <script type="text/javascript" src="lib/js/jquery/slickgrid/slick.editors.js"></script>
 <script type="text/javascript" src="lib/js/jquery/slickgrid/smart-grid.js"></script>
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/simplePagination.css">
+<script type="text/javascript" src="lib/js/jquery/pager/jquery.simplePagination.js"></script>
 <style>
 .smartGrid_Default {
 }
@@ -98,16 +98,16 @@
 		//--
 		var messagesArr = getGridSelectedRows();
 		if((!messagesArr) || (messagesArr.length <= 0)) {
-			SmartJS_BrowserUtils.alert_Dialog('<h3>No ' + itemType + 's Selected ...</h3>', null, 'Select ' + itemType + '(s)', 500, 175);
+			SmartJS_BrowserUtils.alert_Dialog('<h3>No ' + itemType + 's Selected ...</h3>', null, 'Select ' + itemType + '(s)', 500, 185);
 			return;
 		} //end if
 		//--
 		switch(action) {
 			case 'delete':
-				SmartJS_BrowserUtils.confirm_Dialog('<div style="position:absolute; right:10px; top:0; color:' + SmartJS_CoreUtils.escape_html(iconColorForMsgDeleteDialog) + '; opacity:0.9;"><i class="sfi ' + SmartJS_CoreUtils.escape_html(iconForMsgDeleteDialog) + ' sfi-2x"></i></div><h3>' + SmartJS_CoreUtils.escape_html(msgForBtnDelete) + '&nbsp;?</h3>' + (msgExtraDelete ? '<div style="font-size:0.825rem!important; color:#F2891F;"><i class="sfi sfi-notification"></i> &nbsp; <b>' + SmartJS_CoreUtils.escape_html(msgExtraDelete)  + '</b></div>' : ''), function(){ moveOrDeleteSelectedMessages(action, messagesArr) }, 'Selected Message(s): ' + String(messagesArr.length), 550, 200);
+				SmartJS_BrowserUtils.confirm_Dialog('<div style="position:absolute; right:10px; top:0; color:' + SmartJS_CoreUtils.escape_html(iconColorForMsgDeleteDialog) + '; opacity:0.9;"><i class="sfi ' + SmartJS_CoreUtils.escape_html(iconForMsgDeleteDialog) + ' sfi-2x"></i></div><h3>' + SmartJS_CoreUtils.escape_html(msgForBtnDelete) + '&nbsp;?</h3>' + (msgExtraDelete ? '<div style="font-size:0.825rem!important; color:#F2891F;"><i class="sfi sfi-notification"></i> &nbsp; <b>' + SmartJS_CoreUtils.escape_html(msgExtraDelete)  + '</b></div>' : ''), function(){ moveOrDeleteSelectedMessages(action, messagesArr) }, 'Selected Message(s): ' + String(messagesArr.length), 550, 225);
 				break;
 			case 'restore':
-				SmartJS_BrowserUtils.confirm_Dialog('<div style="position:absolute; right:10px; top:0; color:#333333; opacity:0.9;"><i class="sfi sfi-folder-upload sfi-2x"></i></div><h3>' + SmartJS_CoreUtils.escape_html(msgForButtonRestore) + '&nbsp;?</h3>' + '<div style="font-size:0.825rem!important; color:#F2891F;"><i class="sfi sfi-notification"></i> &nbsp; If there are selected <b>messages</b> that are <b>marked with the Trash icon</b> they <b>cannot be restored</b> as they have an unknown origin. <i>Only the messages that have been moved to Trash from the WebMail\'s Inbox or Sent folders can be restored back and they are marked with a different icon</i>.</div>', function(){ moveOrDeleteSelectedMessages(action, messagesArr) }, 'Selected Message(s): ' + String(messagesArr.length), 550, 250);
+				SmartJS_BrowserUtils.confirm_Dialog('<div style="position:absolute; right:10px; top:0; color:#333333; opacity:0.9;"><i class="sfi sfi-folder-upload sfi-2x"></i></div><h3>' + SmartJS_CoreUtils.escape_html(msgForButtonRestore) + '&nbsp;?</h3>' + '<div style="font-size:0.825rem!important; color:#F2891F;"><i class="sfi sfi-notification"></i> &nbsp; If there are selected <b>messages</b> that are <b>marked with the Trash icon</b> they <b>cannot be restored</b> as they have an unknown origin. <i>Only the messages that have been moved to Trash from the WebMail\'s Inbox or Sent folders can be restored back and they are marked with a different icon</i>.</div>', function(){ moveOrDeleteSelectedMessages(action, messagesArr) }, 'Selected Message(s): ' + String(messagesArr.length), 550, 265);
 				break;
 			default:
 				var warnMsg = 'Invalid Select Action: ' + action;
@@ -297,32 +297,34 @@ jQuery(function() {
 		asyncEditorLoading: false
 	};
 
-	var getWDiff = function() {
-		return (SmartCloud_DynLayout_Vertical_DynamicBar.getBarWidth() + 60);
-	}
-
-	var getHDiff = function() {
-		return 210;
-	}
-
-	// Grid sizing
-	var winW = jQuery(window).width();
-	var winH = jQuery(window).height();
-	jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - getWDiff()), 'height': parseInt(winH - getHDiff()) });
-	jQuery('#cloud_dynlayout_resizer_div').resize(function() {
-		winW = jQuery(window).width();
-		winH = jQuery(window).height();
-		jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - getWDiff()), 'height': parseInt(winH - getHDiff()) });
-		TheGrid.grid.resizeCanvas();
-		TheGrid.grid.autosizeColumns();
-	});
-
-	// Runtime
+	//-- Runtime
 	TheGrid.initNavPager('webmailNavPager', 3);
 	TheGrid.initGrid(columns, options);
-	TheGrid.grid.resizeCanvas();
-	TheGrid.grid.autosizeColumns();
 	TheGrid.loadGridData(0);
+
+	//-- Grid Sizing
+	var resizeTheGrid = function() {
+		//--
+		var winW = parseInt(jQuery(window).width());
+		var winH = parseInt(jQuery(window).height());
+		//--
+		var getWDiff = Math.ceil(SmartCloud_DynLayout_Vertical_DynamicBar.getBarWidth()) + 60;
+		var getHDiff = 210;
+		//--
+		jQuery('#' + IdOfGrid).css({ 'width': Math.floor(winW - getWDiff), 'height':  Math.floor(winH - getHDiff) });
+		//--
+		TheGrid.grid.resizeCanvas();
+		TheGrid.grid.autosizeColumns();
+		//--
+	} //end function
+
+	//-- Grid Re-Sizing
+	jQuery('#cloud_dynlayout_resizer_div').resize(function() {
+		resizeTheGrid();
+	});
+
+	//-- Render
+	setTimeout(function(){ resizeTheGrid(); }, 100);
 
 });
 //--

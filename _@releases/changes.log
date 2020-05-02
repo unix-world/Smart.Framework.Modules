@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply onlt for for Milestone Releases
 
+May 02, 2020 :: Version 5.7.2 rev.20200502
+	* Upgrade jQuery to 3.5.0
+	* Fix all broken javascripts that depend on jQuery and were affected by the major breaking changes in jQuery 3.5.0: xhtml tags converted to html tags ; object hasOwnProperty over {}
+
 April 15, 2020 :: Version 5.7.2 rev.20200415
 	* Cloud WebMail stable
 

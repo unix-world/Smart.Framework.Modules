@@ -1,11 +1,12 @@
 
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20200501
 //== unixman changes:
 // (#1) replaced jQuery deprecated $.isArray() with Array.isArray()
 // (#2) change some default options as: force_text: true ; stripes: true
 // (#3) several small fixes on export options
+// (#4) jQuery 3.5.0 ready (fixed XHTML Tags)
 //==
 
 // jsTree 3.3.7
@@ -2057,7 +2058,7 @@
 			tmp = d.children("a").first().length ? d.children("a").first().clone() : d.clone();
 			tmp.children("ins, i, ul").remove();
 			tmp = tmp.html();
-			tmp = $('<div />').html(tmp);
+			tmp = $('<div></div>').html(tmp);
 			data.text = this.settings.core.force_text ? tmp.text() : tmp.html();
 			tmp = d.data();
 			data.data = tmp ? $.extend(true, {}, tmp) : null;
@@ -4516,8 +4517,8 @@
 			w2 = ai.width() * ai.length,
 			*/
 			t  = default_text;
-			h1 = $("<"+"div />", { css : { "position" : "absolute", "top" : "-200px", "left" : (rtl ? "0px" : "-1000px"), "visibility" : "hidden" } }).appendTo(document.body);
-			h2 = $("<"+"input />", {
+			h1 = $('<div></div>', { css : { "position" : "absolute", "top" : "-200px", "left" : (rtl ? "0px" : "-1000px"), "visibility" : "hidden" } }).appendTo(document.body);
+			h2 = $('<input>', {
 						"value" : t,
 						"class" : "jstree-rename-input",
 						// "size" : t.length,
@@ -4621,7 +4622,7 @@
 				theme_url = dir + '/' + theme_name + '/style.css';
 			}
 			if(theme_url && $.inArray(theme_url, themes_loaded) === -1) {
-				$('head').append('<'+'link rel="stylesheet" href="' + theme_url + '" type="text/css" />');
+				$('head').append('<link rel="stylesheet" href="' + theme_url + '" type="text/css">');
 				themes_loaded.push(theme_url);
 			}
 			if(this._data.core.themes.name) {
@@ -7005,7 +7006,7 @@
 	// helpers
 	(function ($) {
 		$.vakata.html = {
-			div : $('<div />'),
+			div : $('<div></div>'),
 			escape : function (str) {
 				return $.vakata.html.div.text(str).html();
 			},

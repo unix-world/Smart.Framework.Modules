@@ -1,8 +1,9 @@
 
-// (c) 2019 unix-world.org
+// (c) 2019-2020 unix-world.org
 // License: GPLv3
-// v.20190405
-// contains fixes by unixman
+// v.20200501
+// modified by unixman
+// depends on: SmartJS_CoreUtils.escape_html() : bug fixes)
 
 /**
  * Super simple wysiwyg editor v0.8.11
@@ -11,7 +12,7 @@
  * summernote may be freely distributed under the MIT license.
  * Date: 2018-12-22T04:42Z
  *
- * (c) 2019 unix-world.org
+ * (c) 2019-2020 unix-world.org
  * fixes by unixman:
  * 		- minor fix: replaced jQuery deprecated $.isArray() with Array.isArray()
  * 		- bugfix: e.offsetX is undefined in Firefox
@@ -20,6 +21,7 @@
  * 		- font-style fix
  * 		- new option: codeviewIframeAllow
  * 		- fix for printable scrolled documents
+ * 		- jQuery 3.5.0 ready (fixed XHTML Tags)
  *
  */
 
@@ -98,8 +100,8 @@
 			// create tooltip node
 			this.$tooltip = $([
 				'<div class="note-tooltip in">',
-				'  <div class="note-tooltip-arrow"/>',
-				'  <div class="note-tooltip-content"/>',
+				'  <div class="note-tooltip-arrow"></div>',
+				'  <div class="note-tooltip-content"></div>',
 				'</div>',
 			].join(''));
 			// define event
@@ -233,7 +235,7 @@
 				target: options.container || 'body'
 			}, options);
 			this.$modal = $node;
-			this.$backdrop = $('<div class="note-modal-backdrop" />');
+			this.$backdrop = $('<div class="note-modal-backdrop"></div>');
 		}
 		ModalUI.prototype.show = function () {
 			if (this.options.target === 'body') {
@@ -259,25 +261,25 @@
 	// unixman: img upload container
 	var imgupldr = renderer.create('<div id="summernote-img-uploader-preview" style="position:fixed; bottom:-5000px; left:-5000px; background-color:#FFFFFF; border: 3px solid #FFFFFF;"></div>');
 
-	var editor = renderer.create('<div class="note-editor note-frame"/>');
-	var toolbar = renderer.create('<div class="note-toolbar" role="toolbar"/>');
-	var editingArea = renderer.create('<div class="note-editing-area"/>');
-	var codable = renderer.create('<textarea class="note-codable" role="textbox" aria-multiline="true" spellcheck="false"/>');
-	var editable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
+	var editor = renderer.create('<div class="note-editor note-frame"></div>');
+	var toolbar = renderer.create('<div class="note-toolbar" role="toolbar"></div>');
+	var editingArea = renderer.create('<div class="note-editing-area"></div>');
+	var codable = renderer.create('<textarea class="note-codable" role="textbox" aria-multiline="true" spellcheck="false"></textarea>');
+	var editable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>');
 	var statusbar = renderer.create([
-		'<output class="note-status-output" role="status" aria-live="polite"/>',
+		'<output class="note-status-output" role="status" aria-live="polite"></output>',
 		'<div class="note-statusbar" role="resize">',
 		'  <div class="note-resizebar" role="seperator" aria-orientation="horizontal" aria-label="resize">',
-		'    <div class="note-icon-bar"/>',
-		'    <div class="note-icon-bar"/>',
-		'    <div class="note-icon-bar"/>',
+		'    <div class="note-icon-bar"></div>',
+		'    <div class="note-icon-bar"></div>',
+		'    <div class="note-icon-bar"></div>',
 		'  </div>',
 		'</div>',
 	].join(''));
-	var airEditor = renderer.create('<div class="note-editor"/>');
+	var airEditor = renderer.create('<div class="note-editor"></div>');
 	var airEditable = renderer.create([
-		'<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>',
-		'<output class="note-status-output" role="status" aria-live="polite"/>',
+		'<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>',
+		'<output class="note-status-output" role="status" aria-live="polite"></output>',
 	].join(''));
 	var buttonGroup = renderer.create('<div class="note-btn-group">');
 	var button = renderer.create('<button type="button" class="note-btn" role="button" tabindex="-1">', function ($node, options) {
@@ -455,9 +457,9 @@
 				className: 'note-table',
 				items: [
 					'<div class="note-dimension-picker">',
-					'  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
-					'  <div class="note-dimension-picker-highlighted"/>',
-					'  <div class="note-dimension-picker-unhighlighted"/>',
+					'  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>',
+					'  <div class="note-dimension-picker-highlighted"></div>',
+					'  <div class="note-dimension-picker-unhighlighted"></div>',
 					'</div>',
 					'<div class="note-dimension-display">1 x 1</div>',
 				].join('')
@@ -474,7 +476,7 @@
 			}
 		}).render();
 	};
-	var palette = renderer.create('<div class="note-color-palette"/>', function ($node, options) {
+	var palette = renderer.create('<div class="note-color-palette"></div>', function ($node, options) {
 		var contents = [];
 		for (var row = 0, rowSize = options.colors.length; row < rowSize; row++) {
 			var eventName = options.eventName;
@@ -539,7 +541,7 @@
 							opt.lang.color.transparent,
 							'    </button>',
 							'  </div>',
-							'  <div class="note-holder" data-event="backColor"/>',
+							'  <div class="note-holder" data-event="backColor"></div>',
 							'  <div class="btn-sm">',
 							'    <input type="color" id="html5bcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
 							'    <button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
@@ -556,7 +558,7 @@
 							opt.lang.color.resetToDefault,
 							'    </button>',
 							'  </div>',
-							'  <div class="note-holder" data-event="foreColor"/>',
+							'  <div class="note-holder" data-event="foreColor"></div>',
 							'  <div class="btn-sm">',
 							'    <input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
 							'    <button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
@@ -614,7 +616,7 @@
 					]
 			}).render();
 	};
-	var dialog = renderer.create('<div class="note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function ($node, options) {
+	var dialog = renderer.create('<div class="note-modal" aria-hidden="false" tabindex="-1" role="dialog"></div>', function ($node, options) {
 		if (options.fade) {
 			$node.addClass('fade');
 		}
@@ -639,7 +641,7 @@
 			opt.lang.video.url + ' <small class="text-muted">' +
 			opt.lang.video.providers + '</small>' +
 			'</label>' +
-			'<input class="note-video-url note-input" type="text" />' +
+			'<input class="note-video-url note-input" type="text">' +
 			'</div>';
 		var footer = [
 			'<button type="button" href="#" class="note-btn note-btn-primary note-video-btn disabled" disabled>',
@@ -656,13 +658,13 @@
 	var imageDialog = function (opt) {
 		var body = '<div class="note-form-group note-group-select-from-files">' +
 			'<label class="note-form-label">' + opt.lang.image.selectFromFiles + '</label>' +
-			'<input class="note-note-image-input note-input" type="file" name="files" accept="image/*" />' +
+			'<input class="note-note-image-input note-input" type="file" name="files" accept="image/*">' +
 			opt.imageLimitation +
 			'</div>';
 		if(opt.allowImageURL) {
 			body += '<div class="note-form-group" style="overflow:auto;">' +
 					'<label class="note-form-label">' + opt.lang.image.url + '</label>' +
-					'<input class="note-image-url note-input" type="text" />' +
+					'<input class="note-image-url note-input" type="text">' +
 					'</div>';
 		}
 		var footer = [
@@ -680,11 +682,11 @@
 	var linkDialog = function (opt) {
 		var body = '<div class="note-form-group">' +
 			'<label class="note-form-label">' + opt.lang.link.textToDisplay + '</label>' +
-			'<input class="note-link-text note-input" type="text" />' +
+			'<input class="note-link-text note-input" type="text">' +
 			'</div>' +
 			'<div class="note-form-group">' +
 			'<label class="note-form-label">' + opt.lang.link.url + '</label>' +
-			'<input class="note-link-url note-input" type="text" value="http://" />' +
+			'<input class="note-link-url note-input" type="text" value="http://">' +
 			'</div>' +
 			(!opt.disableLinkTarget ? '<div class="checkbox">' +
 				'<label>' + '<input type="checkbox" checked> ' + opt.lang.link.openInNewWindow + '</label>' +
@@ -704,8 +706,8 @@
 	};
 	var popover = renderer.create([
 		'<div class="note-popover bottom">',
-		'  <div class="note-popover-arrow"/>',
-		'  <div class="popover-content note-children-container"/>',
+		'  <div class="note-popover-arrow"></div>',
+		'  <div class="popover-content note-children-container"></div>',
 		'</div>',
 	].join(''), function ($node, options) {
 		var direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
@@ -719,14 +721,14 @@
 			'<label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
 			' <input role="checkbox" type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
 			(options.checked ? ' checked' : ''),
-			' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
+			' aria-checked="' + (options.checked ? 'true' : 'false') + '">',
 			(options.text ? options.text : ''),
 			'</label>',
 		].join(''));
 	});
 	var icon = function (iconClassName, tagName) {
 		tagName = tagName || 'i';
-		return '<' + tagName + ' class="' + iconClassName + '"/>';
+		return '<' + tagName + ' class="' + iconClassName + '"></' + tagName + '>';
 	};
 	var ui = {
 		editor: editor,
@@ -5160,6 +5162,10 @@
 		 */
 		Editor.prototype.insertImagesAsDataURL = function (files) {
 			var _this = this;
+			var maxImgSize = 1024 * 1024 * 0.32; // max size in bytes for the image ; max 32 KB / image
+			var maxImgWidth = 1024;
+			var maxImgHeight = 1024;
+			var maxImgQuality = 0.75;
 			$$1.each(files, function (idx, file) {
 				var filename = file.name;
 				if (_this.options.maximumImageFileSize && _this.options.maximumImageFileSize < file.size) {
@@ -5169,17 +5175,16 @@
 					//-- # fix by unixman
 					(function(){
 						if(file.type === 'image/svg+xml') {
-							if(String(dataURL).length <= (1024 * 1024 * 0.15)) {
+							if(String(dataURL).length <= maxImgSize) {
 								return _this.insertImage(dataURL, filename);
 							} else {
 								console.log('Summernote Image Uploader WARNING: SVG Size after resize is higher than allowed size: ' + String(dataURL).length + ' Bytes');
 								_this.context.triggerEvent('image.upload.error');
 							} //end if else
 						} //end if
-						var imgQuality = 0.7;
 						var the_type_of_file = String(file.type);
 						var $imgpw = $('#summernote-img-uploader-preview');
-						$imgpw.append('<img id="summernote-img-uploader-result-img" src="' + SmartJS_CoreUtils.escape_html(dataURL) + '" style="max-width:595px; max-height:595px; width:auto !important; height:auto !important;">');
+						$imgpw.append('<img id="summernote-img-uploader-result-img" src="' + SmartJS_CoreUtils.escape_html(dataURL) + '" style="max-width:' + maxImgWidth + 'px; max-height:' + maxImgWidth + 'px; width:auto !important; height:auto !important;">');
 						setTimeout(function(){
 							var img = $('#summernote-img-uploader-result-img');
 							var w = Math.round(img.width()) || 1;
@@ -5206,9 +5211,9 @@
 								//ctx.fillStyle = '#FFFFFF'; // make sense just for image/jpeg
 								//ctx.fillRect(0, 0, w, h); // make sense just for image/jpeg
 								ctx.drawImage(this, 0, 0, w, h);
-								var imgResizedB64 = cnv.toDataURL(String(the_type_of_file), imgQuality); // preserve file type ; set image quality ... just for jpeg right now ...
+								var imgResizedB64 = cnv.toDataURL(String(the_type_of_file), maxImgQuality); // preserve file type ; set image quality ... just for jpeg right now ...
 								//console.log('Before' + dataURL.length, 'After: ' + imgResizedB64.length);
-								if(String(imgResizedB64).length <= (1024 * 1024 * 0.15)) {
+								if(String(imgResizedB64).length <= maxImgSize) {
 									$imgpw.empty().html('');
 									return _this.insertImage(imgResizedB64, filename);
 								} else {
@@ -5479,7 +5484,7 @@
 			this.documentEventHandlers = {};
 			this.$dropzone = $$1([
 				'<div class="note-dropzone">',
-				'  <div class="note-dropzone-message"/>',
+				'  <div class="note-dropzone-message"></div>',
 				'</div>',
 			].join('')).prependTo(this.$editor);
 		}
@@ -5969,7 +5974,7 @@
 			var match = keyword.match(linkPattern);
 			if (match && (match[1] || match[2])) {
 				var link = match[1] ? keyword : defaultScheme + keyword;
-				var node = $$1('<a />').html(keyword).attr('href', link)[0];
+				var node = $$1('<a></a>').html(keyword).attr('href', link)[0];
 				if (this.context.options.linkTargetBlank) {
 					$$1(node).attr('target', '_blank');
 				}
@@ -6228,14 +6233,14 @@
 							this.lang.color.transparent,
 							'    </button>',
 							'  </div>',
-							'  <div class="note-holder" data-event="backColor"/>',
+							'  <div class="note-holder" data-event="backColor"></div>',
 							'  <div>',
 							'    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">',
 							this.lang.color.cpSelect,
 							'    </button>',
 							'    <input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">',
 							'  </div>',
-							'  <div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>',
+							'  <div class="note-holder-custom" id="backColorPalette" data-event="backColor"></div>',
 							'</div>',
 							].join('') : '') +
 							(foreColor ? [
@@ -6247,13 +6252,13 @@
 								this.lang.color.resetToDefault,
 								'    </button>',
 								'  </div>',
-								'  <div class="note-holder" data-event="foreColor"/>',
+								'  <div class="note-holder" data-event="foreColor"></div>',
 								'  <div>',
 								'    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">',
 								this.lang.color.cpSelect,
 								'    </button>',
 								'    <input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">',
-								'  <div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>',
+								'  <div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"></div>',
 								'</div>',
 							].join('') : ''),
 						callback: function ($dropdown) {
@@ -6440,7 +6445,7 @@
 				return _this.ui.buttonGroup([
 					_this.button({
 						className: 'dropdown-toggle',
-						contents: _this.ui.dropdownButtonContents('<span class="note-current-fontname"/>', _this.options),
+						contents: _this.ui.dropdownButtonContents('<span class="note-current-fontname"></span>', _this.options),
 						tooltip: _this.lang.font.name,
 						data: {
 							toggle: 'dropdown'
@@ -6452,7 +6457,7 @@
 						items: _this.options.fontNames.filter(_this.isFontInstalled.bind(_this)),
 						title: _this.lang.font.name,
 						template: function (item) {
-							return '<span style="font-size:13px; font-family: \'' + item + '\'">' + item + '</span>';
+							return '<span style="font-size:13px; font-family: \'' + SmartJS_CoreUtils.htmlspecialchars(item, 'ENT_QUOTES') + '\'">' + item + '</span>'; // need to escape also '
 						},
 						click: _this.context.createInvokeHandlerAndUpdateState('editor.fontName')
 					}),
@@ -6462,7 +6467,7 @@
 				return _this.ui.buttonGroup([
 					_this.button({
 						className: 'dropdown-toggle',
-						contents: _this.ui.dropdownButtonContents('<span class="note-current-fontsize"/>', _this.options),
+						contents: _this.ui.dropdownButtonContents('<span class="note-current-fontsize"></span>', _this.options),
 						tooltip: _this.lang.font.size,
 						data: {
 							toggle: 'dropdown'
@@ -6592,9 +6597,9 @@
 						className: 'note-table',
 						items: [
 							'<div class="note-dimension-picker">',
-							'  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
-							'  <div class="note-dimension-picker-highlighted"/>',
-							'  <div class="note-dimension-picker-unhighlighted"/>',
+							'  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>',
+							'  <div class="note-dimension-picker-highlighted"></div>',
+							'  <div class="note-dimension-picker-unhighlighted"></div>',
 							'</div>',
 							'<div class="note-dimension-display">1 x 1</div>',
 						].join('')
@@ -7087,14 +7092,14 @@
 			var body = [
 				'<div class="form-group note-form-group">',
 				"<label class=\"note-form-label\">" + this.lang.link.textToDisplay + "</label>",
-				'<input class="note-link-text form-control note-form-control note-input" type="text" />',
+				'<input class="note-link-text form-control note-form-control note-input" type="text">',
 				'</div>',
 				'<div class="form-group note-form-group">',
 				"<label class=\"note-form-label\">" + this.lang.link.url + "</label>",
-				'<input class="note-link-url form-control note-form-control note-input" type="text" value="http://" />',
+				'<input class="note-link-url form-control note-form-control note-input" type="text" value="http://">',
 				'</div>',
 				!this.options.disableLinkTarget
-					? $$1('<div/>').append(this.ui.checkbox({
+					? $$1('<div></div>').append(this.ui.checkbox({
 							className: 'sn-checkbox-open-in-new-window',
 							text: this.lang.link.openInNewWindow,
 							checked: true
@@ -7295,13 +7300,13 @@
 			}
 			var body =  '<div class="form-group note-form-group note-group-select-from-files">' +
 						'<label class="note-form-label">' + this.lang.image.selectFromFiles + ' [svg / png / gif / jpg]</label>' +
-						'<input class="note-image-input form-control-file note-form-control note-input" type="file" name="files" accept="image/*" />' +
+						'<input class="note-image-input form-control-file note-form-control note-input" type="file" name="files" accept="image/*">' +
 						imageLimitation +
 						'</div>';
 			if(this.options.allowImageURL) {
 				body += '<div class="form-group note-group-image-url" style="overflow:auto;">' +
 						'<label class="note-form-label">' + this.lang.image.url + '</label>' +
-						'<input class="note-image-url form-control note-form-control note-input ' + ' col-md-12" type="text" />' +
+						'<input class="note-image-url form-control note-form-control note-input ' + ' col-md-12" type="text">' +
 						'</div>';
 			}
 			var buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
@@ -7513,7 +7518,7 @@
 			var body = [
 				'<div class="form-group note-form-group row-fluid">',
 				"<label class=\"note-form-label\">" + this.lang.video.url + " <small class=\"text-muted\">" + this.lang.video.providers + "</small></label>",
-				'<input class="note-video-url form-control note-form-control note-input" type="text" />',
+				'<input class="note-video-url form-control note-form-control note-input" type="text">',
 				'</div>',
 			].join('');
 			var buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';
@@ -7743,11 +7748,11 @@
 			var keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
 			return Object.keys(keyMap).map(function (key) {
 				var command = keyMap[key];
-				var $row = $$1('<div><div class="help-list-item"/></div>');
+				var $row = $$1('<div><div class="help-list-item"></div></div>');
 				$row.append($$1('<label><kbd>' + key + '</kdb></label>').css({
 					'width': 180,
 					'margin-right': 10
-				})).append($$1('<span/>').html(_this.context.memo('help.' + command) || command));
+				})).append($$1('<span></span>').html(_this.context.memo('help.' + command) || command));
 				return $row.html();
 			}).join('');
 		};
@@ -7941,7 +7946,7 @@
 		HintPopover.prototype.createItemTemplates = function (hintIdx, items) {
 			var hint = this.hints[hintIdx];
 			return items.map(function (item, idx) {
-				var $item = $$1('<div class="note-hint-item"/>');
+				var $item = $$1('<div class="note-hint-item"></div>');
 				$item.append(hint.template ? hint.template(item) : item + '');
 				$item.data({
 					'index': hintIdx,
@@ -7976,7 +7981,7 @@
 		};
 		HintPopover.prototype.createGroup = function (idx, keyword) {
 			var _this = this;
-			var $group = $$1('<div class="note-hint-group note-hint-group-' + idx + '"/>');
+			var $group = $$1('<div class="note-hint-group note-hint-group-' + idx + '"></div>');
 			this.searchKeyword(idx, keyword, function (items) {
 				items = items || [];
 				if (items.length) {

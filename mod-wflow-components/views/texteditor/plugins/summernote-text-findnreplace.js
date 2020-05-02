@@ -1,9 +1,11 @@
 
-// (c) 2019 unix-world.org
+// (c) 2019-2020 unix-world.org
 // License: GPLv3
-// v.20190405
+// v.20200501
+// modified by unixman
 
 // Copyright 2013-2019 Alan Hong. and other contributors
+// Copyright 2017 Diemen Design
 // License: MIT
 
 (function (factory) {
@@ -68,12 +70,12 @@
 					'<hr>' +
 					'<div class="form-group">' +
 						'<div style="width:49%; display:inline-block; text-align:left;">' +
-							'<button class="ux-button ux-button-small btn btn-primary note-btn note-btn-primary note-image-btn" style="width: 100px;">' + lang.findnreplace.findBtn + '</button>' +
+							'<button class="ux-button ux-button-small btn btn-primary note-btn note-btn-primary note-image-btn note-findnreplace-find-btn" style="width: 100px;">' + lang.findnreplace.findBtn + '</button>' +
 							'<input id="note-findnreplace-find" type="text" class="ux-field note-findnreplace-find form-control input-sm" value="" placeholder="' + lang.findnreplace.findPlaceholder + '">' +
 						'</div>' +
 						'<div style="width:49%; display:inline-block; text-align:right;">' +
 							'<input id="note-findnreplace-replace" type="text" class="ux-field note-findnreplace-replace form-control input-sm" value="" placeholder="' + lang.findnreplace.replacePlaceholder + '">' +
-							'<button class="ux-button ux-button-small btn btn-primary note-btn note-btn-primary note-image-btn" style="width: 100px;">' + lang.findnreplace.replaceBtn + '</button>' +
+							'<button class="ux-button ux-button-small btn btn-primary note-btn note-btn-primary note-image-btn note-findnreplace-replace-btn" style="width: 100px;">' + lang.findnreplace.replaceBtn + '</button>' +
 						'</div>' +
 					'</div>' +
 				'</div>';
@@ -85,28 +87,29 @@
 				var $fnrReplaceBtn = $toolbar.find('.note-findnreplace-replace-btn');
 				$fnrFindBtn.click(function (e) {
 					e.preventDefault();
-					$editor.find('.note-findnreplace').contents().unwrap('u');
+					$editor.find('.note-findnreplace').contents().unwrap('mark');
 					var fnrCode    = context.invoke('code');
-					var fnrFind    = $('.note-findnreplace-find').val();
-					var fnrReplace = $('.note-findnreplace-replace').val();
-					var fnrCount   = (fnrCode.match(new RegExp(fnrFind, "gi")) || []).length
+					var fnrFind    = SmartJS_CoreUtils.escape_html($('.note-findnreplace-find').val()); // bugfix (unixman): escape to HTML to avoid break the HTML code
+					var fnrReplace = SmartJS_CoreUtils.escape_html($('.note-findnreplace-replace').val()); // bugfix (unixman): escape to HTML to avoid break the HTML code
+					var fnrCount   = (fnrCode.match(new RegExp(fnrFind + "(?![^<>]*>)", "gi")) || []).length;
 					if (fnrFind) {
 						$('#findnreplace-info').text(fnrCount + lang.findnreplace.findResult + "`" + fnrFind + "`");
-						var fnrReplaced = fnrCode.replace(new RegExp("(" + fnrFind + ")","gi"),'<u class="note-findnreplace" style="' + options.findnreplace.highlight + '">$1</u>');
+						var fnrReplaced = fnrCode.replace(new RegExp(fnrFind + "(?![^<>]*>)", "gi"), function(e){return '<mark class="note-findnreplace">' + e + '</mark>';});
 						$note.summernote('code',fnrReplaced);
 					} else
 						$('#findnreplace-info').html('<span class="text-danger">' + lang.findnreplace.findError + '</span>');
 				});
 				$fnrReplaceBtn.click(function (e) {
 					e.preventDefault();
-					$editor.find('.note-findnreplace').contents().unwrap('u');
+					$editor.find('.note-findnreplace').contents().unwrap('mark');
 					var fnrCode    = context.invoke('code');
-					var fnrFind    = $('.note-findnreplace-find').val();
-					var fnrReplace = $('.note-findnreplace-replace').val();
-					var fnrCount   = (fnrCode.match(new RegExp(fnrFind, "gi")) || []).length
+					var fnrFind    = SmartJS_CoreUtils.escape_html($('.note-findnreplace-find').val()); // bugfix (unixman): escape to HTML to avoid break the HTML code
+					var fnrReplace = SmartJS_CoreUtils.escape_html($('.note-findnreplace-replace').val()); // bugfix (unixman): escape to HTML to avoid break the HTML code
+				//	var fnrCount   = (fnrCode.match(new RegExp(fnrFind, "gi")) || []).length;
+					var fnrCount   = (fnrCode.match(new RegExp(fnrFind + "(?![^<>]*>)", "gi")) || []).length;
 					if (fnrFind) {
 						$('#findnreplace-info').text(fnrCount + lang.findnreplace.findResult + "`" + fnrFind + "`" + lang.findnreplace.replaceResult +"`" + fnrReplace + "`");
-						var fnrReplaced = fnrCode.replace(new RegExp(fnrFind, "gi"), fnrReplace);
+						var fnrReplaced = fnrCode.replace(new RegExp(fnrFind + "(?![^<>]*>)", "gi"), fnrReplace);
 						$note.summernote('code', fnrReplaced);
 					} else {
 						if (fnrReplace) {

@@ -10,6 +10,11 @@
  *
  * Project: https://github.com/CodeSeven/toastr
  */
+
+// (c) 2020 unix-world.org
+// fixes by unixman r.20200501:
+// 	* jQuery 3.5.0 ready (fixed XHTML Tags)
+
 /* global define */
 ; (function (define) {
 	define(['jquery'], function ($) {
@@ -142,7 +147,7 @@
 			}
 
 			function createContainer(options) {
-				$container = $('<div/>')
+				$container = $('<div></div>')
 					.attr('id', options.containerId)
 					.addClass(options.positionClass)
 					.attr('aria-live', 'polite')
@@ -209,10 +214,10 @@
 				$container = getContainer(options, true);
 
 				var intervalId = null;
-				var $toastElement = $('<div/>');
-				var $titleElement = $('<div/>');
-				var $messageElement = $('<div/>');
-				var $progressElement = $('<div/>');
+				var $toastElement = $('<div></div>');
+				var $titleElement = $('<div></div>');
+				var $messageElement = $('<div></div>');
+				var $progressElement = $('<div></div>');
 				var $closeElement = $(options.closeHtml);
 				var progressBar = {
 					intervalId: null,

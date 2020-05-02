@@ -1,7 +1,7 @@
 
-// (c) 2019 unix-world.org
+// (c) 2019-2020 unix-world.org
 // License: GPLv3
-// v.20190405
+// v.20200501
 // contains fixes by unixman
 
 // License: MIT
@@ -96,7 +96,7 @@
 
 			this.replaceTags = function($nodes, newTag) {
 				$nodes.replaceWith(function() {
-					return $("<" + newTag + " />", {html: $(this).html()});
+					return $("<" + newTag + "></" + newTag + ">", {html: $(this).html()});
 				});
 			}
 

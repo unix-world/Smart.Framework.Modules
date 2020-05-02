@@ -1,7 +1,7 @@
 
-// (c) 2019 unix-world.org
+// (c) 2019-2020 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20200502
 
 // https://gist.github.com/linchpinstudios/61ed36f5ff42088753ba1bf0ea42fffa
 
@@ -46,10 +46,11 @@ fabric.Arrow = fabric.util.createClass(fabric.Line, {
 	clipTo: function(ctx) {
 		this._render(ctx);
 	}
+
 });
 
 fabric.Arrow.fromObject = function (object, callback) {
-		callback && callback(new fabric.Arrow([object.x1, object.y1, object.x2, object.y2],object));
+	callback && callback(new fabric.Arrow([object.x1, object.y1, object.x2, object.y2],object));
 };
 
 fabric.Arrow.async = true;

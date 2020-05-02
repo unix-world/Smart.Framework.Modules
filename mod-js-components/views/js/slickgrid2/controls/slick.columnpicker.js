@@ -1,3 +1,9 @@
+
+// (c) 2017-2020 unix-world.org
+// SlickGrid v2.3.uxm20200502
+// Fixes by unixman:
+// 	- jQuery 3.5.0 ready (fixed XHTML Tags)
+
 (function ($) {
 	function SlickColumnPicker(columns, grid, options) {
 		var $menu;
@@ -12,7 +18,7 @@
 			grid.onColumnsReordered.subscribe(updateColumnOrder);
 			options = $.extend({}, defaults, options);
 
-			$menu = $("<span class='slick-columnpicker' style='display:none;position:absolute;z-index:20;overflow-y:scroll;' />").appendTo(document.body);
+			$menu = $("<span class='slick-columnpicker' style='display:none;position:absolute;z-index:20;overflow-y:scroll;'></span>").appendTo(document.body);
 
 			$menu.on("mouseleave", function (e) {
 				$(this).fadeOut(options.fadeSpeed)
@@ -35,24 +41,24 @@
 
 			var $li, $input;
 			for (var i = 0; i < columns.length; i++) {
-				$li = $("<li />").appendTo($menu);
-				$input = $("<input type='checkbox' />").data("column-id", columns[i].id);
+				$li = $("<li></li>").appendTo($menu);
+				$input = $("<input type='checkbox'>").data("column-id", columns[i].id);
 				columnCheckboxes.push($input);
 
 				if (grid.getColumnIndex(columns[i].id) != null) {
 					$input.prop("checked", true);
 				}
 
-				$("<label />")
+				$("<label></label>")
 						.html(columns[i].name)
 						.prepend($input)
 						.appendTo($li);
 			}
 
-			$("<hr/>").appendTo($menu);
-			$li = $("<li />").appendTo($menu);
-			$input = $("<input type='checkbox' />").data("option", "autoresize");
-			$("<label />")
+			$("<hr>").appendTo($menu);
+			$li = $("<li></li>").appendTo($menu);
+			$input = $("<input type='checkbox'>").data("option", "autoresize");
+			$("<label></label>")
 					.text("Force fit columns")
 					.prepend($input)
 					.appendTo($li);
@@ -60,9 +66,9 @@
 				$input.prop("checked", true);
 			}
 
-			$li = $("<li />").appendTo($menu);
-			$input = $("<input type='checkbox' />").data("option", "syncresize");
-			$("<label />")
+			$li = $("<li></li>").appendTo($menu);
+			$input = $("<input type='checkbox'>").data("option", "syncresize");
+			$("<label></label>")
 					.text("Synchronous resize")
 					.prepend($input)
 					.appendTo($li);
@@ -151,3 +157,5 @@
 	// Slick.Controls.ColumnPicker
 	$.extend(true, window, { Slick:{ Controls:{ ColumnPicker:SlickColumnPicker }}});
 })(jQuery);
+
+// #END

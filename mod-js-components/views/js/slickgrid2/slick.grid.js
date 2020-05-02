@@ -5,9 +5,10 @@
  * Distributed under MIT license.
  * All rights reserved.
  *
- * (c) 2017-2019 unix-world.org
- *
- * SlickGrid v2.3.uxm190116
+ * (c) 2017-2020 unix-world.org
+ * SlickGrid v2.3.uxm20200502
+ * Fixes by unixman:
+ * 	- jQuery 3.5.0 ready (fixed XHTML Tags)
  *
  * NOTES:
  *     Cell/row DOM manipulations are done directly bypassing jQuery's DOM manipulation methods.
@@ -271,8 +272,8 @@ if (typeof Slick === "undefined") {
 			$focusSink = $("<div tabIndex='0' hideFocus style='position:fixed;width:0;height:0;top:0;left:0;outline:0;'></div>").appendTo($container);
 
 			if (options.createPreHeaderPanel) {
-				$preHeaderPanelScroller = $("<div class='slick-preheader-panel ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
-				$preHeaderPanel = $("<div />").appendTo($preHeaderPanelScroller);
+				$preHeaderPanelScroller = $("<div class='slick-preheader-panel ui-state-default' style='overflow:hidden;position:relative;'></div>").appendTo($container);
+				$preHeaderPanel = $("<div></div>").appendTo($preHeaderPanelScroller);
 				$preHeaderPanelSpacer = $("<div style='display:block;height:1px;position:absolute;top:0;left:0;'></div>")
 						.appendTo($preHeaderPanelScroller);
 
@@ -281,16 +282,16 @@ if (typeof Slick === "undefined") {
 				}
 			}
 
-			$headerScroller = $("<div class='slick-header ui-state-default' />").appendTo($container);
-			$headers = $("<div class='slick-header-columns' style='left:-1000px' />").appendTo($headerScroller);
+			$headerScroller = $("<div class='slick-header ui-state-default'></div>").appendTo($container);
+			$headers = $("<div class='slick-header-columns' style='left:-1000px'></div>").appendTo($headerScroller);
 
-			$headerRowScroller = $("<div class='slick-headerrow ui-state-default' />").appendTo($container);
-			$headerRow = $("<div class='slick-headerrow-columns' />").appendTo($headerRowScroller);
+			$headerRowScroller = $("<div class='slick-headerrow ui-state-default'></div>").appendTo($container);
+			$headerRow = $("<div class='slick-headerrow-columns'></div>").appendTo($headerRowScroller);
 			$headerRowSpacer = $("<div style='display:block;height:1px;position:absolute;top:0;left:0;'></div>")
 					.appendTo($headerRowScroller);
 
-			$topPanelScroller = $("<div class='slick-top-panel-scroller ui-state-default' />").appendTo($container);
-			$topPanel = $("<div class='slick-top-panel' style='width:10000px' />").appendTo($topPanelScroller);
+			$topPanelScroller = $("<div class='slick-top-panel-scroller ui-state-default'></div>").appendTo($container);
+			$topPanel = $("<div class='slick-top-panel' style='width:10000px'></div>").appendTo($topPanelScroller);
 
 			if (!options.showTopPanel) {
 				$topPanelScroller.hide();
@@ -304,7 +305,7 @@ if (typeof Slick === "undefined") {
 			$viewport.css("overflow-y", options.autoHeight ? "hidden" : "auto");
 			if (options.viewportClass) $viewport.toggleClass(options.viewportClass, true);
 
-			$canvas = $("<div class='grid-canvas' />").appendTo($viewport);
+			$canvas = $("<div class='grid-canvas'></div>").appendTo($viewport);
 
 			scrollbarDimensions = scrollbarDimensions || measureScrollbar();
 
@@ -315,8 +316,8 @@ if (typeof Slick === "undefined") {
 
 
 			if (options.createFooterRow) {
-				$footerRowScroller = $("<div class='slick-footerrow ui-state-default' />").appendTo($container);
-				$footerRow = $("<div class='slick-footerrow-columns' />").appendTo($footerRowScroller);
+				$footerRowScroller = $("<div class='slick-footerrow ui-state-default'></div>").appendTo($container);
+				$footerRow = $("<div class='slick-footerrow-columns'></div>").appendTo($footerRowScroller);
 				$footerRowSpacer = $("<div style='display:block;height:1px;position:absolute;top:0;left:0;'></div>")
 						.css("width", getCanvasWidth() + scrollbarDimensions.width + "px")
 						.appendTo($footerRowScroller);
@@ -555,7 +556,7 @@ if (typeof Slick === "undefined") {
 			var supportedHeight = 1000000;
 			// FF reports the height back but still renders blank after ~6M px
 			var testUpTo = navigator.userAgent.toLowerCase().match(/firefox/) ? 6000000 : 1000000000;
-			var div = $("<div style='display:none' />").appendTo(document.body);
+			var div = $("<div style='display:none'></div>").appendTo(document.body);
 
 			while (true) {
 				var test = supportedHeight * 2;
@@ -720,7 +721,7 @@ if (typeof Slick === "undefined") {
 			for (var i = 0; i < columns.length; i++) {
 				var m = columns[i];
 
-				var header = $("<div class='ui-state-default slick-header-column' />")
+				var header = $("<div class='ui-state-default slick-header-column'></div>")
 						.html("<span class='slick-column-name'>" + m.name + "</span>")
 						.width(m.width - headerColumnWidthDiff)
 						.attr("id", "" + uid + m.id)
@@ -737,7 +738,7 @@ if (typeof Slick === "undefined") {
 
 				if (m.sortable) {
 					header.addClass("slick-header-sortable");
-					header.append("<span class='" + sortIndicatorCssClass + "' />");
+					header.append("<span class='" + sortIndicatorCssClass + "'></span>");
 				}
 
 				trigger(self.onHeaderCellRendered, {
@@ -927,7 +928,7 @@ if (typeof Slick === "undefined") {
 					return;
 				}
 				$col = $(e);
-				$("<div class='slick-resizable-handle' />")
+				$("<div class='slick-resizable-handle'></div>")
 						.appendTo(e)
 						.on("dragstart", function (e, dd) {
 							if (!getEditorLock().commitCurrentEdit()) {
@@ -1111,7 +1112,7 @@ if (typeof Slick === "undefined") {
 			}
 			el.remove();
 
-			var r = $("<div class='slick-row' />").appendTo($canvas);
+			var r = $("<div class='slick-row'></div>").appendTo($canvas);
 			el = $("<div class='slick-cell' id='' style='visibility:hidden'>-</div>").appendTo(r);
 			cellWidthDiff = cellHeightDiff = 0;
 			if (el.css("box-sizing") != "border-box" && el.css("-moz-box-sizing") != "border-box" && el.css("-webkit-box-sizing") != "border-box") {
@@ -1128,7 +1129,7 @@ if (typeof Slick === "undefined") {
 		}
 
 		function createCssRules() {
-			$style = $("<style type='text/css' rel='stylesheet' />").appendTo($("head"));
+			$style = $("<style type='text/css' rel='stylesheet'></style>").appendTo($("head"));
 			var rowHeight = (options.rowHeight - cellHeightDiff);
 			var rules = [
 				"." + uid + " .slick-header-column { left: 1000px; }",

@@ -1,8 +1,8 @@
 
 /*
-// (c) 2019 unix-world.org
+// (c) 2019-2020 unix-world.org
 // License: GPLv3
-// v.20190404
+// v.20200501
 */
 
 /**
@@ -868,7 +868,8 @@ a.note-dropdown-item,a.note-dropdown-item:hover{
 }
 .note-popover .note-popover-content .note-color .note-dropdown-menu .note-palette .note-palette-title,.note-toolbar .note-color .note-dropdown-menu .note-palette .note-palette-title{
 	margin:2px 7px;
-	font-size:12px;
+	font-size:15px;
+	font-weight: bold;
 	text-align:center;
 	border-bottom:1px solid #eee;
 }
@@ -951,8 +952,11 @@ a.note-dropdown-item,a.note-dropdown-item:hover{
 	padding:2px 5px;
 	margin-bottom:2px;
 }
-.note-modal .note-modal-body .help-list-item:hover{
+.note-modal .note-modal-body .help-list-item:hover {
 	background-color:#e0e0e0;
+}
+.note-modal .note-modal-body .note-specialchar-node * {
+	font-size: 1.25rem;
 }
 @-moz-document url-prefix(){
 	.note-image-input{

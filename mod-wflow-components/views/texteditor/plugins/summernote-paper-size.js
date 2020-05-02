@@ -1,7 +1,7 @@
 
-// (c) 2019 unix-world.org
+// (c) 2019-2020 unix-world.org
 // License: GPLv3
-// v.20190405
+// v.20200501
 // modified by unixman
 
 // License: MIT

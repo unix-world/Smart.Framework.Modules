@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: Cloud r.20200420 #
+# Smart.Framework.Modules: Cloud r.20200502 #
 
 // r.5.7.2 / smart.framework.v.5.7
 

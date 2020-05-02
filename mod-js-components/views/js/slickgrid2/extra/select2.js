@@ -1,7 +1,9 @@
 
-//== unixman changes - r.2019.01.27
-// (#1) replaced jQuery deprecated $.isArray() with Array.isArray()
-//==
+// (c) 2017-2020 unix-world.org
+// SlickGrid v2.3.uxm20200502
+// Fixes by unixman:
+//	- replaced jQuery deprecated $.isArray() with Array.isArray()
+// 	- jQuery 3.5.0 ready (fixed XHTML Tags)
 
 /**
  * Select2 4.0.3
@@ -1843,7 +1845,7 @@ S2.define('select2/selection/search',[
 			'<li class="select2-search select2-search--inline">' +
 				'<input class="select2-search__field" type="search" tabindex="-1"' +
 				' autocomplete="off" autocorrect="off" autocapitalize="off"' +
-				' spellcheck="false" role="textbox" aria-autocomplete="list" />' +
+				' spellcheck="false" role="textbox" aria-autocomplete="list">' +
 			'</li>'
 		);
 
@@ -3894,7 +3896,7 @@ S2.define('select2/dropdown/search',[
 			'<span class="select2-search select2-search--dropdown">' +
 				'<input class="select2-search__field" type="search" tabindex="-1"' +
 				' autocomplete="off" autocorrect="off" autocapitalize="off"' +
-				' spellcheck="false" role="textbox" />' +
+				' spellcheck="false" role="textbox">' +
 			'</span>'
 		);
 

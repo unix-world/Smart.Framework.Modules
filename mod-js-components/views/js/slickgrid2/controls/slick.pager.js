@@ -1,3 +1,9 @@
+
+// (c) 2017-2020 unix-world.org
+// SlickGrid v2.3.uxm20200502
+// Fixes by unixman:
+// 	- jQuery 3.5.0 ready (fixed XHTML Tags)
+
 (function ($) {
 	function SlickGridPager(dataView, grid, $container) {
 		var $status;
@@ -62,9 +68,9 @@
 		function constructPagerUI() {
 			$container.empty();
 
-			var $nav = $("<span class='slick-pager-nav' />").appendTo($container);
-			var $settings = $("<span class='slick-pager-settings' />").appendTo($container);
-			$status = $("<span class='slick-pager-status' />").appendTo($container);
+			var $nav = $("<span class='slick-pager-nav'></span>").appendTo($container);
+			var $settings = $("<span class='slick-pager-settings'></span>").appendTo($container);
+			$status = $("<span class='slick-pager-status'></span>").appendTo($container);
 
 			$settings
 					.append("<span class='slick-pager-settings-expanded' style='display:none'>Show: <a data=0>All</a><a data='-1'>Auto</a><a data=25>25</a><a data=50>50</a><a data=100>100</a></span>");
@@ -82,7 +88,7 @@
 			});
 
 			var icon_prefix = "<span class='ui-state-default ui-corner-all ui-icon-container'><span class='ui-icon ";
-			var icon_suffix = "' /></span>";
+			var icon_suffix = "'></span></span>";
 
 			$(icon_prefix + "ui-icon-lightbulb" + icon_suffix)
 					.click(function () {
@@ -111,7 +117,7 @@
 						$(this).toggleClass("ui-state-hover");
 					});
 
-			$container.children().wrapAll("<div class='slick-pager' />");
+			$container.children().wrapAll("<div class='slick-pager'></div>");
 		}
 
 
@@ -145,3 +151,5 @@
 	// Slick.Controls.Pager
 	$.extend(true, window, { Slick:{ Controls:{ Pager:SlickGridPager }}});
 })(jQuery);
+
+// #END

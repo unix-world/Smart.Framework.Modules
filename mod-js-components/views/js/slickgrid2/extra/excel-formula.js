@@ -28,7 +28,7 @@
 		/**
 		* Simple/quick string formater. This will take an input string and apply n number of arguments to it.
 		*
-		* <b>example:</b><br />
+		* <b>example:</b><br>
 		* <code>
 		* <pre>
 		*   var foo = excelFormulaUtilities.core.formatStr("{0}", "foo"); // foo will be set to "foo"
@@ -963,7 +963,7 @@
 		 *  tmplIndentTab               - template for the tab char.
 		 *  tmplIndentSpace             - template for space char.
 		 *  autoLineBreak               - when rendering line breaks automaticly which types should it break on. 'TOK_SUBTYPE_STOP | TOK_SUBTYPE_START | TOK_TYPE_ARGUMENT'
-		 *  newLine                     - used for the {{autolinebreak}} replacement as well as some string parsing. if this is not set correctly you may get undesired results. usually \n for text or <br /> for html
+		 *  newLine                     - used for the {{autolinebreak}} replacement as well as some string parsing. if this is not set correctly you may get undesired results. usually \n for text or <br> for html
 		 *  trim: true                  - trim the output.
 		 *  customTokenRender: null     - this is a call back to a custom token function. your call back should look like
 		 *                                EXAMPLE:

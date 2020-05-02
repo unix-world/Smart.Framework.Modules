@@ -4,6 +4,9 @@
  * Licensed under the MIT license
  */
 
+// Fixes by unixman:
+//	* jQuery 3.5.0 ready (fixed Object.prototype.hasOwnProperty.call() instead of obj.hasOwnProperty() when jQuery returns {} instead of Object)
+
 if (typeof jQuery === 'undefined') {
 	throw new Error('Bootstrap\'s JavaScript requires jQuery')
 }
@@ -1505,7 +1508,8 @@ if (typeof jQuery === 'undefined') {
 		var dataAttributes = this.$element.data()
 
 		for (var dataAttr in dataAttributes) {
-			if (dataAttributes.hasOwnProperty(dataAttr) && $.inArray(dataAttr, DISALLOWED_ATTRIBUTES) !== -1) {
+		//	if (dataAttributes.hasOwnProperty(dataAttr) && $.inArray(dataAttr, DISALLOWED_ATTRIBUTES) !== -1) {
+			if (dataAttributes && dataAttr && Object.prototype.hasOwnProperty.call(dataAttributes, dataAttr) && $.inArray(dataAttr, DISALLOWED_ATTRIBUTES) !== -1) { // fix by unixman to work with jQuery 3.5.0
 				delete dataAttributes[dataAttr]
 			}
 		}

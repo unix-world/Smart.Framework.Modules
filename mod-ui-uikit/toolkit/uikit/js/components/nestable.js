@@ -519,7 +519,7 @@
 
 						// create new sub-level if one doesn't exist
 						if (!list.length) {
-							list = UI.$('<ul/>').addClass(opt.listClass);
+							list = UI.$('<ul></ul>').addClass(opt.listClass);
 							list.append(this.placeEl);
 							prev.append(list);
 							this.setParent(prev);
