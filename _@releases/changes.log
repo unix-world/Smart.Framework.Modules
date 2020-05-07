@@ -1,6 +1,10 @@
 
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
-## This apply onlt for for Milestone Releases
+## This apply only for for Milestone Releases
+
+May 05, 2020 :: Version 5.7.2 rev.20200507
+	* Minor Js fixes for some scripts that were not ES5 compatible
+	* Add upstream fixes from github for twig v1 and v3
 
 May 02, 2020 :: Version 5.7.2 rev.20200502
 	* Upgrade jQuery to 3.5.0

@@ -1,7 +1,7 @@
 
 // (c) 2019-2020 unix-world.org
 // License: GPLv3
-// v.20200501
+// v.20200507
 // contains fixes by unixman
 
 // License: MIT
@@ -162,27 +162,38 @@
 			) {
 				var index = 0;
 				var list = "";
-
-				for (var style of exclusiveStyles) {
+				//-- unixman fix for es5
+				/*
+				for(var style of exclusiveStyles) {
 					list += self.getListItem(style, exclusiveLabels[index], true);
 					index++;
 				}
+				*/
+				exclusiveStyles.forEach(function(style) {
+					list += self.getListItem(style, exclusiveLabels[index], true);
+					index++;
+				});
+				// #end fix
 				if(inclusiveStyles.length) {
 					list += '<hr style="margin: 5px 0px; background-color: #CCCCCC; height: 1px; border: 0;">';
 					index = 0;
-					for (var style of inclusiveStyles) {
+					//-- unixman fix for es5
+					/*
+					for(var style of inclusiveStyles) {
 						list += self.getListItem(style, inclusiveLabels[index], false);
 						index++;
 					}
+					*/
+					inclusiveStyles.forEach(function(style) {
+						list += self.getListItem(style, inclusiveLabels[index], false);
+						index++;
+					});
+					// #end fix
 				}
 				return list;
 			};
 
-			self.getListItem = function(
-				value,
-				label,
-				isExclusive,
-			) {
+			self.getListItem = function(value, label, isExclusive) {
 				var item = '<li style="list-style-type:none;"><a href="#" class="note-dropdown-item ' + (isExclusive ? "exclusive-item" : "inclusive-item") + '" style="display: block;" data-value="' + value + '">' +
 					'<i class="sfi sfi-checkmark" ' + (!isExclusive ? 'style="color:#777777;" ' : 'style="color:#888888;" ') + '></i>' + ' ' + label + '</a></li>';
 				return item;

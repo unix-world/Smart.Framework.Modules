@@ -42,7 +42,8 @@ class FilesystemCache implements CacheInterface
 
     public function load($key)
     {
-        if (file_exists($key)) {
+    //  if (file_exists($key)) {
+        if (is_file($key)) { // fix from github.com/twigphp/Twig/commit/d0e2074a04fd2220d46686d2b3c9c92f1d444590
             @include_once $key;
         }
     }
@@ -82,7 +83,8 @@ class FilesystemCache implements CacheInterface
 
     public function getTimestamp($key)
     {
-        if (!file_exists($key)) {
+    //  if (!file_exists($key)) {
+        if (!is_file($key)) { // fix from github.com/twigphp/Twig/commit/d0e2074a04fd2220d46686d2b3c9c92f1d444590
             return 0;
         }
 

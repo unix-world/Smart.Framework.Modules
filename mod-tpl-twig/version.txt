@@ -1,7 +1,7 @@
 
-# Smart.Framework.Modules: TplTwig r.20200310 #
-## Symfony Twig Templating Engine v.3.0.3  (req. PHP 7.2 or later) ##
-## Symfony Twig Templating Engine v.1.42.5 (for PHP 5.6 up to 7.1) ##
+# Smart.Framework.Modules: TplTwig r.20200507 #
+## Symfony Twig Templating Engine v.3.0.3  + fixes [ commit/d0e2074a04fd2220d46686d2b3c9c92f1d444590 ; commit/103e2495f0968e34a8cc585ce5bc98f6681fe048 ] (req. PHP 7.2 or later) ##
+## Symfony Twig Templating Engine v.1.42.5 + fixes [ commit/d0e2074a04fd2220d46686d2b3c9c92f1d444590 ; commit/103e2495f0968e34a8cc585ce5bc98f6681fe048 ] (for PHP 5.6 up to 7.1) ##
 ## Symfony Polyfills Ctype v.1.13 (for PHP 5.6 or later) ##
 ## Symfony Polyfills MBString is not includded as it only provides a replacement of PHP MBstring with PHP Intl in the case that PHP MBstring is N/A ; but Smart.Framework requires by default PHP MBstring to run so makes non-sense to add this polyfill in this case ... ##
 

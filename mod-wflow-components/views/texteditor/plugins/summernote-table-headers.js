@@ -1,7 +1,7 @@
 
 // (c) 2019-2020 unix-world.org
 // License: GPLv3
-// v.20200501
+// v.20200507
 // contains fixes by unixman
 
 // License: MIT
@@ -76,14 +76,21 @@
 						// https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
 						// Options for the observer (which mutations to observe)
 						var config = { childList: true, subtree: true };
-						// Callback function to execute when mutations are observed
+						//-- unixman fix for es5
+						self.observer = new MutationObserver(function(mutationsList) { // Callback function to execute when mutations are observed
+							mutationsList.forEach(function(mutation) {
+								self.replaceTags($(mutation.target).find('td'), 'th');
+							});
+						});
+						/*
 						var callback = function(mutationsList) {
 							for(var mutation of mutationsList) {
 								self.replaceTags($(mutation.target).find('td'), 'th')
 							}
 						};
-						// Create an observer instance linked to the callback function
-						self.observer = new MutationObserver(callback);
+						self.observer = new MutationObserver(callback); // Create an observer instance linked to the callback function
+						*/
+						//-- # end fix
 						// Start observing the target node for configured mutations
 						self.observer.observe($thead[0], config);
 						self.destroy = function () {
