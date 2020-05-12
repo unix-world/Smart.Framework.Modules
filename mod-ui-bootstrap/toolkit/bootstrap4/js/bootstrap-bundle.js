@@ -3,6 +3,10 @@
 	* Copyright 2011-2019 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
 	* Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
 	*/
+
+// Fixes by unixman:
+//	* jQuery 3.5.0 ready (fixed ERROR for Collapse: 'TypeError: Cannot convert object to primitive value: config in line 1433 (now is 1437)')
+
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('jquery')) :
 	typeof define === 'function' && define.amd ? define(['exports', 'jquery'], factory) :
@@ -1430,7 +1434,8 @@
 
 				var _config = _objectSpread({}, Default$1, $this.data(), typeof config === 'object' && config ? config : {});
 
-				if (!data && _config.toggle && /show|hide/.test(config)) {
+			//	if (!data && _config.toggle && /show|hide/.test(config)) {
+				if (!data && _config.toggle && /show|hide/.test(_config)) { // fix by unixman to work with jQuery 3.5.0
 					_config.toggle = false;
 				}
 
