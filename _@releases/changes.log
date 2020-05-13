@@ -2,7 +2,11 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+May 02, 2020 :: Version 5.7.2 rev.20200502
+	* Fix Bootstrap v4 js bundle to work with jQuery to 3.5.0 and later (collapse element failed)
+
 May 05, 2020 :: Version 5.7.2 rev.20200507
+	* Upgrade jQuery to 3.5.1
 	* Minor Js fixes for some scripts that were not ES5 compatible
 	* Add upstream fixes from github for twig v1 and v3
 
