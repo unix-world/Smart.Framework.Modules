@@ -29,7 +29,7 @@ use RedBeanPHP\Util\Feature;
  * RedBean Facade
  *
  * Version Information
- * RedBean Version @version 5.4
+ * RedBean Version @version 5.5
  *
  * This class hides the object landscape of
  * RedBeanPHP behind a single letter class providing
@@ -49,7 +49,7 @@ class Facade
 	/**
 	 * RedBeanPHP version constant.
 	 */
-	const C_REDBEANPHP_VERSION = '5.4';
+	const C_REDBEANPHP_VERSION = '5.5';
 
 	/**
 	 * @var ToolBox
@@ -398,11 +398,49 @@ class Facade
 			throw new RedException( 'A database has already been specified for this key.' );
 		}
 
+		self::$toolboxes[$key] = self::createToolbox($dsn, $user, $pass, $frozen, $partialBeans);
+	}
+
+	/**
+	 * Creates a toolbox. This method can be called if you want to use redbean non-static.
+   * It has the same interface as R::setup(). The createToolbx() method can be called
+   * without any arguments, in this case it will try to create a SQLite database in
+   * /tmp called red.db (this only works on UNIX-like systems).
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * R::createToolbox( 'mysql:host=localhost;dbname=mydatabase', 'dba', 'dbapassword' );
+	 * </code>
+	 *
+	 * You can replace 'mysql:' with the name of the database you want to use.
+	 * Possible values are:
+	 *
+	 * - pgsql  (PostgreSQL database)
+	 * - sqlite (SQLite database)
+	 * - mysql  (MySQL database)
+	 * - mysql  (also for Maria database)
+	 * - sqlsrv (MS SQL Server - community supported experimental driver)
+	 * - CUBRID (CUBRID driver - basic support provided by Plugin)
+	 *
+	 * Note that createToolbox() will not immediately establish a connection to the database.
+	 * Instead, it will prepare the connection and connect 'lazily', i.e. the moment
+	 * a connection is really required, for instance when attempting to load a bean.
+	 *
+	 * @param string  $dsn      Database connection string
+	 * @param string  $username Username for database
+	 * @param string  $password Password for database
+	 * @param boolean $frozen   TRUE if you want to setup in frozen mode
+	 *
+	 * @return ToolBox
+	 */
+  public static function createToolbox( $dsn = NULL, $username = NULL, $password = NULL, $frozen = FALSE, $partialBeans = FALSE )
+  {
 		if ( is_object($dsn) ) {
 			$db  = new RPDO( $dsn );
 			$dbType = $db->getDatabaseType();
 		} else {
-			$db = new RPDO( $dsn, $user, $pass, TRUE );
+			$db = new RPDO( $dsn, $username, $password, TRUE );
 			$dbType = substr( $dsn, 0, strpos( $dsn, ':' ) );
 		}
 
@@ -429,8 +467,8 @@ class Facade
 			$redbean->getCurrentRepository()->usePartialBeans( $partialBeans );
 		}
 
-		self::$toolboxes[$key] = new ToolBox( $redbean, $adapter, $writer );
-	}
+		return new ToolBox( $redbean, $adapter, $writer );
+  }
 
 	/**
 	 * Sets PDO attributes for MySQL SSL connection.
@@ -619,10 +657,10 @@ class Facade
 			$result = self::$redbean->store( $bean );
 		} catch (SQLException $exception) {
 			$wasFrozen = self::$redbean->isFrozen();
-			if ( !self::$allowHybridMode || !$wasFrozen ) throw $exception;
+			if ( !self::$allowHybridMode || !$unfreezeIfNeeded ) throw $exception;
 			self::freeze( FALSE );
 			$result = self::$redbean->store( $bean );
-			self::freeze( !$wasFrozen );
+			self::freeze( $wasFrozen );
 		}
 		return $result;
 	}
@@ -759,11 +797,28 @@ class Facade
 	 * @param string $sql      SQL query to find the desired bean, starting right after WHERE clause
 	 * @param array  $bindings array of values to be bound to parameters in query
 	 *
-	 * @return OODBBean
+	 * @return array
 	 */
-	public static function findForUpdate( $type, $sql, $bindings = array() )
+	public static function findForUpdate( $type, $sql = NULL, $bindings = array() )
 	{
 		return self::find( $type, $sql, $bindings, AQueryWriter::C_SELECT_SNIPPET_FOR_UPDATE );
+	}
+
+	/**
+	 * Convenience method.
+	 * Same as findForUpdate but returns just one bean and adds LIMIT-clause.
+	 *
+	 * @param string $type     the type of bean you are looking for
+	 * @param string $sql      SQL query to find the desired bean, starting right after WHERE clause
+	 * @param array  $bindings array of values to be bound to parameters in query
+	 *
+	 * @return array
+	 */
+	public static function findOneForUpdate( $type, $sql = NULL, $bindings = array() )
+	{
+		$sql = self::getWriter()->glueLimitOne( $sql );
+		$beans = self::findForUpdate($type, $sql, $bindings);
+		return !empty($beans) ? reset($beans) : NULL;
 	}
 
 	/**
@@ -1361,12 +1416,13 @@ class Facade
 	 * @param    array|OODBBean $beans   beans to be exported
 	 * @param    boolean        $parents whether you want parent beans to be exported
 	 * @param    array          $filters whitelist of types
+	 * @param    boolean        $meta      export meta data as well
 	 *
 	 * @return array
 	 */
-	public static function exportAll( $beans, $parents = FALSE, $filters = array())
+	public static function exportAll( $beans, $parents = FALSE, $filters = array(), $meta = FALSE )
 	{
-		return self::$duplicationManager->exportAll( $beans, $parents, $filters, self::$exportCaseStyle );
+		return self::$duplicationManager->exportAll( $beans, $parents, $filters, self::$exportCaseStyle, $meta );
 	}
 
 	/**
@@ -1443,10 +1499,11 @@ class Facade
 	 * @param array  $row       one row from the database
 	 * @param string $metamask  metamask (see convertToBeans)
 	 *
-	 * @return OODBBean
+	 * @return OODBBean|NULL
 	 */
 	public static function convertToBean( $type, $row, $metamask = NULL )
 	{
+		if ( !count( $row ) ) return NULL;
 		$beans = self::$redbean->convertToBeans( $type, array( $row ), $metamask );
 		$bean  = reset( $beans );
 		return $bean;
@@ -1900,6 +1957,48 @@ class Facade
 	}
 
 	/**
+	 * Convenience method to quickly attach parent beans.
+	 * Although usually this can also be done with findMulti(), that
+	 * approach can be a bit verbose sometimes. This convenience method
+	 * uses a default yet overridable SQL snippet to perform the
+	 * operation, leveraging the power of findMulti().
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $users = R::find('user');
+	 * $users = R::loadJoined( $users, 'country' );
+	 * </code>
+	 *
+	 * This is an alternative for:
+	 *
+	 * <code>
+	 * $all = R::findMulti('country',
+	 *    R::genSlots( $users,
+	 *       'SELECT country.* FROM country WHERE id IN ( %s )' ),
+	 *    array_column( $users, 'country_id' ),
+	 *    [Finder::onmap('country', $gebruikers)]
+	 * );
+	 * </code>
+	 *
+	 * @param array  $beans       a list of OODBBeans
+	 * @param string $type        a type string
+	 * @param string $sqlTemplate an SQL template string for the SELECT-query
+	 *
+	 * @return array
+	 */
+	public static function loadJoined( $beans, $type, $sqlTemplate = 'SELECT %s.* FROM %s WHERE id IN (%s)' )
+	{
+		if (!count($beans)) return array();
+		$ids  = array();
+		$key  = "{$type}_id";
+		foreach( $beans as $bean ) $ids[] = $bean->{$key};
+		$result = self::findMulti($type, self::genSlots( $beans,sprintf($sqlTemplate, $type, $type, '%s')), $ids, array( Finder::onmap($type, $beans) ) );
+		$bean = reset($beans);
+		return $result[ $bean->getMeta('type') ];
+	}
+
+	/**
 	 * Flattens a multi dimensional bindings array for use with genSlots().
 	 *
 	 * Usage:
@@ -1931,8 +2030,29 @@ class Facade
 	 */
 	public static function nuke()
 	{
-		if ( !self::$redbean->isFrozen() ) {
-			self::$writer->wipeAll();
+		return self::wipeAll( TRUE );
+	}
+
+	/**
+	 * Truncates or drops all database tables/views.
+	 * Empties the database. If the deleteTables flag is set to TRUE
+	 * this function will also remove the database structures.
+	 * The latter only works in fluid mode.
+	 *
+	 * @param boolean $alsoDeleteTables TRUE to clear entire database.
+	 *
+	 * @return void
+	 */
+	public static function wipeAll( $alsoDeleteTables = FALSE )
+	{
+		if ( $alsoDeleteTables ) {
+			if ( !self::$redbean->isFrozen() ) {
+				self::$writer->wipeAll();
+			}
+		} else {
+			foreach ( self::$writer->getTables() as $table ) {
+				self::wipe( $table );
+			}
 		}
 	}
 
@@ -2428,18 +2548,19 @@ class Facade
 	 * @param string $mode     mode for function: i.e. read or write
 	 * @param string $field    field (table.column) to bind function to
 	 * @param string $function SQL function to bind to specified column
+	 * @param boolean $isTemplate TRUE if $function is an SQL string, FALSE for just a function name
 	 *
 	 * @return void
 	 */
-	public static function bindFunc( $mode, $field, $function )
+	public static function bindFunc( $mode, $field, $function, $isTemplate = FALSE )
 	{
-		self::$redbean->bindFunc( $mode, $field, $function );
+		self::$redbean->bindFunc( $mode, $field, $function, $isTemplate );
 	}
 
 	/**
 	 * Sets global aliases.
 	 * Registers a batch of aliases in one go. This works the same as
-	 * fetchAs and setAutoResolve but explicitly. For instance if you register
+	 * fetchAs but explicitly. For instance if you register
 	 * the alias 'cover' for 'page' a property containing a reference to a
 	 * page bean called 'cover' will correctly return the page bean and not
 	 * a (non-existant) cover bean.
@@ -2464,9 +2585,7 @@ class Facade
 	 * cover => page
 	 *
 	 * From that point on, every bean reference to a cover
-	 * will return a 'page' bean. Note that with autoResolve this
-	 * feature along with fetchAs() is no longer very important, although
-	 * relying on explicit aliases can be a bit faster.
+	 * will return a 'page' bean.
 	 *
 	 * @param array $list list of global aliases to use
 	 *
@@ -2684,21 +2803,9 @@ class Facade
 	}
 
 	/**
-	 * Alias for setAutoResolve() method on OODBBean.
-	 * Enables or disables auto-resolving fetch types.
-	 * Auto-resolving aliased parent beans is convenient but can
-	 * be slower and can create infinite recursion if you
-	 * used aliases to break cyclic relations in your domain.
-	 * Returns previous value of the flag.
-	 *
-	 * @param boolean $automatic TRUE to enable automatic resolving aliased parents
-	 *
-	 * @return boolean
+	 * @deprecated
 	 */
-	public static function setAutoResolve( $automatic = TRUE )
-	{
-		return OODBBean::setAutoResolve( (boolean) $automatic );
-	}
+	public static function setAutoResolve( $automatic = TRUE ){}
 
 	/**
 	 * Toggles 'partial bean mode'. If this mode has been
@@ -3001,19 +3108,15 @@ class Facade
 	}
 
 	/**
-	 * @experimental
-	 *
 	 * Given a bean and an optional SQL snippet,
-	 * this method will return all child beans in a hierarchically structured
+	 * this method will return the bean together with all 
+	 * child beans in a hierarchically structured
 	 * bean table.
 	 *
 	 * @note that not all database support this functionality. You'll need
 	 * at least MariaDB 10.2.2 or Postgres. This method does not include
 	 * a warning mechanism in case your database does not support this
 	 * functionality.
-	 *
-	 * @note that this functionality is considered 'experimental'.
-	 * It may still contain bugs.
 	 *
 	 * @param OODBBean $bean     bean to find children of
 	 * @param string   $sql      optional SQL snippet
@@ -3025,10 +3128,8 @@ class Facade
 	}
 
 	/**
-	 * @experimental
-	 *
 	 * Given a bean and an optional SQL snippet,
-	 * this method will return all parent beans in a hierarchically structured
+	 * this method will count all child beans in a hierarchically structured
 	 * bean table.
 	 *
 	 * @note that not all database support this functionality. You'll need
@@ -3036,8 +3137,43 @@ class Facade
 	 * a warning mechanism in case your database does not support this
 	 * functionality.
 	 *
-	 * @note that this functionality is considered 'experimental'.
-	 * It may still contain bugs.
+	 * @param OODBBean $bean     bean to find children of
+	 * @param string   $sql      optional SQL snippet
+	 * @param array    $bindings SQL snippet parameter bindings
+	 */
+	public static function countChildren( OODBBean $bean, $sql = NULL, $bindings = array() )
+	{
+		return self::$tree->countChildren( $bean, $sql, $bindings );
+	}
+
+	/**
+	 * Given a bean and an optional SQL snippet,
+	 * this method will count all parent beans in a hierarchically structured
+	 * bean table.
+	 *
+	 * @note that not all database support this functionality. You'll need
+	 * at least MariaDB 10.2.2 or Postgres. This method does not include
+	 * a warning mechanism in case your database does not support this
+	 * functionality.
+	 *
+	 * @param OODBBean $bean     bean to find children of
+	 * @param string   $sql      optional SQL snippet
+	 * @param array    $bindings SQL snippet parameter bindings
+	 */
+	public static function countParents( OODBBean $bean, $sql = NULL, $bindings = array() )
+	{
+		return self::$tree->countParents( $bean, $sql, $bindings );
+	}
+
+	/**
+	 * Given a bean and an optional SQL snippet,
+	 * this method will return the bean along with all parent beans
+	 * in a hierarchically structured bean table.
+	 *
+	 * @note that not all database support this functionality. You'll need
+	 * at least MariaDB 10.2.2 or Postgres. This method does not include
+	 * a warning mechanism in case your database does not support this
+	 * functionality.
 	 *
 	 * @param OODBBean $bean     bean to find parents of
 	 * @param string   $sql      optional SQL snippet
@@ -3104,8 +3240,8 @@ class Facade
 	 */
 	public static function ext( $pluginName, $callable )
 	{
-		if ( !ctype_alnum( $pluginName ) ) {
-			throw new RedException( 'Plugin name may only contain alphanumeric characters.' );
+		if ( !preg_match( '#^[a-zA-Z_][a-zA-Z0-9_]*$#', $pluginName ) ) {
+			throw new RedException( 'Plugin name may only contain alphanumeric characters and underscores and cannot start with a number.' );
 		}
 		self::$plugins[$pluginName] = $callable;
 	}
@@ -3121,10 +3257,10 @@ class Facade
 	 */
 	public static function __callStatic( $pluginName, $params )
 	{
-		if ( !ctype_alnum( $pluginName) ) {
-			throw new RedException( 'Plugin name may only contain alphanumeric characters.' );
-		}
 		if ( !isset( self::$plugins[$pluginName] ) ) {
+			if ( !preg_match( '#^[a-zA-Z_][a-zA-Z0-9_]*$#', $pluginName ) ) {
+				throw new RedException( 'Plugin name may only contain alphanumeric characters and underscores and cannot start with a number.' );
+			}
 			throw new RedException( 'Plugin \''.$pluginName.'\' does not exist, add this plugin using: R::ext(\''.$pluginName.'\')' );
 		}
 		return call_user_func_array( self::$plugins[$pluginName], $params );

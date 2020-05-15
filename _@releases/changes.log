@@ -2,6 +2,11 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+May 15, 2020 :: Version 5.7.2 rev.20200515
+	* Upgrade Bootstrap to 4.5.0
+	* Upgrade RedBean ORM to 5.5.0
+	* Update all documentation
+
 May 02, 2020 :: Version 5.7.2 rev.20200502
 	* Fix Bootstrap v4 js bundle to work with jQuery to 3.5.0 and later (collapse element failed)
 
