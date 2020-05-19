@@ -21,6 +21,8 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
  * Admin Area Controller
  * @version 20200121
  * @ignore
+ *
+ * @requires define('SMART_FRAMEWORK_DOCUMENTOR_ALLOW', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 

@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+May 19, 2020 :: Version 5.7.2 rev.20200519
+	* All SVGs fixed and validate against SVG 1.1 DTD
+
 May 15, 2020 :: Version 5.7.2 rev.20200515
 	* Upgrade Bootstrap to 4.5.0
 	* Upgrade RedBean ORM to 5.5.0
