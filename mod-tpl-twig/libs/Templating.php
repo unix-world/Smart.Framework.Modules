@@ -361,32 +361,11 @@ function autoload__TwigTemplating_SFM($classname) {
 	//--
 	if(!$path) {
 		//--
-		$twig_version = 'v3';
-	//	if(\version_compare((string)\phpversion(), '7.2.9') < 0) {
-		if(\version_compare((string)\phpversion(), '7.2') < 0) {
-			$twig_version = 'v1';
+		if((string)\substr((string)$classname, 0, 5) === 'Twig\\') { // if class name is starting with Twig\
+			//--
+			$path = 'modules/mod-tpl-twig/libs/twig3/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
+			//--
 		} //end if
-		//--
-		if((string)$twig_version == 'v1') {
-			if((string)\substr((string)$classname, 0, 5) === 'Twig\\') { // if class name is starting with Twig\
-				//--
-				$path = 'modules/mod-tpl-twig/libs/v1/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
-				//--
-			} elseif((string)\substr((string)$classname, 0, 5) === 'Twig_') { // if class name is starting with Twig_ (old classes, no namespace)
-				//--
-				$path = 'modules/mod-tpl-twig/libs/v1/Twig/-lib/'.\str_replace(array('\\', "\0", '_'), array('', '', '/'), (string)$classname);
-				//--
-			} //end if
-		} else {
-		//	if(\strpos((string)$classname, '\\') === false) { // if have no namespace
-		//		return;
-		//	} //end if
-			if((string)\substr((string)$classname, 0, 5) === 'Twig\\') { // if class name is starting with Twig\
-				//--
-				$path = 'modules/mod-tpl-twig/libs/v3/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
-				//--
-			} //end if
-		} //end if else
 		//--
 	} //end if
 	//--

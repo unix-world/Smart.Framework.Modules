@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+June 04, 2020 :: Version 5.7.2 rev.20200604
+	* require PHP 7.2+
+
 May 19, 2020 :: Version 5.7.2 rev.20200519
 	* All SVGs fixed and validate against SVG 1.1 DTD
 

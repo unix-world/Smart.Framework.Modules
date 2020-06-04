@@ -166,7 +166,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 		//--
 		$php_v_ok = 'OK:PHP-VERSION';
-		$php_min_ver = '7.1'; // {{{SYNC-DOCUMENTOR-PHP-MIN-VERSION}}}
+		$php_min_ver = '7.2'; // {{{SYNC-DOCUMENTOR-PHP-MIN-VERSION}}}
 		//--
 		$this->PageViewSetVars([
 			'title' 	=> 'QUnit Engine :: Generate Docs'.($area ? ' ('.$area.')' : '').($mode ? ' :: M='.$mode : '').($extra ? ' :: E='.$extra : ''),

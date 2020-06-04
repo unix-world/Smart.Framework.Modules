@@ -13,9 +13,9 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 //-----------------------------------------------------
-if(version_compare((string)phpversion(), '7.1') < 0) { // {{{SYNC-DOCUMENTOR-PHP-MIN-VERSION}}}
+if(version_compare((string)phpversion(), '7.2') < 0) { // {{{SYNC-DOCUMENTOR-PHP-MIN-VERSION}}}
 	@http_response_code(503);
-	die(SmartComponents::http_message_503_serviceunavailable('Service N/A: PHP 7.1 or later is required for this service'));
+	die(SmartComponents::http_message_503_serviceunavailable('Service N/A: PHP 7.2 or later is required for this service'));
 } //end if
 if(function_exists('\\opcache_get_status')) {
 	if((string)ini_get('opcache.save_comments') != '1') {
