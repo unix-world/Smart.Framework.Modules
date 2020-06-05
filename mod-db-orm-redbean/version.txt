@@ -1,7 +1,7 @@
 
-# Smart.Framework.Modules: RedBean-ORM r.20200515 #
+# Smart.Framework.Modules: RedBean-ORM r.20200605 #
 ## gabordemooij/redbean 5.5 (includes fixes by unixman for logging facility to integrate with Smart.Framework logging facility) ##
 
-// r.5.7.2 / smart.framework.v.5.7
+// r.7.2.1 / smart.framework.v.7.2
 
 ###

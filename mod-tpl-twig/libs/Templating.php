@@ -2,7 +2,7 @@
 // Class: \SmartModExtLib\TplTwig\Templating
 // [Smart.Framework.Modules - Twig / Templating]
 // (c) 2006-2020 unix-world.org - all rights reserved
-// r.5.7.2 / smart.framework.v.5.7
+// r.7.2.1 / smart.framework.v.7.2
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 

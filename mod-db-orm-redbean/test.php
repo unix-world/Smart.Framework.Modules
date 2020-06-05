@@ -3,7 +3,7 @@
 // Controller: Readbean ORM Test Sample
 // Route: ?/page/db-orm-redbean.test (?page=db-orm-redbean.test)
 // (c) 2006-2020 unix-world.org - all rights reserved
-// r.5.7.2 / smart.framework.v.5.7
+// r.7.2.1 / smart.framework.v.7.2
 
 use \SmartModExtLib\DbOrmRedbean\ORM as R;
 

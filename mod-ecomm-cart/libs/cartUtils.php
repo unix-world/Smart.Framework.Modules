@@ -1,10 +1,11 @@
 <?php
+// (c) 2006-2020 unix-world.org - all rights reserved
+// r.7.2.1 / smart.framework.v.7.2
 
 namespace SmartModExtLib\EcommCart;
 
 /**
  * Cart: A complex PHP cart library, with support of Product / Services with attributes, formula calculations and multiple currency exchanges
- * Copyright (c) 2018-2020 unix-world.org
  *
  */
 

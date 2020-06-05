@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+June 05, 2020 :: Version 7.2.1 rev.20200605
+	* PHP 7.2+ Optimizations
+
 June 04, 2020 :: Version 5.7.2 rev.20200604
 	* require PHP 7.2+
 

@@ -418,7 +418,7 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.5.7.2 / smart.framework.v.5.7 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
 
 /* ----------------------------- */
 
@@ -950,6 +950,48 @@ to the facade. Adding a database with the same key will cause an exception.</div
 <span class="hljs-meta">?&gt;</span></code></pre>
 	
 	
+</div><div class="doc-container" id="Method--createToolbox">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>createToolbox</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$dsn` Parameter is OPTIONAL, with the Default Value: null">$dsn</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$username` Parameter is OPTIONAL, with the Default Value: null">$username</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$password` Parameter is OPTIONAL, with the Default Value: null">$password</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+			<i>boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$frozen` Parameter is OPTIONAL, with the Default Value: false">$frozen</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$partialBeans` Parameter is OPTIONAL, with the Default Value: false">$partialBeans</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ToolBox
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
+	
+			<div class="doc-method-ret-params">@return: {ToolBox}<br>
+@param: {string} $dsn: Database connection string<br>
+@param: {string} $username: Username for database<br>
+@param: {string} $password: Password for database<br>
+@param: {boolean} $frozen: TRUE if you want to setup in frozen mode</div>
+	
+			<div class="doc-method-comments">Creates a toolbox. This method can be called if you want to use redbean non-static.<br>
+It has the same interface as R::setup(). The createToolbx() method can be called<br>
+without any arguments, in this case it will try to create a SQLite database in<br>
+/tmp called red.db (this only works on UNIX-like systems).<br>
+Usage:<br>
+You can replace 'mysql:' with the name of the database you want to use.<br>
+Possible values are:<br>
+- pgsql  (PostgreSQL database)<br>
+- sqlite (SQLite database)<br>
+- mysql  (MySQL database)<br>
+- mysql  (also for Maria database)<br>
+- sqlsrv (MS SQL Server - community supported experimental driver)<br>
+- CUBRID (CUBRID driver - basic support provided by Plugin)<br>
+Note that createToolbox() will not immediately establish a connection to the database.<br>
+Instead, it will prepare the connection and connect 'lazily', i.e. the moment<br>
+a connection is really required, for instance when attempting to load a bean.</div>
+	
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+
+ R::createToolbox( <span class="hljs-string">'mysql:host=localhost;dbname=mydatabase'</span>, <span class="hljs-string">'dba'</span>, <span class="hljs-string">'dbapassword'</span> );
+
+<span class="hljs-meta">?&gt;</span></code></pre>
+	
+	
 </div><div class="doc-container" id="Method--useMysqlSSL">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>useMysqlSSL</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
@@ -1253,14 +1295,14 @@ Usage:</div>
 </div><div class="doc-container" id="Method--findForUpdate">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>findForUpdate</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$type` Parameter is REQUIRED">$type</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$sql` Parameter is REQUIRED">$sql</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$sql` Parameter is OPTIONAL, with the Default Value: null">$sql</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
 			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bindings` Parameter is OPTIONAL, with the Default Value: array()">$bindings</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array()</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;OODBBean
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;array
 	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
 	
-			<div class="doc-method-ret-params">@return: {OODBBean}<br>
+			<div class="doc-method-ret-params">@return: {array}<br>
 @param: {string} $type: the type of bean you are looking for<br>
 @param: {string} $sql: SQL query to find the desired bean, starting right after WHERE clause<br>
 @param: {array} $bindings: array of values to be bound to parameters in query</div>
@@ -1282,6 +1324,26 @@ Usage:</div>
  R::store( $bean );
 
 <span class="hljs-meta">?&gt;</span></code></pre>
+	
+	
+</div><div class="doc-container" id="Method--findOneForUpdate">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>findOneForUpdate</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$type` Parameter is REQUIRED">$type</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$sql` Parameter is OPTIONAL, with the Default Value: null">$sql</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bindings` Parameter is OPTIONAL, with the Default Value: array()">$bindings</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array()</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;array
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
+	
+			<div class="doc-method-ret-params">@return: {array}<br>
+@param: {string} $type: the type of bean you are looking for<br>
+@param: {string} $sql: SQL query to find the desired bean, starting right after WHERE clause<br>
+@param: {array} $bindings: array of values to be bound to parameters in query</div>
+	
+			<div class="doc-method-comments">Convenience method.<br>
+Same as findForUpdate but returns just one bean and adds LIMIT-clause.</div>
+	
 	
 	
 </div><div class="doc-container" id="Method--trash">
@@ -1936,7 +1998,8 @@ This is a simplified version of the deprecated R::dup() function.</div>
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>exportAll</b></span>&nbsp;(
 				<i>array|OODBBean</i>&nbsp;<span class="doc-param-name"><b><span title="`$beans` Parameter is REQUIRED">$beans</span></b></span>, 
 			<i>boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$parents` Parameter is OPTIONAL, with the Default Value: false">$parents</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$filters` Parameter is OPTIONAL, with the Default Value: array()">$filters</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array()</b></span>
+			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$filters` Parameter is OPTIONAL, with the Default Value: array()">$filters</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array()</b></span>, 
+			<i>boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$meta` Parameter is OPTIONAL, with the Default Value: false">$meta</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;array
@@ -1945,7 +2008,8 @@ This is a simplified version of the deprecated R::dup() function.</div>
 			<div class="doc-method-ret-params">@return: {array}<br>
 @param: {array|OODBBean} $beans: beans to be exported<br>
 @param: {boolean} $parents: whether you want parent beans to be exported<br>
-@param: {array} $filters: whitelist of types</div>
+@param: {array} $filters: whitelist of types<br>
+@param: {boolean} $meta: export meta data as well</div>
 	
 			<div class="doc-method-comments">Exports a collection of beans. Handy for XML/JSON exports with a<br>
 Javascript framework like Dojo or ExtJS.<br>
@@ -2030,10 +2094,10 @@ $rows = R::getAll( <span class="hljs-string">'SELECT FROM... COUNT(*) AS extra_c
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$metamask` Parameter is OPTIONAL, with the Default Value: null">$metamask</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;OODBBean
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;OODBBean|NULL
 	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
 	
-			<div class="doc-method-ret-params">@return: {OODBBean}<br>
+			<div class="doc-method-ret-params">@return: {OODBBean|NULL}<br>
 @param: {string} $type: type of bean to produce<br>
 @param: {array} $row: one row from the database<br>
 @param: {string} $metamask: metamask (see convertToBeans)</div>
@@ -2509,6 +2573,44 @@ R::genSlots( <span class="hljs-keyword">array</span>(<span class="hljs-string">'
 <span class="hljs-meta">?&gt;</span></code></pre>
 	
 	
+</div><div class="doc-container" id="Method--loadJoined">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>loadJoined</b></span>&nbsp;(
+				<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$beans` Parameter is REQUIRED">$beans</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$type` Parameter is REQUIRED">$type</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$sqlTemplate` Parameter is OPTIONAL, with the Default Value: &quot;SELECT %s.* FROM %s WHERE id IN (%s)&quot;">$sqlTemplate</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;SELECT %s.* FROM %s WHERE id IN (%s)&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;array
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
+	
+			<div class="doc-method-ret-params">@return: {array}<br>
+@param: {array} $beans: a list of OODBBeans<br>
+@param: {string} $type: a type string<br>
+@param: {string} $sqlTemplate: an SQL template string for the SELECT-query</div>
+	
+			<div class="doc-method-comments">Convenience method to quickly attach parent beans.<br>
+Although usually this can also be done with findMulti(), that<br>
+approach can be a bit verbose sometimes. This convenience method<br>
+uses a default yet overridable SQL snippet to perform the<br>
+operation, leveraging the power of findMulti().<br>
+Usage:<br>
+This is an alternative for:</div>
+	
+			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+
+ $users = R::find(<span class="hljs-string">'user'</span>);
+ $users = R::loadJoined( $users, <span class="hljs-string">'country'</span> );
+
+$all = R::findMulti(<span class="hljs-string">'country'</span>,
+    R::genSlots( $users,
+       <span class="hljs-string">'SELECT country.* FROM country WHERE id IN ( %s )'</span> ),
+    array_column( $users, <span class="hljs-string">'country_id'</span> ),
+    [Finder::onmap(<span class="hljs-string">'country'</span>, $gebruikers)]
+ );
+
+<span class="hljs-meta">?&gt;</span></code></pre>
+	
+	
 </div><div class="doc-container" id="Method--flat">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>flat</b></span>&nbsp;(
 				<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$array` Parameter is REQUIRED">$array</span></b></span>, 
@@ -2545,6 +2647,24 @@ produces an array like: [ 'a', 'b', 'c' ]</div>
 			<div class="doc-method-comments">Nukes the entire database.<br>
 This will remove all schema structures from the database.<br>
 Only works in fluid mode. Be careful with this method.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--wipeAll">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>wipeAll</b></span>&nbsp;(
+				<i>boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$alsoDeleteTables` Parameter is OPTIONAL, with the Default Value: false">$alsoDeleteTables</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;void
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
+	
+			<div class="doc-method-ret-params">@return: {void}<br>
+@param: {boolean} $alsoDeleteTables: TRUE to clear entire database.</div>
+	
+			<div class="doc-method-comments">Truncates or drops all database tables/views.<br>
+Empties the database. If the deleteTables flag is set to TRUE<br>
+this function will also remove the database structures.<br>
+The latter only works in fluid mode.</div>
 	
 	
 	
@@ -3063,7 +3183,8 @@ also be dumped.</div>
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>bindFunc</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$mode` Parameter is REQUIRED">$mode</span></b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$field` Parameter is REQUIRED">$field</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$function` Parameter is REQUIRED">$function</span></b></span>
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$function` Parameter is REQUIRED">$function</span></b></span>, 
+			<i>boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$isTemplate` Parameter is OPTIONAL, with the Default Value: false">$isTemplate</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;void
@@ -3072,7 +3193,8 @@ also be dumped.</div>
 			<div class="doc-method-ret-params">@return: {void}<br>
 @param: {string} $mode: mode for function: i.e. read or write<br>
 @param: {string} $field: field (table.column) to bind function to<br>
-@param: {string} $function: SQL function to bind to specified column</div>
+@param: {string} $function: SQL function to bind to specified column<br>
+@param: {boolean} $isTemplate: TRUE if $function is an SQL string, FALSE for just a function name</div>
 	
 			<div class="doc-method-comments">Binds an SQL function to a column.<br>
 This method can be used to setup a decode/encode scheme or<br>
@@ -3104,7 +3226,7 @@ for this column/mode.</div>
 	
 			<div class="doc-method-comments">Sets global aliases.<br>
 Registers a batch of aliases in one go. This works the same as<br>
-fetchAs and setAutoResolve but explicitly. For instance if you register<br>
+fetchAs but explicitly. For instance if you register<br>
 the alias 'cover' for 'page' a property containing a reference to a<br>
 page bean called 'cover' will correctly return the page bean and not<br>
 a (non-existant) cover bean.<br>
@@ -3113,9 +3235,7 @@ The format of the aliases registration array is:<br>
 In the example above we use:<br>
 cover =&gt; page<br>
 From that point on, every bean reference to a cover<br>
-will return a 'page' bean. Note that with autoResolve this<br>
-feature along with fetchAs() is no longer very important, although<br>
-relying on explicit aliases can be a bit faster.</div>
+will return a 'page' bean.</div>
 	
 			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
 
@@ -3352,21 +3472,13 @@ database object.</div>
 	
 </div><div class="doc-container" id="Method--setAutoResolve">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setAutoResolve</b></span>&nbsp;(
-				<i>boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$automatic` Parameter is OPTIONAL, with the Default Value: true">$automatic</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$automatic` Parameter is OPTIONAL, with the Default Value: true">$automatic</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;boolean
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
 	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
 	
-			<div class="doc-method-ret-params">@return: {boolean}<br>
-@param: {boolean} $automatic: TRUE to enable automatic resolving aliased parents</div>
 	
-			<div class="doc-method-comments">Alias for setAutoResolve() method on OODBBean.<br>
-Enables or disables auto-resolving fetch types.<br>
-Auto-resolving aliased parent beans is convenient but can<br>
-be slower and can create infinite recursion if you<br>
-used aliases to break cyclic relations in your domain.<br>
-Returns previous value of the flag.</div>
 	
 	
 	
@@ -3698,12 +3810,58 @@ method does not return anything (void).</div>
 @param: {array} $bindings: SQL snippet parameter bindings</div>
 	
 			<div class="doc-method-comments">Given a bean and an optional SQL snippet,<br>
-this method will return all child beans in a hierarchically structured<br>
+this method will return the bean together with all<br>
+child beans in a hierarchically structured<br>
 bean table.<br>
 at least MariaDB 10.2.2 or Postgres. This method does not include<br>
 a warning mechanism in case your database does not support this<br>
-functionality.<br>
-It may still contain bugs.</div>
+functionality.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--countChildren">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countChildren</b></span>&nbsp;(
+				<i>RedBeanPHP\OODBBean</i>&nbsp;<span class="doc-param-name"><b><span title="`$bean` Parameter is REQUIRED">$bean</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$sql` Parameter is OPTIONAL, with the Default Value: null">$sql</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bindings` Parameter is OPTIONAL, with the Default Value: array()">$bindings</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array()</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
+	
+			<div class="doc-method-ret-params">@param: {OODBBean} $bean: bean to find children of<br>
+@param: {string} $sql: optional SQL snippet<br>
+@param: {array} $bindings: SQL snippet parameter bindings</div>
+	
+			<div class="doc-method-comments">Given a bean and an optional SQL snippet,<br>
+this method will count all child beans in a hierarchically structured<br>
+bean table.<br>
+at least MariaDB 10.2.2 or Postgres. This method does not include<br>
+a warning mechanism in case your database does not support this<br>
+functionality.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--countParents">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countParents</b></span>&nbsp;(
+				<i>RedBeanPHP\OODBBean</i>&nbsp;<span class="doc-param-name"><b><span title="`$bean` Parameter is REQUIRED">$bean</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$sql` Parameter is OPTIONAL, with the Default Value: null">$sql</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bindings` Parameter is OPTIONAL, with the Default Value: array()">$bindings</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array()</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
+	
+			<div class="doc-method-ret-params">@param: {OODBBean} $bean: bean to find children of<br>
+@param: {string} $sql: optional SQL snippet<br>
+@param: {array} $bindings: SQL snippet parameter bindings</div>
+	
+			<div class="doc-method-comments">Given a bean and an optional SQL snippet,<br>
+this method will count all parent beans in a hierarchically structured<br>
+bean table.<br>
+at least MariaDB 10.2.2 or Postgres. This method does not include<br>
+a warning mechanism in case your database does not support this<br>
+functionality.</div>
 	
 	
 	
@@ -3722,12 +3880,11 @@ It may still contain bugs.</div>
 @param: {array} $bindings: SQL snippet parameter bindings</div>
 	
 			<div class="doc-method-comments">Given a bean and an optional SQL snippet,<br>
-this method will return all parent beans in a hierarchically structured<br>
-bean table.<br>
+this method will return the bean along with all parent beans<br>
+in a hierarchically structured bean table.<br>
 at least MariaDB 10.2.2 or Postgres. This method does not include<br>
 a warning mechanism in case your database does not support this<br>
-functionality.<br>
-It may still contain bugs.</div>
+functionality.</div>
 	
 	
 	
@@ -3845,7 +4002,7 @@ intercept static calls and route them to the specified plugin.</div>
 </div>
 <!-- constants r.20200121 -->
 <div class="doc-container" id="Constant--C_REDBEANPHP_VERSION">
-	<span class="doc-modifiers">public</span> <i>const</i> <b>C_REDBEANPHP_VERSION</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;5.4&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	<span class="doc-modifiers">public</span> <i>const</i> <b>C_REDBEANPHP_VERSION</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;5.5&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
 			<div class="doc-method-comments">RedBeanPHP version constant.</div>
 	
 </div>
@@ -3919,6 +4076,9 @@ function smartHandleDocSelector(obj) {
 									<option value="Method--addDatabase"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addDatabase()</option>
 			
 			
+									<option value="Method--createToolbox"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;createToolbox()</option>
+			
+			
 									<option value="Method--useMysqlSSL"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;useMysqlSSL()</option>
 			
 			
@@ -3953,6 +4113,9 @@ function smartHandleDocSelector(obj) {
 			
 			
 									<option value="Method--findForUpdate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findForUpdate()</option>
+			
+			
+									<option value="Method--findOneForUpdate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findOneForUpdate()</option>
 			
 			
 									<option value="Method--trash"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;trash()</option>
@@ -4090,10 +4253,16 @@ function smartHandleDocSelector(obj) {
 									<option value="Method--genSlots"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;genSlots()</option>
 			
 			
+									<option value="Method--loadJoined"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;loadJoined()</option>
+			
+			
 									<option value="Method--flat"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;flat()</option>
 			
 			
 									<option value="Method--nuke"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;nuke()</option>
+			
+			
+									<option value="Method--wipeAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;wipeAll()</option>
 			
 			
 									<option value="Method--storeAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;storeAll()</option>
@@ -4237,6 +4406,12 @@ function smartHandleDocSelector(obj) {
 									<option value="Method--children"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;children()</option>
 			
 			
+									<option value="Method--countChildren"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;countChildren()</option>
+			
+			
+									<option value="Method--countParents"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;countParents()</option>
+			
+			
 									<option value="Method--parents"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parents()</option>
 			
 			
@@ -4282,7 +4457,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2020-05-15 15:04:21 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2020-06-05 10:32:40 +0000</small>
 <hr>
 <br>
 <!-- # -->

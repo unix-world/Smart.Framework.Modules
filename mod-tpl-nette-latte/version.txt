@@ -1,7 +1,7 @@
 
-# Smart.Framework.Modules: TplNetteLatte r.20200519 #
+# Smart.Framework.Modules: TplNetteLatte r.20200605 #
 ## Nette Latte Templating Engine v.github#v.2.4.8 w. modif ##
 
-// r.5.7.2 / smart.framework.v.5.7
+// r.7.2.1 / smart.framework.v.7.2
 
 ###
