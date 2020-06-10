@@ -62,7 +62,7 @@ abstract class AbstractTemplating {
 
 	//=====
 	/**
-	 * Must be re-implemented to return the real TPL version
+	 * Must be re-implemented to return the real TPL Engine Version
 	 * @return STRING the TPL Version String (ex: 'v.0.1')
 	 */
 	public static function getVersion() {

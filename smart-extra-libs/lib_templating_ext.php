@@ -20,7 +20,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * Depending upon the file name extension will choose to render as:
  *
- * some-file.mtpl.htm 		: SmartMarkersTemplating 									(Markers-TPL syntax: .mtpl.)
+ * some-file.mtpl.htm 		: SmartMarkersTemplating 									(Marker-TPL syntax: .mtpl.)
  *
  * some-file.dust.htm 		: \SmartModExtLib\TplDust\SmartDustTemplating 				(Dust-TPL syntax: .dust.)
  *

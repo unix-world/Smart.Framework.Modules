@@ -1,8 +1,12 @@
 <?php
-// Medoo database framework
-// (c) 2019, Angel Lai, https://github.com/catfan/Medoo
-// Released under the MIT license
-// v.1.7.6
+/*!
+ * Medoo database framework
+ * https://medoo.in
+ * Version 1.7.10
+ *
+ * Copyright 2020, Angel Lai
+ * Released under the MIT license
+ */
 
 namespace Medoo;
 
@@ -331,6 +335,8 @@ class Medoo
 
 	public function exec($query, $map = [])
 	{
+		$this->statement = null;
+
 		if ($this->debug_mode)
 		{
 			echo $this->generate($query, $map);
@@ -439,15 +445,20 @@ class Medoo
 		}
 
 		$query = preg_replace_callback(
-			'/((FROM|TABLE|INTO|UPDATE)\s*)?\<([a-zA-Z0-9_\.]+)\>/i',
+			'/(([`\']).*?)?((FROM|TABLE|INTO|UPDATE|JOIN)\s*)?\<(([a-zA-Z0-9_]+)(\.[a-zA-Z0-9_]+)?)\>(.*?\2)?/i',
 			function ($matches)
 			{
-				if (!empty($matches[ 2 ]))
+				if (!empty($matches[ 2 ]) && isset($matches[ 8 ]))
 				{
-					return $matches[ 2 ] . ' ' . $this->tableQuote($matches[ 3 ]);
+					return $matches[ 0 ];
 				}
 
-				return $this->columnQuote($matches[ 3 ]);
+				if (!empty($matches[ 4 ]))
+				{
+					return $matches[ 1 ] . $matches[ 4 ] . ' ' . $this->tableQuote($matches[ 5 ]);
+				}
+
+				return $matches[ 1 ] . $this->columnQuote($matches[ 5 ]);
 			},
 			$raw->value);
 
@@ -471,6 +482,11 @@ class Medoo
 
 	protected function tableQuote($table)
 	{
+		if (!preg_match('/^[a-zA-Z0-9_]+$/i', $table))
+		{
+			throw new InvalidArgumentException("Incorrect table name \"$table\"");
+		}
+
 		return '"' . $this->prefix . $table . '"';
 	}
 
@@ -728,7 +744,7 @@ class Medoo
 						{
 							$item = strval($item);
 
-							if (!preg_match('/(\[.+\]|_|%.+|.+%)/', $item))
+							if (!preg_match('/(\[.+\]|[\*\?\!\%#^-_]|%.+|.+%)/', $item))
 							{
 								$item = '%' . $item . '%';
 							}
@@ -1833,6 +1849,7 @@ class Medoo
 
 		return $output;
 	}
+
 }
 
 // #END
