@@ -13,17 +13,6 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 //-----------------------------------------------------
-if(version_compare((string)phpversion(), '7.2') < 0) { // {{{SYNC-DOCUMENTOR-PHP-MIN-VERSION}}}
-	@http_response_code(503);
-	die(SmartComponents::http_message_503_serviceunavailable('Service N/A: PHP 7.2 or later is required for this service'));
-} //end if
-if(function_exists('\\opcache_get_status')) {
-	if((string)ini_get('opcache.save_comments') != '1') {
-		@http_response_code(503);
-		die(SmartComponents::http_message_503_serviceunavailable('Service N/A: PHP Opcache is active and Opcache.SaveComments is Disabled (and must be Enabled)'));
-	} //end if
-} //end if
-//-----------------------------------------------------
 define('SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO', 'lib/framework/img/sf-logo.svg');
 define('SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS', 'tmp/documentor-php/');
 define('SMART_FRAMEWORK_DOCUMENTOR_DIR_PKGS', 'tmp/documentor-php@packages/');
@@ -101,6 +90,10 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			$this->PageViewSetErrorStatus(500, 'ERROR: Documentor cannot be used when Debug is ON ...'); // results are unpredictable ...
 			return;
 		} //end if
+		//--
+
+		//--
+		$ver = (string) \SmartModExtLib\Documentor\SmartClasses::DOCGENERATOR_VERSION; // required to pre-load the class + checks
 		//--
 
 		//--

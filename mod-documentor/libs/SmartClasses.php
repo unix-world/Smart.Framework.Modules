@@ -13,6 +13,20 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //-----------------------------------------------------
 
 
+//-----------------------------------------------------
+if(\version_compare((string)\phpversion(), '7.2') < 0) { // {{{SYNC-DOCUMENTOR-PHP-MIN-VERSION}}}
+	@\http_response_code(503);
+	die(\SmartComponents::http_message_503_serviceunavailable('Service N/A: PHP 7.2 or later is required for this service'));
+} //end if
+if(\function_exists('\\opcache_get_status')) {
+	if((string)\ini_get('opcache.save_comments') != '1') {
+		@\http_response_code(503);
+		die(\SmartComponents::http_message_503_serviceunavailable('Service N/A: PHP Opcache is active and Opcache.SaveComments is Disabled (and must be Enabled)'));
+	} //end if
+} //end if
+//-----------------------------------------------------
+
+
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
@@ -26,13 +40,16 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20200611
  * @package 	Documentor
  *
  */
 final class SmartClasses {
 
 	// ::
+
+
+	const DOCGENERATOR_VERSION = '20200611';
 
 
 	public static function getJavascriptSfFile() {
@@ -47,9 +64,9 @@ final class SmartClasses {
 		return [
 			'SmartJS_CoreUtils' 		=> 'lib/js/framework/src/core_utils.js',
 			'SmartJS_DateUtils' 		=> 'lib/js/framework/src/date_utils.js',
-			'SmartJS_Base64' 			=> 'lib/js/framework/src/crypt_utils.js',
-			'SmartJS_CryptoHash' 		=> 'lib/js/framework/src/crypt_utils.js',
-			'SmartJS_CryptoBlowfish' 	=> 'lib/js/framework/src/crypt_utils.js',
+			'SmartJS_Base64' 			=> 'lib/js/framework/src/crypt_utils.js?#SmartJS_Base64',
+			'SmartJS_CryptoHash' 		=> 'lib/js/framework/src/crypt_utils.js?#SmartJS_CryptoHash',
+			'SmartJS_CryptoBlowfish' 	=> 'lib/js/framework/src/crypt_utils.js?#SmartJS_CryptoBlowfish',
 			'SmartJS_ModalBox' 			=> 'lib/js/framework/src/ifmodalbox.js',
 			'SmartJS_BrowserUtils' 		=> 'lib/js/framework/src/browser_utils.js',
 			'Test_Browser_Compliance' 	=> 'lib/js/framework/src/browser_check.js'

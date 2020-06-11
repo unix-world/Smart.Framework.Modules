@@ -51,6 +51,10 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
+		$ver = (string) \SmartModExtLib\Documentor\SmartClasses::DOCGENERATOR_VERSION; // required to pre-load the class + checks
+		//--
+
+		//--
 		$action = $this->RequestVarGet('action', '', 'string');
 		$area = $this->RequestVarGet('area', '', 'string');
 		$heading = $this->RequestVarGet('heading', '', 'string');
