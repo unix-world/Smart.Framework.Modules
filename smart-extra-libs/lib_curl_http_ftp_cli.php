@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP CURL, PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
- * @version 	v.20200121
+ * @version 	v.20200619
  * @package 	extralibs:Network
  *
  */
@@ -110,7 +110,7 @@ final class SmartCurlHttpFtpClient {
 		//--
 
 		//-- signature
-		$this->useragent = 'Mozilla/5.0 PHP.CURL.SFM ('.SMART_APP_MODULES_EXTRALIBS_VER.'/'.php_uname().')';
+		$this->useragent = 'Mozilla/4.0 PHP.CURL.SFM ('.SMART_APP_MODULES_EXTRALIBS_VER.'/'.php_uname().')';
 		//--
 
 		//-- option
@@ -554,7 +554,9 @@ final class SmartCurlHttpFtpClient {
 		//--
 
 		//-- Execute a Curl request
-		@curl_setopt($this->curl, CURLOPT_DNS_USE_GLOBAL_CACHE, false);
+		if((string)DIRECTORY_SEPARATOR != '\\') { // if not on Windows, because of the thread-safe warning
+			@curl_setopt($this->curl, CURLOPT_DNS_USE_GLOBAL_CACHE, false);
+		} //end if
 		@curl_setopt($this->curl, CURLOPT_FRESH_CONNECT, true);
 		@curl_setopt($this->curl, CURLOPT_FORBID_REUSE, true);
 		@curl_setopt($this->curl, CURLOPT_URL, (string)$url);

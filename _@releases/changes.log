@@ -3,6 +3,7 @@
 ## This apply only for for Milestone Releases
 
 June 19, 2020 :: Version 7.2.1 rev.20200619
+	* Fix Lib CURL HTTP/FTP Cli (do not set the option CURLOPT_DNS_USE_GLOBAL_CACHE on Windows Platform to avoid warnings)
 	* Minor Fixes + Update Documentation
 
 June 05, 2020 :: Version 7.2.1 rev.20200605
