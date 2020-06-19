@@ -216,6 +216,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				[
 					'QMODE' 				=> (string) $mode, // raw | visual
 					'LANG' 					=> (string) $this->ControllerGetParam('lang'), // codeMirror
+					'HLJS-PREFIX-URL' 		=> (string) '',
 					'CSS-THEME' 			=> (string) 'github', // highlightJs
 					'PAGE-URL' 				=> (string) $the_base_url,
 					'COOKIENAME-COLLECTION' => (string) $the_cookiename_collection,
