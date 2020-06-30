@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+June 30, 2020 :: Version 7.2.1 rev.20200630
+	* Update Docs
+
 June 19, 2020 :: Version 7.2.1 rev.20200619
 	* Fix Lib CURL HTTP/FTP Cli (do not set the option CURLOPT_DNS_USE_GLOBAL_CACHE on Windows Platform to avoid warnings)
 	* Minor Fixes + Update Documentation
