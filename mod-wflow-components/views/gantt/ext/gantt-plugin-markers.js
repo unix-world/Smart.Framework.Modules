@@ -5,7 +5,7 @@
 
 // (c) 2017-2020 unix-world.org
 // License: GPLv3
-// v.20200502 (stable)
+// v.20200701 (stable)
 /*
 modified by unixman:
 	- isolate in a function

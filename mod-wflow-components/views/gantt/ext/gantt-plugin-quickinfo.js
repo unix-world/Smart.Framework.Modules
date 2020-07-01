@@ -5,7 +5,7 @@
 
 // (c) 2017-2020 unix-world.org
 // License: GPLv3
-// v.20200502 (stable)
+// v.20200701 (stable)
 /*
 modified by unixman:
 	- isolate in a function
@@ -106,8 +106,11 @@ function SmartGanttPluginQuickinfo(gantt) {
 			var height = qi.offsetHeight;
 			var scrolls = this.getScrollState();
 			var screen_width = this.$task.offsetWidth + scrolls.x - width;
-			qi.style.left = Math.min(Math.max(scrolls.x, pos.left - pos.dx*(width - pos.width)), screen_width) + "px";
-			qi.style.top = pos.top - (pos.dy?height:-pos.height) - 25 + "px";
+			//-- # fix by unixman
+		//	qi.style.left = Math.min(Math.max(scrolls.x, pos.left - (pos.dx * (width - pos.width))), screen_width) + "px";
+			qi.style.left = Math.min((scrolls.x + pos.left), (scrolls.x + width)) + "px";
+			//-- #end fix my unixman
+			qi.style.top = pos.top - (pos.dy ? height : -pos.height) - 25 + "px";
 		} else {
 			qi.style.top = 20 + "px";
 			if (pos.dx == 1){

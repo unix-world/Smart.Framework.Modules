@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: WflowComponents r.20200625 #
+# Smart.Framework.Modules: WflowComponents r.20200701 #
 
 // r.7.2.1 / smart.framework.v.7.2
 

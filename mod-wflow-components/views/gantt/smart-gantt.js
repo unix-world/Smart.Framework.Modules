@@ -2,7 +2,7 @@
 // Gantt Manager
 // (c) 2019-2020 unix-world.org
 // License: GPLv3
-// v.20200502 (stable)
+// v.20200701 (stable)
 
 var SmartGanttManager = new function() { // START CLASS
 
