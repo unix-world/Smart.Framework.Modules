@@ -9,7 +9,7 @@ var SmartGanttManager = new function() { // START CLASS
 	// :: static
 
 
-	this.drawInstance = function(theData, isEditable, showGrid, gantID, theScale, theReferenceDate, theNowDate) {
+	this.drawInstance = function(theData, isEditable, showGrid, gantID, theScale, theReferenceDate, theNowDate, theRowHeight, theScaleHeight, hideTaskCells) {
 
 		if((typeof theData != 'object') || (!theData)) {
 			theData = newGanttDataStructure();
@@ -71,7 +71,9 @@ var SmartGanttManager = new function() { // START CLASS
 			date_scale: theDateScale,
 			readonly: !isEditable,
 			show_grid : showGrid, // grid_width: 0, // or use this with zero to hide right grid
-			//show_task_cells : false,
+			row_height: (theRowHeight && theRowHeight >= 20 && theRowHeight <= 100) ? Math.ceil(theRowHeight) : 27,
+			scale_height: (theScaleHeight && theScaleHeight >= 20 && theScaleHeight <= 100) ? Math.ceil(theScaleHeight) : 27,
+			show_task_cells: (hideTaskCells === true) ? false : true,
 			//sort: true,
 			//step:1,
 		}); // .load("data.json")
@@ -318,4 +320,3 @@ var SmartGanttManager = new function() { // START CLASS
 
 
 // #END
-
