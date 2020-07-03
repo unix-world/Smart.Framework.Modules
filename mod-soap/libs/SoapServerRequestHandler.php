@@ -82,6 +82,7 @@ final class SoapServerRequestHandler {
 	 * Get the SOAP Action from SOAP Request
 	 * The Valid URL format to recognize the SOAP Action must be something like: urn://some-request.url/SomeSoapAction#SomeSoapAction
 	 * For using with Smart.Framework URL format can be: http(s)://smart-framework.url/?/page/some.controller/action/SomeSoapAction/#SomeSoapAction
+	 * If the SOAP Client is not able to handle the fragment (after the hashmark #), it can be used without it but in this case the soap action must be detected separately by parsing the getSoapRequestAction()
 	 *
 	 * @hints This comes from SOAP Request, processed
 	 *
