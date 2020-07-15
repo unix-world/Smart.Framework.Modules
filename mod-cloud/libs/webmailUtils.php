@@ -19,7 +19,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 final class webmailUtils {
 
-	// r.20200420
+	// r.20200715
 	// ::
 
 
@@ -149,31 +149,7 @@ final class webmailUtils {
 			return (string) \trim((string)$uid); // return it back, trimmed, don't know how to parse
 		} //end if
 		//--
-		$uid = (string) \trim((string)$uid);
-		if((string)$uid == '') {
-			return '';
-		} //end if
-		//--
-		if(\strpos((string)$uid, 'IMAP4-UIV-') !== 0) {
-			return '';
-		} //end if
-		//--
-		$uid = (string) \trim((string)\ltrim((string)$uid, 'IMAP4-UIV-'));
-		if((string)$uid == '') {
-			return '';
-		} //end if
-		//--
-		if(\strpos((string)$uid, '-UID-') === false) {
-			return '';
-		} //end if
-		//--
-		$uid = (array) \explode('-UID-', (string)$uid);
-		$uid = (string) \trim((string)$uid[1]);
-		if((string)$uid == '') {
-			return '';
-		} //end if
-		//--
-		return (string) $uid;
+		return (string) \SmartMailerUtils::get_imap_message_real_uid((string)$uid);
 		//--
 	} //END FUNCTION
 
@@ -1076,6 +1052,7 @@ final class webmailUtils {
 				'server_cafile' 		=> '',
 				'server_auth_user' 		=> (string) $tmp_cfg_send_arr['settings_auth_username'],
 				'server_auth_pass' 		=> (string) \SmartUtils::crypto_blowfish_decrypt((string)$tmp_cfg_send_arr['settings_auth_password']),
+				'server_auth_mode' 		=> (string) $tmp_cfg_send_arr['settings_auth_mode'],
 				'send_from_addr' 		=> (string) $tmp_cfg_send_from_addr,
 				'send_from_name' 		=> (string) $tmp_cfg_send_from_name,
 				'use_qp_encoding' 		=> (bool)   ($tmp_cfg_send_arr['settings_use_qp_encoding'] === true) ? true : false,

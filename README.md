@@ -29,6 +29,7 @@
 	* Countries: json list of countries + svg flags for countries
 	* SocialMedia Facebook: Js + PHP API
 	* SocialMedia Twitter: Js + PHP API
+	* OAuth2 Api: Manager for XOAUTH2 based authentications (can be used as an external provider for: SMTP, IMAP and other protocols)
 	* SVN (manager): a web based SVN (subversion) manager
 	* DB Admin (manager): a web based DataBase administrator (currently supports just MongoDB)
 

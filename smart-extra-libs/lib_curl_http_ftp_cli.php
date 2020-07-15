@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP CURL, PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
- * @version 	v.20200619
+ * @version 	v.20200708
  * @package 	extralibs:Network
  *
  */
@@ -405,16 +405,27 @@ final class SmartCurlHttpFtpClient {
 				//--
 			} //end if
 			//--
-			switch(strtolower((string)$ssl_version)) {
+			switch((string)strtolower((string)$ssl_version)) {
+				//--
 				case 'ssl':
-					$browser_protocol = CURL_SSLVERSION_DEFAULT; // default SSL
+					$browser_protocol = CURL_SSLVERSION_DEFAULT; // deprecated
 					break;
 				case 'sslv3':
-					$browser_protocol = CURL_SSLVERSION_SSLv3; // SSLv3
+					$browser_protocol = CURL_SSLVERSION_SSLv3; // deprecated
+					break;
+				//--
+				case 'tls:1.0':
+					$browser_protocol = CURL_SSLVERSION_TLSv1_0;
+					break;
+				case 'tls:1.1':
+					$browser_protocol = CURL_SSLVERSION_TLSv1_1;
+					break;
+				case 'tls:1.2':
+					$browser_protocol = CURL_SSLVERSION_TLSv1_2;
 					break;
 				case 'tls':
 				default:
-					$browser_protocol =  CURL_SSLVERSION_TLSv1; // TLSv1.x
+					$browser_protocol =  CURL_SSLVERSION_TLSv1;
 			} //end switch
 			//--
 			@curl_setopt($this->curl, CURLOPT_SSLVERSION, $browser_protocol);

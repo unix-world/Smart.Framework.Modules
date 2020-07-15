@@ -1,0 +1,141 @@
+<!-- View: list-records v.20200715 -->
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/simplePagination.css?[###RELEASE-HASH|url|html###]">
+<script type="text/javascript" src="lib/js/jquery/pager/jquery.simplePagination.js?[###RELEASE-HASH|url|html###]"></script>
+<script type="text/javascript" src="lib/js/jquery/jquery.event.drag.js?[###RELEASE-HASH|url|html###]"></script>
+<script type="text/javascript" src="lib/js/jquery/jquery.event.drop.js?[###RELEASE-HASH|url|html###]"></script>
+<script type="text/javascript" src="lib/js/jquery/jquery.simulate.js?[###RELEASE-HASH|url|html###]"></script>
+<style>
+	.smartGrid_AlignCenter {
+		text-align: center;
+	}
+	.smartGrid_AlignRight {
+		text-align: right;
+	}
+	.smartGrid_Highlight {
+		color: #44619D;
+		font-weight: bold;
+	}
+	.smartGrid_Important {
+		font-weight: bold;
+	}
+</style>
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid.css?[###RELEASE-HASH|url|html###]">
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid-fixes.css?[###RELEASE-HASH|url|html###]">
+<script type="text/javascript" src="lib/js/jquery/slickgrid/slick.grid.js?[###RELEASE-HASH|url|html###]"></script>
+<script type="text/javascript" src="lib/js/jquery/slickgrid/slick.editors.js?[###RELEASE-HASH|url|html###]"></script>
+<script type="text/javascript" src="lib/js/jquery/slickgrid/smart-grid.js?[###RELEASE-HASH|url|html###]"></script>
+<script type="text/javascript">
+	//--
+	var itemURL = '[###ACTIONS-URL|js###]';
+	var IdOfGrid = 'Oauth2ListGrid';
+	var TheGrid = new Smart_Grid(IdOfGrid, 'infoTotalRows', itemURL+'list', 'oauth2_list_tbl', 'id', 'ASC', '', 'filtering');
+	//--
+</script>
+
+<div style="color:#778899; line-height:24px; font-size:24px; font-weight:bold; display:flex; align-items:center;"><a href="admin.php"><img width="48" height="48" src="modules/mod-oauth2/views/img/logo-oauth.svg" style="vertical-align:middle; margin-right:10px;"></a> Oauth2 Management :: <span id="infoTotalRows"># / # @</span></div>
+<br>
+<form id="filtering" name="filtering" class="ux-form">
+	<span style="display:inline-block;">
+		<input type="text" id="filter-id" name="id" placeholder="ID" value="" style="width:175px;">
+	</span>
+	<button type="button" class="ux-button ux-button-special" onClick="TheGrid.loadGridData(0);">Filter &nbsp; <i class="sfi sfi-search"></i></button>
+	<button type="button" class="ux-button ux-button-regular" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);">Reset &nbsp; <i class="sfi sfi-history"></i></button>
+	<button type="button" class="ux-button ux-button-primary" style="margin-left:50px;" onClick="SmartJS_BrowserUtils.PopUpLink('[###ACTIONS-URL|js|html###]new-form', 'oauth2_list_mod'); return false;"> Create New Oauth2 API &nbsp; <i class="sfi sfi-plus"></i></button>
+</form>
+<br>
+<div id="Oauth2ListNavPager"></div>
+<form class="ux-form"><div id="Oauth2ListGrid" class="slickgrid-table" style="font-size:10px;width:100%;height:10px;"></div></form>
+<script type="text/javascript">
+$(function() {
+
+	// Column Formatters
+	function formatter_Meta(cellNode, row, dataContext, colDef) {
+		var the_id = dataContext['id'];
+		var active = dataContext['active'];
+		var isErr = dataContext['errs'];
+		$(cellNode).empty().html('').append('<button class="ux-button ux-button-xsmall' + ((isErr > 0) ? ' ux-button-special' : '') + '" onClick="SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(itemURL + 'view-data' +'&id=' + SmartJS_CoreUtils.escape_url(the_id)) +'\', \'oauth2_list_mod\'); return false;" title="Edit (Click to Open the Editor)"><i class="sfi sfi-fa-key"></i></button>');
+	}
+	function formatter_Active(row, cell, value, columnDef, dataContext) {
+		if(value == 1) {
+			return '<i class="sfi sfi-checkbox-checked" style="color:#6D8813; cursor:pointer;" title="Active (Double-Click to Change)"></i>';
+		} else {
+			return '<i class="sfi sfi-checkbox-unchecked" style="color:#FF5500; cursor:pointer;" title="Inactive (Double-Click to Change)"></i>';
+		}
+	}
+	function formatter_DateTime(row, cell, value, columnDef, dataContext) {
+		value = parseInt(value);
+		if(value > 0) {
+			var d = new Date(value * 1000);
+			value = d.getFullYear() + '-' + ('00' + (d.getMonth() + 1)).slice(-2) + '-' + ('00' + d.getDate()).slice(-2) + ' ' + ('00' + d.getHours()).slice(-2) + ':' + ('00' + d.getMinutes()).slice(-2) + ':' + ('00' + d.getSeconds()).slice(-2);
+		} else {
+			value = '-';
+		}
+		return String(value);
+	}
+
+	// Column Updaters
+	function updateCellData(url_segment_update) {
+		SmartJS_BrowserUtils.Submit_Form_By_Ajax('', '[###ACTIONS-URL|js|html###]edit-cell' + url_segment_update, 'yes', 'TheGrid.loadGridData(TheGrid.getOffset());', 'TheGrid.loadGridData(TheGrid.getOffset());');
+	}
+
+	// Grid Data Defs
+	var columns = [
+		{id:'meta', name:'', sortable:false, width:30, cssClass:'smartGrid_AlignCenter', asyncPostRender:formatter_Meta},
+		{id:'id', field:'id', name:'ID', sortable:true, width:200, cssClass:'smartGrid_Highlight', editor:TextCellSelector},
+		{id:'active', field:'active', name:'Active', sortable:true, sortNumeric:true, width:50, cssClass:'smartGrid_AlignCenter', formatter:formatter_Active, editor:CheckboxCellEditor},
+		{id:'client_id', field:'client_id', name:'ClientID', sortable:false, width:100, cssClass:'smartGrid_Important', editor:TextCellSelector},
+		{id:'url_redirect', field:'url_redirect', name:'RedirectURL', sortable:false, width:100, editor:TextCellSelector},
+		{id:'scope', field:'scope', name:'Scope', sortable:false, width:125, cssClass:'smartGrid_Important', editor:TextCellSelector},
+		{id:'url_auth', field:'url_auth', name:'AuthURL', sortable:false, width:100, editor:TextCellSelector},
+		{id:'url_token', field:'url_token', name:'TokenURL', sortable:false, width:100, editor:TextCellSelector},
+		{id:'access_expire_seconds', field:'access_expire_seconds', name:'Expire-Seconds', cssClass:'smartGrid_AlignRight', sortable:false, width:100, editor:TextCellSelector},
+		{id:'modified', field:'modified', name:'Modified', sortable:true, sortNumeric:true, width:100, cssClass:'smartGrid_Important', formatter:formatter_DateTime},
+		{id:'created', field:'created', name:'Created', sortable:true, sortNumeric:true, width:100, formatter:formatter_DateTime},
+	];
+
+	//-- Grid Options
+	var options = {
+		enableAddRow: false,
+		enableCellNavigation: true,
+		enableColumnReorder: false,
+		enableAsyncPostRender: true,
+		forceFitColumns: false,
+		asyncPostRenderDelay: 15,
+		rowHeight: 30,
+		editable: true,
+		autoEdit: false,
+		asyncEditorLoading: false
+	};
+
+	// Grid sizing
+	var winW = $(window).width();
+	var winH = $(window).height();
+	$('#' + IdOfGrid).css({ 'width': parseInt(winW - 25), 'height': parseInt(winH - 200) });
+	$(window).resize(function() {
+		winW = $(window).width();
+		winH = $(window).height();
+		$('#' + IdOfGrid).css({ 'width': parseInt(winW - 25), 'height': parseInt(winH - 200) });
+		TheGrid.grid.resizeCanvas();
+		TheGrid.grid.autosizeColumns();
+	});
+
+	// Runtime
+	TheGrid.initNavPager('Oauth2ListNavPager');
+	TheGrid.initGrid(columns, options);
+	TheGrid.grid.onCellChange = function(row, cell, dataContext, columnDef) {
+		switch(columnDef.field) {
+			case 'active':
+				updateCellData('&column=' + SmartJS_CoreUtils.escape_url(columnDef.field) + '&value=' + SmartJS_CoreUtils.escape_url(dataContext[columnDef.field]) + '&id=' + SmartJS_CoreUtils.escape_url(dataContext['id']));
+				break;
+			default: // invalid
+				console.log('WARNING: Table Column is not editable: ' + columnDef.field);
+		}
+	}
+	TheGrid.grid.resizeCanvas();
+	TheGrid.grid.autosizeColumns();
+	TheGrid.loadGridData(0);
+
+});
+//--
+</script>
+<!-- #END :: View -->

@@ -1,0 +1,26 @@
+<!-- View: display-record v.20200715 -->
+[@@@SUB-TEMPLATE:partials/form-styles.mtpl.htm@@@]
+<div style="text-align:center; max-width:90vw;">
+	<div style="text-align:left;">
+		<div><h1 style="display:inline-block!important;">[###THE-TITLE|html###]</h1></div>
+		<div style="text-align:right;"><h3 style="display:inline-block!important;">[###DATE-NOW|html###]</h3></div>
+		[%%%LOOP:DATA-ARR%%%]
+		<div class="ux-grid-row" style="padding:5px; border: 1px solid #FAFAFA; border-bottom: 0; background:[%%%IF:DATA-ARR._-KEY-_:?Id|Logs;%%%]#ECECEC[%%%ELSE:DATA-ARR._-KEY-_%%%]#FFFFFF[%%%/IF:DATA-ARR._-KEY-_%%%];">
+			<div class="ux-grid-col s12 m3 l2"><b>[###DATA-ARR._-KEY-_|html###]</b></div>
+			<div class="ux-grid-col s12 m9 l10">
+				[%%%IF:DATA-ARR._-KEY-_:?Description|Logs;%%%]
+					[###DATA-ARR._-VAL-_|html|nl2br###]
+				[%%%ELSE:DATA-ARR._-KEY-_%%%]
+					[###DATA-ARR._-VAL-_|html###]
+				[%%%/IF:DATA-ARR._-KEY-_%%%]
+			</div>
+		</div>
+		[%%%/LOOP:DATA-ARR%%%]
+		<div style="text-align:center; border-top: 1px solid #FAFAFA;">
+			<br>
+			<button type="button" class="ux-button" style="margin-right:10px; margin-bottom:5px;" onClick="SmartJS_BrowserUtils.CloseDelayedModalPopUp();"> Close &nbsp; <i class="sfi sfi-cross"></i></button>
+			<button type="button" class="ux-button ux-button-secondary" style="margin-right:10px; margin-bottom:5px;" onClick="SmartJS_BrowserUtils.confirm_Dialog('<h1>Refresh now this Access Token ?</h1><span style=&quot;color:#003366;&quot;>Notice: The Access Token is automatically refreshed if expired at every usage, thus is not necessary to manually update it. Anyway you can do update the Access Token now if press OK...</span>', function(){ self.location='[###ACTION-REFRESH-TOKEN|js###]'; }, 'Access Token Manual REFRESH', 550, 250); return false;"> Refresh Token &nbsp; <i class="sfi sfi-loop"></i></button>
+			<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="SmartJS_BrowserUtils.confirm_Dialog('<h1>Delete now this Access Token ?</h1><span style=&quot;color:#FF3300;&quot;>Notice: The Access Token will be completely removed from the Storage backend. Press OK to confirm the deletion...</span>', function(){ self.location='[###ACTION-DELETE-TOKEN|js###]'; }, 'Access Token DELETE', 550, 250); return false;"> Delete Token &nbsp; <i class="sfi sfi-bin"></i></button>
+		</div>
+	</div>
+</div>

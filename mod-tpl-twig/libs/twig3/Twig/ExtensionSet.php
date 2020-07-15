@@ -103,8 +103,7 @@ final class ExtensionSet
 
         foreach ($this->extensions as $extension) {
             $r = new \ReflectionObject($extension);
-        //  if (file_exists($r->getFileName()) && ($extensionTime = filemtime($r->getFileName())) > $this->lastModified) {
-            if (is_file($r->getFileName()) && ($extensionTime = filemtime($r->getFileName())) > $this->lastModified) { // fix from github.com/twigphp/Twig/commit/d0e2074a04fd2220d46686d2b3c9c92f1d444590
+            if (is_file($r->getFileName()) && ($extensionTime = filemtime($r->getFileName())) > $this->lastModified) {
                 $this->lastModified = $extensionTime;
             }
         }

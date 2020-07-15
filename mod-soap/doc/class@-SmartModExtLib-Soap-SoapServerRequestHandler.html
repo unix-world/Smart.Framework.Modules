@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartModExtLib\Soap\SoapServerRequestHandler        final class \SmartModExtLib\Soap\ SoapServerRequestHandler    {   } ::    Provides a SOAP Server">
-	<meta name="keywords" content="smartmodextlib soap soapserverrequesthandler, final, class, smartmodextlib soap, soapserverrequesthandler, provides, a, soap, server, request, handler, full, unicode, compliant, utf ., this, does, not, depend, on, the, php, extension, language, located, at, modules mod-soap libs soapserverrequesthandler.php, package, modules network, namespace, name, version, v, depends, classes, smart, smartxmlparser, domxml, domdocument, smartmarkerstemplating, hints, use, to, easy, manage, calls, usage, static, object, class  method, -, only, methods, public, function, issoaprequest, boolean, return, boolean, true, if, is, or, false, check, getsoaprequesturl, string, hints, comes, from, raw, string, will, return">
+	<meta name="keywords" content="smartmodextlib soap soapserverrequesthandler, final, class, smartmodextlib soap, soapserverrequesthandler, provides, a, soap, server, request, handler, full, unicode, compliant, utf ., this, does, not, depend, on, the, php, extension, language, located, at, modules mod-soap libs soapserverrequesthandler.php, package, modules network, namespace, name, version, v, depends, classes, smart, smartxmlparser, domxml, domdocument, smartmarkerstemplating, hints, use, to, easy, manage, calls, usage, static, object, class  method, -, only, methods, public, function, issoaprequest, boolean, return, boolean, true, if, is, or, false, check, getsoaprequesturl, string, hints, comes, from, raw, string, will, return, non-empty, url, aka, httpsoapaction, else, an, empty, get">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 	<title>PHP Documentation for: \SmartModExtLib\Soap\SoapServerRequestHandler</title>
 	<!-- CSS and Fonts -->
@@ -748,7 +748,8 @@ The SOAP clients will have to send the HTTP_SOAPACTION to comply with this Serve
 	
 			<div class="doc-method-comments">Get the SOAP Action from SOAP Request<br>
 The Valid URL format to recognize the SOAP Action must be something like: urn://some-request.url/SomeSoapAction#SomeSoapAction<br>
-For using with Smart.Framework URL format can be: http(s)://smart-framework.url/?/page/some.controller/action/SomeSoapAction/#SomeSoapAction</div>
+For using with Smart.Framework URL format can be: http(s)://smart-framework.url/?/page/some.controller/action/SomeSoapAction/#SomeSoapAction<br>
+If the SOAP Client is not able to handle the fragment (after the hashmark #), it can be used without it but in this case the soap action must be detected separately by parsing the getSoapRequestAction()</div>
 	
 	
 	
@@ -920,7 +921,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2020-06-30 10:26:15 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2020-07-09 11:27:44 +0000</small>
 <hr>
 <br>
 <!-- # -->

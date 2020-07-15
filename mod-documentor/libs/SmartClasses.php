@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20200611
+ * @version 	v.20200707
  * @package 	Documentor
  *
  */
@@ -49,7 +49,7 @@ final class SmartClasses {
 	// ::
 
 
-	const DOCGENERATOR_VERSION = '20200611';
+	const DOCGENERATOR_VERSION = '20200707';
 
 
 	public static function getJavascriptSfFile() {
@@ -165,6 +165,7 @@ final class SmartClasses {
 			//--
 			'\\SmartModExtLib\\AuthAdmins\\SimpleAuthAdminsHandler',
 			'\\SmartModExtLib\\AuthAdmins\\AuthAdminsHandler',
+			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendPageBuilder',
 			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendController',
 			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendPlugin',
 			'\\SmartModExtLib\\Webdav\\ControllerAdmDavFs',

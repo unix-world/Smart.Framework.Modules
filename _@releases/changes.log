@@ -2,6 +2,13 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+July 15, 2020 :: Version 7.2.1 rev.20200715
+	* new Module: OAuth2
+	* Twig update to latest 3.0.4
+
+July 08, 2020 :: Version 7.2.1 rev.20200708
+	* HTTP / FTP Cli (CURL): add support for explicit TLS versions
+
 June 30, 2020 :: Version 7.2.1 rev.20200630
 	* Update Docs
 

@@ -1,0 +1,6 @@
+
+# Smart.Framework.Modules: OAuth2 r.20200715 #
+
+// r.7.2.1 / smart.framework.v.7.2
+
+###
