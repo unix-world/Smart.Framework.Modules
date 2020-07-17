@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+July 17, 2020 :: Version 7.2.1 rev.20200717
+	* Fixes for Oauth2 Module manager
+
 July 15, 2020 :: Version 7.2.1 rev.20200715
 	* new Module: OAuth2
 	* Twig update to latest 3.0.4

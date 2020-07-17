@@ -18,7 +18,7 @@ define('SMART_APP_MODULE_AUTH', true);
  * Admin Controller
  *
  * @ignore
- * @version v.20200715
+ * @version v.20200717
  *
  */
 class SmartAppAdminController extends SmartAbstractAppController {
@@ -159,11 +159,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$title = 'Oauth2 Manager - Display Record';
 				//--
-				$arr = (array) \SmartModExtLib\Oauth2\Oauth2Api::getApiData((string)$id);
-				$data = [];
-				foreach($arr as $key => $val) {
-					$data[ucwords((string)str_replace('_', ' ', (string)$key))] = (string) $val;
-				} //end foreach
+				$data = (array) \SmartModExtLib\Oauth2\Oauth2Api::getApiData((string)$id);
 				//--
 				$this->PageViewSetVars([
 					'title' => (string) $title,
