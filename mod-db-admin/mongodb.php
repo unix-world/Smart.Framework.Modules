@@ -129,26 +129,41 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$error = '';
+		$query = (array) $this->convertQueryToRealMongoId((array)$query);
+		//--
+
+		//--
+		$error = [];
 		try {
 			$count = (int) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsCount((string)$the_collection, (array)$query);
 		} catch(Exception $e) {
-			$error = (string) $e->getMessage();
+			$error[] = (string) $e->getMessage();
 			$query = [];
 			$count = 0;
 		} //end try catch
 		$time = microtime(true);
-		$data = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsData((string)$the_collection, (array)$query, (int)$ofs, (int)$limit, (array)$sorting);
+		try {
+			$data = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsData((string)$the_collection, (array)$query, (int)$ofs, (int)$limit, (array)$sorting);
+		} catch(Exception $e) {
+			$error[] = (string) $e->getMessage();
+			$query = [];
+			$data = [];
+		} //end try catch
 		$time = microtime(true) - $time;
 		//--
 		$records = [];
 		for($i=0; $i<Smart::array_size($data); $i++) {
+			//--
+			if(is_array($data[$i]['_id'])) {
+				$data[$i]['_id'] = (string) 'ObjectId('.$data[$i]['_id']['$oid'].')';
+			} //end if
 			//--
 			if((string)$data[$i]['_id'] != '') {
 				$tmp_arr = (array) $data[$i];
 				unset($tmp_arr['_id']);
 				$records[] = [
 					'_id' 	=> (string) $data[$i]['_id'],
+					'-id' 	=> (string) $data[$i]['id'],
 					'-num' 	=> (int) ((int)$i + 1 + (int)$ofs),
 					'-json' => (string) Smart::json_encode((array)$tmp_arr)
 				];
@@ -209,6 +224,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
+		$num_pages = ceil((int)$count / (int)$limit);
+		if($num_pages <= 0) {
+			$num_pages = 1;
+		} //end if
+		//--
 		$this->PageViewSetVars([
 			'title' => 'DB Admin :: MongoDB',
 			'main'  => (string) SmartMarkersTemplating::render_file_template(
@@ -216,6 +236,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				[
 					'QMODE' 				=> (string) $mode, // raw | visual
 					'LANG' 					=> (string) $this->ControllerGetParam('lang'), // codeMirror
+					'CODEED-PREFIX-URL' 	=> (string) '',
 					'HLJS-PREFIX-URL' 		=> (string) '',
 					'CSS-THEME' 			=> (string) 'github', // highlightJs
 					'PAGE-URL' 				=> (string) $the_base_url,
@@ -227,11 +248,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'COLLECTION' 			=> (string) $the_collection,
 					'COLLINDEXES' 			=> (string) SmartUtils::pretty_print_var($collection_indexes),
 					'EXECUTION-TIME' 		=> (string) Smart::format_number_dec($time, 10, '.', ''),
-					'ERROR' 				=> (string) $error,
+					'ERROR' 				=> (string) implode("\n", (array)$error),
 					'QUERY' 				=> (string) (Smart::array_size($query_) > 0) ? Smart::json_encode((array)$query_, true, true, false) : '{'."\n\n".'}',
 					'SORT-MAX' 				=> (int)    $sort_max,
+					'LIMIT-PER-PAGE' 		=> (int)    $limit,
 					'OFFSET' 				=> (int)    (ceil((int)$ofs / (int)$limit) + 1),
-					'PAGES' 				=> (int)    ceil((int)$count / (int)$limit),
+					'PAGES' 				=> (int)    $num_pages,
+					'TOTAL-RECORDS' 		=> (int)    $count,
 					'FILTER-ID_' 			=> (string) $id_,
 					'SORTING' 				=> (array)  $html_sorting,
 					'NAV-PAGER-HTML' 		=> (string) SmartViewHtmlHelpers::html_navpager(
@@ -254,6 +277,34 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 	} //END FUNCTION
+
+
+	private function convertQueryToRealMongoId($query, $level=0) {
+		//--
+		$level = (int) $level;
+		if($level < 0) {
+			return array();
+		} //end if
+		//--
+		if(!is_array($query)) {
+			return array();
+		} //end if
+		//--
+		foreach($query as $key => $val) {
+			if(((string)$key == '_id') OR ($level > 0)) {
+				if(is_array($val)) {
+					$query[(string)$key] = $this->convertQueryToRealMongoId($val, $level+1);
+				} else {
+					$query[(string)$key] = \SmartModDataModel\DbAdmin\MongoDbAdmin::getRealMongoId($val);
+				} //end if
+				break;
+			} //end if
+		} //end foreach
+		//--
+		return (array) $query;
+		//--
+	} //END FUNCTION
+
 
 } //END CLASS
 

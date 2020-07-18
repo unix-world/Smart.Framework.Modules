@@ -72,13 +72,13 @@ label {
 #indexes-info pre {
 	overflow: auto;
 	min-width: 250px;
-	height: 100px;
+	height: 125px;
 }
 </style>
 <script>
 jQuery(function() {
 	var options = {
-		collapsed: true, // 1 = colapse only first level
+		collapsed: [%%%IF:NUM-RECORDS:==1;%%%]false[%%%ELSE:NUM-RECORDS%%%]true[%%%/IF:NUM-RECORDS%%%], // 1 = colapse only first level
 		withQuotes: [%%%IF:QMODE:==visual;%%%]false[%%%ELSE:QMODE%%%]true[%%%/IF:QMODE%%%] // add quotes arround keys
 	};
 	jQuery('.json-render-area').each(function(index) {
@@ -251,45 +251,28 @@ function handleButtonShowJson() {
 			</td>
 			<td>&nbsp;</td>
 			<td id="indexes-info">
-				<b>Indexes:</b><br>
+				<b><i>Collection</i>&nbsp;Indexes:</b><br>
 				<pre style="width:">[###COLLINDEXES|html###]</pre>
 			</td>
 		</tr>
 	</table>
 	<span id="query-error">[###ERROR|html###]</span>
 </div>
-<table>
-	<tr>
-		<td width="200">
-			<div class="query-info">
-				Cost: <b>[###EXECUTION-TIME|html###] sec.</b><br>
-				Page: <b>[###OFFSET|int###] of [###PAGES|int###]</b><br>
-			</div>
-		</td>
-		<td>[###NAV-PAGER-HTML###]</td>
-	</tr>
-</table>
+[@@@SUB-TEMPLATE:partials/mongodb-list-query-info.mtpl.inc.htm@@@]
 <div id="records-list">
 [%%%LOOP:RECORDS%%%]
 	<div class="record-area" title="#[###RECORDS.-NUM|int###]">
+		[%%%IF:RECORDS.-ID:!=;%%%]
+		<div align="right"><span style="font-weight:bold;"><span style="color:#7777AA; font-size:1rem!important;">[###RECORDS.-ID|html###]</span></span></div>
+		[%%%/IF:RECORDS.-ID%%%]
 		<span style="font-weight:bold;"><span style="color:#778899;">[###RECORDS.-NUM|int###].</span>&nbsp;<span class="json-key">[%%%IF:QMODE:!=visual;%%%]&quot;[%%%/IF:QMODE%%%]_id[%%%IF:QMODE:!=visual;%%%]&quot;[%%%/IF:QMODE%%%]</span>&nbsp;:&nbsp;<span class="json-string">&quot;[###RECORDS._ID|html###]&quot;</span></span>
 		<br>
 		<pre id="json-renderer" class="json-render-area" data-id="[###RECORDS._ID|html###]" data-json="[###RECORDS.-JSON|json|html###]"></pre>
 	</div>
 [%%%/LOOP:RECORDS%%%]
 </div>
-[%%%IF:PAGES:>0;%%%][%%%IF:NUM-RECORDS:>0;%%%]
-<table>
-	<tr>
-		<td width="200">
-			<div class="query-info">
-				Page: <b>[###OFFSET|int###] of [###PAGES|int###]</b><br>
-				Cost: <b>[###EXECUTION-TIME|html###] sec.</b><br>
-			</div>
-		</td>
-		<td>[###NAV-PAGER-HTML###]</td>
-	</tr>
-</table>
+[%%%IF:PAGES:>0;%%%][%%%IF:NUM-RECORDS:>1;%%%]
+[@@@SUB-TEMPLATE:partials/mongodb-list-query-info.mtpl.inc.htm@@@]
 [%%%/IF:NUM-RECORDS%%%][%%%/IF:PAGES%%%]
 <br>
 <br>

@@ -178,7 +178,7 @@ final class MongoDbAdmin {
 	} //END FUNCTION
 
 
-	final public static function insertRecord($collection, $doc) {
+	public static function insertRecord($collection, $doc) {
 		//--
 		$doc = \Smart::json_decode((string)$doc);
 		if(\Smart::array_size($doc) <= 0) {
@@ -210,7 +210,7 @@ final class MongoDbAdmin {
 	} //END FUNCTION
 
 
-	final public static function deleteRecord($collection, $id) {
+	public static function deleteRecord($collection, $id) {
 		//--
 		$mongo = self::getInstance();
 		if(!$mongo) {
@@ -226,6 +226,31 @@ final class MongoDbAdmin {
 		);
 		//--
 		return (array) $result;
+		//--
+	} //END FUNCTION
+
+
+	public static function getRealMongoId($id) {
+		//--
+		$id = (string) \trim((string)$id);
+		if((string)$id == '') {
+			return '';
+		} //end if
+		//--
+		if(!\class_exists('\\MongoDB\\BSON\\ObjectId')) {
+			return (string) $id;
+		} //end if
+		//--
+		$objMongoId = (string) $id;
+		if((\strpos((string)$id, 'ObjectId(') === 0) AND (\substr((string)$id, -1, 1) == ')')) {
+			try {
+				$objMongoId = new \MongoDB\BSON\ObjectId((string)\substr((string)$id, 9, -1));
+			} catch(\Exception $e) {
+				$objMongoId = (string) $id;
+			} //end if else
+		} //end if
+		//--
+		return $objMongoId; // MIXED: string or object
 		//--
 	} //END FUNCTION
 
