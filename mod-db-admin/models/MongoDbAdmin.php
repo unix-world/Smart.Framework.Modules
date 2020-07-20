@@ -105,7 +105,13 @@ final class MongoDbAdmin {
 	} //END FUNCTION
 
 
-	public static function getDbCollectionIndexes($collection) {
+	public static function getDbCollectionIndexes(string $collection) {
+		//--
+		$collection = (string) \trim((string)$collection);
+		if((string)$collection == '') {
+			\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Empty ...');
+			return array();
+		} //end if
 		//--
 		$mongo = self::getInstance();
 		if(!$mongo) {
@@ -124,7 +130,13 @@ final class MongoDbAdmin {
 	} //END FUNCTION
 
 
-	public static function getRecordsCount($collection, $query) {
+	public static function getRecordsCount(string $collection, array $query=[]) {
+		//--
+		$collection = (string) \trim((string)$collection);
+		if((string)$collection == '') {
+			\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Empty ...');
+			return 0;
+		} //end if
 		//--
 		$mongo = self::getInstance();
 		if(!$mongo) {
@@ -140,7 +152,13 @@ final class MongoDbAdmin {
 	} //END FUNCTION
 
 
-	public static function getRecordsData($collection, $query, $offset=0, $limit=10, $sorting=[]) {
+	public static function getRecordsData(string $collection, array $query=[], $offset=0, $limit=10, $sorting=[]) {
+		//--
+		$collection = (string) \trim((string)$collection);
+		if((string)$collection == '') {
+			\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Empty ...');
+			return array();
+		} //end if
 		//--
 		$mongo = self::getInstance();
 		if(!$mongo) {
@@ -178,39 +196,37 @@ final class MongoDbAdmin {
 	} //END FUNCTION
 
 
-	public static function insertRecord($collection, $doc) {
+	public static function getRealMongoId(string $id) {
 		//--
-		$doc = \Smart::json_decode((string)$doc);
-		if(\Smart::array_size($doc) <= 0) {
-			return array(
-				'smart@error' => 'Empty Document'
-			);
+		$id = (string) \trim((string)$id);
+		if((string)$id == '') {
+			return '';
 		} //end if
 		//--
 		$mongo = self::getInstance();
 		if(!$mongo) {
 			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
-			return array();
+			return (string) $id;
 		} //end if
 		//--
-		$result = array();
-		try {
-			$result = (array) $mongo->insert(
-				(string) $collection,
-				(array)  $doc
-			);
-		} catch(\Exception $err) {
-			$result = array(
-				'smart@error' => 'Exception: '.$err->getMessage()
-			);
-		} //end try catch
+		if((\strpos((string)$id, 'ObjectId(') === 0) AND ((string)\substr((string)$id, -1, 1) == ')')) { // try to convert to MongoDB ObjectId
+			$objMongoId = $mongo->getObjectId((string)\substr((string)$id, 9, -1)); // return mixed
+		} else { // preserve as string
+			$objMongoId = (string) $id;
+		} //end if
 		//--
-		return (array) $result;
+		return $objMongoId; // MIXED: string or object
 		//--
 	} //END FUNCTION
 
 
-	public static function deleteRecord($collection, $id) {
+	public static function getRecord(string $collection, string $id) {
+		//--
+		$collection = (string) \trim((string)$collection);
+		if((string)$collection == '') {
+			\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Empty ...');
+			return array();
+		} //end if
 		//--
 		$mongo = self::getInstance();
 		if(!$mongo) {
@@ -218,10 +234,18 @@ final class MongoDbAdmin {
 			return array();
 		} //end if
 		//--
-		$result = (array) $mongo->delete(
+		if((string)\trim((string)$id) == '') {
+			return array();
+		} //end if
+		$id = self::getRealMongoId($id); // mixed
+		if(!$id) {
+			return array();
+		} //end if
+		//--
+		$result = (array) $mongo->findone(
 			(string) $collection,
 			[
-				'_id' => (string) $id
+				'_id' => $id // mixed
 			] // filter
 		);
 		//--
@@ -230,27 +254,140 @@ final class MongoDbAdmin {
 	} //END FUNCTION
 
 
-	public static function getRealMongoId($id) {
+	public static function insertRecord(string $collection, array $doc) {
 		//--
-		$id = (string) \trim((string)$id);
-		if((string)$id == '') {
-			return '';
+		$collection = (string) \trim((string)$collection);
+		if((string)$collection == '') {
+			\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Empty ...');
+			return 'No Collection Selected';
 		} //end if
 		//--
-		if(!\class_exists('\\MongoDB\\BSON\\ObjectId')) {
-			return (string) $id;
+		if(!\is_array($doc)) {
+			return 'Document Data is NOT Array';
+		} //end if
+		if(\array_key_exists('_id', (array)$doc)) {
+			unset($doc['_id']);
 		} //end if
 		//--
-		$objMongoId = (string) $id;
-		if((\strpos((string)$id, 'ObjectId(') === 0) AND (\substr((string)$id, -1, 1) == ')')) {
-			try {
-				$objMongoId = new \MongoDB\BSON\ObjectId((string)\substr((string)$id, 9, -1));
-			} catch(\Exception $e) {
-				$objMongoId = (string) $id;
-			} //end if else
+		if(\Smart::array_size($doc) <= 0) {
+			return 'Empty Document';
 		} //end if
 		//--
-		return $objMongoId; // MIXED: string or object
+		$mongo = self::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return 'MongoDB Instance is N/A';
+		} //end if
+		//--
+		$doc['_id'] = (string) $mongo->assign_uuid();
+		//--
+		$result = array();
+		try {
+			$result = (array) $mongo->insert(
+				(string) $collection,
+				(array)  $doc
+			);
+		} catch(\Exception $err) {
+			return 'Insert EXCEPTION: '.$err->getMessage();
+		} //end try catch
+		//--
+		if($result[1] != 1) {
+			return 'Insert FAILED: ['.$result[1].']';
+		} //end if
+		//--
+		return 'OK';
+		//--
+	} //END FUNCTION
+
+
+	public static function modifyRecord(string $collection, string $id, array $doc) {
+		//--
+		$collection = (string) \trim((string)$collection);
+		if((string)$collection == '') {
+			\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Empty ...');
+			return 'No Collection Selected';
+		} //end if
+		//--
+		if((string)\trim((string)$id) == '') {
+			return 'Empty Record UID';
+		} //end if
+		//--
+		if(!\is_array($doc)) {
+			return 'Document Data is NOT Array';
+		} //end if
+		if(\array_key_exists('_id', (array)$doc)) {
+			unset($doc['_id']); // this must not be updated
+		} //end if
+		//--
+		if(\Smart::array_size($doc) <= 0) {
+			return 'Empty Document';
+		} //end if
+		//--
+		$mongo = self::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return 'MongoDB Instance is N/A';
+		} //end if
+		//--
+		$id = self::getRealMongoId($id); // mixed
+		if(!$id) {
+			return 'Invalid Record UID';
+		} //end if
+		//--
+		$result = array();
+		try {
+			$result = (array) $mongo->update(
+				(string) $collection,
+				(array) [ '_id' => $id ], // filter
+				(array) [ 0 => (array) $doc ] // replace
+			);
+		} catch(\Exception $err) {
+			return 'Update EXCEPTION: '.$err->getMessage();
+		} //end try catch
+		//--
+		if($result[1] != 1) {
+			return 'Update FAILED: ['.$result[1].']';
+		} //end if
+		//--
+		return 'OK';
+		//--
+	} //END FUNCTION
+
+
+	public static function deleteRecord(string $collection, string $id) {
+		//--
+		$collection = (string) \trim((string)$collection);
+		if((string)$collection == '') {
+			\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Empty ...');
+			return 'No Collection Selected';
+		} //end if
+		//--
+		$mongo = self::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return 'MongoDB Instance is N/A';
+		} //end if
+		//--
+		if((string)\trim((string)$id) == '') {
+			return 'Empty Record UID';
+		} //end if
+		$id = self::getRealMongoId($id); // mixed
+		if(!$id) {
+			return 'Invalid Record UID';
+		} //end if
+		//--
+		$result = (array) $mongo->delete(
+			(string) $collection,
+			[
+				'_id' => $id // mixed
+			] // filter
+		);
+		//--
+		if($result[1] != 1) {
+			return 'Delete FAILED: ['.$result[1].']';
+		} //end if
+		//--
+		return 'OK';
 		//--
 	} //END FUNCTION
 

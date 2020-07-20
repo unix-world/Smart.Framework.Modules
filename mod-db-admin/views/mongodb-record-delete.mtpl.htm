@@ -1,0 +1,44 @@
+<!-- MongoDB Record Delete -->
+<link rel="stylesheet" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
+<style>
+code.hljs, code.hljs * {
+	font-family: 'IBM Plex Mono', mono;
+	font-smooth: always;
+}
+#hljs-json-area {
+	min-height: calc(100vh - 291px);
+}
+</style>
+[@@@SUB-TEMPLATE:!lib/core/plugins/templates/syntax-highlight-init-static.inc.htm!@@@]
+<script>
+function btnHandlerCancel() {
+	SmartJS_BrowserUtils.CloseDelayedModalPopUp();
+	return false;
+}
+function btnHandlerSubmit() {
+	jQuery.alertable.confirm('Delete this Record ?' + '\n\n' + 'This action will permanent delete the selected Record from Database.').then(function(){
+		SmartJS_BrowserUtils.Submit_Form_By_Ajax('record_form', '[###ACTIONS-URL|js###]', 'yes');
+	});
+	return false;
+}
+</script>
+<h2>Database:&nbsp;<span style="color:#666699; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;<span style="color:#EE8A0A;">[###COLLECTION|html###]</span></h2>
+<h3><span style="color:#778899;">MongoDB :: </span>[###THE-TITLE|html|nl2br###]</h3>
+[%%%IF:RECORD-ID:!=;%%%]<h5>_id: <span style="color:#003399;" title="Record UID">[###RECORD-ID|html###]</span></h5>[%%%/IF:RECORD-ID%%%]
+<form id="record_form" name="record_form" class="ux-form ux-form-aligned" onSubmit="return false;">
+<input type="hidden" name="frm[chk]" value="[###CHECKSUM-HASH|html###]">
+</form>
+
+<div style="width: 90vw !important; text-align:left;"><pre style="width: calc(100% - 25px) !important; height: calc(100vh - 275px); border:1px solid #ECECEC; padding:0;"><code id="hljs-json-area" class="json">[###DATA-JSON|html###]</code></pre></div>
+<script>
+	setTimeout(function(){ var block = jQuery('#hljs-json-area').get(0); try { hljs.highlightBlock(block); } catch(err){ alert(err); } }, 10);
+</script>
+
+
+
+<br>
+<div class="ux-controls">
+	<button type="button" class="ux-button" style="margin-right:10px; margin-bottom:5px;" onClick="btnHandlerCancel();"> Cancel &nbsp; <i class="sfi sfi-spinner11"></i></button>
+	<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="btnHandlerSubmit();"> [###ACTION-TXT|html###] &nbsp; <i class="sfi sfi-bin2"></i></button>
+</div>
+<!-- # MongoDB Record Delete -->

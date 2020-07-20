@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+July 20, 2020 :: Version 7.2.1 rev.20200720
+	* Mod DB-Admin / MongoDB marked as stable
+	* Mod Cloud: minor fixes
+
 July 17, 2020 :: Version 7.2.1 rev.20200717
 	* Fixes for Oauth2 Module manager
 

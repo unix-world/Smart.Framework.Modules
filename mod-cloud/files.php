@@ -26,15 +26,19 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs 
 		//--
 		if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
 			http_response_code(500);
-			echo \SmartComponents::http_message_500_internalerror('ERROR: Cloud Files requires Mod WebDAV ...');
+			echo SmartComponents::http_message_500_internalerror('ERROR: Cloud Files requires Mod WebDAV ...');
 			return;
 		} //end if
 		//--
-
-		//--
-		if(!defined('SMART_SOFTWARE_URL_ALLOW_PATHINFO') OR ((int)SMART_SOFTWARE_URL_ALLOW_PATHINFO < 1)) {
+		if(SmartFrameworkRuntime::PathInfo_Enabled() !== true) {
 			http_response_code(500);
-			echo \SmartComponents::http_message_500_internalerror('ERROR: WebDAV requires PathInfo to be enabled into init.php for Admin Area ...');
+			echo SmartComponents::http_message_500_internalerror('ERROR: WebDAV requires PathInfo to be enabled into init.php for Admin Area ...');
+			return;
+		} //end if
+		//--
+		if(strpos((string)SmartUtils::get_server_current_request_uri(), '/~') === false) {
+			http_response_code(400);
+			echo SmartComponents::http_message_400_badrequest('ERROR: WebDAV requires to be accessed in a special mode: `/~`');
 			return;
 		} //end if
 		//--
@@ -42,7 +46,7 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs 
 		//--
 		if(SmartAuth::check_login() !== true) {
 			http_response_code(503);
-			echo \SmartComponents::http_message_503_serviceunavailable('ERROR: WebDAV Invalid Auth ...');
+			echo SmartComponents::http_message_503_serviceunavailable('ERROR: WebDAV Invalid Auth ...');
 			return;
 		} //end if
 		//--
@@ -51,20 +55,20 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs 
 		$safe_user_dir = (string) Smart::safe_username(SmartAuth::get_login_id());
 		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$safe_user_dir) != '1')) {
 			http_response_code(500);
-			echo \SmartComponents::http_message_500_internalerror('ERROR: WebDAV Unsafe User Dir ...');
+			echo SmartComponents::http_message_500_internalerror('ERROR: WebDAV Unsafe User Dir ...');
 			return;
 		} //end if
 		//--
 		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/webdav';
 		if(SmartFileSysUtils::check_if_safe_path((string)$safe_user_path) != '1') {
 			http_response_code(500);
-			echo \SmartComponents::http_message_500_internalerror('ERROR: WebDAV Unsafe User Path ...');
+			echo SmartComponents::http_message_500_internalerror('ERROR: WebDAV Unsafe User Path ...');
 			return;
 		} //end if
 		//--
 		if(SmartFileSystem::is_type_dir((string)$safe_user_path) !== true) {
 			http_response_code(500);
-			echo \SmartComponents::http_message_500_internalerror('ERROR: WebDAV User Path does not exists ...');
+			echo SmartComponents::http_message_500_internalerror('ERROR: WebDAV User Path does not exists ...');
 			return;
 		} //end if
 		//--
@@ -72,10 +76,10 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs 
 		//--
 		if((string)ltrim((string)$this->RequestPathGet(), '/') != '') {
 			$txt_lnk = 'Cloud.Files :: Home';
-			$url_lnk = (string) \SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script().'/page/cloud.files/~';
+			$url_lnk = (string) SmartUtils::get_server_current_url().SmartUtils::get_server_current_script().'/page/cloud.files/~';
 		} else {
 			$txt_lnk = 'Cloud :: Home';
-			$url_lnk = (string) \SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script().'?/page/cloud.welcome';
+			$url_lnk = (string) SmartUtils::get_server_current_url().SmartUtils::get_server_current_script().'?/page/cloud.welcome';
 		} //end if else
 		//--
 		if(defined('NCLOUD_WEBDAV_PROPFIND_ETAG_MAX_FSIZE')) {

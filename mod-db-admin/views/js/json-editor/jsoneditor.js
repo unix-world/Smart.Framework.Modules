@@ -13,6 +13,9 @@
  * @version 3.1.2
  * @date    2014-09-03
  *
+ * r.20200719
+ * (c) unix-world.org
+ *
  */
 
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -842,7 +845,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // create undo button
 	      var undo = document.createElement('button');
 	      undo.className = 'undo separator';
-	      undo.title = 'Undo last action (Ctrl+Z)';
+	      undo.title = 'Undo (Ctrl+Z)';
 	      undo.onclick = function () {
 	        editor._onUndo();
 	      };

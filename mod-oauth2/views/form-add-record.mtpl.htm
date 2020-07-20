@@ -138,7 +138,7 @@ function btnHandlerSubmit() {
 		});
 		jQuery('#btn-submit-btn').prop('disabled', true);
 		submitStep++;
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('add_form', '[###ACTIONS-URL|js|html###]', 'yes');
+		SmartJS_BrowserUtils.Submit_Form_By_Ajax('add_form', '[###ACTIONS-URL|js###]', 'yes');
 	} else {
 		alert('ERROR: Invalid Submit Step: ' + submitStep);
 	}

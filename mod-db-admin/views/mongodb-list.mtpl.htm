@@ -1,6 +1,7 @@
+<!-- MongoDB List Collection -->
 <link rel="stylesheet" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
 <style>
-#filter-query, #filter-query *, #records-list * {
+#filter-query, #filter-query *, #records-list *, .json-render-indexes * {
 	font-family: 'IBM Plex Mono', mono;
 	font-smooth: always;
 }
@@ -14,13 +15,11 @@ code.hljs, code.hljs * {
 </style>
 [@@@SUB-TEMPLATE:!lib/core/plugins/templates/syntax-highlight-init-static.inc.htm!@@@]
 [%%%ELSE:QMODE%%%]
-[@@@SUB-TEMPLATE:!lib/core/plugins/templates/code-editor-init.inc.htm!@@@]
+[@@@SUB-TEMPLATE:partials/code-editor.mtpl.inc.htm@@@]
 <script type="text/javascript">
 var cmInstance;
 jQuery(function() {
-	var cmWidth = '350px';
-	var cmHeight = '170px';
-	cmInstance = SmartCodeMirror_Initialize('filter-query', false, 'application/ld+json', cmWidth, cmHeight, 'uxm', true, 530, 'codeEditorMenuArea', false, 'cmInstance');
+	cmInstance = drawCodeEditor('cmInstance', 'filter-query', 'codeEditorMenuArea', '100%', '100%');
 });
 </script>
 [%%%/IF:QMODE%%%]
@@ -67,18 +66,41 @@ label {
 #indexes-info {
 	background: #FCFCFC;
 	border: 1px solid #ECECEC;
-	padding: 10px;
+	padding: 5px;
 }
 #indexes-info pre {
 	overflow: auto;
 	min-width: 250px;
-	height: 125px;
+	height: 150px;
 }
 </style>
 <script>
 jQuery(function() {
 	var options = {
-		collapsed: [%%%IF:NUM-RECORDS:==1;%%%]false[%%%ELSE:NUM-RECORDS%%%]true[%%%/IF:NUM-RECORDS%%%], // 1 = colapse only first level
+		collapsed: -1, // -1 = colapse only 2nd level
+		withQuotes: false // add quotes arround keys
+	};
+	var input = '';
+	var isOK = true;
+	var $el = jQuery('.json-render-indexes');
+	try {
+		input = JSON.parse(String($el.attr('data-json')));
+	} catch(err) {
+		isOK = false;
+		input = '{ERR}';
+	}
+	if(isOK) {
+		$el.jsonViewer(input, options);
+		$el.attr('data-json', '');
+	} else {
+		$el.html('<span style="color:#FF3300; font-weight:bold;">{ERR}</span><br><textarea style="width:250px; height:50px;" spellcheck="false" readonly>' + SmartJS_CoreUtils.escape_html($el.attr('data-json')) + '</textarea>');
+	}
+});
+</script>
+<script>
+jQuery(function() {
+	var options = {
+		collapsed: [%%%IF:TOTAL-RECORDS:==1;%%%]false[%%%ELSE:TOTAL-RECORDS%%%]true[%%%/IF:TOTAL-RECORDS%%%], // 1 = colapse only first level
 		withQuotes: [%%%IF:QMODE:==visual;%%%]false[%%%ELSE:QMODE%%%]true[%%%/IF:QMODE%%%] // add quotes arround keys
 	};
 	jQuery('.json-render-area').each(function(index) {
@@ -94,11 +116,12 @@ jQuery(function() {
 			jQuery(this).jsonViewer(input, options);
 			jQuery(this).attr('data-json', '');
 		} else {
-			jQuery(this).html('<span style="color:#FF3300; font-weight:bold;">{ERR}</span><br><textarea style="width:250px; height:50px;">' + SmartJS_CoreUtils.escape_html(jQuery(this).attr('data-json')) + '</textarea>');
+			jQuery(this).html('<span style="color:#FF3300; font-weight:bold;">{ERR}</span><br><textarea style="width:250px; height:50px;" spellcheck="false" readonly>' + SmartJS_CoreUtils.escape_html(jQuery(this).attr('data-json')) + '</textarea>');
 		}
 	});
 });
 </script>
+[@@@SUB-TEMPLATE:partials/test-json.mtpl.inc.htm@@@]
 <script>
 var jsonEditor;
 var theListLocation = '[###PAGE-URL|js###]';
@@ -140,17 +163,11 @@ function handleButtonQuery() {
 	if(!theQueryStr) {
 		theQueryStr = '{}';
 	}
-	var testJSON = null;
-	try {
-		testJSON = JSON.parse(theQueryStr);
-	} catch(err) {
-		jQuery('#query-error').empty().text('Invalid Query JSON Format' + '\n' + err);
+	var errTestJson = testValidJson(theQueryStr);
+	if(errTestJson) {
+		jQuery('#query-error').empty().text('Invalid Query JSON Format' + '\n' + errTestJson);
 		return;
 	}
-//	if((!testJSON) || (jQuery.type(testJSON) !== 'object') || (jQuery.isEmptyObject(testJSON))) {
-//		return;
-//	}
-	testJSON = null;
 	var sortingArr = {};
 	var valFld, varSelBox;
 	for(var i=0; i<sortMax; i++) {
@@ -185,7 +202,7 @@ function handleButtonShowJson() {
 	var json;
 	try {
 		json = jsonEditor.get();
-		SmartSimpleDialog.Dialog_Alert('<pre style="max-width:calc(100% - 5px) !important;"><code id="hljs-json-dlg" class="json">' + SmartJS_CoreUtils.escape_html(String(JSON.stringify(json, null, 2))) + '</code></pre><' + 'script' + '>setTimeout(function(){ var block = jQuery(\'#hljs-json-dlg\').get(0); try { hljs.highlightBlock(block); } catch(err){} }, 10);</' + 'script' + '>', null, 'Query JSON', Math.floor(jQuery(window).width() * 0.8), Math.floor(jQuery(window).height() * 0.75));
+		SmartSimpleDialog.Dialog_Alert('<pre style="max-width:calc(100% - 5px) !important;"><code id="hljs-json-dlg" class="json">' + SmartJS_CoreUtils.escape_html(String(JSON.stringify(json, null, 2))) + '</code></pre><' + 'script' + '>setTimeout(function(){ var block = jQuery(\'#hljs-json-dlg\').get(0); try { hljs.highlightBlock(block); } catch(err){} }, 10);</' + 'script' + '>', null, 'Query: JSON', Math.floor(jQuery(window).width() * 0.8), Math.floor(jQuery(window).height() * 0.75));
 	} catch(err){
 		jQuery.alertable.alert('Cannot Get Editor JSON. ' + err).always(function(){});
 	}
@@ -193,42 +210,38 @@ function handleButtonShowJson() {
 [%%%/IF:QMODE%%%]
 </script>
 <img src="lib/core/img/db/mongodb-logo.svg" width="48" height="48" align="right" style="margin-right:5px; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|html###]">
-<h2><span style="color:#778899;">MongoDB :: </span>Database:&nbsp;<span style="color:#666699">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;[@@@SUB-TEMPLATE:partials/mongodb-collections.mtpl.inc.htm@@@]</h2>
+<h2><span style="color:#778899;">MongoDB :: </span>Database:&nbsp;<span style="color:#666699; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;[@@@SUB-TEMPLATE:partials/mongodb-collections.mtpl.inc.htm@@@]</h2>
 <div class="query-builder">
-	<b>_id:</b> <input id="filter-_id" name="filter[_id]" type="text" maxlength="255" size="65" class="ux-field" value="[###FILTER-ID_|html###]"> <button class="ux-button ux-button-small ux-button-dark" onClick="handleButtonSelectById();">Select by ID</button>
-	<table>
-		<tr valign="top">
+	<table width="96%">
+		<tr>
 			<td>
+				<b>_id:</b> <input id="filter-_id" name="filter[_id]" type="text" maxlength="255" size="65" class="ux-field" value="[###FILTER-ID_|html###]"> <button class="ux-button ux-button-small ux-button-dark" onClick="handleButtonSelectById();" title="Find One Record by UID"><i class="sfi sfi-filter"></i>&nbsp;&nbsp;Select&nbsp;by&nbsp;UID</button>
+			</td>
+			<td align="right">
+				<span style="font-size:0.625rem; font-weight:bold;">Server:&nbsp;<span style="color:#FF5500;">[###HOST|html###]:[###PORT|html###]</span></span>
+			</td>
+		</tr>
+	</table>
+	<table width="96%">
+		<tr valign="top">
+			<td title="Query">
 				[%%%IF:QMODE:==visual;%%%]
-				<link rel="stylesheet" type="text/css" href="modules/mod-db-admin/views/js/json-editor/jsoneditor.css">
-				<script type="text/javascript" src="modules/mod-db-admin/views/js/json-editor/jsoneditor.js"></script>
-				<div id="filter-query" data-mode="visual" style="width:350px !important; height:200px !important;"></div>
+				[@@@SUB-TEMPLATE:partials/json-editor.mtpl.inc.htm@@@]
+				<div id="filter-query" data-mode="visual" style="width: calc(96vw - 700px) !important; min-width:200px !important; height:195px !important;"></div>
 				<script>
-					(function(){
-						var json;
-						try {
-							json = JSON.parse('[###QUERY|js###]');
-						} catch(err) {
-							json = {};
-						}
-						var options = {
-							mode: 'tree',
-							search: false
-						};
-						var container = document.getElementById('filter-query');
-						jsonEditor = new JSONEditor(container, options, json); //jsonEditor.set(json);
-						jsonEditor.expandAll();
-					})();
+					drawJsonEditor('filter-query', '[###QUERY|js###]');
 				</script>
 				[%%%ELSE:QMODE%%%]
-				<div id="codeEditorMenuArea"></div>
-				<textarea id="filter-query" data-mode="raw" name="filter[query]" maxlength="65535" class="ux-field" style="width:350px; height:170px;" spellcheck="false" onKeyDown="SmartJS_BrowserUtils.catch_TABKey(event);">[###QUERY|html###]</textarea>
+				<div style="width: calc(96vw - 700px) !important; min-width:200px !important; height:170px;">
+					<div id="codeEditorMenuArea"></div>
+					<textarea id="filter-query" data-mode="raw" name="filter[query]" maxlength="65535" class="ux-field" style="width:100%; height:100%;" spellcheck="false" onKeyDown="SmartJS_BrowserUtils.catch_TABKey(event);">[###QUERY|html###]</textarea>
+				</div>
 				[%%%/IF:QMODE%%%]
 			</td>
 			<td>
 				&nbsp;
 			</td>
-			<td>
+			<td style="min-width:200px;">
 				[%%%LOOP:SORTING%%%]
 				<input id="sort-f[###SORTING._-ITERATOR-_|int###]" name="sort[f[###SORTING._-ITERATOR-_|int###]]" type="text" maxlength="255" size="10" class="ux-field filter-field" value="[###SORTING.ID-FIELD|html###]">&nbsp;[###SORTING.HTML-FIELD###]<br>
 				[%%%/LOOP:SORTING%%%]
@@ -237,22 +250,26 @@ function handleButtonShowJson() {
 				&nbsp;
 			</td>
 			<td valign="bottom">
-				<input id="query-mode" type="checkbox" class="ux-field" onClick="theDisplayMode = jQuery(this).is(':checked') ? 'visual' : 'raw';" [%%%IF:QMODE:==visual;%%%]checked[%%%/IF:QMODE%%%]><label for="query-mode">Visual&nbsp;Mode</label>
+				<br>
+				<a class="ux-button ux-button-small ux-button-regular" data-smart="open.modal" href="[###URL-NEW-RECORD|html###]" title="Add New Record"><i class="sfi sfi-plus"></i>&nbsp;&nbsp;New&nbsp;Record</a>
 				<br>
 				<br>
 				<br>
+				<span title="Switch between Visual Query Editor and Raw Query Editor"><input id="query-mode" type="checkbox" class="ux-field" onClick="theDisplayMode = jQuery(this).is(':checked') ? 'visual' : 'raw';" [%%%IF:QMODE:==visual;%%%]checked[%%%/IF:QMODE%%%]><label for="query-mode">Visual&nbsp;Mode</label></span>
 				<br>
 				<br>
 				[%%%IF:QMODE:==visual;%%%]
-				<button class="ux-button ux-button-small" onClick="handleButtonShowJson();">Raw Query JSON</button>
+				<button class="ux-button ux-button-small ux-button-secondary" onClick="handleButtonShowJson();" title="Display the Raw Query JSON (from the Visual JSON Query Editor)"><i class="sfi sfi-stack"></i>&nbsp;&nbsp;Query:&nbsp;JSON</button>
+				[%%%ELSE:QMODE%%%]
 				<br>
 				[%%%/IF:QMODE%%%]
-				<button class="ux-button ux-button-small ux-button-primary" onClick="handleButtonQuery();">Submit Query</button>
+				<br>
+				<button class="ux-button ux-button-small ux-button-primary" onClick="handleButtonQuery();" title="Find Record(s) by Query (JSON)"><i class="sfi sfi-search"></i>&nbsp;&nbsp;Select&nbsp;by&nbsp;Query</button>
 			</td>
 			<td>&nbsp;</td>
 			<td id="indexes-info">
 				<b><i>Collection</i>&nbsp;Indexes:</b><br>
-				<pre style="width:">[###COLLINDEXES|html###]</pre>
+				<pre class="json-render-indexes" style="width:100%;" data-json="[###COLLINDEXES|json|html###]"></pre>
 			</td>
 		</tr>
 	</table>
@@ -263,9 +280,11 @@ function handleButtonShowJson() {
 [%%%LOOP:RECORDS%%%]
 	<div class="record-area" title="#[###RECORDS.-NUM|int###]">
 		[%%%IF:RECORDS.-ID:!=;%%%]
-		<div align="right"><span style="font-weight:bold;"><span style="color:#7777AA; font-size:1rem!important;">[###RECORDS.-ID|html###]</span></span></div>
+		<div align="right"><span style="font-weight:bold;"><span style="color:#7777AA; font-size:0.9375rem!important;" title="Record ID">[###RECORDS.-ID|html###]</span></span></div>
 		[%%%/IF:RECORDS.-ID%%%]
-		<span style="font-weight:bold;"><span style="color:#778899;">[###RECORDS.-NUM|int###].</span>&nbsp;<span class="json-key">[%%%IF:QMODE:!=visual;%%%]&quot;[%%%/IF:QMODE%%%]_id[%%%IF:QMODE:!=visual;%%%]&quot;[%%%/IF:QMODE%%%]</span>&nbsp;:&nbsp;<span class="json-string">&quot;[###RECORDS._ID|html###]&quot;</span></span>
+		<span style="color:#778899;">[###RECORDS.-NUM|int###].</span>
+		<a title="Edit Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-highlight" href="[###URL-EDIT-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-file-text2"></i></a><a title="Delete Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-special" href="[###URL-DELETE-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-bin"></i></a>
+		<span style="font-weight:bold;"><span class="json-key">[%%%IF:QMODE:!=visual;%%%]&quot;[%%%/IF:QMODE%%%]_id[%%%IF:QMODE:!=visual;%%%]&quot;[%%%/IF:QMODE%%%]</span>&nbsp;:&nbsp;<span class="json-string" title="Record UID">&quot;[###RECORDS._ID|html###]&quot;</span></span>
 		<br>
 		<pre id="json-renderer" class="json-render-area" data-id="[###RECORDS._ID|html###]" data-json="[###RECORDS.-JSON|json|html###]"></pre>
 	</div>
@@ -276,3 +295,4 @@ function handleButtonShowJson() {
 [%%%/IF:NUM-RECORDS%%%][%%%/IF:PAGES%%%]
 <br>
 <br>
+<!-- # MongoDB List Collection -->
