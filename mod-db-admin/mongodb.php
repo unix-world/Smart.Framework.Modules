@@ -21,6 +21,7 @@ define('SMART_APP_MODULE_AREA', 'ADMIN'); // INDEX, ADMIN, SHARED
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
+
 	public function Run() {
 
 		//--
@@ -48,25 +49,24 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
+		$param_collection = (string) trim((string)$this->RequestVarGet('collection', '', 'string'));
+		//--
 		$the_collection = (string) trim((string)$this->CookieVarGet((string)$the_cookiename_collection));
 		//--
+		$collections_arr = array();
 		$collections_list = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbCollections();
-		$collection_exists = null;
-		if((string)$the_collection != '') {
-			$collection_exists = false;
-			for($i=0; $i<Smart::array_size($collections_list); $i++) {
-				if(is_array($collections_list[$i])) {
+		$collection_selected = false;
+		for($i=0; $i<Smart::array_size($collections_list); $i++) {
+			if(is_array($collections_list[$i])) {
+				$collections_arr[] = (string) $collections_list[$i]['name'];
+				if((string)$the_collection != '') {
 					if((string)$collections_list[$i]['name'] === (string)$the_collection) {
-						$collection_exists = true;
+						$collection_selected = true;
 						break;
 					} //end if
 				} //end if
-			} //end for
-		} //end if
-		//--
-	//	if($collection_exists !== true) {
-	//		$the_collection = '';
-	//	} //end if
+			} //end if
+		} //end for
 		//--
 
 		//--
@@ -103,23 +103,31 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				//--
-				$title = 'Add New Record';
+				if((string)$param_collection == '@NEW@') {
+					$title = 'Create New Collection & Add New Record';
+					$txt_action = 'Create Collection & Insert Record';
+				} else {
+					$title = 'Add New Record';
+					$txt_action = 'Insert Record';
+				} //end if else
 				$this->PageViewSetVars([
 					'title' => (string) $title,
 					'main' => SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'mongodb-record-form.mtpl.htm',
 						[
 							'ACTIONS-URL' 		=> (string) $the_base_url.'&action=new-add',
-							'ACTION-TXT' 		=> (string) 'Insert Record',
+							'ACTION-TXT' 		=> (string) $txt_action,
+							'ACTION-METHOD' 	=> (string) 'new',
+							'TXT-COLLECTION' 	=> (string) 'Collection Name',
 							'THE-TITLE' 		=> (string) $title,
 							'HOST' 				=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost(),
 							'PORT' 				=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort(),
 							'DATABASE' 			=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName(),
-							'COLLECTION' 		=> (string) $the_collection,
+							'COLLECTION' 		=> (string) (((string)$param_collection == '@NEW@') ? $param_collection : $the_collection),
 							'DATA-JSON' 		=> '{'."\n\n".'}',
 							'LANG' 				=> (string) $this->ControllerGetParam('lang'), // codeMirror
 							'CODEED-PREFIX-URL' => (string) '', // codeMirror
-							'CHECKSUM-HASH' 	=> (string) sha1((string)\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().'/'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().'@'.$the_collection),
+							'CHECKSUM-HASH' 	=> (string) sha1((string)\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().'/'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().'@'.(((string)$param_collection == '@NEW@') ? $param_collection : $the_collection)),
 							'RECORD-ID' 		=> (string) '',
 							'QMODE' 			=> (string) $mode // raw | visual
 						]
@@ -154,6 +162,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						[
 							'ACTIONS-URL' 		=> (string) $the_base_url.'&action=edit-record&id_='.Smart::escape_url((string)$id_),
 							'ACTION-TXT' 		=> (string) 'Save Record',
+							'ACTION-METHOD' 	=> (string) 'edit',
 							'THE-TITLE' 		=> (string) $title,
 							'HOST' 				=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost(),
 							'PORT' 				=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort(),
@@ -203,8 +212,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'DATABASE' 			=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName(),
 							'COLLECTION' 		=> (string) $the_collection,
 							'DATA-JSON' 		=> (string) Smart::json_encode((array)$data, true, true, false),
-							'LANG' 				=> (string) $this->ControllerGetParam('lang'), // codeMirror
-							'CODEED-PREFIX-URL' => (string) '', // codeMirror
 							'CHECKSUM-HASH' 	=> (string) sha1((string)\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().'/'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().'@'.$the_collection.'#'.$id_),
 							'RECORD-ID' 		=> (string) $id_,
 							'HLJS-PREFIX-URL' 	=> (string) '', // highlightJs
@@ -212,6 +219,251 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						]
 					)
 				]);
+				//--
+				break;
+
+			case 'drop-collection-confirm': // Confirm for Drop Collection (OUTPUTS: HTML)
+				//--
+				if((string)$the_collection == '') {
+					$this->PageViewSetCfg('error', 'No Collection Selected');
+					return 400;
+				} //end if
+				//--
+				if($collection_selected !== true) {
+					$this->PageViewSetCfg('error', 'Invalid Collection Selected: `'.$the_collection.'`');
+					return 400;
+				} //end if
+				//--
+				$this->PageViewSetCfg('template-file', 'template-modal.htm');
+				//--
+				$title = 'Drop Collection';
+				$this->PageViewSetVars([
+					'title' => (string) $title,
+					'main' => SmartMarkersTemplating::render_file_template(
+						$this->ControllerGetParam('module-view-path').'mongodb-collection-drop-confirm.mtpl.htm',
+						[
+							'ACTIONS-URL' 			=> (string) $the_base_url.'&action=drop-a-collection&collection='.Smart::escape_url((string)$the_collection),
+							'ACTION-TXT' 			=> (string) 'Drop the collection: `'.(string)$the_collection.'`',
+							'THE-TITLE' 			=> (string) $title,
+							'HOST' 					=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost(),
+							'PORT' 					=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort(),
+							'DATABASE' 				=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName(),
+							'COLLECTION' 			=> (string) $the_collection,
+							'TOTAL-ALL-RECORDS' 	=> (int)    \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsCount((string)$the_collection, [])
+						]
+					)
+				]);
+				//--
+				break;
+
+			case 'drop-index-form': // display the Drop Index form (OUTPUTS: HTML)
+				//--
+				if((string)$the_collection == '') {
+					$this->PageViewSetCfg('error', 'No Collection Selected');
+					return 400;
+				} //end if
+				//--
+				if($collection_selected !== true) {
+					$this->PageViewSetCfg('error', 'Invalid Collection Selected: `'.$the_collection.'`');
+					return 400;
+				} //end if
+				//--
+				$collection_indexes = (array) $this->getCollectionIndexes((string)$the_collection, (bool)$collection_selected);
+				unset($collection_indexes['_id_']);
+				//--
+				$this->PageViewSetCfg('template-file', 'template-modal.htm');
+				//--
+				$title = 'Drop an Index from Collection';
+				$this->PageViewSetVars([
+					'title' => (string) $title,
+					'main' => SmartMarkersTemplating::render_file_template(
+						$this->ControllerGetParam('module-view-path').'mongodb-index-delete-form.mtpl.htm',
+						[
+							'ACTIONS-URL' 		=> (string) $the_base_url.'&action=delete-index-do',
+							'ACTION-TXT' 		=> (string) 'Drop Selected Index',
+							'THE-TITLE' 		=> (string) $title,
+							'HOST' 				=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost(),
+							'PORT' 				=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort(),
+							'DATABASE' 			=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName(),
+							'COLLECTION' 		=> (string) $the_collection,
+							'ARR-INDEXES' 		=> (array)  $collection_indexes,
+							'COLLINDEXES' 		=> (string) ((Smart::array_size($collection_indexes) > 0) ? Smart::json_encode($collection_indexes, true, true, false) : '{}'),
+							'CHECKSUM-HASH' 	=> (string) sha1((string)\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().'/'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().'@'.$the_collection),
+							'HLJS-PREFIX-URL' 	=> (string) '', // highlightJs
+							'CSS-THEME' 		=> (string) 'github' // highlightJs
+						]
+					)
+				]);
+				//--
+				break;
+
+			case 'add-index-form': // display the Add Index form (OUTPUTS: HTML)
+				//--
+				if((string)$the_collection == '') {
+					$this->PageViewSetCfg('error', 'No Collection Selected');
+					return 400;
+				} //end if
+				//--
+				$this->PageViewSetCfg('template-file', 'template-modal.htm');
+				//--
+				$title = 'Create a New Index for Collection';
+				$this->PageViewSetVars([
+					'title' => (string) $title,
+					'main' => SmartMarkersTemplating::render_file_template(
+						$this->ControllerGetParam('module-view-path').'mongodb-index-add-form.mtpl.htm',
+						[
+							'ACTIONS-URL' 		=> (string) $the_base_url.'&action=add-index-do',
+							'ACTION-TXT' 		=> (string) 'Create New Index',
+							'THE-TITLE' 		=> (string) $title,
+							'HOST' 				=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost(),
+							'PORT' 				=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort(),
+							'DATABASE' 			=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName(),
+							'COLLECTION' 		=> (string) $the_collection,
+							'DATA-JSON' 		=> (string) '{'."\n".'"name": "",'."\n".'"key": { "": 1, "": -1 },'."\n".'"unique": false'."\n".'}',
+							'LANG' 				=> (string) $this->ControllerGetParam('lang'), // codeMirror
+							'CODEED-PREFIX-URL' => (string) '', // codeMirror
+							'CHECKSUM-HASH' 	=> (string) sha1((string)\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().'/'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().'@'.$the_collection)
+						]
+					)
+				]);
+				//--
+				break;
+
+			case 'delete-index-do':
+				//--
+				$this->PageViewSetCfg('rawpage', true);
+				//--
+				$frm = $this->RequestVarGet('frm', [], 'array');
+				if(!is_array($frm)) {
+					$frm = array();
+				} //end if
+				//--
+				$title = 'MongoDB '.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().' :: '.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().' @ '.$the_collection;
+				//--
+				$message = ''; // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
+				$status = 'INVALID';
+				$redirect = '';
+				$jsevcode = '';
+				//--
+				if((string)trim((string)$the_collection) == '') {
+					$message = 'No Collection selected';
+				} elseif($collection_selected !== true) {
+					$message = 'Collection does not exists: `'.$the_collection.'`';
+				} else {
+					$frm = $this->validateIndexDropFormData((string)$the_collection, (array)$frm);
+					if(!is_array($frm)) {
+						$message = 'ERR: '.$frm;
+					} else {
+						$message = (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::dropIndex((string)$the_collection, (string)$frm['drop-index']);
+						if((string)$message === 'OK') {
+							$status = 'OK';
+							$message = 'Index Drop SUCCESSFUL';
+							$redirect = (string) $the_base_url.'&action=close-modal';
+						} //end if
+					} //end if
+				} //end if else
+				//--
+				$this->PageViewSetVar(
+					'main',
+					SmartViewHtmlHelpers::js_ajax_replyto_html_form(
+						$status,
+						$title,
+						Smart::escape_html((string)$message),
+						$redirect,
+						'',
+						'',
+						$jsevcode
+					)
+				);
+				//--
+				break;
+
+			case 'add-index-do':
+				//--
+				$this->PageViewSetCfg('rawpage', true);
+				//--
+				$frm = $this->RequestVarGet('frm', [], 'array');
+				if(!is_array($frm)) {
+					$frm = array();
+				} //end if
+				//--
+				$title = 'MongoDB '.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().' :: '.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().' @ '.$the_collection;
+				//--
+				$message = ''; // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
+				$status = 'INVALID';
+				$redirect = '';
+				$jsevcode = '';
+				//--
+				if((string)trim((string)$the_collection) == '') {
+					$message = 'No Collection selected';
+				} elseif($collection_selected !== true) {
+					$message = 'Collection does not exists: `'.$the_collection.'`';
+				} else {
+					$frm = $this->validateIndexAddFormData((string)$the_collection, (array)$frm);
+					if(!is_array($frm)) {
+						$message = 'ERR: '.$frm;
+					} else {
+						$message = (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::createIndex((string)$the_collection, (array)$frm);
+						if((string)$message === 'OK') {
+							$status = 'OK';
+							$message = 'Index Created SUCCESSFUL';
+							$redirect = (string) $the_base_url.'&action=close-modal';
+						} //end if
+					} //end if
+				} //end if else
+				//--
+				$this->PageViewSetVar(
+					'main',
+					SmartViewHtmlHelpers::js_ajax_replyto_html_form(
+						$status,
+						$title,
+						Smart::escape_html((string)$message),
+						$redirect,
+						'',
+						'',
+						$jsevcode
+					)
+				);
+				//--
+				break;
+
+			case 'drop-a-collection': // Drop a Collection (OUTPUTS: JSON)
+				//--
+				$this->PageViewSetCfg('rawpage', true);
+				//--
+				$title = 'MongoDB '.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().' :: '.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().' @ '.$the_collection;
+				//--
+				$message = ''; // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
+				$status = 'INVALID';
+				$redirect = '';
+				$jsevcode = '';
+				//--
+				if(((string)$param_collection == '') OR (!\SmartModDataModel\DbAdmin\MongoDbAdmin::validateCollectionName((string)$param_collection))) {
+					$message = 'Empty or Invalid Collection selected';
+				} elseif(!in_array((string)$param_collection, (array)$collections_arr)) {
+					$message = 'The selected Collection does not exists: `'.$param_collection.'`';
+				} else {
+					$message = (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::dropCollection((string)$the_collection);
+					if((string)$message === 'OK') {
+						$this->CookieVarSet((string)$the_cookiename_collection, ''); // reset collection cookie
+						$status = 'OK';
+						$message = 'Collection DROP was SUCCESSFUL';
+						$redirect = (string) $the_base_url.'&action=close-modal';
+					} //end if
+				} //end if else
+				//--
+				$this->PageViewSetVar(
+					'main',
+					SmartViewHtmlHelpers::js_ajax_replyto_html_form(
+						$status,
+						$title,
+						Smart::escape_html((string)$message),
+						$redirect,
+						'',
+						'',
+						$jsevcode
+					)
+				);
 				//--
 				break;
 
@@ -231,20 +483,42 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$redirect = '';
 				$jsevcode = '';
 				//--
-				if($collection_exists !== true) {
-					$message = 'Collection does not exists !';
-				} else {
-					$frm = $this->validateInsertFormData((string)$the_collection, (array)$frm);
-					if(!is_array($frm)) {
-						$message = 'ERR: '.$frm;
-					} else {
-						$message = (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::insertRecord((string)$the_collection, (array)$frm);
-						if((string)$message === 'OK') {
-							$status = 'OK';
-							$message = 'Record Insert SUCCESSFUL';
-							$redirect = (string) $the_base_url.'&action=close-modal';
-						} //end if
+				$name_new_collection = '';
+				$nerr = '';
+				$nmsg = '';
+				if((string)$param_collection == '@NEW@') {
+					$the_collection = (string) $param_collection;
+					$collection_selected = true; // fake it to easy logic here
+					$name_new_collection = (string) trim((string)$this->RequestVarGet('newcollectionname', '', 'string'));
+					$nmsg = 'Collection: `'.$name_new_collection.'` created SUCCESSFUL and ';
+					if(((string)$name_new_collection == '') OR (!\SmartModDataModel\DbAdmin\MongoDbAdmin::validateCollectionName((string)$name_new_collection))) {
+						$nerr = 'Empty or Invalid Name for the New Collection !';
+					} //end if else
+					if(in_array((string)$name_new_collection, (array)$collections_arr)) {
+						$nerr = 'The Collection already exists !';
 					} //end if
+				} //end if
+				//--
+				if((string)trim((string)$the_collection) == '') {
+					$message = 'No Collection selected';
+				} elseif($collection_selected !== true) {
+					$message = 'Collection does not exists: `'.$the_collection.'`';
+				} else {
+					if($nerr) {
+						$message = 'ERR: '.$nerr;
+					} else {
+						$frm = $this->validateInsertFormData((string)$the_collection, (array)$frm);
+						if(!is_array($frm)) {
+							$message = 'ERR: '.$frm;
+						} else {
+							$message = (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::insertRecord((string)$the_collection, (array)$frm, (string)$name_new_collection);
+							if((string)$message === 'OK') {
+								$status = 'OK';
+								$message = $nmsg.'Record Insert SUCCESSFUL';
+								$redirect = (string) $the_base_url.'&action=close-modal';
+							} //end if
+						} //end if
+					} //end if else
 				} //end if else
 				//--
 				$this->PageViewSetVar(
@@ -278,8 +552,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$redirect = '';
 				$jsevcode = '';
 				//--
-				if($collection_exists !== true) {
-					$message = 'Collection does not exists !';
+				if((string)trim((string)$the_collection) == '') {
+					$message = 'No Collection selected';
+				} elseif($collection_selected !== true) {
+					$message = 'Collection does not exists: `'.$the_collection.'`';
 				} else {
 					$frm = $this->validateEditFormData((string)$the_collection, (string)$id_, (array)$frm);
 					if(!is_array($frm)) {
@@ -289,7 +565,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						if((string)$message === 'OK') {
 							$status = 'OK';
 							$message = 'Record Edit SUCCESSFUL';
-							$redirect = (string) $the_base_url.'&action=close-modal&rdr='.Smart::escape_url((string)$the_base_url.'&action=edit-form&id_='.Smart::escape_url((string)$id_));
+							$redirect = (string) $the_base_url.'&action=close-modal&rdr='.Smart::escape_url((string)$the_base_url.'&action=edit-form&id_='.Smart::escape_url((string)$id_).'&mode='.Smart::escape_url((string)$mode));
 						} //end if
 					} //end if
 				} //end if else
@@ -325,8 +601,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$redirect = '';
 				$jsevcode = '';
 				//--
-				if($collection_exists !== true) {
-					$message = 'Collection does not exists !';
+				if((string)trim((string)$the_collection) == '') {
+					$message = 'No Collection selected';
+				} elseif($collection_selected !== true) {
+					$message = 'Collection does not exists: `'.$the_collection.'`';
 				} else {
 					$test_chk = $this->validateDeleteFormData((string)$the_collection, (string)$id_, (array)$frm);
 					if((string)$test_chk !== 'OK') {
@@ -377,7 +655,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								'COLLECTIONS' 			=> (array)  $collections_list,
 								'BUILD-INFO' 			=> (string) SmartUtils::pretty_print_var($build_info),
 								'PAGE-LIST-URL' 		=> (string) $the_base_url,
-								'COOKIENAME-COLLECTION' => (string) $the_cookiename_collection
+								'COOKIENAME-COLLECTION' => (string) $the_cookiename_collection,
+								'URL-NEW-COLLECTION' 	=> $the_base_url.'&action=new-form'.'&collection='.Smart::escape_url('@NEW@')
 							]
 						)
 					]);
@@ -386,16 +665,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 
 				//--
-				$collection_indexes = [];
-				if($collection_exists === true) {
-					$tmp_indexes = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbCollectionIndexes((string)$the_collection);
-					for($i=0; $i<Smart::array_size($tmp_indexes); $i++) {
-						if(Smart::array_size($tmp_indexes[$i]) > 0) {
-							$collection_indexes[(string)$tmp_indexes[$i]['name']] = (array) $tmp_indexes[$i]['key'];
-						} //end if
-					} //end for
-					$tmp_indexes = array();
-				} //end if
+				$collection_indexes = (array) $this->getCollectionIndexes((string)$the_collection, (bool)$collection_selected);
 				//--
 
 				//--
@@ -433,6 +703,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 
 				//--
+				$is_empty_collection = false;
 				$count = 0;
 				$all_count = 0;
 				$data = [];
@@ -460,6 +731,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} else {
 					$all_count = (int) $count;
 				} //end if else
+				//--
+				if(((int)$all_count <= 0) AND ((int)$count <= 0)) {
+					$is_empty_collection = true;
+				} //end if
 				//--
 				$time = 0;
 				if(Smart::array_size($error) > 0) {
@@ -567,22 +842,30 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'HLJS-PREFIX-URL' 		=> (string) '', // highlightJs
 							'CSS-THEME' 			=> (string) 'github', // highlightJs
 							'PAGE-URL' 				=> (string) $the_base_url,
-							'COOKIENAME-COLLECTION' => (string) $the_cookiename_collection,
+							'URL-DROP-COLLECTION' 	=> (string) $the_base_url.'&action=drop-collection-confirm',
+							'URL-NEW-RECORD' 		=> (string) $the_base_url.'&action=new-form'.'&mode='.Smart::escape_url((string)$mode),
+							'URL-EDIT-RECORD' 		=> (string) $the_base_url.'&action=edit-form'.'&mode='.Smart::escape_url((string)$mode).'&id_=',
+							'URL-DELETE-RECORD' 	=> (string) $the_base_url.'&action=delete-confirm'.'&id_=',
+							'URL-ADD-INDEX' 		=> (string) $the_base_url.'&action=add-index-form',
+							'URL-DROP-INDEX' 		=> (string) $the_base_url.'&action=drop-index-form',
 							'HOST' 					=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost(),
 							'PORT' 					=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort(),
 							'DATABASE' 				=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName(),
+							'COOKIENAME-COLLECTION' => (string) $the_cookiename_collection,
 							'COLLECTIONS' 			=> (array)  $collections_list,
 							'COLLECTION' 			=> (string) $the_collection,
 							'COLLINDEXES' 			=> (string) ((Smart::array_size($collection_indexes) > 0) ? Smart::json_encode($collection_indexes) : '{}'),
 							'EXECUTION-TIME' 		=> (string) Smart::format_number_dec($time, 10, '.', ''),
 							'ERROR' 				=> (string) implode("\n", (array)$error),
 							'QUERY' 				=> (string) (Smart::array_size($query_) > 0) ? Smart::json_encode((array)$query_, true, true, false) : '{'."\n"."\n".'}',
+							'IS-QUERY' 				=> (string) (Smart::array_size($query_) > 0) ? 'yes' : 'no',
 							'SORT-MAX' 				=> (int)    $sort_max,
 							'LIMIT-PER-PAGE' 		=> (int)    $limit,
 							'OFFSET' 				=> (int)    (ceil((int)$ofs / (int)$limit) + 1),
 							'PAGES' 				=> (int)    $num_pages,
 							'TOTAL-RECORDS' 		=> (int)    $count,
 							'TOTAL-ALL-RECORDS' 	=> (int)    $all_count,
+							'IS-EMPTY-COLLECTION' 	=> (int)    $is_empty_collection,
 							'FILTER-ID_' 			=> (string) $id_,
 							'SORTING' 				=> (array)  $html_sorting,
 							'NAV-PAGER-HTML' 		=> (string) SmartViewHtmlHelpers::html_navpager(
@@ -598,10 +881,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								]
 							),
 							'NUM-RECORDS' 			=> (int) Smart::array_size($records),
-							'RECORDS' 				=> (array) $records,
-							'URL-NEW-RECORD' 		=> (string) $the_base_url.'&action=new-form'.'&mode='.Smart::escape_url((string)$mode),
-							'URL-EDIT-RECORD' 		=> (string) $the_base_url.'&action=edit-form'.'&mode='.Smart::escape_url((string)$mode).'&id_=',
-							'URL-DELETE-RECORD' 	=> (string) $the_base_url.'&action=delete-confirm'.'&id_=',
+							'RECORDS' 				=> (array) $records
 						]
 					)
 				]);
@@ -613,7 +893,39 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	} //END FUNCTION
 
 
-	private function convertQueryToRealMongoId($query, $level=0) {
+	private function getCollectionIndexes(string $the_collection, bool $collection_selected) {
+		//--
+		if((string)$the_collection == '') {
+			return array();
+		} //end if
+		//--
+		$collection_indexes = [];
+		if($collection_selected === true) {
+			$tmp_indexes = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbCollectionIndexes((string)$the_collection);
+			for($i=0; $i<Smart::array_size($tmp_indexes); $i++) {
+				if(Smart::array_size($tmp_indexes[$i]) > 0) {
+					$tmp_idx_data = (array) $tmp_indexes[$i];
+					$tmp_idx_name = (string) trim((string)$tmp_idx_data['name']);
+					if((string)$tmp_idx_name == '') {
+						$tmp_idx_name = (string) '@'.sha1((string)print_r($tmp_idx_data, 1));
+					} //end if
+					unset($tmp_idx_data['name']); // name is used as key
+					unset($tmp_idx_data['ns']); // unset index namespace (Ex: dbName.CollactionName)
+				//	unset($tmp_idx_data['v']); // unset version
+					$collection_indexes[(string)$tmp_idx_name] = (array) $tmp_idx_data;
+					$tmp_idx_name = '';
+					$tmp_idx_data = array();
+				} //end if
+			} //end for
+			$tmp_indexes = array();
+		} //end if
+		//--
+		return (array) $collection_indexes;
+		//--
+	} //END FUNCTION
+
+
+	private function convertQueryToRealMongoId($query, $level=0) { // do not use strong type params
 		//--
 		$level = (int) $level;
 		if($level < 0) {
@@ -743,6 +1055,62 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 		//--
 		return 'OK';
+		//--
+	} //END FUNCTION
+
+
+	private function validateIndexAddFormData(string $the_collection, array $frm) {
+		//--
+		if((string)$the_collection == '') {
+			return 'No Collection Selected !';
+		} //end if
+		//--
+		if(Smart::array_size($frm) <= 0) {
+			return 'Index Data is Empty !';
+		} //end if
+		//--
+		if((string)$frm['chk'] !== (string)sha1((string)\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().'/'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().'@'.$the_collection)) {
+			return 'Form Checksum is Invalid !';
+		} //end if
+		//--
+		$frm['json'] = (string) trim((string)$frm['json']);
+		if((string)$frm['json'] == '') {
+			return 'Index JSON is Empty !';
+		} //end if
+		//--
+		$frm['json'] = Smart::json_decode((string)$frm['json']); // mixed
+		if(!is_array($frm['json'])) {
+			return 'Index JSON Structure is Invalid !';
+		} //end if
+		if(Smart::array_size($frm['json']) <= 0) {
+			return 'Index Data is Empty !';
+		} //end if
+		//--
+		return (array) $frm['json'];
+		//--
+	} //END FUNCTION
+
+
+	private function validateIndexDropFormData(string $the_collection, array $frm) {
+		//--
+		if((string)$the_collection == '') {
+			return 'No Collection Selected !';
+		} //end if
+		//--
+		if(Smart::array_size($frm) <= 0) {
+			return 'Index Data is Empty !';
+		} //end if
+		//--
+		if((string)$frm['chk'] !== (string)sha1((string)\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().'/'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().'@'.$the_collection)) {
+			return 'Form Checksum is Invalid !';
+		} //end if
+		//--
+		$frm['drop-index'] = (string) trim((string)$frm['drop-index']);
+		if((string)$frm['drop-index'] == '') {
+			return 'Empty Drop Index Selected !';
+		} //end if
+		//--
+		return (array) $frm;
 		//--
 	} //END FUNCTION
 

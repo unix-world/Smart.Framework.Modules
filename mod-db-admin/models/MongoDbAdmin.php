@@ -29,7 +29,7 @@ final class MongoDbAdmin {
 			return array();
 		} //end if
 		//--
-		$result = (array) $mongo->command(
+		$result = (array) $mongo->igcommand(
 			[
 				'buildInfo' => 1
 			]
@@ -94,7 +94,7 @@ final class MongoDbAdmin {
 			return array();
 		} //end if
 		//--
-		$result = (array) $mongo->command(
+		$result = (array) $mongo->igcommand(
 			[
 				'listCollections' => 1 // 'listDatabases' => 1 (to get databases list ; req to be connected to `admin` db)
 			]
@@ -119,7 +119,7 @@ final class MongoDbAdmin {
 			return array();
 		} //end if
 		//--
-		$result = (array) $mongo->command(
+		$result = (array) $mongo->igcommand(
 			[
 				'listIndexes' => (string) $collection
 			]
@@ -130,6 +130,7 @@ final class MongoDbAdmin {
 	} //END FUNCTION
 
 
+	// THROWS
 	public static function getRecordsCount(string $collection, array $query=[]) {
 		//--
 		$collection = (string) \trim((string)$collection);
@@ -152,6 +153,7 @@ final class MongoDbAdmin {
 	} //END FUNCTION
 
 
+	// THROWS
 	public static function getRecordsData(string $collection, array $query=[], $offset=0, $limit=10, $sorting=[]) {
 		//--
 		$collection = (string) \trim((string)$collection);
@@ -242,19 +244,33 @@ final class MongoDbAdmin {
 			return array();
 		} //end if
 		//--
-		$result = (array) $mongo->findone(
-			(string) $collection,
-			[
-				'_id' => $id // mixed
-			] // filter
-		);
+		try {
+			$result = (array) $mongo->findone(
+				(string) $collection,
+				[
+					'_id' => $id // mixed
+				] // filter
+			);
+		} catch(\Exception $err) {
+			// $err->getMessage();
+			$result = array();
+		} //end try catch
 		//--
 		return (array) $result;
 		//--
 	} //END FUNCTION
 
 
-	public static function insertRecord(string $collection, array $doc) {
+	public static function insertRecord(string $collection, array $doc, string $name_new_collection='') {
+		//--
+		$name_new_collection = (string) \trim((string)$name_new_collection);
+		if((string)$name_new_collection != '') {
+			if(self::validateCollectionName((string)$name_new_collection) !== true) {
+				\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Invalid ...');
+				return 'Invalid Name for the New Collection ...';
+			} //end if
+			$collection = (string) $name_new_collection;
+		} //end ie
 		//--
 		$collection = (string) \trim((string)$collection);
 		if((string)$collection == '') {
@@ -376,18 +392,194 @@ final class MongoDbAdmin {
 			return 'Invalid Record UID';
 		} //end if
 		//--
-		$result = (array) $mongo->delete(
-			(string) $collection,
-			[
-				'_id' => $id // mixed
-			] // filter
-		);
+		try {
+			$result = (array) $mongo->delete(
+				(string) $collection,
+				[
+					'_id' => $id // mixed
+				] // filter
+			);
+		} catch(\Exception $err) {
+			return 'Delete EXCEPTION: '.$err->getMessage();
+		} //end try catch
 		//--
 		if($result[1] != 1) {
 			return 'Delete FAILED: ['.$result[1].']';
 		} //end if
 		//--
 		return 'OK';
+		//--
+	} //END FUNCTION
+
+
+	public static function dropCollection(string $collection) {
+		//--
+		$collection = (string) \trim((string)$collection);
+		if((string)$collection == '') {
+			\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Empty ...');
+			return 'No Collection Selected';
+		} //end if
+		//--
+		if(self::validateCollectionName((string)$collection) !== true) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Invalid ...');
+			return 'Invalid Name for the Selected Collection to Drop ...';
+		} //end if
+		//--
+		$mongo = self::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return 'MongoDB Instance is N/A';
+		} //end if
+		//--
+		$result = $mongo->igcommand(
+			[
+				'drop' => (string) $collection
+			]
+		);
+		//--
+		if(!$mongo->is_command_ok($result)) {
+			return 'MongoDB Collection Drop FAILED for: '.$collection;
+		} //end if
+		//--
+		return 'OK';
+		//--
+	} //END FUNCTION
+
+
+	public static function dropIndex(string $collection, string $index) {
+		//--
+		$collection = (string) \trim((string)$collection);
+		if((string)$collection == '') {
+			\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Empty ...');
+			return 'No Collection Selected';
+		} //end if
+		//--
+		$index = (string) $index;
+		if(self::validateIndexName((string)$index) !== true) {
+			return 'No Index Selected';
+		} //end if
+		//--
+		$mongo = self::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return 'MongoDB Instance is N/A';
+		} //end if
+		//--
+		try {
+			$result = $mongo->command(
+				[
+					'dropIndexes' => (string) $collection,
+					'index' => (string) $index
+				]
+			);
+		} catch(\Exception $err) {
+			return 'dropIndex EXCEPTION: '.$err->getMessage();
+		} //end try catch
+		//--
+		if(!$mongo->is_command_ok($result)) {
+			return 'MongoDB Collection Drop Indexes FAILED for: '.$collection;
+		} //end if
+		//--
+		return 'OK';
+		//--
+	} //END FUNCTION
+
+
+	public static function createIndex(string $collection, array $defs) {
+		//--
+		$collection = (string) \trim((string)$collection);
+		if((string)$collection == '') {
+			\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Empty ...');
+			return 'No Collection Selected';
+		} //end if
+		//--
+		if(\Smart::array_size($defs) <= 0) {
+			return 'Empty Index Definitions';
+		} //end if
+		if(\Smart::array_type_test($defs) != 2) { // must be associative
+			return 'Invalid Index Definitions';
+		} //end if
+		//--
+		if(!\array_key_exists('name', (array)$defs)) {
+			return 'Index Definitions are Missing for the Property: name'.\print_r($defs,1);
+		} //end if
+		if(self::validateIndexName((string)$defs['name']) !== true) {
+			return 'Index Definitions are Invalid for the Property: name: `'.$defs['name'].'`';
+		} //end if
+		//--
+		if(!\array_key_exists('key', (array)$defs)) {
+			return 'Index Definitions are Missing the Property: key';
+		} //end if
+		if((\Smart::array_size($defs['key']) <= 0) OR (\Smart::array_type_test($defs['key']) != 2)) { // must be associative
+			return 'Index Definitions are Invalid for the Property: [key]: Must Be an Associative Array as [ key1: 1, key2: -1, ..., key3: text ]';
+		} //end if
+		foreach($defs['key'] as $key => $val) {
+			if((string)\trim((string)$key) == '') {
+				return 'Index Definitions are Empty for at least one Property of: key[]';
+			} //end if
+			if((string)\trim((string)$val) == '') {
+				return 'Index Definitions are Empty for the Property: key['.$key.']';
+			} //end if
+		} //end foreach
+		//--
+		$mongo = self::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return 'MongoDB Instance is N/A';
+		} //end if
+		//--
+		try {
+			$result = $mongo->command(
+				[
+					'createIndexes' => (string) $collection,
+					'indexes' => [
+						(array) $defs
+					]
+				]
+			);
+		} catch(\Exception $err) {
+			return 'createIndex EXCEPTION: '.$err->getMessage();
+		} //end try catch
+		//--
+		if(!$mongo->is_command_ok($result)) {
+			return 'MongoDB Collection Create Indexes FAILED for: '.$collection;
+		} //end if
+		//--
+		return 'OK';
+		//--
+	} //END FUNCTION
+
+
+	public static function validateCollectionName(string $collection) {
+		//--
+		if((string)\trim((string)$collection) == '') {
+			return false;
+		} //end if
+		//--
+		if(!\preg_match((string)'/^[a-zA-Z0-9_]+$/', (string)$collection)) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
+	public static function validateIndexName(string $index) {
+		//--
+		if((string)\trim((string)$index) == '') {
+			return false;
+		} //end if
+		//--
+		if((string)\trim((string)$index) == '_id_') { // this is reserved for MongoDB internal index as _id !!
+			return false;
+		} //end if
+		//--
+		if(!\preg_match((string)'/^[[:graph:]]+$/', (string)$index)) { // [:graph:] = Visible characters (anything except spaces and control characters)
+			return false;
+		} //end if
+		//--
+		return true;
 		//--
 	} //END FUNCTION
 
