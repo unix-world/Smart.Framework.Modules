@@ -700,7 +700,11 @@ class TemplateParser
         if (preg_match_all(Patterns::$SPLIT_PATTERN_SHORTHANDSYNTAX_ARRAY_PARTS, $arrayText, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $singleMatch) {
                 $arrayKey = $this->unquoteString($singleMatch['Key']);
-                if (!empty($singleMatch['VariableIdentifier'])) {
+                //-- fix from upstream git @ fb5ce8d686a1bf01042045fd1da79beab4c4124a # 20200127
+                //if (!empty($singleMatch['VariableIdentifier'])) {
+                if (array_key_exists('Subarray', $singleMatch) && !empty($singleMatch['Subarray'])) {
+                    $arrayToBuild[$arrayKey] = new ArrayNode($this->recursiveArrayHandler($singleMatch['Subarray']));
+                } elseif (!empty($singleMatch['VariableIdentifier'])) {
                     $arrayToBuild[$arrayKey] = new ObjectAccessorNode($singleMatch['VariableIdentifier']);
                 } elseif (array_key_exists('Number', $singleMatch) && (!empty($singleMatch['Number']) || $singleMatch['Number'] === '0')) {
                     // Note: this method of casting picks "int" when value is a natural number and "float" if any decimals are found. See also NumericNode.
@@ -709,8 +713,8 @@ class TemplateParser
                 } elseif ((array_key_exists('QuotedString', $singleMatch) && !empty($singleMatch['QuotedString']))) {
                     $argumentString = $this->unquoteString($singleMatch['QuotedString']);
                     $arrayToBuild[$arrayKey] = $this->buildArgumentObjectTree($argumentString);
-                } elseif (array_key_exists('Subarray', $singleMatch) && !empty($singleMatch['Subarray'])) {
-                    $arrayToBuild[$arrayKey] = new ArrayNode($this->recursiveArrayHandler($singleMatch['Subarray']));
+            //  } elseif (array_key_exists('Subarray', $singleMatch) && !empty($singleMatch['Subarray'])) {
+            //      $arrayToBuild[$arrayKey] = new ArrayNode($this->recursiveArrayHandler($singleMatch['Subarray']));
                 }
             }
         }

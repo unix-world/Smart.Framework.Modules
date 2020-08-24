@@ -1,5 +1,7 @@
 <?php
 
+// contains fixes by unixman
+
 /**
  * JavaScript minifier
  *

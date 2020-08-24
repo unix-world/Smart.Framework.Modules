@@ -211,7 +211,8 @@ class NodeConverter
 
             $initializationPhpCode .= $argumentInitializationCode . $viewHelperInitializationPhpCode;
         } catch (StopCompilingChildrenException $stopCompilingChildrenException) {
-            $convertedViewHelperExecutionCode = '\'' . $stopCompilingChildrenException->getReplacementString() . '\'';
+        //  $convertedViewHelperExecutionCode = '\'' . $stopCompilingChildrenException->getReplacementString() . '\''; // fix from upstream git @ 31e0830636b8757450c878b29347fc60819429f2 # 20200509
+            $convertedViewHelperExecutionCode = '\'' . str_replace("'", "\'", $stopCompilingChildrenException->getReplacementString()) . '\'';
         }
         $initializationArray = [
             'initialization' => $initializationPhpCode,

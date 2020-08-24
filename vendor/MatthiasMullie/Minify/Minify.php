@@ -1,5 +1,7 @@
 <?php
 
+// contains fixes by unixman
+
 /**
  * Abstract minifier class
  *
@@ -100,6 +102,8 @@ abstract class Minify
 		return $this;
 	}
 
+	// public function addFile() was disabled by unixman (not safe)
+
 	/**
 	 * Minify the data & (optionally) saves it to a file.
 	 *
@@ -140,21 +144,7 @@ abstract class Minify
 		return $content;
 	}
 
-	/**
-	 * Minify the data & write it to a CacheItemInterface object.
-	 *
-	 * @param CacheItemInterface $item Cache item to write the data to
-	 *
-	 * @return CacheItemInterface Cache item with the minifier data
-	 */
-	/* disabled by unixman: this requires an extra class which is not provided (but anyway, this can be managed separately)
-	public function cache(CacheItemInterface $item)
-	{
-		$content = $this->execute();
-		$item->set($content);
-
-		return $item;
-	} */
+	// public function cache() was disabled by unixman (not necessary, the cache will be managed in a different way)
 
 	/**
 	 * Minify the data.

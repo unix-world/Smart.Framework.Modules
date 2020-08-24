@@ -630,7 +630,8 @@ class TemplatePaths
      */
     protected function createIdentifierForFile($pathAndFilename, $prefix)
     {
-        $templateModifiedTimestamp = $pathAndFilename !== 'php://stdin' ? filemtime($pathAndFilename) : 0;
+    //  $templateModifiedTimestamp = $pathAndFilename !== 'php://stdin' ? filemtime($pathAndFilename) : 0;
+        $templateModifiedTimestamp = $pathAndFilename !== 'php://stdin' && file_exists($pathAndFilename) ? filemtime($pathAndFilename) : 0; // fix from upstream git @ 1ae79347dcdad5a315e70b69a26af763b10c50d1 # 20200106
         return sprintf('%s_%s', $prefix, sha1($pathAndFilename . '|' . $templateModifiedTimestamp));
     }
 
