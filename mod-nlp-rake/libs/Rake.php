@@ -198,46 +198,7 @@ final class Rake {
 	 * Load stop words from an input file
 	 */
 	private function load_stopwords() {
-		if(!\SmartFileSysUtils::check_if_safe_path($this->stopwords_path)) {
-			\Smart::raise_error(
-				'Rake Stopwords File path is invalid !',
-				__METHOD__.'() The Stopwords File path is invalid: '.$this->stopwords_path
-			);
-			return array();
-		} //end if
-		if(!\SmartFileSystem::is_type_file($this->stopwords_path)) {
-			\Smart::raise_error(
-				'Rake Stopwords File cannot be found !',
-				__METHOD__.'() The Stopwords File is missing: '.$this->stopwords_path
-			);
-			return array();
-		} //end if
-		if(!\SmartFileSystem::have_access_read($this->stopwords_path)) {
-			\Smart::raise_error(
-				'Rake Stopwords File cannot be read !',
-				__METHOD__.'() The Stopwords File is unreadable: '.$this->stopwords_path
-			);
-			return array();
-		} //end if
-		$stopwords = array();
-		$all = (string) \SmartFileSystem::read($this->stopwords_path);
-		$all = (string) \trim((string)$all);
-		$all = (string) \str_replace(["\r\n", "\r", "\t"], ["\n", "\n", ' '], (string)$all);
-		$arr = (array)  \explode("\n", $all);
-		foreach($arr as $kk => $line) {
-			$line = (string) \trim((string)$line);
-			if(((string)$line != '') AND (\strpos($line, '#') !== 0)) {
-				\array_push($stopwords, $line);
-			} //end if
-		} //end foreach
-		if(\Smart::array_size($stopwords) < 1) {
-			\Smart::raise_error(
-				'Rake Stopwords File is empty !',
-				__METHOD__.'() The Stopwords File is empty: '.$this->stopwords_path
-			);
-			return array();
-		} //end if
-		return (array) $stopwords;
+		return (array) \SmartModExtLib\NlpRake\Stopwords::load((string)$this->stopwords_path);
 	} //END FUNCTION
 
 

@@ -16,6 +16,8 @@ namespace SmartModExtLib\NlpLemmatizer;
  */
 final class Lemmatizer {
 
+	private static $arrLemas = [];
+
 
 	/**
 	* Given a word, return its lemma form.
@@ -59,27 +61,31 @@ final class Lemmatizer {
 			);
 			return '';
 		} //end if
-		if(!\SmartFileSystem::is_type_file($path) OR !\SmartFileSystem::have_access_read($path)) {
-			\Smart::raise_error(
-				'Lemmatizer Data File cannot be read !',
-				__METHOD__.'() The Data File is unreadable: '.$path
-			);
-			return '';
+		if(\Smart::array_size(self::$arrLemas[(string)$path]) <= 0) {
+			if(!\SmartFileSystem::is_type_file($path) OR !\SmartFileSystem::have_access_read($path)) {
+				\Smart::raise_error(
+					'Lemmatizer Data File cannot be read !',
+					__METHOD__.'() The Data File is unreadable: '.$path
+				);
+				return '';
+			} //end if
+			$contents = (string) \SmartFileSystem::read($path);
+			$map = \Smart::json_decode($contents);
+			if(!\is_array($map)) {
+				$map = array();
+			} //end if
+			if(\Smart::array_size($map) <= 0) {
+				\Smart::raise_error(
+					'Lemmatizer Data File cannot is empty or invalid !',
+					__METHOD__.'() The Data File is empty or invalid: '.$path
+				);
+				return '';
+			} //end if
+			self::$arrLemas[(string)$path] = (array) $map;
+			$map = null; // free mem
 		} //end if
-		$contents = (string) \SmartFileSystem::read($path);
-		$map = \Smart::json_decode($contents);
-		if(!\is_array($map)) {
-			$map = array();
-		} //end if
-		if(\Smart::array_size($map) <= 0) {
-			\Smart::raise_error(
-				'Lemmatizer Data File cannot is empty or invalid !',
-				__METHOD__.'() The Data File is empty or invalid: '.$path
-			);
-			return '';
-		} //end if
-		if(\array_key_exists((string)$input, (array)$map)) {
-			return (string) $map[(string)$input];
+		if(\array_key_exists((string)$input, (array)self::$arrLemas[(string)$path])) {
+			return (string) self::$arrLemas[(string)$path][(string)$input];
 		} //end if
 		return (string) $input;
 	} //END FUNCTION
