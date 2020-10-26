@@ -15,7 +15,7 @@ namespace SmartModExtLib\NlpRake;
  * @version 1.1
  */
 
-class Rake {
+final class Rake {
 
 	/**
 	 * @var string $stopwords_path

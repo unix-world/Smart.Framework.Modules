@@ -14,7 +14,7 @@ namespace SmartModExtLib\NlpLemmatizer;
  * @version 1.1
  *
  */
-class Lemmatizer {
+final class Lemmatizer {
 
 
 	/**
