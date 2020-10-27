@@ -12,7 +12,7 @@ namespace SmartModExtLib\NlpRake;
  * based on PHP Rake by Richard Filipčík <richard@filipcik.sk> https://github.com/Richdark/RAKE-PHP @ version 0.1
  *
  * @author unixman, (c) 2020 unix-world.org
- * @version 1.1
+ * @version 1.1.1 # r.20201027
  */
 
 final class Rake {
@@ -119,6 +119,7 @@ final class Rake {
 			$phrases_temp = \preg_replace($this->stopwords_pattern, '|', $s);
 			$phrases = \explode('|', $phrases_temp);
 			foreach($phrases as $kkk => $p) {
+				$p = (string) \trim((string)\trim((string)$p), '_-+=\'"`,.!?@#^*:;()[]{}<>&/\\|'); // unixman: fix to avoid words starting or ending with punctuation characters
 				$p = (string) \strtolower((string)\trim((string)$p));
 				if((string)$p != '') {
 					\array_push($phrases_arr, $p);

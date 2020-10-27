@@ -33,7 +33,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$text = 'Criteria of compatibility of a system of linear Diophantine equations, strict inequations, and nonstrict inequations are considered. Upper bounds for components of a minimal set of solutions and algorithms of construction of minimal generating sets of solutions for all types of systems are given.';
+		$text = 'Criteria of compatibility (this-is-a-test) linear\'s of a system of linear Diophantine equations, strict inequations, and nonstrict inequations are considered. Upper bounds for components of a minimal set of solutions and algorithms of construction of minimal generating sets of solutions for all types of systems are given.';
 		//--
 		$keywords = (new \SmartModExtLib\NlpRake\Rake())->extract($text);
 		//--
