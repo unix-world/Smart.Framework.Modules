@@ -1,6 +1,8 @@
 <?php
 namespace SVG\Rasterization\Renderers;
 
+// includes fixes by unixman
+
 use SVG\Rasterization\SVGRasterizer;
 
 class SVGTextRenderer extends SVGRenderer
@@ -25,7 +27,7 @@ class SVGTextRenderer extends SVGRenderer
 			$params['x'],
 			$params['y'],
 			$color,
-			$params['font_path'],
+			realpath($params['font_path']), // unixman fix: on windows, PHP 7+ GD needs real path for TTF Fonts
 			$params['text']
 		);
 	}
@@ -38,7 +40,7 @@ class SVGTextRenderer extends SVGRenderer
 
 		for ($c1 = ($x-abs($px)); $c1 <= ($x+abs($px)); $c1++) {
 			for ($c2 = ($y - abs($px)); $c2 <= ($y + abs($px)); $c2++) {
-				imagettftext($image, $params['size'], 0, $c1, $c2, $color, $params['font_path'], $params['text']);
+				imagettftext($image, $params['size'], 0, $c1, $c2, $color, realpath($params['font_path']), $params['text']); // unixman fix: on windows, PHP 7+ GD needs real path for TTF Fonts
 			}
 		}
 	}

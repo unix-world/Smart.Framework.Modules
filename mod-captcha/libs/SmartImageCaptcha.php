@@ -49,7 +49,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP GD Extension w. *optional TTF support ; classes: Smart, SmartFileSysUtils
- * @version 	v.20200121
+ * @version 	v.20201105
  * @package 	modules:development:Captcha
  */
 final class SmartImageCaptcha {
@@ -688,7 +688,7 @@ final class SmartImageCaptcha {
 				} else {
 					$angle = \Smart::random_number(330, 360);
 				} //end if else
-				@\imagettftext($im, $this->charttfsize, (int)$angle, (int)$first_x, (int)$y, $c, (string)$font, (string)$w);
+				@\imagettftext($im, $this->charttfsize, (int)$angle, (int)$first_x, (int)$y, $c, (string)\Smart::real_path((string)$font), (string)$w); // fix: on windows, PHP 7+ GD needs real path for TTF Fonts
 			} //end if else
 			//--
 			$first_x += (int) $this->charspace + \Smart::random_number(5, $this->charxvar);
