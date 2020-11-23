@@ -11,21 +11,27 @@ use SVG\Rasterization\SVGRasterizer;
  */
 class SVGGenericNodeType extends SVGNodeContainer
 {
-	private $tagName;
+    private $tagName;
 
-	public function __construct($tagName)
-	{
-		parent::__construct();
-		$this->tagName = $tagName;
-	}
+    public function __construct($tagName)
+    {
+        parent::__construct();
+        $this->tagName = $tagName;
+    }
 
-	public function getName()
-	{
-		return $this->tagName;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getName()
+    {
+        return $this->tagName;
+    }
 
-	public function rasterize(SVGRasterizer $rasterizer)
-	{
-		// do nothing
-	}
+    /**
+     * @inheritdoc
+     */
+    public function rasterize(SVGRasterizer $rasterizer)
+    {
+        // do nothing
+    }
 }

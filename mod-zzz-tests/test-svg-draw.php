@@ -58,14 +58,19 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$image2 = \SVG\SVG::fromString($image);
 		$imgres = $image->toRasterImage(100, 100);
-		imagefilter($imgres, IMG_FILTER_GRAYSCALE);
+		//--
+		$extratext = '';
+		if(rand(0,1) == 1) {
+			$extratext = ' + GreyScale Filter';
+			imagefilter($imgres, IMG_FILTER_GRAYSCALE);
+		} //end if
 		ob_start();
 		imagepng($imgres);
 		$png = ob_get_clean();
 		//--
 		$this->PageViewSetVars([
 			'title' => 'ZZZ Tests: SVG Draw',
-			'main' => '<h1 id="qunit-test-result">SVG Test Result: OK</h1><pre><h2>SVG Source Code</h2><pre>'.Smart::escape_html(str_replace('><', '>'."\n".'<', (string)$image)).'</pre><hr>'.'<h2>SVG Vector Image</h2><img src="data:image/svg+xml;base64,'.base64_encode((string)$image).'"><hr>'.'<h2>SVG Raster (PNG + GreyScale Filter)</h2><img src="data:image/png;base64,'.base64_encode((string)$png).'"><hr>'.'<br><br>'
+			'main' => '<h1 id="qunit-test-result">SVG Test Result: OK</h1><pre><h2>SVG Source Code</h2><pre>'.Smart::escape_html(str_replace('><', '>'."\n".'<', (string)$image)).'</pre><hr>'.'<h2>SVG Vector Image</h2><img src="data:image/svg+xml;base64,'.base64_encode((string)$image).'"><hr>'.'<h2>SVG Raster (PNG'.$extratext.')</h2><img src="data:image/png;base64,'.base64_encode((string)$png).'"><hr>'.'<br><br>'
 		]);
 		//--
 

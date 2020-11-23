@@ -10,22 +10,20 @@ use SVG\Rasterization\SVGRasterizer;
  */
 class SVGClipPath extends SVGNodeContainer
 {
-	const TAG_NAME = 'clipPath';
+    const TAG_NAME = 'clipPath';
 
-	public function __construct($id)
-	{
-		parent::__construct();
+    public function __construct($id = null)
+    {
+        parent::__construct();
 
-		$this->setAttribute('id', $id);
-	}
+        $this->setAttribute('id', $id);
+    }
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 *
-	 * @param SVGRasterizer $rasterizer
-	 */
-	public function rasterize(SVGRasterizer $rasterizer)
-	{
-		// TODO How do we rasterize this? The clipPath in and of itself wont get rasterized, but usages of it will be!
-	}
+    /**
+     * @inheritdoc
+     */
+    public function rasterize(SVGRasterizer $rasterizer)
+    {
+        // TODO How do we rasterize this? The clipPath in and of itself wont get rasterized, but usages of it will be!
+    }
 }

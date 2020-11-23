@@ -12,202 +12,186 @@ use SVG\Utilities\Units\Length;
  */
 class SVGDocumentFragment extends SVGNodeContainer
 {
-	const TAG_NAME = 'svg';
+    const TAG_NAME = 'svg';
 
-	/** @var mixed[] $initialStyles A map of style keys to their defaults. */
-	private static $initialStyles = array(
-		'fill'          => '#000000',
-		'stroke'        => 'none',
-		'stroke-width'  => '1',
-		'opacity'       => '1',
-	);
+    /** @var mixed[] $initialStyles A map of style keys to their defaults. */
+    private static $initialStyles = array(
+        'fill'          => '#000000',
+        'stroke'        => 'none',
+        'stroke-width'  => '1',
+        'opacity'       => '1',
+    );
 
-	/** @var string[] $namespaces A map of custom namespaces to their URIs. */
-	private $namespaces;
+    /**
+     * @param string|null $width  The declared width.
+     * @param string|null $height The declared height.
+     */
+    public function __construct($width = null, $height = null)
+    {
+        parent::__construct();
 
-	/**
-	 * @param string|null $width      The declared width.
-	 * @param string|null $height     The declared height.
-	 * @param string[]    $namespaces A map of custom namespaces to their URIs.
-	 */
-	public function __construct($width = null, $height = null, array $namespaces = array())
-	{
-		parent::__construct();
+        $this->setAttribute('width', $width);
+        $this->setAttribute('height', $height);
+    }
 
-		$this->namespaces = $namespaces;
+    /**
+     * @return bool Whether this is the root document.
+     */
+    public function isRoot()
+    {
+        return $this->getParent() === null;
+    }
 
-		$this->setAttribute('width', $width);
-		$this->setAttribute('height', $height);
-	}
+    /**
+     * @return string The declared width of this document.
+     */
+    public function getWidth()
+    {
+        return $this->getAttribute('width');
+    }
 
-	/**
-	 * @return bool Whether this is the root document.
-	 */
-	public function isRoot()
-	{
-		return $this->getParent() === null;
-	}
+    /**
+     * Declares a new width for this document.
+     *
+     * @param string $width The new width.
+     *
+     * @return $this This node instance, for call chaining.
+     */
+    public function setWidth($width)
+    {
+        return $this->setAttribute('width', $width);
+    }
 
-	/**
-	 * @return string The declared width of this document.
-	 */
-	public function getWidth()
-	{
-		return $this->getAttribute('width');
-	}
+    /**
+     * @return string The declared height of this document.
+     */
+    public function getHeight()
+    {
+        return $this->getAttribute('height');
+    }
 
-	/**
-	 * Declares a new width for this document.
-	 *
-	 * @param string $width The new width.
-	 *
-	 * @return $this This node instance, for call chaining.
-	 */
-	public function setWidth($width)
-	{
-		return $this->setAttribute('width', $width);
-	}
+    /**
+     * Declares a new height for this document.
+     *
+     * @param string $height The new height.
+     *
+     * @return $this This node instance, for call chaining.
+     */
+    public function setHeight($height)
+    {
+        return $this->setAttribute('height', $height);
+    }
 
-	/**
-	 * @return string The declared height of this document.
-	 */
-	public function getHeight()
-	{
-		return $this->getAttribute('height');
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getComputedStyle($name)
+    {
+        // return either explicit declarations ...
+        $style = parent::getComputedStyle($name);
+        if (isset($style) || !isset(self::$initialStyles[$name])) {
+            return $style;
+        }
 
-	/**
-	 * Declares a new height for this document.
-	 *
-	 * @param string $height The new height.
-	 *
-	 * @return $this This node instance, for call chaining.
-	 */
-	public function setHeight($height)
-	{
-		return $this->setAttribute('height', $height);
-	}
+        // ... or the default one.
+        return self::$initialStyles[$name];
+    }
 
-	public function getComputedStyle($name)
-	{
-		// return either explicit declarations ...
-		$style = parent::getComputedStyle($name);
-		if (isset($style) || !isset(self::$initialStyles[$name])) {
-			return $style;
-		}
+    /**
+     * @inheritdoc
+     */
+    public function rasterize(SVGRasterizer $rasterizer)
+    {
+        if ($this->isRoot()) {
+            parent::rasterize($rasterizer);
+            return;
+        }
 
-		// ... or the default one.
-		return self::$initialStyles[$name];
-	}
+        // create new rasterizer for nested viewport
+        $subRasterizer = new SVGRasterizer(
+            $this->getWidth(),          // document width
+            $this->getHeight(),         // document height
+            $this->getViewBox(),        // viewBox
+            Length::convert($this->getWidth() ?: '100%', $rasterizer->getWidth()),
+            Length::convert($this->getHeight() ?: '100%', $rasterizer->getHeight())
+        );
 
-	/**
-	 * Draws this node to the given rasterizer.
-	 *
-	 * @param SVGRasterizer $rasterizer The rasterizer to draw to.
-	 *
-	 * @return void
-	 */
-	public function rasterize(SVGRasterizer $rasterizer)
-	{
-		if ($this->isRoot()) {
-			parent::rasterize($rasterizer);
-			return;
-		}
+        // perform rasterization as usual
+        parent::rasterize($subRasterizer);
+        $img = $subRasterizer->finish();
 
-		// create new rasterizer for nested viewport
-		$subRasterizer = new SVGRasterizer(
-			$this->getWidth(),          // document width
-			$this->getHeight(),         // document height
-			$this->getViewBox(),        // viewBox
-			Length::convert($this->getWidth() ?: '100%', $rasterizer->getWidth()),
-			Length::convert($this->getHeight() ?: '100%', $rasterizer->getHeight())
-		);
+        // copy nested viewport onto parent viewport
+        imagecopy(
+            $rasterizer->getImage(),    // destination
+            $img,                       // source
+            0,                          // dst_x
+            0,                          // dst_y
+            0,                          // srx_x
+            0,                          // src_y
+            $subRasterizer->getWidth(), // src_w
+            $subRasterizer->getHeight() // src_h
+        );
+        imagedestroy($img);
+    }
 
-		// perform rasterization as usual
-		parent::rasterize($subRasterizer);
-		$img = $subRasterizer->finish();
+    /**
+     * @inheritdoc
+     */
+    public function getSerializableAttributes()
+    {
+        $attrs = parent::getSerializableAttributes();
 
-		// copy nested viewport onto parent viewport
-		imagecopy(
-			$rasterizer->getImage(),    // destination
-			$img,                       // source
-			0, 0,                       // dst_x, dst_y
-			0, 0,                       // src_x, src_y
-			$subRasterizer->getWidth(), // src_w
-			$subRasterizer->getHeight() // src_h
-		);
-		imagedestroy($img);
-	}
+        if (isset($attrs['width']) && $attrs['width'] === '100%') {
+            unset($attrs['width']);
+        }
+        if (isset($attrs['height']) && $attrs['height'] === '100%') {
+            unset($attrs['height']);
+        }
 
-	public function getSerializableAttributes()
-	{
-		$attrs = parent::getSerializableAttributes();
+        return $attrs;
+    }
 
-		if ($this->isRoot()) {
-			$attrs['xmlns'] = 'http://www.w3.org/2000/svg';
-			$attrs['xmlns:xlink'] = 'http://www.w3.org/1999/xlink';
-			foreach ($this->namespaces as $namespace => $uri) {
-				$namespace = $this->serializeNamespace($namespace);
-				$attrs[$namespace] = $uri;
-			}
-		}
+    /**
+     * @inheritdoc
+     */
+    public function getSerializableNamespaces()
+    {
+        if ($this->isRoot()) {
+            return parent::getSerializableNamespaces() + array(
+                '' => 'http://www.w3.org/2000/svg',
+                'xlink' => 'http://www.w3.org/1999/xlink',
+            );
+        }
+        return parent::getSerializableNamespaces();
+    }
 
-		if (isset($attrs['width']) && $attrs['width'] === '100%') {
-			unset($attrs['width']);
-		}
-		if (isset($attrs['height']) && $attrs['height'] === '100%') {
-			unset($attrs['height']);
-		}
+    /**
+     * Returns the node with the given id, or null if no such node exists in the
+     * document.
+     *
+     * @param string $id The id to search for.
+     *
+     * @return \SVG\Nodes\SVGNode|null The node with the given id if it exists.
+     */
+    public function getElementById($id)
+    {
+        // start with document
+        $stack = array($this);
 
-		return $attrs;
-	}
+        while (!empty($stack)) {
+            $elem = array_pop($stack);
+            // check current node
+            if ($elem->getAttribute('id') === $id) {
+                return $elem;
+            }
+            // add children to stack (tree order traversal)
+            if ($elem instanceof SVGNodeContainer) {
+                for ($i = $elem->countChildren() - 1; $i >= 0; --$i) {
+                    array_push($stack, $elem->getChild($i));
+                }
+            }
+        }
 
-	/**
-	 * Converts the given namespace string to standard form, i.e. ensuring that
-	 * it either equals 'xmlns' or starts with 'xmlns:'.
-	 *
-	 * @param string $namespace The namespace string.
-	 *
-	 * @return string The modified namespace string to be added as attribute.
-	 */
-	private function serializeNamespace($namespace)
-	{
-		if ($namespace === '' || $namespace === 'xmlns') {
-			return 'xmlns';
-		}
-		if (substr($namespace, 0, 6) !== 'xmlns:') {
-			return 'xmlns:'.$namespace;
-		}
-		return $namespace;
-	}
-
-	/**
-	 * Returns the node with the given id, or null if no such node exists in the
-	 * document.
-	 *
-	 * @param string $id The id to search for.
-	 *
-	 * @return \SVG\Nodes\SVGNode|null The node with the given id if it exists.
-	 */
-	public function getElementById($id)
-	{
-		// start with document
-		$stack = array($this);
-
-		while (!empty($stack)) {
-			$elem = array_pop($stack);
-			// check current node
-			if ($elem->getAttribute('id') === $id) {
-				return $elem;
-			}
-			// add children to stack (tree order traversal)
-			if ($elem instanceof SVGNodeContainer) {
-				for ($i = $elem->countChildren() - 1; $i >= 0; --$i) {
-					array_push($stack, $elem->getChild($i));
-				}
-			}
-		}
-
-		return null;
-	}
+        return null;
+    }
 }

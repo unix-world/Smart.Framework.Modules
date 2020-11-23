@@ -9,5 +9,18 @@ use SVG\Nodes\SVGNodeContainer;
  */
 class SVGTextPath extends SVGNodeContainer
 {
-	const TAG_NAME = 'textPath';
+    const TAG_NAME = 'textPath';
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rasterize(SVGRasterizer $rasterizer)
+    {
+        // Nothing to rasterize.
+    }
 }

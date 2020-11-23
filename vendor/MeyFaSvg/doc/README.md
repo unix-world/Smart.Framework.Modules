@@ -1,7 +1,8 @@
 # php-svg
 
-[![Build Status](https://travis-ci.org/meyfa/php-svg.svg?branch=master)](https://travis-ci.org/meyfa/php-svg)
-[![Code Climate](https://codeclimate.com/github/meyfa/php-svg/badges/gpa.svg)](https://codeclimate.com/github/meyfa/php-svg)
+[![Build Status](https://travis-ci.com/meyfa/php-svg.svg?branch=master)](https://travis-ci.com/meyfa/php-svg)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8f73468601a653aff0e8/maintainability)](https://codeclimate.com/github/meyfa/php-svg/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/8f73468601a653aff0e8/test_coverage)](https://codeclimate.com/github/meyfa/php-svg/test_coverage)
 
 This is a vector graphics library for PHP, which surely is a broad
 specification. That is due to the fact that the goal of this project is to
@@ -94,8 +95,8 @@ echo $image;
 ### Rasterizing
 
 To convert an instance of `SVG` to a PHP/GD image resource, or in other words
-convert it to a raster image, you simply call `toRasterImage($width, $height)`
-on it. Example:
+convert it to a raster image, you simply call
+`toRasterImage($width, $height [, $background])` on it. Example:
 
 ```php
 <?php
@@ -114,12 +115,24 @@ $doc->addChild(
         ->setStyle('stroke-width', '2px')
 );
 
-// rasterize to a 200x200 image, i.e. the original SVG size scaled by 2
+// rasterize to a 200x200 image, i.e. the original SVG size scaled by 2.
+// the background will be transparent by default.
 $rasterImage = $image->toRasterImage(200, 200);
 
 header('Content-Type: image/png');
 imagepng($rasterImage);
 ```
+
+If you require a specific background color, e.g. white, use the 3rd parameter.
+It supports all CSS colors (including named colors, hexadecimal, rgba, etc.):
+
+```php
+<?php
+$rasterImage = $image->toRasterImage(200, 200, '#FFFFFF');
+```
+
+Specifying a background color is mandatory for JPEG output, as JPEG does not
+support transparency.
 
 ### Loading an SVG
 

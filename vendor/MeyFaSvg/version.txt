@@ -1,0 +1,5 @@
+
+github.com/meyfa/php-svg#HEAD@2020-10-28
+
+// includes fixes by unixman
+* fix: on windows, PHP 7+ GD needs real path for TTF Fonts

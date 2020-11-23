@@ -2,8 +2,8 @@
 
 namespace SVG\Nodes\Texts;
 
-use SVG\Nodes\Structures\SVGFont;
 use SVG\Nodes\SVGNodeContainer;
+use SVG\Nodes\Structures\SVGFont;
 use SVG\Rasterization\SVGRasterizer;
 
 /**
@@ -27,70 +27,77 @@ use SVG\Rasterization\SVGRasterizer;
  */
 class SVGText extends SVGNodeContainer
 {
-	const TAG_NAME = 'text';
+    const TAG_NAME = 'text';
 
-	/**
-	 * @var SVGFont
-	 */
-	private $font;
+    /**
+     * @var SVGFont
+     */
+    private $font;
 
-	public function __construct($text = '', $x = 0, $y = 0)
-	{
-		parent::__construct();
-		$this->setValue($text);
+    public function __construct($text = '', $x = 0, $y = 0)
+    {
+        parent::__construct();
+        $this->setValue($text);
 
-		$this->setAttribute('x', $x);
-		$this->setAttribute('y', $y);
-	}
+        $this->setAttribute('x', $x);
+        $this->setAttribute('y', $y);
+    }
 
-	/**
-	 * Set font
-	 *
-	 * @param SVGFont $font
-	 * @return $this
-	 */
-	public function setFont(SVGFont $font)
-	{
-		$this->font = $font;
-		$this->setStyle('font-family', $font->getFontName());
-		return $this;
-	}
+    /**
+     * Set font
+     *
+     * @param SVGFont $font
+     * @return $this
+     */
+    public function setFont(SVGFont $font)
+    {
+        $this->font = $font;
+        $this->setStyle('font-family', $font->getFontName());
+        return $this;
+    }
 
-	/**
-	 * Set font size
-	 *
-	 * @param $size
-	 * @return $this
-	 */
-	public function setSize($size)
-	{
-		$this->setStyle('font-size', $size);
-		return $this;
-	}
+    /**
+     * Set font size
+     *
+     * @param $size
+     * @return $this
+     */
+    public function setSize($size)
+    {
+        $this->setStyle('font-size', $size);
+        return $this;
+    }
 
-	public function getComputedStyle($name)
-	{
-		// force stroke before fill
-		if ($name === 'paint-order') {
-			// TODO remove this workaround
-			return 'stroke fill';
-		}
+    /**
+     * @inheritdoc
+     */
+    public function getComputedStyle($name)
+    {
+        // force stroke before fill
+        if ($name === 'paint-order') {
+            // TODO remove this workaround
+            return 'stroke fill';
+        }
 
-		return parent::getComputedStyle($name);
-	}
+        return parent::getComputedStyle($name);
+    }
 
-	public function rasterize(SVGRasterizer $rasterizer)
-	{
-		if (empty($this->font)) {
-			return;
-		}
+    /**
+     * @inheritdoc
+     */
+    public function rasterize(SVGRasterizer $rasterizer)
+    {
+        if (empty($this->font)) {
+            return;
+        }
 
-		$rasterizer->render('text', array(
-			'x'         => $this->getAttribute('x'),
-			'y'         => $this->getAttribute('y'),
-			'size'      => $this->getComputedStyle('font-size'),
-			'text'      => $this->getValue(),
-			'font_path' => $this->font->getFontPath(),
-		), $this);
-	}
+        $rasterizer->render('text', array(
+            'x'         => $this->getAttribute('x'),
+            'y'         => $this->getAttribute('y'),
+            'size'      => $this->getComputedStyle('font-size'),
+            'anchor'    => $this->getComputedStyle('text-anchor'),
+            'text'      => $this->getValue(),
+            'font_path' => $this->font->getFontPath(),
+        ), $this);
+    }
 }

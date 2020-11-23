@@ -2,130 +2,163 @@
 
 namespace SVG\Nodes\Shapes;
 
-use SVG\Nodes\SVGNode;
+use SVG\Nodes\SVGNodeContainer;
 
 /**
  * This is the base class for polygons and polylines.
  * Offers methods for manipulating the list of points.
  */
-abstract class SVGPolygonalShape extends SVGNode
+abstract class SVGPolygonalShape extends SVGNodeContainer
 {
-	/** @var array[] $points List of points (float 2-tuples). */
-	private $points;
+    /**
+     * @param array[] $points Array of points (float 2-tuples).
+     */
+    public function __construct(array $points = null)
+    {
+        parent::__construct();
 
-	/**
-	 * @param array[] $points Array of points (float 2-tuples).
-	 */
-	public function __construct($points)
-	{
-		parent::__construct();
+        if (isset($points)) {
+            $this->setAttribute('points', self::joinPoints($points));
+        }
+    }
 
-		$this->points = $points;
-	}
+    /**
+     * Appends a new point to the end of this shape. The point can be given
+     * either as a 2-tuple (1 param) or as separate x and y (2 params).
+     *
+     * @param float|float[] $a The point as an array, or its x coordinate.
+     * @param float|null    $b The point's y coordinate, if not given as array.
+     *
+     * @return $this This node instance, for call chaining.
+     */
+    public function addPoint($a, $b = null)
+    {
+        if (is_array($a)) {
+            list($a, $b) = $a;
+        }
 
-	public static function constructFromAttributes($attrs)
-	{
-		$points = array();
+        $pointsAttribute = $this->getAttribute('points') ?: '';
+        $this->setAttribute('points', trim($pointsAttribute . ' ' . $a . ',' . $b));
 
-		if (isset($attrs['points'])) {
-			$coords = preg_split('/[\s,]+/', trim($attrs['points']));
-			for ($i = 0, $n = count($coords); $i < $n; $i += 2) {
-				$points[] = array(
-					floatval($coords[$i]),
-					floatval($coords[$i + 1]),
-				);
-			}
-		}
+        return $this;
+    }
 
-		return new static($points);
-	}
+    /**
+     * Removes the point at the given index from this shape.
+     *
+     * @param int $index The index of the point to remove.
+     *
+     * @return $this This node instance, for call chaining.
+     */
+    public function removePoint($index)
+    {
+        $coords = self::splitCoordinates($this->getAttribute('points') ?: '');
+        array_splice($coords, $index * 2, 2);
+        $this->setAttribute('points', self::joinCoordinates($coords));
 
-	/**
-	 * Appends a new point to the end of this shape. The point can be given
-	 * either as a 2-tuple (1 param) or as separate x and y (2 params).
-	 *
-	 * @param float|float[] $a The point as an array, or its x coordinate.
-	 * @param float|null    $b The point's y coordinate, if not given as array.
-	 *
-	 * @return $this This node instance, for call chaining.
-	 */
-	public function addPoint($a, $b = null)
-	{
-		if (!is_array($a)) {
-			$a = array($a, $b);
-		}
+        return $this;
+    }
 
-		$this->points[] = $a;
-		return $this;
-	}
+    /**
+     * @return int The number of points in this shape.
+     */
+    public function countPoints()
+    {
+        $pointsAttribute = $this->getAttribute('points');
+        if (isset($pointsAttribute)) {
+            $coords = self::splitCoordinates($pointsAttribute);
+            return (int) (count($coords) / 2);
+        }
+        return 0;
+    }
 
-	/**
-	 * Removes the point at the given index from this shape.
-	 *
-	 * @param int $index The index of the point to remove.
-	 *
-	 * @return $this This node instance, for call chaining.
-	 */
-	public function removePoint($index)
-	{
-		array_splice($this->points, $index, 1);
-		return $this;
-	}
+    /**
+     * @return array[] All points in this shape (array of float 2-tuples).
+     */
+    public function getPoints()
+    {
+        $pointsAttribute = $this->getAttribute('points');
+        if (isset($pointsAttribute)) {
+            return self::splitPoints($pointsAttribute);
+        }
+        return array();
+    }
 
-	/**
-	 * @return int The number of points in this shape.
-	 */
-	public function countPoints()
-	{
-		return count($this->points);
-	}
+    /**
+     * @param int $index The index of the point to get.
+     *
+     * @return float[] The point at the given index (0 => x, 1 => y).
+     */
+    public function getPoint($index)
+    {
+        $coords = self::splitCoordinates($this->getAttribute('points') ?: '');
+        return array(
+            (float) $coords[$index * 2],
+            (float) $coords[$index * 2 + 1],
+        );
+    }
 
-	/**
-	 * @return array[] All points in this shape (array of float 2-tuples).
-	 */
-	public function getPoints()
-	{
-		return $this->points;
-	}
+    /**
+     * Replaces the point at the given index with a different one.
+     *
+     * @param int     $index The index of the point to set.
+     * @param float[] $point The new point.
+     *
+     * @return $this This node instance, for call chaining.
+     */
+    public function setPoint($index, array $point)
+    {
+        $coords = self::splitCoordinates($this->getAttribute('points') ?: '');
+        $coords[$index * 2] = $point[0];
+        $coords[$index * 2 + 1] = $point[1];
+        $this->setAttribute('points', self::joinCoordinates($coords));
 
-	/**
-	 * @param int $index The index of the point to get.
-	 *
-	 * @return float[] The point at the given index (0 => x, 1 => y).
-	 */
-	public function getPoint($index)
-	{
-		return $this->points[$index];
-	}
+        return $this;
+    }
 
-	/**
-	 * Replaces the point at the given index with a different one.
-	 *
-	 * @param int     $index The index of the point to set.
-	 * @param float[] $point The new point.
-	 *
-	 * @return $this This node instance, for call chaining.
-	 */
-	public function setPoint($index, $point)
-	{
-		$this->points[$index] = $point;
-		return $this;
-	}
+    private static function splitCoordinates($pointsString)
+    {
+        return preg_split('/[\s,]+/', trim($pointsString));
+    }
 
-	public function getSerializableAttributes()
-	{
-		$attrs = parent::getSerializableAttributes();
+    private static function joinCoordinates(array $coordinatesArray)
+    {
+        $pointsString = '';
+        for ($i = 0, $n = count($coordinatesArray); $i < $n; ++$i) {
+            if ($i > 0) {
+                // join coordinates with ',' and points (2 coordinates) with ' '
+                $pointsString .= $i % 2 === 1 ? ',' : ' ';
+            }
+            $pointsString .= $coordinatesArray[$i];
+        }
+        return $pointsString;
+    }
 
-		$points = '';
-		for ($i = 0, $n = count($this->points); $i < $n; ++$i) {
-			$point = $this->points[$i];
-			if ($i > 0) {
-				$points .= ' ';
-			}
-			$points .= $point[0].','.$point[1];
-		}
-		$attrs['points'] = $points;
+    private static function splitPoints($pointsString)
+    {
+        $pointsArray = array();
+        $coords = self::splitCoordinates($pointsString);
+        for ($i = 0, $n = count($coords); $i + 1 < $n; $i += 2) {
+            $pointsArray[] = array(
+                (float) $coords[$i],
+                (float) $coords[$i + 1],
+            );
+        }
+        return $pointsArray;
+    }
 
-		return $attrs;
-	}
+    private static function joinPoints(array $pointsArray)
+    {
+        $pointsString = '';
+        foreach ($pointsArray as $point) {
+            if (count($point) < 2) {
+                break;
+            }
+            if ($pointsString !== '') {
+                $pointsString .= ' ';
+            }
+            $pointsString .= $point[0] . ',' . $point[1];
+        }
+        return $pointsString;
+    }
 }
