@@ -1,7 +1,7 @@
 
 // Facebook JS API Handler
 // (c) 2012-2020 unix-world.org
-// v.20200121
+// v.20201204
 
 // Depends on: jQuery
 // Depends on: SmartJS_Base64, SmartJS_BrowserUtils
@@ -82,7 +82,7 @@ var FacebookApiHandler = new function() { // START CLASS
 	this.init = function(settings, fxSubscribe, fxResponseOk, fxResponseNotOk, fxResponseUnauth) {
 		//--
 		if(!settings.appId) {
-			console.error('Facebook Js Api: No App Id used to initialize ...');
+			console.error('ERR: Facebook Js Api: The AppId was not set or is empty ...');
 		} //end if
 		//-- mandatory settings
 		FbSettings.appId = String(settings.appId);
@@ -200,11 +200,14 @@ var FacebookApiHandler = new function() { // START CLASS
 		FB.ui(
 			{ // data definition
 				method: 		'feed',
-				name: 			'' + data.name,
 				link: 			'' + data.link,
-				picture: 		'' + data.picture,
-				caption: 		'' + data.caption,
-				description: 	'' + data.description
+				source: 		'' + data.source, 		// NEW: this replaces 'picture'
+				redirect_uri: 	'' + data.redirect_uri, // NEW
+				app_id: 		'' + FbSettings.appId, 	// NEW
+			//	picture: 		'' + data.picture, 		// deprecated
+			//	name: 			'' + data.name, 		// deprecated
+			//	caption: 		'' + data.caption, 		// deprecated
+			//	description: 	'' + data.description, 	// deprecated
 			},
 			function(response) {
 				if(response && response.post_id) {
@@ -227,7 +230,7 @@ var FacebookApiHandler = new function() { // START CLASS
 			if(typeof fxFail === 'function') {
 				fxFail(null, null, 'Empty media sent to Facebook');
 			} else {
-				console.error('ERROR: Media / Empty Media');
+				console.error('ERR: Media / Empty Media');
 			} //end if
 			return;
 		} //end if
@@ -244,11 +247,13 @@ var FacebookApiHandler = new function() { // START CLASS
 		//--
 		var blob;
 		try {
-		//	if(typeof SmartJS_Base64 != 'undefined') {
+			if(typeof SmartJS_Base64 != 'undefined') {
 				var byteString = SmartJS_Base64.decode(imB64, true); // works in all browsers
-		//	} else {
-		//		var byteString = atob(imB64); // IE 10+ ; FFox 3+ ; Webkit 3+ ; Safari 3+ ; Opera 7+
-		//	} //end if else
+			} else {
+			//	var byteString = atob(imB64); // IE 10+ ; FFox 3+ ; Webkit 3+ ; Safari 3+ ; Opera 7+
+				console.error('ERR: Missing: SmartJS_Base64');
+				return;
+			} //end if else
 			var ab = new ArrayBuffer(byteString.length);
 			var ia = new Uint8Array(ab);
 			for(var i = 0; i < byteString.length; i++) {
@@ -338,64 +343,42 @@ var FacebookApiHandler = new function() { // START CLASS
 	} //END FUNCTION
 
 
-	//===== Below functions can be supplied by Smart.Framework/Js.Api/SmartJS_BrowserUtils
-
-
 	var getCookie = function(name) {
 		//--
-		return SmartJS_BrowserUtils.getCookie(name);
-		//--
-		/*
-		var c;
-		try {
-			c = document.cookie.match(new RegExp('(^|;)\\s*' + String(name) + '=([^;\\s]*)'));
-		} catch(err){
-			console.error('NOTICE: BrowserUtils Failed to getCookie: ' + err);
-		} //end try catch
-		//--
-		if(c && c.length >= 3) {
-			var d = decodeURIComponent(c[2]) || ''; // fix to avoid working with null !!
-			return String(d);
-		} else {
-			return ''; // fix to avoid working with null !!
+		if(typeof SmartJS_BrowserUtils == 'undefined') {
+			console.error('ERR: Missing: SmartJS_BrowserUtils');
+			return null;
 		} //end if
-		*/
+		//--
+		return SmartJS_BrowserUtils.getCookie(name);
 		//--
 	} //END FUNCTION
 
 
 	var setCookie = function(name, value, days, path, domain, secure) {
 		//--
+		if(typeof SmartJS_BrowserUtils == 'undefined') {
+			console.error('ERR: Missing: SmartJS_BrowserUtils');
+			return false;
+		} //end if
+		//--
 		SmartJS_BrowserUtils.setCookie(name, value, days, path, domain, secure);
 		//--
-		/*
-		if((typeof value == 'undefined') || (value == undefined) || (value == null)) {
-			return; // bug fix (avoid to set null cookie)
-		} //end if
-		//--
-		var d = new Date();
-		//--
-		if(days) {
-			d.setTime(d.getTime() + (days * 8.64e7)); // now + days in milliseconds
-		} //end if
-		//--
-		try {
-			document.cookie = String(name) + '=' + encodeURIComponent(value) + (days ? ('; expires=' + d.toGMTString()) : '') + '; path=' + (path || '/') + (domain ? ('; domain=' + domain) : '') + (secure ? '; secure' : '');
-		} catch(err){
-			console.error('NOTICE: Failed to setCookie: ' + err);
-		} //end try catch
-		*/
+		return true;
 		//--
 	} //END FUNCTION
 
 
 	var deleteCookie = function(name, path, domain, secure) {
 		//--
+		if(typeof SmartJS_BrowserUtils == 'undefined') {
+			console.error('ERR: Missing: SmartJS_BrowserUtils');
+			return false;
+		} //end if
+		//--
 		SmartJS_BrowserUtils.deleteCookie(name, path, domain, secure);
 		//--
-		/*
-		setCookie(name, '', -1, path, domain, secure); // sets expiry to now - 1 day
-		*/
+		return true;
 		//--
 	} //END FUNCTION
 
