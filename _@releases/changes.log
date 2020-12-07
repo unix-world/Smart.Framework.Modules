@@ -2,6 +2,11 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+December 07, 2020 :: Version 7.2.1 rev.20201207
+	* Fixes and Optimizations
+	* New Modules
+	* Documentation Updates
+
 August 19, 2020 :: Version 7.2.1 rev.20200819
 	* Update Twig
 	* Update Typo3Fluid
