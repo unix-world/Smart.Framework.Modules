@@ -1,3 +1,18 @@
+# 3.2.1 (2021-01-05)
+
+ * Fix extra bundle compat with older versions of Symfony
+
+# 3.2.0 (2021-01-05)
+
+ * Add the Cache extension in the "extra" repositories: "cache" tag
+ * Add "registerUndefinedTokenParserCallback"
+ * Mark built-in node visitors as @internal
+ * Fix "odd" not working for negative numbers
+
+# 3.1.1 (2020-10-27)
+
+ * Fix "include(template_from_string())"
+
 # 3.1.0 (2020-10-21)
 
  * Fix sandbox support when using "include(template_from_string())"
@@ -58,7 +73,23 @@
  * bumped minimum PHP version to 7.2
  * removed PSR-0 classes
 
-# 2.14.0 (2020-XX-XX)
+# 2.14.4 (2021-XX-XX)
+
+ * n/a
+
+# 2.14.3 (2021-01-05)
+
+ * Fix extra bundle compat with older versions of Symfony
+
+# 2.14.2 (2021-01-05)
+
+ * Fix "odd" not working for negative numbers
+
+# 2.14.1 (2020-10-27)
+
+* Fix "include(template_from_string())"
+
+# 2.14.0 (2020-10-21)
 
  * Fix sandbox support when using "include(template_from_string())"
  * Make round brackets optional for one argument tests like "same as" or "divisible by"
@@ -384,7 +415,19 @@
  * improved the performance of the filesystem loader
  * removed features that were deprecated in 1.x
 
-# 1.44.0 (2020-XX-XX)
+# 1.44.3 (2021-XX-XX)
+
+ * n/a
+
+# 1.44.2 (2021-01-05)
+
+ * Fix "odd" not working for negative numbers
+
+# 1.44.1 (2020-10-27)
+
+ * Fix "include(template_from_string())"
+
+# 1.44.0 (2020-10-21)
 
  * Remove implicit dependency on ext/iconv in JS escaper
  * Fix sandbox support when using "include(template_from_string())"
