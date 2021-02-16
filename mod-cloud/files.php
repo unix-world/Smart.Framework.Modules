@@ -15,6 +15,14 @@ define('SMART_APP_MODULE_AREA', 'ADMIN'); // admin only
 define('SMART_APP_MODULE_AUTH', true); // requires auth always
 define('SMART_APP_MODULE_DIRECT_OUTPUT', true); // do direct output
 
+//--
+if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
+	http_response_code(500);
+	echo SmartComponents::http_message_500_internalerror('ERROR: Cloud Files requires Mod WebDAV ...');
+	die('');
+} //end if
+//--
+
 /**
  * Admin Controller (direct output)
  */
@@ -24,9 +32,9 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs 
 	public function Run() {
 
 		//--
-		if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
-			http_response_code(500);
-			echo SmartComponents::http_message_500_internalerror('ERROR: Cloud Files requires Mod WebDAV ...');
+		if(SmartAuth::check_login() !== true) {
+			http_response_code(403);
+			echo SmartComponents::http_message_403_forbidden('ERROR: WebDAV Invalid Auth ...');
 			return;
 		} //end if
 		//--
@@ -43,12 +51,6 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs 
 		} //end if
 		//--
 
-		//--
-		if(SmartAuth::check_login() !== true) {
-			http_response_code(503);
-			echo SmartComponents::http_message_503_serviceunavailable('ERROR: WebDAV Invalid Auth ...');
-			return;
-		} //end if
 		//--
 		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--

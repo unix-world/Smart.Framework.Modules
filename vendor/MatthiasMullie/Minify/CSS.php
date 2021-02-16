@@ -32,23 +32,24 @@ class CSS extends Minify
 	/**
 	 * @var int maximum inport size in kB
 	 */
-	protected $maxImportSize = 5;
+	protected $maxImportSize = 100;
 
 	/**
 	 * @var string[] valid import extensions
 	 */
 	protected $importExtensions = array(
-		'gif' => 'data:image/gif',
-		'png' => 'data:image/png',
-		'jpe' => 'data:image/jpeg',
-		'jpg' => 'data:image/jpeg',
-		'jpeg' => 'data:image/jpeg',
-		'svg' => 'data:image/svg+xml',
-	//	'woff' => 'data:application/x-font-woff',
-	//	'ttf' => 'data:application/x-font-ttf',
-	//	'tif' => 'image/tiff',
-	//	'tiff' => 'image/tiff',
-	//	'xbm' => 'image/x-xbitmap',
+		'gif' 	=> 'data:image/gif',
+		'png' 	=> 'data:image/png',
+		'jpe' 	=> 'data:image/jpeg',
+		'jpg' 	=> 'data:image/jpeg',
+		'jpeg' 	=> 'data:image/jpeg',
+		'svg' 	=> 'data:image/svg+xml',
+		'woff2' => 'data:application/font-woff2',
+		'woff' 	=> 'data:application/font-woff',
+		'ttf' 	=> 'data:application/x-font-ttf',
+	//	'tif' 	=> 'image/tiff',
+	//	'tiff' 	=> 'image/tiff',
+	//	'xbm' 	=> 'image/x-xbitmap',
 	);
 
 	/**
