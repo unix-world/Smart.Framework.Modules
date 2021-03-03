@@ -49,7 +49,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP GD Extension w. *optional TTF support ; classes: Smart, SmartFileSysUtils
- * @version 	v.20201105
+ * @version 	v.20210303
  * @package 	modules:development:Captcha
  */
 final class SmartImageCaptcha {
@@ -364,7 +364,8 @@ final class SmartImageCaptcha {
 			\Smart::log_warning(__METHOD__.' # ['.$intext.'] Errors/Output: '.$err);
 		} //end if
 		//--
-		if(!\is_resource($captcha_image)) {
+	//	if(!\is_resource($captcha_image)) {
+		if((!\is_resource($captcha_image)) AND (!\is_a($captcha_image, '\\GdImage'))) { // fix to be PHP8 compatible # https://php.watch/versions/8.0/gdimage
 			\Smart::log_warning(__METHOD__.' # Invalid Resource');
 			return '';
 		} //end if

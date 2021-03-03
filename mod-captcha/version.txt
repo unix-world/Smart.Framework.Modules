@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: Captcha r.20201105 #
+# Smart.Framework.Modules: Captcha r.20210303 #
 
 // r.7.2.1 / smart.framework.v.7.2
 

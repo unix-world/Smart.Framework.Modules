@@ -10,6 +10,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 } //end if
 //-----------------------------------------------------
 
+// [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -50,7 +51,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: SmartMarkersTemplating, \SmartModExtLib\TplDust\SmartDustTemplating, \SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating, \SmartModExtLib\TplTwig\SmartTwigTemplating, \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating
- * @version 	v.20200121
+ * @version 	v.20210303
  * @package 	extralibs:TemplatingEngine
  *
  */
@@ -67,6 +68,12 @@ final class SmartTemplating {
 		//--
 		if(!is_array($options)) {
 			$options = array();
+		} //end if
+		if(!array_key_exists('use-caching', $options)) {
+			$options['use-caching'] = null;
+		} //end if
+		if(!array_key_exists('only-debug', $options)) {
+			$options['only-debug'] = null;
 		} //end if
 		//--
 		if(strpos((string)$file, '.mtpl.') !== false) { // markers TPL
