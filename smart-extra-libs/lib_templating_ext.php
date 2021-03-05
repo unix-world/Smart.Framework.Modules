@@ -25,8 +25,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * some-file.dust.htm 		: \SmartModExtLib\TplDust\SmartDustTemplating 				(Dust-TPL syntax: .dust.)
  *
- * some-file.latte.htm 		: \SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating 	(NetteLatte-TPL syntax: .latte.)
- *
  * some-file.twig.htm 		: \SmartModExtLib\TplTwig\SmartTwigTemplating 				(Twig-TPL syntax: .twig.)
  *
  * some-file.t3fluid.htm 	: \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating 	(Typo3Fluid-TPL syntax: .t3fluid.)
@@ -37,7 +35,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * $this->PageViewSetVar(
  *     'main',
  *     SmartTemplating::render_file_template(
- *         'modules/my-module-name/views/my-view.(mtpl|dust|latte|twig|t3fluid).htm',
+ *         'modules/my-module-name/views/my-view.(mtpl|dust|twig|t3fluid).htm',
  *         [
  *             'someVar' => 'Hello World',
  *             'otherVar' => date('Y-m-d H:i:s')
@@ -50,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	classes: SmartMarkersTemplating, \SmartModExtLib\TplDust\SmartDustTemplating, \SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating, \SmartModExtLib\TplTwig\SmartTwigTemplating, \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating
+ * @depends 	classes: SmartMarkersTemplating, \SmartModExtLib\TplDust\SmartDustTemplating, \SmartModExtLib\TplTwig\SmartTwigTemplating, \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating
  * @version 	v.20210303
  * @package 	extralibs:TemplatingEngine
  *
@@ -87,14 +85,6 @@ final class SmartTemplating {
 		} elseif(strpos((string)$file, '.dust.') !== false) { // dust TPL
 			//--
 			return (string) \SmartModExtLib\TplDust\SmartDustTemplating::render_file_template(
-				(string) $file,
-				(array)  $arr_vars,
-				(bool)   $options['only-debug'] // false / true
-			);
-			//--
-		} elseif(strpos((string)$file, '.latte.') !== false) { // netteLatte TPL
-			//--
-			return (string) \SmartModExtLib\TplNetteLatte\SmartNetteLatteTemplating::render_file_template(
 				(string) $file,
 				(array)  $arr_vars,
 				(bool)   $options['only-debug'] // false / true

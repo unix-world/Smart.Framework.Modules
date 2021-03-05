@@ -23,6 +23,9 @@ function autoload__VendorMatthiasMullie($classname) {
 	$parts = (array) explode('\\', $classname);
 	//--
 	$max = (int) count($parts) - 1; // the last is the class
+	if($max < 1) {
+		return;
+	} //end if
 	//--
 	$dir = 'modules/vendor/MatthiasMullie/';
 	//--

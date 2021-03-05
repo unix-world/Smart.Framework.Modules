@@ -35,6 +35,9 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			$mode = 'memory';
 		} else {
 			$db_file = 'tmp/test-medoo.sqlite'; // file db
+			if(SmartFileSystem::is_type_file($db_file)) {
+				SmartFileSystem::delete($db_file);
+			} //end if
 			$mode = 'file';
 		} //end if
 		//--

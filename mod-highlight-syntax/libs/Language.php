@@ -34,6 +34,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //
 //----------------------------------------------------------------------
 
+// [PHP8]
+
 /**
  * Class: \SmartModExtLib\HighlightSyntax\Language
  *
@@ -41,7 +43,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	\stdClass, \Smart, \SmartUnicode, SmartFileSysUtils, \SmartFileSystem, \SmartModExtLib\HighlightSyntax\JsonRef
- * @version 	v.20200121
+ * @version 	v.20210305
  * @package 	modules:HighlightSyntax
  *
  */
@@ -330,6 +332,12 @@ class Language {
 				} //end if
 				foreach($dat as $kw) {
 					$pair = (array) \explode('|', (string)$kw);
+					if(!\array_key_exists(0, $pair)) {
+						$pair[0] = null;
+					} //end if
+					if(!\array_key_exists(1, $pair)) {
+						$pair[1] = null;
+					} //end if
 					$compiledKeywords[$pair[0]] = array($clsNm, isset($pair[1]) ? \intval($pair[1]) : 1);
 				} //end foreach
 			} //end foreach

@@ -12,7 +12,7 @@ namespace SmartModExtLib\EcommCart;
 
 final class cartManager {
 
-	// r.20200325
+	// r.20210305
 
 	/**
 	 * An unique ID for the cart.
@@ -764,6 +764,9 @@ final class cartManager {
 			if(\is_array($this->items[$id])) {
 				foreach($this->items[$id] as $index => $item) {
 					if((string)$item['hash'] == (string)$hash) {
+						if(!\array_key_exists('quantity', $this->items[$id][$index])) {
+							$this->items[$id][$index]['quantity'] = 0;
+						} //end if
 						$this->items[$id][$index]['quantity'] += $quantity;
 						$this->items[$id][$index]['quantity'] = ($this->itemMaxQuantity < $this->items[$id][$index]['quantity'] && $this->itemMaxQuantity != 0) ? $this->itemMaxQuantity : $this->items[$id][$index]['quantity'];
 						return (bool) $this->write();

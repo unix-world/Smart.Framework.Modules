@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype ; classes: Dust
- * @version 	v.20200121
+ * @version 	v.20210305
  * @package 	modules:TemplatingEngine
  *
  */
@@ -373,12 +373,18 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		if(!\is_array($dbgarr)) {
 			$dbgarr = array();
 		} //end if
+		if(!\is_array($dbgarr['tpl-vars'])) {
+			$dbgarr['tpl-vars'] = array();
+		} //end if
 		//--
 		if(\is_a($val, '\\Dust\\Ast\\Body')) {
 			if(\Smart::array_size($val->parts) > 0) {
 				for($i=0; $i<\Smart::array_size($val->parts); $i++) {
 					if(\is_a($val->parts[$i], '\\Dust\\Ast\\Reference')) {
 						if(\is_a($val->parts[$i]->identifier, '\\Dust\\Ast\\Identifier')) {
+							if(!\array_key_exists((string)$prefix.$val->parts[$i]->identifier->key, $dbgarr['tpl-vars'])) {
+								$dbgarr['tpl-vars'][(string)$prefix.$val->parts[$i]->identifier->key] = 0;
+							} //end if
 							$dbgarr['tpl-vars'][(string)$prefix.$val->parts[$i]->identifier->key] += 1;
 						} //end if
 					} elseif(\is_a($val->parts[$i], '\\Dust\Ast\Section')) {
@@ -388,6 +394,9 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 							} //end if
 						} elseif((string)$val->parts[$i]->type != '@') {
 							if(\is_a($val->parts[$i]->identifier, '\\Dust\\Ast\\Identifier')) {
+								if(!\array_key_exists((string)$prefix.$val->parts[$i]->identifier->key, $dbgarr['tpl-vars'])) {
+									$dbgarr['tpl-vars'][(string)$prefix.$val->parts[$i]->identifier->key] = 0;
+								} //end if
 								$dbgarr['tpl-vars'][(string)$prefix.$val->parts[$i]->identifier->key] += 1;
 							} //end if
 						} //end if else

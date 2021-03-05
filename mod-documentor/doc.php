@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20200121
+ * @version 20210305
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -408,23 +408,23 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['method']) > 0) {
 							for($j=0; $j<Smart::array_size($arr['methods'][$i]['doc-comments']['props']['method']); $j++) {
 									$tmp_proc_sub_meth_params = [];
-									$tmp_proc_sub_meth_type = trim((string)$arr['methods'][$i]['doc-comments']['props']['method'][$j]['type']);
+									$tmp_proc_sub_meth_type = (string) trim((string)$arr['methods'][$i]['doc-comments']['props']['method'][$j]['type']);
 									$tmp_proc_sub_meth_arr = (string) trim((string)$arr['methods'][$i]['doc-comments']['props']['method'][$j]['comment']);
 									$tmp_proc_sub_meth_arr = (array) explode('::', (string)$tmp_proc_sub_meth_arr);
-									$tmp_proc_sub_meth_name = (string) trim((string)$tmp_proc_sub_meth_arr[0]);
+									$tmp_proc_sub_meth_name = (string) trim((string)(isset($tmp_proc_sub_meth_arr[0]) ? $tmp_proc_sub_meth_arr[0] : ''));
 									array_shift($tmp_proc_sub_meth_arr);
 									$tmp_proc_sub_meth_arr = (array) array_values((array)$tmp_proc_sub_meth_arr);
 									$tmp_proc_sub_meth_arr = (string) implode('#', (array)$tmp_proc_sub_meth_arr);
 									$tmp_proc_sub_meth_desc = (string) trim((string)$tmp_proc_sub_meth_arr);
 									$tmp_proc_sub_meth_arr = null;
 									$tmp_proc_sub_meth_arr = (array) explode('(', (string)rtrim((string)$tmp_proc_sub_meth_name, ')'));
-									$tmp_proc_sub_meth_name = (string) trim((string)$tmp_proc_sub_meth_arr[0]);
-									$tmp_proc_sub_meth_arr = (array) explode(',', (string)trim((string)$tmp_proc_sub_meth_arr[1]));
+									$tmp_proc_sub_meth_name = (string) trim((string)(isset($tmp_proc_sub_meth_arr[0]) ? $tmp_proc_sub_meth_arr[0] : ''));
+									$tmp_proc_sub_meth_arr = (array) explode(',', (string)trim((string)(isset($tmp_proc_sub_meth_arr[1]) ? $tmp_proc_sub_meth_arr[1] : '')));
 									if(Smart::array_size($tmp_proc_sub_meth_arr) > 0) {
 										for($p=0; $p<Smart::array_size($tmp_proc_sub_meth_arr); $p++) {
 											$tmp_proc_sub_meth_param = (array) explode(' ', (string)trim((string)$tmp_proc_sub_meth_arr[$p]));
-											$tmp_proc_sub_meth_param[0] = (string) trim((string)$tmp_proc_sub_meth_param[0]);
-											$tmp_proc_sub_meth_param[1] = (string) trim((string)$tmp_proc_sub_meth_param[1]);
+											$tmp_proc_sub_meth_param[0] = (string) trim((string)(isset($tmp_proc_sub_meth_param[0]) ? $tmp_proc_sub_meth_param[0] : ''));
+											$tmp_proc_sub_meth_param[1] = (string) trim((string)(isset($tmp_proc_sub_meth_param[1]) ? $tmp_proc_sub_meth_param[1] : ''));
 											if((string)$tmp_proc_sub_meth_param[1] == '') {
 												$tmp_proc_sub_meth_param[1] = $tmp_proc_sub_meth_param[0];
 												$tmp_proc_sub_meth_param[0] = '';

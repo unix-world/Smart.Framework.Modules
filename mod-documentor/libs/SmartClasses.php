@@ -182,7 +182,6 @@ final class SmartClasses {
 			'\\SmartTemplating',
 			'\\SmartModExtLib\\TplDust\\SmartDustTemplating',
 			'\\SmartModExtLib\\TplTwig\\SmartTwigTemplating',
-			'\\SmartModExtLib\\TplNetteLatte\\SmartNetteLatteTemplating',
 			'\\SmartModExtLib\\TplTypo3Fluid\\SmartTypo3FluidTemplating',
 			//--
 			'\\SmartSolrDb',

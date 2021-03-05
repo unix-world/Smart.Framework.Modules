@@ -8,7 +8,7 @@ namespace Dust;
 
 class Dust implements \Serializable {
 
-	const VERSION = 'v.0.1.91-r.20191129.sfm'; // github.com/Bloafer/dust-php
+	const VERSION = 'v.0.1.91-r.20210305.sfm'; // github.com/Bloafer/dust-php
 
 	private $parser;
 
@@ -162,6 +162,9 @@ class Dust implements \Serializable {
 		$compiled->filePath = (string) $path;
 		//--
 		if(\SmartFrameworkRuntime::ifDebug()) {
+			if(!\array_key_exists((string)$path, $this->fsRdRpls)) {
+				$this->fsRdRpls[(string)$path] = 0;
+			} //end if
 			$this->fsRdRpls[(string)$path] += 1;
 			\SmartFrameworkRegistry::setDebugMsg('extra', 'DUST-TEMPLATING', [
 				'title' => '[TPL-ReadFileTemplate-From-FS] :: Dust-'.(((string)$basePath == '') ? 'Sub' : '').'TPL / File-Read: '.$path.' ;',

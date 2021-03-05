@@ -26,7 +26,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20200611
+ * @version 20210305
  * @ignore
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -288,7 +288,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		if(strpos((string)$file, '?#') !== false) {
 			$file = (array) explode('?#', (string)$file);
-			$file = (string) trim((string)$file[0]);
+			$file = (string) trim((string)(isset($file[0]) ? $file[0] : ''));
 		} //end if
 		//--
 		if((string)\trim((string)$cls) == '') {

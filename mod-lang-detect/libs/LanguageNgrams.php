@@ -56,7 +56,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @hints		By default will use the 1-3-930 NGrams. To use extended NGrams (Ex: 1-4-15k) see the local code examples.
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSysUtils
- * @version 	v.20200121
+ * @version 	v.20210305
  * @package 	modules:LanguageDetection
  *
  */
@@ -298,8 +298,15 @@ final class LanguageNgrams {
 			/*	for($j=0; ($i+$j-1) < $l; ++$j, ++$tmp) {
 					$tmp =& $tokens[$i][(string)\SmartUnicode::sub_str($word, $j, $i)];
 				} //end for */
-				for($j=0; ($i+$j-1) < $l; ++$j) {
-					$tokens[$i][(string)\SmartUnicode::sub_str($word, $j, $i)]++;
+				if((!isset($tokens[$i])) OR (!\is_array($tokens[$i]))) {
+					$tokens[$i] = [];
+				} //end if
+				for($j=0; ($i+$j-1)<$l; ++$j) {
+					$the_key = (string) \SmartUnicode::sub_str($word, $j, $i);
+					if(!\array_key_exists((string)$the_key, $tokens[$i])) {
+						$tokens[$i][(string)$the_key] = 0;
+					} //end if
+					$tokens[$i][(string)$the_key]++;
 				} //end for
 				//--
 			} //end for

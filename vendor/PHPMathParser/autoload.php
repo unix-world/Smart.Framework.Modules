@@ -23,7 +23,7 @@ function autoload__VendorPHPMathParser($classname) {
 	$parts = (array) explode('\\', $classname);
 	$max = (int) count($parts) - 1; // the last is the class
 	//--
-	if(((string)$parts[1] == '') OR ($max < 1)) {
+	if(($max < 1) OR ((string)$parts[1] == '')) {
 		return;
 	} //end if
 	//--

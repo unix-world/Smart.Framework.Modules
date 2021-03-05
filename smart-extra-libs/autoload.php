@@ -37,7 +37,6 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 		//--
 		case 'SmartTypo3FluidTemplating':
 		case 'SmartTwigTemplating':
-		case 'SmartNetteLatteTemplating':
 		case 'SmartTemplating':
 			require_once('modules/smart-extra-libs/lib_templating_ext.php'); 		// extended templating
 			break;

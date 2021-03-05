@@ -1,6 +1,6 @@
 
-# Smart.Framework.Modules: Zend-DBAL r.20200610 #
-## Zend/Db 2.10.0 ; Zend/Stdlib 3.2.1 ##
+# Smart.Framework.Modules: Zend-DBAL r.20210305 #
+## Zend/Db 2.11.0 (with fixes by unixman for PHP8) ; Zend/Stdlib 3.2.1 ##
 
 // r.7.2.1 / smart.framework.v.7.2
 

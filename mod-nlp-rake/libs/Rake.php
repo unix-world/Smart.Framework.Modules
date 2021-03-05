@@ -117,7 +117,7 @@ final class Rake {
 		$phrases_arr = array();
 		foreach($sentences as $kk => $s) {
 			$phrases_temp = \preg_replace($this->stopwords_pattern, '|', $s);
-			$phrases = \explode('|', $phrases_temp);
+			$phrases = (array) \explode('|', $phrases_temp);
 			foreach($phrases as $kkk => $p) {
 				$p = (string) \trim((string)\trim((string)$p), '_-+=\'"`,.!?@#^*:;()[]{}<>&/\\|'); // unixman: fix to avoid words starting or ending with punctuation characters
 				$p = (string) \strtolower((string)\trim((string)$p));

@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	extensions: PHP Ctype (optional) ; classes: \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20200121
+ * @version 	v.20210305
  * @package 	modules:TemplatingEngine
  *
  */
@@ -130,6 +130,9 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 		$dbg_arr['tpl-vars'] = array();
 		foreach($tmp_vars as $key => $val) {
 			if((string)\trim((string)$key) != '') {
+				if(!\array_key_exists((string)$key, $dbg_arr['tpl-vars'])) {
+					$dbg_arr['tpl-vars'][(string)$key] = 0;
+				} //end if
 				$dbg_arr['tpl-vars'][(string)$key] += (int)$val;
 			} //end if
 		} //end foreach

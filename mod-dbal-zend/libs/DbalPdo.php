@@ -193,8 +193,8 @@ final class DbalPdo {
 		} //end if else
 		//--
 		$this->cfg['driver'] = (string) \strtolower((string)\trim((string)$this->cfg['driver']));
-		$this->cfg['host'] = (string) \trim((string)$this->cfg['host']);
-		$this->cfg['port'] = (int) $this->cfg['port'];
+		$this->cfg['host'] = (string) \trim((string)(isset($this->cfg['host']) ? $this->cfg['host'] : ''));
+		$this->cfg['port'] = (int) (isset($this->cfg['port']) ? $this->cfg['port'] : null);
 		//--
 		switch((string)$this->cfg['driver']) {
 		//	case 'mysqli': // do not use as the cross-db params compatibility in queries would be broken !
@@ -228,10 +228,10 @@ final class DbalPdo {
 		} //end switch
 		//--
 		$this->cfg['charset'] = (string) \SMART_FRAMEWORK_DBSQL_CHARSET;
-		$this->cfg['options'] = (array) $this->cfg['options'];
+		$this->cfg['options'] = (array) ((isset($this->cfg['options']) && \is_array($this->cfg['options'])) ? $this->cfg['options'] : []);
 		$this->cfg['options']['buffer_results'] = true;
 		//--
-		$this->connkey = (string) $this->cfg['driver'].'*'.$this->cfg['host'].':'.$this->cfg['port'].'@'.$this->cfg['database'].'#'.$this->cfg['username'];
+		$this->connkey = (string) (isset($this->cfg['driver']) ? $this->cfg['driver'] : '').'*'.(isset($this->cfg['host']) ? $this->cfg['host'] : '').':'.(isset($this->cfg['port']) ? $this->cfg['port'] : '').'@'.(isset($this->cfg['database']) ? $this->cfg['database'] : '').'#'.(isset($this->cfg['username']) ? $this->cfg['username'] : '');
 		//--
 		$this->connection = new \Zend\Db\Adapter\Adapter((array)$this->cfg); // lazy connection, does not throw here (will connect on first query)
 		//--
@@ -461,7 +461,7 @@ final class DbalPdo {
 	 */
 	public function write_data($query, $values_or_mode='') {
 		//--
-		if((string)\strtoupper((string)$values_or_mode) == 'QUERY_MODE_EXECUTE') {
+		if((!\is_array($values_or_mode)) AND ((string)\strtoupper((string)$values_or_mode) == 'QUERY_MODE_EXECUTE')) {
 			$values_or_mode = \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE;
 		} elseif(!\is_array($values_or_mode)) {
 			$values_or_mode = array();
@@ -646,16 +646,19 @@ function autoload__ZendDbal_SFM($classname) {
 	$parts = (array) \explode('\\', $classname);
 	//--
 	$max = (int) \count($parts) - 1; // the last is the class
+	if($max < 2) {
+		return;
+	} //end if
 	//--
 	$dir = 'modules/mod-dbal-zend/libs/Zend/';
 	//--
 	if(((string)$parts[1] == 'Db') OR ((string)$parts[1] == 'Stdlib')) {
 		//--
-		if((string)$parts[1] != '') {
-			for($i=1; $i<$max; $i++) {
+		for($i=1; $i<$max; $i++) {
+			if((string)$parts[$i] != '') {
 				$dir .= (string) $parts[$i].'/';
-			} //end for
-		} //end if
+			} //end if
+		} //end for
 		//--
 	} else {
 		//--

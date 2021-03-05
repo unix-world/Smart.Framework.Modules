@@ -324,8 +324,8 @@ final class ArchLzs {
 		$unarch = (string) \trim((string)self::RawInflate((string)$compressed));
 		//-- checksum verification
 		$arr = (array) \explode('#CHECKSUM-SHA1#', $unarch);
-		$unarch = (string) \trim((string)$arr[0]);
-		$checksum = (string) \trim((string)$arr[1]);
+		$unarch 	= (string) \trim((string)(isset($arr[0]) ? $arr[0] : ''));
+		$checksum 	= (string) \trim((string)(isset($arr[1]) ? $arr[1] : ''));
 		//--
 		if((string)\SmartHashCrypto::sha1($unarch) != (string)$checksum) {
 			\Smart::log_notice(__METHOD__.'() :: Checksum Failed');

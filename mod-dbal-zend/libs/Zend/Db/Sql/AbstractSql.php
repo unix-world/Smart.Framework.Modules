@@ -253,7 +253,8 @@ abstract class AbstractSql implements SqlInterface
                             $ppCount
                         ));
                     }
-                    $multiParamValues[] = vsprintf($paramSpecs[$position][$ppCount], $multiParamsForPosition);
+                //  $multiParamValues[] = vsprintf($paramSpecs[$position][$ppCount], $multiParamsForPosition);
+                    $multiParamValues[] = vsprintf($paramSpecs[$position][$ppCount], (is_array($multiParamsForPosition) ? $multiParamsForPosition : [ $multiParamsForPosition ])); // bug fix by unixman for PHP8
                 }
                 $topParameters[] = implode($paramSpecs[$position]['combinedby'], $multiParamValues);
             } elseif ($paramSpecs[$position] !== null) {
