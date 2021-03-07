@@ -63,7 +63,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200121
+ * @version 	v.20210307
  * @package 	extralibs:ViewComponents
  *
  */
@@ -306,6 +306,7 @@ public function generate($y_mode='raw') {
 	ob_end_clean();
 	//--
 	@imagedestroy($this->img);
+	$this->img = null;
 	//--
 
 	//--
@@ -522,7 +523,7 @@ private function color_alocate($y_color) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200121
+ * @version 	v.20210307
  * @package 	extralibs:ViewComponents
  *
  */
@@ -1124,6 +1125,7 @@ private function draw_chart() {
 	ob_end_clean();
 	//--
 	@imagedestroy($this->img);
+	$this->img = null;
 	//--
 
 	//--

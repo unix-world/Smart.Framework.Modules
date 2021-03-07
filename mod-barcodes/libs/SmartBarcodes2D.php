@@ -52,7 +52,7 @@ if(!defined('SMART_FRAMEWORK_BARCODE_2D_OPTS')) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	Smart.Framework
- * @version 	v.20200121
+ * @version 	v.20210307
  * @package 	modules:Barcodes
  *
  */
@@ -494,6 +494,7 @@ final class SmartBarcodes2D {
 		@\imagepng($png); // barcodes are speed oriented ! for 2 color png the zlib default compression level (6) is enough and increasing to 9 makes no diff in size ; more, if adding PNG_ALL_FILTERS will increase the size
 		$imagedata = \ob_get_clean();
 		@\imagedestroy($png);
+		$png = null;
 		//--
 		return (string) $imagedata;
 		//--
