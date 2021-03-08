@@ -3,8 +3,8 @@
 ### This software project is open source. You must choose which license to use depending on your use case: BSD license or GPLv3 license (see LICENSE file)
 <b>(c) 2009 - 2019 unix-world.org</b> / <i>support&#64;unix-world.org</i>
 
-#### This software framework is compatible, stable and actively tested with PHP 7.2 / 7.3 / 7.4 versions.
-**Prefered PHP versions** are: **7.2 / 7.3** which are currently LTS.
+#### This software framework is compatible, stable and actively tested with PHP 7.2 / 7.3 / 7.4 / 8.0 versions.
+**Prefered PHP version** is: **7.4** (LTS).
 
 ## List of available Modules for Smart.Framework:
 
@@ -21,7 +21,6 @@
 	* Dust Templating Engine (by LinkedIn) integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-dust into smart-framework/modules/
 	* Twig Templating Engine (by Symfony): integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-twig into smart-framework/modules/
 	* TYPO3Flow Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-typo3-fluid into smart-framework/modules/
-	* Nette Latte Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-nette-latte into smart-framework/modules/
 	* Zend DBAL: PDO based connector for: PgSQL, MySQL and SQLite ; to start use just copy the mod-dbal-zend into smart-framework/modules/
 	* Redbean ORM: an ORM based connector for: PgSQL, MySQL and SQLite ; to start use just copy the mod-db-orm-redbean into smart-framework/modules/
 	* GeoIP: a GeoIP api for PHP using the geoiplookup / geoiplookup6 executables
