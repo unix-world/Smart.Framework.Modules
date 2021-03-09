@@ -69,9 +69,20 @@ class SVGFont extends SVGStyle
         if (!$embed) {
             return $path;
         }
-
-        $data = file_get_contents($path);
-        if ($data === false) {
+        //-- security fix by unixman: file_get_contents() is not safe as the SVG MUST NOT be able to access local files but only URLs or Data URLs as in this case !!!
+    //  $data = file_get_contents($path);
+        //--
+        $data = false;
+        if((string)trim((string)$path) != '') {
+            $arr = \SmartRobot::load_url_content($path); // force load file using HTTP browser and even if this is a file browse it via local URL
+            if((int)$arr['result'] == 1) {
+                if((int)$arr['code'] == 200) {
+                    $data = ($arr['content'] ? (string)$arr['content'] : false); // be consistent with file_get_contents()
+                }
+            }
+        }
+        //-- #fix
+        if($data === false) {
             throw new RuntimeException('Font file "' . $path . '" could not be read.');
         }
 

@@ -46,7 +46,19 @@ class SVGImage extends SVGNodeContainer
      */
     public static function fromFile($path, $mimeType, $x = null, $y = null, $width = null, $height = null)
     {
-        $imageContent = file_get_contents($path);
+        //-- security fix by unixman: file_get_contents() is not safe as the SVG MUST NOT be able to access local files but only URLs or Data URLs as in this case !!!
+    //  $imageContent = file_get_contents($path);
+        //--
+        $imageContent = false;
+        if((string)trim((string)$path) != '') {
+            $arr = \SmartRobot::load_url_content($path); // force load file using HTTP browser and even if this is a file browse it via local URL
+            if((int)$arr['result'] == 1) {
+                if((int)$arr['code'] == 200) {
+                    $imageContent = ($arr['content'] ? (string)$arr['content'] : false); // be consistent with file_get_contents()
+                }
+            }
+        }
+        //-- #fix
         if ($imageContent === false) {
             throw new RuntimeException('Image file "' . $path . '" could not be read.');
         }

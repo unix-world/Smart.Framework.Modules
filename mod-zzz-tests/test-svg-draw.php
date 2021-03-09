@@ -56,8 +56,13 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				->setStyle('stroke-width', '2px')
 		);
 		//--
+		$image = (string) $image; // toString()
+		//-- #use for extended test purposes only (will use lib robot with external URL or dataURL)
+		$image = (string) str_ireplace('</svg>', '<image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAPCAYAAAACsSQRAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ODhBMDIwQzhDRUI3MTFFMjg4RUJDNUMzQkZEREM2RDIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6ODhBMDIwQzlDRUI3MTFFMjg4RUJDNUMzQkZEREM2RDIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4OEEwMjBDNkNFQjcxMUUyODhFQkM1QzNCRkREQzZEMiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4OEEwMjBDN0NFQjcxMUUyODhFQkM1QzNCRkREQzZEMiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PntuzoIAAACySURBVHjaYmTAAjo6Ov4z4AAVFRWM6GJM6ALt7e0OUCYjFowsDwfIEjDbDRgZGSf8//8fUzEj4wGgeAGQeQFJ+CIj0IALQEl9BjIB0NADTJQYAHWdAxMDFQBVDGEB+ukgxYYAcQNSzCCnh4NY0o89VkOAAbMfV5gBNR0AytuDXAs01AEUxbhcwoAj1c4HaUTi9wMNwWnb/0ERO0xA/z6k0IyP4NgBGpRApgEfgHgBQIABAAcyQOF3e6FiAAAAAElFTkSuQmCC" height="16" width="16"/></svg>', (string)$image);
+	//	$image = (string) str_ireplace('</svg>', '<image href="http://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png" height="24" width="24"/></svg>', (string)$image);
+		//-- #end test
 		$image2 = \SVG\SVG::fromString($image);
-		$imgres = $image->toRasterImage(100, 100);
+		$imgres = $image2->toRasterImage(100, 100);
 		//--
 		$extratext = '';
 		if(rand(0,1) == 1) {

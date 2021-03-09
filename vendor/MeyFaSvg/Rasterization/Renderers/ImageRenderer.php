@@ -32,8 +32,8 @@ class ImageRenderer extends Renderer
         $image = $rasterizer->getImage();
 
         $img = $this->loadImage($href, $width, $height);
-
-        if (!empty($img) && is_resource($img)) {
+    //  if (!empty($img) && is_resource($img)) {
+        if (!empty($img) && (is_resource($img) OR (is_a($img, '\\GdImage')))) { // fix by unixman for PHP8
             imagecopyresampled(
                 $image,         // dst
                 $img,           // src
@@ -65,7 +65,12 @@ class ImageRenderer extends Renderer
      */
     private function loadImage($href, $w, $h)
     {
+        //-- fix by unixman
         $content = $this->loadImageContent($href);
+        if(!$content) {
+            return null;
+        }
+        //-- #fix
 
         if (strpos($content, '<svg') !== false && strrpos($content, '</svg>') !== false) {
             $svg = SVG::fromString($content);
@@ -84,6 +89,9 @@ class ImageRenderer extends Renderer
      */
     private function loadImageContent($href)
     {
+
+        //-- security fix by unixman: file_get_contents() is not safe as the SVG MUST NOT be able to access local files but only URLs or Data URLs as in this case !!!
+        /*
         $dataPrefix = 'data:';
 
         // check if $href is data URI
@@ -100,5 +108,19 @@ class ImageRenderer extends Renderer
         }
 
         return file_get_contents($href);
+        */
+
+        if((string)trim((string)$href) == '') {
+            return false; // be consistent with file_get_contents()
+        }
+        $arr = \SmartRobot::load_url_img_content($href); // works with dataURL and also URL or local files via URL ; force load image using HTTP browser and even if this is a file browse it via local URL
+        if((int)$arr['result'] != 1) {
+            return false; // be consistent with file_get_contents()
+        }
+        if((int)$arr['code'] != 200) {
+            return false; // be consistent with file_get_contents()
+        }
+        return ($arr['content'] ? (string)$arr['content'] : false); // be consistent with file_get_contents()
+        //-- #fix
     }
 }
