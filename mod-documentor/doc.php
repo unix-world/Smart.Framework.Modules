@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20210305
+ * @version 20210309
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -40,7 +40,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		if(!defined('SMART_APP_MODULES_EXTRALIBS_VER')) {
-			require_once('modules/smart-extra-libs/autoload.php');
+			if(SmartFileSystem::is_type_dir('modules/smart-extra-libs')) {
+				require_once('modules/smart-extra-libs/autoload.php');
+			} //end if
+			if(!defined('SMART_APP_MODULES_EXTRALIBS_VER')) {
+				$this->PageViewSetErrorStatus(500, 'ERROR: Smart Extra Libs are Missing and could not be loaded ...');
+				return;
+			} //end if
 		} //end if
 		//--
 
@@ -73,6 +79,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_ALLOW !== true)) {
 			$this->PageViewSetErrorStatus(503, 'ERROR: Documentor is disabled. Must defined SMART_FRAMEWORK_DOCUMENTOR_ALLOW = TRUE to allow it.');
+			return;
+		} //end if
+		//--
+		if(!class_exists('DOMDocument')) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: DOMDocument PHP extension is missing ...');
 			return;
 		} //end if
 		//--
@@ -199,7 +210,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						$this->jsonAnswer($proc.' ...', false);
 						return;
 					} //end if
-					$this->jsonAnswer('Documentation saved for: '.$type.' `'.$cls.'`');
+					$this->jsonAnswer('Documentation saved for: `'.$cls.'`');
 					//--
 				} else { // ERR
 					//--
@@ -318,7 +329,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				]
 			);
 		} //end if
-		if(empty($arr['class'])) {
+	//	if(empty($arr['class'])) {
+		if((!isset($arr['class'])) OR (empty($arr['class']))) {
 			$this->errMsg = 'Cannot get the definition (2) for class:'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',
@@ -330,7 +342,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$doc_comments = '';
 		$doc_code = '';
-		if(Smart::array_size($arr['class']['doc-comments']) > 0) {
+		if(isset($arr['class']['doc-comments']) AND (Smart::array_size($arr['class']['doc-comments']) > 0)) {
 			if((string)trim((string)$arr['class']['doc-comments']['comments']) != '') {
 				$doc_comments = (string) trim((string)$arr['class']['doc-comments']['comments']);
 				$doc_comments = (string) Smart::nl_2_br(Smart::escape_html($doc_comments)); // need to be HTML for prepare nosyntax
@@ -346,16 +358,16 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$doc_hints = '';
 		$doc_usage = '';
 		$doc_throws = '';
-		if(Smart::array_size($arr['class']['doc-@comments']) > 0) {
-			$doc_package = (string) $arr['class']['doc-@comments']['package'];
-			$doc_version = (string) $arr['class']['doc-@comments']['version'];
-			$doc_depends = (string) $arr['class']['doc-@comments']['depends'];
-			$doc_hints = (string) $arr['class']['doc-@comments']['hints'];
-			$doc_usage = (string) $arr['class']['doc-@comments']['usage'];
-			$doc_throws = (string) $arr['class']['doc-@comments']['throws'];
+		if(isset($arr['class']['doc-@comments']) AND (Smart::array_size($arr['class']['doc-@comments']) > 0)) {
+			$doc_package = (string) (isset($arr['class']['doc-@comments']['package']) ? $arr['class']['doc-@comments']['package'] : '');
+			$doc_version = (string) (isset($arr['class']['doc-@comments']['version']) ? $arr['class']['doc-@comments']['version'] : '');
+			$doc_depends = (string) (isset($arr['class']['doc-@comments']['depends']) ? $arr['class']['doc-@comments']['depends'] : '');
+			$doc_hints   = (string) (isset($arr['class']['doc-@comments']['hints'])   ? $arr['class']['doc-@comments']['hints']   : '');
+			$doc_usage   = (string) (isset($arr['class']['doc-@comments']['usage'])   ? $arr['class']['doc-@comments']['usage']   : '');
+			$doc_throws  = (string) (isset($arr['class']['doc-@comments']['throws'])  ? $arr['class']['doc-@comments']['throws']  : '');
 		} //end if
 		//--
-		if(Smart::array_size($arr['constants']) > 0) {
+		if(isset($arr['constants']) AND (Smart::array_size($arr['constants']) > 0)) {
 			for($i=0; $i<Smart::array_size($arr['constants']); $i++) {
 				//--
 				$arr['constants'][$i]['doc-const-type'] = '';
@@ -371,36 +383,38 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			} //end for
 		} //end if
 		//--
-		if(Smart::array_size($arr['properties']) > 0) {
+		if(isset($arr['properties']) AND (Smart::array_size($arr['properties']) > 0)) {
 			for($i=0; $i<Smart::array_size($arr['properties']); $i++) {
 				//--
 				$arr['properties'][$i]['doc-var-type'] = '';
 				//--
-				if(Smart::array_size($arr['properties'][$i]['doc-comments']['props']) > 0) {
-					if(Smart::array_size($arr['properties'][$i]['doc-comments']['props']['var']) > 0) {
+				if(isset($arr['properties'][$i]['doc-comments']['props']) AND (Smart::array_size($arr['properties'][$i]['doc-comments']['props']) > 0)) {
+					if(isset($arr['properties'][$i]['doc-comments']['props']['var']) AND (Smart::array_size($arr['properties'][$i]['doc-comments']['props']['var']) > 0)) {
 						$arr['properties'][$i]['doc-var-type'] = (string) trim((string)$arr['properties'][$i]['doc-comments']['props']['var']['type']);
 						if((string)$arr['properties'][$i]['value'] == '') {
-							$arr['properties'][$i]['value'] = (string) trim((string)$arr['properties'][$i]['doc-comments']['props']['default']['line']);
+							if(isset($arr['properties'][$i]['doc-comments']['props']['default']) AND is_array($arr['properties'][$i]['doc-comments']['props']['default'])) {
+								$arr['properties'][$i]['value'] = (string) trim((string)$arr['properties'][$i]['doc-comments']['props']['default']['line']);
+							} //end if
 						} //end if
 					} //end if
 				} //end if
 				//--
-				$arr['properties'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['properties'][$i]['doc-comments']['comments'])), true);
+				$arr['properties'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html((string)(isset($arr['properties'][$i]['doc-comments']['comments']) ? $arr['properties'][$i]['doc-comments']['comments'] : ''))), true);
 				//--
 			} //end for
 		} //end if
 		//--
-		if(Smart::array_size($arr['methods']) > 0) {
+		if(isset($arr['methods']) AND (Smart::array_size($arr['methods']) > 0)) {
 			for($i=0; $i<Smart::array_size($arr['methods']); $i++) {
 				//--
 				$arr['methods'][$i]['sub-methods'] = [];
 				$arr['methods'][$i]['ret-param-html'] = '';
 				$tmp_arr_ret_param = [];
 				//--
-				if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['throws']) > 0) {
+				if(isset($arr['methods'][$i]['doc-comments']['props']['throws']) AND (Smart::array_size($arr['methods'][$i]['doc-comments']['props']['throws']) > 0)) {
 					$tmp_arr_ret_param[] = '@throws: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['throws']['type'].'} '.ltrim($arr['methods'][$i]['doc-comments']['props']['throws']['comment'], ' :'));
 				} //end if
-				if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['hints']) > 0) {
+				if(isset($arr['methods'][$i]['doc-comments']['props']['hints']) AND (Smart::array_size($arr['methods'][$i]['doc-comments']['props']['hints']) > 0)) {
 					$tmp_arr_ret_param[] = '@hints: '.ltrim($arr['methods'][$i]['doc-comments']['props']['hints']['line'], ' :');
 				} //end if
 				if($arr['methods'][$i]['is-magic'] === true) {
@@ -457,11 +471,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						} //end if
 					} //end if
 				} else {
-					if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']) > 0) {
-						if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['return']) > 0) {
+					if(isset($arr['methods'][$i]['doc-comments']['props']) AND (Smart::array_size($arr['methods'][$i]['doc-comments']['props']) > 0)) {
+						if(isset($arr['methods'][$i]['doc-comments']['props']['return']) AND (Smart::array_size($arr['methods'][$i]['doc-comments']['props']['return']) > 0)) {
 							$tmp_arr_ret_param[] = '@return: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['return']['type'].'} '.ltrim($arr['methods'][$i]['doc-comments']['props']['return']['comment'], ' :'));
 						} //end if
-						if(Smart::array_size($arr['methods'][$i]['doc-comments']['props']['param']) > 0) {
+						if(isset($arr['methods'][$i]['doc-comments']['props']['param']) AND (Smart::array_size($arr['methods'][$i]['doc-comments']['props']['param']) > 0)) {
 							for($j=0; $j<Smart::array_size($arr['methods'][$i]['doc-comments']['props']['param']); $j++) {
 								if(strpos(trim((string)$arr['methods'][$i]['doc-comments']['props']['param'][$j]['var']), '$') === 0) {
 									$tmp_arr_ret_param[] = (string) rtrim('@param: {'.trim((string)$arr['methods'][$i]['doc-comments']['props']['param'][$j]['type']).'} '.trim((string)$arr['methods'][$i]['doc-comments']['props']['param'][$j]['var']).': '.trim((string)ltrim($arr['methods'][$i]['doc-comments']['props']['param'][$j]['comment'], ' :')), ' :');
@@ -476,9 +490,12 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if else
 				$tmp_arr_ret_param = [];
 				//--
-				$arr['methods'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['methods'][$i]['doc-comments']['comments'])), true);
-				if(Smart::array_size($arr['methods'][$i]['doc-comments']['code']) > 0) {
+				$arr['methods'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html((isset($arr['methods'][$i]['doc-comments']['comments']) ? $arr['methods'][$i]['doc-comments']['comments'] : ''))), true);
+				//--
+				if(isset($arr['methods'][$i]['doc-comments']['code']) AND (Smart::array_size($arr['methods'][$i]['doc-comments']['code']) > 0)) {
 					$arr['methods'][$i]['code-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template($this->highlightPhpCode((string)implode("\n\n", (array)$arr['methods'][$i]['doc-comments']['code'])));
+				} elseif(isset($arr['methods'][$i]['doc-comments']['code']) AND Smart::is_nscalar($arr['methods'][$i]['doc-comments']['code']) AND ((string)trim((string)$arr['methods'][$i]['doc-comments']['code']) != '')) {
+					$arr['methods'][$i]['code-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template($this->highlightPhpCode((string)$arr['methods'][$i]['doc-comments']['code']));
 				} else {
 					$arr['methods'][$i]['code-html'] = '';
 				} //end if else
@@ -642,7 +659,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				if(array_key_exists('internal', (array)$comments['props'])) {
 					$is_internal_priv = true;
 				} // end if
-				if(Smart::array_size($comments['props']['access']) > 0) {
+				if(isset($comments['props']['access']) AND (Smart::array_size($comments['props']['access']) > 0)) {
 					if((string)trim((string)strtolower((string)$comments['props']['access']['type'])) == 'private') {
 						$is_internal_priv = true;
 					} //end if
@@ -707,12 +724,16 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$properties = [];
 		foreach($akeys as $key => $val) {
 			if($val === true) {
-				for($i=0; $i<Smart::array_size($parr[(string)$key]); $i++) {
-					if((string)$parr[(string)$key][$i]['decl'] != '') {
-						$parr[(string)$key][$i]['decl'] = (string) '\\'.ltrim((string)$parr[(string)$key][$i]['decl'], '\\');
-					} //end if
-					$properties[] = (array) $parr[(string)$key][$i];
-				} //end for
+				if(isset($parr[(string)$key]) AND is_array($parr[(string)$key])) {
+					for($i=0; $i<Smart::array_size($parr[(string)$key]); $i++) {
+						if(isset($parr[(string)$key][$i]) AND is_array($parr[(string)$key][$i]) AND isset($parr[(string)$key][$i]['decl'])) {
+							if((string)$parr[(string)$key][$i]['decl'] != '') {
+								$parr[(string)$key][$i]['decl'] = (string) '\\'.ltrim((string)$parr[(string)$key][$i]['decl'], '\\');
+							} //end if
+						} //end if
+						$properties[] = (array) $parr[(string)$key][$i];
+					} //end for
+				} //end if
 			} //end if
 		} //end foreach
 		//--
@@ -722,12 +743,16 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$constants = [];
 		foreach($akeys as $key => $val) {
 			if($val === true) {
-				for($i=0; $i<Smart::array_size($carr[(string)$key]); $i++) {
-					if((string)$carr[(string)$key][$i]['decl'] != '') {
-						$carr[(string)$key][$i]['decl'] = (string) '\\'.ltrim((string)$carr[(string)$key][$i]['decl'], '\\');
-					} //end if
-					$constants[] = (array) $carr[(string)$key][$i];
-				} //end for
+				if(isset($carr[(string)$key]) AND is_array($carr[(string)$key])) {
+					for($i=0; $i<Smart::array_size($carr[(string)$key]); $i++) {
+						if(isset($carr[(string)$key][$i]) AND is_array($carr[(string)$key][$i]) AND isset($carr[(string)$key][$i]['decl'])) {
+							if((string)$carr[(string)$key][$i]['decl'] != '') {
+								$carr[(string)$key][$i]['decl'] = (string) '\\'.ltrim((string)$carr[(string)$key][$i]['decl'], '\\');
+							} //end if
+						} //end if
+						$constants[] = (array) $carr[(string)$key][$i];
+					} //end for
+				} //end if
 			} //end if
 		} //end foreach
 		//--
@@ -1020,14 +1045,14 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 								if(array_key_exists('internal', (array)$comments['props'])) {
 									$is_internal_priv = true;
 								} // end if
-								if(Smart::array_size($comments['props']['access']) > 0) {
+								if(isset($comments['props']['access']) AND (Smart::array_size($comments['props']['access']) > 0)) {
 									if((string)trim((string)strtolower((string)$comments['props']['access']['type'])) == 'private') {
 										$is_internal_priv = true;
 									} //end if
 								} //end if
-								if(Smart::array_size($comments['props']['return']) > 0) {
+								if(isset($comments['props']['return']) AND (Smart::array_size($comments['props']['return']) > 0)) {
 									$returns = (string) trim((string)$comments['props']['return']['type']);
-								} elseif(Smart::array_size($comments['props']['returns']) > 0) {
+								} elseif(isset($comments['props']['returns']) AND (Smart::array_size($comments['props']['returns']) > 0)) {
 									$returns = (string) trim((string)$comments['props']['returns']['type']);
 								} //end if else
 							} //end if
@@ -1075,9 +1100,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 										'have-type' 		=> (bool)   $havetypeparam,
 										'type' 				=> (string) $deftype,
 										'def-type' 			=> (string) $deftype, // store default type ; the above type may be overwritten by doc type
-										'is-type-array' 	=> (bool)   $param->isArray(),
-										'is-callable' 		=> (bool)   $param->isCallable(),
+									//	'is-type-array' 	=> (bool)   $param->isArray(), // deprecated since PHP8
+										'is-type-array' 	=> (bool)   ($param->getType() && ($param->getType()->getName() === 'array')), // fix for PHP8
+									//	'is-callable' 		=> (bool)   $param->isCallable(), // deprecated since PHP8
+										'is-callable' 		=> (bool)   ($param->getType() && ($param->getType()->getName() === 'callable')), // fix for PHP8
 										'is-variadic' 		=> (bool)   $param->isVariadic()
+										// before PHP8: $param->getClass();
+										// since  PHP8: (($param->getType() && (!$param->getType()->isBuiltin())) ? new ReflectionClass($param->getType()->getName()) : null);
 									];
 								} //end if
 								$param = null;
@@ -1086,7 +1115,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							if(Smart::array_size($cparams) > 0) {
 								if(Smart::array_size($comments) > 0) {
 									if(Smart::array_size($comments['props']) > 0) {
-										if(Smart::array_size($comments['props']['param']) > 0) {
+										if(isset($comments['props']['param']) AND (Smart::array_size($comments['props']['param']) > 0)) {
 											foreach($comments['props']['param'] as $key => $val) {
 												for($p=0; $p<Smart::array_size($cparams); $p++) {
 													if(is_array($val)) {
@@ -1242,7 +1271,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$arr = (array) explode("\n", (string)$str);
 		//print_r($arr);
 		for($l=0; $l<=Smart::array_size($arr); $l++) {
-			$line = (string) $arr[$l];
+			$line = (string) (isset($arr[$l]) ? $arr[$l] : null);
 			//echo "\n\n".'('.$l.'.) '.$line."\n";
 			$line = (string) trim((string)$line);
 			$line = (string) ltrim((string)$line, '/*');
@@ -1284,7 +1313,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 								'line' 		=> (string) $prop
 							];
 							if(((string)$name == 'param') OR ((string)$name == 'method')) { // parse magic methods
-								if(!is_array($arr_props[(string)$name])) {
+								if((!isset($arr_props[(string)$name])) OR (!is_array($arr_props[(string)$name]))) {
 									$arr_props[(string)$name] = array();
 								} //end if
 								$arr_props[(string)$name][] = (array) $tmp_arr;
@@ -1371,7 +1400,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$hl = (new \SmartModExtLib\HighlightSyntax\Highlighter())->highlight('php', (string)'<'.'?php'."\n\n".' '.trim((string)$code)."\n\n".'?'.'>');
 		//--
-		return (string) SmartUtils::comment_php_code(trim($hl->value));
+		return (string) SmartUtils::comment_php_code((string)trim((string)$hl->value));
 		//--
 	} //END FUNCTION
 
@@ -1410,7 +1439,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 /**
  * Index Area Controller
- * @version 20200121
+ * @version 20210309
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {

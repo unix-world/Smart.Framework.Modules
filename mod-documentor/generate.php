@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20200121
+ * @version 20210309
  * @ignore
  *
  * @requires define('SMART_FRAMEWORK_DOCUMENTOR_ALLOW', true);
@@ -32,6 +32,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_ALLOW !== true)) {
 			$this->PageViewSetErrorStatus(503, 'ERROR: Documentor is disabled ...');
+			return;
+		} //end if
+		//--
+		if(!class_exists('DOMDocument')) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: DOMDocument PHP extension is missing ...');
 			return;
 		} //end if
 		//--

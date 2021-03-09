@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20210309
  * @package 	Documentor
  *
  */
@@ -169,7 +169,7 @@ final class Utils {
 					$tmp_json['package'] = '@No-Package'; // {{{SYNC-DOCUMENTOR-EMPTY-PACKAGE}}}
 				} //end if
 				$tmp_json['file'] = (string) \Smart::base_name((string)$files_n_dirs['list-files'][$i], '.json');
-				if(!\is_array($arr_packages[(string)$tmp_json['package']])) {
+				if((!isset($arr_packages[(string)$tmp_json['package']])) OR (!\is_array($arr_packages[(string)$tmp_json['package']]))) {
 					$arr_packages[(string)$tmp_json['package']] = [];
 				} //end if
 				$arr_packages[(string)$tmp_json['package']][] = (array) $tmp_json;

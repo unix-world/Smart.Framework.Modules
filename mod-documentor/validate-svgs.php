@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20200518
+ * @version 20210309
  * @ignore
  *
  * @requires define('SMART_TESTUNIT_XML_DTD_SVG_URL', 'modules/mod-documentor/dtd/svg11/svg11.dtd');
@@ -47,6 +47,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		if(!SmartFileSystem::is_type_file((string)SMART_TESTUNIT_XML_DTD_SVG_URL)) {
 			$this->PageViewSetErrorStatus(500, 'ERROR: SVG DTD Validator Path does not exists or is not a file ...');
+			return;
+		} //end if
+		//--
+		if(!class_exists('DOMDocument')) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: DOMDocument PHP extension is missing ...');
 			return;
 		} //end if
 		//--

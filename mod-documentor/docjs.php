@@ -26,7 +26,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20210305
+ * @version 20210309
  * @ignore
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -82,6 +82,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_ALLOW !== true)) {
 			$this->PageViewSetErrorStatus(503, 'ERROR: Documentor is disabled ...');
+			return;
+		} //end if
+		//--
+		if(!class_exists('DOMDocument')) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: DOMDocument PHP extension is missing ...');
 			return;
 		} //end if
 		//--
@@ -182,7 +187,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						$this->jsonAnswer($proc.' ...', false);
 						return;
 					} //end if
-					$this->jsonAnswer('Documentation saved for: '.$type.' `'.$cls.'`');
+					$this->jsonAnswer('Documentation saved for: `'.$cls.'`');
 					//--
 				} else { // ERR
 					//--
@@ -400,13 +405,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			'code'
 		];
 		for($i=0; $i<Smart::array_size($keys); $i++) {
-			if(Smart::array_size($arr['class']['data']['props'][(string)$keys[$i]]) <= 0) {
+			if((!isset($arr['class']['data']['props'][(string)$keys[$i]])) OR (Smart::array_size($arr['class']['data']['props'][(string)$keys[$i]]) <= 0)) {
 				$arr['class']['data']['props'][(string)$keys[$i]] = array();
 			} //end if
 		} //end if
 		//--
 		$depends = [];
-		if((string)trim((string)$arr['class']['data']['props']['requires']['line']) != '') {
+		if(isset($arr['class']['data']['props']['requires']['line']) AND ((string)trim((string)$arr['class']['data']['props']['requires']['line']) != '')) {
 			$depends[] = (string) trim((string)$arr['class']['data']['props']['requires']['line']);
 		} else {
 			for($i=0; $i<Smart::array_size($arr['class']['data']['props']['requires']); $i++) {
@@ -468,7 +473,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						} elseif((string)$key == 'param') {
 							$tmp_method['params'] = (array) $val;
 						} elseif((string)$key == 'requires') {
-							if((string)trim((string)$val['line']) != '') {
+							if(isset($val['line']) AND ((string)trim((string)$val['line']) != '')) {
 								$tmp_method['depends'][] = (string) trim((string)$val['line']);
 							} else {
 								for($z=0; $z<Smart::array_size($val); $z++) {
@@ -540,26 +545,26 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			} //end if
 		} //end for
 		//--
-		$this->clsPackage = (string) $arr['class']['data']['props']['package']['line'];
+		$this->clsPackage = (string) (isset($arr['class']['data']['props']['package']['line']) ? $arr['class']['data']['props']['package']['line'] : '');
 		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			(string) $this->ControllerGetParam('module-view-path').'js-class.mtpl.inc.htm',
 			[
 				'base-url' 				=> (string) $base_url,
 				'js-path' 				=> (string) $jsPath,
-				'file-name' 			=> (string) implode('; ', [ (string)($this->sfjfile ? $this->sfjfile : $file), (string)$arr['class']['data']['props']['file']['line'] ]),
+				'file-name' 			=> (string) implode('; ', [ (string)($this->sfjfile ? $this->sfjfile : $file), (string)(isset($arr['class']['data']['props']['file']['line']) ? $arr['class']['data']['props']['file']['line'] : '') ]),
 				'type' 					=> (string) $this->clsType,
 				'callmode' 				=> (string) $callmode,
 				'usage' 				=> (string) $usage,
-				'name' 					=> (string) $arr['class']['data']['props']['class']['type'],
+				'name' 					=> (string) (isset($arr['class']['data']['props']['class']['type']) ? $arr['class']['data']['props']['class']['type'] : ''),
 				'modifiers' 			=> (string) $modifier,
 				'package' 				=> (string) $this->clsPackage,
 				'version' 				=> (string) $arr['class']['data']['props']['version']['line'],
 				'depends' 				=> (string) implode(', ', (array)$depends),
-				'hints' 				=> (string) $arr['class']['data']['props']['hint']['line'],
-				'throws' 				=> (string) $arr['class']['data']['props']['throws']['line'],
-				'fires' 				=> (string) $arr['class']['data']['props']['fires']['line'],
-				'listens' 				=> (string) $arr['class']['data']['props']['listens']['line'],
+				'hints' 				=> (string) (isset($arr['class']['data']['props']['hint']['line'])    ? $arr['class']['data']['props']['hint']['line']    : ''),
+				'throws' 				=> (string) (isset($arr['class']['data']['props']['throws']['line'])  ? $arr['class']['data']['props']['throws']['line']  : ''),
+				'fires' 				=> (string) (isset($arr['class']['data']['props']['fires']['line'])   ? $arr['class']['data']['props']['fires']['line']   : ''),
+				'listens' 				=> (string) (isset($arr['class']['data']['props']['listens']['line']) ? $arr['class']['data']['props']['listens']['line'] : ''),
 				'arr-methods' 			=> (array)  $methods,
 				'arr-properties' 		=> (array)  $properties,
 				'arr-constants' 		=> (array)  $constants,
@@ -607,24 +612,24 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				if(Smart::array_size($props['props']) > 0) {
 					//--
-					if(Smart::array_size($props['props']['class']) > 0) {
+					if(isset($props['props']['class']) AND (Smart::array_size($props['props']['class']) > 0)) {
 						if((string)$props['props']['class']['type'] == (string)$cls) {
 							$is_class_found = 1;
 						} //end if
 					} elseif(Smart::array_size($props['props']['memberof']) > 0) {
 						if((string)$props['props']['memberof']['type'] == (string)$cls) {
-							if(Smart::array_size($props['props']['method']) > 0) {
+							if(isset($props['props']['method']) AND (Smart::array_size($props['props']['method']) > 0)) {
 								$is_class_found = 2;
-							} elseif(Smart::array_size($props['props']['var']) > 0) {
+							} elseif(isset($props['props']['var']) AND (Smart::array_size($props['props']['var']) > 0)) {
 								$is_class_found = 3;
-							} elseif(Smart::array_size($props['props']['const']) > 0) {
+							} elseif(isset($props['props']['const']) AND (Smart::array_size($props['props']['const']) > 0)) {
 								$is_class_found = 4;
 							} //end if else
 						} //end if
 					} //end if else
 					//--
-					if($is_class_found > 0) {
-						if(Smart::array_size($props['props']['desc']) > 0) {
+					if((int)$is_class_found > 0) {
+						if(isset($props['props']['desc']) AND (Smart::array_size($props['props']['desc']) > 0)) {
 							$props['comments'] .= (string) "\n".$props['props']['desc']['line'];
 						} //end if
 					} //end if
@@ -708,7 +713,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$arr = (array) explode("\n", (string)$str);
 		//print_r($arr);
 		for($l=0; $l<=Smart::array_size($arr); $l++) {
-			$line = (string) $arr[$l];
+			$line = (string) (isset($arr[$l]) ? $arr[$l] : '');
 			//echo "\n\n".'('.$l.'.) '.$line."\n";
 			$line = (string) trim((string)$line);
 			$line = (string) ltrim((string)$line, '/*');
@@ -750,7 +755,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 								'line' 		=> (string) $prop
 							];
 							if(((string)$name == 'param') OR ((string)$name == 'requires')) { // parse special params
-								if(!is_array($arr_props[(string)$name])) {
+								if((!isset($arr_props[(string)$name])) OR (!is_array($arr_props[(string)$name]))) {
 									$arr_props[(string)$name] = array();
 								} //end if
 								$arr_props[(string)$name][] = (array) $tmp_arr;
