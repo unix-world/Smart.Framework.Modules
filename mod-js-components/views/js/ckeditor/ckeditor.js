@@ -3,7 +3,7 @@ Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
 
-// Contains fixes by unixman (c) 2016 unix-world.org
+// Contains fixes by unixman (c) 2016-2021 unix-world.org
 // v.4.5.7 r.2017.05.16 with fixes up to from v.4.5.11
 
 if(!jQuery().htmlClean) { // unixman
@@ -2711,7 +2711,7 @@ CKEDITOR.dom = {};
 		 * @param {String} value
 		 */
 		setCookie: function( name, value ) {
-			document.cookie = encodeURIComponent( name ) + '=' + encodeURIComponent( value ) + ';path=/';
+			document.cookie = encodeURIComponent(name) + '=' + encodeURIComponent(value) + '; path=/; SameSite=Strict';
 		},
 
 		/**

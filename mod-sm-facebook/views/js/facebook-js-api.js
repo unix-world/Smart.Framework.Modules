@@ -355,28 +355,28 @@ var FacebookApiHandler = new function() { // START CLASS
 	} //END FUNCTION
 
 
-	var setCookie = function(name, value, days, path, domain, secure) {
+	var setCookie = function(name, value, days, path, domain, secure, samesite) {
 		//--
 		if(typeof SmartJS_BrowserUtils == 'undefined') {
 			console.error('ERR: Missing: SmartJS_BrowserUtils');
 			return false;
 		} //end if
 		//--
-		SmartJS_BrowserUtils.setCookie(name, value, days, path, domain, secure);
+		SmartJS_BrowserUtils.setCookie(name, value, days, path, domain, secure, samesite);
 		//--
 		return true;
 		//--
 	} //END FUNCTION
 
 
-	var deleteCookie = function(name, path, domain, secure) {
+	var deleteCookie = function(name, path, domain, secure, samesite) {
 		//--
 		if(typeof SmartJS_BrowserUtils == 'undefined') {
 			console.error('ERR: Missing: SmartJS_BrowserUtils');
 			return false;
 		} //end if
 		//--
-		SmartJS_BrowserUtils.deleteCookie(name, path, domain, secure);
+		SmartJS_BrowserUtils.deleteCookie(name, path, domain, secure, samesite);
 		//--
 		return true;
 		//--
@@ -385,4 +385,5 @@ var FacebookApiHandler = new function() { // START CLASS
 
 } //END CLASS
 
-// END
+
+// #END

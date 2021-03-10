@@ -453,92 +453,54 @@ var TwitterApiHandler = new function() { // START CLASS
 
 	var parseUrlParams = function() {
 		//--
+		if(typeof SmartJS_BrowserUtils == 'undefined') {
+			console.error('ERR: Missing: SmartJS_BrowserUtils');
+			return null;
+		} //end if
+		//--
 		return SmartJS_BrowserUtils.parseCurrentUrlGetParams();
-		//--
-		/*
-		var result = {};
-		//--
-		if(!location.search) {
-			return result; // Object
-		} //end if
-		var query = String(location.search.substr(1)); // get: 'param1=value1&param2=value%202' from '?param1=value1&param2=value%202'
-		if(!query) {
-			return result; // Object
-		} //end if
-		//--
-		query.split('&').forEach(function(part) {
-			var item = '';
-			part = String(part);
-			if(part) {
-				item = part.split('=');
-				result[String(item[0])] = String(decodeURIComponent(String(item[1])));
-			} //end if
-		});
-		//--
-		return result; // Object
-		*/
 		//--
 	} //END FUNCTION
 
 
 	var getCookie = function(name) {
 		//--
+		if(typeof SmartJS_BrowserUtils == 'undefined') {
+			console.error('ERR: Missing: SmartJS_BrowserUtils');
+			return null;
+		} //end if
+		//--
 		return SmartJS_BrowserUtils.getCookie(name);
 		//--
-		/*
-		var c;
-		try {
-			c = document.cookie.match(new RegExp('(^|;)\\s*' + String(name) + '=([^;\\s]*)'));
-		} catch(err){
-			console.error('NOTICE: BrowserUtils Failed to getCookie: ' + err);
-		} //end try catch
+	} //END FUNCTION
+
+
+	var setCookie = function(name, value, days, path, domain, secure, samesite) {
 		//--
-		if(c && c.length >= 3) {
-			var d = decodeURIComponent(c[2]) || ''; // fix to avoid working with null !!
-			return String(d);
-		} else {
-			return ''; // fix to avoid working with null !!
+		if(typeof SmartJS_BrowserUtils == 'undefined') {
+			console.error('ERR: Missing: SmartJS_BrowserUtils');
+			return false;
 		} //end if
-		*/
+		//--
+		SmartJS_BrowserUtils.setCookie(name, value, days, path, domain, secure, samesite);
+		//--
+		return true;
 		//--
 	} //END FUNCTION
 
 
-	var setCookie = function(name, value, days, path, domain, secure) {
+	var deleteCookie = function(name, path, domain, secure, samesite) {
 		//--
-		SmartJS_BrowserUtils.setCookie(name, value, days, path, domain, secure);
-		//--
-		/*
-		if((typeof value == 'undefined') || (value == undefined) || (value == null)) {
-			return; // bug fix (avoid to set null cookie)
+		if(typeof SmartJS_BrowserUtils == 'undefined') {
+			console.error('ERR: Missing: SmartJS_BrowserUtils');
+			return false;
 		} //end if
 		//--
-		var d = new Date();
+		SmartJS_BrowserUtils.deleteCookie(name, path, domain, secure, samesite);
 		//--
-		if(days) {
-			d.setTime(d.getTime() + (days * 8.64e7)); // now + days in milliseconds
-		} //end if
-		//--
-		try {
-			document.cookie = String(name) + '=' + encodeURIComponent(value) + (days ? ('; expires=' + d.toGMTString()) : '') + '; path=' + (path || '/') + (domain ? ('; domain=' + domain) : '') + (secure ? '; secure' : '');
-		} catch(err){
-			console.error('NOTICE: Failed to setCookie: ' + err);
-		} //end try catch
-		*/
+		return true;
 		//--
 	} //END FUNCTION
-
-
-	var deleteCookie = function(name, path, domain, secure) {
-		//--
-		SmartJS_BrowserUtils.deleteCookie(name, path, domain, secure);
-		//--
-		/*
-		setCookie(name, '', -1, path, domain, secure); // sets expiry to now - 1 day
-		*/
-		//--
-	} //END FUNCTION
-
 
 
 } //END CLASS

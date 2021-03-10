@@ -5,7 +5,9 @@
 
 // (c) 2017-2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20210310
+// Fixes by unixman:
+// 	- added default to SameSite=Strict for cookies
 
 SQL.Designer = function(objData) {
 
@@ -209,7 +211,7 @@ SQL.Designer.prototype.setCookie = function(obj) {
 		arr.push(p+":'"+obj[p]+"'");
 	}
 	var str = "{"+arr.join(",")+"}";
-	document.cookie = "smartdbmodelerjs="+str+"; path=/";
+	document.cookie = "smartdbmodelerjs=" + encodeURIComponent(str) + "; path=/; SameSite=Strict";
 }
 
 SQL.Designer.prototype.getOption = function(name) {
