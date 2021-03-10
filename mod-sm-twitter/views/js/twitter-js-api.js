@@ -1,7 +1,7 @@
 
 // Twitter JS API Handler
-// (c) 2012-2020 unix-world.org
-// v.20200121
+// (c) 2012-2021 unix-world.org
+// v.20210310
 
 // Depends on: codebird.js, SmartJS_BrowserUtils
 
@@ -440,7 +440,7 @@ var TwitterApiHandler = new function() { // START CLASS
 		} //end if
 		//--
 		if(value) {
-			setCookie(key, value, null, '/', storageBaseDomain);
+			setCookie(key, value, 0, '/', storageBaseDomain);
 		} else {
 			deleteCookie(key, '/', storageBaseDomain);
 		} //end if else
@@ -475,28 +475,28 @@ var TwitterApiHandler = new function() { // START CLASS
 	} //END FUNCTION
 
 
-	var setCookie = function(name, value, days, path, domain, secure, samesite) {
+	var setCookie = function(name, value, expire, path, domain, samesite, secure) {
 		//--
 		if(typeof SmartJS_BrowserUtils == 'undefined') {
 			console.error('ERR: Missing: SmartJS_BrowserUtils');
 			return false;
 		} //end if
 		//--
-		SmartJS_BrowserUtils.setCookie(name, value, days, path, domain, secure, samesite);
+		SmartJS_BrowserUtils.setCookie(name, value, expire, path, domain, samesite, secure);
 		//--
 		return true;
 		//--
 	} //END FUNCTION
 
 
-	var deleteCookie = function(name, path, domain, secure, samesite) {
+	var deleteCookie = function(name, path, domain, samesite, secure) {
 		//--
 		if(typeof SmartJS_BrowserUtils == 'undefined') {
 			console.error('ERR: Missing: SmartJS_BrowserUtils');
 			return false;
 		} //end if
 		//--
-		SmartJS_BrowserUtils.deleteCookie(name, path, domain, secure, samesite);
+		SmartJS_BrowserUtils.deleteCookie(name, path, domain, samesite, secure);
 		//--
 		return true;
 		//--

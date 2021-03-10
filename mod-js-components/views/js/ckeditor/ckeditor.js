@@ -2711,7 +2711,7 @@ CKEDITOR.dom = {};
 		 * @param {String} value
 		 */
 		setCookie: function( name, value ) {
-			document.cookie = encodeURIComponent(name) + '=' + encodeURIComponent(value) + '; path=/; SameSite=Strict';
+			document.cookie = encodeURIComponent(name) + '=' + encodeURIComponent(value) + '; path=/; SameSite=Lax'; // added SameSite=Lax by unixman
 		},
 
 		/**

@@ -52,7 +52,7 @@ var SmartCloud_DynLayout_Vertical_DynamicBar = new function() { // START CLASS
 				});
 			}).bind('dragend', function(event) {
 				//console.log('drag end');
-				SmartJS_BrowserUtils.setCookie('SmartCloud_DynLayout_LeftArea_Size', pwidth, 0, '/');
+				SmartJS_BrowserUtils.setCookie('SmartCloud_DynLayout_LeftArea_Size', pwidth);
 				jQuery(this).trigger('resize')
 			});
 			//--

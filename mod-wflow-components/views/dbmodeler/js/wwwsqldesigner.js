@@ -7,7 +7,7 @@
 // License: GPLv3
 // v.20210310
 // Fixes by unixman:
-// 	- added default to SameSite=Strict for cookies
+// 	- added default to SameSite=Lax for cookies
 
 SQL.Designer = function(objData) {
 
@@ -211,7 +211,7 @@ SQL.Designer.prototype.setCookie = function(obj) {
 		arr.push(p+":'"+obj[p]+"'");
 	}
 	var str = "{"+arr.join(",")+"}";
-	document.cookie = "smartdbmodelerjs=" + encodeURIComponent(str) + "; path=/; SameSite=Strict";
+	document.cookie = "smartdbmodelerjs=" + encodeURIComponent(str) + "; path=/; SameSite=Lax";
 }
 
 SQL.Designer.prototype.getOption = function(name) {

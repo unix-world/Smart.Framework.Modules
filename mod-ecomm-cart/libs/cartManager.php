@@ -562,9 +562,9 @@ final class cartManager {
 		$this->items = [];
 		//--
 		if($this->useCookie) {
-			return (bool) \SmartUtils::set_cookie((string)$this->cartId, '', -1);
+			return (bool) \SmartUtils::unset_cookie((string)$this->cartId);
 		} else {
-			return (bool) \SmartSession::set((string)$this->cartId, null);
+			return (bool) \SmartSession::unsets((string)$this->cartId);
 		} //end if else
 		//--
 	} //END FUNCTION
@@ -1114,7 +1114,7 @@ final class cartManager {
 				} //end if
 				return false;
 			} //end if
-			return (bool) \SmartUtils::set_cookie($this->cartId, (string)$data, \time() + 604800);
+			return (bool) \SmartUtils::set_cookie($this->cartId, (string)$data, 604800);
 		} else {
 			return (bool) \SmartSession::set((string)$this->cartId, (array)$this->items);
 		} //end if else

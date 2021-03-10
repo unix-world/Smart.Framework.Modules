@@ -1,7 +1,7 @@
 
 // Facebook JS API Handler
-// (c) 2012-2020 unix-world.org
-// v.20201204
+// (c) 2012-2021 unix-world.org
+// v.20210310
 
 // Depends on: jQuery
 // Depends on: SmartJS_Base64, SmartJS_BrowserUtils
@@ -335,7 +335,7 @@ var FacebookApiHandler = new function() { // START CLASS
 		} //end if
 		//--
 		if(value) {
-			setCookie(key, value, null, '/', FbSettings.domain);
+			setCookie(key, value, 0, '/', FbSettings.domain);
 		} else {
 			deleteCookie(key, '/', FbSettings.domain);
 		} //end if else
@@ -355,28 +355,28 @@ var FacebookApiHandler = new function() { // START CLASS
 	} //END FUNCTION
 
 
-	var setCookie = function(name, value, days, path, domain, secure, samesite) {
+	var setCookie = function(name, value, expire, path, domain, samesite, secure) {
 		//--
 		if(typeof SmartJS_BrowserUtils == 'undefined') {
 			console.error('ERR: Missing: SmartJS_BrowserUtils');
 			return false;
 		} //end if
 		//--
-		SmartJS_BrowserUtils.setCookie(name, value, days, path, domain, secure, samesite);
+		SmartJS_BrowserUtils.setCookie(name, value, expire, path, domain, samesite, secure);
 		//--
 		return true;
 		//--
 	} //END FUNCTION
 
 
-	var deleteCookie = function(name, path, domain, secure, samesite) {
+	var deleteCookie = function(name, path, domain, samesite, secure) {
 		//--
 		if(typeof SmartJS_BrowserUtils == 'undefined') {
 			console.error('ERR: Missing: SmartJS_BrowserUtils');
 			return false;
 		} //end if
 		//--
-		SmartJS_BrowserUtils.deleteCookie(name, path, domain, secure, samesite);
+		SmartJS_BrowserUtils.deleteCookie(name, path, domain, samesite, secure);
 		//--
 		return true;
 		//--

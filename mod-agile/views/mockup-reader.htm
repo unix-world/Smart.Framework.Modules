@@ -9,7 +9,7 @@
 	<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
 </div>
 <br>
-<div title="Mockup HTML Safe SandBox / iFrame" style="position:relative;"><iframe name="MockupReaderSandBox" id="MockupReaderSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:[###DOC-W|int###]px; height:[###DOC-H|int###]px; height:max-content; border:1px solid #EFEFEF;" srcdoc="[###DOC-DATA|html###]" sandbox></iframe></div>
+<div title="Mockup HTML Safe SandBox / iFrame" style="position:relative;"><iframe name="MockupReaderSandBox" id="MockupReaderSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:[###DOC-W|int###]px; height:[###DOC-H|int###]px; height:max-content; border:1px solid #EFEFEF;" sandbox="allow-same-origin" srcdoc="[###DOC-DATA|html###]"></iframe></div>
 <script>
 function doExportMockup() {
 	var exportDTime = '[###DTIME|js###]';

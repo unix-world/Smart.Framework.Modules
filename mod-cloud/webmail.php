@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 
 /**
- * Admin Controller r.20200420
+ * Admin Controller r.20210310
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
@@ -562,7 +562,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		);
 		//-- sandbox if required (print mode) :: if non-print mode will use automatically ; for print mode must be custom implemented !
 		if($use_sandbox === true) {
-			$main = '<div title="WebMail HTML Safe SandBox / iFrame" style="position:relative;"><img height="16" src="lib/core/plugins/img/email/safe.svg" style="cursor:help; position:absolute; top:3px; left:7px; opacity:0.25;"><iframe name="WebMailMessageSandBox" id="WebMailMessageSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:97vw; min-height:97vh; height:max-content; border:1px solid #EFEFEF;" srcdoc="'.Smart::escape_html('<!DOCTYPE html><html><head><title>'.Smart::escape_html($mime_ttl).'</title><meta charset="'.Smart::escape_html(SMART_FRAMEWORK_CHARSET).'">'.SmartFileSystem::read('lib/core/templates/base-html-styles.inc.htm').'</head><body>'.$main.'<script>alert(\'If you can see this alert the WebMail iFrame Sandbox is unsafe ...\');</script></body></html>').'" sandbox></iframe></div>';
+			$main = '<div title="WebMail HTML Safe SandBox / iFrame" style="position:relative;"><img height="16" src="lib/core/plugins/img/email/safe.svg" style="cursor:help; position:absolute; top:3px; left:7px; opacity:0.25;"><iframe name="WebMailMessageSandBox" id="WebMailMessageSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:97vw; min-height:97vh; height:max-content; border:1px solid #EFEFEF;" sandbox="allow-same-origin" srcdoc="'.Smart::escape_html('<!DOCTYPE html><html><head><title>'.Smart::escape_html($mime_ttl).'</title><meta charset="'.Smart::escape_html(SMART_FRAMEWORK_CHARSET).'">'.SmartFileSystem::read('lib/core/templates/base-html-styles.inc.htm').'</head><body>'.$main.'<script>alert(\'If you can see this alert the WebMail iFrame Sandbox is unsafe ...\');</script></body></html>').'"></iframe></div>';
 		} //end if
 		//-- forwarder for misc email parts
 		if(((string)$rawmode == 'raw') AND ((string)$mode != 'partial')) { // msg raw parts such as images (cids)

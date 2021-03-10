@@ -184,7 +184,7 @@ this.calculator_click_key = function(Caption) {
 // private
 var calculator_reset = function(value) {
 
-	SmartJS_BrowserUtils.setCookie('WIDGET_NETVISION_CALCULATOR_RESULT', value.toFixed(4), 0, '/');
+	SmartJS_BrowserUtils.setCookie('WIDGET_NETVISION_CALCULATOR_RESULT', value.toFixed(4));
 	document.calculator.LED.value = value.toFixed(4);
 	tmp_Value__Result = 0, tmp_Value__Operand = 0, tmp_Value__Second = 0, tmp_Value__Ready = 0; tmp_Value__Done = 1; tmp_Value__Complete = 0;
 
