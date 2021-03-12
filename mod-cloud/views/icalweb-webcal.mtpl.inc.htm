@@ -1,19 +1,21 @@
 <!-- TPL: Smart.Cloud / WebCalendar / WebCal :: [###USER-ACC|html###] -->
-<div align="center">
+<link rel="stylesheet" href="lib/js/jquery/calendar/monthly.css">
+<script type="text/javascript" src="lib/js/jquery/calendar/monthly.js"></script>
+<center>
+<div>
 	<span style="font-size:40px!important; color:#778899;"><b><i>Smart.Cloud</i></b> <img width="32" height="32" src="modules/mod-cloud/views/img/globe.svg" alt="Smart.Cloud WebCalendar" title="Smart.Cloud WebCalendar" style="opacity:0.7;cursor:help;"> <b>WebCalendar</b></span>
 	<br>
 </div>
 <hr>
-<div align="center">
+<div>
 	<h3>Calendar: [###USER-CAL|html###] (Events: [###COUNT-EVENTS|int###]) / Account: [###USER-ACC|html###]</h3>
 </div>
-<link rel="stylesheet" href="lib/js/jquery/calendar/monthly.css">
-<script type="text/javascript" src="lib/js/jquery/calendar/monthly.js"></script>
-<div align="center">
+<div>
 	<div style="width:90%; max-width:800px; display:inline-block;">
 		<div class="monthly" id="web-calendar"></div>
 	</div>
 </div>
+</center>
 <script type="text/javascript">
 jQuery(function() {
 	jQuery('#web-calendar').monthly({

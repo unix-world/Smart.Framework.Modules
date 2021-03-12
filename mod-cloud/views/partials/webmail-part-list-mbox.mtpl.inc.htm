@@ -215,7 +215,7 @@ jQuery(function() {
 			default:
 				// invalid folder icon
 		} //end switch
-		return '<div align="center" title="' + iFolderDesc + ':' + ' ' + SmartJS_CoreUtils.escape_html(dataContext['msg_id']) + '" style="cursor:help; color:' + SmartJS_CoreUtils.escape_html(iFolderColor) + ';"><i class="' + SmartJS_CoreUtils.escape_html(iFolderIcon) + '"></i></div>';
+		return '<center><div title="' + iFolderDesc + ':' + ' ' + SmartJS_CoreUtils.escape_html(dataContext['msg_id']) + '" style="cursor:help; color:' + SmartJS_CoreUtils.escape_html(iFolderColor) + ';"><i class="' + SmartJS_CoreUtils.escape_html(iFolderIcon) + '"></i></div></center>';
 	}
 	function formatter_Atts(row, cell, value, columnDef, dataContext) {
 		value = value || '0';
@@ -223,7 +223,7 @@ jQuery(function() {
 		if(value != 1) {
 			value = '';
 		} else {
-			value = '<div align="center" title="' + SmartJS_CoreUtils.escape_html(atts) + '" style="cursor:help;"><i class="sfi sfi-attachment"></i></div>';
+			value = '<center><div title="' + SmartJS_CoreUtils.escape_html(atts) + '" style="cursor:help;"><i class="sfi sfi-attachment"></i></div></center>';
 		} //end
 		return String(value);
 	}

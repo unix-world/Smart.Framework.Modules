@@ -1,6 +1,6 @@
 <!-- start dust template v.20200121 -->
 {! Template: sample.dust.htm !}<!-- comments are removed -->
-<div align="center">
+<center><div>
 	<div>
 		<a href="//github.com/linkedin/dustjs/wiki/Dust-Tutorial" target="_blank"><img src="{Tpl_Dir__|h}img/dust.svg" width="160" height="160"></a>
 		<br>
@@ -18,7 +18,7 @@
 	<div style="color:#777777;" id="the-dateTime">?</div>
 	{! "!modules/mod-tpl-dust/views/sample-partial.dust.inc.htm!" !}
 	{> "sample-partial.dust.inc.htm" /}
-</div>
+</div></center>
 <script>
 	var jsDate = '{date_time|j}';
 	jQuery('#the-dateTime').text(jsDate);
