@@ -25,6 +25,7 @@
 .slick-row[row$="7"] .cell-inner, .slick-row[row$="9"] .cell-inner {
 	margin-left: 50px;
 	margin-right: 0;
+	margin-bottom: 10px;
 }
 .contact-card-cell {
 	border-color: transparent!important;
@@ -51,7 +52,7 @@
 }
 .cell-main {
 	max-width: 450px !important;
-	height: 147px !important;
+	height: 155px !important;
 	margin-left: 50px;
 	cursor: text !important;
 	white-space: normal !important;
@@ -76,17 +77,15 @@ jQuery(function() {
 		return '<img width="32" height="32" src="lib/framework/img/loading-bubbles.svg">';
 	}
 
-	var ctpl = String(decodeURIComponent(tpl));
-
 	function renderAsyncCell(cellNode, row, dataContext, colDef) {
-		var cell = SmartJS_CoreUtils.renderMarkersTpl(ctpl, {
+		var cell = SmartJS_CoreUtils.renderMarkersTpl(tpl, {
 			'UUID': String(dataContext.id),
 			'NAME': String(dataContext.name),
 			'ORGANIZATION': String(dataContext.organization),
 			'PHONE': String(dataContext.phone),
 			'EMAIL': String(dataContext.email),
 			'ADDRESS': String(dataContext.address),
-		});
+		}, true);
 		$(cellNode).empty().html(cell);
 	}
 
@@ -94,7 +93,7 @@ jQuery(function() {
 		{
 			id: 'id',
 			name: '[###USER-ABK|js###] :: Contacts',
-			width: 750,
+			width: 700,
 			cssClass: 'contact-card-cell',
 			formatter: waitingFormatter,
 			rerenderOnResize: true,

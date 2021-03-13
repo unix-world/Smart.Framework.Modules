@@ -171,7 +171,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$out = [];
 				foreach($data as $key => $val) {
 					if(is_array($val)) {
-						$val = (string) $this->getVcfFieldData($val, ' › ', '');
+						$val = (string) $this->getVcfFieldData($val, ' → ', '');
 					} //end if
 					if((string)trim((string)$val) != '') {
 						if(is_int($key)) {

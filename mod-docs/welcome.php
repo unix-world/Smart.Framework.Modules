@@ -47,11 +47,22 @@ final class SmartAppIndexController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
-		//$action = $this->RequestVarGet('action', '', 'string');
+		//$display = $this->RequestVarGet('display', '', 'string');
+		//--
+
+		//--
+		$semaphores = [];
+		//--
+		$semaphores[] = 'theme:dark';
+		$semaphores[] = 'skip:js-ui';
+	//	$semaphores[] = 'load:searchterm-highlight-js';
+		$semaphores[] = 'load:code-highlight-js';
+	//	$semaphores[] = 'skip:unveil-js';
 		//--
 
 		//--
 		$this->PageViewSetVars([
+			'semaphore' 		=> (string) Smart::array_to_list($semaphores),
 			'title' 			=> 'Smart.Framework Documentation',
 			'seo-description' 	=> '',
 			'seo-keywords' 		=> '',
