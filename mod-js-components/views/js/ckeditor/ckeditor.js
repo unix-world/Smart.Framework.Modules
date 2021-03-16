@@ -19621,7 +19621,7 @@ CKEDITOR.htmlParser.fragment = function() {
 
 			//-- unixman fix (clean HTML before protecting) ... the CKEditor does a bad task here ...
 			data = $.htmlClean(data, { // {{{SYNC-HTML-CLEAN}}}
-				'format': true,
+				'format': 				true, // format the HTML code
 				'allowedTags': 			this.config.SmartCKEditCfg_allowedTags,
 				'allowedAttributes': 	this.config.SmartCKEditCfg_allowedTagAttrs,
 				'removeTags': 			this.config.SmartCKEditCfg_removeTags
