@@ -102,7 +102,7 @@ final class SmartMinify {
 		//--
 		$cssUnionFilePath = (string) $basePath.$theCssFile;
 		//--
-		if(!\is_file((string)$cssUnionFilePath)) {
+		if(\is_file((string)$cssUnionFilePath)) {
 			if(!\unlink((string)$cssUnionFilePath)) {
 				throw new \Exception(__METHOD__.' # FAILED: To remove the old CSS file: '.$cssUnionFilePath);
 				return false;
@@ -238,7 +238,7 @@ final class SmartMinify {
 		//--
 		$jsUnionFilePath = (string) $basePath.$theJsFile;
 		//--
-		if(!\is_file((string)$jsUnionFilePath)) {
+		if(\is_file((string)$jsUnionFilePath)) {
 			if(!\unlink((string)$jsUnionFilePath)) {
 				throw new \Exception(__METHOD__.' # FAILED: To remove the old JS file: '.$jsUnionFilePath);
 				return false;
