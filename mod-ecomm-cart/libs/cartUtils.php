@@ -11,7 +11,7 @@ namespace SmartModExtLib\EcommCart;
 
 final class cartUtils {
 
-	// r.20200325
+	// r.20210318
 
 	/**
 	 * Get all items in cart formated for display cart.
@@ -35,43 +35,49 @@ final class cartUtils {
 							//print_r($item); die();
 							// {{{SYNC-ECART-ITEM-PROPS}}}
 							$tmp_arr = [];
-							$tmp_arr['position'] 		= (int)    $item['position'];
-							$tmp_arr['dtime'] 			= (string) $item['dtime'];
-							$tmp_arr['hash'] 			= (string) $item['hash'];
-							$tmp_arr['id'] 				= (string) $item['id'];
-							$tmp_arr['type'] 			= (string) $item['type'];
-							$tmp_arr['name'] 			= (string) $item['data']['name'];
-							$tmp_arr['quantity'] 		= (float)  (0 + \Smart::format_number_dec($item['quantity'], 4, '.', ''));
-							$tmp_arr['qtyerg'] 			= (float)  (0 + \Smart::format_number_dec($item['qtyerg'], 4, '.', ''));
-							$tmp_arr['currency'] 		= (string) $item['currency'];
-							$tmp_arr['price'] 			= (float)  (0 + \Smart::format_number_dec($item['price'], 2, '.', ''));
-							$tmp_arr['tax'] 			= (float)  (0 + \Smart::format_number_dec($item['tax'], 2, '.', ''));
-							$tmp_arr['price_'] 			= (string) $item['price_'];
-							$tmp_arr['_price'] 			= (string) $item['_price'];
-							$tmp_arr['discount_'] 		= (string) $item['discount_'];
-							$tmp_arr['_discount'] 		= (string) $item['_discount'];
-							$tmp_arr['_currency'] 		= (string) $item['_currency'];
-							$tmp_arr['_exchrate'] 		= (string) $item['_exchrate'];
+							$tmp_arr['position'] 		= (int)    (isset($item['position']) ? $item['position'] : null);
+							$tmp_arr['dtime'] 			= (string) (isset($item['dtime']) ? $item['dtime'] : null);
+							$tmp_arr['hash'] 			= (string) (isset($item['hash']) ? $item['hash'] : null);
+							$tmp_arr['id'] 				= (string) (isset($item['id']) ? $item['id'] : null);
+							$tmp_arr['type'] 			= (string) (isset($item['type']) ? $item['type'] : null);
+							$tmp_arr['name'] 			= (string) ((isset($item['data']) && \is_array($item['data']) && isset($item['data']['name'])) ? $item['data']['name'] : null);
+							$tmp_arr['quantity'] 		= (float)  (0 + \Smart::format_number_dec((isset($item['quantity']) ? $item['quantity'] : null), 4, '.', ''));
+							$tmp_arr['qtyerg'] 			= (float)  (0 + \Smart::format_number_dec((isset($item['qtyerg']) ? $item['qtyerg'] : null), 4, '.', ''));
+							$tmp_arr['currency'] 		= (string) (isset($item['currency']) ? $item['currency'] : null);
+							$tmp_arr['price'] 			= (float)  (0 + \Smart::format_number_dec((isset($item['price']) ? $item['price'] : null), 2, '.', ''));
+							$tmp_arr['tax'] 			= (float)  (0 + \Smart::format_number_dec((isset($item['tax']) ? $item['tax'] : null), 2, '.', ''));
+							$tmp_arr['price_'] 			= (string) (isset($item['price_']) ? $item['price_'] : null);
+							$tmp_arr['_price'] 			= (string) (isset($item['_price']) ? $item['_price'] : null);
+							$tmp_arr['discount_'] 		= (string) (isset($item['discount_']) ? $item['discount_'] : null);
+							$tmp_arr['_discount'] 		= (string) (isset($item['_discount']) ? $item['_discount'] : null);
+							$tmp_arr['_currency'] 		= (string) (isset($item['_currency']) ? $item['_currency'] : null);
+							$tmp_arr['_exchrate'] 		= (string) (isset($item['_exchrate']) ? $item['_exchrate'] : null);
 							//-- {{{SYNC-CART-CALC-TOTALS}}}
 							$tmp_arr['tax-ratio'] 		= (float)  (0 + \Smart::format_number_dec(($tmp_arr['tax'] / 100), 4, '.', '')); // {{{SYNC-CART-TAX-RATIO}}} tax / 100 must have 4 decimals as tax % can have 2 decimals !!!
 							$tmp_arr['tot-price-notax'] = (float)  (0 + \Smart::format_number_dec(($tmp_arr['quantity'] * $tmp_arr['price']), 2, '.', ''));
 							$tmp_arr['tot-price-tax'] 	= (float)  (0 + \Smart::format_number_dec(($tmp_arr['quantity'] * $tmp_arr['price'] * $tmp_arr['tax-ratio']), 2, '.', ''));
 							//--
-							$tmp_arr['um'] 				= (string) $item['data']['pak']['um'];
-							$tmp_arr['umtype'] 			= (string) $item['data']['pak']['umtype'];
-							$tmp_arr['umerg'] 			= (string) $item['data']['pak']['umerg'];
-							$tmp_arr['ummin'] 			= (float)  (0 + \Smart::format_number_dec($item['data']['pak']['ummin'], 4, '.', ''));
+							$tmp_arr['um'] 				= (string) '';
+							$tmp_arr['umtype'] 			= (string) '';
+							$tmp_arr['umerg'] 			= (string) '';
+							$tmp_arr['ummin'] 			= (float)  0;
+							if(isset($item['data']) AND \is_array($item['data']) AND isset($item['data']['pak']) AND \is_array($item['data']['pak'])) {
+								$tmp_arr['um'] 				= (string) (isset($item['data']['pak']['um']) ? $item['data']['pak']['um'] : null);
+								$tmp_arr['umtype'] 			= (string) (isset($item['data']['pak']['umtype']) ? $item['data']['pak']['umtype'] : null);
+								$tmp_arr['umerg'] 			= (string) (isset($item['data']['pak']['umerg']) ? $item['data']['pak']['umerg'] : null);
+								$tmp_arr['ummin'] 			= (float)  (0 + \Smart::format_number_dec((isset($item['data']['pak']['ummin']) ? $item['data']['pak']['ummin'] : null), 4, '.', ''));
+							} //end if
 							//--
-							$tmp_arr['attributes'] 		= array();
-							if(\Smart::array_size($item['data']) > 0) {
-								if(\Smart::array_size($item['data']['atts']) > 0) {
+							$tmp_arr['attributes'] = array();
+							if(isset($item['data']) AND (\Smart::array_size($item['data']) > 0)) {
+								if(isset($item['data']['atts']) AND (\Smart::array_size($item['data']['atts']) > 0)) {
 									//print_r($item['data']['atts']); die();
 									foreach($item['data']['atts'] as $zk => $zv) {
 										$tmp_z_name = (string) $zv['name'];
 										if(!$tmp_z_name) {
 											$tmp_z_name = (string) $zk; // if no attribute name use attribute key as name
 										} //end if
-										$tmp_z_oldval = (string) $item['attributes'][(string)$zk];
+										$tmp_z_oldval = (string) ((isset($item['attributes']) && \is_array($item['attributes']) && isset($item['attributes'][(string)$zk])) ? $item['attributes'][(string)$zk] : null);
 										$tmp_z_display = true;
 										if((string)$tmp_z_oldval == '') {
 											if($show_empty_atts === false) {
@@ -104,16 +110,16 @@ final class cartUtils {
 											'name' 			=> (string) $tmp_z_name,
 											'value' 		=> (string) $tmp_z_oldval,
 											'display' 		=> (string) ($tmp_z_display ? 'yes' : 'no'),
-											'optional' 		=> (string) $zv['optional'],
-											'validhint' 	=> (string) $zv['validhint'],
-											'validation' 	=> (string) $zv['validation'],
-											'decimals' 		=> (string) $zv['decimals'],
-											'min' 			=> (string) $zv['min'],
-											'minlen' 		=> (string) $zv['minlen'],
-											'minval' 		=> (string) $zv['minval'],
-											'max' 			=> (string) $zv['max'],
-											'maxlen' 		=> (string) $zv['maxlen'],
-											'maxval' 		=> (string) $zv['maxval'],
+											'optional' 		=> (string) (isset($zv['optional']) ? $zv['optional'] : null),
+											'validhint' 	=> (string) (isset($zv['validhint']) ? $zv['validhint'] : null),
+											'validation' 	=> (isset($zv['validation']) ? $zv['validation'] : ''), // mixed: can be string or array if list
+											'decimals' 		=> (string) (isset($zv['decimals']) ? $zv['decimals'] : null),
+											'min' 			=> (string) (isset($zv['min']) ? $zv['min'] : null),
+											'minlen' 		=> (string) (isset($zv['minlen']) ? $zv['minlen'] : null),
+											'minval' 		=> (string) (isset($zv['minval']) ? $zv['minval'] : null),
+											'max' 			=> (string) (isset($zv['max']) ? $zv['max'] : null),
+											'maxlen' 		=> (string) (isset($zv['maxlen']) ? $zv['maxlen'] : null),
+											'maxval' 		=> (string) (isset($zv['maxval']) ? $zv['maxval'] : null),
 										];
 										$tmp_z_name = null;
 										$tmp_z_oldval = null;
@@ -159,9 +165,9 @@ final class cartUtils {
 			if(\is_array($items)) {
 				foreach($items as $kk => $item) {
 					if(\is_array($item)) {
-						$tmp_item_qty   = \Smart::format_number_dec($item['quantity'], 4, '.', '');
-						$tmp_item_price = \Smart::format_number_dec($item['price'], 2, '.', '');
-						$tmp_item_tax   = \Smart::format_number_dec(($item['tax'] / 100), 4, '.', ''); // {{{SYNC-CART-TAX-RATIO}}} tax / 100 must have 4 decimals as tax % can have 2 decimals !!!
+						$tmp_item_qty   = \Smart::format_number_dec((isset($item['quantity']) ? $item['quantity'] : null), 4, '.', '');
+						$tmp_item_price = \Smart::format_number_dec((isset($item['price']) ? $item['price'] : null), 2, '.', '');
+						$tmp_item_tax   = \Smart::format_number_dec(((float)(isset($item['tax']) ? $item['tax'] : null) / 100), 4, '.', ''); // {{{SYNC-CART-TAX-RATIO}}} tax / 100 must have 4 decimals as tax % can have 2 decimals !!!
 						$tmp_item_tot_price_notax = \Smart::format_number_dec(($tmp_item_qty * $tmp_item_price), 2, '.', '');
 						$tmp_item_tot_price_tax = \Smart::format_number_dec(($tmp_item_qty * $tmp_item_price * $tmp_item_tax), 2, '.', '');
 						$tmp_item_tot_price_all = \Smart::format_number_dec(($tmp_item_tot_price_notax + $tmp_item_tot_price_tax), 2, '.', '');

@@ -1,5 +1,5 @@
 [@@@SUB-TEMPLATE:partials/base.inc.mtpl.htm@@@]
-<!-- shop r.20200325 -->
+<!-- shop r.20210318 -->
 <style>
 .shop-area * {
 	font-size: 0.875rem !important;
@@ -106,7 +106,7 @@
 							<input type="date" name="frm[att][[###PRODUCTS-ARR.ATTS._-KEY-_|htmid###]]" value="" class="form-control form-control-date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" [%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:==;%%%]required[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL%%%]>
 							[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.TYPE%%%]
 							[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:==inventory;(1)%%%]
-								<span title="Optional: [###PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL|html###]" class="help-area"><i class="sfi sfi-fa-certificate item-att-opt-inventory"></i></span>
+								<span title="Required: [###PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL|html###]" class="help-area"><i class="sfi sfi-book item-att-opt-inventory"></i></span>
 							[%%%ELSE:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL(1)%%%]
 								[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:!=;(2)%%%]
 								<span title="[%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:==validation;(3)%%%]Required[%%%ELSE:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL(3)%%%]Optional[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL(3)%%%]: [###PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL|html###]" class="help-area"><i class="sfi [%%%IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL:==validation;(3)%%%]sfi-command item-att-opt-validation[%%%ELSE:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL(3)%%%]sfi-fa-certificate item-att-opt-all[%%%/IF:PRODUCTS-ARR.ATTS._-VAL-_.OPTIONAL(3)%%%]"></i></span>
