@@ -78,7 +78,7 @@ class IfHelper {
 					return $chunk;
 				}
 				break; //--
-			//-- numbers
+			//-- strings or numbers (compare all as strings)
 			case '==':
 				if((string)$lexpr == (string)$rexpr) {
 					return $chunk->render($bodies->block, $context);
@@ -97,6 +97,7 @@ class IfHelper {
 					return $chunk;
 				}
 				break; //--
+			//-- numbers
 			case '<=':
 				if((float)$lexpr <= (float)$rexpr) {
 					return $chunk->render($bodies->block, $context);

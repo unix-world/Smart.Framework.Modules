@@ -1,7 +1,7 @@
 # Smart.Framework.Modules - a collection of modules for Smart.Framework
 ## Dual-licensed: under BSD license or GPLv3 license (at your choice)
 ### This software project is open source. You must choose which license to use depending on your use case: BSD license or GPLv3 license (see LICENSE file)
-<b>(c) 2009 - 2019 unix-world.org</b> / <i>support&#64;unix-world.org</i>
+<b>(c) 2009 - 2021 unix-world.org</b> / <i>support&#64;unix-world.org</i>
 
 #### This software framework is compatible, stable and actively tested with PHP 7.2 / 7.3 / 7.4 / 8.0 versions.
 **Prefered PHP version** is: **7.4** (LTS).
@@ -44,7 +44,7 @@
 	* CURL based HTTP Client Lib with proxy support
 	* LangID.py client wrapper (a language detection utility based on external service)
 	* Charts library for PHP
-	* TPL wrapper Lib for the includded TPL engines (this make life easier with existing TPL engines in Smart.Framework: MarkersTPL and Smart.Framework.Modules: Dust, Twig, netteLatte and typo3Fluid)
+	* TPL wrapper Lib for the includded TPL engines (this make life easier with existing TPL engines in Smart.Framework: MarkersTPL and Smart.Framework.Modules: Dust, Twig and Typo3Fluid)
 
 ### Vendor Libs (BSD licensed):
 	* CSS and JS Minify, Geo, Scrapbook: vendor/MatthiasMullie
