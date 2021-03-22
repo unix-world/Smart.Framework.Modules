@@ -20,7 +20,7 @@
 </head>
 <body>
 <script>
-var theVersion = 'r.20210320.0432';
+var theVersion = 'r.20210321';
 // (c) 2021 unix-world.org
 // license: BSD
 function sandboxedWorkerJsEval(untrustedCode, maxTimeOfExecution) {
@@ -118,7 +118,7 @@ function sandboxedWorkerJsEval(untrustedCode, maxTimeOfExecution) {
 <script>
 //--
 var isFiniteNumber = function(num) { // http://stackoverflow.com/questions/5690071/why-check-for-isnan-after-isfinite
-	//-- v.20210320.0410
+	//-- v.20210321
 	// # https://www.w3schools.com/jsref/jsref_isfinite_number.asp
 	// Number.isFinite() is different from the global isFinite() function.
 	// The global isFinite() function converts the tested value to a Number, then tests it.
@@ -189,8 +189,10 @@ jQuery(function($) {
 		} else if(command == 'info') {
 			term.echo(termIcon('{{terminal|FFFFFF}}') + 'Smart.Terminal.JS version: ' + termEscapeText(theVersion));
 			term.echo(termIcon('{{sphere|#666699}}') + 'Browser Signature: `' + termEscapeText(navigator.userAgent) + '`');
-			if(window.Worker) {
+			if(!window.Worker) {
 				term.echo(termIcon('{{cross|#FF5500}}') + '[[b;#FFFFFF;#FF5500]' + 'The Browser does not support the Web Workers API, required for Javascript Sandbox' + ']');
+			} else {
+				term.echo(termIcon('{{checkmark2|#B9F700}}') + '[[b;#111111;#B9F700]' + 'The Browser does supports the Web Workers API, required for Javascript Sandbox' + ']');
 			}
 			term.echo(termIcon('{{earth|#778899}}') + 'Current URL: `' + termEscapeText(window.location.href) + '`');
 		} else if(command == 'js-sandbox') {
@@ -262,7 +264,7 @@ jQuery(function($) {
 								theType = 'Unknown';
 							}
 						}
-						term.echo(termIcon('{{checkmark2|#B9F700}}{{arrow-down2|#B9F700}}') + '[[i;#DDDDDD;]' + termEscapeText('Result Type: ' + theType + theTxtType) + ']');
+						term.echo(termIcon('{{checkmark|#B9F700}}{{arrow-down2|#B9F700}}') + '[[i;#DDDDDD;]' + termEscapeText('Result Type: ' + theType + theTxtType) + ']');
 						if(typeof result === 'undefined') { // return null;
 							term.echo('[[b;#FFFFFF;#F76560]' + 'undefined' + ']');
 						} else if(result === null) {
