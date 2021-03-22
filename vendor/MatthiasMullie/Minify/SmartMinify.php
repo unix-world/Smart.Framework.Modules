@@ -1,7 +1,7 @@
 <?php
 
 // (c) 2021 unixman
-// version: 20210316
+// version: 20210322
 
 namespace MatthiasMullie\Minify;
 
@@ -10,20 +10,22 @@ final class SmartMinify {
 	const SAFE_PATH_REGEX = '/^[_a-zA-Z0-9\-\.@\/]+$/';
 
 
-	public static function minifyCss(string $theCssFile, string $basePath, array $arrFiles, array $importExtensions=[ 'svg' => 'data:image/svg+xml', 'png' => 'data:image/png', 'jpg' => 'data:image/jpeg', 'gif' => 'data:image/gif' ], int $maxImportSizeKb=250) {
+	public static function minifyCss(string $theFile, string $basePath, array $arrFiles, array $importExtensions=[ 'svg' => 'data:image/svg+xml', 'png' => 'data:image/png', 'jpg' => 'data:image/jpeg', 'gif' => 'data:image/gif' ], int $maxImportSizeKb=250) {
 		//--
-		$theCssFile = (string) trim((string)$theCssFile);
+		$theFile = (string) trim((string)$theFile);
 		if( // {{{SYNC-CSS-CHEKS}}}
-			((string)$theCssFile == '') OR
-			((string)$theCssFile == '.') OR
-			((string)$theCssFile == '..') OR
-			((string)\substr((string)$theCssFile, 0, 1) == '.') OR
-			((string)\substr((string)$theCssFile, 0, 1) == '/') OR
-			((string)\substr((string)$theCssFile, -4, 4) != '.css') OR
-			((int)\strlen((string)$theCssFile) < 5) OR
-			(!\preg_match(self::SAFE_PATH_REGEX, (string)$theCssFile))
+			((string)$theFile == '') OR
+			((string)$theFile == '/') OR
+			((string)$theFile == '.') OR
+			((string)$theFile == '..') OR
+			(strpos((string)$theFile, '..') !== false) OR
+			((string)\substr((string)$theFile, 0, 1) == '.') OR
+			((string)\substr((string)$theFile, 0, 1) == '/') OR
+			((string)\substr((string)$theFile, -4, 4) != '.css') OR
+			((int)\strlen((string)$theFile) < 5) OR
+			(!\preg_match(self::SAFE_PATH_REGEX, (string)$theFile))
 		) {
-			throw new \Exception(__METHOD__.' # FAILED: Invalid CSS Export File: '.$theCssFile);
+			throw new \Exception(__METHOD__.' # FAILED: Invalid CSS Export File: '.$theFile);
 			return false;
 		} //end if
 		//--
@@ -65,8 +67,10 @@ final class SmartMinify {
 					//--
 					if( // {{{SYNC-CSS-CHEKS}}}
 						((string)$path == '') OR
+						((string)$path == '/') OR
 						((string)$path == '.') OR
 						((string)$path == '..') OR
+						(strpos((string)$path, '..') !== false) OR
 						((string)\substr((string)$path, 0, 1) == '.') OR
 						((string)\substr((string)$path, 0, 1) == '/') OR
 						((string)\substr((string)$path, -4, 4) != '.css') OR
@@ -100,7 +104,7 @@ final class SmartMinify {
 		//--
 		$cssUnionContent = '/* [@[#[!SF.DEV-ONLY!]#]@] */'."\n".'/* mmUnion.CSS# */'."\n\n".$cssUnionContent."\n".'/* #mmUnion.CSS */'."\n";
 		//--
-		$cssUnionFilePath = (string) $basePath.$theCssFile;
+		$cssUnionFilePath = (string) $basePath.$theFile;
 		//--
 		if(\is_file((string)$cssUnionFilePath)) {
 			if(!\unlink((string)$cssUnionFilePath)) {
@@ -131,20 +135,22 @@ final class SmartMinify {
 	} //END FUNCTION
 
 
-	public static function minifyJs(string $theJsFile, string $basePath, array $arrFiles, bool $checkForMinifiedJs=true) {
+	public static function minifyJs(string $theFile, string $basePath, array $arrFiles, bool $checkForMinifiedJs=true) {
 		//--
-		$theJsFile = (string) trim((string)$theJsFile);
+		$theFile = (string) trim((string)$theFile);
 		if( // {{{SYNC-JS-CHEKS}}}
-			((string)$theJsFile == '') OR
-			((string)$theJsFile == '.') OR
-			((string)$theJsFile == '..') OR
-			((string)\substr((string)$theJsFile, 0, 1) == '.') OR
-			((string)\substr((string)$theJsFile, 0, 1) == '/') OR
-			((string)\substr((string)$theJsFile, -3, 3) != '.js') OR
-			((int)\strlen((string)$theJsFile) < 4) OR
-			(!\preg_match(self::SAFE_PATH_REGEX, (string)$theJsFile))
+			((string)$theFile == '') OR
+			((string)$theFile == '/') OR
+			((string)$theFile == '.') OR
+			((string)$theFile == '..') OR
+			(strpos((string)$theFile, '..') !== false) OR
+			((string)\substr((string)$theFile, 0, 1) == '.') OR
+			((string)\substr((string)$theFile, 0, 1) == '/') OR
+			((string)\substr((string)$theFile, -3, 3) != '.js') OR
+			((int)\strlen((string)$theFile) < 4) OR
+			(!\preg_match(self::SAFE_PATH_REGEX, (string)$theFile))
 		) {
-			throw new \Exception(__METHOD__.' # FAILED: Invalid JS Export File: '.$theJsFile);
+			throw new \Exception(__METHOD__.' # FAILED: Invalid JS Export File: '.$theFile);
 			return false;
 		} //end if
 		//--
@@ -179,8 +185,10 @@ final class SmartMinify {
 					//--
 					if( // {{{SYNC-JS-CHEKS}}}
 						((string)$path == '') OR
+						((string)$path == '/') OR
 						((string)$path == '.') OR
 						((string)$path == '..') OR
+						(strpos((string)$path, '..') !== false) OR
 						((string)\substr((string)$path, 0, 1) == '.') OR
 						((string)\substr((string)$path, 0, 1) == '/') OR
 						((string)\substr((string)$path, -3, 3) != '.js') OR
@@ -236,7 +244,7 @@ final class SmartMinify {
 		//--
 		$jsUnionContent = '// [@[#[!SF.DEV-ONLY!]#]@]'."\n".'/* mmUnion.JS# */'.(($haveJsMin !== true) ? "\n".'// mmJsMin' : '')."\n\n".$jsUnionContent."\n".'/* #mmUnion.JS */'."\n";
 		//--
-		$jsUnionFilePath = (string) $basePath.$theJsFile;
+		$jsUnionFilePath = (string) $basePath.$theFile;
 		//--
 		if(\is_file((string)$jsUnionFilePath)) {
 			if(!\unlink((string)$jsUnionFilePath)) {

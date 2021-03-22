@@ -20,7 +20,7 @@
 </head>
 <body>
 <script>
-var theVersion = 'r.20210321';
+var theVersion = 'r.20210322';
 // (c) 2021 unix-world.org
 // license: BSD
 function sandboxedWorkerJsEval(untrustedCode, maxTimeOfExecution) {
@@ -118,16 +118,16 @@ function sandboxedWorkerJsEval(untrustedCode, maxTimeOfExecution) {
 <script>
 //--
 var isFiniteNumber = function(num) { // http://stackoverflow.com/questions/5690071/why-check-for-isnan-after-isfinite
-	//-- v.20210321
+	//-- v.20210322
 	// # https://www.w3schools.com/jsref/jsref_isfinite_number.asp
 	// Number.isFinite() is different from the global isFinite() function.
 	// The global isFinite() function converts the tested value to a Number, then tests it.
 	// Number.isFinite() does not convert the values to a Number, and will not return true for any value that is not of the type Number.
 	// thus, isFinite('') or isFinite(' ') will return TRUE while the Number.isFinite('') or Number.isFinite(' ') will return FALSE !!
 	// Number.isFinite() is N/A in Internet Explorer or older browsers, so will use here the global isFinite() with a fix
-	//-- bug fix for the above notice
+	//--
 	if(typeof num != 'number') {
-		return false;
+		return false; // bug fix for the above notice
 	} //end if
 	//--
 	return Boolean(isFinite(num) && !isNaN(num));

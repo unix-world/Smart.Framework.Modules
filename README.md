@@ -1,7 +1,7 @@
 # Smart.Framework.Modules - a collection of modules for Smart.Framework
 ## Dual-licensed: under BSD license or GPLv3 license (at your choice)
 ### This software project is open source. You must choose which license to use depending on your use case: BSD license or GPLv3 license (see LICENSE file)
-<b>(c) 2009 - 2021 unix-world.org</b> / <i>support&#64;unix-world.org</i>
+**(c) 2009 - 2021 unix-world.org** / support&#64;unix-world.org
 
 #### This software framework is compatible, stable and actively tested with PHP 7.2 / 7.3 / 7.4 / 8.0 versions.
 **Prefered PHP version** is: **7.4** (LTS).
