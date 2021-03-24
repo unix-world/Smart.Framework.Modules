@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20200123
+	// v.20210325
 
 	public function Run() {
 
@@ -134,8 +134,17 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					return;
 				} //end if
 				//print_r($revs); die();
-				$rev_new = (int) $revs[0]['revision'];
-				$rev_old = (int) $revs[1]['revision']; // this can be zero if first selected
+				$rev_new = (int) ((isset($revs[0]) && is_array($revs[0]) && isset($revs[0]['revision'])) ? $revs[0]['revision'] : 0);
+				$rev_old = (int) ((isset($revs[1]) && is_array($revs[1]) && isset($revs[1]['revision'])) ? $revs[1]['revision'] : 0); // this can be zero if first selected
+
+				$difftxt = (string) \SmartModExtLib\Svn\SvnWebManager::getDiffFile($repo, $path, $rev_old, $rev_new);
+				$bsize = (int) strlen((string)$difftxt);
+				$fsize = (string) \SmartUtils::pretty_print_bytes((int)$bsize, 1, ' '); // {{{SYNC-SVN-PRETTY-PRINT-BYTES}}}
+				if((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) {
+					$difftxt = (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html((string)$difftxt));
+				} else {
+					$difftxt = '';
+				} //end if else
 
 				$this->PageViewSetCfg('template-file', 'template-modal.htm'); // the default modal template
 				$title = 'SVN - Web Manager :: Repo: '.$repo.' @ File: '.$path;
@@ -143,13 +152,18 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$this->ControllerGetParam('module-view-path').'web-manager-view-file.inc.htm',
 					[
 						'VIEWS-PATH' 		=> (string) $this->ControllerGetParam('module-view-path'),
+						'REPO-ACTION' 		=> (string) $op,
 						'REPO-NAME' 		=> (string) $repo,
 						'REPO-PATH' 		=> (string) $path,
+						'TYPE' 				=> (string) $type,
+						'FILE-SIZE-BYTES' 	=> (int)    $bsize,
+						'FILE-SIZE' 		=> (string) $fsize,
 						'ICON-SUFFIX' 		=> (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$path),
 						'REVISION' 			=> (string) $rev,
 						'CODE-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web']),
 						'CODE-TYPE' 		=> 'diff',
-						'CODE-HTML' 		=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html((string)\SmartModExtLib\Svn\SvnWebManager::getDiffFile($repo, $path, $rev_old, $rev_new)))
+						'CODE-HTML' 		=> (string) (((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) ? $difftxt : ''),
+						'CODE-EXT-HTML' 	=> (string) (((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) ? '' : '<br><hr><center><h3 style="color:#666699;">File is too large to display diff here ...  File Size: '.(int)$bsize.' bytes ...</h3></center>'),
 					]
 				);
 
@@ -172,6 +186,15 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$this->PageViewSetErrorStatus(400, 'ERROR: Empty Type Selected for View ...');
 					return;
 				} //end if
+				$bsize = -1; // must be file
+				$fsize = '';
+				$farr = (array) \SmartModExtLib\Svn\SvnWebManager::listRepo($repo, $path, $rev); // must be file
+				if(((int)Smart::array_size($farr) == 1) AND isset($farr[0]) AND (Smart::array_size($farr[0]) > 0)) {
+					if(array_key_exists('size-bytes', $farr[0])) {
+						$bsize = (int) $farr[0]['size-bytes'];
+						$fsize = (string) $farr[0]['size'];
+					} //end if
+				} //end if
 
 				$fname = (string) Smart::base_name((string)$path);
 				$fmime = (array) SmartFileSysUtils::mime_eval($fname);
@@ -180,6 +203,14 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$title = 'SVN - Web Manager :: Repo: '.$repo.' @ File: '.$path;
 
 				if(\SmartModExtLib\Svn\SvnWebManager::isTextFileByMimeType((string)$fmime[0]) === true) {
+					$fhtml = '';
+					if((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) {
+						if(\SmartModExtLib\Svn\SvnWebManager::isSvgImageFileByMimeType((string)$fmime[0]) === true) {
+							$fhtml = '<br><hr><br><center><img style="width:auto; max-width:90%!important;" alt="'.Smart::escape_html((string)$fmime[0]).'" title="'.Smart::escape_html((string)$fmime[0]).'" src="data:'.Smart::escape_html((string)$fmime[0]).';base64,'.base64_encode((string)\SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev)).'"></center><br>';
+						} //end if
+					} else {
+						$fhtml = '<br><hr><center><h3 style="color:#666699;">File is too large to display here ...  Size: '.(int)$bsize.' bytes ...</h3></center>';
+					} //end if
 					$highlight_arr = (array) SmartViewHtmlHelpers::get_highlightsyntax_by_filetype((string)$path);
 					//TODO: if $highlight_arr['type'] does return empty string before fallback to plain text call the similar from mod highlight to try complete
 					if((string)$highlight_arr['type'] == '') {
@@ -189,27 +220,45 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						$this->ControllerGetParam('module-view-path').'web-manager-view-file.inc.htm',
 						[
 							'VIEWS-PATH' 		=> (string) $this->ControllerGetParam('module-view-path'),
+							'REPO-ACTION' 		=> (string) $op,
 							'REPO-NAME' 		=> (string) $repo,
 							'REPO-PATH' 		=> (string) $path,
+							'TYPE' 				=> (string) $type,
+							'FILE-SIZE-BYTES' 	=> (int)    $bsize,
+							'FILE-SIZE' 		=> (string) $fsize,
 							'ICON-SUFFIX' 		=> (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$path),
 							'REVISION' 			=> (string) $rev,
 							'CODE-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', (array)$highlight_arr['pack']),
 							'CODE-TYPE' 		=> (string) $highlight_arr['type'],
-							'CODE-HTML' 		=> (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html((string)\SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev)))
+							'CODE-HTML' 		=> (string) (((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) ? SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html((string)\SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev))) : ''),
+							'CODE-EXT-HTML' 	=> (string) $fhtml,
 						]
 					);
 				} else {
+					$fhtml = '';
+					if(\SmartModExtLib\Svn\SvnWebManager::isImageFileByMimeType((string)$fmime[0]) === true) {
+						if((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) {
+							$fhtml = '<br><hr><br><center><img style="width:auto; max-width:90%!important;" alt="'.Smart::escape_html((string)$fmime[0]).'" title="'.Smart::escape_html((string)$fmime[0]).'" src="data:'.Smart::escape_html((string)$fmime[0]).';base64,'.base64_encode((string)\SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev)).'"></center>';
+						} else {
+							$fhtml = '<br><hr><center><h3 style="color:#666699;">File is too large to display here ...  Size: '.(int)$bsize.' bytes ...</h3></center>';
+						} //end switch
+					} //end if
 					$main = (string) SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'web-manager-view-file.inc.htm',
 						[
 							'VIEWS-PATH' 		=> (string) $this->ControllerGetParam('module-view-path'),
+							'REPO-ACTION' 		=> (string) $op,
 							'REPO-NAME' 		=> (string) $repo,
 							'REPO-PATH' 		=> (string) $path,
+							'TYPE' 				=> (string) $type,
+							'FILE-SIZE-BYTES' 	=> (int)    $bsize,
+							'FILE-SIZE' 		=> (string) $fsize,
 							'ICON-SUFFIX' 		=> (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$path),
 							'REVISION' 			=> (string) $rev,
 							'CODE-HIGHLIGHT' 	=> (string) '',
 							'CODE-TYPE' 		=> (string) '',
-							'CODE-HTML' 		=> (string) '<b>'.Smart::escape_html((string)$fmime[0]).'</b>'
+							'CODE-HTML' 		=> (string) '<b><i>Mime-Type</i>:&nbsp;'.Smart::escape_html((string)$fmime[0]).'</b>',
+							'CODE-EXT-HTML' 	=> (string) $fhtml,
 						]
 					);
 				} //end if else
@@ -258,7 +307,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$path = '';
 				} //end if
 
-				$repos = (array) Smart::get_from_config('svn.repos');
+				$repos = (array) \SmartModExtLib\Svn\SvnWebManager::getReposConfigs();
 				if(((string)trim((string)$repo) == '') OR (Smart::array_size($repos[(string)trim((string)$repo)]) <= 0)) {
 					$this->PageViewSetErrorStatus(400, 'ERROR: Invalid SVN Repo: ['.$repo.']');
 					return;
@@ -306,7 +355,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$path = '';
 				} //end if
 
-				$repos = (array) Smart::get_from_config('svn.repos');
+				$repos = (array) \SmartModExtLib\Svn\SvnWebManager::getReposConfigs();
 				if(((string)trim((string)$repo) == '') OR (Smart::array_size($repos[(string)trim((string)$repo)]) <= 0)) {
 					$this->PageViewSetErrorStatus(400, 'ERROR: Invalid SVN Repo: ['.$repo.']');
 					return;
@@ -380,30 +429,34 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$main = (string) SmartMarkersTemplating::render_file_template(
 					$this->ControllerGetParam('module-view-path').'web-manager-list-repo.inc.htm',
 					[
-						'VIEWS-PATH' 			=> (string) $this->ControllerGetParam('module-view-path'),
-						'HOME-URL' 				=> (string) 'admin.php?page='.$this->ControllerGetParam('controller'),
-						'REPO-NAME' 			=> (string) $repo,
-						'REPO-PATH' 			=> (string) $crr_path,
-						'BACK-URL' 				=> $path ? 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url(Smart::dir_name($path)).'&rev='.Smart::escape_url($rev) : 'admin.php?page='.$this->ControllerGetParam('controller'),
-						'SELECT-URLBASE' 		=> 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($crr_path),
-						'SELECT-URLFILE' 		=> $isfile ? 'admin.php?page='.$this->ControllerGetParam('controller').'&op=cat&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($crr_path).'&type=file' : '#',
-						'DOWNLOAD-ARCH-ALLOW' 	=> $arch_dwn_allow ? 'yes' : 'no',
-						'DOWNLOAD-ARCH-MODE' 	=> (string) $arch_dwn_mode,
-						'DOWNLOAD-ARCH-URL' 	=> $isfile ? '' : 'admin.php?page='.$this->ControllerGetParam('controller').'&op=dwarch&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($crr_path),
-						'TYPE' 					=> (string) $type,
-						'MIMETYPE' 				=> (string) $mimetype,
-						'MIMEDISP' 				=> (string) $mimedisp,
-						'DISPLAY-LINK' 			=> (string) $display_link,
-						'REPODATA' 				=> (array) $arr,
-						'REVSDATA' 				=> (array) $revs,
-						'LASTREVISFIRST' 		=> (string) $lastrevisfirst,
-						'REV-CRR' 				=> (int) $rev_crr,
-						'REV-FIRST' 			=> (int) $rev_first,
-						'REV-HEAD' 				=> (int) $rev_head,
-						'COMPARE-ROOT-URL' 		=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=compare&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url('/').'&rev=',
-						'COMPARE-URL' 			=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=compare&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($path).'&rev=',
-						'PROPS-URL' 			=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=props&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($path).'&type='.Smart::escape_url($type).'&rev=',
-						'HEAD-ROOT-URL' 		=> 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path=/&rev=' // head revision must go into ROOT folder to avoid errors if the current folder have been deleted and is not available in the HEAD revision !!
+						'VIEWS-PATH' 				=> (string) $this->ControllerGetParam('module-view-path'),
+						'HOME-URL' 					=> (string) 'admin.php?page='.$this->ControllerGetParam('controller'),
+						'MAX-FSIZE-PRETTY' 			=> (string) \SmartUtils::pretty_print_bytes((int)(int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY, 1, ' '),
+						'REPO-NAME' 				=> (string) $repo,
+						'REPO-PATH' 				=> (string) $crr_path,
+						'BACK-URL' 					=> $path ? 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url(Smart::dir_name($path)).'&rev='.Smart::escape_url($rev) : 'admin.php?page='.$this->ControllerGetParam('controller'),
+						'SELECT-URLBASE' 			=> 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($crr_path),
+						'SELECT-URLFILE' 			=> $isfile ? 'admin.php?page='.$this->ControllerGetParam('controller').'&op=cat&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($crr_path).'&type=file' : '#',
+						'DOWNLOAD-ARCH-ALLOW' 		=> $arch_dwn_allow ? 'yes' : 'no',
+						'DOWNLOAD-ARCH-MODE' 		=> (string) $arch_dwn_mode,
+						'DOWNLOAD-ARCH-URL' 		=> $isfile ? '' : 'admin.php?page='.$this->ControllerGetParam('controller').'&op=dwarch&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($crr_path),
+						'TYPE' 						=> (string) $type,
+						'MIMETYPE' 					=> (string) $mimetype,
+						'MIMEDISP' 					=> (string) $mimedisp,
+						'DISPLAY-LINK' 				=> (string) $display_link,
+						'REPODATA' 					=> (array) $arr,
+						'REVSDATA' 					=> (array) $revs,
+						'LASTREVISFIRST' 			=> (string) $lastrevisfirst,
+						'REV-CRR' 					=> (int) $rev_crr,
+						'REV-FIRST' 				=> (int) $rev_first,
+						'REV-HEAD' 					=> (int) $rev_head,
+						'COMPARE-ROOT-URL' 			=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=compare&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url('/').'&rev=',
+						'COMPARE-URL' 				=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=compare&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($path).'&rev=',
+						'COMPARE-PATH' 				=> (string) $path,
+						'COMPARE-FILE-DIFF-URL' 	=> (((string)$type == 'file') ? 'admin.php?page='.$this->ControllerGetParam('controller').'&op=diff&repo='.Smart::escape_url($repo).'&type=file&path='.Smart::escape_url($path).'&rev=' : ''),
+						'COMPARE-FILE-VIEW-URL' 	=> (((string)$type == 'file') ? 'admin.php?page='.$this->ControllerGetParam('controller').'&op=view&repo='.Smart::escape_url($repo).'&type=file&path='.Smart::escape_url($path).'&rev=' : ''),
+						'PROPS-URL' 				=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&op=props&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url($path).'&type='.Smart::escape_url($type).'&rev=',
+						'HEAD-ROOT-URL' 			=> 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path=/&rev=' // head revision must go into ROOT folder to avoid errors if the current folder have been deleted and is not available in the HEAD revision !!
 					]
 				);
 

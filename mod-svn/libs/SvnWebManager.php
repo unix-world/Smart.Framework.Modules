@@ -24,15 +24,83 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SvnWebManager {
 
 	// ::
-	// v.20200123
+	// v.20210325
+
+	const MAX_FILESIZE_DISPLAY = 10000000; // 10MB
 
 	private static $svn_cache_dir = 'tmp/cache/svn/'; 		// must have trailing slash :: the svn proc jail root
+	private static $configs = null;
+
+
+	//============================================================ OK
+	public static function getReposConfigs() {
+		//--
+		if(\is_array(self::$configs)) {
+			return (array) self::$configs;
+		} //end if
+		//--
+		if(!\is_array(self::$configs)) {
+			self::$configs = array();
+		} //end if
+		//--
+		$repos = (array) \Smart::get_from_config('svn.repos', 'array');
+		if(\is_array($repos)) {
+			foreach($repos as $key => $val) {
+				$key = (string) \trim((string)$key);
+				if((string)$key != '') {
+					$tmp_repo = array();
+					if(\is_array($val)) {
+						$val = (array) \Smart::array_init_keys(
+							$val,
+							[
+								'url',
+								'path',
+								'user',
+								'pass',
+								'encrypted-pass',
+								'allow-download',
+								'readonly'
+							]
+						);
+						foreach($val as $k => $v) {
+							if(\Smart::is_nscalar($v)) {
+								$tmp_repo[(string)$k] = $v;
+							} //end if
+						} //end foreach
+					} //end if
+					if(\Smart::array_size($tmp_repo) > 0) {
+						$tmp_repo['url'] = (string) \trim((string)$tmp_repo['url']);
+						if((string)$tmp_repo['path'] != '') {
+							$tmp_repo['path'] = (string) \trim((string)$tmp_repo['path']);
+							$tmp_repo['path'] = (string) \trim((string)$tmp_repo['path'], '/');
+							if((string)$tmp_repo['path'] != '') {
+								$tmp_repo['path'] = '/'.$tmp_repo['path'];
+							} //end if
+						} //end if
+						if($tmp_repo['encrypted-pass'] === true) {
+							$tmp_repo['pass'] = (string) \SmartUtils::crypto_blowfish_decrypt((string)$tmp_repo['pass']);
+						} //end if
+						if($tmp_repo['readonly'] !== true) {
+							$tmp_repo['readonly'] = false;
+						} //end if
+						self::$configs[(string)$key] = (array) $tmp_repo;
+					} //end if
+				} //end if
+			} //end foreach
+		} //end if
+		//--
+		$repos = null;
+		//--
+		return (array) self::$configs;
+		//--
+	} //END FUNCTION
+	//============================================================
 
 
 	//============================================================ OK
 	public static function listRepos() {
 		//--
-		$repos = (array) \Smart::get_from_config('svn.repos');
+		$repos = (array) self::getReposConfigs();
 		if(\Smart::array_size($repos) <= 0) {
 			return array();
 		} //end if
@@ -44,19 +112,36 @@ final class SvnWebManager {
 			if(((string)\trim((string)$key) != '') AND (self::validateCfgRepoEntry($val))) {
 				//--
 				$tmp_arr = (array) self::execSvnCmd('info', (string)$val['url'], '', $val['user'], $val['pass'], 'xml-arr'); // OK
-				// \print_r($tmp_arr); die();
 				//--
 				if(\Smart::array_size($tmp_arr) > 0) {
 					if(\Smart::array_size($tmp_arr['info']) > 0) {
 						if(\Smart::array_size($tmp_arr['info'][0]) > 0) {
 							//--
+							$tmp_path = (string) $val['path'];
+							//--
+							$tmp_repo_protocol = '';
+							if(\stripos((string)$val['url'], 'file:///') === 0) {
+								$tmp_repo_protocol = 'file:///';
+							} else {
+								$tmp_repo_protocol = (array) \explode('//', (string)$val['url']);
+								$tmp_repo_protocol = (string) \strtolower((string)\trim((string)$tmp_repo_protocol[0])).'//';
+							} //end if
+							//--
+							$tmp_secure_pass = (int) $val['encrypted-pass'];
+							$tmp_is_readonly = (int) $val['readonly'];
+							//--
 							$arr[] = [
 								'repo-name' 		=> (string) \trim((string)$key),
+								'repo-url' 			=> (string) $val['url'],
+								'repo-protocol' 	=> (string) $tmp_repo_protocol,
+								'repo-path' 		=> (string) $tmp_path,
+								'repo-user' 		=> (string) $val['user'],
+								'repo-secure-pass' 	=> (int)    $tmp_secure_pass,
+								'repo-readonly' 	=> (int)    $tmp_is_readonly,
 								'last-rev-num' 		=> (string) \Smart::array_get_by_key_path((array)$tmp_arr, 'info.0.entry.0.commit|@attributes.0.revision', '.'),
 								'last-rev-author' 	=> (string) \Smart::array_get_by_key_path((array)$tmp_arr, 'info.0.entry.0.commit.0.author.0', '.'),
 								'last-rev-date' 	=> (string) \date('D, d M Y H:i:s', \strtotime((string)\Smart::array_get_by_key_path((array)$tmp_arr, 'info.0.entry.0.commit.0.date.0', '.')))
 							];
-							// \print_r($arr); die();
 							//--
 						} //end if
 					} //end if
@@ -78,52 +163,50 @@ final class SvnWebManager {
 	public static function listRepo($repo, $path, $rev) {
 		//--
 		$repo = (string) \trim((string)$repo);
-		$repos = (array) \Smart::get_from_config('svn.repos');
+		if((string)\trim((string)$repo) == '') {
+			return array();
+		} //end if
+		//--
+		$repos = (array) self::getReposConfigs();
 		$rdata = (array) $repos[(string)\trim((string)$repo)];
-		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		if(!self::validateCfgRepoEntry($rdata)) {
 			return array();
 		} //end if
 		//--
 		$arr = array();
 		//--
 		$tmp_arr = (array) self::execSvnCmd('list', (string)$rdata['url'], (string)$path, $rdata['user'], $rdata['pass'], 'xml-arr', [ 'rev' => (string)$rev ]); // OK
-		// \print_r($tmp_arr); die();
 		if(\Smart::array_size($tmp_arr) <= 0) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN List: Invalid XML (1): ['.$path.']',
 				'ERR: SVN List: Invalid XML (1)' // msg to display
 			);
-			die(''); // just in case
 			return array();
 		} //end if
 		//--
-		if(\Smart::array_size($tmp_arr['lists']) <= 0) {
+		if((!isset($tmp_arr['lists'])) OR (\Smart::array_size($tmp_arr['lists']) <= 0)) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN List: Invalid XML (2): ['.$path.']',
 				'ERR: SVN List: Invalid XML (2)' // msg to display
 			);
-			die(''); // just in case
 			return array();
 		} //end if
 		//--
-		if(\Smart::array_size($tmp_arr['lists'][0]) <= 0) {
+		if((!isset($tmp_arr['lists'][0])) OR (\Smart::array_size($tmp_arr['lists'][0]) <= 0)) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN List: Invalid XML (3): ['.$path.']',
 				'ERR: SVN List: Invalid XML (3)' // msg to display
 			);
-			die(''); // just in case
 			return array();
 		} //end if
 		//--
 		$tmp_arr = (array) $tmp_arr['lists'][0];
-		// \print_r($tmp_arr); die();
 		//--
 		if((\Smart::array_size($tmp_arr['list']) <= 0) OR (\Smart::array_size($tmp_arr['list|@attributes']) <= 0)) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN List: Invalid XML (4): ['.$path.']',
 				'ERR: SVN List: Invalid XML (4)' // msg to display
 			);
-			die(''); // just in case
 			return array();
 		} //end if
 		//--
@@ -132,29 +215,27 @@ final class SvnWebManager {
 		$tmp_entries = \Smart::array_get_by_key_path((array)$tmp_arr, 'list.0.entry', '.'); // don't force array !!
 		$tmp_arr = array();
 		if(\Smart::array_size($tmp_entries) <= 0) {
-			//var_dump((array)$tmp_entries); die((string)phpversion());
 			return array(); // Fix: no entries found
 		} //end if
-		// \print_r($tmp_entries); die();
 		if(\Smart::array_size($tmp_entratt) <= 0) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN List: Invalid XML (5): ['.$path.']',
 				'ERR: SVN List: Invalid XML (5)' // msg to display
 			);
-			die(''); // just in case
 			return array(); // no entries found
 		} //end if
 		//--
 		for($i=0; $i<\Smart::array_size($tmp_entries); $i++) {
 			//--
 			$val = (array) $tmp_entries[$i];
-			// \print_r($val); die();
-			//-- proc
+			//--
 			if(\Smart::array_size($val) > 0) {
 				//--
 				$size = '-';
+				$bsize = 0;
 				if(\array_key_exists('size', (array)$val)) {
-					$size = (string) \SmartUtils::pretty_print_bytes((int)\Smart::array_get_by_key_path((array)$val, 'size.0', '.'), 1, ' ');
+					$bsize = (int) \Smart::array_get_by_key_path((array)$val, 'size.0', '.');
+					$size = (string) \SmartUtils::pretty_print_bytes((int)$bsize, 1, ' '); // {{{SYNC-SVN-PRETTY-PRINT-BYTES}}}
 				} //end if
 				//--
 				$the_item_name = (string) \Smart::array_get_by_key_path((array)$val, 'name.0', '.');
@@ -170,19 +251,16 @@ final class SvnWebManager {
 					'type' => (string) $the_item_type,
 					'name' => (string) $the_item_name,
 					'icon-suffix' => (string) $the_item_icon_suffix,
+					'size-bytes' => (int) $bsize,
 					'size' => (string) $size,
 					'last-rev-num' => (string) \Smart::array_get_by_key_path((array)$val, 'commit|@attributes.0.revision', '.'),
 					'last-rev-author' => (string) \Smart::array_get_by_key_path((array)$val, 'commit.0.author.0', '.'),
 					'last-rev-date' => (string) \date('D, d M Y H:i:s', \strtotime((string)\Smart::array_get_by_key_path((array)$val, 'commit.0.date.0', '.'))),
 				];
 				//--
-				// \print_r($arr); die();
-				//--
 			} //end if
 			//--
 		} //end for
-		//--
-		// \print_r($arr); die();
 		//--
 		return (array) $arr;
 		//--
@@ -194,23 +272,25 @@ final class SvnWebManager {
 	public static function getHeadRevision($repo) {
 		//--
 		$repo = (string) \trim((string)$repo);
-		$repos = (array) \Smart::get_from_config('svn.repos');
+		if((string)\trim((string)$repo) == '') {
+			return -1;
+		} //end if
+		//--
+		$repos = (array) self::getReposConfigs();
 		$rdata = (array) $repos[(string)\trim((string)$repo)];
-		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		if(!self::validateCfgRepoEntry($rdata)) {
 			return -1;
 		} //end if
 		//--
 		$tmp_arr = (array) self::execSvnCmd('get-revs', (string)$rdata['url'], '', $rdata['user'], $rdata['pass'], 'xml-arr', [ 'start-rev' => 'HEAD', 'num-revs' => 1 ]); // get latest revision
-		// \print_r($tmp_arr); die();
-		$entry_zero = (array) \Smart::array_get_by_key_path((array)$tmp_arr, 'log.0.logentry|@attributes.0', '.');
+		//--
+		$entry_zero = \Smart::array_get_by_key_path((array)$tmp_arr, 'log.0.logentry|@attributes.0', '.');
 		if((\Smart::array_size($entry_zero) <= 0) OR (!\array_key_exists('revision', (array)$entry_zero))) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN Export: Failed to get SVN Export Head Revision ...',
 				'ERR: Failed to get SVN Export Head Revision' // msg to display
 			);
-			die(''); // just in case
 		} //end if
-		// \print_r($entry_zero); die();
 		//--
 		return (string) ($entry_zero['revision'] ? (int)$entry_zero['revision'] : '');
 		//--
@@ -222,16 +302,20 @@ final class SvnWebManager {
 	public static function getProps($repo, $path, $rev) {
 		//--
 		$repo = (string) \trim((string)$repo);
-		$repos = (array) \Smart::get_from_config('svn.repos');
+		if((string)\trim((string)$repo) == '') {
+			return array();
+		} //end if
+		//--
+		$repos = (array) self::getReposConfigs();
 		$rdata = (array) $repos[(string)\trim((string)$repo)];
-		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		if(!self::validateCfgRepoEntry($rdata)) {
 			return array();
 		} //end if
 		//--
 		$arr = array();
 		//--
 		$tmp_arr = (array) self::execSvnCmd('proplist', (string)$rdata['url'], (string)$path, $rdata['user'], $rdata['pass'], 'xml-arr', [ 'rev' => (string)$rev ]); // OK
-		// \print_r($tmp_arr); die();
+		//--
 		if(\Smart::array_size($tmp_arr) <= 0) {
 			return array();
 		} //end if
@@ -251,7 +335,6 @@ final class SvnWebManager {
 		if(\Smart::array_size($tmp_arr['properties'][0]['target'][0]['property|@attributes']) <= 0) {
 			return array();
 		} //end if
-		// \print_r($tmp_arr['properties'][0]['target'][0]['property|@attributes']); die();
 		//--
 		$arr = [];
 		foreach($tmp_arr['properties'][0]['target'][0]['property|@attributes'] as $key => $val) {
@@ -279,21 +362,23 @@ final class SvnWebManager {
 	public static function getCompare($repo, $path, $rev) {
 		//--
 		$repo = (string) \trim((string)$repo);
-		$repos = (array) \Smart::get_from_config('svn.repos');
+		if((string)\trim((string)$repo) == '') {
+			return array();
+		} //end if
+		//--
+		$repos = (array) self::getReposConfigs();
 		$rdata = (array) $repos[(string)\trim((string)$repo)];
-		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		if(!self::validateCfgRepoEntry($rdata)) {
 			return array();
 		} //end if
 		//-- get compare just for root and later filter by path
 		$tmp_arr = self::execSvnCmd('compare', (string)$rdata['url'], '/', $rdata['user'], $rdata['pass'], 'xml-arr', [ 'rev' => (string)$rev ]); // OK
-		// \print_r($tmp_arr); die();
 		//--
 		if(\Smart::array_size($tmp_arr['log']) <= 0) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN Compare: Invalid XML (1): ['.$path.']',
 				'ERR: SVN Compare: Invalid XML (1)' // msg to display
 			);
-			die(''); // just in case
 			return array();
 		} //end if
 		if(\Smart::array_size($tmp_arr['log'][0]) <= 0) {
@@ -301,7 +386,6 @@ final class SvnWebManager {
 				__METHOD__.' #ERR# SVN Compare: Invalid XML (2): ['.$path.']',
 				'ERR: SVN Compare: Invalid XML (2)' // msg to display
 			);
-			die(''); // just in case
 			return array();
 		} //end if
 		//--
@@ -310,22 +394,20 @@ final class SvnWebManager {
 		$tmp_author = (string) \Smart::array_get_by_key_path((array)$tmp_arr, 'logentry.0.author.0', '.');
 		$tmp_date = (string) \Smart::array_get_by_key_path((array)$tmp_arr, 'logentry.0.date.0', '.');
 		$tmp_msg = (string) \Smart::array_get_by_key_path((array)$tmp_arr, 'logentry.0.msg.0', '.');
-		$tmp_arr = (array) \Smart::array_get_by_key_path((array)$tmp_arr, 'logentry.0.paths.0', '.');
+		$tmp_arr = \Smart::array_get_by_key_path((array)$tmp_arr, 'logentry.0.paths.0', '.');
 		//--
 		if((string)$tmp_rev !== (string)$rev) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN Compare: Invalid XML Rev.['.$tmp_rev.'] / Rev.['.$rev.'] (3): ['.$path.']',
 				'ERR: SVN Compare: Invalid XML (3)' // msg to display
 			);
-			die(''); // just in case
 			return array();
 		} //end if
-		if((\Smart::array_size($tmp_arr['path']) <= 0) OR (\Smart::array_size($tmp_arr['path|@attributes']) <= 0) OR (\Smart::array_size($tmp_arr['path']) != \Smart::array_size($tmp_arr['path|@attributes']))) {
+		if((\Smart::array_size($tmp_arr) <= 0) OR (\Smart::array_size($tmp_arr['path']) <= 0) OR (\Smart::array_size($tmp_arr['path|@attributes']) <= 0) OR (\Smart::array_size($tmp_arr['path']) != \Smart::array_size($tmp_arr['path|@attributes']))) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN Compare: Invalid XML (4): ['.$path.']',
 				'ERR: SVN Compare: Invalid XML (4)' // msg to display
 			);
-			die(''); // just in case
 			return array();
 		} //end if
 		//--
@@ -338,26 +420,26 @@ final class SvnWebManager {
 		];
 		$arr['changes'] = [];
 		for($i=0; $i<\Smart::array_size($tmp_arr['path']); $i++) {
-			if(((string)$path == '') OR ((string)$path == '/') OR (\strpos($tmp_arr['path'][$i], $path) === 0)) {
+			if(((string)$path == '') OR ((string)$path == '/') OR (\strpos($tmp_arr['path'][$i], (((string)$rdata['path'] != '') ? $rdata['path'] : '').$path) === 0)) {
+				$fixed_path = (string) self::fixTrunkPath((string)$tmp_arr['path'][$i], (array)$rdata);
 				$tmp_atts = (array) $tmp_arr['path|@attributes'][$i];
 				$the_item_icon_suffix = '';
 				if((string)$tmp_atts['kind'] == 'file') {
-					$the_item_icon_suffix = (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$tmp_arr['path'][$i]);
+					$the_item_icon_suffix = (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$fixed_path);
 				} //end if
 				$arr['changes'][] = [
-					'path' 			=> (string) $tmp_arr['path'][$i],
-					'type' 			=> (string) $tmp_atts['kind'],
 					'icon-suffix' 	=> (string) $the_item_icon_suffix,
-					'txtmod' 		=> (string) $tmp_atts['text-mods'],
-					'action' 		=> (string) $tmp_atts['action'],
-					'propsmod' 		=> (string) $tmp_atts['prop-mods'],
-					'copyfromp' 	=> (string) $tmp_atts['copyfrom-path'],
-					'copyfromr' 	=> (string) $tmp_atts['copyfrom-rev']
+					'path' 			=> (string) $fixed_path,
+					'type' 			=> (string) (isset($tmp_atts['kind']) ? $tmp_atts['kind'] : null),
+					'txtmod' 		=> (string) (isset($tmp_atts['text-mods']) ? $tmp_atts['text-mods'] : null),
+					'action' 		=> (string) (isset($tmp_atts['action']) ? $tmp_atts['action'] : null),
+					'propsmod' 		=> (string) (isset($tmp_atts['prop-mods']) ? $tmp_atts['prop-mods'] : null),
+					'copyfromp' 	=> (string) (isset($tmp_atts['copyfrom-path']) ? $tmp_atts['copyfrom-path'] : null),
+					'copyfromr' 	=> (string) (isset($tmp_atts['copyfrom-rev']) ? $tmp_atts['copyfrom-rev'] : null)
 				];
 			} //end if
 		} //end for
 		//--
-		// \print_r($arr); die();
 		return (array) $arr;
 		//--
 	} //END FUNCTION
@@ -368,9 +450,13 @@ final class SvnWebManager {
 	public static function getFile($repo, $path, $rev) {
 		//--
 		$repo = (string) \trim((string)$repo);
-		$repos = (array) \Smart::get_from_config('svn.repos');
+		if((string)\trim((string)$repo) == '') {
+			return '';
+		} //end if
+		//--
+		$repos = (array) self::getReposConfigs();
 		$rdata = (array) $repos[(string)\trim((string)$repo)];
-		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		if(!self::validateCfgRepoEntry($rdata)) {
 			return '';
 		} //end if
 		//--
@@ -384,14 +470,18 @@ final class SvnWebManager {
 	public static function getRealPathFromPrevRevision($repo, $path, $revx, $revy) {
 		//--
 		$repo = (string) \trim((string)$repo);
-		$repos = (array) \Smart::get_from_config('svn.repos');
+		if((string)\trim((string)$repo) == '') {
+			return '';
+		} //end if
+		//--
+		$repos = (array) self::getReposConfigs();
 		$rdata = (array) $repos[(string)\trim((string)$repo)];
-		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		if(!self::validateCfgRepoEntry($rdata)) {
 			return '';
 		} //end if
 		//--
 		$tmp_arr = (array) self::execSvnCmd('prev-info', (string)$rdata['url'], (string)$path, $rdata['user'], $rdata['pass'], 'xml-arr', [ 'rev-old' => (string)$revx, 'rev-new' => (string)$revy ]); // OK
-		// \print_r($tmp_arr); die();
+		//--
 		$path = (string) \Smart::array_get_by_key_path((array)$tmp_arr, 'info.0.entry.0.relative-url.0', '.');
 		$rpath = (string) \trim((string)\substr((string)$path, 1));
 		if((\substr((string)$path, 0, 1) != '^') OR ((string)$rpath == '')) {
@@ -399,11 +489,9 @@ final class SvnWebManager {
 				__METHOD__.' #ERR# SVN Revision Path: Invalid Real Path for: ['.$path.'] @ ['.$path.']',
 				'ERR: Invalid SVN Revision Path' // msg to display
 			);
-			die(''); // just in case
 		} //end if
-		//die('Path: '.$rpath);
 		//--
-		return (string) $rpath;
+		return (string) self::fixTrunkPath((string)$rpath, (array)$rdata);
 		//--
 	} //END FUNCTION
 	//============================================================
@@ -413,9 +501,13 @@ final class SvnWebManager {
 	public static function getDiffFile($repo, $path, $revx, $revy) {
 		//--
 		$repo = (string) \trim((string)$repo);
-		$repos = (array) \Smart::get_from_config('svn.repos');
+		if((string)\trim((string)$repo) == '') {
+			return '';
+		} //end if
+		//--
+		$repos = (array) self::getReposConfigs();
 		$rdata = (array) $repos[(string)\trim((string)$repo)];
-		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		if(!self::validateCfgRepoEntry($rdata)) {
 			return '';
 		} //end if
 		//--
@@ -443,9 +535,13 @@ final class SvnWebManager {
 		} //end switch
 		//--
 		$repo  = (string) \trim((string)$repo);
-		$repos = (array) \Smart::get_from_config('svn.repos');
+		if((string)\trim((string)$repo) == '') {
+			return array();
+		} //end if
+		//--
+		$repos = (array) self::getReposConfigs();
 		$rdata = (array) $repos[(string)\trim((string)$repo)];
-		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		if(!self::validateCfgRepoEntry($rdata)) {
 			return array();
 		} //end if
 		//--
@@ -491,30 +587,31 @@ final class SvnWebManager {
 	public static function listRevs($repo, $path, $start, $num) {
 		//--
 		$repo = (string) \trim((string)$repo);
-		$repos = (array) \Smart::get_from_config('svn.repos');
+		if((string)\trim((string)$repo) == '') {
+			return array();
+		} //end if
+		//--
+		$repos = (array) self::getReposConfigs();
 		$rdata = (array) $repos[(string)\trim((string)$repo)];
-		if(((string)\trim((string)$repo) == '') OR (!self::validateCfgRepoEntry($rdata))) {
+		if(!self::validateCfgRepoEntry($rdata)) {
 			return array();
 		} //end if
 		//--
 		$tmp_arr = (array) self::execSvnCmd('get-revs', (string)$rdata['url'], (string)$path, $rdata['user'], $rdata['pass'], 'xml-arr', [ 'start-rev' => (string)$start, 'num-revs' => (int)$num, 'rev' => (string)$start ]);
-		// \print_r($tmp_arr); die();
 		//--
-		if(\Smart::array_size($tmp_arr['log']) <= 0) {
+		if((!isset($tmp_arr['log'])) OR (\Smart::array_size($tmp_arr['log']) <= 0)) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN Rev. List: Invalid XML (1): ['.$path.']',
 				'ERR: SVN Rev. List: Invalid XML (1)' // msg to display
 			);
-			die(''); // just in case
 			return array();
 		} //end if
-		if(\Smart::array_size($tmp_arr['log'][0]) <= 0) {
+		if((!isset($tmp_arr['log'][0])) OR (\Smart::array_size($tmp_arr['log'][0]) <= 0)) {
 			/* if zero revisions avoid fatal error
 			\Smart::raise_error(
 				__METHOD__.' #ERR# SVN Rev. List: Invalid XML (2): ['.$path.']',
 				'ERR: SVN Rev. List: Invalid XML (2)' // msg to display
 			);
-			die(''); // just in case
 			*/
 			return array();
 		} //end if
@@ -522,7 +619,6 @@ final class SvnWebManager {
 		$entries = (array) $tmp_arr['log'][0];
 		$tmp_arr = array();
 		$arr = [];
-		// \print_r($entries); die();
 		for($i=0; $i<\Smart::array_size($entries['logentry']); $i++) {
 			//--
 			$arr[] = [
@@ -531,10 +627,8 @@ final class SvnWebManager {
 				'date' => (string) \date('D, d M Y H:i:s', \strtotime((string)\Smart::array_get_by_key_path((array)$entries['logentry'], $i.'.date.0', '.'))),
 				'msg' => (string) \Smart::array_get_by_key_path((array)$entries['logentry'], $i.'.msg.0', '.')
 			];
-			// \print_r($arr); die();
 			//--
 		} //end for
-		// \print_r($arr); die();
 		//--
 		return (array) $arr;
 		//--
@@ -543,7 +637,7 @@ final class SvnWebManager {
 
 
 	//============================================================
-	public static function isTextFileByMimeType($mimetype) {
+	public static function isTextFileByMimeType(string $mimetype) {
 		//--
 		if(\in_array((string)$mimetype, [
 			'application/x-php',
@@ -571,30 +665,54 @@ final class SvnWebManager {
 	//============================================================
 
 
+	//============================================================
+	public static function isImageFileByMimeType(string $mimetype) {
+		//--
+		if(\in_array((string)$mimetype, [
+			'image/svg+xml',
+			'image/png',
+			'image/jpeg',
+			'image/gif',
+			'image/webp'
+		])) {
+			$out = true;
+		} else {
+			$out = false;
+		} //end if else
+		//--
+		return (bool) $out;
+		//--
+	} //END FUNCTION
+	//============================================================
+
+
+	//============================================================
+	public static function isSvgImageFileByMimeType(string $mimetype) {
+		//--
+		if((string)$mimetype == 'image/svg+xml') {
+			$out = true;
+		} else {
+			$out = false;
+		} //end if else
+		//--
+		return (bool) $out;
+		//--
+	} //END FUNCTION
+	//============================================================
+
+
 	//===== PRIVATES
 
 
 	//============================================================ OK
 	private static function validateCfgRepoEntry($repo_entry) {
 		//--
-		if(!\Smart::array_size($repo_entry) > 0) {
+		if(\Smart::array_size($repo_entry) <= 0) {
 			return false;
 		} //end if
 		//--
-		if((string)\trim((string)$repo_entry['url']) == '') {
+		if((string)\trim((string)$repo_entry['url']) == '') { // need at least the repo URL key, it is mandatory
 			return false;
-		} //end if
-		//--
-		if($repo_entry['user'] !== null) {
-			if((string)\trim((string)$repo_entry['user']) == '') {
-				return false;
-			} //end if
-		} //end if
-		//--
-		if($repo_entry['pass'] !== null) {
-			if((string)\trim((string)$repo_entry['pass']) == '') {
-				return false;
-			} //end if
 		} //end if
 		//--
 		return true;
@@ -617,7 +735,6 @@ final class SvnWebManager {
 				__METHOD__.' #ERR# SVN Command:['.$cmd.'] Returned Some Errors ; ExitCode=['.$exearr['exitcode'].'] ; ErrorMsg: '.$exearr['stderr'],
 				'ERR: Errors when running command' // msg to display
 			);
-			die(''); // just in case
 		} //end if
 		$out = (string) \trim((string)$exearr['stdout']);
 		$exearr = array(); // free mem
@@ -629,16 +746,13 @@ final class SvnWebManager {
 						__METHOD__.' #ERR# SVN Command:['.$cmd.'] Returned Empty Output ...',
 						'ERR: Errors when running command' // msg to display
 					);
-					die(''); // just in case
 				} //end if
-				//die((string)$out);
 				$arr = (array) (new \SmartXmlParser('extended'))->transform((string)$out);
 				if(\Smart::array_size($arr) <= 0) {
 					\Smart::raise_error(
 						__METHOD__.' #ERR# SVN Command:['.$cmd.'] Returned Invalid Output:['."\n".$out."\n".']',
 						'ERR: Errors when running command' // msg to display
 					);
-					die(''); // just in case
 				} //end if
 				return (array) $arr;
 				break;
@@ -653,8 +767,8 @@ final class SvnWebManager {
 						__METHOD__.' #ERR# SVN Command:['.$cmd.'] Invalid command Output Type selected:['.$format.']',
 						'ERR: Invalid command Output Type selected' // msg to display
 					);
-					die(''); // just in case
 				} //end if
+				return null;
 		} //end switch
 		//--
 	} //END FUNCTION
@@ -663,7 +777,21 @@ final class SvnWebManager {
 
 	//============================================================ OK
 	private static function buildSvnCmd($what, $repo, $path, $auth_user, $auh_pass, $options) {
-		//--
+		//-- fix for PHP8
+		if(!\is_array($options)) {
+			$options = array();
+		} //end if
+		$init_keys = [
+			'start-rev',
+			'num-revs',
+			'rev-old',
+			'rev-new',
+			'rev',
+			'prop',
+			'export-dir',
+		];
+		$options = (array) \Smart::array_init_keys($options, $init_keys);
+		//-- #end fix
 		$repo = (string) \trim((string)$repo);
 		if(\strpos((string)$repo, '://') === false) {
 			$repo = 'file:///INVALID-REPOSITORY/--invalid-repo-name-err-svn--';
@@ -677,8 +805,6 @@ final class SvnWebManager {
 			$path = (string) '/'.$path;
 		} //end if
 		//--
-		//die($repo.$path);
-		//--
 		$cmdsvn = (string) \trim((string)\Smart::get_from_config('svn.cmd'));
 		if((string)$cmdsvn == '') {
 			return '';
@@ -686,9 +812,9 @@ final class SvnWebManager {
 		//--
 		$base_cmd = (string) self::escapeCmdExe((string)$cmdsvn).' --non-interactive';
 		$base_cmd .= ' --config-dir '.self::escapeCmdArg('svn-cfg'); // this path is relative to the proc jailroot
-		if($auth_user !== null) {
+		if((string)$auth_user !== '') {
 			$base_cmd .= ' --no-auth-cache --username '.self::escapeCmdArg((string)$auth_user);
-			if($auh_pass !== null) {
+			if((string)$auh_pass !== '') {
 				$base_cmd .= ' --password '.self::escapeCmdArg((string)$auh_pass);
 			} //end if
 		} //end if
@@ -728,7 +854,6 @@ final class SvnWebManager {
 						__METHOD__.' #ERR# SVN PropGet: Empty or Invalid Property',
 						'ERR: Invalid Property for SVN PropGet' // msg to display
 					);
-					die(''); // just in case
 				} //end if
 				$cmd = (string) $base_cmd.' --xml propget '.self::escapeCmdArg((string)$options['prop']).' --revision '.self::escapeCmdArg((string)$rev).' '.self::escapeCmdArg((string)$repo.$path.'@'.(string)$rev);
 				break;
@@ -747,7 +872,6 @@ final class SvnWebManager {
 					$rev = 'HEAD';
 				} //end if else
 				$cmd = (string) $base_cmd.' --xml log --verbose --revision '.self::escapeCmdArg((string)$options['rev']).':'.self::escapeCmdArg((string)$options['rev']).' '.self::escapeCmdArg((string)$repo.$path.'@'.(string)$options['rev']);
-				//die($cmd);
 				break;
 			case 'diff': // show diff on a text file
 				$cmd = (string) $base_cmd.' diff --revision '.self::escapeCmdArg((string)$options['rev-old']).':'.self::escapeCmdArg((string)$options['rev-new']).' '.self::escapeCmdArg((string)$repo.$path.'@');
@@ -758,7 +882,6 @@ final class SvnWebManager {
 						__METHOD__.' #ERR# SVN Export: Empty or Invalid Export Dir:['.$options['export-dir'].']',
 						'ERR: Invalid Dir for SVN Export' // msg to display
 					);
-					die(''); // just in case
 				} //end if
 				if((string)\trim((string)$options['rev']) != '') {
 					$rev = (string) $options['rev'];
@@ -787,7 +910,6 @@ final class SvnWebManager {
 				// nothing
 		} //end switch
 		//--
-		//die($cmd);
 		return (string) $cmd;
 		//--
 	} //END FUNCTION
@@ -812,7 +934,6 @@ final class SvnWebManager {
 				__METHOD__.' #ERR# Empty Archive Command: 7za',
 				'ERR: Empty Archive Command' // msg to display
 			);
-			die(''); // just in case
 		} //end if
 		//--
 		$cmd = (string) self::escapeCmdExe((string)$cmd7za).' a -ssc -t7z -m0=lzma '.self::escapeCmdArg((string)$arch_file).' '.self::escapeCmdArg((string)$arch_dir);
@@ -822,9 +943,7 @@ final class SvnWebManager {
 				__METHOD__.' #ERR# Archive Command:['.$cmd.'] Returned Some Errors ; ExitCode=['.$exearr['exitcode'].'] ; ErrorMsg: '.$exearr['stderr'],
 				'ERR: Errors when running archive command' // msg to display
 			);
-			die(''); // just in case
 		} //end if
-		//die(\trim((string)$exearr['stdout'])); // not needed for archiving
 		$exearr = array(); // free mem
 		//--
 		if(\SmartFileSystem::is_type_file((string)$fpatharch)) {
@@ -832,13 +951,11 @@ final class SvnWebManager {
 				//--
 				$cmd = (string) self::escapeCmdExe((string)$cmd7za).' t '.self::escapeCmdArg((string)$arch_file);
 				$exearr = (array) \SmartUtils::run_proc_cmd((string)$cmd, null, (string)self::$svn_cache_dir.$dir);
-				//die(\trim((string)$exearr['stdout'])); // not needed for archiving
 				if(($exearr['exitcode'] !== 0) OR ((string)$exearr['stderr'] != '') OR (\stripos((string)$exearr['stdout'], "\n".'Everything is Ok'."\n") === false)) {
 					\Smart::raise_error(
 						__METHOD__.' #ERR# Archive Test Command:['.$cmd.'] Returned Some Errors ; ExitCode=['.$exearr['exitcode'].'] ; ErrorMsg: '.$exearr['stderr'].' ; StdOut: '.$exearr['stdout'],
 						'ERR: Errors when running archive test command' // msg to display
 					);
-					die(''); // just in case
 				} //end if
 				$exearr = array(); // free mem
 				//--
@@ -850,6 +967,36 @@ final class SvnWebManager {
 		return '';
 		//--
 	} //END FUNCTION
+	//============================================================
+
+
+	//============================================================ OK
+	private static function fixTrunkPath(string $fixed_path, array $rdata) {
+		//--
+		$path = '';
+		if(\array_key_exists('path', (array)$rdata)) {
+			$path = (string) $rdata['path'];
+			$path = (string) \trim((string)$path);
+			$path = (string) \trim((string)$path, '/');
+			$path = (string) \trim((string)$path);
+		} //end if
+		//--
+		if((string)$path != '') {
+			$path = '/'.$path;
+			if((string)$fixed_path == (string)$path) {
+				$fixed_path = '';
+			} elseif(strpos((string)$fixed_path, (string)$path.'/') === 0) {
+				$fixed_path = (string) substr((string)$fixed_path, (int)strlen((string)$path));
+			} //end if
+		} //end if
+		//--
+		if((string)trim((string)$fixed_path) == '') {
+			$fixed_path = '/';
+		} //end if
+		//--
+		return (string) $fixed_path;
+		//--
+	} //END IF
 	//============================================================
 
 

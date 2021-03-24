@@ -8,11 +8,10 @@
 </style>
 <div class="ux-grid-row">
 	<div class="ux-grid-col s3">
-		<a href="[###HOME-URL|html###]" class="ux-link"><h1>Smart::Web SVN</h1></a>
-		<hr>
+		[@@@SUB-TEMPLATE:partials/web-manager-home.inc.htm@@@]
 		<div style="height:80vh; overflow-x:hidden; overflow-y:auto;">
 			<section id="svn-timeline" class="vtml-container vtml-small-container">
-			<!-- Current Rev. is [###REV-CRR|html###] ; First Rev. is: [###REV-FIRST|html###] -->
+			<!-- Current Rev. is [###REV-CRR|html###] ; First Rev. is: [###REV-FIRST|html###] ; Max File Size to display is: [###MAX-FSIZE-PRETTY|html###] -->
 			[%%%LOOP:REVSDATA%%%]
 			<div class="vtml-timeline-block">
 				[%%%IF:REVSDATA._-ITERATOR-_:<=0;(1)%%%]
@@ -40,9 +39,19 @@
 				</div>
 				<div class="vtml-timeline-content div_line">
 					<h2>Rev.&nbsp;[###REVSDATA.REVISION|html###]</h2>
+					&nbsp;
+				[%%%IF:TYPE:==file;%%%]
+					[%%%IF:COMPARE-FILE-DIFF-URL:!=;%%%]
+					<a data-smart="open.modal" href="[###COMPARE-FILE-DIFF-URL|html###][###REVSDATA.REVISION|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/diff.svg" alt="View Modifications / Diff for Rev. #[###REVSDATA.REVISION|html###] for Current File: [###COMPARE-PATH|html###]" title="View Modifications / Diff for Rev. #[###REVSDATA.REVISION|html###] for Current File: [###COMPARE-PATH|html###]"></a>
+					[%%%/IF:COMPARE-FILE-DIFF-URL%%%]
+					[%%%IF:COMPARE-FILE-VIEW-URL:!=;%%%]
+					<a data-smart="open.modal" href="[###COMPARE-FILE-VIEW-URL|html###][###REVSDATA.REVISION|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/view.svg" alt="View the Current File: [###COMPARE-PATH|html###] as in Rev. #[###REVSDATA.REVISION|html###]" title="View the Current File: [###COMPARE-PATH|html###] as in Rev. #[###REVSDATA.REVISION|html###]"></a>
+					[%%%/IF:COMPARE-FILE-VIEW-URL%%%]
+				[%%%/IF:TYPE%%%]
+					<a data-smart="open.modal" href="[###PROPS-URL|html###][###REVSDATA.REVISION|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/props.svg" alt="View Props for Revision #[###REVSDATA.REVISION|html###] Log for Current Path: [###COMPARE-PATH|html###]" title="View Props for Revision #[###REVSDATA.REVISION|html###] Log for Current Path: [###COMPARE-PATH|html###]"></a>
 					&nbsp; <a data-smart="open.modal" href="[###COMPARE-ROOT-URL|html###][###REVSDATA.REVISION|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/changes.svg" alt="View Revision #[###REVSDATA.REVISION|html###] Log for Root Path: /" title="View Revision #[###REVSDATA.REVISION|html###] Log for Root Path: /"></a>
 					[%%%IF:REVSDATA.REVISION:!=###REV-CRR###;%%%]
-					&nbsp; <a href="[###SELECT-URLBASE|html###]&rev=[###REVSDATA.REVISION|url|html###]&prev=[###REV-CRR|url|html###]&type=[###TYPE|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/revselect.svg" alt="Select and Display the Revision #[###REVSDATA.REVISION|html###]" title="Select and Display the Revision #[###REVSDATA.REVISION|html###]"></a>
+					<a href="[###SELECT-URLBASE|html###]&rev=[###REVSDATA.REVISION|url|html###]&prev=[###REV-CRR|url|html###]&type=[###TYPE|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/revselect.svg" alt="Select and Display the Revision #[###REVSDATA.REVISION|html###]" title="Select and Display the Revision #[###REVSDATA.REVISION|html###]"></a>
 					[%%%/IF:REVSDATA.REVISION%%%]
 					<p style="color:#778899; font-weight:bold;">[###REVSDATA.AUTHOR|html###]</p>
 					<p style="color:#778899; font-style:italic;">[###REVSDATA.MSG|html|nl2br###]</p>
@@ -71,7 +80,7 @@
 				<a class="ux-link" href="[###BACK-URL|html###]" title="Level Up">^..^</a>
 				[%%%/IF:TYPE%%%]
 				&nbsp;
-				<a data-smart="open.modal" href="[###COMPARE-URL|html###][###REV-CRR|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/change.svg" alt="View Revision #[###REV-CRR|html###] Log for Current Path: [###REPO-PATH|html###]" title="View Revision #[###REV-CRR|html###] Log for Current Path : [###REPO-NAME|html###][###REPO-PATH|html###]"></a>
+				<a data-smart="open.modal" href="[###COMPARE-URL|html###][###REV-CRR|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/[%%%IF:REPO-PATH:==/;%%%]changes.svg[%%%ELSE:REPO-PATH%%%]change.svg[%%%/IF:REPO-PATH%%%]" alt="View Revision #[###REV-CRR|html###] Log for Current Path: [###REPO-PATH|html###]" title="View Revision #[###REV-CRR|html###] Log for Current Path : [###REPO-NAME|html###][###REPO-PATH|html###]"></a>
 				&nbsp;
 				<a data-smart="open.modal" href="[###PROPS-URL|html###][###REV-CRR|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/props.svg" alt="View Props for Revision #[###REV-CRR|html###] Log for Current Path: [###REPO-PATH|html###]" title="View Props for Revision #[###REV-CRR|html###] Log for Current Path : [###REPO-NAME|html###][###REPO-PATH|html###]"></a>
 				[%%%IF:DOWNLOAD-ARCH-URL:!=;%%%]
@@ -114,7 +123,7 @@
 				[%%%/IF:DISPLAY-LINK%%%]
 			</div>
 			<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
-				<span style="font-weight:bold; color:#CCCCCC;">[###REPODATA.SIZE|html###]</span>
+				<span style="font-weight:bold; color:#CCCCCC;" title="[###REPODATA.SIZE-BYTES|int###] bytes">[###REPODATA.SIZE|html###]</span>
 			</div>
 			<div class="ux-grid-col s1" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
 				<span style="font-weight:bold; color:#333333;">[###REPODATA.LAST-REV-NUM|html###]</span>
@@ -150,7 +159,7 @@
 				[%%%/IF:REPODATA.TYPE%%%]
 			</div>
 			<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
-				<span style="font-weight:bold; color:#CCCCCC;">[###REPODATA.SIZE|html###]</span>
+				<span style="font-weight:bold; color:#CCCCCC;" title="[%%%IF:REPODATA.SIZE:!=-;(1)%%%][###REPODATA.SIZE-BYTES|int###] bytes[%%%ELSE:REPODATA.SIZE(1)%%%]N/A[%%%/IF:REPODATA.SIZE(1)%%%]">[###REPODATA.SIZE|html###]</span>
 			</div>
 			<div class="ux-grid-col s1" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:right;">
 				<span style="font-weight:bold; color:#333333;">[###REPODATA.LAST-REV-NUM|html###]</span>
