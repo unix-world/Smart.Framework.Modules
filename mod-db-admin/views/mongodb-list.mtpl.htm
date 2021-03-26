@@ -7,12 +7,6 @@
 }
 </style>
 [%%%IF:QMODE:==visual;%%%]
-<style>
-code.hljs, code.hljs * {
-	font-family: 'IBM Plex Mono', mono;
-	font-smooth: always;
-}
-</style>
 [@@@SUB-TEMPLATE:!lib/core/plugins/templates/syntax-highlight-init-static.inc.htm!@@@]
 [%%%ELSE:QMODE%%%]
 [@@@SUB-TEMPLATE:partials/code-editor.mtpl.inc.htm@@@]
@@ -202,7 +196,7 @@ function handleButtonShowJson() {
 	var json;
 	try {
 		json = jsonEditor.get();
-		SmartSimpleDialog.Dialog_Alert('<pre style="max-width:calc(100% - 5px) !important;"><code id="hljs-json-dlg" class="json">' + SmartJS_CoreUtils.escape_html(String(JSON.stringify(json, null, 2))) + '</code></pre><' + 'script' + '>setTimeout(function(){ var block = jQuery(\'#hljs-json-dlg\').get(0); try { hljs.highlightBlock(block); } catch(err){} }, 10);</' + 'script' + '>', null, 'Query: JSON', Math.floor(jQuery(window).width() * 0.8), Math.floor(jQuery(window).height() * 0.75));
+		SmartSimpleDialog.Dialog_Alert('<div id="hjls-div-dlg"><pre style="max-width:calc(100% - 5px) !important;"><code id="hljs-json-dlg" class="json">' + SmartJS_CoreUtils.escape_html(String(JSON.stringify(json, null, 2))) + '</code></pre></div><' + 'script' + '>setTimeout(function(){ SmartJS_Custom_Syntax_Highlight(\'#hjls-div-dlg\') }, 10);</' + 'script' + '>', null, 'Query: JSON', Math.floor(jQuery(window).width() * 0.8), Math.floor(jQuery(window).height() * 0.75));
 	} catch(err){
 		jQuery.alertable.alert('Cannot Get Editor JSON. ' + err).always(function(){});
 	}

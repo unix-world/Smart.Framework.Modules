@@ -16,6 +16,8 @@
   <script type="text/javascript" src="../syntax/lang/haskell.js"></script>
   <script type="text/javascript" src="../syntax/lang/java.js"></script>
   <script type="text/javascript" src="../syntax/lang/scala.js"></script>
+  <script type="text/javascript" src="../syntax/lang/groovy.js"></script>
+  <script type="text/javascript" src="../syntax/lang/kotlin.js"></script>
   <script type="text/javascript" src="../syntax/lang/objectivec.js"></script>
   <script type="text/javascript" src="../syntax/lang/ocaml.js"></script>
   <script type="text/javascript" src="../syntax/lang/openscad.js"></script>
@@ -410,6 +412,43 @@ lazy val ns = for {
   x &lt;- 0 until 100
   y &lt;- 0 until 100
 } yield (x + y) * 33.33
+</code></pre>
+</div>
+
+<!-- Groovy -->
+
+<div>
+<h2>Groovy</h2>
+<pre><code class="groovy">
+import groovy.sql.Sql
+sql = Sql.newInstance(
+	'jdbc:h2:~/test',
+	'sa',
+	'',
+	'org.h2.Driver')
+sql.eachRow('select * from USER') {
+	println &quot;${it.id}, ${it.firstName}&quot;
+}
+</code></pre>
+</div>
+
+<!-- Kotlin -->
+
+<div>
+<h2>Kotlin</h2>
+<pre><code class="kotlin">
+import kotlin.lang.test
+
+interface A {
+    fun x()
+}
+
+fun xxx(): Int {
+    return 888
+}
+
+public fun main(args: Array<String>) {
+}
 </code></pre>
 </div>
 

@@ -16,13 +16,18 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210325
+	// v.20210327
 
 	public function Run() {
 
 		//--
-		if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
-			$this->PageViewSetErrorStatus(500, 'ERROR: SVN Manager requires Mod WebDAV ...');
+		if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) { // req. for icons
+			$this->PageViewSetErrorStatus(500, 'ERROR: SVN Manager requires Mod Webdav ...');
+			return;
+		} //end if
+		//--
+		if(!SmartAppInfo::TestIfModuleExists('mod-highlight-syntax')) { // req. for extra highlightjs syntax
+			$this->PageViewSetErrorStatus(500, 'ERROR: SVN Manager requires Mod HighlightSyntax ...');
 			return;
 		} //end if
 		//--
@@ -111,6 +116,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 				break;
 
+
+			case 'blame': // text files only
+
+				break;
+
 			case 'diff': // text files only
 
 				$repo = (string) $this->RequestVarGet('repo', '', 'string');
@@ -156,11 +166,12 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						'REPO-NAME' 		=> (string) $repo,
 						'REPO-PATH' 		=> (string) $path,
 						'TYPE' 				=> (string) $type,
+						'MIMETYPE' 			=> (string) 'text/plain', // diff is text plain as in SmartFileSysUtils::mime_eval()
 						'FILE-SIZE-BYTES' 	=> (int)    $bsize,
 						'FILE-SIZE' 		=> (string) $fsize,
 						'ICON-SUFFIX' 		=> (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$path),
 						'REVISION' 			=> (string) $rev,
-						'CODE-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web']),
+						'CODE-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body'),
 						'CODE-TYPE' 		=> 'diff',
 						'CODE-HTML' 		=> (string) (((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) ? $difftxt : ''),
 						'CODE-EXT-HTML' 	=> (string) (((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) ? '' : '<br><hr><center><h3 style="color:#666699;">File is too large to display diff here ...  File Size: '.(int)$bsize.' bytes ...</h3></center>'),
@@ -212,10 +223,17 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						$fhtml = '<br><hr><center><h3 style="color:#666699;">File is too large to display here ...  Size: '.(int)$bsize.' bytes ...</h3></center>';
 					} //end if
 					$highlight_arr = (array) SmartViewHtmlHelpers::get_highlightsyntax_by_filetype((string)$path);
-					//TODO: if $highlight_arr['type'] does return empty string before fallback to plain text call the similar from mod highlight to try complete
-					if((string)$highlight_arr['type'] == '') {
-						$highlight_arr['type'] = 'plaintext';
+					$highlight_ext_arr = (array) \SmartModExtLib\HighlightSyntax\SmartViewHtmlHelpers::get_highlightsyntax_by_filetype((string)$path);
+
+					$code_type = (string) $highlight_arr['type']; // first get from here
+					if((string)$highlight_ext_arr['type'] != '') { // if this is non-empty found a better value (ex: .htm is 'markertpl' but if .twig.htm is 'twig' is a better choice
+						$code_type = (string) $highlight_ext_arr['type'];
 					} //end if
+					if((string)$code_type == '') {
+						$code_type = 'plaintext'; // fallback
+					} //end if
+					$highlight_arr = null;
+					$highlight_ext_arr = null;
 					$main = (string) SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'web-manager-view-file.inc.htm',
 						[
@@ -224,12 +242,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'REPO-NAME' 		=> (string) $repo,
 							'REPO-PATH' 		=> (string) $path,
 							'TYPE' 				=> (string) $type,
+							'MIMETYPE' 			=> (string) $fmime[0],
 							'FILE-SIZE-BYTES' 	=> (int)    $bsize,
 							'FILE-SIZE' 		=> (string) $fsize,
 							'ICON-SUFFIX' 		=> (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$path),
 							'REVISION' 			=> (string) $rev,
-							'CODE-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', (array)$highlight_arr['pack']),
-							'CODE-TYPE' 		=> (string) $highlight_arr['type'],
+							'CODE-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', null, 'github', true, false, (string)SmartModExtLib\HighlightSyntax\SmartViewHtmlHelpers::html_jsload_highlightsyntax(null, true, false)), // load all packs + all ext packs
+							'CODE-TYPE' 		=> (string) $code_type,
 							'CODE-HTML' 		=> (string) (((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) ? SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html((string)\SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev))) : ''),
 							'CODE-EXT-HTML' 	=> (string) $fhtml,
 						]
@@ -251,6 +270,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'REPO-NAME' 		=> (string) $repo,
 							'REPO-PATH' 		=> (string) $path,
 							'TYPE' 				=> (string) $type,
+							'MIMETYPE' 			=> (string) $fmime[0],
 							'FILE-SIZE-BYTES' 	=> (int)    $bsize,
 							'FILE-SIZE' 		=> (string) $fsize,
 							'ICON-SUFFIX' 		=> (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$path),

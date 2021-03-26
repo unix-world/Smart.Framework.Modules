@@ -214,8 +214,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'DATA-JSON' 		=> (string) Smart::json_encode((array)$data, true, true, false),
 							'CHECKSUM-HASH' 	=> (string) sha1((string)\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().'/'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().'@'.$the_collection.'#'.$id_),
 							'RECORD-ID' 		=> (string) $id_,
-							'HLJS-PREFIX-URL' 	=> (string) '', // highlightJs
-							'CSS-THEME' 		=> (string) 'github' // highlightJs
 						]
 					)
 				]);
@@ -289,8 +287,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'ARR-INDEXES' 		=> (array)  $collection_indexes,
 							'COLLINDEXES' 		=> (string) ((Smart::array_size($collection_indexes) > 0) ? Smart::json_encode($collection_indexes, true, true, false) : '{}'),
 							'CHECKSUM-HASH' 	=> (string) sha1((string)\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().'/'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().'@'.$the_collection),
-							'HLJS-PREFIX-URL' 	=> (string) '', // highlightJs
-							'CSS-THEME' 		=> (string) 'github' // highlightJs
 						]
 					)
 				]);
@@ -839,8 +835,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'QMODE' 				=> (string) $mode, // raw | visual
 							'LANG' 					=> (string) $this->ControllerGetParam('lang'), // codeMirror
 							'CODEED-PREFIX-URL' 	=> (string) '', // codeMirror
-							'HLJS-PREFIX-URL' 		=> (string) '', // highlightJs
-							'CSS-THEME' 			=> (string) 'github', // highlightJs
 							'PAGE-URL' 				=> (string) $the_base_url,
 							'URL-DROP-COLLECTION' 	=> (string) $the_base_url.'&action=drop-collection-confirm',
 							'URL-NEW-RECORD' 		=> (string) $the_base_url.'&action=new-form'.'&mode='.Smart::escape_url((string)$mode),

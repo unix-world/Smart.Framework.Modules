@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SvnWebManager {
 
 	// ::
-	// v.20210325
+	// v.20210327
 
 	const MAX_FILESIZE_DISPLAY = 10000000; // 10MB
 
@@ -639,24 +639,20 @@ final class SvnWebManager {
 	//============================================================
 	public static function isTextFileByMimeType(string $mimetype) {
 		//--
-		if(\in_array((string)$mimetype, [
+		$out = false;
+		//--
+		if(strpos((string)$mimetype, 'text/') === 0) {
+			$out = true;
+		} elseif(\in_array((string)$mimetype, [
+			'message/rfc822',
 			'application/x-php',
 			'application/javascript',
 			'application/json',
 			'application/xml',
-			'text/html',
-			'text/css',
-			'text/plain',
-			'text/x-vcard',
-			'text/calendar',
-			'text/csv',
+			'application/pgp-signature',
 			'image/svg+xml',
-			'text/ldif',
-			'application/pgp-signature'
 		])) {
 			$out = true;
-		} else {
-			$out = false;
 		} //end if else
 		//--
 		return (bool) $out;

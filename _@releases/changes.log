@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+March 27, 2021 :: :: Version 7.2.1 rev.20210327
+	* mod Highlight Syntax: HighlightJs ViewHelpers - new features
+
 March 16, 2021 :: :: Version 7.2.1 rev.20210316
 	* stable on PHP 8, pass all tests
 
