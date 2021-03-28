@@ -760,8 +760,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						$tmp_arr = (array) $data[$i];
 						unset($tmp_arr['_id']);
 						$records[] = [
-							'_id' 	=> (string) $data[$i]['_id'],
-							'-id' 	=> (string) $data[$i]['id'],
+							'_id' 	=> (string) (isset($data[$i]['_id']) ? $data[$i]['_id'] : null),
+							'-id' 	=> (string) (isset($data[$i]['id']) ? $data[$i]['id'] : null),
 							'-num' 	=> (int) ((int)$i + 1 + (int)$ofs),
 							'-json' => (string) Smart::json_encode((array)$tmp_arr)
 						];
@@ -862,7 +862,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'IS-EMPTY-COLLECTION' 	=> (int)    $is_empty_collection,
 							'FILTER-ID_' 			=> (string) $id_,
 							'SORTING' 				=> (array)  $html_sorting,
-							'NAV-PAGER-HTML' 		=> (string) SmartViewHtmlHelpers::html_navpager(
+							'NAV-PAGER-HTML' 		=> (string) (((int)Smart::array_size($records) > 0) ? SmartViewHtmlHelpers::html_navpager(
 								(string) $navbox_url,
 								(int) $count,
 								(int) $limit,
@@ -873,7 +873,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 									'show-first' => true,
 									'show-last' => true
 								]
-							),
+							) : ''),
 							'NUM-RECORDS' 			=> (int) Smart::array_size($records),
 							'RECORDS' 				=> (array) $records
 						]
