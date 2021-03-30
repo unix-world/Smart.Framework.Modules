@@ -3508,7 +3508,6 @@ var methods = {
 			return sigma / count;
 		} //END FUNCTION
 
-
 		var MIN = function() {
 			var range = _FORMULA__ARGSCONCAT(arguments);
 			var n = range.length;
@@ -3529,14 +3528,135 @@ var methods = {
 			return max;
 		} //END FUNCTION
 
-		//===== formulas:public:single
+		//===== formulas:public:single-or-several
+
+		var CEIL = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number = numbers[0];
+			return Math.ceil(number);
+		} //END FUNCTION
+
+		var FLOOR = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number = numbers[0];
+			return Math.floor(number);
+		} //END FUNCTION
+
+		var ROUND = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number = numbers[0];
+			return Math.round(number);
+		} //END FUNCTION
 
 		var ABS = function() {
 			var numbers = _FORMULA__ARGSTOARRAY(arguments);
 			if(!numbers.length) {
 				return 0;
 			}
-			return Math.abs(numbers[0]);
+			var number = numbers[0];
+			return Math.abs(number);
+		} //END FUNCTION
+
+		var ACOS = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number = numbers[0];
+			return Math.acos(number);
+		} //END FUNCTION
+
+		var ACOSH = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number = numbers[0];
+			return Math.log(number + Math.sqrt(number * number - 1));
+		} //END FUNCTION
+
+		var ACOT = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number = numbers[0];
+			return Math.atan(1 / number);
+		} //END FUNCTION
+
+		var ACOTH = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number = numbers[0];
+			return 0.5 * Math.log((number + 1) / (number - 1));
+		} //END FUNCTION
+
+		var ASIN = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number = numbers[0];
+			return Math.asin(number);
+		} //END FUNCTION
+
+		var ASINH = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number = numbers[0];
+			return Math.log(number + Math.sqrt(number * number + 1));
+		} //END FUNCTION
+
+		var ATAN = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number = numbers[0];
+			return Math.atan(number);
+		} //END FUNCTION
+
+		var ATAN2 = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number_x = numbers[0]['v'];
+			var number_y = numbers[1]['v'];
+			return Math.atan2(number_y, number_x); // reversed order to calculate as in libreoffice
+		} //END FUNCTION
+
+		var ATANH = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number = numbers[0];
+			return Math.log((1 + number) / (1 - number)) / 2;
+		} //END FUNCTION
+
+		var BASE = function() {
+			var numbers = _FORMULA__ARGSTOARRAY(arguments);
+			if(!numbers.length) {
+				return 0;
+			}
+			var number = numbers[0]['v'];
+			var radix = numbers[1]['v'];
+			var result = number.toString(radix);
+			return parseInt(result);
 		} //END FUNCTION
 
 		//===== formulas:privates

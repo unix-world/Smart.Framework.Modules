@@ -762,10 +762,16 @@ The Javascript version of this class is available in modules/mod-js-components/v
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">$myString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">'Some&nbsp;string&nbsp;to&nbsp;archive&nbsp;as&nbsp;LZS'</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;</span><span style="color: #FFFFFF">$archString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">\SmartModExtLib\JsComponents\ArchLzs</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">compressToBase64</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$myString</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;archive&nbsp;the&nbsp;string<br>&nbsp;</span><span style="color: #FFFFFF">$unarchString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">\SmartModExtLib\JsComponents\ArchLzs</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">decompressFromBase64</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$archString</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;unarchive&nbsp;it&nbsp;back<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">if((string)</span><span style="color: #FFFFFF">$unarchString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">!==&nbsp;(string)</span><span style="color: #FFFFFF">$myString</span><span style="color: #FFCC00; font-weight: bold">)&nbsp;{&nbsp;</span><span style="color: #999999">//&nbsp;Test:&nbsp;check&nbsp;if&nbsp;unarchive&nbsp;is&nbsp;the&nbsp;same&nbsp;as&nbsp;archive<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">@</span><span style="color: #FFFFFF">http_response_code</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">500</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;die(</span><span style="color: #5F9CCE">'LZS&nbsp;Archive&nbsp;test&nbsp;Failed&nbsp;!'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;}&nbsp;</span><span style="color: #999999">//end&nbsp;if<br><br></span><span style="color: #FFFFFF">?&gt;</span>
-</span>
-</code><!-- [/@] Smart/HTML.Cleaner --></code></pre>
+	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
+<br></span><span class="c2">//&nbsp;Usage&nbsp;example:<br>
+&nbsp;</span><span class="c1">$myString&nbsp;</span><span class="c3">=&nbsp;</span><span class="c4">&#39;Some&nbsp;string&nbsp;to&nbsp;archive&nbsp;as&nbsp;LZS&#39;</span><span class="c3">;<br>
+&nbsp;</span><span class="c1">$archString&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">\SmartModExtLib\JsComponents\ArchLzs</span><span class="c3">::</span><span class="c1">compressToBase64</span><span class="c3">(</span><span class="c1">$myString</span><span class="c3">);&nbsp;</span><span class="c2">//&nbsp;archive&nbsp;the&nbsp;string<br>
+&nbsp;</span><span class="c1">$unarchString&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">\SmartModExtLib\JsComponents\ArchLzs</span><span class="c3">::</span><span class="c1">decompressFromBase64</span><span class="c3">(</span><span class="c1">$archString</span><span class="c3">);&nbsp;</span><span class="c2">//&nbsp;unarchive&nbsp;it&nbsp;back<br>
+&nbsp;</span><span class="c3">if((string)</span><span class="c1">$unarchString&nbsp;</span><span class="c3">!==&nbsp;(string)</span><span class="c1">$myString</span><span class="c3">)&nbsp;{&nbsp;</span><span class="c2">//&nbsp;Test:&nbsp;check&nbsp;if&nbsp;unarchive&nbsp;is&nbsp;the&nbsp;same&nbsp;as&nbsp;archive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c3">@</span><span class="c1">http_response_code</span><span class="c3">(</span><span class="c1">500</span><span class="c3">);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;die(</span><span class="c4">&#39;LZS&nbsp;Archive&nbsp;test&nbsp;Failed&nbsp;!&#39;</span><span class="c3">);<br>
+&nbsp;}&nbsp;</span><span class="c2">//end&nbsp;if<br>
+<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
 </div>
 <!-- Summary List -->
 <br>
@@ -827,7 +833,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-12 18:00:53 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-30 00:55:48 +0000</small>
 <hr>
 <br>
 <!-- # -->

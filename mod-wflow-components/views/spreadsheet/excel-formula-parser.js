@@ -2,7 +2,7 @@
 // Excel Formula Parser
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20210328
 
 /*
  * This code is ispired from: excel-formula.js

@@ -1,7 +1,7 @@
 
 // NetVision JS - Voting Stars
-// (c) 2006-2015 unix-world.org
-// v.2015.02.15
+// (c) 2006-2021 unix-world.org
+// v.20210329
 
 // DEPENDS: CrossBrowser, jQuery, Growl
 
@@ -134,26 +134,20 @@ this.cast_vote = function(score, el_id, url) {
 							//--
 							tmp_score = parseInt(res);
 							//--
-							//alert(inf);
-							$.gritter.add({
-								class_name: 'gritter-green',
-								title: 'Rating Stars',
-								text: '' + inf,
-								sticky: false,
-								time: 3500
-							});
+							if(typeof SmartJS_BrowserUtils != 'undefined') {
+								SmartJS_BrowserUtils.GrowlNotificationAdd('Rating Stars', SmartJS_CoreUtils.escape_html(String(inf)), '', 1000, false, 'green');
+							} else {
+								console.log('Rating Stars NOTICE: ' + inf);
+							} //end if
 							//--
 							break;
 						case 'RATINGSTARS: +400 ERROR':
 							//--
-							//alert(inf);
-							$.gritter.add({
-								class_name: 'gritter-red',
-								title: 'Rating Stars',
-								text: '' + inf,
-								sticky: false,
-								time: 3500
-							});
+							if(typeof SmartJS_BrowserUtils != 'undefined') {
+								SmartJS_BrowserUtils.GrowlNotificationAdd('Rating Stars', SmartJS_CoreUtils.escape_html(String(inf)), '', 3000, false, 'red');
+							} else {
+								console.warn('Rating Stars WARN: ' + String(inf));
+							} //end if
 							//--
 							break;
 						default:

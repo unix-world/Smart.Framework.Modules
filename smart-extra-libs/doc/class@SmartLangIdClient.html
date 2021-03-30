@@ -759,10 +759,11 @@ If LangId.Py is not set in configuration as it may not be available will return 
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br>$check_with_default_service&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartLangIdClient</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">getLanguageConfidence</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Your&nbsp;text&nbsp;to&nbsp;check&nbsp;goes&nbsp;here&nbsp;...'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$check_with_custom_service&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartLangIdClient</span><span style="color: #FFCC00; font-weight: bold">([&nbsp;</span><span style="color: #5F9CCE">'url'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'http://langid.host:9008/detect'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'ssl'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">''</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'auth-user'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">''</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'auth-pass'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">''&nbsp;</span><span style="color: #FFCC00; font-weight: bold">]))-&gt;</span><span style="color: #FFFFFF">getLanguageConfidence</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Your&nbsp;text&nbsp;to&nbsp;check&nbsp;goes&nbsp;here&nbsp;...'</span><span style="color: #FFCC00; font-weight: bold">);<br><br></span><span style="color: #FFFFFF">?&gt;</span>
-</span>
-</code><!-- [/@] Smart/HTML.Cleaner --></code></pre>
+	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c4"><span class="c1">&lt;?php<br>
+<br>
+$check_with_default_service&nbsp;</span><span class="c2">=&nbsp;(array)&nbsp;(new&nbsp;</span><span class="c1">SmartLangIdClient</span><span class="c2">())-&gt;</span><span class="c1">getLanguageConfidence</span><span class="c2">(</span><span class="c3">&#39;Your&nbsp;text&nbsp;to&nbsp;check&nbsp;goes&nbsp;here&nbsp;...&#39;</span><span class="c2">);<br>
+&nbsp;</span><span class="c1">$check_with_custom_service&nbsp;</span><span class="c2">=&nbsp;(array)&nbsp;(new&nbsp;</span><span class="c1">SmartLangIdClient</span><span class="c2">([&nbsp;</span><span class="c3">&#39;url&#39;&nbsp;</span><span class="c2">=&gt;&nbsp;</span><span class="c3">&#39;http://langid.host:9008/detect&#39;</span><span class="c2">,&nbsp;</span><span class="c3">&#39;ssl&#39;&nbsp;</span><span class="c2">=&gt;&nbsp;</span><span class="c3">&#39;&#39;</span><span class="c2">,&nbsp;</span><span class="c3">&#39;auth-user&#39;&nbsp;</span><span class="c2">=&gt;&nbsp;</span><span class="c3">&#39;&#39;</span><span class="c2">,&nbsp;</span><span class="c3">&#39;auth-pass&#39;&nbsp;</span><span class="c2">=&gt;&nbsp;</span><span class="c3">&#39;&#39;&nbsp;</span><span class="c2">]))-&gt;</span><span class="c1">getLanguageConfidence</span><span class="c2">(</span><span class="c3">&#39;Your&nbsp;text&nbsp;to&nbsp;check&nbsp;goes&nbsp;here&nbsp;...&#39;</span><span class="c2">);<br>
+<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
 </div>
 <!-- Summary List -->
 <br>
@@ -820,7 +821,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-12 18:00:52 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-30 00:55:47 +0000</small>
 <hr>
 <br>
 <!-- # -->

@@ -761,10 +761,19 @@ select#select-summary {
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Sample:&nbsp;use&nbsp;this&nbsp;code&nbsp;in&nbsp;a&nbsp;controller&nbsp;of&nbsp;Smart.Framework&nbsp;(after&nbsp;you&nbsp;install&nbsp;the&nbsp;Smart.Framework.Modules)<br>&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetVar</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'main'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">\SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">render_file_template</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'modules/my-module-name/views/my-view.t3fluid.htm'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'someVar'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'Hello&nbsp;World'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'otherVar'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">date</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Y-m-d&nbsp;H:i:s'</span><span style="color: #FFCC00; font-weight: bold">)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>&nbsp;);<br><br></span><span style="color: #FFFFFF">?&gt;</span>
-</span>
-</code><!-- [/@] Smart/HTML.Cleaner --></code></pre>
+	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
+<br></span><span class="c2">//&nbsp;Sample:&nbsp;use&nbsp;this&nbsp;code&nbsp;in&nbsp;a&nbsp;controller&nbsp;of&nbsp;Smart.Framework&nbsp;(after&nbsp;you&nbsp;install&nbsp;the&nbsp;Smart.Framework.Modules)<br>
+&nbsp;</span><span class="c1">$this</span><span class="c3">-&gt;</span><span class="c1">PageViewSetVar</span><span class="c3">(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;main&#39;</span><span class="c3">,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c1">\SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating</span><span class="c3">::</span><span class="c1">render_file_template</span><span class="c3">(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;modules/my-module-name/views/my-view.t3fluid.htm&#39;</span><span class="c3">,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;someVar&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c4">&#39;Hello&nbsp;World&#39;</span><span class="c3">,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;otherVar&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c1">date</span><span class="c3">(</span><span class="c4">&#39;Y-m-d&nbsp;H:i:s&#39;</span><span class="c3">)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;);<br>
+<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
 </div>
 <!-- Summary List -->
 <br>
@@ -822,7 +831,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-12 18:00:51 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-30 00:55:45 +0000</small>
 <hr>
 <br>
 <!-- # -->

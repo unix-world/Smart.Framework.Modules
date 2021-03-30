@@ -74,16 +74,16 @@
 		ajax.done(function(msg) {
 			if((msg.hasOwnProperty('completed')) && (msg.completed === 'DONE') && (msg.hasOwnProperty('status')) && (msg.hasOwnProperty('title')) && (msg.hasOwnProperty('message')) && (msg.hasOwnProperty('js_evcode')) && (msg.hasOwnProperty('redirect'))) {
 				if(msg.status === 'OK') {
-					SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(msg.title), SmartJS_CoreUtils.escape_html(msg.message), '', 5000, false, 'gritter-green');
+					SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(msg.title), SmartJS_CoreUtils.escape_html(msg.message), '', 5000, false, 'green');
 					setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
 					TheGrid.loadGridData(0);
 				} else {
-					SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(msg.title), SmartJS_CoreUtils.escape_html(msg.message), '', 7500, false, 'gritter-red');
+					SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(msg.title), SmartJS_CoreUtils.escape_html(msg.message), '', 7500, false, 'red');
 					setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
 					TheGrid.loadGridData(0);
 				}
 			} else {
-				SmartJS_BrowserUtils.GrowlNotificationAdd('ERROR', 'Invalid JSON Answer', '', 7500, false, 'gritter-red');
+				SmartJS_BrowserUtils.GrowlNotificationAdd('ERROR', 'Invalid JSON Answer', '', 7500, false, 'pink');
 				setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
 				TheGrid.loadGridData(0);
 			}
