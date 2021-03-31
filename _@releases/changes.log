@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+March 31, 2021 :: :: Version 7.2.1 rev.20210331
+	* cleanup and re-organize wflow components / sci-fi
+
 March 30, 2021 :: :: Version 7.2.1 rev.20210330
 	* moved wflow components / toastr to framework
 	* updated documentation for PHP / JS
