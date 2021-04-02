@@ -1,10 +1,11 @@
 
 // Area Calculator
-// (c) 2019 unix-world.org
+// (c) 2019-2021 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20210331
 
 // DEPENDS: bc-math.js
+// TODO: calculateGeometryArea should not return HTML but an object as: { formula:'Lxl', result:100, err:'' } or { formula:'Lxl', result:false, err:'failed ...' }
 
 //==================================================================
 //==================================================================
@@ -26,7 +27,7 @@ var GeometryAreaCalculator = new function() { // START CLASS :: v.171002
 	//	theGrandTotal = Math.round(100 * theGrandTotal) / 100; // format with 2 decimals
 		theGrandTotal = BC_Math.bcadd(theGrandTotal, result, 2);
 	//	document.getElementById('result-total').innerHTML = '<h4>' + 'Total: ' + parseFloat(theGrandTotal) + '</h4>';
-		document.getElementById('result-total').innerHTML = '<h4 style="font-weight:bold;">' + 'Total: ' + theGrandTotal + '</h4>';
+		document.getElementById('area-display-total').innerHTML = 'Total: ' + theGrandTotal;
 	} //END FUNCTION
 
 

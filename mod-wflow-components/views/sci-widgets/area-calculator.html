@@ -3,30 +3,66 @@
 // Area Calculator
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20210331
 -->
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>Math: Geometry - Area Calculator</title>
-	<style>
-	* {
-		font-family: arial,sans-serif;
-		font-smooth: always;
-	}
-	</style>
-	<link rel="stylesheet" href="../../../mod-ui-w3/toolkit/w3/css/w3.css">
-	<script type="text/javascript" src="js/bc-math.js"></script>
-	<script type="text/javascript" src="js/area-calculator.js"></script>
-	<style>
-	.area-main {
-		text-align: left;
-	}
-	</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math: Geometry - Area Calculator</title>
+<style>
+* {
+	font-family: arial,sans-serif;
+	font-smooth: always;
+}
+</style>
+<link rel="stylesheet" href="../../../mod-ui-w3/toolkit/w3/css/w3.css">
+<script type="text/javascript" src="js/bc-math.js"></script>
+<script type="text/javascript" src="js/area-calculator.js"></script>
+<style>
+#navbar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	font-weight: bold;
+}
+#area-main {
+	text-align: left;
+}
+#area-display {
+	position: fixed;
+	top: 40px;
+	right: 2px;
+	width: 47vw;
+	height: calc(100vh - 45px);
+	border: 1px solid #CCCCCC;
+}
+#area-display-result {
+	height: calc(100vh - 170px);
+	overflow: auto;
+	padding-left: 10px;
+	padding-right: 10px;
+	border: 1px solid #CCCCCC;
+	margin-top: 10px;
+	padding: 10px;
+}
+#area-display-total {
+	overflow-y: auto;
+	width: 100%;
+	font-size: 24px;
+	line-height: 24px;
+	font-weight: bold;
+	height: 35px;
+	border:1px solid #CCCCCC;
+	margin-top: 10px;
+	padding: 5px;
+}
+</style>
 </head>
 <body>
 <!-- navigation menu: learning resources / geometry: area calculator triangle -->
-<div style="position:fixed; top:0px; left:0px; width:100%;">
+<div id="navbar">
 	<div class="w3-bar w3-indigo">
 		<a href="#top" class="w3-bar-item w3-button">Area Calculator</a>
 		<div class="w3-dropdown-hover">
@@ -49,11 +85,9 @@
 <!-- page layout grid with 12 columns: 2 areas (6 columns / 6 columns) -->
 <div class="w3-row" style="margin-left:25px; margin-right:25px;">
 	<div class="w3-col w3-container m6 l6"><!-- column one -->
-		<div class="area-main">
-			<h1 style="font-weight:bold;">Math: Geometry</h1>
-			<h2 style="display:inline;">Area Calculator</h2>
+		<div id="area-main">
+			<h1><span style="font-weight:bold;">Math: <i>Geometry</i> </span>Area <i>Calculator</i></h1>
 			<!-- Area Triangle: by Base and Height -->
-			<br>
 			<br id="triangle-bh">
 			<hr>
 			<h4>Calculate <b>Triangle Area <i>by Base and Height</i></b></h4>
@@ -63,7 +97,7 @@
 				<input id="triangle-bh-base" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
 				<label class="w3-text-green">Height (h):</label>
 				<input id="triangle-bh-height" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
-				<button id="triangle-bh-calculate" onclick="GeometryAreaCalculator.calculateTriangleAreaBH('result-calculate', 'triangle-bh-base', 'triangle-bh-height'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
+				<button id="triangle-bh-calculate" onclick="GeometryAreaCalculator.calculateTriangleAreaBH('area-display-result', 'triangle-bh-base', 'triangle-bh-height'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
 			</div>
 			<!-- Area Triangle (Heron): by All Sides -->
 			<br id="triangle-heron">
@@ -77,7 +111,7 @@
 				<input id="triangle-heron-s2" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
 				<label class="w3-text-green">Side Three (s3):</label>
 				<input id="triangle-heron-s3" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
-				<button id="triangle-heron-calculate" onclick="GeometryAreaCalculator.calculateTriangleAreaHeron('result-calculate', 'triangle-heron-s1', 'triangle-heron-s2', 'triangle-heron-s3'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
+				<button id="triangle-heron-calculate" onclick="GeometryAreaCalculator.calculateTriangleAreaHeron('area-display-result', 'triangle-heron-s1', 'triangle-heron-s2', 'triangle-heron-s3'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
 			</div>
 			<!-- Area Rectangle/Square: by Base and Height -->
 			<br id="rectangle-square">
@@ -89,7 +123,7 @@
 				<input id="rectangle-square-base" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
 				<label class="w3-text-green">Height (h):</label>
 				<input id="rectangle-square-height" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
-				<button id="rectangle-square-calculate" onclick="GeometryAreaCalculator.calculateRectangleOrSquareArea('result-calculate', 'rectangle-square-base', 'rectangle-square-height'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
+				<button id="rectangle-square-calculate" onclick="GeometryAreaCalculator.calculateRectangleOrSquareArea('area-display-result', 'rectangle-square-base', 'rectangle-square-height'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
 			</div>
 			<!-- Area Rhombus/Square: by the Diagonals -->
 			<br id="rhombus-square">
@@ -101,7 +135,7 @@
 				<input id="rhombus-square-d1" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
 				<label class="w3-text-green">Diagonal Two (d2):</label>
 				<input id="rhombus-square-d2" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
-				<button id="rhombus-square-calculate" onclick="GeometryAreaCalculator.calculateRhombusOrSquareArea('result-calculate', 'rhombus-square-d1', 'rhombus-square-d2'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
+				<button id="rhombus-square-calculate" onclick="GeometryAreaCalculator.calculateRhombusOrSquareArea('area-display-result', 'rhombus-square-d1', 'rhombus-square-d2'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
 			</div>
 			<!-- Area Parallelogram: by Base and Height -->
 			<br>
@@ -114,7 +148,7 @@
 				<input id="parallelogram-base" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
 				<label class="w3-text-green">Height (h):</label>
 				<input id="parallelogram-height" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
-				<button id="parallelogram-calculate" onclick="GeometryAreaCalculator.calculateParallelogramArea('result-calculate', 'parallelogram-base', 'parallelogram-height'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
+				<button id="parallelogram-calculate" onclick="GeometryAreaCalculator.calculateParallelogramArea('area-display-result', 'parallelogram-base', 'parallelogram-height'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
 			</div>
 			<!-- Area Trapezoid: by Base1, Base2 and Height -->
 			<br id="trapezoid">
@@ -128,10 +162,8 @@
 				<input id="trapezoid-base2" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
 				<label class="w3-text-green">Height (h):</label>
 				<input id="trapezoid-height" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
-				<button id="trapezoid-calculate" onclick="GeometryAreaCalculator.calculateTrapezoidArea('result-calculate', 'trapezoid-base1', 'trapezoid-base2', 'trapezoid-height'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
+				<button id="trapezoid-calculate" onclick="GeometryAreaCalculator.calculateTrapezoidArea('area-display-result', 'trapezoid-base1', 'trapezoid-base2', 'trapezoid-height'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
 			</div>
-
-
 			<!-- Area Ellipse / Circle: by Radius1 and Radius2 -->
 			<br>
 			<br id="ellipse-circle">
@@ -143,9 +175,8 @@
 				<input id="ellipse-circle-r1" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
 				<label class="w3-text-green">Radius2 (r):</label>
 				<input id="ellipse-circle-r2" class="w3-input w3-border" style="width:200px;" type="text" maxlength="25">
-				<button id="parallelogram-calculate" onclick="GeometryAreaCalculator.calculateEllipseCircleArea('result-calculate', 'ellipse-circle-r1', 'ellipse-circle-r2'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
+				<button id="parallelogram-calculate" onclick="GeometryAreaCalculator.calculateEllipseCircleArea('area-display-result', 'ellipse-circle-r1', 'ellipse-circle-r2'); return false;" class="w3-button w3-green" style="margin-top:10px;">Calculate Area</button>
 			</div>
-
 			<!-- end areas -->
 			<br>
 			<hr>
@@ -155,7 +186,7 @@
 		&nbsp;
 	</div>
 </div>
-<div class="w3-container w3-light-grey" style="position:fixed; top:40px; right:2px; width:47vw; border:1px solid #CCCCCC;">
+<div id="area-display" class="w3-container w3-light-grey">
 	<table width="100%"><tr>
 		<td width="50%">
 			<h3 style="display:inline;">Calculation <b>Results</b>:</h3>
@@ -164,38 +195,14 @@
 			<button class="w3-button w3-red" onClick="self.location.reload();">Clear</button>
 		</td>
 	</tr></table>
-	<br>
-	<div id="result-calculate" style="height:65vh; overflow:auto; padding-left:10px; padding-right:10px;">
-		<br>
-	</div>
-	<div id="result-total">
+	<div id="area-display-result"></div>
+	<div id="area-display-total">
 	</div>
 	<br>
 	<br>
 </div>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+<div style="height: 500px;"></div><!-- req. for scroll to #anchors to work also on last element -->
 <hr>
-<div style="text-align:right; font-size:10px; color:#DCDCDC; padding:5px;">
-	(c) 2017-2019 unix-world.org
-</div>
+<div style="text-align:right; font-size:10px; color:#DCDCDC; padding:5px;">(c) 2017-2021 unix-world.org</div>
 </body>
 </html>

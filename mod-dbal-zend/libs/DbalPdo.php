@@ -91,7 +91,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP PDO ; classes: \Zend\Db
- * @version 	v.20200121
+ * @version 	v.20210401
  * @package 	modules:Database:PDO:Zend-Dbal
  *
  */
@@ -99,7 +99,7 @@ final class DbalPdo {
 
 	// ->
 
-	private $zend_db_version = 'Zend/Db 2.9.3 ; Zend/Stdlib 3.1.1';
+	private $zend_db_version = 'Zend/Db 2.11.0.uxm.1 ; Zend/Stdlib 3.2.1';
 
 	private $cfg = array();
 	private $connkey = '';
@@ -609,7 +609,8 @@ final class DbalPdo {
 		//--
 		\Smart::raise_error(
 			'#Zend-Db@'.$this->connkey.' :: Q# // '.$driver.' :: ERROR :: '.$err_log, // err to register
-			$out // msg to display
+			$out, // msg to display
+			true // is html
 		);
 		die(''); // just in case
 		//--

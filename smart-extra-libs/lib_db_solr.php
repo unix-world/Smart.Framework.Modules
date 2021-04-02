@@ -78,7 +78,7 @@ $configs['solr']['slowtime']	= 0.4500;									// 0.0500 .. 0.7500 slow query ti
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartComponents
- * @version 	v.20200121
+ * @version 	v.20210401
  * @package 	extralibs:Database:Solr
  *
  */
@@ -813,53 +813,54 @@ private function solr_connect() {
  *
  */
 private function error($y_area, $y_error_message, $y_query='', $y_warning='') {
-//--
-if($this->fatal_err === false) {
-	throw new Exception('#SOLR-DB@'.$this->connid.'# :: Q# // Solr Client :: EXCEPTION :: '.$y_area."\n".$y_error_message);
-	return;
-} //end if
-//--
-$def_warn = 'Execution Halted !';
-$y_warning = (string) trim((string)$y_warning);
-if(SmartFrameworkRuntime::ifDebug()) {
-	$width = 750;
-	$the_area = (string) $y_area;
-	if((string)$y_warning == '') {
-		$y_warning = (string) $def_warn;
+	//--
+	if($this->fatal_err === false) {
+		throw new Exception('#SOLR-DB@'.$this->connid.'# :: Q# // Solr Client :: EXCEPTION :: '.$y_area."\n".$y_error_message);
+		return;
 	} //end if
-	$the_error_message = 'Operation FAILED: '.$def_warn."\n".$y_error_message;
-	$the_params = '- Mode: '.$this->mode.' -';
-	$the_query_info = (string) $y_query;
-	if((string)$the_query_info == '') {
-		$the_query_info = '-'; // query cannot e empty in this case (templating enforcement)
-	} //end if
-} else {
-	$width = 550;
-	$the_area = '';
-	$the_error_message = 'Operation FAILED: '.$def_warn;
-	$the_params = '';
-	$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
-} //end if else
-//--
-$out = SmartComponents::app_error_message(
-	'Solr Client',
-	'Apache-Solr',
-	'FTS',
-	'Server',
-	'modules/smart-extra-libs/img/solr-logo.svg',
-	$width, // width
-	$the_area, // area
-	$the_error_message, // err msg
-	$the_params, // title or params
-	$the_query_info // command
-);
-//--
-Smart::raise_error(
-	'#SOLR-DB@ '.$this->connid.' :: Q# // Solr Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Statement:'."\n".$y_query,
-	$out // msg to display
-);
-die(''); // just in case
-//--
+	//--
+	$def_warn = 'Execution Halted !';
+	$y_warning = (string) trim((string)$y_warning);
+	if(SmartFrameworkRuntime::ifDebug()) {
+		$width = 750;
+		$the_area = (string) $y_area;
+		if((string)$y_warning == '') {
+			$y_warning = (string) $def_warn;
+		} //end if
+		$the_error_message = 'Operation FAILED: '.$def_warn."\n".$y_error_message;
+		$the_params = '- Mode: '.$this->mode.' -';
+		$the_query_info = (string) $y_query;
+		if((string)$the_query_info == '') {
+			$the_query_info = '-'; // query cannot e empty in this case (templating enforcement)
+		} //end if
+	} else {
+		$width = 550;
+		$the_area = '';
+		$the_error_message = 'Operation FAILED: '.$def_warn;
+		$the_params = '';
+		$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
+	} //end if else
+	//--
+	$out = SmartComponents::app_error_message(
+		'Solr Client',
+		'Apache-Solr',
+		'FTS',
+		'Server',
+		'modules/smart-extra-libs/img/solr-logo.svg',
+		$width, // width
+		$the_area, // area
+		$the_error_message, // err msg
+		$the_params, // title or params
+		$the_query_info // command
+	);
+	//--
+	Smart::raise_error(
+		'#SOLR-DB@ '.$this->connid.' :: Q# // Solr Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Statement:'."\n".$y_query,
+		$out, // msg to display
+		true // is html
+	);
+	die(''); // just in case
+	//--
 } //END FUNCTION
 //======================================================
 
