@@ -26,15 +26,17 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Class: \SmartModExtLib\Oauth2\Oauth2Api
  * Lookup in GeoIP DB
  *
- * @version 	v.20200715
+ * @version 	v.20210402
  * @package 	modules:Oauth2
  *
  */
 final class Oauth2Api {
 
 
-	public const OAUTH2_STANDALONE_REFRESH_URL = 'urn:ietf:wg:oauth:2.0:oob';
-	public const OAUTH2_AUTHORIZE_URL_PARAMS = 'response_type=code&client_id=[###CLIENT-ID|url###]&scope=[###SCOPE|url###]&redirect_uri=[###REDIRECT-URI|url###]&state=[###STATE|url###]';
+	const OAUTH2_STANDALONE_REFRESH_URL = 'urn:ietf:wg:oauth:2.0:oob';
+	const OAUTH2_AUTHORIZE_URL_PARAMS = 'response_type=code&client_id=[###CLIENT-ID|url###]&scope=[###SCOPE|url###]&redirect_uri=[###REDIRECT-URI|url###]&state=[###STATE|url###]';
+
+	const OAUTH2_REGEX_VALID_ID = '/^[_a-z0-9\-\.@,\#\:]+$/';
 
 	private static $model = null;
 
@@ -58,7 +60,7 @@ final class Oauth2Api {
 			(!\array_key_exists('client_secret', $data)) OR
 			(!\array_key_exists('scope', $data)) OR
 			(!\array_key_exists('url_redirect', $data)) OR
-			((string)$data['url_redirect'] != (string)self::OAUTH2_STANDALONE_REFRESH_URL) OR
+		//	((string)$data['url_redirect'] != (string)self::OAUTH2_STANDALONE_REFRESH_URL) OR // can be also a valid redirect URL
 			(!\array_key_exists('url_auth', $data)) OR
 			(!\array_key_exists('url_token', $data)) OR
 			(\strpos((string)$data['url_token'], 'https://') !== 0) OR // {{{SYNC-OAUTH2-VALIDATE-URL}}}
@@ -70,6 +72,7 @@ final class Oauth2Api {
 		} //end if
 		//--
 		$bw = new \SmartHttpClient();
+		$bw->rawheaders = [ 'Accept' => 'application/json' ]; // this is because for github the answer can be without this header like: access_token=12345&token_type=bearer
 		$bw->connect_timeout = (int) ($timeout > 15 && $timeout < 60) ? $timeout : 15; // {{{SYNC-OAUTH2-REQUEST-TIMEOUT}}}
 		$bw->postvars = [
 			'grant_type' 	=> (string) 'authorization_code',
@@ -85,21 +88,31 @@ final class Oauth2Api {
 		//--
 		$json = \Smart::json_decode((string)$response['content']);
 		if(\Smart::array_size($json) <= 0) {
-			return 'Invalid HTTP(S) Answer: JSON Data is Invalid';
+			return 'Invalid HTTP(S) Answer: JSON Data is Invalid: '.$response['content'];
 		} //end if
 		//--
 		if(
-			((string)$json['token_type'] != 'Bearer') OR
-			((string)$json['scope'] != (string)$data['scope']) OR
-			((string)\trim((string)$json['refresh_token']) == '') OR
-			((string)\trim((string)$json['access_token']) == '') OR
-			((int)$json['expires_in'] <= 0)
+			((!isset($json['token_type'])) OR ((string)strtolower((string)$json['token_type']) != 'bearer')) OR
+			((!isset($json['scope'])) OR ((string)$json['scope'] != (string)$data['scope'])) OR
+			((!isset($json['access_token'])) OR ((string)\trim((string)$json['access_token']) == ''))
 		) {
-			return 'Invalid HTTP(S) Answer: JSON Structure is NOT Valid';
+			return 'Invalid HTTP(S) Answer: JSON Structure is NOT Valid: '.$response['content'];
 		} //end if else
 		//--
-		$data['refresh_token'] 			= (string) $json['refresh_token'];
+		if(!isset($json['refresh_token'])) {
+			$json['refresh_token'] = ''; // some providers do not use this (ex: github)
+		} //end if
+		if(!isset($json['expires_in'])) {
+			$json['expires_in'] = 0; // some providers do not use this (ex: github)
+		} //end if
+		if((string)$json['refresh_token'] != '') {
+			if((int)$json['expires_in'] <= 0) {
+				return 'Invalid HTTP(S) Answer: JSON Structure contains an Invalid ExpireIn value: '.$response['content'];
+			} //end if
+		} //end if
+		//--
 		$data['access_token'] 			= (string) $json['access_token'];
+		$data['refresh_token'] 			= (string) $json['refresh_token'];
 		$data['access_expire_seconds'] 	= (int)    $json['expires_in'];
 		//--
 		$insert = (int) self::getDataModel()->insertRecord((array)$data, (string)$data['url_redirect']);
@@ -148,6 +161,11 @@ final class Oauth2Api {
 		if((string)\trim((string)$arr['access_token']) == '') {
 			return null;
 		} //end if
+		//--
+		if((string)\trim((string)$arr['refresh_token']) == '') {
+			return (string) $arr['access_token']; // this is a non expiring token
+		} //end if
+		//--
 		$expired = (int) ((int)\time() - 15); // make it expired with 15 sec before it real expires because the socket times must be considered also
 		if((int)$arr['access_expire_time'] >= (int)$expired) {
 			return (string) $arr['access_token']; // OK, not expired and not empty
@@ -157,6 +175,7 @@ final class Oauth2Api {
 		if(\Smart::array_size($upd) <= 0) {
 			return null;
 		} //end if
+		//--
 		return (string) $upd['access_token'];
 		//--
 	} //END FUNCTION
@@ -180,6 +199,7 @@ final class Oauth2Api {
 		} //end if
 		//--
 		$bw = new \SmartHttpClient();
+		$bw->rawheaders = [ 'Accept' => 'application/json' ];
 		$bw->connect_timeout = (int) ($timeout > 15 && $timeout < 60) ? $timeout : 15; // {{{SYNC-OAUTH2-REQUEST-TIMEOUT}}}
 		$bw->postvars = [
 			'grant_type' 	=> (string) 'refresh_token',
@@ -202,7 +222,7 @@ final class Oauth2Api {
 		} //end if
 		//--
 		if(
-			((string)$json['token_type'] != 'Bearer') OR
+			((!isset($json['token_type'])) OR ((string)strtolower((string)$json['token_type']) != 'bearer')) OR
 			((string)$json['scope'] != (string)$arr['scope']) OR
 			((string)\trim((string)$json['access_token']) == '') OR
 			((int)$json['expires_in'] <= 0)

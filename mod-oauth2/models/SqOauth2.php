@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqOauth2 {
 
 	// ->
-	// v.20200715
+	// v.20210402
 
 	private $db;
 
@@ -244,7 +244,7 @@ final class SqOauth2 {
 		if((\strlen((string)$data['id']) < 5) OR (\strlen((string)$data['id']) > 127)) {
 			return -10; // invalid id length
 		} //end if
-		if(!\preg_match('/^[_a-z0-9\-\.@,\#\:]+$/', (string)$data['id'])) { // {{{SYNC-OAUTH2-REGEX-ID}}}
+		if(!\preg_match((string)\SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_REGEX_VALID_ID, (string)$data['id'])) { // {{{SYNC-OAUTH2-REGEX-ID}}}
 			return -11; // invalid characters in id
 		} //end if
 		//--
@@ -288,27 +288,33 @@ final class SqOauth2 {
 		} //end if
 		$data['code'] = (string) \SmartUtils::crypto_blowfish_encrypt((string)$data['code'], (string)$data['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY);
 		//--
-		$data['refresh_token'] = (string) \trim((string)$arr_data['refresh_token']);
-		if((string)$data['refresh_token'] == '') {
-			return -20; // empty refresh token
-		} //end if
-		$data['refresh_token'] = (string) \SmartUtils::crypto_blowfish_encrypt((string)$data['refresh_token'], (string)$data['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY);
-		//--
 		$data['access_token'] = (string) \trim((string)$arr_data['access_token']);
 		if((string)$data['access_token'] == '') { // {{{SYNC-OAUTH2-CONDITION-ACCESS-TOKEN}}}
-			return -21; // empty access token
+			return -20; // empty access token
 		} //end if
 		$data['access_token'] = (string) \SmartUtils::crypto_blowfish_encrypt((string)$data['access_token'], (string)$data['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY);
 		//--
-		$data['access_expire_seconds'] = (int) \trim((string)$arr_data['access_expire_seconds']);
-		if((int)$data['access_expire_seconds'] < 1) { // {{{SYNC-OAUTH2-CONDITION-ACCESS-EXPIRE-SECONDS-TOKEN}}}
-			return -22; // invalid access token expire seconds
-		} //end if
-		//--
-		$data['access_expire_time'] = (int) ((int)$data['access_expire_seconds'] + (int)$data['modified']);
-		if((int)$data['access_expire_time'] <= (int)\time()) {
-			return -23; // invalid access token expire time
-		} //end if
+		$data['refresh_token'] = (string) \trim((string)$arr_data['refresh_token']);
+		if((string)$data['refresh_token'] == '') { // OK: some providers do not use this (ex: github)
+			//--
+			$data['access_expire_seconds'] = 0;
+			$data['access_expire_time'] = 0;
+			//--
+		}  else {
+			//--
+			$data['refresh_token'] = (string) \SmartUtils::crypto_blowfish_encrypt((string)$data['refresh_token'], (string)$data['id'].':'.\SMART_FRAMEWORK_SECURITY_KEY);
+			//--
+			$data['access_expire_seconds'] = (int) \trim((string)$arr_data['access_expire_seconds']);
+			if((int)$data['access_expire_seconds'] < 1) { // {{{SYNC-OAUTH2-CONDITION-ACCESS-EXPIRE-SECONDS-TOKEN}}}
+				return -22; // invalid access token expire seconds
+			} //end if
+			//--
+			$data['access_expire_time'] = (int) ((int)$data['access_expire_seconds'] + (int)$data['modified']);
+			if((int)$data['access_expire_time'] <= (int)\time()) {
+				return -23; // invalid access token expire time
+			} //end if
+			//--
+		} //end if else
 		//--
 		$data['description'] = (string) \trim((string)$arr_data['description']);
 		if((string)$data['description'] == '') {
@@ -393,7 +399,7 @@ final class SqOauth2 {
 			return -100;
 		} //end if
 		//--
-		if(\Smart::random_number(0, 100) == 50) {
+		if(\Smart::random_number(0, 1000) == 500) {
 			$this->db->write_data('VACUUM');
 		} //end if
 		//--
@@ -401,24 +407,33 @@ final class SqOauth2 {
 			return -10; // invalid ID
 		} //end if
 		//--
+		$rdarr = (array) $this->getById((string)$id, false);
+		if(\Smart::array_size($rdarr) <= 0) {
+			return -11; // record not found, Invalid ID
+		} //end if
+		if((string)$rdarr['refresh_token'] == '') {
+			return -12; // records without a refresh token must not update the access token
+		} //end if
+		$rdarr = null;
+		//--
 		$data = [];
 		$data['modified'] = (int) \time();
 		$data['logs'] = (string) \SmartUtils::crypto_blowfish_encrypt((string)'# '.\date('Y-m-d H:i:s O')."\n".'# '.'Access Token Updated using the stored Refresh Token', (string)$id.':'.\SMART_FRAMEWORK_SECURITY_KEY);
 		//--
 		$data['access_token'] = (string) \trim((string)$access_token);
 		if((string)$data['access_token'] == '') { // {{{SYNC-OAUTH2-CONDITION-ACCESS-TOKEN}}}
-			return -11; // empty access token
+			return -13; // empty access token
 		} //end if
 		$data['access_token'] = (string) \SmartUtils::crypto_blowfish_encrypt((string)$data['access_token'], (string)$id.':'.\SMART_FRAMEWORK_SECURITY_KEY);
 		//--
 		$data['access_expire_seconds'] = (int) $access_expire_seconds;
 		if((int)$data['access_expire_seconds'] < 1) { // {{{SYNC-OAUTH2-CONDITION-ACCESS-EXPIRE-SECONDS-TOKEN}}}
-			return -12; // invalid access token expire seconds
+			return -14; // invalid access token expire seconds
 		} //end if
 		//--
 		$data['access_expire_time'] = (int) ((int)$data['access_expire_seconds'] + (int)$data['modified']);
 		if((int)$data['access_expire_time'] <= (int)\time()) {
-			return -13; // invalid access token expire time
+			return -15; // invalid access token expire time
 		} //end if
 		//--
 		$data['errs'] = 0;
@@ -454,7 +469,7 @@ final class SqOauth2 {
 			return -100;
 		} //end if
 		//--
-		if(\Smart::random_number(0, 100) == 50) {
+		if(\Smart::random_number(0, 1000) == 500) {
 			$this->db->write_data('VACUUM');
 		} //end if
 		//--
@@ -499,6 +514,8 @@ final class SqOauth2 {
 			\Smart::raise_error('Invalid OAUTH2 DB Connection !');
 			return -100;
 		} //end if
+		//--
+		$this->db->write_data('VACUUM');
 		//--
 		$out = -1;
 		//--
@@ -580,8 +597,8 @@ CREATE TABLE 'oauth2_acc' (
 	`client_id` character varying(255) NOT NULL,
 	`client_secret` character varying(255) NOT NULL,
 	`code` character varying(255) NOT NULL,
-	`refresh_token` character varying(255) NOT NULL,
 	`access_token` character varying(255) NOT NULL,
+	`refresh_token` character varying(255) NOT NULL,
 	`access_expire_seconds` integer DEFAULT 0 NOT NULL,
 	`access_expire_time` bigint DEFAULT 0 NOT NULL,
 	`description` text DEFAULT '' NOT NULL,

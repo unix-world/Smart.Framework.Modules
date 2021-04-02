@@ -1,4 +1,4 @@
-<!-- View: add-record v.20200715 -->
+<!-- View: add-record v.20210402 -->
 [@@@SUB-TEMPLATE:partials/form-styles.mtpl.htm@@@]
 <style>
 .form-step2 {
@@ -25,9 +25,9 @@ var theDataStepOne = null;
 function readDataStepOne() {
 	theDataStepOne = null;
 	var theApiId = String(jQuery('#api_id').val() || '');
-	var regexOfApiID = /^[_a-z0-9\-\.@,\#\:]+$/g; // {{{SYNC-OAUTH2-REGEX-ID}}}
+	var regexOfApiID = [###REGEX-VALID-ID###]g; // {{{SYNC-OAUTH2-REGEX-ID}}}
 	if((!theApiId) || (theApiId.length < 5) || (theApiId.length > 127) || (!theApiId.match(regexOfApiID))) {
-		SmartJS_BrowserUtils.GrowlNotificationAdd('Notice', 'API-ID is empty or invalid', null, 3500, false);
+		SmartJS_BrowserUtils.GrowlNotificationAdd('Notice', 'API-ID is empty or invalid: ' + theApiId, null, 3500, false);
 		return false;
 	}
 	var theDescription = String(jQuery('#api_desc').val() || '');
@@ -150,7 +150,7 @@ jQuery(function(){
 	btnHandlerSubmit();
 });
 </script>
-<div align="center" style="max-width:760px;">
+<div style="max-width:760px;"><center>
 <form id="add_form" name="add_form" class="ux-form ux-form-aligned" onSubmit="return false;">
 	<legend><h1>Create New Oauth2 API</h1></legend>
 	<br>
@@ -176,7 +176,7 @@ jQuery(function(){
 	</div>
 	<div class="ux-control-group form-step1">
 		<label>Redirect URL</label>
-		<input id="oauth2_url_redirect" type="text" autocomplete="off" spellcheck="false" name="frm[url_redirect]" placeholder="Oauth2 Redirect URL" maxlength="255" class="ux-input-1-2" value="[###DEFAULT-REDIRECT-URL|html###]" readonly required>
+		<input id="oauth2_url_redirect" type="text" autocomplete="off" spellcheck="false" name="frm[url_redirect]" placeholder="Oauth2 Redirect URL" maxlength="255" class="ux-input-1-2" value="[###DEFAULT-REDIRECT-URL|html###]" required>
 	</div>
 	<div class="ux-control-group form-step1">
 		<label>OAuth2 Auth URL</label>
@@ -198,4 +198,4 @@ jQuery(function(){
 		<button type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="btnHandlerSubmit();" id="btn-submit-btn"> <span id="btn-submit-label"></span> &nbsp; <i class="sfi sfi-checkmark"></i></button>
 	</div>
 </form>
-</div>
+</center></div>

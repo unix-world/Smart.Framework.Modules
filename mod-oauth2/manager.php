@@ -18,7 +18,7 @@ define('SMART_APP_MODULE_AUTH', true);
  * Admin Controller
  *
  * @ignore
- * @version v.20200717
+ * @version v.20210402
  *
  */
 class SmartAppAdminController extends SmartAbstractAppController {
@@ -50,7 +50,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetVars([
 					'title' => 'Wait ...',
-					'main' => '<br><div align="center"><img src="lib/framework/img/loading-bars.svg" width="64" height="64"></div>'.
+					'main' => '<br><div><center><img src="lib/framework/img/loading-bars.svg" width="64" height="64"></center></div>'.
 					'<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>'.
 					'<script type="text/javascript">SmartJS_BrowserUtils.CloseDelayedModalPopUp();</script>'
 				]);
@@ -66,6 +66,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'main' => SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'form-add-record.mtpl.htm',
 						[
+							'REGEX-VALID-ID' 		=> (string) \SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_REGEX_VALID_ID,
 							'DEFAULT-REDIRECT-URL' 	=> (string) \SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_STANDALONE_REFRESH_URL, // {{{SYNC-OAUTH2-DEFAULT-REDIRECT-URL}}}
 							'ACTIONS-URL' 			=> 'admin.php?page='.$this->ControllerGetParam('controller').'&action=new-add',
 							'TPL-AUTH-URL-PARAMS' 	=> (string) SmartMarkersTemplating::escape_template((string)\SmartModExtLib\Oauth2\Oauth2Api::OAUTH2_AUTHORIZE_URL_PARAMS)
@@ -168,8 +169,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						[
 							'THE-TITLE' 			=> (string) $title,
 							'DATE-NOW' 				=> (string) \date('Y-m-d H:i:s O'),
+							'ACTION-GET-TOKEN' 		=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&action=get-the-access-token&id='.Smart::escape_url((string)$id),
 							'ACTION-REFRESH-TOKEN' 	=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&action=refresh-token&id='.Smart::escape_url((string)$id),
 							'ACTION-DELETE-TOKEN' 	=> (string) 'admin.php?page='.$this->ControllerGetParam('controller').'&action=delete-token&id='.Smart::escape_url((string)$id),
+							'IS-EXPIRING' 			=> (string) ($data['refresh_token'] ? 'yes' : 'no'),
 							'DATA-ARR' 				=> (array)  $data
 						]
 					)
@@ -188,15 +191,43 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$upd = (array) \SmartModExtLib\Oauth2\Oauth2Api::updateApiAccessToken((string)$id, 15);
 				if(Smart::array_size($upd) > 0) {
 					$result = 'OK';
+					$img = 'lib/framework/img/sign-ok.svg';
 				} else {
 					$result = 'FAILED';
+					$img = 'lib/framework/img/sign-warn.svg';
 				} //end if else
 				//--
 				$this->PageViewSetVars([
 					'title' => (string) $title,
-					'main' => '<h1 style="color:#003366;!important">'.Smart::escape_html($title).'</h1><h2>'.Smart::escape_html($id).'</h2><h3>[ '.Smart::escape_html($result).' ]</h3><br><div align="center"><img src="lib/framework/img/loading-spin.svg" width="64" height="64"></div>'.
+					'main' => '<h1 style="color:#003366;!important">'.Smart::escape_html($title).'</h1><h2>'.Smart::escape_html($id).'</h2><div style="font-size:2rem;">[ '.Smart::escape_html($result).' ]<br><img src="'.Smart::escape_html($img).'"></div><div><center><img src="lib/framework/img/loading-spin.svg" width="64" height="64"></center></div>'.
 					'<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>'.
 					'<script type="text/javascript">setTimeout(function(){ self.location=\''.Smart::escape_js('admin.php?page='.$this->ControllerGetParam('controller').'&action=view-data&id='.Smart::escape_url((string)$id)).'\'; }, 3000);</script>'
+				]);
+				//--
+				break;
+
+			case 'get-the-access-token': // Get the Access Token and If Expired will Update for an API (OUTPUTS: HTML)
+				//--
+				$id = $this->RequestVarGet('id', '', 'string');
+				//--
+				$this->PageViewSetCfg('template-file', 'template-modal.htm');
+				//--
+				$title = 'Getting the Access Token for Oauth2 API';
+				//--
+				$token = \SmartModExtLib\Oauth2\Oauth2Api::getApiAccessToken((string)$id, 15);
+				if($token !== null) {
+					$result = 'OK';
+					$img = 'lib/framework/img/sign-ok.svg';
+				} else {
+					$result = 'FAILED';
+					$img = 'lib/framework/img/sign-warn.svg';
+				} //end if else
+				//--
+				$this->PageViewSetVars([
+					'title' => (string) $title,
+					'main' => '<h1 style="color:#003366;!important">'.Smart::escape_html($title).'</h1><h2>'.Smart::escape_html($id).'</h2><div style="font-size:2rem;">[ '.Smart::escape_html($result).' ]<br><img src="'.Smart::escape_html($img).'"></div><div><center><h1>'.Smart::escape_html($token).'</h1></center></div><br>'.
+					'<button class="ux-button" onClick="self.location=\''.Smart::escape_js('admin.php?page='.$this->ControllerGetParam('controller').'&action=view-data&id='.Smart::escape_url((string)$id)).'\';"><i class="sfi sfi-undo2"></i> &nbsp; Go Back</button>'.
+					'<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>'
 				]);
 				//--
 				break;
@@ -218,7 +249,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetVars([
 					'title' => (string) $title,
-					'main' => '<h1 style="color:#FF3300;!important">'.Smart::escape_html($title).'</h1><h2>'.Smart::escape_html($id).'</h2><h3>[ '.Smart::escape_html($result).' ]</h3><br><div align="center"><img src="lib/framework/img/loading-spin.svg" width="64" height="64"></div>'.
+					'main' => '<h1 style="color:#FF3300;!important">'.Smart::escape_html($title).'</h1><h2>'.Smart::escape_html($id).'</h2><h3>[ '.Smart::escape_html($result).' ]</h3><br><div><center><img src="lib/framework/img/loading-spin.svg" width="64" height="64"></center></div>'.
 					'<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>'.
 					'<script type="text/javascript">SmartJS_BrowserUtils.CloseDelayedModalPopUp();</script>'
 				]);

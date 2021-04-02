@@ -4,10 +4,22 @@
 This OAuth2 API uses Oauth2 and Google Oauth2 Standards.
 Thus other, non-standard Oauth2 implementations may not be compatible with this implementation API.
 
+To setup an Oauth2 Api there are 3 steps:
+
+Step1: Setup API on provider's website and obtain the ClientID and ClientSecret -> Step2: Obtain the code -> Step 3
+
 ## The 1st step is to setup the OAuth2 application with the Oauth2 provider in order to get: THE_CLIENT_ID and THE_CLIENT_SECRET
 
-
 ## The 2nd step is to authorize the OAuth2 application by running the below generated link in a web browser to get the Authorization Code
+
+### Example (Github Oauth) ; THE_REDIRECT_URL must be changed to match your needs:
+* THE_OAUTH2_URI 	= "https://github.com/login/oauth/authorize"
+* THE_SCOPE 		= "repo:status"
+* THE_REDIRECT_URL 	= "https://127.0.0.1/your-web-app/?/page/oauth2.get-code/"
+### For the step 3 add the above + these:
+THE_TOKEN_URL		= "https://github.com/login/oauth/access_token"
+* THE_CODE			= will be provided in a web browser by the THE_REDIRECT_URL via $_REQUEST['code'] after completing the first step
+
 
 ```
 #!/bin/sh
@@ -26,7 +38,7 @@ echo "${THE_OAUTH2_URI}?client_id=${THE_CLIENT_ID}&redirect_uri=${THE_REDIRECT_U
 ```
 
 
-## The 3rd step is to get the first Access Token, the Expiration Time and the Refresh Token
+## The 3rd step is to get the first Access Token (and the Expiration Time and the Refresh Token if provided ; some providers do not use expiring tokens so the first Access Token provided will be valid until it is being Revoked)
 The obtained Access Token in this step can be used for XOAUTH2 logins but will expire after a limited time. It have to be stored together with the Expiration Time to be used for future logins but will no more work after the Expiration Time thus after it expires go to step 4.
 The obtained Refresh Token in this step must be stored securely somewhere in order to be used for 4th step anytime when a new Access Token is needed because the old Access Token was expired.
 If the Refresh Token is lost, the application needs a full re-authorization starting from step 1 again.

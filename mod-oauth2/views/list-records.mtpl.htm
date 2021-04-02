@@ -1,4 +1,4 @@
-<!-- View: list-records v.20200715 -->
+<!-- View: list-records v.20210402 -->
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/simplePagination.css?[###RELEASE-HASH|url|html###]">
 <script type="text/javascript" src="lib/js/jquery/pager/jquery.simplePagination.js?[###RELEASE-HASH|url|html###]"></script>
 <script type="text/javascript" src="lib/js/jquery/jquery.event.drag.js?[###RELEASE-HASH|url|html###]"></script>
@@ -32,9 +32,9 @@
 	//--
 </script>
 
-<div style="color:#778899; line-height:24px; font-size:24px; font-weight:bold; display:flex; align-items:center;"><a href="admin.php"><img width="48" height="48" src="modules/mod-oauth2/views/img/logo-oauth.svg" style="vertical-align:middle; margin-right:10px;"></a> Oauth2 Management :: <span id="infoTotalRows"># / # @</span></div>
+<div style="color:#778899; line-height:24px; font-size:2rem; font-weight:bold; display:flex; align-items:center;"><a href="admin.php"><img width="96" height="96" src="modules/mod-oauth2/views/img/logo-oauth.svg" style="vertical-align:middle; margin-right:10px;"></a> Oauth2 Management :: <span id="infoTotalRows"># / # @</span></div>
 <br>
-<form id="filtering" name="filtering" class="ux-form">
+<form id="filtering" name="filtering" class="ux-form" onSubmit="return false;">
 	<span style="display:inline-block;">
 		<input type="text" id="filter-id" name="id" placeholder="ID" value="" style="width:175px;">
 	</span>
@@ -53,7 +53,7 @@ $(function() {
 		var the_id = dataContext['id'];
 		var active = dataContext['active'];
 		var isErr = dataContext['errs'];
-		$(cellNode).empty().html('').append('<button class="ux-button ux-button-xsmall' + ((isErr > 0) ? ' ux-button-special' : '') + '" onClick="SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(itemURL + 'view-data' +'&id=' + SmartJS_CoreUtils.escape_url(the_id)) +'\', \'oauth2_list_mod\'); return false;" title="Edit (Click to Open the Editor)"><i class="sfi sfi-fa-key"></i></button>');
+		$(cellNode).empty().html('').append('<button class="ux-button ux-button-xsmall' + ((isErr > 0) ? ' ux-button-special' : '') + '" onClick="SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(itemURL + 'view-data' +'&id=' + SmartJS_CoreUtils.escape_url(the_id)) +'\', \'oauth2_list_mod\'); return false;" title="Edit (Click to Open the Editor)"><i class="sfi sfi-pencil2"></i></button>');
 	}
 	function formatter_Active(row, cell, value, columnDef, dataContext) {
 		if(value == 1) {

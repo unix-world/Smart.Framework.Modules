@@ -2,6 +2,14 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+April 03, 2021 :: :: Version 7.2.1 rev.20210403
+	* Mod Oauth2 support github and non-expiring tokens
+
+April 02, 2021 :: :: Version 7.2.1 rev.20210402
+	* Mod SVN Fixes
+	* Mod Oauth2 Fixes
+	* Update W3CSS
+
 March 31, 2021 :: :: Version 7.2.1 rev.20210331
 	* cleanup and re-organize wflow components / sci-fi
 

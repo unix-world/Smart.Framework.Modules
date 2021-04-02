@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SvnWebManager {
 
 	// ::
-	// v.20210327
+	// v.20210402
 
 	const MAX_FILESIZE_DISPLAY = 10000000; // 10MB
 
@@ -727,10 +727,15 @@ final class SvnWebManager {
 		//--
 		$exearr = (array) \SmartUtils::run_proc_cmd((string)$cmd, null, (string)self::$svn_cache_dir); // avoid proc open in web root !!
 		if(($exearr['exitcode'] !== 0) OR ((string)$exearr['stderr'] != '')) {
-			\Smart::raise_error(
-				__METHOD__.' #ERR# SVN Command:['.$cmd.'] Returned Some Errors ; ExitCode=['.$exearr['exitcode'].'] ; ErrorMsg: '.$exearr['stderr'],
-				'ERR: Errors when running command' // msg to display
-			);
+			//-- Fix: not raise error here ! in some cases when path renames going backward to select diff, props or view if path renames will have an error ; make this a nice error and do not raise fatal
+			if(\SmartFrameworkRuntime::ifDebug()) {
+				\Smart::log_notice(__METHOD__.' #ERR# SVN Command:['.$cmd.'] Returned Some Errors ; ExitCode=['.$exearr['exitcode'].'] ; ErrorMsg: '.$exearr['stderr']);
+			} //end if
+			if(!\headers_sent()) {
+				\http_response_code(400);
+			} //end if
+			die((string)\SmartComponents::http_message_400_badrequest('Message: `'.$exearr['stderr'].'`', '<h6 style="color:#333333;">ExitCode:&nbsp;['.\Smart::escape_html($exearr['exitcode']).']</h6>'));
+			//-- #fix
 		} //end if
 		$out = (string) \trim((string)$exearr['stdout']);
 		$exearr = array(); // free mem
@@ -738,7 +743,7 @@ final class SvnWebManager {
 		switch((string)$format) {
 			case 'xml-arr':
 				if((string)$out == '') {
-					\Smart::raise_error(
+					\Smart::raise_error( // should be a fatal error or 404 ??
 						__METHOD__.' #ERR# SVN Command:['.$cmd.'] Returned Empty Output ...',
 						'ERR: Errors when running command' // msg to display
 					);
@@ -790,7 +795,7 @@ final class SvnWebManager {
 		//-- #end fix
 		$repo = (string) \trim((string)$repo);
 		if(\strpos((string)$repo, '://') === false) {
-			$repo = 'file:///INVALID-REPOSITORY/--invalid-repo-name-err-svn--';
+			$repo = 'file:///-INVALID-REPOSITORY-/--invalid-repo-name-err-svn--';
 		} //end if
 		if((string)\substr((string)$repo, -1, 1) == '/') {
 			$repo = (string) \substr((string)$repo, 0, -1);

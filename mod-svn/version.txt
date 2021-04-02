@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: Subversion (Manager) r.20210327 #
+# Smart.Framework.Modules: Subversion (Manager) r.20210402 #
 
 // r.7.2.1 / smart.framework.v.7.2
 
