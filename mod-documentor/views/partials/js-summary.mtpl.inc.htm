@@ -1,4 +1,4 @@
-<!-- summary r.20200121 -->
+<!-- summary r.20210414 -->
 <script>
 [@@@SUB-TEMPLATE:partials/summary-js.mtpl.inc.js@@@]
 </script>
@@ -12,7 +12,7 @@
 			<option value="Methods--Summary-">Methods list</option>
 			[%%%LOOP:ARR-METHODS%%%]
 			[%%%IF:ARR-METHODS.IS-INTERNAL-PRIV:!=1;%%%]
-			<option value="Method--[###ARR-METHODS.NAME|htmid|html###]"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;[###ARR-METHODS.NAME|html###]()</option>
+			<option value="Method--[###ARR-METHODS.NAME|htmid|html###]"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; [%%%IF:ARR-METHODS.IS-ARROW:==1;%%%]=&gt;[%%%ELSE:ARR-METHODS.IS-ARROW%%%]function[%%%/IF:ARR-METHODS.IS-ARROW%%%]&nbsp;[###ARR-METHODS.NAME|html###]()</option>
 			[%%%/IF:ARR-METHODS.IS-INTERNAL-PRIV%%%]
 			[%%%/LOOP:ARR-METHODS%%%]
 		</optgroup>
@@ -20,7 +20,7 @@
 			<option value="Properties--Summary-">Properties list</option>
 			[%%%LOOP:ARR-PROPERTIES%%%]
 			[%%%IF:ARR-PROPERTIES.IS-INTERNAL-PRIV:!=1;%%%]
-			<option value="Property--[###ARR-PROPERTIES.NAME|htmid|html###]"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;[###ARR-PROPERTIES.NAME|html###]</option>
+			<option value="Property--[###ARR-PROPERTIES.NAME|htmid|html###]"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; [###ARR-PROPERTIES.PROP-TYPE|html###]&nbsp;[###ARR-PROPERTIES.NAME|html###]</option>
 			[%%%/IF:ARR-PROPERTIES.IS-INTERNAL-PRIV%%%]
 			[%%%/LOOP:ARR-PROPERTIES%%%]
 		</optgroup>

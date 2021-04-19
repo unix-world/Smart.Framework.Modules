@@ -1,15 +1,18 @@
 
 // Twitter JS API Handler
 // (c) 2012-2021 unix-world.org
-// v.20210310
+// v.20210411
 
-// Depends on: codebird.js, SmartJS_BrowserUtils
+// Depends on: codebird.js, smartJ$Browser, smartJ$Base64
 
 var TwitterApiHandler = new function() { // START CLASS
 
 	// :: static
 
 	var _class = this; // self referencing
+
+	var _BwUtils$ = smartJ$Browser;
+	var _Ba$e64 = smartJ$Base64;
 
 	var cb = null;
 
@@ -209,8 +212,7 @@ var TwitterApiHandler = new function() { // START CLASS
 
 	this.closepopup = function() {
 
-		//if(window.opener) {
-		if(SmartJS_BrowserUtils.WindowIsPopup()) {
+		if(_BwUtils$.WindowIsPopup()) {
 			try {
 				self.close();
 			} catch(err){}
@@ -422,7 +424,7 @@ var TwitterApiHandler = new function() { // START CLASS
 		//--
 		if(archive) {
 			if(value) {
-				value = String(SmartJS_Base64.decode(String(value)));
+				value = String(_Ba$e64.decode(String(value)));
 			} //end if
 		} //end if
 		//--
@@ -435,7 +437,7 @@ var TwitterApiHandler = new function() { // START CLASS
 		//--
 		if(archive) {
 			if(value) {
-				value = String(SmartJS_Base64.encode(String(value)));
+				value = String(_Ba$e64.encode(String(value)));
 			} //end if
 		} //end if
 		//--
@@ -448,57 +450,33 @@ var TwitterApiHandler = new function() { // START CLASS
 	} //END FUNCTION
 
 
-	//===== Below functions can be supplied by Smart.Framework/Js.Api/SmartJS_BrowserUtils
+	//==
 
 
 	var parseUrlParams = function() {
 		//--
-		if(typeof SmartJS_BrowserUtils == 'undefined') {
-			console.error('ERR: Missing: SmartJS_BrowserUtils');
-			return null;
-		} //end if
-		//--
-		return SmartJS_BrowserUtils.parseCurrentUrlGetParams();
+		return _BwUtils$.parseCurrentUrlGetParams();
 		//--
 	} //END FUNCTION
 
 
 	var getCookie = function(name) {
 		//--
-		if(typeof SmartJS_BrowserUtils == 'undefined') {
-			console.error('ERR: Missing: SmartJS_BrowserUtils');
-			return null;
-		} //end if
-		//--
-		return SmartJS_BrowserUtils.getCookie(name);
+		return _BwUtils$.getCookie(name);
 		//--
 	} //END FUNCTION
 
 
 	var setCookie = function(name, value, expire, path, domain, samesite, secure) {
 		//--
-		if(typeof SmartJS_BrowserUtils == 'undefined') {
-			console.error('ERR: Missing: SmartJS_BrowserUtils');
-			return false;
-		} //end if
-		//--
-		SmartJS_BrowserUtils.setCookie(name, value, expire, path, domain, samesite, secure);
-		//--
-		return true;
+		return _BwUtils$.setCookie(name, value, expire, path, domain, samesite, secure);
 		//--
 	} //END FUNCTION
 
 
 	var deleteCookie = function(name, path, domain, samesite, secure) {
 		//--
-		if(typeof SmartJS_BrowserUtils == 'undefined') {
-			console.error('ERR: Missing: SmartJS_BrowserUtils');
-			return false;
-		} //end if
-		//--
-		SmartJS_BrowserUtils.deleteCookie(name, path, domain, samesite, secure);
-		//--
-		return true;
+		return _BwUtils$.deleteCookie(name, path, domain, samesite, secure);
 		//--
 	} //END FUNCTION
 

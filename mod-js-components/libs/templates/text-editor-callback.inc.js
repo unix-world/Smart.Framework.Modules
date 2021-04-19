@@ -11,7 +11,7 @@
 		} else {
 			parent.CKEDITOR.tools.callFunction(parent.Smart_CKEditor_fileBrowserCallExchange(), url);
 		}
-		SmartJS_BrowserUtils.CloseModalPopUp();
+		smartJ$Browser.CloseModalPopUp();
 		return false;
 	} else {
 		return CKEDITOR.tools.callFunction(Smart_CKEditor_fileBrowserCallExchange(), url);

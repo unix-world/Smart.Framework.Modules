@@ -78,7 +78,7 @@ jQuery(function() {
 	}
 
 	function renderAsyncCell(cellNode, row, dataContext, colDef) {
-		var cell = SmartJS_CoreUtils.renderMarkersTpl(tpl, {
+		var cell = smartJ$Utils.renderMarkersTpl(tpl, {
 			'UUID': String(dataContext.id),
 			'NAME': String(dataContext.name),
 			'ORGANIZATION': String(dataContext.organization),

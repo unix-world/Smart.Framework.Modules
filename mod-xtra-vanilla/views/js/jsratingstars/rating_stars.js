@@ -1,9 +1,9 @@
 
 // NetVision JS - Voting Stars
 // (c) 2006-2021 unix-world.org
-// v.20210329
+// v.20210411
 
-// DEPENDS: CrossBrowser, jQuery, Growl
+// DEPENDS: smartJ$Utils, smartJ$Browser, jQuery, Growl
 
 //=====================================
 
@@ -119,12 +119,12 @@ this.cast_vote = function(score, el_id, url) {
 			dataType: 'text',
 			success: function(answer) {
 				//--
-				var str = SmartJS_CoreUtils.stringTrim(answer).split("\n");
+				var str = smartJ$Utils.stringTrim(answer).split("\n");
 				//-- errcode [\n] score [\n] info [\n] #end
-				var msg = SmartJS_CoreUtils.stringTrim(str[0]);
-				var res = SmartJS_CoreUtils.stringTrim(str[1]);
-				var inf = SmartJS_CoreUtils.stringTrim(str[2]);
-				var end = SmartJS_CoreUtils.stringTrim(str[3]);
+				var msg = smartJ$Utils.stringTrim(str[0]);
+				var res = smartJ$Utils.stringTrim(str[1]);
+				var inf = smartJ$Utils.stringTrim(str[2]);
+				var end = smartJ$Utils.stringTrim(str[3]);
 				//--
 				var tmp_score = tmp_old_score;
 				//--
@@ -134,8 +134,8 @@ this.cast_vote = function(score, el_id, url) {
 							//--
 							tmp_score = parseInt(res);
 							//--
-							if(typeof SmartJS_BrowserUtils != 'undefined') {
-								SmartJS_BrowserUtils.GrowlNotificationAdd('Rating Stars', SmartJS_CoreUtils.escape_html(String(inf)), '', 1000, false, 'green');
+							if(typeof smartJ$Browser != 'undefined') {
+								smartJ$Browser.GrowlNotificationAdd('Rating Stars', smartJ$Utils.escape_html(String(inf)), '', 1000, false, 'green');
 							} else {
 								console.log('Rating Stars NOTICE: ' + inf);
 							} //end if
@@ -143,8 +143,8 @@ this.cast_vote = function(score, el_id, url) {
 							break;
 						case 'RATINGSTARS: +400 ERROR':
 							//--
-							if(typeof SmartJS_BrowserUtils != 'undefined') {
-								SmartJS_BrowserUtils.GrowlNotificationAdd('Rating Stars', SmartJS_CoreUtils.escape_html(String(inf)), '', 3000, false, 'red');
+							if(typeof smartJ$Browser != 'undefined') {
+								smartJ$Browser.GrowlNotificationAdd('Rating Stars', smartJ$Utils.escape_html(String(inf)), '', 3000, false, 'red');
 							} else {
 								console.warn('Rating Stars WARN: ' + String(inf));
 							} //end if

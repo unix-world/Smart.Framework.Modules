@@ -8,13 +8,13 @@
  * Depends:
  *   - jQuery 3.0+
  *   - jQuery UI 1.12+ widget factory
- *   - SmartJS_CoreUtils (fixes by unixman)
+ *   - smartJ$Utils (fixes by unixman)
  *
  * Optional:
  *   - jQuery UI effects
  *   - jQuery UI position utility
  *
- * copyright (c) 2012-2017 unix-world.org
+ * copyright (c) 2012-2021 unix-world.org
  * Fixes by unixman:
  * 		* highlights corrections
  * 		* fix html special characters
@@ -141,11 +141,11 @@
 		var parent = this.parentNode;
 		//-- fix by unixman
 		//var title = this.innerHTML;
-		var title = SmartJS_CoreUtils.escape_html(this.text); // fix to display htmlspecialchars correctly
+		var title = smartJ$Utils.escape_html(this.text); // fix to display htmlspecialchars correctly
 		//var description = this.title;
-		var description = SmartJS_CoreUtils.escape_html(this.title); // fix to display htmlspecialchars correctly
+		var description = smartJ$Utils.escape_html(this.title); // fix to display htmlspecialchars correctly
 		//var value = this.value;
-		var value = SmartJS_CoreUtils.escape_html(this.value); // fix to display htmlspecialchars correctly
+		var value = smartJ$Utils.escape_html(this.value); // fix to display htmlspecialchars correctly
 		//-- end fix
 		var inputID = 'ui-multiselect-' + (this.id || id + '-option-' + i);
 		var isDisabled = this.disabled;

@@ -1,4 +1,4 @@
-<!-- dbmodel-editor.htm v.20200121 -->
+<!-- dbmodel-editor.htm v.20210411 -->
 <form class="ux-form" id="dbmodel_form" name="dbmodel_form" method="POST" action="#">
 	<input id="dbmodel_uuid" name="uuid" type="hidden" value="[###UUID|html###]">
 	<input id="dbmodel_title" name="dbmodel_title" type="text" maxlength="255" value="[###TITLE|html###]" title="DbModel Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:1rem!important; font-weight:bold; text-align:center;">
@@ -8,5 +8,5 @@
 <br>
 [@@@SUB-TEMPLATE:dbmodel-init.inc.htm@@@]
 <script>
-	SmartJS_BrowserUtils.PageAwayControl('Exit without Save ?');
+	smartJ$Browser.PageAwayControl('Exit without Save ?');
 </script>

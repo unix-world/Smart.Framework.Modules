@@ -1,5 +1,5 @@
 [@@@SUB-TEMPLATE:bpmn-init.inc.htm@@@]
-<!-- bpmn-reader.htm v.20200403 -->
+<!-- bpmn-reader.htm v.20210411 -->
 <style>
 #dld-svg-button {
 	position: fixed;
@@ -22,7 +22,7 @@
 <div style="text-align:center;">
 	<button class="ux-button ux-button-small ux-button-secondary" id="bpmnExportBtn" onclick="doExportBpmn();" style="margin-left: 15px;">Export as JSON</button>
 	<button class="ux-button ux-button-small ux-button-highlight" id="bpmnEditBtn" onclick="self.location='admin.php?/page/agile.bpmn-editor/uuid/[###UUID|url|html###]/edit/yes'; return false;" style="margin-left: 15px;">Edit BPMN-Diagram</button>
-	<button class="ux-button ux-button-small ux-button-special" id="bpmnCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
+	<button class="ux-button ux-button-small ux-button-special" id="bpmnCancelBtn" onclick="smartJ$Browser.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
 </div>
 <br>
 <div id="canvas"></div>
@@ -68,7 +68,7 @@ var exportAuthor = '[###AUTHOR|js###]';
 							console.error('BPMN Diagram Get as XML ERROR', err);
 							return false;
 						}
-						SmartJS_BrowserUtils.VirtualFileDownload(String(xml), 'bpmn-diagram-' + exportDTime + '@' + exportAuthor + '.bpmn.xml', 'application/xml', 'UTF-8');
+						smartJ$Browser.VirtualFileDownload(String(xml), 'bpmn-diagram-' + exportDTime + '@' + exportAuthor + '.bpmn.xml', 'application/xml', 'UTF-8');
 					});
 				});
 				$('#dld-svg-button').click(function(){
@@ -78,7 +78,7 @@ var exportAuthor = '[###AUTHOR|js###]';
 							console.error('BPMN Diagram Get as SVG ERROR', err);
 							return false;
 						}
-						SmartJS_BrowserUtils.VirtualFileDownload(String(svg), 'bpmn-diagram-' + exportDTime + '@' + exportAuthor + '.svg', 'image/svg+xml', 'UTF-8');
+						smartJ$Browser.VirtualFileDownload(String(svg), 'bpmn-diagram-' + exportDTime + '@' + exportAuthor + '.svg', 'image/svg+xml', 'UTF-8');
 					});
 				});
 			});
@@ -93,6 +93,6 @@ var exportAuthor = '[###AUTHOR|js###]';
 function doExportBpmn() {
 	var data = bpmnDataObj;
 	data.docTitle = String($('#bpmn_title').text());
-	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'bpmn-diagram-' + exportDTime + '@' + exportAuthor + '.json', 'application/json', 'UTF-8');
+	smartJ$Browser.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'bpmn-diagram-' + exportDTime + '@' + exportAuthor + '.json', 'application/json', 'UTF-8');
 }
 </script>

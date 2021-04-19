@@ -1,6 +1,6 @@
 
 // Advanced Str(ing) Diff
-// (c) 2015-2019 unix-world.org # r.20190121
+// (c) 2015-2021 unix-world.org # r.20190121
 
 
 var Advanced_StrDiff = new function() { // START CLASS
@@ -52,7 +52,7 @@ var Advanced_StrDiff = new function() { // START CLASS
 			DIFF_EQUAL = 0;
 
 	var escapeText = function(text) {
-		return SmartJS_CoreUtils.escape_html(text);
+		return smartJ$Utils.escape_html(text);
 	}
 
 	/**

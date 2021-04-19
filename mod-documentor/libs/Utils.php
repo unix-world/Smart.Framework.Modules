@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210309
+ * @version 	v.20210418
  * @package 	Documentor
  *
  */
@@ -399,7 +399,7 @@ final class Utils {
 			])
 		);
 		//--
-		$slug = (string) \Smart::safe_filename($type.'@'.\Smart::create_slug((string)$cls).'.html');
+		$slug = (string) \Smart::safe_filename($type.'@'.\Smart::create_slug((string)str_replace('$', 's', (string)$cls)).'.html'); // support also $ for Javascript classes
 		//--
 		$dir = (string) \SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.$extdir;
 		//--

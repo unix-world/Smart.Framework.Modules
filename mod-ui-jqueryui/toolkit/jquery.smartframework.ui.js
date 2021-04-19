@@ -1,9 +1,9 @@
 
 // [LIB - SmartFramework / JS / Browser UI Utils - jQueryUI]
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
-// DEPENDS: jQuery, SmartJS_CoreUtils, SmartJS_DateUtils, SmartJS_BrowserUtils, jQueryUI, jQuery.UI.ListSelect, jQuery.UI.TimePicker, jQuery.DataTable
+// DEPENDS: jQuery, smartJ$Utils, smartJ$Date, smartJ$Browser, jQueryUI, jQuery.UI.ListSelect, jQuery.UI.TimePicker, jQuery.DataTable
 
 // ! To use jQueryUI bindings for Smart.Framework load this instead of lib/js/jquery/jquery.smartframework.ui.js ; they are a drop-in replacements for LighJS-UI !
 
@@ -17,7 +17,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 		if(!this.options.title) {
 			fixTitle = '';
 		} else {
-			fixTitle = SmartJS_CoreUtils.stringTrim(this.options.title);
+			fixTitle = smartJ$Utils.stringTrim(this.options.title);
 		} //end if else
 		if(!fixTitle) {
 			fixTitle = '&nbsp;';
@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
+var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210419
 
 	this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
@@ -36,20 +36,41 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 	//	jQueryUI
 	this.ToolTip = function(selector) {
 		//--
-		var HtmlElement = jQuery(selector);
+		var HtmlElement = $(selector);
 		var dataTooltipOk = 'tooltip-ok';
 		//--
-		HtmlElement.tooltip().data(dataTooltipOk, '1');
-		HtmlElement.on('focus', function(){
-			HtmlElement.tooltip('close');
-		});
-		//--
-		jQuery('body').on('mousemove', selector, function(el) {
-			jQuery(selector).each(function(index) {
-				if(jQuery(this).data(dataTooltipOk)) {
+		$('body').on('mousemove', selector, function(el) {
+			$(selector).each(function(index, el) {
+				var $el = $(this);
+				if($el.data(dataTooltipOk)) {
 					return;
 				} //end if
-				jQuery(this).tooltip().data(dataTooltipOk, '1');
+				$el.data(dataTooltipOk, '1').tooltip({
+					track: true,
+					show: {
+						delay: 10,
+						duration: 0
+					},
+					hide: {
+						delay: 10,
+						duration: 0
+					},
+					classes: {
+						'ui-tooltip': 'ui-state-active'
+					}
+				});
+				var trigered = false;
+				$el.on('mousemove', function() {
+					if(trigered) {
+						return;
+					} //end if
+					trigered = true;
+					$el.trigger('mouseenter');
+				}).on('focus blur click', function(){
+					try {
+						$el.tooltip('close');
+					} catch(err){} // fix: Uncaught Error: cannot call methods on tooltip prior to initialization; attempted to call method 'close'
+				});
 			});
 		});
 		//--
@@ -59,31 +80,23 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 
 	//=======================================
 
-	// SYNC WITH: SmartJS_BrowserUtils.alert_Dialog()
+	// SYNC WITH: smartJ$Browser.AlertDialog()
 	// Dependencies:
 	//	jQueryUI
 	this.DialogAlert = function(y_message_html, evcode, y_title, y_width, y_height) {
 		//--
 		// evcode params: -
 		//--
-		if((typeof y_title == 'undefined') || (y_title == null) || (y_title == '')) {
-			y_title = '';
-		} //end if
+		y_title = smartJ$Utils.stringPureVal(y_title); // cast to string, don't trim ! need to preserve the value
 		//--
-		if((typeof y_width == 'undefined') || (y_width == null) || (y_width == '')) {
-			y_width = 550;
-		} //end if
-		y_width = parseInt(y_width);
-		if(isNaN(y_width) || (y_width < 100) || (y_width > 1920)) {
+		y_width = smartJ$Utils.format_number_int(y_width);
+		if((y_width < 100) || (y_width > 1920)) {
 			y_width = 550;
 		} //end if
 		//--
-		if((typeof y_height == 'undefined') || (y_height == null) || (y_height == '')) {
-			y_height = 225;
-		} //end if
-		y_height = parseInt(y_height);
-		if(isNaN(y_height) || (y_height < 50) || (y_height > 1080)) {
-			y_height = 225;
+		y_height = smartJ$Utils.format_number_int(y_height);
+		if((y_height < 50) || (y_height > 1080)) {
+			y_height = 250;
 		} //end if
 		//--
 		var HtmlElement = $('<div></div>').html(y_message_html);
@@ -101,18 +114,17 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 			buttons: {
 				'OK': {
 					text: 'OK',
-					//icons: { primary: 'ui-icon-check' },
-					icon: 'ui-icon-check', // fix for jQueryUI 1.12
+					icon: 'ui-icon-check',
 					click: function() {
 						//--
 						$(this).dialog('close');
 						//--
-						if((typeof evcode != 'undefined') && (evcode != 'undefined') && (evcode != null) && (evcode != '')) {
+						if((evcode != undefined) && (evcode != 'undefined') && (evcode != '')) { // undef tests also for null
 							try {
-								if(typeof evcode === 'function') {
+								if(typeof(evcode) === 'function') {
 									evcode(); // call :: sync params dialog-alert
 								} else {
-									eval('(function(){ ' + evcode + ' })();'); // sandbox
+									eval('(function(){ ' + String(evcode) + ' })();'); // sandbox
 								} //end if else
 							} catch(err) {
 								console.error('ERROR: JS-Eval Error on BrowserUI DialogAlert Function' + '\nDetails: ' + err);
@@ -135,31 +147,23 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 
 	//=======================================
 
-	// SYNC WITH: SmartJS_BrowserUtils.confirm_Dialog()
+	// SYNC WITH: smartJ$Browser.ConfirmDialog()
 	// Dependencies:
 	//	jQueryUI
 	this.DialogConfirm = function(y_question_html, evcode, y_title, y_width, y_height) {
 		//--
 		// evcode params: -
 		//--
-		if((typeof y_title == 'undefined') || (y_title == null) || (y_title == '')) {
-			y_title = '';
-		} //end if
+		y_title = smartJ$Utils.stringPureVal(y_title); // cast to string, don't trim ! need to preserve the value
 		//--
-		if((typeof y_width == 'undefined') || (y_width == null) || (y_width == '')) {
-			y_width = 550;
-		} //end if
-		y_width = parseInt(y_width);
-		if(isNaN(y_width) || (y_width < 100) || (y_width > 1920)) {
+		y_width = smartJ$Utils.format_number_int(y_width);
+		if((y_width < 100) || (y_width > 1920)) {
 			y_width = 550;
 		} //end if
 		//--
-		if((typeof y_height == 'undefined') || (y_height == null) || (y_height == '')) {
-			y_height = 225;
-		} //end if
-		y_height = parseInt(y_height);
-		if(isNaN(y_height) || (y_height < 50) || (y_height > 1080)) {
-			y_height = 225;
+		y_height = smartJ$Utils.format_number_int(y_height);
+		if((y_height < 50) || (y_height > 1080)) {
+			y_height = 250;
 		} //end if
 		//--
 		var HtmlElement = $('<div></div>').html(y_question_html);
@@ -177,8 +181,7 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 			buttons: {
 				'Cancel': {
 					text: 'Cancel',
-					//icons: { primary: 'ui-icon-closethick' },
-					icon: 'ui-icon-closethick', // fix for jQueryUI 1.12
+					icon: 'ui-icon-closethick',
 					click: function() {
 						//--
 						$(this).dialog('close');
@@ -189,18 +192,17 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 				},
 				'OK': {
 					text: 'OK',
-					//icons: { primary: 'ui-icon-check' },
-					icon: 'ui-icon-check', // fix for jQueryUI 1.12
+					icon: 'ui-icon-check',
 					click: function() {
 						//--
 						$(this).dialog('close');
 						//--
-						if((typeof evcode != 'undefined') && (evcode != 'undefined') && (evcode != null) && (evcode != '')) {
+						if((evcode != undefined) && (evcode != 'undefined') && (evcode != '')) { // undef tests also for null
 							try {
-								if(typeof evcode === 'function') {
+								if(typeof(evcode) === 'function') {
 									evcode(); // call :: sync params dialog-confirm
 								} else {
-									eval('(function(){ ' + evcode + ' })();'); // sandbox
+									eval('(function(){ ' + String(evcode) + ' })();'); // sandbox
 								} //end if else
 							} catch(err) {
 								console.error('ERROR: JS-Eval Error on BrowserUI DialogConfirm Function' + '\nDetails: ' + err);
@@ -231,7 +233,7 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 	//	modules/mod-ui-jqueryui/toolkit/listselect/i18n/jquery.multiselect.{lang}.js
 	//	modules/mod-ui-jqueryui/toolkit/listselect/jquery.multiselect.filter.js
 	//	modules/mod-ui-jqueryui/toolkit/listselect/i18n/jquery.multiselect.filter.{lang}.js
-	this.Smart_SelectList = function(elemID, dimW, dimH, allowMulti, useFilter) {
+	this.SelectList = function(elemID, dimW, dimH, allowMulti, useFilter) {
 		//--
 		// evcode is taken from onBlur ; evcode params: elemID
 		//--
@@ -251,16 +253,16 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 			close: function() {
 				//--
 				var evcode = HtmlElement.attr('onBlur'); // onChange is always triggered, but useless on Multi-Select Lists on which we substitute it with the onBlur which is not triggered here but we catch and execute here
-				if((typeof evcode != 'undefined') && (evcode != 'undefined') && (evcode != null) && (evcode != '')) {
+				if((evcode != undefined) && (evcode != 'undefined') && (evcode != '')) { // undef tests also for null
 					try {
-						if(typeof evcode === 'function') {
+						if(typeof(evcode) === 'function') {
 							evcode(elemID); // call :: sync params ui-selectlist
 						} else { // sync :: eliminate javascript:
-							evcode = SmartJS_CoreUtils.stringTrim(evcode);
+							evcode = smartJ$Utils.stringTrim(evcode);
 							evcode = evcode.replace('javascript:', '');
-							evcode = SmartJS_CoreUtils.stringTrim(evcode);
+							evcode = smartJ$Utils.stringTrim(evcode);
 							if((evcode != null) && (evcode != '')) {
-								eval('(function(){ ' + evcode + ' })();'); // sandbox
+								eval('(function(){ ' + String(evcode) + ' })();'); // sandbox
 							} //end if
 						} //end if else
 					} catch(err) {
@@ -288,7 +290,7 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 	// Dependencies:
 	//	jQueryUI
 	//	modules/mod-ui-jqueryui/toolkit/i18n/jquery.ui.datepicker-{lang}.js
-	this.Date_Picker_Init = function(elemID, dateFmt, selDate, calStart, calMinDate, calMaxDate, noOfMonths, evcode) {
+	this.DatePickerInit = function(elemID, dateFmt, selDate, calStart, calMinDate, calMaxDate, noOfMonths, evcode) {
 		//--
 		// evcode params: date, altdate, inst, elemID
 		//--
@@ -296,7 +298,7 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 		//--
 		var the_initial_altdate = '';
 		if(the_initial_date != '') {
-			the_initial_altdate = SmartJS_DateUtils.formatDate(String(dateFmt), new Date(the_initial_date));
+			the_initial_altdate = smartJ$Date.formatDate(String(dateFmt), new Date(the_initial_date));
 			$('#date-entry-' + elemID).val(the_initial_altdate);
 		} //end if
 		//--
@@ -318,8 +320,8 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 				//--
 				var altdate = date;
 				try {
-					altdate = SmartJS_DateUtils.formatDate(String(dateFmt), new Date(date));
-					if(/Invalid|NaN/.test(altdate)) {
+					altdate = smartJ$Date.formatDate(String(dateFmt), new Date(date));
+					if(/Invalid|NaN|Infinity/.test(altdate)) {
 						altdate = date;
 					} //end if
 				} catch(err) {
@@ -327,12 +329,12 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 				} //end try catch
 				$('#date-entry-' + elemID).val(altdate);
 				//--
-				if((typeof evcode != 'undefined') && (evcode != 'undefined') && (evcode != null) && (evcode != '')) {
+				if((evcode != undefined) && (evcode != 'undefined') && (evcode != '')) { // undef tests also for null
 					try {
-						if(typeof evcode === 'function') {
+						if(typeof(evcode) === 'function') {
 							evcode(date, altdate, inst, elemID); // call :: sync params ui-datepicker
 						} else {
-							eval('(function(){ ' + evcode + ' })();'); // sandbox
+							eval('(function(){ ' + String(evcode) + ' })();'); // sandbox
 						} //end if else
 					} catch(err) {
 						console.error('ERROR: JS-Eval Error on DatePicker: ' + elemID + '\nDetails: ' + err);
@@ -351,7 +353,7 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 	// Dependencies:
 	//	jQueryUI
 	//	modules/mod-ui-jqueryui/toolkit/i18n/jquery.ui.datepicker-{lang}.js
-	this.Date_Picker_Display = function(datepicker_id) {
+	this.DatePickerDisplay = function(datepicker_id) {
 		//--
 		var HtmlElement = $('#' + datepicker_id);
 		//--
@@ -368,7 +370,7 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 	//	modules/mod-ui-jqueryui/toolkit/timepicker/jquery.ui.timepicker.css
 	//	modules/mod-ui-jqueryui/toolkit/timepicker/jquery.ui.timepicker.js
 	//	modules/mod-ui-jqueryui/toolkit/timepicker/i18n/jquery.ui.timepicker-{lang}.js
-	this.Time_Picker_Init = function(elemID, hStart, hEnd, mStart, mEnd, mInterval, tmRows, evcode) {
+	this.TimePickerInit = function(elemID, hStart, hEnd, mStart, mEnd, mInterval, tmRows, evcode) {
 		//--
 		// evcode params: time, inst, elemID
 		//--
@@ -396,12 +398,12 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 			onSelect: function(time, inst) {
 				//--
 				if(time != '') { //emulate on select because onSelect trigger twice (1 select hour + 2 select minutes), so if no time selected even if onClose means no onSelect !
-					if((typeof evcode != 'undefined') && (evcode != 'undefined') && (evcode != null) && (evcode != '')) {
+					if((evcode != undefined) && (evcode != 'undefined') && (evcode != '')) { // undef tests also for null
 						try {
-							if(typeof evcode === 'function') {
+							if(typeof(evcode) === 'function') {
 								evcode(time, inst, elemID); // call :: sync params ui-timepicker
 							} else {
-								eval('(function(){ ' + evcode + ' })();'); // sandbox
+								eval('(function(){ ' + String(evcode) + ' })();'); // sandbox
 							} //end if else
 						} catch(err) {
 							console.error('ERROR: JS-Eval Error on TimePicker: ' + elemID + '\nDetails: ' + err);
@@ -423,7 +425,7 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 	//	modules/mod-ui-jqueryui/toolkit/timepicker/jquery.ui.timepicker.css
 	//	modules/mod-ui-jqueryui/toolkit/timepicker/jquery.ui.timepicker.js
 	//	modules/mod-ui-jqueryui/toolkit/timepicker/i18n/jquery.ui.timepicker-{lang}.js
-	this.Time_Picker_Display = function(timepicker_id) {
+	this.TimePickerDisplay = function(timepicker_id) {
 		//--
 		var HtmlElement = $('#' + timepicker_id);
 		//--
@@ -437,7 +439,7 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 
 	// Dependencies:
 	//	jQueryUI
-	this.Tabs_Init = function(tabs_id, tab_selected, prevent_reload) {
+	this.TabsInit = function(tabs_id, tab_selected, prevent_reload) {
 		//--
 		tab_selected = parseInt(tab_selected);
 		if(tab_selected < 0) {
@@ -462,8 +464,8 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 				if(!ui.tab.data('loaded')) {
 					$('#smartframeworkcomponents_jquery_tabs_loader').remove();
 					var imgLoader = '';
-					if(SmartJS_BrowserUtils.param_LoaderImg) {
-						imgLoader = '<img src="' + SmartJS_CoreUtils.escape_html(SmartJS_BrowserUtils.param_LoaderImg) + '" alt="... loading Tab data ...">';
+					if(smartJ$Browser.param_LoaderImg) {
+						imgLoader = '<img src="' + smartJ$Utils.escape_html(smartJ$Browser.param_LoaderImg) + '" alt="... loading Tab data ...">';
 					} //end if
 					$('<div id="smartframeworkcomponents_jquery_tabs_loader" style="width:250px; position:absolute; top:37px; right:0px; text-align:center;">' + imgLoader + '</div>').appendTo('#' + tabs_id);
 					//ui.ajaxSettings.type = 'GET';
@@ -472,7 +474,7 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 					//ui.ajaxSettings.timeout = 0;
 					//ui.jqXHR.error(function() { // .error() is deprecated in the favour of .fail()
 					ui.jqXHR.fail(function() {
-						SmartJS_BrowserUtils.alert_Dialog('<h1>WARNING: Asyncronous Load Timeout or URL is broken !</h1>', '$(\'#smartframeworkcomponents_jquery_tabs_loader\').remove();', 'TAB #' + (parseInt($(ui.tab).index()) + 1) + ' :: ' + $(ui.tab).text());
+						smartJ$Browser.AlertDialog('<h1>WARNING: Asyncronous Load Timeout or URL is broken !</h1>', '$(\'#smartframeworkcomponents_jquery_tabs_loader\').remove();', 'TAB #' + (parseInt($(ui.tab).index()) + 1) + ' :: ' + $(ui.tab).text());
 					});
 				} //end if
 			},
@@ -489,7 +491,7 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 
 	// Dependencies:
 	//	jQueryUI
-	this.Tabs_Activate = function(tabs_id, activation) {
+	this.TabsActivate = function(tabs_id, activation) {
 		//--
 		var HtmlElement = $('#' + tabs_id);
 		//--
@@ -524,7 +526,8 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 			min_term_len = 255;
 		} //end if
 		//--
-		if((typeof var_term == 'undefined') || (var_term == 'undefined') || (var_term == null) || (var_term == '')) {
+		var_term = smartJ$Utils.stringPureVal(var_term, true); // cast to string, trim
+		if((var_term == null) || (var_term == '')) {
 			var_term = 'undefined_search_term_url_variable';
 		} //end if
 		//--
@@ -539,11 +542,11 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 			timeout: 0,
 			delay: 500,
 			source: function(request, response) {
-				var ajax = SmartJS_BrowserUtils.Ajax_XHR_Request_From_URL(
+				var ajax = smartJ$Browser.AjaxRequestFromURL(
 					''+data_url,
 					'POST',
 					'json',
-					'&'+var_term+'='+encodeURIComponent(SmartJS_CoreUtils.arrayGetLast(SmartJS_CoreUtils.stringSplitbyComma(request.term)))
+					'&'+var_term+'='+encodeURIComponent(smartJ$Utils.arrayGetLast(smartJ$Utils.stringSplitbyComma(request.term)))
 				);
 				ajax.done(function(msg) { // {{{JQUERY-AJAX}}}
 					response(msg); // this will bind json to the autocomplete
@@ -553,7 +556,7 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 			},
 			search: function() {
 				// custom minLength
-				var term = SmartJS_CoreUtils.arrayGetLast(SmartJS_CoreUtils.stringSplitbyComma(HtmlElement.val()));
+				var term = smartJ$Utils.arrayGetLast(smartJ$Utils.stringSplitbyComma(HtmlElement.val()));
 				if(term.length < min_term_len) {
 					return false;
 				}
@@ -569,19 +572,19 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 				var data = String(ui.item.data); // can be a json to be used with JSON.parse(data) to pass extra properties
 				try {
 					if(single_or_multi === 'multilist') {
-						HtmlElement.val(SmartJS_CoreUtils.addToList(value, HtmlElement.val(), ','));
+						HtmlElement.val(smartJ$Utils.addToList(value, HtmlElement.val(), ','));
 					} else {
 						HtmlElement.val(value); // on select replace element value with the selected item
 					} //end if else
 				} catch(err) {
 					console.error('UI.AutoCompleteField: ERROR ... could not bind value to Element: ' + elem_id);
 				}
-				if((typeof evcode != 'undefined') && (evcode != 'undefined') && (evcode != null) && (evcode != '')) {
+				if((evcode != undefined) && (evcode != 'undefined') && (evcode != '')) { // undef tests also for null
 					try {
-						if(typeof evcode === 'function') {
+						if(typeof(evcode) === 'function') {
 							evcode(id, value, label, data); // call :: sync params ui-autosuggest
 						} else {
-							eval('(function(){ ' + evcode + ' })();'); // sandbox
+							eval('(function(){ ' + String(evcode) + ' })();'); // sandbox
 						} //end if else
 					} catch(err) {
 						console.error('UI.AutoCompleteField ERROR: JS-Eval Error on Element: ' + elem_id + '\nDetails: ' + err);
@@ -601,9 +604,9 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 	//	jQuery
 	//	lib/js/jquery/datatables/datatables-responsive.css
 	//	lib/js/jquery/datatables/datatables-responsive.js
-	this.Smart_DataTable_Init = function(elem_id, options) {
+	this.DataTableInit = function(elem_id, options) {
 		//--
-		if(!options || typeof options !== 'object') {
+		if(!options || (typeof(options) !== 'object')) {
 			options = {};
 		} //end if
 		//--
@@ -697,7 +700,7 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 			columnDefs: 	Array.from(options.coldefs)
 		};
 		//--
-		var HtmlElement = jQuery('table#' + elem_id);
+		var HtmlElement = $('table#' + elem_id);
 		//--
 		HtmlElement.DataTable(opts);
 		HtmlElement.data('smart-ui-elem-type', 'DataTable');
@@ -709,12 +712,12 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 	//=======================================
 
 	// Dependencies:
-	//	jQuery, SmartJS_CoreUtils
+	//	jQuery, smartJ$Utils
 	//	lib/js/jquery/datatables/datatables-responsive.css
 	//	lib/js/jquery/datatables/datatables-responsive.js
-	this.Smart_DataTable_FilterColumns = function(elem_id, filterColNumber, regexStr) {
+	this.DataTableColumnsFilter = function(elem_id, filterColNumber, regexStr) {
 		//--
-		var HtmlElement = jQuery('table#' + elem_id);
+		var HtmlElement = $('table#' + elem_id);
 		//--
 		if(HtmlElement.data('smart-ui-elem-type') !== 'DataTable') {
 			return null;
@@ -723,10 +726,20 @@ var SmartJS_BrowserUIUtils = new function() { // START CLASS :: v.20200121
 		var obj = HtmlElement.DataTable();
 		//--
 		var col = parseInt(filterColNumber);
-		if((col < 0) || !SmartJS_CoreUtils.isFiniteNumber(col)) {
+		if((col < 0) || !smartJ$Utils.isFiniteNumber(col)) {
 			col = 0;
 		} //end if
-		if(regexStr) { // ex: '^(val1|val\-2)$'
+		if(regexStr) {
+			let testregex;
+			try {
+				testregex = new RegExp(String(regexStr));
+			} catch(err) { // catch regex errors
+				regexStr = '';
+				console.warn('smartJ$UI.DataTableColumnsFilter', 'ERR: Filter Expression', regexStr, err);
+			} //end try catch
+			testregex = null;
+		} //end if
+		if(regexStr) {
 			obj.columns(col).search(String(regexStr), true, false, true).draw();
 		} else {
 			obj.columns(col).search('').draw();

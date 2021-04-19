@@ -6,7 +6,7 @@
  */
 
 // contains fixes by unixman
-// depends on SmartJS_CoreUtils
+// depends on smartJ$Utils
 
 ;(function(root, factory) {
 	if (typeof define === 'function' && define.amd) {
@@ -181,7 +181,7 @@ Tagify.prototype = {
 	 */
 	escapeHTML: function escapeHTML(s) {
 		//-- fix by unixman
-		return SmartJS_CoreUtils.escape_html(s);
+		return smartJ$Utils.escape_html(s);
 		/*
 		var text = document.createTextNode(s),
 				p = document.createElement('p');

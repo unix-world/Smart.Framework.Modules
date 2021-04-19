@@ -3,9 +3,9 @@
 // (c) 2015 Dinamenta, UAB.
 // License: GPLv2
 
-// (c) 2017-2020 unix-world.org
+// (c) 2017-2021 unix-world.org
 // License: GPLv3
-// v.20200701 (stable)
+// v.20210411 (stable)
 /*
 modified by unixman:
 	- changed text: Title instead of Task
@@ -202,7 +202,7 @@ function SmartGanttPluginTooltip(gantt) {
 		if(txt.length > 50) {
 			txt = txt.substr(0, 50) + '...';
 		} //end if
-		return '<b>Title:</b> ' + SmartJS_CoreUtils.escape_html(txt) + '<br><b>Start date:</b> ' + SmartJS_CoreUtils.escape_html(gantt.templates.tooltip_date_format(start)) + '<br><b>End date:</b> ' + SmartJS_CoreUtils.escape_html(endTxt);
+		return '<b>Title:</b> ' + smartJ$Utils.escape_html(txt) + '<br><b>Start date:</b> ' + smartJ$Utils.escape_html(gantt.templates.tooltip_date_format(start)) + '<br><b>End date:</b> ' + smartJ$Utils.escape_html(endTxt);
 	}; // fix by unixman
 
 	return gantt;

@@ -1,5 +1,5 @@
 [@@@SUB-TEMPLATE:todo-k-init.inc.htm@@@]
-<!-- todo-k-editor.htm v.20200121 -->
+<!-- todo-k-editor.htm v.20210413 -->
 <style>
 .jskanban_box {
 	cursor: grab;
@@ -40,8 +40,8 @@ jQuery(document).ready(function() {
 		//	doc.docTitle = String($('#todo_title').val());
 			var theData = JSON.stringify(doc);
 			jQuery('#todo_data').val(theData);
-			SmartJS_BrowserUtils.RefreshParent();
-			SmartJS_BrowserUtils.Submit_Form_By_Ajax('todo_form', 'admin.php?page=agile.todo-save&mode=kanban', 'yes');
+			smartJ$Browser.RefreshParent();
+			smartJ$Browser.SubmitFormByAjax('todo_form', 'admin.php?page=agile.todo-save&mode=kanban', 'yes');
 		});
 	});
 });
@@ -49,7 +49,7 @@ jQuery(document).ready(function() {
 <div style="text-align:center;">
 	<button class="ux-button ux-button-small ux-button-regular" id="kanban-save-data" style="margin-left: 15px;">Save ToDo-List</button>
 	[%%%IF:OP-MODE:==create;%%%]
-	<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
+	<button class="ux-button ux-button-small ux-button-special" onclick="smartJ$Browser.CloseModalPopUp(); smartJ$Browser.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
 	[%%%ELSE:OP-MODE%%%]
 	<button class="ux-button ux-button-small ux-button-special" onclick="self.location='admin.php?/page/agile.todo-editor/mode/kanban/uuid/[###UUID|url|html###]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
 	[%%%/IF:OP-MODE%%%]
@@ -57,5 +57,5 @@ jQuery(document).ready(function() {
 <br>
 [@@@SUB-TEMPLATE:todo-k-board.inc.htm@@@]
 <script>
-	SmartJS_BrowserUtils.PageAwayControl('Exit without Save ?');
+	smartJ$Browser.PageAwayControl('Exit without Save ?');
 </script>

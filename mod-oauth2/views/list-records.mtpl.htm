@@ -1,4 +1,4 @@
-<!-- View: list-records v.20210402 -->
+<!-- View: list-records v.20210419 -->
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/simplePagination.css?[###RELEASE-HASH|url|html###]">
 <script type="text/javascript" src="lib/js/jquery/pager/jquery.simplePagination.js?[###RELEASE-HASH|url|html###]"></script>
 <script type="text/javascript" src="lib/js/jquery/jquery.event.drag.js?[###RELEASE-HASH|url|html###]"></script>
@@ -28,7 +28,7 @@
 	//--
 	var itemURL = '[###ACTIONS-URL|js###]';
 	var IdOfGrid = 'Oauth2ListGrid';
-	var TheGrid = new Smart_Grid(IdOfGrid, 'infoTotalRows', itemURL+'list', 'oauth2_list_tbl', 'id', 'ASC', '', 'filtering');
+	var TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', itemURL+'list', 'oauth2_list_tbl', 'id', 'ASC', '', 'filtering');
 	//--
 </script>
 
@@ -40,7 +40,7 @@
 	</span>
 	<button type="button" class="ux-button ux-button-special" onClick="TheGrid.loadGridData(0);">Filter &nbsp; <i class="sfi sfi-search"></i></button>
 	<button type="button" class="ux-button ux-button-regular" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);">Reset &nbsp; <i class="sfi sfi-history"></i></button>
-	<button type="button" class="ux-button ux-button-primary" style="margin-left:50px;" onClick="SmartJS_BrowserUtils.PopUpLink('[###ACTIONS-URL|js|html###]new-form', 'oauth2_list_mod'); return false;"> Create New Oauth2 API &nbsp; <i class="sfi sfi-plus"></i></button>
+	<button type="button" class="ux-button ux-button-primary" style="margin-left:50px;" onClick="smartJ$Browser.PopUpLink('[###ACTIONS-URL|js|html###]new-form', 'oauth2_list_mod'); return false;"> Create New Oauth2 API &nbsp; <i class="sfi sfi-plus"></i></button>
 </form>
 <br>
 <div id="Oauth2ListNavPager"></div>
@@ -53,7 +53,7 @@ $(function() {
 		var the_id = dataContext['id'];
 		var active = dataContext['active'];
 		var isErr = dataContext['errs'];
-		$(cellNode).empty().html('').append('<button class="ux-button ux-button-xsmall' + ((isErr > 0) ? ' ux-button-special' : '') + '" onClick="SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(itemURL + 'view-data' +'&id=' + SmartJS_CoreUtils.escape_url(the_id)) +'\', \'oauth2_list_mod\'); return false;" title="Edit (Click to Open the Editor)"><i class="sfi sfi-pencil2"></i></button>');
+		$(cellNode).empty().html('').append('<button class="ux-button ux-button-xsmall' + ((isErr > 0) ? ' ux-button-special' : '') + '" onClick="smartJ$Browser.PopUpLink(\'' + smartJ$Utils.escape_js(itemURL + 'view-data' +'&id=' + smartJ$Utils.escape_url(the_id)) +'\', \'oauth2_list_mod\'); return false;" title="Edit (Click to Open the Editor)"><i class="sfi sfi-pencil2"></i></button>');
 	}
 	function formatter_Active(row, cell, value, columnDef, dataContext) {
 		if(value == 1) {
@@ -75,7 +75,7 @@ $(function() {
 
 	// Column Updaters
 	function updateCellData(url_segment_update) {
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('', '[###ACTIONS-URL|js|html###]edit-cell' + url_segment_update, 'yes', 'TheGrid.loadGridData(TheGrid.getOffset());', 'TheGrid.loadGridData(TheGrid.getOffset());');
+		smartJ$Browser.SubmitFormByAjax('', '[###ACTIONS-URL|js|html###]edit-cell' + url_segment_update, 'yes', 'TheGrid.loadGridData(TheGrid.getOffset());', 'TheGrid.loadGridData(TheGrid.getOffset());');
 	}
 
 	// Grid Data Defs
@@ -125,7 +125,7 @@ $(function() {
 	TheGrid.grid.onCellChange = function(row, cell, dataContext, columnDef) {
 		switch(columnDef.field) {
 			case 'active':
-				updateCellData('&column=' + SmartJS_CoreUtils.escape_url(columnDef.field) + '&value=' + SmartJS_CoreUtils.escape_url(dataContext[columnDef.field]) + '&id=' + SmartJS_CoreUtils.escape_url(dataContext['id']));
+				updateCellData('&column=' + smartJ$Utils.escape_url(columnDef.field) + '&value=' + smartJ$Utils.escape_url(dataContext[columnDef.field]) + '&id=' + smartJ$Utils.escape_url(dataContext['id']));
 				break;
 			default: // invalid
 				console.log('WARNING: Table Column is not editable: ' + columnDef.field);

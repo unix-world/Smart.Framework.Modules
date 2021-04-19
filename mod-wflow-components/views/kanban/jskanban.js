@@ -1,8 +1,8 @@
 
 // Js Kanban CSS
-// (c) 2017-2019 unix-world.org
+// (c) 2017-2021 unix-world.org
 // License: GPLv3
-// v.20190307
+// v.20210414
 
 var JsKanban = function() { // START CLASS
 
@@ -130,7 +130,7 @@ var JsKanban = function() { // START CLASS
 		//--
 		var id = String(obj.id || '');
 		if(!id) {
-			id = String(SmartJS_CoreUtils.uuid());
+			id = String(smartJ$Utils.uuid());
 			obj.id = id;
 			obj.start = String(getIsoDate());
 			obj.type = 'flextask';
@@ -183,11 +183,11 @@ var JsKanban = function() { // START CLASS
 		//--
 		kData.push(obj);
 		if(display >= 2) {
-			jQuery(String(kArea)).find('div.jskanban_holder').find('ul#kanban-' + String(status)).append('<li title="Task: ' + SmartJS_CoreUtils.escape_html(id) + '" id="kanban-task--' + SmartJS_CoreUtils.escape_html(id) + '" data-kanban-item-status="" data-id="' + SmartJS_CoreUtils.escape_html(id) + '" class="jskanban_box' + SmartJS_CoreUtils.escape_html(extraClass) + '"><div class="task-text"><div class="task-row">' + SmartJS_CoreUtils.escape_html(ttl) + '</div><div class="task-subrow"><div class="task-timings">' + SmartJS_CoreUtils.escape_html(timings) + '</div>' + (parentTtl ? ' &nbsp; ' + SmartJS_CoreUtils.escape_html(parentTtl) : '') + '</div></div><div title="Progress: ' + SmartJS_CoreUtils.escape_html(p_progress) + '%" class="sparkline" data-chart="' + SmartJS_CoreUtils.escape_html(t_progress + ',' + (1-t_progress)) + '"></div></li>');
+			jQuery(String(kArea)).find('div.jskanban_holder').find('ul#kanban-' + String(status)).append('<li title="Task: ' + smartJ$Utils.escape_html(id) + '" id="kanban-task--' + smartJ$Utils.escape_html(id) + '" data-kanban-item-status="" data-id="' + smartJ$Utils.escape_html(id) + '" class="jskanban_box' + smartJ$Utils.escape_html(extraClass) + '"><div class="task-text"><div class="task-row">' + smartJ$Utils.escape_html(ttl) + '</div><div class="task-subrow"><div class="task-timings">' + smartJ$Utils.escape_html(timings) + '</div>' + (parentTtl ? ' &nbsp; ' + smartJ$Utils.escape_html(parentTtl) : '') + '</div></div><div title="Progress: ' + smartJ$Utils.escape_html(p_progress) + '%" class="sparkline" data-chart="' + smartJ$Utils.escape_html(t_progress + ',' + (1-t_progress)) + '"></div></li>');
 		} else if(display === 0) {
-			jQuery('body').find('div.jskanban_passive_elements').append('<div class="type-project" title="Project Feature: ' + SmartJS_CoreUtils.escape_html(id) + '">' + SmartJS_CoreUtils.escape_html(ttl) + '<br><span>' + SmartJS_CoreUtils.escape_html(timings) + '&nbsp;' + SmartJS_CoreUtils.escape_html('>') + '</span></div>');
+			jQuery('body').find('div.jskanban_passive_elements').append('<div class="type-project" title="Project Feature: ' + smartJ$Utils.escape_html(id) + '">' + smartJ$Utils.escape_html(ttl) + '<br><span>' + smartJ$Utils.escape_html(timings) + '&nbsp;' + smartJ$Utils.escape_html('>') + '</span></div>');
 		} else if(display === 1) {
-			jQuery('body').find('div.jskanban_passive_elements').append('<div class="type-milestone" title="Milestone: ' + SmartJS_CoreUtils.escape_html(id) + '">' + SmartJS_CoreUtils.escape_html(ttl) + '<br><span>' + SmartJS_CoreUtils.escape_html(timings) + '&nbsp;' + SmartJS_CoreUtils.escape_html('^') + (parentTtl ? ' &nbsp; ' + SmartJS_CoreUtils.escape_html(parentTtl) : '') + '</span></div>');
+			jQuery('body').find('div.jskanban_passive_elements').append('<div class="type-milestone" title="Milestone: ' + smartJ$Utils.escape_html(id) + '">' + smartJ$Utils.escape_html(ttl) + '<br><span>' + smartJ$Utils.escape_html(timings) + '&nbsp;' + smartJ$Utils.escape_html('^') + (parentTtl ? ' &nbsp; ' + smartJ$Utils.escape_html(parentTtl) : '') + '</span></div>');
 		} //end if else
 		//--
 		renderItemSparklineChart(id);
@@ -273,15 +273,15 @@ var JsKanban = function() { // START CLASS
 	var getIsoDate = function(oldDate, daysOffset) {
 		//--
 		var d = new Date();
-		var dz  = SmartJS_DateUtils.standardizeDate(d);
-		var iso = SmartJS_DateUtils.getIsoDate(dz);
+		var dz  = smartJ$Date.standardizeDate(d);
+		var iso = smartJ$Date.getIsoDate(dz);
 		if(oldDate && daysOffset) {
 			daysOffset = Math.floor(daysOffset);
 			if(daysOffset > 0) {
 				d = new Date(String(oldDate));
-				dz  = SmartJS_DateUtils.standardizeDate(d);
-				dz = SmartJS_DateUtils.addDays(dz, daysOffset);
-				iso = SmartJS_DateUtils.getIsoDate(dz);
+				dz  = smartJ$Date.standardizeDate(d);
+				dz = smartJ$Date.addDays(dz, daysOffset);
+				iso = smartJ$Date.getIsoDate(dz);
 			} //end if
 		} //end if
 		//--
@@ -302,7 +302,7 @@ var JsKanban = function() { // START CLASS
 		var timings 	= theObjProps.timings;
 		theObjProps 	= null;
 		//--
-		jQuery(String(kArea)).find('div.jskanban_holder').find('ul[id^=kanban-]').find('li#kanban-task--' + SmartJS_CoreUtils.escape_html(id) + ' > div.task-text > div.task-subrow > div.task-timings').empty().html(SmartJS_CoreUtils.escape_html(timings));
+		jQuery(String(kArea)).find('div.jskanban_holder').find('ul[id^=kanban-]').find('li#kanban-task--' + smartJ$Utils.escape_html(id) + ' > div.task-text > div.task-subrow > div.task-timings').empty().html(smartJ$Utils.escape_html(timings));
 		//--
 	} //END FUNCTION
 
@@ -361,7 +361,7 @@ var JsKanban = function() { // START CLASS
 			return null;
 		} //end if
 		//--
-		return jQuery(String(kArea)).find('div.jskanban_holder').find('ul[id^=kanban-]').find('li#kanban-task--' + SmartJS_CoreUtils.escape_html(id) + ' > div.sparkline');
+		return jQuery(String(kArea)).find('div.jskanban_holder').find('ul[id^=kanban-]').find('li#kanban-task--' + smartJ$Utils.escape_html(id) + ' > div.sparkline');
 		//--
 	} //END FUNCTION
 
@@ -380,7 +380,7 @@ var JsKanban = function() { // START CLASS
 				if(String(id) === String(obj.id)) {
 					var t_progress = Number(obj.progress);
 					var p_progress = Math.floor(t_progress * 100);
-					item.attr('data-chart', String(Number(t_progress) + ',' + Number(1-t_progress))).attr('title', String('Progress: ' + SmartJS_CoreUtils.escape_html(p_progress) + '%'));
+					item.attr('data-chart', String(Number(t_progress) + ',' + Number(1-t_progress))).attr('title', String('Progress: ' + smartJ$Utils.escape_html(p_progress) + '%'));
 					return true;
 				} //end if
 			} //end if

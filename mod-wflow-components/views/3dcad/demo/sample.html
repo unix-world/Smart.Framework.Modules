@@ -123,7 +123,7 @@ function selectSample() {
 			openJsCadTextInstantUpdate: 'Instant Update View',
 			openJsCadTextExport: 'Export To:',
 			openJsCadFxExport: function(data, ext, mime) {
-				SmartJS_BrowserUtils.VirtualFileDownload(String(data), '3dcad.' + String(ext), String(mime), 'UTF-8');
+				smartJ$Browser.VirtualFileDownload(String(data), '3dcad.' + String(ext), String(mime), 'UTF-8');
 			}
 		});
 		//--

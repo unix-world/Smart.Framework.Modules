@@ -22,7 +22,7 @@ function selectCollection() {
 	if(!selected) {
 		return false;
 	}
-	SmartJS_BrowserUtils.setCookie(String(theCookieNameCollection), String(selected));
+	smartJ$Browser.setCookie(String(theCookieNameCollection), String(selected));
 	self.location = String(theListLocation);
 }
 </script>

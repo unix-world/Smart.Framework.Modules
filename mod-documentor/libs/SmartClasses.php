@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\Documentor\SmartClasses
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 namespace SmartModExtLib\Documentor;
@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20210309
+ * @version 	v.20210419
  * @package 	Documentor
  *
  */
@@ -49,7 +49,7 @@ final class SmartClasses {
 	// ::
 
 
-	const DOCGENERATOR_VERSION = '20210308';
+	const DOCGENERATOR_VERSION = '20210419';
 
 
 	public static function getJavascriptSfFile() {
@@ -62,14 +62,14 @@ final class SmartClasses {
 	public static function listJavascriptSfClasses() {
 		//--
 		return [
-			'SmartJS_CoreUtils' 		=> 'lib/js/framework/src/core_utils.js',
-			'SmartJS_DateUtils' 		=> 'lib/js/framework/src/date_utils.js',
-			'SmartJS_Base64' 			=> 'lib/js/framework/src/crypt_utils.js?#SmartJS_Base64',
-			'SmartJS_CryptoHash' 		=> 'lib/js/framework/src/crypt_utils.js?#SmartJS_CryptoHash',
-			'SmartJS_CryptoBlowfish' 	=> 'lib/js/framework/src/crypt_utils.js?#SmartJS_CryptoBlowfish',
-			'SmartJS_ModalBox' 			=> 'lib/js/framework/src/ifmodalbox.js',
-			'SmartJS_BrowserUtils' 		=> 'lib/js/framework/src/browser_utils.js',
-			'Test_Browser_Compliance' 	=> 'lib/js/framework/src/browser_check.js'
+			'smartJ$Utils' 				=> 'lib/js/framework/src/core_utils.js',
+			'smartJ$Date' 				=> 'lib/js/framework/src/date_utils.js',
+			'smartJ$Base64' 			=> 'lib/js/framework/src/crypt_utils.js?#smartJ$Base64',
+			'smartJ$CryptoHash' 		=> 'lib/js/framework/src/crypt_utils.js?#smartJ$CryptoHash',
+			'smartJ$CryptoBlowfish' 	=> 'lib/js/framework/src/crypt_utils.js?#smartJ$CryptoBlowfish',
+			'smartJ$ModalBox' 			=> 'lib/js/framework/src/ifmodalbox.js',
+			'smartJ$Browser' 			=> 'lib/js/framework/src/browser_utils.js',
+			'smartJ$TestBrowser' 		=> 'lib/js/framework/src/browser_check.js'
 		];
 		//--
 	} //END FUNCTION
@@ -78,7 +78,7 @@ final class SmartClasses {
 	public static function listJavascriptSfmClasses() {
 		//--
 		return [
-			'SmartJS_BrowserUIUtils' 	=> 'lib/js/jquery/jquery.smartframework.ui.js',
+			'smartJ$UI' 				=> 'lib/js/jquery/jquery.smartframework.ui.js',
 			'ArchLzs'					=> 'modules/mod-js-components/views/js/arch-lzs/arch-lzs.js'
 		];
 		//--

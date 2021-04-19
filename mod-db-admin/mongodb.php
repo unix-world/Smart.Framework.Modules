@@ -85,15 +85,15 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$rdr = (string) trim((string)$this->RequestVarGet('rdr', '', 'string'));
 				if((string)$rdr != '') {
-					$final_js = 'SmartJS_BrowserUtils.RedirectDelayedToURL(\''.Smart::escape_js((string)$rdr).'\', 1000)';
+					$final_js = 'smartJ$Browser.RedirectDelayedToURL(\''.Smart::escape_js((string)$rdr).'\', 1000)';
 				} else {
-					$final_js = 'SmartJS_BrowserUtils.CloseDelayedModalPopUp();';
+					$final_js = 'smartJ$Browser.CloseDelayedModalPopUp();';
 				} //end if
 				//--
 				$this->PageViewSetVars([
 					'title' => 'Wait ...',
 					'main' => '<br><div><center><img src="lib/framework/img/loading-bars.svg" width="64" height="64"></center></div>'.
-					'<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>'.
+					'<script type="text/javascript">smartJ$Browser.RefreshParent();</script>'.
 					'<script type="text/javascript">'.$final_js.'</script>'
 				]);
 				//--

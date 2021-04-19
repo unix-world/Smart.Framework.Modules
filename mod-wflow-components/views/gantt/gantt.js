@@ -3,9 +3,9 @@
 // License: GPLv2
 // (c) 2015 Dinamenta, UAB.
 
-// (c) 2017-2020 unix-world.org
+// (c) 2017-2021 unix-world.org
 // License: GPLv3
-// v.20200701 (stable)
+// v.20210411 (stable)
 /*
 modified by unixman:
 	- add types: project, milestone
@@ -411,7 +411,7 @@ var SmartGanttInstance = function() { // START CLASS
 				col.width = this._get_grid_width() - width;
 			}
 			width += col.width;
-			var sort = (this._sort && col.name == this._sort.name) ? ('<div class="gantt_sort gantt_' + SmartJS_CoreUtils.escape_html(this._sort.direction) + '"></div>') : '';
+			var sort = (this._sort && col.name == this._sort.name) ? ('<div class="gantt_sort gantt_' + smartJ$Utils.escape_html(this._sort.direction) + '"></div>') : '';
 			var real_colname = String(col.name || '');
 			if(this.config.readonly) { // unixman
 				if(real_colname == 'add') {
@@ -420,14 +420,14 @@ var SmartGanttInstance = function() { // START CLASS
 			} //end if
 			var cssClass = [
 				'gantt_grid_head_cell',
-				('gantt_grid_head_' + SmartJS_CoreUtils.escape_html(real_colname)), // unixman
+				('gantt_grid_head_' + smartJ$Utils.escape_html(real_colname)), // unixman
 				(last ? 'gantt_last_cell' : ''),
 				this.templates.grid_header_class(col.name, col)
 			].join(' ');
 			var style = 'width:' + (col.width - (last ? 1 : 0)) + 'px;';
 			var label = (col.label || labels['column_' + col.name]);
 			label = label || '';
-			var cell = '<div class="' + SmartJS_CoreUtils.escape_html(cssClass) + '" style="' + SmartJS_CoreUtils.escape_html(style) + '" column_id="' + SmartJS_CoreUtils.escape_html(col.name) + '">' + SmartJS_CoreUtils.escape_html(label) + sort + '</div>';
+			var cell = '<div class="' + smartJ$Utils.escape_html(cssClass) + '" style="' + smartJ$Utils.escape_html(style) + '" column_id="' + smartJ$Utils.escape_html(col.name) + '">' + smartJ$Utils.escape_html(label) + sort + '</div>';
 			cells.push(cell);
 		}
 		this.$grid_scale.style.height = (this.config.scale_height - 1) + 'px';
@@ -484,7 +484,7 @@ var SmartGanttInstance = function() { // START CLASS
 						value = value.toFixed(0);
 					}
 				}
-				value = '<div class="gantt_tree_content">' + SmartJS_CoreUtils.escape_html(value) + '</div>';
+				value = '<div class="gantt_tree_content">' + smartJ$Utils.escape_html(value) + '</div>';
 			}
 			var css = 'gantt_cell' + (last ? ' gantt_last_cell' : '');
 			var tree = '';
@@ -505,7 +505,7 @@ var SmartGanttInstance = function() { // START CLASS
 			if(dhtmlx.defined(col.align)) {
 				style += 'text-align:' + col.align + ';';
 			}
-			cell = '<div class="' + SmartJS_CoreUtils.escape_html(css) + '" style="' + SmartJS_CoreUtils.escape_html(style) + '">' + tree + value + '</div>';
+			cell = '<div class="' + smartJ$Utils.escape_html(css) + '" style="' + smartJ$Utils.escape_html(style) + '">' + tree + value + '</div>';
 			cells.push(cell);
 		}
 		var css = item.$index % 2 === 0 ? '' : ' odd';
@@ -1925,7 +1925,7 @@ var SmartGanttInstance = function() { // START CLASS
 			if(className) {
 				css.push(className);
 			}
-			var html = '<div class="' + SmartJS_CoreUtils.escape_html(className) + '">' + gantt.templates.drag_link(link.from, link.from_start, link.to, link.to_start) + '</div>';
+			var html = '<div class="' + smartJ$Utils.escape_html(className) + '">' + gantt.templates.drag_link(link.from, link.from_start, link.to, link.to_start) + '</div>';
 			marker.innerHTML = html;
 		}
 
@@ -2328,13 +2328,13 @@ var SmartGanttInstance = function() { // START CLASS
 				template = '',
 				cssclass = '';
 			if(width) {
-				style = 'width:' + SmartJS_CoreUtils.escape_html(width) + 'px;';
+				style = 'width:' + smartJ$Utils.escape_html(width) + 'px;';
 				cssclass = 'gantt_scale_cell' + (i == config.count-1 ? ' gantt_last_cell' : '');
 				template = css.call(this, date);
 				if(template) {
 					cssclass += ' ' + template;
 				}
-				var cell = '<div class="' + SmartJS_CoreUtils.escape_html(cssclass) + '" style="' + SmartJS_CoreUtils.escape_html(style) + '">' + value + '</div>';
+				var cell = '<div class="' + smartJ$Utils.escape_html(cssclass) + '" style="' + smartJ$Utils.escape_html(style) + '">' + value + '</div>';
 				cells.push(cell);
 			} else {
 				//do not render ignored cells
@@ -2374,7 +2374,7 @@ var SmartGanttInstance = function() { // START CLASS
 				if(tplClass) {
 					cssClass += ' ' + tplClass;
 				}
-				html.push('<div class="' + SmartJS_CoreUtils.escape_html(cssClass) + '" style="height:' + SmartJS_CoreUtils.escape_html(cfgs[i].height) + 'px;line-height:' + SmartJS_CoreUtils.escape_html(cfgs[i].height) + 'px">' + this._prepare_scale_html(cfgs[i]) + '</div>');
+				html.push('<div class="' + smartJ$Utils.escape_html(cssClass) + '" style="height:' + smartJ$Utils.escape_html(cfgs[i].height) + 'px;line-height:' + smartJ$Utils.escape_html(cfgs[i].height) + 'px">' + this._prepare_scale_html(cfgs[i]) + '</div>');
 			}
 			scales_html = html.join('');
 			outer_width = cfg.full_width + this.$scroll_ver.offsetWidth + 'px';
@@ -3848,7 +3848,7 @@ var SmartGanttInstance = function() { // START CLASS
 	gantt.createTask = function(item, parent) {
 		item = item || {};
 	//	item.id = dhtmlx.uid();
-		item.id = String(SmartJS_CoreUtils.uuid()); // fix by unixman (uuid)
+		item.id = String(smartJ$Utils.uuid()); // fix by unixman (uuid)
 		item.open = true;
 		if(!item.start) {
 			item.start = gantt._default_task_date(item, parent);
@@ -4139,7 +4139,7 @@ var SmartGanttInstance = function() { // START CLASS
 	gantt._init_task = function(task) {
 		if(!dhtmlx.defined(task.id)) {
 		//	task.id = dhtmlx.uid();
-			task.id = String(SmartJS_CoreUtils.uuid()); // fix by unixman (uuid)
+			task.id = String(smartJ$Utils.uuid()); // fix by unixman (uuid)
 		}
 		if(task.start) {
 			task.start = gantt.date.parseDate(task.start, 'xml_date');
@@ -4622,7 +4622,7 @@ var SmartGanttInstance = function() { // START CLASS
 	gantt._init_link = function(link) {
 		if(!dhtmlx.defined(link.id)) {
 		//	link.id = dhtmlx.uid();
-			link.id = String(SmartJS_CoreUtils.uuid()); // fix by unixman (uuid)
+			link.id = String(smartJ$Utils.uuid()); // fix by unixman (uuid)
 		}
 		return link;
 	};
@@ -4844,12 +4844,12 @@ var SmartGanttInstance = function() { // START CLASS
 			for(var i = 0; i < buttons.length; i++) {
 				// needed to migrate from 'dhx_something' to 'gantt_something' naming in a lightbox
 				var button = this.config._migrate_buttons[buttons[i]] ? this.config._migrate_buttons[buttons[i]] : buttons[i];
-				html += '<div class="gantt_btn_set gantt_left_btn_set ' + SmartJS_CoreUtils.escape_html(button) + '_set"><div dhx_button="1" class="' + SmartJS_CoreUtils.escape_html(button) + '"></div><div>' + SmartJS_CoreUtils.escape_html(this.locale.labels[button]) + '</div></div>';
+				html += '<div class="gantt_btn_set gantt_left_btn_set ' + smartJ$Utils.escape_html(button) + '_set"><div dhx_button="1" class="' + smartJ$Utils.escape_html(button) + '"></div><div>' + smartJ$Utils.escape_html(this.locale.labels[button]) + '</div></div>';
 			}
 			buttons = this.config.buttons_right;
 			for(var i = 0; i < buttons.length; i++) {
 				var button = this.config._migrate_buttons[buttons[i]] ? this.config._migrate_buttons[buttons[i]] : buttons[i];
-				html += '<div class="gantt_btn_set gantt_right_btn_set ' + SmartJS_CoreUtils.escape_html(button) + '_set" style="float:right;"><div dhx_button="1" class="' + SmartJS_CoreUtils.escape_html(button) + '"></div><div>' + SmartJS_CoreUtils.escape_html(this.locale.labels[button]) + '</div></div>';
+				html += '<div class="gantt_btn_set gantt_right_btn_set ' + smartJ$Utils.escape_html(button) + '_set" style="float:right;"><div dhx_button="1" class="' + smartJ$Utils.escape_html(button) + '"></div><div>' + smartJ$Utils.escape_html(this.locale.labels[button]) + '</div></div>';
 			}
 			html += '</div>';
 			d.innerHTML=html;
@@ -4891,12 +4891,12 @@ var SmartGanttInstance = function() { // START CLASS
 			var display = sns[i].hidden ? ' style="display:none"' : '';
 			var button = '';
 			if(sns[i].button) {
-				button = '<div class="gantt_custom_button" index="' + i + '"><div class="gantt_custom_button_' + SmartJS_CoreUtils.escape_html(sns[i].button) + '"></div><div>' + SmartJS_CoreUtils.escape_html(this.locale.labels['button_'+sns[i].button]) + '</div></div>';
+				button = '<div class="gantt_custom_button" index="' + i + '"><div class="gantt_custom_button_' + smartJ$Utils.escape_html(sns[i].button) + '"></div><div>' + smartJ$Utils.escape_html(this.locale.labels['button_'+sns[i].button]) + '</div></div>';
 			}
 			if(this.config.wide_form) {
 				html += '<div class="gantt_wrap_section"' + display + '>';
 			}
-			html += '<div id="' + SmartJS_CoreUtils.escape_html(sns[i].id) + '" class="gantt_cal_lsection">' + button + SmartJS_CoreUtils.escape_html(this.locale.labels['section_'+sns[i].name]) + '</div>' + block.render.call(this,sns[i]);
+			html += '<div id="' + smartJ$Utils.escape_html(sns[i].id) + '" class="gantt_cal_lsection">' + button + smartJ$Utils.escape_html(this.locale.labels['section_'+sns[i].name]) + '</div>' + block.render.call(this,sns[i]);
 			html += '</div>';
 		}
 		return html;
@@ -5250,7 +5250,7 @@ var SmartGanttInstance = function() { // START CLASS
 						sns._time_format_order[1] = p;
 						sns._time_format_order.size++;
 						for(var i=0; i < 12; i++) {
-							options += '<option value="' + i + '">' + SmartJS_CoreUtils.escape_html(this.locale.date.month_full[i]) + '</option>';
+							options += '<option value="' + i + '">' + smartJ$Utils.escape_html(this.locale.date.month_full[i]) + '</option>';
 						}
 						break;
 					case '%d': // days
@@ -5305,7 +5305,7 @@ var SmartGanttInstance = function() { // START CLASS
 		textarea:{
 			render:function(sns) {
 				var height = (sns.height || '50') + 'px';
-				return '<div class="gantt_cal_ltext" style="height:' + SmartJS_CoreUtils.escape_html(height) + ';"><textarea maxlength="1024"></textarea></div>';
+				return '<div class="gantt_cal_ltext" style="height:' + smartJ$Utils.escape_html(height) + ';"><textarea maxlength="1024"></textarea></div>';
 			},
 			set_value:function(node,value,ev) {
 				node.firstChild.value = value || '';
@@ -5321,7 +5321,7 @@ var SmartGanttInstance = function() { // START CLASS
 		colortsel:{ // text color
 			render:function(sns) {
 				var height = '23px';
-				return '<div class="gantt_cal_ltext"><select style="height:' + SmartJS_CoreUtils.escape_html(height) + ';width:100%;"><option value="#FFFFFF">' + SmartJS_CoreUtils.escape_html(this.locale.labels.text_color + ': ' + this.locale.labels.sel_default) + '</option><option value="#111111">' + SmartJS_CoreUtils.escape_html(this.locale.labels.text_color + ': ' + this.locale.labels.sel_invert) + '</option></select></div>';
+				return '<div class="gantt_cal_ltext"><select style="height:' + smartJ$Utils.escape_html(height) + ';width:100%;"><option value="#FFFFFF">' + smartJ$Utils.escape_html(this.locale.labels.text_color + ': ' + this.locale.labels.sel_default) + '</option><option value="#111111">' + smartJ$Utils.escape_html(this.locale.labels.text_color + ': ' + this.locale.labels.sel_invert) + '</option></select></div>';
 			},
 			set_value:function(node,value,ev) {
 				node.firstChild.value = value || '#FFFFFF';
@@ -5337,7 +5337,7 @@ var SmartGanttInstance = function() { // START CLASS
 		colorsel:{ // bg color
 			render:function(sns) {
 				var height = '23px';
-				return '<div class="gantt_cal_ltext"><input style="height:' + SmartJS_CoreUtils.escape_html(height) + ';width:100%;" type="color" title="' + SmartJS_CoreUtils.escape_html(this.locale.labels.bg_color) + '"></div>';
+				return '<div class="gantt_cal_ltext"><input style="height:' + smartJ$Utils.escape_html(height) + ';width:100%;" type="color" title="' + smartJ$Utils.escape_html(this.locale.labels.bg_color) + '"></div>';
 			},
 			set_value:function(node,value,ev) {
 				var def_color = '#3db9d3'; // task, flextask
@@ -5359,7 +5359,7 @@ var SmartGanttInstance = function() { // START CLASS
 		inputarea:{
 			render:function(sns) {
 				var height = '23px';
-				return '<div class="gantt_cal_ltext"><input style="height:' + SmartJS_CoreUtils.escape_html(height) + ';width:96%;" type="text" maxlength="255"></div>';
+				return '<div class="gantt_cal_ltext"><input style="height:' + smartJ$Utils.escape_html(height) + ';width:96%;" type="text" maxlength="255"></div>';
 			},
 			set_value:function(node,value,ev) {
 				node.firstChild.value = value || '';
@@ -5392,10 +5392,10 @@ var SmartGanttInstance = function() { // START CLASS
 		tasktype:{
 			render:function(sns) {
 				var height = '23px';
-				var html = '<div class="gantt_cal_ltext" style="height:' + SmartJS_CoreUtils.escape_html(height) + ';"><select style="width:100%;">';
-				html += '<option value="' + SmartJS_CoreUtils.escape_html(this.config.types.task) + '">' + SmartJS_CoreUtils.escape_html(this.locale.labels["type_task"]) + '</option>';
-				html += '<option value="' + SmartJS_CoreUtils.escape_html(this.config.types.flextask) + '">' + SmartJS_CoreUtils.escape_html(this.locale.labels["type_flextask"]) + '</option>';
-				html += '<option value="' + SmartJS_CoreUtils.escape_html(this.config.types.milestone) + '">' + SmartJS_CoreUtils.escape_html(this.locale.labels["type_milestone"]) + '</option>';
+				var html = '<div class="gantt_cal_ltext" style="height:' + smartJ$Utils.escape_html(height) + ';"><select style="width:100%;">';
+				html += '<option value="' + smartJ$Utils.escape_html(this.config.types.task) + '">' + smartJ$Utils.escape_html(this.locale.labels["type_task"]) + '</option>';
+				html += '<option value="' + smartJ$Utils.escape_html(this.config.types.flextask) + '">' + smartJ$Utils.escape_html(this.locale.labels["type_flextask"]) + '</option>';
+				html += '<option value="' + smartJ$Utils.escape_html(this.config.types.milestone) + '">' + smartJ$Utils.escape_html(this.locale.labels["type_milestone"]) + '</option>';
 				html += '</select></div><br>';
 				return html;
 			},
@@ -5418,8 +5418,8 @@ var SmartGanttInstance = function() { // START CLASS
 		projtype:{
 			render:function(sns) {
 				var height = '23px';
-				var html = '<div class="gantt_cal_ltext" style="height:' + SmartJS_CoreUtils.escape_html(height) + ';"><select style="width:100%;">';
-				html += '<option value="' + SmartJS_CoreUtils.escape_html(this.config.types.project) + '">' + SmartJS_CoreUtils.escape_html(this.locale.labels["type_project"]) + '</option>';
+				var html = '<div class="gantt_cal_ltext" style="height:' + smartJ$Utils.escape_html(height) + ';"><select style="width:100%;">';
+				html += '<option value="' + smartJ$Utils.escape_html(this.config.types.project) + '">' + smartJ$Utils.escape_html(this.locale.labels["type_project"]) + '</option>';
 				html += '</select></div><br>';
 				return html;
 			},
@@ -5443,9 +5443,9 @@ var SmartGanttInstance = function() { // START CLASS
 			render:function(sns) {
 				//console.log(JSON.stringify(sns.options, null, 2));
 				var height = (sns.height || '23') + 'px';
-				var html = '<div class="gantt_cal_ltext" style="height:' + SmartJS_CoreUtils.escape_html(height) + ';"><select style="width:100%;">';
+				var html = '<div class="gantt_cal_ltext" style="height:' + smartJ$Utils.escape_html(height) + ';"><select style="width:100%;">';
 				for(var i=0; i<sns.options.length; i++) {
-					html += '<option value="' + SmartJS_CoreUtils.escape_html(sns.options[i].key) + '" title="' + SmartJS_CoreUtils.escape_html(sns.options[i].key) + '">' + SmartJS_CoreUtils.escape_html(sns.options[i].label) + '</option>';
+					html += '<option value="' + smartJ$Utils.escape_html(sns.options[i].key) + '" title="' + smartJ$Utils.escape_html(sns.options[i].key) + '">' + smartJ$Utils.escape_html(sns.options[i].label) + '</option>';
 				}
 				html += '</select></div>';
 				return html;
@@ -5565,7 +5565,7 @@ var SmartGanttInstance = function() { // START CLASS
 				} else {
 					duration += '<input type="button" class="gantt_duration_inc" value="+"' + readonly + '>';
 				}
-				duration += '<label> <b>' + SmartJS_CoreUtils.escape_html(label) + '</b>: </label><span></span>';
+				duration += '<label> <b>' + smartJ$Utils.escape_html(label) + '</b>: </label><span></span>';
 				duration += '</div>';
 				var html = '<div style="height:' + (sns.height || 23) + 'px;padding-top:0px;font-size:inherit;" class="gantt_section_time">' + time + ' ' + duration + '</div>';
 				return html;
@@ -7048,7 +7048,7 @@ var SmartGanttInstance = function() { // START CLASS
 							txt += '...';
 						}
 					}
-					return SmartJS_CoreUtils.escape_html(txt);
+					return smartJ$Utils.escape_html(txt);
 				},
 				task_class:function(start, end, task) {return '';},
 				grid_row_class:function(start, end, task) {
@@ -7093,15 +7093,15 @@ var SmartGanttInstance = function() { // START CLASS
 				link_description : function(link) {
 					var from = gantt.getTask(link.source),
 						to = gantt.getTask(link.target);
-					return '<b>' + SmartJS_CoreUtils.escape_html(from.title) + '</b> &ndash;  <b>' + SmartJS_CoreUtils.escape_html(to.title) + '</b>';
+					return '<b>' + smartJ$Utils.escape_html(from.title) + '</b> &ndash;  <b>' + smartJ$Utils.escape_html(to.title) + '</b>';
 				},
 				drag_link : function(from, from_start, to, to_start) {
 					from = gantt.getTask(from);
 					var labels = gantt.locale.labels;
-					var text = '<b>' + SmartJS_CoreUtils.escape_html(from.title) + '</b> ' + SmartJS_CoreUtils.escape_html(from_start ? labels.link_start : labels.link_end) + '<br>';
+					var text = '<b>' + smartJ$Utils.escape_html(from.title) + '</b> ' + smartJ$Utils.escape_html(from_start ? labels.link_start : labels.link_end) + '<br>';
 					if(to) {
 						to = gantt.getTask(to);
-						text += '<b> ' + SmartJS_CoreUtils.escape_html(to.title) + '</b> ' + SmartJS_CoreUtils.escape_html(to_start ? labels.link_start : labels.link_end) + '<br>';
+						text += '<b> ' + smartJ$Utils.escape_html(to.title) + '</b> ' + smartJ$Utils.escape_html(to_start ? labels.link_start : labels.link_end) + '<br>';
 					}
 					return text;
 				},
@@ -7478,7 +7478,7 @@ var SmartGanttInstance = function() { // START CLASS
 		} else if(label.length > 50) {
 			label = label.substr(0, 75) + '...';
 		}
-		return SmartJS_CoreUtils.escape_html(label);
+		return smartJ$Utils.escape_html(label);
 	};
 	//--
 

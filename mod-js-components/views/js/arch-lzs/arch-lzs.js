@@ -1,8 +1,8 @@
 
 // [LIB - Smart.Framework / JS / LZS Archiver]
-// (c) 2006-2019 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 
-// DEPENDS: SmartJS_CoreUtils
+// DEPENDS: smartJ$Utils
 
 //==================================================================
 // based on LZString v.1.3.6 (a free LZ based compression algorithm)
@@ -23,13 +23,14 @@
  * The purpose of this class is to compress/decompress cookies that can be shared also with PHP
  * The PHP version of this class is available in modules/mod-js-components/libs/ArchLzs.php
  *
- * @requires		SmartJS_CoreUtils
+ * @requires		smartJ$Utils
+ * @requires		smartJ$CryptoHash
  *
  * @desc LZS Archiver for JavaScript :: compress on-the-fly a string using only Javascript with the LZS algorithm
  * @author unix-world.org
  * @license BSD
  * @file arch_utils.js
- * @version 20191220
+ * @version 20210413
  * @class ArchLzs
  * @static
  *
@@ -220,9 +221,9 @@ var ArchLzs = new function() { // START CLASS
 			return '';
 		} //end if
 		//--
-		var arch = SmartJS_CoreUtils.bin2hex(uncompressed).toUpperCase();
+		var arch = smartJ$Utils.bin2hex(uncompressed).toUpperCase();
 		//--
-		return String(RawDeflate(String(arch + '#CHECKSUM-SHA1#' + SmartJS_CryptoHash.sha1(arch))));
+		return String(RawDeflate(String(arch + '#CHECKSUM-SHA1#' + smartJ$CryptoHash.sha1(arch))));
 		//--
 	} //END FUNCTION
 
@@ -251,17 +252,17 @@ var ArchLzs = new function() { // START CLASS
 			return '';
 		} //end if
 		//--
-		var unarch = String(SmartJS_CoreUtils.stringTrim(RawInflate(String(compressed))));
+		var unarch = String(smartJ$Utils.stringTrim(RawInflate(String(compressed))));
 		var parts = unarch.split('#CHECKSUM-SHA1#');
-		unarch = SmartJS_CoreUtils.stringTrim(String(parts[0]));
-		var checksum = SmartJS_CoreUtils.stringTrim(String(parts[1]));
-		//-- aaa
-		if(SmartJS_CryptoHash.sha1(unarch) !== (String(checksum))) {
+		unarch = smartJ$Utils.stringTrim(String(parts[0]));
+		var checksum = smartJ$Utils.stringTrim(String(parts[1]));
+		//--
+		if(smartJ$CryptoHash.sha1(unarch) !== (String(checksum))) {
 			console.error('JS-LZS Archiver / Decompress: Checksum Failed'); // do not raise error just alert
 			return '';
 		} //end if
 		//--
-		return String(SmartJS_CoreUtils.hex2bin(unarch.toLowerCase()));
+		return String(smartJ$Utils.hex2bin(unarch.toLowerCase()));
 		//--
 	} //END FUNCTION
 

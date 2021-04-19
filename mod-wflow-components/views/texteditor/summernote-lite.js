@@ -1,9 +1,9 @@
 
-// (c) 2019-2020 unix-world.org
+// (c) 2019-2021 unix-world.org
 // License: GPLv3
-// v.20200501
+// v.20210411
 // modified by unixman
-// depends on: SmartJS_CoreUtils.escape_html() : bug fixes)
+// depends on: smartJ$Utils.escape_html() : bug fixes)
 
 /**
  * Super simple wysiwyg editor v0.8.11
@@ -5184,26 +5184,28 @@
 						} //end if
 						var the_type_of_file = String(file.type);
 						var $imgpw = $('#summernote-img-uploader-preview');
-						$imgpw.append('<img id="summernote-img-uploader-result-img" src="' + SmartJS_CoreUtils.escape_html(dataURL) + '" style="max-width:' + maxImgWidth + 'px; max-height:' + maxImgWidth + 'px; width:auto !important; height:auto !important;">');
+						$imgpw.append('<img id="summernote-img-uploader-result-img" src="' + smartJ$Utils.escape_html(dataURL) + '" style="max-width:' + maxImgWidth + 'px; max-height:' + maxImgWidth + 'px; width:auto !important; height:auto !important;">');
 						setTimeout(function(){
 							var img = $('#summernote-img-uploader-result-img');
 							var w = Math.round(img.width()) || 1;
 							var h = Math.round(img.height()) || 1;
 							//console.log('Img WxH', w, h);
 							$('#summernote-img-uploader-result-img').remove();
-							$imgpw.append('<canvas id="summernote-img-uploader-result-cnvs" width="' + SmartJS_CoreUtils.escape_html(w) + '" height="' + SmartJS_CoreUtils.escape_html(h) + '" style="border: 1px dotted #ECECEC;"></canvas>');
+							$imgpw.append('<canvas id="summernote-img-uploader-result-cnvs" width="' + smartJ$Utils.escape_html(w) + '" height="' + smartJ$Utils.escape_html(h) + '" style="border: 1px dotted #ECECEC;"></canvas>');
 							var im = new Image();
 							im.width = w;
 							im.height = h;
 							im.onload = function(){
 								var cnv = jQuery('#summernote-img-uploader-result-cnvs')[0];
 								if(!cnv) {
+									jQuery('#summernote-img-uploader-result-cnvs').remove();
 									console.error('Summernote Image Uploader ERROR: Failed to Get Resizable Container');
 									_this.context.triggerEvent('image.upload.error');
 									return;
 								} //end if
 								var ctx = cnv.getContext('2d');
 								if(!ctx) {
+									jQuery('#summernote-img-uploader-result-cnvs').remove();
 									console.error('Summernote Image Uploader ERROR: Failed to Get Resizable Container Context');
 									_this.context.triggerEvent('image.upload.error');
 									return;
@@ -5215,8 +5217,10 @@
 								//console.log('Before' + dataURL.length, 'After: ' + imgResizedB64.length);
 								if(String(imgResizedB64).length <= maxImgSize) {
 									$imgpw.empty().html('');
+									jQuery('#summernote-img-uploader-result-cnvs').remove();
 									return _this.insertImage(imgResizedB64, filename);
 								} else {
+									jQuery('#summernote-img-uploader-result-cnvs').remove();
 									console.log('Summernote Image Uploader WARNING: Image Size after resize is higher than allowed size: ' + String(imgResizedB64).length + ' Bytes');
 									_this.context.triggerEvent('image.upload.error');
 								} //end if else
@@ -6457,7 +6461,7 @@
 						items: _this.options.fontNames.filter(_this.isFontInstalled.bind(_this)),
 						title: _this.lang.font.name,
 						template: function (item) {
-							return '<span style="font-size:13px; font-family: \'' + SmartJS_CoreUtils.htmlspecialchars(item, 'ENT_QUOTES') + '\'">' + item + '</span>'; // need to escape also '
+							return '<span style="font-size:13px; font-family: \'' + smartJ$Utils.htmlspecialchars(item, 'ENT_QUOTES') + '\'">' + item + '</span>'; // need to escape also '
 						},
 						click: _this.context.createInvokeHandlerAndUpdateState('editor.fontName')
 					}),

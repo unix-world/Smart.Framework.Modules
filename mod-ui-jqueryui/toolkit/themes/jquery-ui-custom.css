@@ -1,8 +1,13 @@
 /* jQueryUI Fixes Fix */
 
 .ui-tooltip {
-	max-width: 512px;
+	max-width: 300px;
 	word-wrap: break-word;
+	border-width: 1px;
+	border-radius: 3px;
+	font-size: 1rem;
+	font-weight: normal;
+	padding: 15px;
 }
 
 .ui-autocomplete {

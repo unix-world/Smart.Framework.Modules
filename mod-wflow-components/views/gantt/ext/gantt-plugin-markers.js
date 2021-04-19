@@ -3,9 +3,9 @@
 // (c) 2015 Dinamenta, UAB.
 // License: GPLv2
 
-// (c) 2017-2020 unix-world.org
+// (c) 2017-2021 unix-world.org
 // License: GPLv3
-// v.20200701 (stable)
+// v.20210411 (stable)
 /*
 modified by unixman:
 	- isolate in a function
@@ -58,7 +58,7 @@ function SmartGanttPluginMarkers(gantt) {
 				css += " " + marker.css;
 			}
 			if(marker.name) {
-				div.title = SmartJS_CoreUtils.escape_html(marker.name);
+				div.title = smartJ$Utils.escape_html(marker.name);
 			}
 			div.className = css;
 			var start = gantt.posFromDate(marker.start);
@@ -69,7 +69,7 @@ function SmartGanttPluginMarkers(gantt) {
 				div.style.width = Math.max((end - start), 0) + "px";
 			}
 			if(marker.title){
-				div.innerHTML = '<div class="gantt_marker_content">' + SmartJS_CoreUtils.escape_html(marker.title) + '</div>';
+				div.innerHTML = '<div class="gantt_marker_content">' + smartJ$Utils.escape_html(marker.title) + '</div>';
 			}
 			return div;
 		}

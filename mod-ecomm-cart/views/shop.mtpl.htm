@@ -1,5 +1,5 @@
 [@@@SUB-TEMPLATE:partials/base.inc.mtpl.htm@@@]
-<!-- shop r.20210318 -->
+<!-- shop r.20210413 -->
 <style>
 .shop-area * {
 	font-size: 0.875rem !important;
@@ -144,7 +144,7 @@ jQuery(document).ready(function(){
 		e.preventDefault();
 		var $btn = jQuery(this);
 		var uuid = $btn.attr('data-uuid'); // $btn.parent().parent().find('#item-uuid').val();
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('Form_' + String(uuid), '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=add', true);
+		smartJ$Browser.SubmitFormByAjax('Form_' + String(uuid), '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=add', true);
 		return false;
 	});
 });

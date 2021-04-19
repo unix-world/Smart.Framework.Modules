@@ -1,12 +1,12 @@
 <!-- MongoDB Drop Collection -->
 <script>
 function btnHandlerCancel() {
-	SmartJS_BrowserUtils.CloseDelayedModalPopUp();
+	smartJ$Browser.CloseDelayedModalPopUp();
 	return false;
 }
 function btnHandlerSubmit() {
 	jQuery.alertable.confirm('DROP the Collection `[###COLLECTION|js###]` ?' + '\n\n' + 'This action will permanently DROP the selected Collection and will DELETE all the records of this Collection.').then(function(){
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('collection_drop_form', '[###ACTIONS-URL|js###]', 'yes');
+		smartJ$Browser.SubmitFormByAjax('collection_drop_form', '[###ACTIONS-URL|js###]', 'yes');
 	});
 	return false;
 }

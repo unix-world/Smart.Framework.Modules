@@ -1,16 +1,18 @@
 
 // Facebook JS API Handler
 // (c) 2012-2021 unix-world.org
-// v.20210310
+// v.20210411
 
-// Depends on: jQuery
-// Depends on: SmartJS_Base64, SmartJS_BrowserUtils
+// Depends on: jQuery, smartJ$Base64, smartJ$Browser
 
 var FacebookApiHandler = new function() { // START CLASS
 
 	// :: static
 
 	var _class = this; // self referencing
+
+	var _BwUtils$ = smartJ$Browser;
+	var _Ba$e64 = smartJ$Base64;
 
 
 	var FbSettings = {
@@ -247,13 +249,7 @@ var FacebookApiHandler = new function() { // START CLASS
 		//--
 		var blob;
 		try {
-			if(typeof SmartJS_Base64 != 'undefined') {
-				var byteString = SmartJS_Base64.decode(imB64, true); // works in all browsers
-			} else {
-			//	var byteString = atob(imB64); // IE 10+ ; FFox 3+ ; Webkit 3+ ; Safari 3+ ; Opera 7+
-				console.error('ERR: Missing: SmartJS_Base64');
-				return;
-			} //end if else
+			var byteString = _Ba$e64.decode(imB64, true); // works in all browsers
 			var ab = new ArrayBuffer(byteString.length);
 			var ia = new Uint8Array(ab);
 			for(var i = 0; i < byteString.length; i++) {
@@ -317,7 +313,7 @@ var FacebookApiHandler = new function() { // START CLASS
 		//--
 		if(archive) {
 			if(value) {
-				value = String(SmartJS_Base64.decode(String(value)));
+				value = String(_Ba$e64.decode(String(value)));
 			} //end if
 		} //end if
 		//--
@@ -330,7 +326,7 @@ var FacebookApiHandler = new function() { // START CLASS
 		//--
 		if(archive) {
 			if(value) {
-				value = String(SmartJS_Base64.encode(String(value)));
+				value = String(_Ba$e64.encode(String(value)));
 			} //end if
 		} //end if
 		//--
@@ -345,40 +341,21 @@ var FacebookApiHandler = new function() { // START CLASS
 
 	var getCookie = function(name) {
 		//--
-		if(typeof SmartJS_BrowserUtils == 'undefined') {
-			console.error('ERR: Missing: SmartJS_BrowserUtils');
-			return null;
-		} //end if
-		//--
-		return SmartJS_BrowserUtils.getCookie(name);
+		return _BwUtils$.getCookie(name);
 		//--
 	} //END FUNCTION
 
 
 	var setCookie = function(name, value, expire, path, domain, samesite, secure) {
 		//--
-		if(typeof SmartJS_BrowserUtils == 'undefined') {
-			console.error('ERR: Missing: SmartJS_BrowserUtils');
-			return false;
-		} //end if
-		//--
-		SmartJS_BrowserUtils.setCookie(name, value, expire, path, domain, samesite, secure);
-		//--
-		return true;
+		return _BwUtils$.setCookie(name, value, expire, path, domain, samesite, secure);
 		//--
 	} //END FUNCTION
 
 
 	var deleteCookie = function(name, path, domain, samesite, secure) {
 		//--
-		if(typeof SmartJS_BrowserUtils == 'undefined') {
-			console.error('ERR: Missing: SmartJS_BrowserUtils');
-			return false;
-		} //end if
-		//--
-		SmartJS_BrowserUtils.deleteCookie(name, path, domain, samesite, secure);
-		//--
-		return true;
+		return _BwUtils$.deleteCookie(name, path, domain, samesite, secure);
 		//--
 	} //END FUNCTION
 

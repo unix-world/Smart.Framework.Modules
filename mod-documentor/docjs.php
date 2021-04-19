@@ -26,7 +26,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Admin Area Controller
- * @version 20210309
+ * @version 20210417
  * @ignore
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -158,12 +158,12 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					$this->jsonAnswer('A JavaScript Class must be selected ...', false);
 					break;
 				default:
-					$this->displaySelector($file, $cls);
+					$this->displaySelector('', $cls);
 			} //end switch
 			return;
 		} //end if
 		//--
-		$file = (string) $this->classes[(string)$cls];
+		$file = (string) (isset($this->classes[(string)$cls]) ? $this->classes[(string)$cls] : '');
 		if((string)$file == '') {
 			$this->sfjfile = '';
 			$file = (string) trim((string)$this->RequestVarGet('file', '', 'string'));
@@ -421,6 +421,10 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			} //end for
 		} //end if
 		//--
+		$isfrozen = false;
+		if(array_key_exists('frozen', (array)$arr['class']['data']['props'])) {
+			$isfrozen = true;
+		} //end if
 		if(array_key_exists('static', (array)$arr['class']['data']['props'])) {
 			$modifier = 'static';
 			$usage = (string) $cls.'.method();';
@@ -447,6 +451,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$tmp_method['modifiers'] = 'public';
 				$tmp_method['code-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template($this->highlightJsCode(trim((string)implode("\n", (array)$arr['methods'][$i]['data']['code']))));
 				$tmp_method['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html(trim((string)$arr['methods'][$i]['data']['comments']))), true);
+				$tmp_method['is-arrow'] = 0;
 				$tmp_method['is-static'] = 0;
 				$tmp_method['is-internal-priv'] = 0;
 				$tmp_method['returns'] = '{Void}';
@@ -456,6 +461,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					foreach($arr['methods'][$i]['data']['props'] as $key => $val) {
 						if((string)$key == 'method') {
 							$tmp_method['name'] = (string) trim((string)$val['type']);
+						} elseif((string)$key == 'arrow') {
+							$tmp_method['is-arrow'] = 1;
 						} elseif((string)$key == 'static') {
 							$tmp_method['is-static'] = 1;
 						} elseif((string)$key == 'private') {
@@ -507,6 +514,9 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			if(Smart::array_size($arr['properties'][$i]['data']) > 0) {
 				$tmp_property = [];
 				$tmp_property['name'] = '';
+				$tmp_property['value'] = '';
+				$tmp_property['set'] = '';
+				$tmp_property['get'] = '';
 				$tmp_property['prop-type'] = (string) $arr['properties'][$i]['type'];
 				$tmp_property['doc-var-type'] = '';
 				$tmp_property['modifiers'] = 'public';
@@ -516,9 +526,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$tmp_property['is-internal-priv'] = 0;
 				if(Smart::array_size($arr['properties'][$i]['data']['props']) > 0) {
 					foreach($arr['properties'][$i]['data']['props'] as $key => $val) {
-						if(((string)$key == 'var') OR ((string)$key == 'const')) {
+						if(((string)$key == 'var') OR ((string)$key == 'let') OR ((string)$key == 'const')) {
 							$tmp_property['name'] = (string) trim((string)$val['var']);
 							$tmp_property['doc-var-type'] = (string) trim((string)$val['type']);
+						} elseif((string)$key == 'set') {
+							$tmp_property['set'] = (string) trim((string)$val['line']);
+						} elseif((string)$key == 'get') {
+							$tmp_property['get'] = (string) trim((string)$val['line']);
 						} elseif((string)$key == 'default') {
 							$tmp_property['value'] = (string) trim((string)$val['line']);
 						} elseif((string)$key == 'static') {
@@ -532,12 +546,15 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					$tmp_property['is-static'] = 1;
 				} //end if
 				if((string)$tmp_property['name'] != '') {
-					if((string)$tmp_property['prop-type'] == 'variable') {
+					if(((string)$tmp_property['prop-type'] == 'var') OR ((string)$tmp_property['prop-type'] == 'let')) {
 						if($tmp_property['is-static'] == 1) {
 							$tmp_property['modifiers'] .= ' static';
 						} //end if
 						$properties[] = (array) $tmp_property;
 					} elseif((string)$tmp_property['prop-type'] == 'constant') {
+						if($tmp_property['is-static'] == 1) {
+							$tmp_property['modifiers'] .= ' static';
+						} //end if
 						$constants[] = (array) $tmp_property;
 					} //end if else
 				} //end if
@@ -557,6 +574,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				'callmode' 				=> (string) $callmode,
 				'usage' 				=> (string) $usage,
 				'name' 					=> (string) (isset($arr['class']['data']['props']['class']['type']) ? $arr['class']['data']['props']['class']['type'] : ''),
+				'is-frozen' 			=> (string) ($isfrozen ? 'yes': 'no'),
 				'modifiers' 			=> (string) $modifier,
 				'package' 				=> (string) $this->clsPackage,
 				'version' 				=> (string) $arr['class']['data']['props']['version']['line'],
@@ -622,8 +640,10 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 								$is_class_found = 2;
 							} elseif(isset($props['props']['var']) AND (Smart::array_size($props['props']['var']) > 0)) {
 								$is_class_found = 3;
-							} elseif(isset($props['props']['const']) AND (Smart::array_size($props['props']['const']) > 0)) {
+							} elseif(isset($props['props']['let']) AND (Smart::array_size($props['props']['let']) > 0)) {
 								$is_class_found = 4;
+							} elseif(isset($props['props']['const']) AND (Smart::array_size($props['props']['const']) > 0)) {
+								$is_class_found = 5;
 							} //end if else
 						} //end if
 					} //end if else
@@ -650,12 +670,19 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							break;
 						case 3:
 							$arr['properties'][] = [
-								'type' 			=> 'variable',
+								'type' 			=> 'var',
 								'doc-comment' 	=> (string) $matches[$i][2],
 								'data' 			=> (array)  $props
 							];
 							break;
 						case 4:
+							$arr['properties'][] = [
+								'type' 			=> 'let',
+								'doc-comment' 	=> (string) $matches[$i][2],
+								'data' 			=> (array)  $props
+							];
+							break;
+						case 5:
 							$arr['properties'][] = [
 								'type' 			=> 'constant',
 								'doc-comment' 	=> (string) $matches[$i][2],
@@ -690,7 +717,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$regex_dc_code = '/@example\s+([^@]+)/';
 		$regex_dc_propx = '/^@([a-z]+)$/';
-		$regex_dc_props = '/@([a-z]+)\s+([^\s]+)(\s+[a-zA-Z0-9_]+)?(.*)/';
+		$regex_dc_props = '/@([a-z]+)\s+([^\s]+)(\s+[a-zA-Z0-9_\$]+)?(.*)/';
 		//--
 		$matches = array();
 		preg_match_all((string)$regex_dc_code, (string)$str, $matches, PREG_SET_ORDER); // OK to get code

@@ -1,11 +1,11 @@
 
 // Business Process Model and Notation (BPMN) - Modeler (Editor)
-// depends on: SmartJS_CoreUtils
+// depends on: smartJ$Utils
 
 /*
-(c) 2019-2020 unix-world.org
+(c) 2019-2021 unix-world.org
 License: GPLv3
-Version: 20200403
+Version: 20210411
 IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BPMN.IO LOGO (see original bpmn.io LICENSE)
 */
 
@@ -1371,7 +1371,7 @@ IMPORTANT: DO NOT MODIFY OR REMOVE THE ORIGINAL BPMN.IO CODE THAT DISPLAY THE BP
 	//--
 	function createAnnotation(elemId, note, canvas) { // {{{SYNC-BPMN-UXM-ANNOTATIONS}}}
 		//--
-		var overlayHtml = jQuery('<div class="djs-xtra-elem-note" data-elem-id="' + SmartJS_CoreUtils.escape_html(String(elemId)) + '" title="' + SmartJS_CoreUtils.escape_html(String(note)) + '">' + SmartJS_CoreUtils.escape_html(String(note)) + '</div>');
+		var overlayHtml = jQuery('<div class="djs-xtra-elem-note" data-elem-id="' + smartJ$Utils.escape_html(String(elemId)) + '" title="' + smartJ$Utils.escape_html(String(note)) + '">' + smartJ$Utils.escape_html(String(note)) + '</div>');
 		//--
 		overlayHtml.on('dblclick', function(e){
 			var $el = jQuery(this);

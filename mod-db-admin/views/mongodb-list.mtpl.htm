@@ -87,7 +87,7 @@ jQuery(function() {
 		$el.jsonViewer(input, options);
 		$el.attr('data-json', '');
 	} else {
-		$el.html('<span style="color:#FF3300; font-weight:bold;">{ERR}</span><br><textarea style="width:250px; height:50px;" spellcheck="false" readonly>' + SmartJS_CoreUtils.escape_html($el.attr('data-json')) + '</textarea>');
+		$el.html('<span style="color:#FF3300; font-weight:bold;">{ERR}</span><br><textarea style="width:250px; height:50px;" spellcheck="false" readonly>' + smartJ$Utils.escape_html($el.attr('data-json')) + '</textarea>');
 	}
 });
 </script>
@@ -110,7 +110,7 @@ jQuery(function() {
 			jQuery(this).jsonViewer(input, options);
 			jQuery(this).attr('data-json', '');
 		} else {
-			jQuery(this).html('<span style="color:#FF3300; font-weight:bold;">{ERR}</span><br><textarea style="width:250px; height:50px;" spellcheck="false" readonly>' + SmartJS_CoreUtils.escape_html(jQuery(this).attr('data-json')) + '</textarea>');
+			jQuery(this).html('<span style="color:#FF3300; font-weight:bold;">{ERR}</span><br><textarea style="width:250px; height:50px;" spellcheck="false" readonly>' + smartJ$Utils.escape_html(jQuery(this).attr('data-json')) + '</textarea>');
 		}
 	});
 });
@@ -128,7 +128,7 @@ function selectCollection() {
 	if(!selected) {
 		selected = '';
 	}
-	SmartJS_BrowserUtils.setCookie(String(theCookieNameCollection), String(selected));
+	smartJ$Browser.setCookie(String(theCookieNameCollection), String(selected));
 	self.location = String(theListLocation);
 }
 
@@ -136,7 +136,7 @@ function handleButtonSelectById() {
 	var theLocation = String(theListLocation);
 	var theID = jQuery('#filter-_id').val();
 	if (theID) {
-		theLocation = theLocation + '&id_=' + SmartJS_CoreUtils.escape_url(theID);
+		theLocation = theLocation + '&id_=' + smartJ$Utils.escape_url(theID);
 	}
 	self.location = String(theLocation);
 }
@@ -180,10 +180,10 @@ function handleButtonQuery() {
 	var urlParamSorting = '';
 	for(var key in sortingArr) {
 		if(key) {
-			urlParamSorting += '&sorting[' + SmartJS_CoreUtils.escape_url(key) + ']=' + SmartJS_CoreUtils.escape_url(sortingArr[key]);
+			urlParamSorting += '&sorting[' + smartJ$Utils.escape_url(key) + ']=' + smartJ$Utils.escape_url(sortingArr[key]);
 		}
 	}
-	theLocation = theLocation + '&mode=' + SmartJS_CoreUtils.escape_url(theDisplayMode) + '&query_=' + SmartJS_CoreUtils.escape_url(theQueryStr) + urlParamSorting;
+	theLocation = theLocation + '&mode=' + smartJ$Utils.escape_url(theDisplayMode) + '&query_=' + smartJ$Utils.escape_url(theQueryStr) + urlParamSorting;
 	self.location = String(theLocation);
 }
 [%%%IF:QMODE:==visual;%%%]
@@ -196,7 +196,7 @@ function handleButtonShowJson() {
 	var json;
 	try {
 		json = jsonEditor.get();
-		SmartSimpleDialog.Dialog_Alert('<div id="hjls-div-dlg"><pre style="max-width:calc(100% - 5px) !important;"><code id="hljs-json-dlg" class="json">' + SmartJS_CoreUtils.escape_html(String(JSON.stringify(json, null, 2))) + '</code></pre></div><' + 'script' + '>setTimeout(function(){ SmartJS_Custom_Syntax_Highlight(\'#hjls-div-dlg\') }, 10);</' + 'script' + '>', null, 'Query: JSON', Math.floor(jQuery(window).width() * 0.8), Math.floor(jQuery(window).height() * 0.75));
+		SmartSimpleDialog.Dialog_Alert('<div id="hjls-div-dlg"><pre style="max-width:calc(100% - 5px) !important;"><code id="hljs-json-dlg" class="json">' + smartJ$Utils.escape_html(String(JSON.stringify(json, null, 2))) + '</code></pre></div><' + 'script' + '>setTimeout(function(){ SmartJS_Custom_Syntax_Highlight(\'#hjls-div-dlg\') }, 10);</' + 'script' + '>', null, 'Query: JSON', Math.floor(jQuery(window).width() * 0.8), Math.floor(jQuery(window).height() * 0.75));
 	} catch(err){
 		jQuery.alertable.alert('Cannot Get Editor JSON. ' + err).always(function(){});
 	}
@@ -228,7 +228,7 @@ function handleButtonShowJson() {
 				[%%%ELSE:QMODE%%%]
 				<div style="width: calc(96vw - 700px) !important; min-width:200px !important; height:170px;">
 					<div id="codeEditorMenuArea"></div>
-					<textarea id="filter-query" data-mode="raw" name="filter[query]" maxlength="65535" class="ux-field" style="width:100%; height:100%;" spellcheck="false" onKeyDown="SmartJS_BrowserUtils.catch_TABKey(event);">[###QUERY|html###]</textarea>
+					<textarea id="filter-query" data-mode="raw" name="filter[query]" maxlength="65535" class="ux-field" style="width:100%; height:100%;" spellcheck="false" onKeyDown="smartJ$Browser.catchKeyTAB(event);">[###QUERY|html###]</textarea>
 				</div>
 				[%%%/IF:QMODE%%%]
 			</td>

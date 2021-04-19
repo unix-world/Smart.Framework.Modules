@@ -2,7 +2,7 @@
 // Excel Formula Parser
 // (c) 2019 unix-world.org
 // License: GPLv3
-// v.20210328
+// v.20210411
 
 /*
  * This code is ispired from: excel-formula.js
@@ -18,8 +18,8 @@ var excelFormulaParser = new function() { // START CLASS :: v.20190205
 
 	this.parseFormula = function(formula) {
 		//--
-		formula = String(SmartJS_CoreUtils.stringTrim(formula));
-		formula = SmartJS_CoreUtils.stringReplaceAll(' ', '', formula); // replace all spaces
+		formula = String(smartJ$Utils.stringTrim(formula));
+		formula = smartJ$Utils.stringReplaceAll(' ', '', formula); // replace all spaces
 		//--
 		if(formula.substr(0,1) != '=') {
 			return String(formula);
@@ -36,7 +36,7 @@ var excelFormulaParser = new function() { // START CLASS :: v.20190205
 		} //end if
 		//--
 		var regexRanges = /[A-Z]+[0-9]+:[A-Z]+[0-9]+/g;
-		var elements = SmartJS_CoreUtils.stringRegexMatchAll(fixFormula, regexRanges);
+		var elements = smartJ$Utils.stringRegexMatchAll(fixFormula, regexRanges);
 		if(elements.length) {
 		//	console.log(JSON.stringify(elements));
 			var fixedRange = '';

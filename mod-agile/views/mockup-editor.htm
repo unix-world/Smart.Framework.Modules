@@ -1,4 +1,4 @@
-<!-- mockup-editor.htm v.20200121 -->
+<!-- mockup-editor.htm v.20210413 -->
 <form class="ux-form" id="mockup_form" name="mockup_form" method="POST" action="#">
 	<input id="mockup_uuid" name="uuid" type="hidden" value="[###UUID|html###]">
 	<input id="mockup_title" name="mockup_title" type="text" maxlength="255" value="[###TITLE|html###]" title="Mockup Title" class="ux-field" style="width:calc(100vw - 50px); margin-bottom:5px; font-size:1rem!important; font-weight:bold; text-align:center;">
@@ -9,7 +9,7 @@
 <div style="text-align:center;">
 	<button class="ux-button ux-button-small ux-button-regular" id="mockupSaveBtn" onclick="doSaveMockup();" style="margin-left: 15px;">Save Mockup</button>
 	[%%%IF:OP-MODE:==create;%%%]
-	<button class="ux-button ux-button-small ux-button-special" id="mockupCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
+	<button class="ux-button ux-button-small ux-button-special" id="mockupCancelBtn" onclick="smartJ$Browser.CloseModalPopUp(); smartJ$Browser.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
 	[%%%ELSE:OP-MODE%%%]
 	<button class="ux-button ux-button-small ux-button-special" id="mockupCancelBtn" onclick="self.location='admin.php?/page/agile.mockup-editor/uuid/[###UUID|url|html###]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
 	[%%%/IF:OP-MODE%%%]
@@ -81,7 +81,7 @@
 	qMockupEditor.setupElements();
 </script>
 <script>
-	SmartJS_BrowserUtils.PageAwayControl('Exit without Save ?');
+	smartJ$Browser.PageAwayControl('Exit without Save ?');
 </script>
 <script>
 function doSaveMockup() {
@@ -90,7 +90,7 @@ function doSaveMockup() {
 	data = JSON.stringify(data);
 	//console.log(data);
 	$('#mockup_data').val(data);
-	SmartJS_BrowserUtils.RefreshParent();
-	SmartJS_BrowserUtils.Submit_Form_By_Ajax('mockup_form', 'admin.php?page=agile.mockup-save', 'yes');
+	smartJ$Browser.RefreshParent();
+	smartJ$Browser.SubmitFormByAjax('mockup_form', 'admin.php?page=agile.mockup-save', 'yes');
 }
 </script>

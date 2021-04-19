@@ -1,10 +1,10 @@
 
 // basic Spreadsheet Implementation over SlickGrid
-// Depends: jQuery ; SmartJS_CoreUtils
-// (c) 2017 unix-world.org
+// Depends: jQuery ; smartJ$Utils
+// (c) 2017-2021 unix-world.org
 
 
-var SlickSpreadSheet = new function() { // START CLASS :: v.170927
+var SlickSpreadSheet = new function() { // START CLASS :: v.20210411
 
 	// :: static
 
@@ -161,7 +161,7 @@ var SlickSpreadSheet = new function() { // START CLASS :: v.170927
 			maxNum = 0;
 		} //end if
 		maxNum = parseInt(maxNum);
-		if(!SmartJS_CoreUtils.isFiniteNumber(maxNum)) {
+		if(!smartJ$Utils.isFiniteNumber(maxNum)) {
 			maxNum = 0;
 		} //end if
 		if(maxNum < 26) {
@@ -278,7 +278,7 @@ var SlickSpreadSheet = new function() { // START CLASS :: v.170927
 
 	this.displaySpreadsheetIdx = function(row, cell, value, columnDef, dataContext) {
 		//--
-		return '<div style="background:#ECECEC;color:#333333;font-size:0.925em;font-weight:bold;text-align:center;cursor:context-menu;">' + SmartJS_CoreUtils.escape_html(String(value+1)) + '</div>';
+		return '<div style="background:#ECECEC;color:#333333;font-size:0.925em;font-weight:bold;text-align:center;cursor:context-menu;">' + smartJ$Utils.escape_html(String(value+1)) + '</div>';
 		//--
 	} //END FUNCTION
 
@@ -298,9 +298,9 @@ var SlickSpreadSheet = new function() { // START CLASS :: v.170927
 			cssXtra = 'text-align:right;';
 		} //end if
 		if(xval == value) {
-			return '<div style="background:#FFFFFF;cursor:cell;' + cssXtra + '">' + SmartJS_CoreUtils.escape_html(String(xval)) + '</div>';
+			return '<div style="background:#FFFFFF;cursor:cell;' + cssXtra + '">' + smartJ$Utils.escape_html(String(xval)) + '</div>';
 		} else {
-			return '<div style="background:#DDEEFF;font-weight:bold;cursor:cell;' + cssXtra + '" title="' + SmartJS_CoreUtils.escape_html(String(value)) + '">' + SmartJS_CoreUtils.escape_html(String(xval)) + '</div>';
+			return '<div style="background:#DDEEFF;font-weight:bold;cursor:cell;' + cssXtra + '" title="' + smartJ$Utils.escape_html(String(value)) + '">' + smartJ$Utils.escape_html(String(xval)) + '</div>';
 		} //end if else
 		//--
 	} //END FUNCTION

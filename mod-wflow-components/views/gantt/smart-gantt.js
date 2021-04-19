@@ -1,8 +1,8 @@
 
 // Gantt Manager
-// (c) 2019-2020 unix-world.org
+// (c) 2019-2021 unix-world.org
 // License: GPLv3
-// v.20200701 (stable)
+// v.20210414 (stable)
 
 var SmartGanttManager = new function() { // START CLASS
 
@@ -27,7 +27,7 @@ var SmartGanttManager = new function() { // START CLASS
 			theData.data.view = 'day';
 		} //end if
 		if(!theData.data.hasOwnProperty('date')) {
-			theData.data.date = SmartJS_DateUtils.getIsoDate(new Date());
+			theData.data.date = smartJ$Date.getIsoDate(new Date());
 		} //end if
 		if(!theData.data.hasOwnProperty('now')) {
 			theData.data.now = true;
@@ -95,7 +95,7 @@ var SmartGanttManager = new function() { // START CLASS
 			return '';
 		} //end if
 		//--
-		return gantInstance.config.reference_date || SmartJS_DateUtils.getIsoDate(new Date());
+		return gantInstance.config.reference_date || smartJ$Date.getIsoDate(new Date());
 		//--
 	} //END FUNCTION
 
@@ -107,11 +107,11 @@ var SmartGanttManager = new function() { // START CLASS
 		} //end if
 		//--
 		if(typeof theReferenceDate == 'undefined') {
-			theReferenceDate = SmartJS_DateUtils.getIsoDate(new Date());
+			theReferenceDate = smartJ$Date.getIsoDate(new Date());
 		} else if(!theReferenceDate) {
 			theReferenceDate = gantInstance.config.reference_date;
 		} else {
-			theReferenceDate = SmartJS_DateUtils.getIsoDate(new Date(String(theReferenceDate)));
+			theReferenceDate = smartJ$Date.getIsoDate(new Date(String(theReferenceDate)));
 		} //end if else
 		//--
 		if(typeof theNowDate == 'undefined') {
@@ -158,7 +158,7 @@ var SmartGanttManager = new function() { // START CLASS
 		} //end if
 		//--
 		if(typeof theReferenceDate == 'undefined') {
-			theReferenceDate = SmartJS_DateUtils.getIsoDate(new Date());
+			theReferenceDate = smartJ$Date.getIsoDate(new Date());
 		} else if(!theReferenceDate) {
 			theReferenceDate = gantInstance.config.reference_date;
 		} //end if else
@@ -222,7 +222,7 @@ var SmartGanttManager = new function() { // START CLASS
 			dataFormat: 'data/structure',
 			data: {
 				view: 'day',
-				date: SmartJS_DateUtils.getIsoDate(new Date()),
+				date: smartJ$Date.getIsoDate(new Date()),
 				now: true,
 				todos: { data:[], links:[] }
 			}
@@ -236,11 +236,11 @@ var SmartGanttManager = new function() { // START CLASS
 		//--
 		if(typeof theReferenceDate == 'undefined' || (!theReferenceDate)) {
 			theReferenceDate = new Date();
-			theReferenceDate = SmartJS_DateUtils.getIsoDate(theReferenceDate);
+			theReferenceDate = smartJ$Date.getIsoDate(theReferenceDate);
 		} //end if
 		//--
 		var dt = new Date(String(theReferenceDate));
-		var ds  = SmartJS_DateUtils.standardizeDate(dt);
+		var ds  = smartJ$Date.standardizeDate(dt);
 		//--
 		var gantDateNow = true;
 		if(typeof theNowDate != 'undefined') {
@@ -250,36 +250,36 @@ var SmartGanttManager = new function() { // START CLASS
 				gantDateNow = false; // hide
 			} else if((theNowDate != '') && (theNowDate != 'undefined') && (theNowDate != null)) { // a date YYYY-MM-DD
 				gantDateNow = new Date(String(theNowDate));
-				gantDateNow = SmartJS_DateUtils.getIsoDate(gantDateNow);
+				gantDateNow = smartJ$Date.getIsoDate(gantDateNow);
 			} //end if else
 		} //end if
 		//--
-		var gantDateStart = SmartJS_DateUtils.getIsoDate(ds);
-		var gantDateEnd = SmartJS_DateUtils.getIsoDate(SmartJS_DateUtils.addDays(ds, 1));
+		var gantDateStart = smartJ$Date.getIsoDate(ds);
+		var gantDateEnd = smartJ$Date.getIsoDate(smartJ$Date.addDays(ds, 1));
 		if(theScale == 'day') {
 			dt = new Date(String(theReferenceDate));
-			ds  = SmartJS_DateUtils.standardizeDate(dt);
-			gantDateStart = SmartJS_DateUtils.getIsoDate(SmartJS_DateUtils.addDays(ds, -1)); // past 1 day
-			gantDateEnd = SmartJS_DateUtils.getIsoDate(SmartJS_DateUtils.addDays(ds, 90)); // next 75 days
+			ds  = smartJ$Date.standardizeDate(dt);
+			gantDateStart = smartJ$Date.getIsoDate(smartJ$Date.addDays(ds, -1)); // past 1 day
+			gantDateEnd = smartJ$Date.getIsoDate(smartJ$Date.addDays(ds, 90)); // next 75 days
 		} else if(theScale == 'week') {
 			dt = new Date(String(theReferenceDate));
-			ds  = SmartJS_DateUtils.standardizeDate(dt);
-			gantDateStart = SmartJS_DateUtils.getIsoDate(SmartJS_DateUtils.addDays(ds, -7)); // past 1 week
-			gantDateEnd = SmartJS_DateUtils.getIsoDate(SmartJS_DateUtils.addDays(ds, 210)); // +30 weeks
+			ds  = smartJ$Date.standardizeDate(dt);
+			gantDateStart = smartJ$Date.getIsoDate(smartJ$Date.addDays(ds, -7)); // past 1 week
+			gantDateEnd = smartJ$Date.getIsoDate(smartJ$Date.addDays(ds, 210)); // +30 weeks
 		} else if(theScale == 'year') {
 			dt = new Date(String(theReferenceDate));
-			ds  = SmartJS_DateUtils.standardizeDate(dt);
-			gantDateStart = SmartJS_DateUtils.getIsoDate(SmartJS_DateUtils.addDays(ds, -31)); // past 1 month
-			gantDateEnd = SmartJS_DateUtils.getIsoDate(SmartJS_DateUtils.addDays(ds, 1097)); // +3 years
+			ds  = smartJ$Date.standardizeDate(dt);
+			gantDateStart = smartJ$Date.getIsoDate(smartJ$Date.addDays(ds, -31)); // past 1 month
+			gantDateEnd = smartJ$Date.getIsoDate(smartJ$Date.addDays(ds, 1097)); // +3 years
 		} else { // month, quarter
 			dt = new Date(String(theReferenceDate));
-			ds  = SmartJS_DateUtils.standardizeDate(dt);
-			gantDateStart = SmartJS_DateUtils.getIsoDate(SmartJS_DateUtils.addDays(ds, -31)); // past 1 month
-			gantDateEnd = SmartJS_DateUtils.getIsoDate(SmartJS_DateUtils.addDays(ds, 367)); // +1 year
+			ds  = smartJ$Date.standardizeDate(dt);
+			gantDateStart = smartJ$Date.getIsoDate(smartJ$Date.addDays(ds, -31)); // past 1 month
+			gantDateEnd = smartJ$Date.getIsoDate(smartJ$Date.addDays(ds, 367)); // +1 year
 		}
 		//--
 		return { // theNowDate
-			refDate: 	String(SmartJS_DateUtils.getIsoDate(new Date(theReferenceDate))),
+			refDate: 	String(smartJ$Date.getIsoDate(new Date(theReferenceDate))),
 			nowDate: 	(gantDateNow === true || gantDateNow === false) ? !!gantDateNow : String(gantDateNow),
 			startDate: 	String(gantDateStart),
 			endDate: 	String(gantDateEnd)

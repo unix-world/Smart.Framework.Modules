@@ -2,7 +2,7 @@
 <html>
 <!--
 // FabricJs Editor
-// v.20190131
+// v.20210411
 // (c) 2019 unix-world.org
 // License: BSD
 // contains portions of code from: fabricjs/samples, fabricjs/freedrawing
@@ -179,7 +179,7 @@ $('#toolbox-scolor').on('change', function() {
 });
 
 //--
-SmartJS_BrowserUtils.VirtualImageUploadHandler('img_uploader_id', 'img_uploader_preview', 0.8, 0.15, canvasWidth, canvasHeight, function(imgDataURL, w, h, isSVG){
+smartJ$Browser.VirtualImageUploadHandler('img_uploader_id', 'img_uploader_preview', 0.8, 0.15, canvasWidth, canvasHeight, function(imgDataURL, w, h, isSVG){
 	//console.log(imgDataURL);
 	if(isSVG) {
 		editor.addImage(imgDataURL, w, h, true);
@@ -195,7 +195,7 @@ btnEl.innerHTML = 'toSVG';
 btnEl.id = 'to-svg';
 document.getElementById('bttns').appendChild(btnEl);
 btnEl.onclick = function() {
-	SmartJS_BrowserUtils.VirtualFileDownload(String(canvas.toSVG()), 'drawing.svg', 'image/svg+xml', 'UTF-8');
+	smartJ$Browser.VirtualFileDownload(String(canvas.toSVG()), 'drawing.svg', 'image/svg+xml', 'UTF-8');
 };
 
 // to json
@@ -204,7 +204,7 @@ btnEl.innerHTML = 'toJSON';
 btnEl.id = 'to-json';
 document.getElementById('bttns').appendChild(btnEl);
 btnEl.onclick = function() {
-	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(canvas, null, 2)), 'drawing.fabric.json', 'application/json', 'UTF-8');
+	smartJ$Browser.VirtualFileDownload(String(JSON.stringify(canvas, null, 2)), 'drawing.fabric.json', 'application/json', 'UTF-8');
 };
 </script>
 <script>

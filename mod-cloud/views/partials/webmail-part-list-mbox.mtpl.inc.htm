@@ -43,7 +43,7 @@
 [%%%/IF:CURRENT-BOX(1)%%%]
 	//--
 	var IdOfGrid = 'webmailGrid_[###CURRENT-BOX|jsvar|js###]';
-	var TheGrid = new Smart_Grid(IdOfGrid, 'infoTotalRows', '[###URL-PAGE|js###]&op=list-json-mbox&mbox=[###CURRENT-MBOX|url|js###]&box=[###CURRENT-BOX|url|js###]', 'webmailSlickGrdList__[###CURRENT-BOX|slug|js###]__[###CURRENT-MBOX|slug|js###]', 'date_time', 'DESC', '', 'filtering');
+	var TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', '[###URL-PAGE|js###]&op=list-json-mbox&mbox=[###CURRENT-MBOX|url|js###]&box=[###CURRENT-BOX|url|js###]', 'webmailSlickGrdList__[###CURRENT-BOX|slug|js###]__[###CURRENT-MBOX|slug|js###]', 'date_time', 'DESC', '', 'filtering');
 	//--
 	function getGridSelectedRows() {
 		var rowsSelected = TheGrid.grid.getSelectedRows();
@@ -64,31 +64,31 @@
 	}
 	function moveOrDeleteSelectedMessages(action, messagesArr) {
 		//console.log(JSON.stringify(messagesArr, null, 2));
-		var urlAction = '[###URL-PAGE|js###]&op=msgs-sel-action&action=' + SmartJS_CoreUtils.escape_url(action) + '&mbox=[###CURRENT-MBOX|url|js###]&box=[###CURRENT-BOX|url|js###]';
+		var urlAction = '[###URL-PAGE|js###]&op=msgs-sel-action&action=' + smartJ$Utils.escape_url(action) + '&mbox=[###CURRENT-MBOX|url|js###]&box=[###CURRENT-BOX|url|js###]';
 		var urlData = '';
 		for(var i=0; i<messagesArr.length; i++) {
-			urlData += '&sel[]=' + SmartJS_CoreUtils.escape_url(messagesArr[i]);
+			urlData += '&sel[]=' + smartJ$Utils.escape_url(messagesArr[i]);
 		} //end for
-		var overlay = SmartJS_BrowserUtils.Overlay_Show();
-		var ajax = SmartJS_BrowserUtils.Ajax_XHR_Request_From_URL(urlAction, 'POST', 'json', urlData);
+		var overlay = smartJ$Browser.OverlayShow();
+		var ajax = smartJ$Browser.AjaxRequestFromURL(urlAction, 'POST', 'json', urlData);
 		ajax.done(function(msg) {
 			if((msg.hasOwnProperty('completed')) && (msg.completed === 'DONE') && (msg.hasOwnProperty('status')) && (msg.hasOwnProperty('title')) && (msg.hasOwnProperty('message')) && (msg.hasOwnProperty('js_evcode')) && (msg.hasOwnProperty('redirect'))) {
 				if(msg.status === 'OK') {
-					SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(msg.title), SmartJS_CoreUtils.escape_html(msg.message), '', 5000, false, 'green');
-					setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
+					smartJ$Browser.GrowlNotificationAdd(smartJ$Utils.escape_html(msg.title), smartJ$Utils.escape_html(msg.message), '', 5000, false, 'green');
+					setTimeout(function(){ smartJ$Browser.OverlayHide(); }, 500);
 					TheGrid.loadGridData(0);
 				} else {
-					SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(msg.title), SmartJS_CoreUtils.escape_html(msg.message), '', 7500, false, 'red');
-					setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
+					smartJ$Browser.GrowlNotificationAdd(smartJ$Utils.escape_html(msg.title), smartJ$Utils.escape_html(msg.message), '', 7500, false, 'red');
+					setTimeout(function(){ smartJ$Browser.OverlayHide(); }, 500);
 					TheGrid.loadGridData(0);
 				}
 			} else {
-				SmartJS_BrowserUtils.GrowlNotificationAdd('ERROR', 'Invalid JSON Answer', '', 7500, false, 'pink');
-				setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
+				smartJ$Browser.GrowlNotificationAdd('ERROR', 'Invalid JSON Answer', '', 7500, false, 'pink');
+				setTimeout(function(){ smartJ$Browser.OverlayHide(); }, 500);
 				TheGrid.loadGridData(0);
 			}
 		}).fail(function (msg) {
-			SmartJS_BrowserUtils.alert_Dialog(SmartJS_CoreUtils.escape_html(msg.responseText), 'SmartJS_BrowserUtils.Overlay_Hide();', 'ERROR: Invalid Server Response ', 720, 400);
+			smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(msg.responseText), 'smartJ$Browser.OverlayHide();', 'ERROR: Invalid Server Response ', 720, 400);
 			TheGrid.loadGridData(0);
 		});
 	}
@@ -98,16 +98,16 @@
 		//--
 		var messagesArr = getGridSelectedRows();
 		if((!messagesArr) || (messagesArr.length <= 0)) {
-			SmartJS_BrowserUtils.alert_Dialog('<h3>No ' + itemType + 's Selected ...</h3>', null, 'Select ' + itemType + '(s)', 500, 185);
+			smartJ$Browser.AlertDialog('<h3>No ' + itemType + 's Selected ...</h3>', null, 'Select ' + itemType + '(s)', 500, 185);
 			return;
 		} //end if
 		//--
 		switch(action) {
 			case 'delete':
-				SmartJS_BrowserUtils.confirm_Dialog('<div style="position:absolute; right:10px; top:0; color:' + SmartJS_CoreUtils.escape_html(iconColorForMsgDeleteDialog) + '; opacity:0.9;"><i class="sfi ' + SmartJS_CoreUtils.escape_html(iconForMsgDeleteDialog) + ' sfi-2x"></i></div><h3>' + SmartJS_CoreUtils.escape_html(msgForBtnDelete) + '&nbsp;?</h3>' + (msgExtraDelete ? '<div style="font-size:0.825rem!important; color:#F2891F;"><i class="sfi sfi-notification"></i> &nbsp; <b>' + SmartJS_CoreUtils.escape_html(msgExtraDelete)  + '</b></div>' : ''), function(){ moveOrDeleteSelectedMessages(action, messagesArr) }, 'Selected Message(s): ' + String(messagesArr.length), 550, 225);
+				smartJ$Browser.ConfirmDialog('<div style="position:absolute; right:10px; top:0; color:' + smartJ$Utils.escape_html(iconColorForMsgDeleteDialog) + '; opacity:0.9;"><i class="sfi ' + smartJ$Utils.escape_html(iconForMsgDeleteDialog) + ' sfi-2x"></i></div><h3>' + smartJ$Utils.escape_html(msgForBtnDelete) + '&nbsp;?</h3>' + (msgExtraDelete ? '<div style="font-size:0.825rem!important; color:#F2891F;"><i class="sfi sfi-notification"></i> &nbsp; <b>' + smartJ$Utils.escape_html(msgExtraDelete)  + '</b></div>' : ''), function(){ moveOrDeleteSelectedMessages(action, messagesArr) }, 'Selected Message(s): ' + String(messagesArr.length), 550, 225);
 				break;
 			case 'restore':
-				SmartJS_BrowserUtils.confirm_Dialog('<div style="position:absolute; right:10px; top:0; color:#333333; opacity:0.9;"><i class="sfi sfi-folder-upload sfi-2x"></i></div><h3>' + SmartJS_CoreUtils.escape_html(msgForButtonRestore) + '&nbsp;?</h3>' + '<div style="font-size:0.825rem!important; color:#F2891F;"><i class="sfi sfi-notification"></i> &nbsp; If there are selected <b>messages</b> that are <b>marked with the Trash icon</b> they <b>cannot be restored</b> as they have an unknown origin. <i>Only the messages that have been moved to Trash from the WebMail\'s Inbox or Sent folders can be restored back and they are marked with a different icon</i>.</div>', function(){ moveOrDeleteSelectedMessages(action, messagesArr) }, 'Selected Message(s): ' + String(messagesArr.length), 550, 265);
+				smartJ$Browser.ConfirmDialog('<div style="position:absolute; right:10px; top:0; color:#333333; opacity:0.9;"><i class="sfi sfi-folder-upload sfi-2x"></i></div><h3>' + smartJ$Utils.escape_html(msgForButtonRestore) + '&nbsp;?</h3>' + '<div style="font-size:0.825rem!important; color:#F2891F;"><i class="sfi sfi-notification"></i> &nbsp; If there are selected <b>messages</b> that are <b>marked with the Trash icon</b> they <b>cannot be restored</b> as they have an unknown origin. <i>Only the messages that have been moved to Trash from the WebMail\'s Inbox or Sent folders can be restored back and they are marked with a different icon</i>.</div>', function(){ moveOrDeleteSelectedMessages(action, messagesArr) }, 'Selected Message(s): ' + String(messagesArr.length), 550, 265);
 				break;
 			default:
 				var warnMsg = 'Invalid Select Action: ' + action;
@@ -179,7 +179,7 @@ jQuery(function() {
 		if(String(dataContext['ifolder']) == 'notes') {
 			itemType = 'Note';
 		}
-		return '<button title="Display ' + SmartJS_CoreUtils.escape_html(itemType) + '" style="margin:0px; margin-top:-2px;" class="ux-button ux-button-xsmall" onClick="jQuery(this).children().first().css({\'color\':\'' + SmartJS_CoreUtils.escape_js(rcolor) + '\'}); SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(value) +'\', \'webmail_view_msg\'); return false;"><i class="sfi sfi-mail" style="color:' + SmartJS_CoreUtils.escape_html(color) + ';"></i></button>';
+		return '<button title="Display ' + smartJ$Utils.escape_html(itemType) + '" style="margin:0px; margin-top:-2px;" class="ux-button ux-button-xsmall" onClick="jQuery(this).children().first().css({\'color\':\'' + smartJ$Utils.escape_js(rcolor) + '\'}); smartJ$Browser.PopUpLink(\'' + smartJ$Utils.escape_js(value) +'\', \'webmail_view_msg\'); return false;"><i class="sfi sfi-mail" style="color:' + smartJ$Utils.escape_html(color) + ';"></i></button>';
 	}
 	function formatter_iFolderBox(row, cell, value, columnDef, dataContext) {
 		var iFolderIcon = 'sfi sfi-warning';
@@ -204,18 +204,18 @@ jQuery(function() {
 			case 'notes':
 				if(dataContext['stat_read'] > 1) {
 					iFolderIcon = 'sfi sfi-files-empty';
-					iFolderDesc = '&searr; Notes (EXPIRED Rev. #' + SmartJS_CoreUtils.escape_html(dataContext['stat_read']) + ')';
+					iFolderDesc = '&searr; Notes (EXPIRED Rev. #' + smartJ$Utils.escape_html(dataContext['stat_read']) + ')';
 					iFolderColor = '#AAAAAA';
 				} else {
 					iFolderIcon = 'sfi sfi-file-text2';
-					iFolderDesc = '&searr; Notes (HEAD Rev. #' + SmartJS_CoreUtils.escape_html(dataContext['stat_read']) + ')';
+					iFolderDesc = '&searr; Notes (HEAD Rev. #' + smartJ$Utils.escape_html(dataContext['stat_read']) + ')';
 					iFolderColor = '#555555';
 				} //end if else
 				break;
 			default:
 				// invalid folder icon
 		} //end switch
-		return '<center><div title="' + iFolderDesc + ':' + ' ' + SmartJS_CoreUtils.escape_html(dataContext['msg_id']) + '" style="cursor:help; color:' + SmartJS_CoreUtils.escape_html(iFolderColor) + ';"><i class="' + SmartJS_CoreUtils.escape_html(iFolderIcon) + '"></i></div></center>';
+		return '<center><div title="' + iFolderDesc + ':' + ' ' + smartJ$Utils.escape_html(dataContext['msg_id']) + '" style="cursor:help; color:' + smartJ$Utils.escape_html(iFolderColor) + ';"><i class="' + smartJ$Utils.escape_html(iFolderIcon) + '"></i></div></center>';
 	}
 	function formatter_Atts(row, cell, value, columnDef, dataContext) {
 		value = value || '0';
@@ -223,29 +223,29 @@ jQuery(function() {
 		if(value != 1) {
 			value = '';
 		} else {
-			value = '<center><div title="' + SmartJS_CoreUtils.escape_html(atts) + '" style="cursor:help;"><i class="sfi sfi-attachment"></i></div></center>';
+			value = '<center><div title="' + smartJ$Utils.escape_html(atts) + '" style="cursor:help;"><i class="sfi sfi-attachment"></i></div></center>';
 		} //end
 		return String(value);
 	}
 	function formatter_FromAll(row, cell, value, columnDef, dataContext) {
 		var addr = value || '';
-		addr = SmartJS_CoreUtils.stringTrim(addr);
+		addr = smartJ$Utils.stringTrim(addr);
 		var name = dataContext['from_name'] || '';
-		name = SmartJS_CoreUtils.stringTrim(name);
+		name = smartJ$Utils.stringTrim(name);
 		if(name == addr) {
 			name = '';
 		}
-		return '<b>' + SmartJS_CoreUtils.escape_html(addr ? addr : '?') + '</b>' + (name ? (' <i>' + SmartJS_CoreUtils.escape_html(name) + '</i>') : '');
+		return '<b>' + smartJ$Utils.escape_html(addr ? addr : '?') + '</b>' + (name ? (' <i>' + smartJ$Utils.escape_html(name) + '</i>') : '');
 	}
 	function formatter_ToAll(row, cell, value, columnDef, dataContext) {
 		var addr = value || '';
-		addr = SmartJS_CoreUtils.stringTrim(addr);
+		addr = smartJ$Utils.stringTrim(addr);
 		var name = dataContext['to_name'] || '';
-		name = SmartJS_CoreUtils.stringTrim(name);
+		name = smartJ$Utils.stringTrim(name);
 		if(name == addr) {
 			name = '';
 		}
-		return '<b>' + SmartJS_CoreUtils.escape_html(addr ? addr : '?') + '</b>' + (name ? (' <i>' + SmartJS_CoreUtils.escape_html(name) + '</i>') : '');
+		return '<b>' + smartJ$Utils.escape_html(addr ? addr : '?') + '</b>' + (name ? (' <i>' + smartJ$Utils.escape_html(name) + '</i>') : '');
 	}
 	function formatter_UUid(row, cell, value, columnDef, dataContext) {
 		var uuid = dataContext['msg_id'] || '';
@@ -253,7 +253,7 @@ jQuery(function() {
 		if(dataContext['stat_read'] > 1) {
 			color = '#777777';
 		}
-		return uuid ? '<small style="color:' + SmartJS_CoreUtils.escape_html(color) + '">' + SmartJS_CoreUtils.escape_html(uuid) + '</small>' : '';
+		return uuid ? '<small style="color:' + smartJ$Utils.escape_html(color) + '">' + smartJ$Utils.escape_html(uuid) + '</small>' : '';
 	}
 
 	// Grid Data Defs

@@ -1,4 +1,4 @@
-<!-- dbmodel-import-db.htm v.20200121 -->
+<!-- dbmodel-import-db.htm v.20210413 -->
 [###HTML-JS-HIGHLIGHT###]
 <h1 style="display:inline-box;">Import DB-Model from a DB Connection</h1>
 <style>
@@ -47,8 +47,8 @@
 		</div>
 		<legend></legend><br>
 		<div class="ux-controls">
-			<button type="button" class="ux-button ux-button-small ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="SmartJS_BrowserUtils.CloseDelayedModalPopUp();"> Cancel Import &nbsp; <i class="sfi sfi-cancel-circle"></i></button>
-			<button type="button" class="ux-button ux-button-small ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="jQuery('#dbmodel_data').val(''); jQuery('#btn-done').prop('disabled',true).hide(); jQuery('#the-xml').empty().html(''); SmartJS_BrowserUtils.Submit_Form_By_Ajax('db_import_fromdb', 'admin.php?page=agile.dbmodel-import-db&mode=import', 'yes'); return false;"> Import Model from DB Connection &nbsp; <i class="sfi sfi-cloud-check"></i></button>
+			<button type="button" class="ux-button ux-button-small ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.CloseDelayedModalPopUp();"> Cancel Import &nbsp; <i class="sfi sfi-cancel-circle"></i></button>
+			<button type="button" class="ux-button ux-button-small ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="jQuery('#dbmodel_data').val(''); jQuery('#btn-done').prop('disabled',true).hide(); jQuery('#the-xml').empty().html(''); smartJ$Browser.SubmitFormByAjax('db_import_fromdb', 'admin.php?page=agile.dbmodel-import-db&mode=import', 'yes'); return false;"> Import Model from DB Connection &nbsp; <i class="sfi sfi-cloud-check"></i></button>
 		</div>
 	</form>
 </td>

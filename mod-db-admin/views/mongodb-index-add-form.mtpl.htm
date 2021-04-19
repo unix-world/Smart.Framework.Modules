@@ -8,11 +8,11 @@
 </style>
 <script>
 function btnHandlerCancel() {
-	SmartJS_BrowserUtils.CloseDelayedModalPopUp();
+	smartJ$Browser.CloseDelayedModalPopUp();
 	return false;
 }
 function btnHandlerSubmit() {
-	SmartJS_BrowserUtils.Submit_Form_By_Ajax('index_add_form', '[###ACTIONS-URL|js###]', 'yes');
+	smartJ$Browser.SubmitFormByAjax('index_add_form', '[###ACTIONS-URL|js###]', 'yes');
 	return false;
 }
 </script>
@@ -30,7 +30,7 @@ jQuery(function() {
 <input type="hidden" name="frm[chk]" value="[###CHECKSUM-HASH|html###]">
 <div style="width: 80vw !important; max-width: 960px; min-width:320px !important; height: calc(100vh - 325px); min-height: 200px;">
 	<div id="codeEditorMenuArea"></div>
-	<textarea id="json-edit-area" data-mode="raw" name="frm[json]" maxlength="16777216" class="ux-field" style="width:100%; height:100%;" autocomplete="off" spellcheck="false" onKeyDown="SmartJS_BrowserUtils.catch_TABKey(event);">[###DATA-JSON|html###]</textarea>
+	<textarea id="json-edit-area" data-mode="raw" name="frm[json]" maxlength="16777216" class="ux-field" style="width:100%; height:100%;" autocomplete="off" spellcheck="false" onKeyDown="smartJ$Browser.catchKeyTAB(event);">[###DATA-JSON|html###]</textarea>
 </div>
 <br>
 <br>

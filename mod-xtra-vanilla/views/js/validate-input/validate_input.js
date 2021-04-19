@@ -1,9 +1,9 @@
 
 // [LIB - SmartFramework / JS / Validate Input (Fields)]
-// (c) 2006-2019 unix-world.org - all rights reserved
-// r.20190103
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.20210411
 
-// DEPENDS: SmartJS_CoreUtils
+// DEPENDS: smartJ$Utils
 
 //==================================================================
 //==================================================================
@@ -26,7 +26,7 @@ var SmartJS_FieldControl = new function() { // START CLASS :: v.181217
 this.validate_Field_Integer = function(yObjInputField, yAllowNegatives) {
 	//--
 	var tmp_Value = '';
-	tmp_Value = SmartJS_CoreUtils.format_number_int(yObjInputField.value, yAllowNegatives);
+	tmp_Value = smartJ$Utils.format_number_int(yObjInputField.value, yAllowNegatives);
 	tmp_Value = String(tmp_Value);
 	//--
 	yObjInputField.value = tmp_Value;
@@ -44,17 +44,17 @@ this.validate_Field_Decimal = function(yObjInputField, yDecimalsDigits, yAllowNe
 		tmp_Value = String(yObjInputField.value);
 	} //end if
 	//-- remove all spaces
-	tmp_Value = String(SmartJS_CoreUtils.stringReplaceAll(' ', '', tmp_Value));
+	tmp_Value = String(smartJ$Utils.stringReplaceAll(' ', '', tmp_Value));
 	//-- detect and trick the decimal and thousands separators
 	var regex_dot = /\./g;
 	var have_dot = regex_dot.test(tmp_Value);
 	if(have_dot === true) {
-		tmp_Value = SmartJS_CoreUtils.stringReplaceAll(',', '', tmp_Value); // remove thousands separator (comma) because there is already a dot there as decimal separator there (dot)
+		tmp_Value = smartJ$Utils.stringReplaceAll(',', '', tmp_Value); // remove thousands separator (comma) because there is already a dot there as decimal separator there (dot)
 	} else {
-		tmp_Value = SmartJS_CoreUtils.stringReplaceAll(',', '.', tmp_Value); // replace the wrong decimal separator (comma) with the real decimal separator (dot)
+		tmp_Value = smartJ$Utils.stringReplaceAll(',', '.', tmp_Value); // replace the wrong decimal separator (comma) with the real decimal separator (dot)
 	} //end if
 	//-- real format the value as decimal
-	tmp_Value = SmartJS_CoreUtils.format_number_dec(tmp_Value, yDecimalsDigits, yAllowNegatives);
+	tmp_Value = smartJ$Utils.format_number_dec(tmp_Value, yDecimalsDigits, yAllowNegatives);
 	//--
 	if(yAddThousandsSeparator === true) {
 		yObjInputField.value = String(addNumberThousandsCommaSeparator(String(tmp_Value)));

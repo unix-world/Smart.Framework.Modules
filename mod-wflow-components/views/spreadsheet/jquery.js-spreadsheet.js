@@ -1,9 +1,9 @@
 
 //--
 // jQuery Js-SpreadSheet
-// (c) 2019 unix-world.org
+// (c) 2019-2021 unix-world.org
 // License: GPLv3
-// version: 1.5.7.1.uxm190207
+// version: 1.5.7.1.uxm20210411
 //--
 // Changes and Fixes by unixman:
 // 	* removed vanilla code - no more support for column types: calendar, autocomplete, dropdown, multiple, checkbox ; this will be implemented later via renderViews / onEdit
@@ -451,14 +451,14 @@ var methods = {
 								contextMenuContent = $.fn.jexcel.defaults[$.fn.jexcel.current].contextMenu(o[0], o[1]);
 							} else {
 							//	if($.fn.jexcel.defaults[$.fn.jexcel.current].about) {
-								contextMenuContent += "<a class=\"about\" onclick=\"return false\">" + SmartJS_CoreUtils.escape_html($.fn.jexcel.defaults[$.fn.jexcel.current].about ? String($.fn.jexcel.defaults[$.fn.jexcel.current].about) : 'SpreadSheet') + "<span></span></a><hr>";
+								contextMenuContent += "<a class=\"about\" onclick=\"return false\">" + smartJ$Utils.escape_html($.fn.jexcel.defaults[$.fn.jexcel.current].about ? String($.fn.jexcel.defaults[$.fn.jexcel.current].about) : 'SpreadSheet') + "<span></span></a><hr>";
 							//	}
 								if($(e.target).parent().parent().is('thead')) {
 									// Default context menu for the columns
-									contextMenuContent += "<a onclick=\"jQuery('#" + $.fn.jexcel.current + "').jexcel('orderBy', '" + SmartJS_CoreUtils.escape_js(o[1]) + "', 0); return false;\">Order ascending <span></span></a>";
-									contextMenuContent += "<a onclick=\"jQuery('#" + $.fn.jexcel.current + "').jexcel('orderBy', '" + SmartJS_CoreUtils.escape_js(o[1]) + "', 1); return false;\">Order descending <span></span></a><hr>";
+									contextMenuContent += "<a onclick=\"jQuery('#" + $.fn.jexcel.current + "').jexcel('orderBy', '" + smartJ$Utils.escape_js(o[1]) + "', 0); return false;\">Order ascending <span></span></a>";
+									contextMenuContent += "<a onclick=\"jQuery('#" + $.fn.jexcel.current + "').jexcel('orderBy', '" + smartJ$Utils.escape_js(o[1]) + "', 1); return false;\">Order descending <span></span></a><hr>";
 									if($.fn.jexcel.defaults[$.fn.jexcel.current].allowInsertColumn == true) {
-										contextMenuContent += "<a onclick=\"jQuery('#" + $.fn.jexcel.current + "').jexcel('insertColumn', 1, null, " + SmartJS_CoreUtils.escape_html(o[1]) + "); return false;\">Insert a New Column<span></span></a>";
+										contextMenuContent += "<a onclick=\"jQuery('#" + $.fn.jexcel.current + "').jexcel('insertColumn', 1, null, " + smartJ$Utils.escape_html(o[1]) + "); return false;\">Insert a New Column<span></span></a>";
 									}
 									if($.fn.jexcel.defaults[$.fn.jexcel.current].allowDeleteColumn == true) {
 										contextMenuContent += "<a onclick=\"jQuery('#" + $.fn.jexcel.current + "').jexcel('deleteColumn'); return false;\">Delete this Column<span></span></a>";
@@ -466,10 +466,10 @@ var methods = {
 								} else if($(e.target).parent().parent().is('tbody')) {
 									// Default context menu for the rows
 									if($.fn.jexcel.defaults[$.fn.jexcel.current].allowInsertColumn == true) {
-										contextMenuContent += "<a onclick=\"jQuery('#" + $.fn.jexcel.current + "').jexcel('insertColumn', 1, null, " + SmartJS_CoreUtils.escape_html(o[1]) + "); return false;\">Insert a New Column<span></span></a>";
+										contextMenuContent += "<a onclick=\"jQuery('#" + $.fn.jexcel.current + "').jexcel('insertColumn', 1, null, " + smartJ$Utils.escape_html(o[1]) + "); return false;\">Insert a New Column<span></span></a>";
 									}
 									if($.fn.jexcel.defaults[$.fn.jexcel.current].allowInsertRow == true) {
-										contextMenuContent += "<a onclick=\"jQuery('#" + $.fn.jexcel.current + "').jexcel('insertRow', 1, " + SmartJS_CoreUtils.escape_html(o[1]) + "); return false;\">Insert a New Row<span></span></a>";
+										contextMenuContent += "<a onclick=\"jQuery('#" + $.fn.jexcel.current + "').jexcel('insertRow', 1, " + smartJ$Utils.escape_html(o[1]) + "); return false;\">Insert a New Row<span></span></a>";
 									}
 									if($.fn.jexcel.defaults[$.fn.jexcel.current].allowDeleteRow == true) {
 										contextMenuContent += "<a onclick=\"jQuery('#" + $.fn.jexcel.current + "').jexcel('deleteRow'); return false;\">Delete this Row<span></span></a>";
@@ -1800,15 +1800,15 @@ var methods = {
 				// Is this value a formula
 				if(value.substr(0,1) == '=') {
 					$(this).jexcel('updateFormulas', v.col + '-' + v.row, value);
-					$(v.cell).attr('title', value).addClass('formula').html('<input type="hidden" value="' + SmartJS_CoreUtils.escape_html(value) + '">' + SmartJS_CoreUtils.escape_html(val));
+					$(v.cell).attr('title', value).addClass('formula').html('<input type="hidden" value="' + smartJ$Utils.escape_html(value) + '">' + smartJ$Utils.escape_html(val));
 				} else {
 					// This is not a formula
 					if(options.columns[position[0]].type == 'numeric') {
-						$(v.cell).attr('title', '').removeClass('formula').html('<input type="hidden" value="' + SmartJS_CoreUtils.escape_html(value) + '">' + SmartJS_CoreUtils.escape_html(val));
+						$(v.cell).attr('title', '').removeClass('formula').html('<input type="hidden" value="' + smartJ$Utils.escape_html(value) + '">' + smartJ$Utils.escape_html(val));
 					} else {
 					//	$(v.cell).html(val);
 					//	$(v.cell).attr('title', '').removeClass('formula').text(val); // unixman: htmlEscape (avoid after edit double escaping)
-						$(v.cell).attr('title', '').removeClass('formula').html(SmartJS_CoreUtils.escape_html(val)); // unixman: htmlEscape (avoid after edit double escaping)
+						$(v.cell).attr('title', '').removeClass('formula').html(smartJ$Utils.escape_html(val)); // unixman: htmlEscape (avoid after edit double escaping)
 					}
 				}
 			}
@@ -3706,7 +3706,7 @@ var methods = {
 			if(String(value) == 'Infinity') {
 				msgErr = '#ERR/0!';
 			}
-			value = '<input type="hidden" value="' + SmartJS_CoreUtils.escape_html(formula) + '">' + msgErr;
+			value = '<input type="hidden" value="' + smartJ$Utils.escape_html(formula) + '">' + msgErr;
 			// Add class error to the cell
 			$(cell).addClass('error');
 			// Update cell content
@@ -3723,7 +3723,7 @@ var methods = {
 			// Update window
 			window[letter] = new $.fn.jexcel.factory(letter, $.fn.jexcel.defaults[id].values[letter]);
 			// New cell value
-			value = '<input type="hidden" value="' + SmartJS_CoreUtils.escape_html(formula) + '">' + SmartJS_CoreUtils.escape_html(value);
+			value = '<input type="hidden" value="' + smartJ$Utils.escape_html(formula) + '">' + smartJ$Utils.escape_html(value);
 			// Remove any error class
 			$(cell).removeClass('error');
 			// Update cell content

@@ -1,5 +1,5 @@
 [@@@SUB-TEMPLATE:todo-init.inc.htm@@@]
-<!-- todo-reader.htm v.20200121 -->
+<!-- todo-reader.htm v.20210411 -->
 <div style="text-align:center; font-size:1rem!important; font-weight:bold; background:#445566; color:#FFFFFF; border-radius:1px;">
 	<span id="todo_title">[###TITLE|html###]</span>
 </div>
@@ -24,7 +24,7 @@ function doExportToDoList() {
 	var exportDTime = '[###DTIME|js###]';
 	var exportAuthor = '[###AUTHOR|js###]';
 	data.docTitle = String($('#todo_title').text());
-	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'todo-list-' + exportDTime + '@' + exportAuthor + '.json', 'application/json', 'UTF-8');
+	smartJ$Browser.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'todo-list-' + exportDTime + '@' + exportAuthor + '.json', 'application/json', 'UTF-8');
 }
 </script>
 <div style="text-align:center;">
@@ -41,7 +41,7 @@ function doExportToDoList() {
 	</select>
 	<button class="ux-button ux-button-small ux-button-secondary" onclick="doExportToDoList();" style="margin-left: 15px;">Export as JSON</button>
 	<button class="ux-button ux-button-small ux-button-highlight" onclick="self.location='admin.php?/page/agile.todo-editor/uuid/[###UUID|url|html###]/edit/yes'; return false;" style="margin-left: 15px;">Edit ToDo-List</button>
-	<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
+	<button class="ux-button ux-button-small ux-button-special" onclick="smartJ$Browser.CloseModalPopUp(); return false;" style="margin-left: 15px;">Close View</button>
 </div>
 <br>
 <div id="gantt-chart"></div>

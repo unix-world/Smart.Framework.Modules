@@ -1,5 +1,5 @@
 [@@@SUB-TEMPLATE:bpmn-init.inc.htm@@@]
-<!-- bpmn-editor.htm v.20200121 -->
+<!-- bpmn-editor.htm v.20210413 -->
 <link rel="stylesheet" href="modules/mod-wflow-components/views/bpmn-flow/modeler.css">
 <style>
 #canvas {
@@ -36,7 +36,7 @@
 <div style="text-align:center;">
 	<button class="ux-button ux-button-small ux-button-regular" id="bpmnSaveBtn" onclick="doSaveBpmn();" style="margin-left: 15px;">Save BPMN-Diagram</button>
 	[%%%IF:OP-MODE:==create;%%%]
-	<button class="ux-button ux-button-small ux-button-special" id="bpmnCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
+	<button class="ux-button ux-button-small ux-button-special" id="bpmnCancelBtn" onclick="smartJ$Browser.CloseModalPopUp(); smartJ$Browser.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
 	[%%%ELSE:OP-MODE%%%]
 	<button class="ux-button ux-button-small ux-button-special" id="bpmnCancelBtn" onclick="self.location='admin.php?/page/agile.bpmn-editor/uuid/[###UUID|url|html###]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
 	[%%%/IF:OP-MODE%%%]
@@ -109,13 +109,13 @@ function doSaveBpmn() {
 		}
 		var theData = JSON.stringify(json);
 		$('#bpmn_data').val(theData);
-		SmartJS_BrowserUtils.RefreshParent();
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('bpmn_form', 'admin.php?page=agile.bpmn-save', 'yes');
+		smartJ$Browser.RefreshParent();
+		smartJ$Browser.SubmitFormByAjax('bpmn_form', 'admin.php?page=agile.bpmn-save', 'yes');
 		return false;
 	});
 	return false;
 }
 </script>
 <script>
-	SmartJS_BrowserUtils.PageAwayControl('Exit without Save ?');
+	smartJ$Browser.PageAwayControl('Exit without Save ?');
 </script>

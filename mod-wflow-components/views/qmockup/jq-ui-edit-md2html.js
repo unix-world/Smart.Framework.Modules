@@ -1,9 +1,9 @@
 
-// (c) 2017-2019 unix-world.org
+// (c) 2017-2021 unix-world.org
 // License: GPLv3
-// v.20190917
+// v.20210411
 // modified by unixman:
-// 	* depends: SmartJS_CoreUtils.escape_html()
+// 	* depends: smartJ$Utils.escape_html()
 
 /*
  * QMockup Editor: jqueryUI plugin for editing the HTML-element’s text
@@ -13,13 +13,13 @@
 // unixman
 var mockEditTextVImageMkdElement = null;
 $(function(){ // jpeg quality: 0.7 ; max image size: 100k
-	SmartJS_BrowserUtils.VirtualImageUploadHandler('img-uploader-id', 'img-uploader-preview', 0.5, 0.1, 500, 500, function(imgDataURL, w, h, isSVG, type, size){
+	smartJ$Browser.VirtualImageUploadHandler('img-uploader-id', 'img-uploader-preview', 0.5, 0.1, 500, 500, function(imgDataURL, w, h, isSVG, type, size){
 		if(mockEditTextVImageMkdElement) {
 			mockEditTextVImageMkdElement.on('blur', function(){
 				mockEditTextVImageMkdElement.trigger('vimg:ok');
 			});
 			if(imgDataURL) {
-				mockEditTextVImageMkdElement.val('![Image ' + SmartJS_CoreUtils.escape_html(type) + ' @ ' + SmartJS_CoreUtils.escape_html(size) + ' Bytes' + '](' + String(imgDataURL) + ')');
+				mockEditTextVImageMkdElement.val('![Image ' + smartJ$Utils.escape_html(type) + ' @ ' + smartJ$Utils.escape_html(size) + ' Bytes' + '](' + String(imgDataURL) + ')');
 				mockEditTextVImageMkdElement.trigger('vimg:ok');
 			}
 		}
@@ -62,7 +62,7 @@ $(function(){ // jpeg quality: 0.7 ; max image size: 100k
 
 			if(this.editType === 'plain'){
 				this.toHTML = function(string){
-					return SmartJS_CoreUtils.escape_html(string); // unixman
+					return smartJ$Utils.escape_html(string); // unixman
 				};
 			} else if(this.editType === 'uielements'){
 				this.toHTML = uiElementsConverter;
@@ -172,7 +172,7 @@ $(function(){ // jpeg quality: 0.7 ; max image size: 100k
 			var html = this.toHTML(editableContent);
 
 			// convert to html + write markdown to data attribute
-			this.element.attr('data-editable-content', SmartJS_CoreUtils.escape_html(editableContent));
+			this.element.attr('data-editable-content', smartJ$Utils.escape_html(editableContent));
 
 			// write content
 			this.$editableElement.html(html);
@@ -205,7 +205,7 @@ $(function(){ // jpeg quality: 0.7 ; max image size: 100k
 				newString = newString+'<li>';
 			}
 			// anyway, close the li
-			value = SmartJS_CoreUtils.escape_html(value); // unixman
+			value = smartJ$Utils.escape_html(value); // unixman
 			newString = newString + value + '</li>';
 		});
 

@@ -15,12 +15,12 @@ pre.pre-hljs-code {
 [@@@SUB-TEMPLATE:!lib/core/plugins/templates/syntax-highlight-init-static.inc.htm!@@@]
 <script>
 function btnHandlerCancel() {
-	SmartJS_BrowserUtils.CloseDelayedModalPopUp();
+	smartJ$Browser.CloseDelayedModalPopUp();
 	return false;
 }
 function btnHandlerSubmit() {
 	jQuery.alertable.confirm('DELETE this Record ?' + '\n\n' + 'This action will permanent delete the selected Record from the Collection.').then(function(){
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('record_form', '[###ACTIONS-URL|js###]', 'yes');
+		smartJ$Browser.SubmitFormByAjax('record_form', '[###ACTIONS-URL|js###]', 'yes');
 	});
 	return false;
 }

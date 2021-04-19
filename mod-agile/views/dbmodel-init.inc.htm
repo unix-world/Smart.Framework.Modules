@@ -1,4 +1,4 @@
-<!-- dbmodel-init.inc.htm v.20200121 -->
+<!-- dbmodel-init.inc.htm v.20210413 -->
 <link rel="stylesheet" href="modules/mod-wflow-components/views/dbmodeler/css/style.css" media="all">
 <script src="modules/mod-wflow-components/views/dbmodeler/js/config.js"></script>
 <script type="text/javascript">
@@ -34,14 +34,14 @@
 		[%%%IF:OP-MODE:?create|edit;(1)%%%]
 		<button class="ux-button ux-button-small ux-button-regular" onclick="saveModelData(); return false;">Save Model</button>
 			[%%%IF:OP-MODE:==create;(2)%%%]
-		<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;">Cancel Create</button>
+		<button class="ux-button ux-button-small ux-button-special" onclick="smartJ$Browser.CloseModalPopUp(); smartJ$Browser.RefreshParent(); return false;">Cancel Create</button>
 			[%%%ELSE:OP-MODE(2)%%%]
 		<button class="ux-button ux-button-small ux-button-special" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[###UUID|url|js###]'; return false;">Cancel Edit</button>
 			[%%%/IF:OP-MODE(2)%%%]
 		[%%%ELSE:OP-MODE(1)%%%]
 		<button class="ux-button ux-button-small ux-button-secondary" onclick="exportModelData();">Export as JSON</button>
 		<button class="ux-button ux-button-small ux-button-highlight" onclick="self.location='admin.php?/page/agile.dbmodel-editor/uuid/[###UUID|url|js###]/edit/yes'; return false;">Edit DB-Model</button>
-		<button class="ux-button ux-button-small ux-button-special" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;">Close View</button>
+		<button class="ux-button ux-button-small ux-button-special" onclick="smartJ$Browser.CloseModalPopUp(); smartJ$Browser.RefreshParent(); return false;">Close View</button>
 		[%%%/IF:OP-MODE(1)%%%]
 		<hr>
 		[%%%IF:OP-MODE:?create|edit;%%%]
@@ -238,7 +238,7 @@ function exportModelData() {
 	[%%%ELSE:OP-MODE%%%]
 	data.docTitle = String($('#dbmodel_title').text());
 	[%%%/IF:OP-MODE%%%]
-	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'dbmodel-' + exportDTime + '@' + exportAuthor + '.json', 'application/json', 'UTF-8');
+	smartJ$Browser.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'dbmodel-' + exportDTime + '@' + exportAuthor + '.json', 'application/json', 'UTF-8');
 }
 [%%%IF:OP-MODE:?create|edit;%%%]
 function saveModelData() {
@@ -247,8 +247,8 @@ function saveModelData() {
 		$('#dbmodel_type').val(String(CONFIG.DEFAULT_DB));
 		data = JSON.stringify(data);
 		$('#dbmodel_data').val(data);
-		SmartJS_BrowserUtils.RefreshParent();
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('dbmodel_form', 'admin.php?page=agile.dbmodel-save', 'yes');
+		smartJ$Browser.RefreshParent();
+		smartJ$Browser.SubmitFormByAjax('dbmodel_form', 'admin.php?page=agile.dbmodel-save', 'yes');
 	} else {
 		alert('ERROR: Empty DB-Model Data ...');
 	}

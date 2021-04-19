@@ -1,10 +1,10 @@
 
 // [@[#[!JS-Compress!]#]@]
 // SmartMaps // JS Lib # v.2017.04.21
-// (c) 2012-2017 unix-world.org
+// (c) 2012-2021 unix-world.org
 // License: Apache 2.0 License
 
-// DEPENDS: SmartJS_CoreUtils, OpenLayers (patched version)
+// DEPENDS: smartJ$Utils, OpenLayers (patched version)
 
 //==
 function Smart_Maps(y_proxycachebuf, y_proxycacheurl, y_proxymaptype) { // OBJECT-CLASS
@@ -888,8 +888,6 @@ var draw_map = function(y_lat, y_lon, y_zoom, y_markers, y_areas, y_mode) {
 			//--
 			if(opmode == 'add-areas') {
 				//--
-				//alert(SmartJS_CoreUtils.print_Object(el.feature));
-				//--
 				//var area = el.feature.geometry.getArea();
 				//alert(area);
 				//--
@@ -930,9 +928,9 @@ var draw_map = function(y_lat, y_lon, y_zoom, y_markers, y_areas, y_mode) {
 		var measure = event.measure;
 		//--
 		if(order == 1) {
-			out = '<b>MEASURE Distance: </b>' + SmartJS_CoreUtils.escape_html(measure.toFixed(3) + ' ' + units);
+			out = '<b>MEASURE Distance: </b>' + smartJ$Utils.escape_html(measure.toFixed(3) + ' ' + units);
 		} else {
-			out = '<b>MEASURE Area: </b>' + SmartJS_CoreUtils.escape_html(measure.toFixed(3) + ' ' + units) + '<sup>2</sup>';
+			out = '<b>MEASURE Area: </b>' + smartJ$Utils.escape_html(measure.toFixed(3) + ' ' + units) + '<sup>2</sup>';
 		} //end if
 		//--
 		setDivContent(divmap + "_lonlat", '<span style="color: #000000;">' + out + '</span>');
@@ -1049,8 +1047,6 @@ var draw_map = function(y_lat, y_lon, y_zoom, y_markers, y_areas, y_mode) {
 	markers.events.on({
 		'featureselected': function(e) {
 			//--
-			//alert(SmartJS_CoreUtils.print_Object(e));
-			//--
 			if(typeof e.feature == 'undefined') {
 				alert('ERROR: Invalid Object Selected (1) !');
 				return;
@@ -1094,8 +1090,6 @@ var draw_map = function(y_lat, y_lon, y_zoom, y_markers, y_areas, y_mode) {
 			//--
 		},
 		'featureunselected': function(e) {
-			//--
-			//alert(SmartJS_CoreUtils.print_Object(e));
 			//--
 			if(typeof e.feature == 'undefined') {
 				alert('ERROR: Invalid Object Selected (1) !');
@@ -1463,8 +1457,6 @@ this.Smart_Handler_SmartMaps_LoadData = function(y_init, y_markers, y_areas, y_l
 //--
 this.Smart_Handler_SmartMaps_Click = function(divmap, map, markers, element_object, popin_coords, el_lat, el_lon, el_ttl, el_lnk, icon_sel_opacity, icon_sel_zindex, icon_def_opacity, icon_def_zindex) {
 	//--
-	//alert(SmartJS_CoreUtils.print_Object(element_object.feature.style));
-	//--
 	if(!element_object) {
 		return;
 	} //end if
@@ -1524,8 +1516,6 @@ this.Smart_Handler_SmartMaps_Click = function(divmap, map, markers, element_obje
 this.Smart_Handler_SmartMaps_EndClick = function(divmap, map, markers, element_object, icon_sel_opacity, icon_sel_zindex, icon_def_opacity, icon_def_zindex) {
 	//--
 	// This will run for each marker on the map when the map is clicked, the event propagates through all markers
-	//--
-	//alert(SmartJS_CoreUtils.print_Object(element_object.feature.style));
 	//--
 	if(!element_object) {
 		return;

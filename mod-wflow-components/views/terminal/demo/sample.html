@@ -8,6 +8,9 @@
 * {
 	font-family: 'IBM Plex Mono', monospace;
 }
+body {
+	margin: 0;
+}
 </style>
 <link rel="stylesheet" type="text/css" href="../../../../../lib/css/toolkit/sf-icons.css">
 <!-- jQuery and jQuery MouseWheel -->
@@ -19,8 +22,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+<div id="terminal" style="width:100vw; height:100vh; margin:0;"></div>
 <script>
-var theVersion = 'r.20210322';
+var theVersion = 'r.20210418';
 // (c) 2021 unix-world.org
 // license: BSD
 function sandboxedWorkerJsEval(untrustedCode, maxTimeOfExecution) {
@@ -144,12 +148,21 @@ var highlights = [ 'clear', 'help', 'info', 'js-sandbox', 'js-quit' ];
 var keywords = highlights.concat(highlights.map(function(keyword) {
 	return keyword.toLowerCase();
 }));
+const escapeHtml = (text) => { // this it performs better, particularly on large blocks of text # https://stackoverflow.com/questions/1787322/htmlspecialchars-equivalent-in-javascript
+	var map = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;'
+	};
+	return text.replace(/[&\<\>"]/g, (m) => map[m]);
+}
 $.terminal.defaults.formatters.push(function(str) { // support highlights
 	return str.split(/([a-z0-9\-]+)/).map(function(s) {
 		if(keywords.indexOf(s) != -1) {
-			return '[[b;#FFFFFF;]' + s + ']';
+			return '[[b;#FFFFFF;]' + escapeHtml(s) + ']';
 		} else {
-			return s;
+			return escapeHtml(s);
 		}
 	}).join('');
 });
@@ -167,7 +180,7 @@ var termEscapeText = function(text) {
 	text = String(text.split('{').join('&#123;'));
 	text = String(text.split('|').join('&#124;'));
 	text = String(text.split('}').join('&#125;'));
-	return String(text);
+	return String(escapeHtml(text));
 }
 //--
 /*
@@ -178,7 +191,7 @@ $.terminal.new_formatter([ // support icons
 */
 //-- to explicit executa a command use: term.exec('command');
 jQuery(function($) {
-	term = $('body').terminal(function(command, term) {
+	term = $('#terminal').terminal(function(command, term) {
 		if(command == 'help') {
 			term.echo(termIcon('{{lifebuoy}}') + 'available commands are: [ clear, help, info, js-sandbox, js-quit ]\n');
 			term.echo(termIcon('{{info}}') + 'Javascript Sandbox Help:');

@@ -1,7 +1,7 @@
 
-// (c) 2019-2020 unix-world.org
+// (c) 2019-2021 unix-world.org
 // License: GPLv3
-// v.20200501
+// v.20210411
 // modified by unixman
 
 // Copyright 2013-2019 Alan Hong. and other contributors
@@ -89,8 +89,8 @@
 					e.preventDefault();
 					$editor.find('.note-findnreplace').contents().unwrap('mark');
 					var fnrCode    = context.invoke('code');
-					var fnrFind    = SmartJS_CoreUtils.escape_html($('.note-findnreplace-find').val()); // bugfix (unixman): escape to HTML to avoid break the HTML code
-					var fnrReplace = SmartJS_CoreUtils.escape_html($('.note-findnreplace-replace').val()); // bugfix (unixman): escape to HTML to avoid break the HTML code
+					var fnrFind    = smartJ$Utils.escape_html($('.note-findnreplace-find').val()); // bugfix (unixman): escape to HTML to avoid break the HTML code
+					var fnrReplace = smartJ$Utils.escape_html($('.note-findnreplace-replace').val()); // bugfix (unixman): escape to HTML to avoid break the HTML code
 					var fnrCount   = (fnrCode.match(new RegExp(fnrFind + "(?![^<>]*>)", "gi")) || []).length;
 					if (fnrFind) {
 						$('#findnreplace-info').text(fnrCount + lang.findnreplace.findResult + "`" + fnrFind + "`");
@@ -103,8 +103,8 @@
 					e.preventDefault();
 					$editor.find('.note-findnreplace').contents().unwrap('mark');
 					var fnrCode    = context.invoke('code');
-					var fnrFind    = SmartJS_CoreUtils.escape_html($('.note-findnreplace-find').val()); // bugfix (unixman): escape to HTML to avoid break the HTML code
-					var fnrReplace = SmartJS_CoreUtils.escape_html($('.note-findnreplace-replace').val()); // bugfix (unixman): escape to HTML to avoid break the HTML code
+					var fnrFind    = smartJ$Utils.escape_html($('.note-findnreplace-find').val()); // bugfix (unixman): escape to HTML to avoid break the HTML code
+					var fnrReplace = smartJ$Utils.escape_html($('.note-findnreplace-replace').val()); // bugfix (unixman): escape to HTML to avoid break the HTML code
 				//	var fnrCount   = (fnrCode.match(new RegExp(fnrFind, "gi")) || []).length;
 					var fnrCount   = (fnrCode.match(new RegExp(fnrFind + "(?![^<>]*>)", "gi")) || []).length;
 					if (fnrFind) {

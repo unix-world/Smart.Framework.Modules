@@ -3,9 +3,9 @@
 // (c) 2015 Dinamenta, UAB.
 // License: GPLv2
 
-// (c) 2017-2020 unix-world.org
+// (c) 2017-2021 unix-world.org
 // License: GPLv3
-// v.20200701 (stable)
+// v.20210411 (stable)
 /*
 modified by unixman:
 	- isolate in a function
@@ -41,14 +41,14 @@ function SmartGanttPluginQuickinfo(gantt) {
 		if(txt.length > 50) {
 			txt = txt.substr(0, 37) + '...';
 		} //end if
-		return SmartJS_CoreUtils.escape_html(txt);
+		return smartJ$Utils.escape_html(txt);
 	};
 	gantt.templates.quick_info_content = function(start, end, ev){
 		var txt = String(ev.details || '');
 		if(txt.length > 50) {
 			txt = txt.substr(0, 120) + '...'; // 40 * 3 lines
 		} //end if
-		return SmartJS_CoreUtils.escape_html(txt);
+		return smartJ$Utils.escape_html(txt);
 	};
 	gantt.templates.quick_info_date = function(start, end, ev){
 		return gantt.templates.task_time(start, end, ev);
@@ -173,7 +173,7 @@ function SmartGanttPluginQuickinfo(gantt) {
 				if(this._quick_info_readonly && is_editor[buttons[i]]) {
 					continue;
 				}
-				html += '<div class="gantt_qi_big_icon ' + SmartJS_CoreUtils.escape_html(buttons[i]) + '" title="' + SmartJS_CoreUtils.escape_html(gantt.locale.labels[buttons[i]]) + '"><div class="gantt_menu_icon ' + SmartJS_CoreUtils.escape_html(buttons[i]) + '"></div><div>' + SmartJS_CoreUtils.escape_html(gantt.locale.labels[buttons[i]]) + '</div></div>';
+				html += '<div class="gantt_qi_big_icon ' + smartJ$Utils.escape_html(buttons[i]) + '" title="' + smartJ$Utils.escape_html(gantt.locale.labels[buttons[i]]) + '"><div class="gantt_menu_icon ' + smartJ$Utils.escape_html(buttons[i]) + '"></div><div>' + smartJ$Utils.escape_html(gantt.locale.labels[buttons[i]]) + '</div></div>';
 			}
 			html += '</div>';
 

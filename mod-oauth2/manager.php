@@ -18,7 +18,7 @@ define('SMART_APP_MODULE_AUTH', true);
  * Admin Controller
  *
  * @ignore
- * @version v.20210402
+ * @version v.20210411
  *
  */
 class SmartAppAdminController extends SmartAbstractAppController {
@@ -51,8 +51,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$this->PageViewSetVars([
 					'title' => 'Wait ...',
 					'main' => '<br><div><center><img src="lib/framework/img/loading-bars.svg" width="64" height="64"></center></div>'.
-					'<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>'.
-					'<script type="text/javascript">SmartJS_BrowserUtils.CloseDelayedModalPopUp();</script>'
+					'<script type="text/javascript">smartJ$Browser.RefreshParent();</script>'.
+					'<script type="text/javascript">smartJ$Browser.CloseDelayedModalPopUp();</script>'
 				]);
 				//--
 				break;
@@ -200,7 +200,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$this->PageViewSetVars([
 					'title' => (string) $title,
 					'main' => '<h1 style="color:#003366;!important">'.Smart::escape_html($title).'</h1><h2>'.Smart::escape_html($id).'</h2><div style="font-size:2rem;">[ '.Smart::escape_html($result).' ]<br><img src="'.Smart::escape_html($img).'"></div><div><center><img src="lib/framework/img/loading-spin.svg" width="64" height="64"></center></div>'.
-					'<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>'.
+					'<script type="text/javascript">smartJ$Browser.RefreshParent();</script>'.
 					'<script type="text/javascript">setTimeout(function(){ self.location=\''.Smart::escape_js('admin.php?page='.$this->ControllerGetParam('controller').'&action=view-data&id='.Smart::escape_url((string)$id)).'\'; }, 3000);</script>'
 				]);
 				//--
@@ -227,7 +227,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'title' => (string) $title,
 					'main' => '<h1 style="color:#003366;!important">'.Smart::escape_html($title).'</h1><h2>'.Smart::escape_html($id).'</h2><div style="font-size:2rem;">[ '.Smart::escape_html($result).' ]<br><img src="'.Smart::escape_html($img).'"></div><div><center><h1>'.Smart::escape_html($token).'</h1></center></div><br>'.
 					'<button class="ux-button" onClick="self.location=\''.Smart::escape_js('admin.php?page='.$this->ControllerGetParam('controller').'&action=view-data&id='.Smart::escape_url((string)$id)).'\';"><i class="sfi sfi-undo2"></i> &nbsp; Go Back</button>'.
-					'<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>'
+					'<script type="text/javascript">smartJ$Browser.RefreshParent();</script>'
 				]);
 				//--
 				break;
@@ -250,8 +250,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$this->PageViewSetVars([
 					'title' => (string) $title,
 					'main' => '<h1 style="color:#FF3300;!important">'.Smart::escape_html($title).'</h1><h2>'.Smart::escape_html($id).'</h2><h3>[ '.Smart::escape_html($result).' ]</h3><br><div><center><img src="lib/framework/img/loading-spin.svg" width="64" height="64"></center></div>'.
-					'<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>'.
-					'<script type="text/javascript">SmartJS_BrowserUtils.CloseDelayedModalPopUp();</script>'
+					'<script type="text/javascript">smartJ$Browser.RefreshParent();</script>'.
+					'<script type="text/javascript">smartJ$Browser.CloseDelayedModalPopUp();</script>'
 				]);
 				//--
 				break;

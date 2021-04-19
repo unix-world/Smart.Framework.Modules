@@ -9,7 +9,7 @@
  * @link      https://github.com/jublonet/codebird-php
  */
 
-// modified by unixman v.20200121
+// modified by unixman v.20210413
 // 		+ security feature: connect with the proxy by using a special hash in header
 //		+ converted to ES5 with babeljs
 
@@ -200,7 +200,7 @@ function _classCallCheck(instance, Constructor) {
 						ua = String(navigator.userAgent);
 					} catch (err) {}
 					//console.log(url+'^'+ua);
-					var data = SmartJS_CryptoHash.sha512(String(url + "^" + ua));
+					var data = smartJ$CryptoHash.sha512(String(url + "^" + ua));
 					xml.setRequestHeader("Z-Sfk", String(data));
 				}
 

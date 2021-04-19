@@ -1,4 +1,4 @@
-<!-- class r.20200121 -->
+<!-- class r.20210417 -->
 <!-- Styles -->
 [@@@SUB-TEMPLATE:partials/styles.mtpl.inc.htm@@@]
 <!-- Headings -->
@@ -16,11 +16,12 @@
 		<li><span class="doc-located"><b>Located at:</b> [###FILE-NAME|html###]</span></li>
 		[%%%IF:PACKAGE:!=;%%%]<li><span class="doc-package"><b>Package:</b> [###PACKAGE|html###]</span></li>[%%%/IF:PACKAGE%%%]
 		<li><span class="doc-name"><b>[###TYPE|ucfirst|html###] Name:</b> [###NAME|html###]</span></li>
+		<li><span class="doc-frozen"><b>Frozen:</b> [###IS-FROZEN|ucfirst|html###]</span></li>
+		[%%%IF:VERSION:!=;%%%]<li><span class="doc-version"><b>Version:</b> [###VERSION|html###]</span></li>[%%%/IF:VERSION%%%]
 		<li><b>Usage:</b> [###USAGE|html###]</li>
 		[%%%IF:THROWS:!=;%%%]<li><span class="doc-throws"><b>Throws:</b> [###THROWS|html###]</span></li>[%%%/IF:THROWS%%%]
 		[%%%IF:FIRES:!=;%%%]<li><b>Fires:</b> [###FIRES|html###]</li>[%%%/IF:FIRES%%%]
 		[%%%IF:LISTENS:!=;%%%]<li><b>Listens:</b> [###LISTENS|html###]</li>[%%%/IF:LISTENS%%%]
-		[%%%IF:VERSION:!=;%%%]<li><b>Version:</b> [###VERSION|html###]</li>[%%%/IF:VERSION%%%]
 		[%%%IF:DEPENDS:!=;%%%]<li><b>Depends:</b> [###DEPENDS|html###]</li>[%%%/IF:DEPENDS%%%]
 		[%%%IF:HINTS:!=;%%%]<li><b>Hints:</b> [###HINTS|html###]</li>[%%%/IF:HINTS%%%]
 	</ul>
@@ -43,7 +44,6 @@
 	<h2 class="doc-header">[###TYPE|html###] Constants</h2>
 </div>
 [@@@SUB-TEMPLATE:partials/js-constants.mtpl.inc.htm@@@]
-
 <!-- Sample Code -->
 [%%%IF:DOC-CODE-HTML:!=;%%%]
 <br>

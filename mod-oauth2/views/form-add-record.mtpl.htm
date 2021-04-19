@@ -1,4 +1,4 @@
-<!-- View: add-record v.20210402 -->
+<!-- View: add-record v.20210413 -->
 [@@@SUB-TEMPLATE:partials/form-styles.mtpl.htm@@@]
 <style>
 .form-step2 {
@@ -8,11 +8,11 @@
 <script>
 var TplAuthParamsUrl = '[###TPL-AUTH-URL-PARAMS|js###]';
 function btnHandlerCancel() {
-	SmartJS_BrowserUtils.CloseDelayedModalPopUp();
+	smartJ$Browser.CloseDelayedModalPopUp();
 	return false;
 }
 function validateUrl(url) { // {{{SYNC-OAUTH2-VALIDATE-URL}}}
-	url = SmartJS_CoreUtils.stringTrim(url);
+	url = smartJ$Utils.stringTrim(url);
 	if((url.length < 15) || (url.length > 255)) {
 		return false;
 	} //end if
@@ -27,42 +27,42 @@ function readDataStepOne() {
 	var theApiId = String(jQuery('#api_id').val() || '');
 	var regexOfApiID = [###REGEX-VALID-ID###]g; // {{{SYNC-OAUTH2-REGEX-ID}}}
 	if((!theApiId) || (theApiId.length < 5) || (theApiId.length > 127) || (!theApiId.match(regexOfApiID))) {
-		SmartJS_BrowserUtils.GrowlNotificationAdd('Notice', 'API-ID is empty or invalid: ' + theApiId, null, 3500, false);
+		smartJ$Browser.GrowlNotificationAdd('Notice', 'API-ID is empty or invalid: ' + theApiId, null, 3500, false);
 		return false;
 	}
 	var theDescription = String(jQuery('#api_desc').val() || '');
 	if((!theDescription) || (theDescription.length < 10)) {
-		SmartJS_BrowserUtils.GrowlNotificationAdd('Notice', 'API Description is empty or too short', null, 3500, false);
+		smartJ$Browser.GrowlNotificationAdd('Notice', 'API Description is empty or too short', null, 3500, false);
 		return null;
 	}
 	var theClientId = String(jQuery('#oauth2_client_id').val() || '');
 	if(!theClientId) {
-		SmartJS_BrowserUtils.GrowlNotificationAdd('Notice', 'OAuth2 Client ID is empty', null, 3500, false);
+		smartJ$Browser.GrowlNotificationAdd('Notice', 'OAuth2 Client ID is empty', null, 3500, false);
 		return null;
 	}
 	var theClientSecret = String(jQuery('#oauth2_client_secret').val() || '');
 	if(!theClientSecret) {
-		SmartJS_BrowserUtils.GrowlNotificationAdd('Notice', 'OAuth2 Client Secret is empty', null, 3500, false);
+		smartJ$Browser.GrowlNotificationAdd('Notice', 'OAuth2 Client Secret is empty', null, 3500, false);
 		return null;
 	}
 	var theScope = String(jQuery('#oauth2_scope').val() || '');
 	if(!theScope) {
-		SmartJS_BrowserUtils.GrowlNotificationAdd('Notice', 'OAuth2 Scope is empty', null, 3500, false);
+		smartJ$Browser.GrowlNotificationAdd('Notice', 'OAuth2 Scope is empty', null, 3500, false);
 		return null;
 	}
 	var oauth2UrlRedirect = String(jQuery('#oauth2_url_redirect').val() || '');
 	if(!oauth2UrlRedirect) {
-		SmartJS_BrowserUtils.GrowlNotificationAdd('Notice', 'OAuth2 URL /auth is empty', null, 3500, false);
+		smartJ$Browser.GrowlNotificationAdd('Notice', 'OAuth2 URL /auth is empty', null, 3500, false);
 		return null;
 	}
 	var oauth2UrlAuth = String(jQuery('#oauth2_url_auth').val() || '');
 	if((!oauth2UrlAuth) || (!validateUrl(oauth2UrlAuth))) {
-		SmartJS_BrowserUtils.GrowlNotificationAdd('Notice', 'OAuth2 URL /auth is empty or invalid', null, 3500, false);
+		smartJ$Browser.GrowlNotificationAdd('Notice', 'OAuth2 URL /auth is empty or invalid', null, 3500, false);
 		return false;
 	}
 	var oauth2UrlToken = String(jQuery('#oauth2_url_token').val() || '');
 	if((!oauth2UrlToken) || (!validateUrl(oauth2UrlToken))) {
-		SmartJS_BrowserUtils.GrowlNotificationAdd('Notice', 'OAuth2 URL /token is empty or invalid', null, 3500, false);
+		smartJ$Browser.GrowlNotificationAdd('Notice', 'OAuth2 URL /token is empty or invalid', null, 3500, false);
 		return null;
 	}
 	return {
@@ -81,7 +81,7 @@ function readDataStepTwo() {
 	theDataStepTwo = null;
 	var theCode = String(jQuery('#oauth2_code').val() || '');
 	if(!theCode) {
-		SmartJS_BrowserUtils.GrowlNotificationAdd('Notice', 'OAuth2 Code is empty', null, 3500, false);
+		smartJ$Browser.GrowlNotificationAdd('Notice', 'OAuth2 Code is empty', null, 3500, false);
 		return null;
 	}
 	return {
@@ -101,7 +101,7 @@ function btnHandlerSubmit() {
 		}
 		var oauth2UrlAuth = theDataStepOne.oauth2UrlAuth;
 		if((!oauth2UrlAuth) || (!validateUrl(oauth2UrlAuth))) {
-			SmartJS_BrowserUtils.GrowlNotificationAdd('Notice', 'OAuth2 URL /auth is empty or invalid', null, 3500, false);
+			smartJ$Browser.GrowlNotificationAdd('Notice', 'OAuth2 URL /auth is empty or invalid', null, 3500, false);
 			return false;
 		}
 		oauth2UrlAuth = String(oauth2UrlAuth);
@@ -110,7 +110,7 @@ function btnHandlerSubmit() {
 		} else {
 			oauth2UrlAuth += '&';
 		}
-		oauth2UrlAuth += SmartJS_CoreUtils.renderMarkersTpl(TplAuthParamsUrl, {
+		oauth2UrlAuth += smartJ$Utils.renderMarkersTpl(TplAuthParamsUrl, {
 				'CLIENT-ID': String(theDataStepOne.theClientId),
 				'SCOPE': String(theDataStepOne.theScope),
 				'REDIRECT-URI': String(theDataStepOne.oauth2UrlRedirect),
@@ -127,7 +127,7 @@ function btnHandlerSubmit() {
 		});
 		submitStep++;
 		$elemId.text('Step 2: Initialize OAuth2 Tokens and Save API');
-		SmartJS_BrowserUtils.PopUpLink(oauth2UrlAuth, 'oauth2_wnd_auth', 0.75, 0.7, 1, 1);
+		smartJ$Browser.PopUpLink(oauth2UrlAuth, 'oauth2_wnd_auth', 0.75, 0.7, 1, 1);
 	} else if(submitStep == 2) {
 		theDataStepTwo = readDataStepTwo();
 		if(!theDataStepTwo) {
@@ -138,7 +138,7 @@ function btnHandlerSubmit() {
 		});
 		jQuery('#btn-submit-btn').prop('disabled', true);
 		submitStep++;
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('add_form', '[###ACTIONS-URL|js###]', 'yes');
+		smartJ$Browser.SubmitFormByAjax('add_form', '[###ACTIONS-URL|js###]', 'yes');
 	} else {
 		alert('ERROR: Invalid Submit Step: ' + submitStep);
 	}

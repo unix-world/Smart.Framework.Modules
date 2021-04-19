@@ -1,7 +1,7 @@
 
-// (c) 2017-2019 unix-world.org
+// (c) 2017-2021 unix-world.org
 // License: GPLv3
-// v.20190219
+// v.20210413
 // modified by unixman:
 // 	* save / load just canvas contents
 // 	* cleanup ui garbage: droppable / draggable / resizable
@@ -342,7 +342,7 @@ var qMockupEditor = new function() { // START CLASS
 		var str = 'This is a UUID for qMockupEditor' + ' @ ' + randNum + ' :: ' + dt;
 		//var str = 'This is a UUID for qMockupEditor' + ' @ ' + ' :: ' + dt;
 		//console.log(str);
-		var uuid = SmartJS_CryptoHash.sha1(str);
+		var uuid = smartJ$CryptoHash.sha1(str);
 		return uuid;
 	} //END FUNCTION
 

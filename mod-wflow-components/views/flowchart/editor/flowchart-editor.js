@@ -1,8 +1,8 @@
 
 // jsPlumb Flowchart Editor :: JS
-// (c) 2017-2019 unix-world.org
+// (c) 2017-2021 unix-world.org
 // License: GPLv3
-// v.20190327
+// v.20210413
 
 function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxEditDialogHelper, fxDeleteDialogHelper, fxSaveDataHelper, fxExportDataHelper) {
 
@@ -62,7 +62,7 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 									if(!label) {
 										label = '';
 									} //end if
-									label = SmartJS_CoreUtils.escape_html(String(label));
+									label = smartJ$Utils.escape_html(String(label));
 									tgtP.setLabel(label);
 								} //end function
 								var tgtP = obj.component.getOverlay('label');
@@ -191,12 +191,12 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 				} //end if else
 			} //end if else
 			if(iconFA) {
-				theIcon = '<span class="'+SmartJS_CoreUtils.escape_html(iconFA)+'"></span>';
+				theIcon = '<span class="'+smartJ$Utils.escape_html(iconFA)+'"></span>';
 			} else {
 				iconFA = '';
 				theIcon = '<span class=""></span>';
 			} //end if else
-			var Div = jQuery('<div class="'+SmartJS_CoreUtils.escape_html(clsName)+'" id="'+SmartJS_CoreUtils.escape_html(theID)+'" data-conn-perimeter="'+SmartJS_CoreUtils.escape_html(dataAttrPerimeter)+'" data-conn-inv="'+SmartJS_CoreUtils.escape_html(dataAttrInvert)+'" data-fa-icon="'+SmartJS_CoreUtils.escape_html(iconFA)+'">'+theIcon+'<p>'+SmartJS_CoreUtils.escape_html(textLabel)+'</p></div>');
+			var Div = jQuery('<div class="'+smartJ$Utils.escape_html(clsName)+'" id="'+smartJ$Utils.escape_html(theID)+'" data-conn-perimeter="'+smartJ$Utils.escape_html(dataAttrPerimeter)+'" data-conn-inv="'+smartJ$Utils.escape_html(dataAttrInvert)+'" data-fa-icon="'+smartJ$Utils.escape_html(iconFA)+'">'+theIcon+'<p>'+smartJ$Utils.escape_html(textLabel)+'</p></div>');
 			Div.css({
 				border: 'solid 1px',
 				left: posX ? (posX + 'px') : '0px',
@@ -399,7 +399,7 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 				if(!label) {
 					label = '';
 				} //end if
-				label = SmartJS_CoreUtils.escape_html(String(label));
+				label = smartJ$Utils.escape_html(String(label));
 				tgtP.parent().attr('data-fa-icon', label);
 				tgtP.attr('class', label);
 			} //end function
@@ -460,7 +460,7 @@ function flowchartEditorInit(flwcDataObj, flwcIsReadonly, fxAddDialogHelper, fxE
 			var seconds = date.getTime();
 			var milliseconds = date.getMilliseconds();
 			var randNum = Math.random().toString(36);
-			var uuID = SmartJS_CryptoHash.sha1('Flowchart UUID # ' + randNum + ' :: ' + seconds + '.' + milliseconds);
+			var uuID = smartJ$CryptoHash.sha1('Flowchart UUID # ' + randNum + ' :: ' + seconds + '.' + milliseconds);
 			return uuID;
 		} //END FUNCTION
 

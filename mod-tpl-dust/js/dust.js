@@ -1,5 +1,5 @@
 
-// dust-full.js v.2.7.2-r.20200121.sfm
+// dust-full.js v.2.7.2-r.20210411.sfm
 
 // modified and fixed by unixman
 // custom filters by unixman to integrate with Smart.Framework
@@ -317,10 +317,10 @@
 			}
 		}
 		*/
-		h: 	function(value) { return String(SmartJS_CoreUtils.escape_html(value)); },
-		j: 	function(value) { return String(SmartJS_CoreUtils.escape_js(value)); },
-		c: 	function(value) { return String(SmartJS_CoreUtils.escape_css(value)); },
-		u: 	function(value) { return String(SmartJS_CoreUtils.escape_url(value)); },
+		h: 	function(value) { return String(smartJ$Utils.escape_html(value)); },
+		j: 	function(value) { return String(smartJ$Utils.escape_js(value)); },
+		c: 	function(value) { return String(smartJ$Utils.escape_css(value)); },
+		u: 	function(value) { return String(smartJ$Utils.escape_url(value)); },
 		o: 	function(value) {
 				var jsonObj = null;
 				try {
@@ -336,7 +336,7 @@
 				value = value.replace(/[\u003E]/g, '\\u003E'); 	// > 	JSON_HEX_TAG (use uppercase as in PHP)
 				value = value.replace(/[\/]/g,     '\\/');	    // / 	JSON_UNESCAPED_SLASHES
 				// this JSON string will not be 100% like the one produced via PHP with HTML-Safe arguments but at least have the minimum escapes to avoid conflicting HTML tags
-				value = String(SmartJS_CoreUtils.stringTrim(value));
+				value = String(smartJ$Utils.stringTrim(value));
 				if(value == '') {
 					value = 'null'; // ensure a minimal json as null for empty string if no expr !
 				} //end if
@@ -352,30 +352,30 @@
 			},
 		i: 	function(value) { // force int
 				value = parseInt(value);
-				if(!SmartJS_CoreUtils.isFiniteNumber(value)) {
+				if(!smartJ$Utils.isFiniteNumber(value)) {
 					value = 0;
 				} //end if
 				return String(value);
 			},
 		d: 	function(value) { // force dec (2 decimals)
-				value = SmartJS_CoreUtils.format_number_dec(value, 2, true, false); // allow negatives, do not discard trailing zeroes
-				if(!SmartJS_CoreUtils.isFiniteNumber(value)) {
+				value = smartJ$Utils.format_number_dec(value, 2, true, false); // allow negatives, do not discard trailing zeroes
+				if(!smartJ$Utils.isFiniteNumber(value)) {
 					value = 0;
 				} //end if
 				return String(value);
 			},
 		n: 	function(value) { // force numeric
 				value = parseFloat(value);
-				if(!SmartJS_CoreUtils.isFiniteNumber(value)) {
+				if(!smartJ$Utils.isFiniteNumber(value)) {
 					value = 0;
 				}
 				return String(value);
 			},
-		t: 	function(value) { return String(SmartJS_CoreUtils.stringTrim(value)); }, // str trim
+		t: 	function(value) { return String(smartJ$Utils.stringTrim(value)); }, // str trim
 		ml:	function(value) { return String(value).toLowerCase(); }, // str lowercase
 		mu:	function(value) { return String(value).toUpperCase(); }, // str uppercase
-		mf:	function(value) { return String(SmartJS_CoreUtils.stringUcFirst(value)); }, // str uc first
-		mw:	function(value) { return String(SmartJS_CoreUtils.stringUcWords(value)); }, // str uc words
+		mf:	function(value) { return String(smartJ$Utils.stringUcFirst(value)); }, // str uc first
+		mw:	function(value) { return String(smartJ$Utils.stringUcWords(value)); }, // str uc words
 		ih: function(value) { // format html ID
 				value = String(value);
 				value = value.replace(/[^a-zA-Z0-9_\-]/g, '');
@@ -386,7 +386,7 @@
 				value = value.replace(/[^a-zA-Z0-9_]/g, '');
 				return String(value);
 			},
-		fn: function(value) { return String(SmartJS_CoreUtils.nl2br(value)); }, // format nl2br
+		fn: function(value) { return String(smartJ$Utils.nl2br(value)); }, // format nl2br
 	};
 
 	function Context(stack, global, options, blocks, templateName) {

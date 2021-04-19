@@ -1,7 +1,7 @@
 
 // NetVision JS - Contextual Advertising
-// (c) 2006-2017 unix-world.org
-// r.20191109
+// (c) 2006-2021 unix-world.org
+// r.20210411
 
 //========================
 
@@ -92,7 +92,7 @@ this.toggleOnOff = function(DivID, iState, eKeyWord) { // 1 visible, 0 hidden
 			//--
 		} //end if
 		//-
-		obj.style.zIndex = SmartJS_BrowserUtils.getHighestZIndex();
+		obj.style.zIndex = smartJ$Browser.getHighestZIndex();
 		obj.style.visibility = "visible";
 		//-
 	} else {

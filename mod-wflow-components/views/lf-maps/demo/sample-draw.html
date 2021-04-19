@@ -480,7 +480,7 @@ document.getElementById('exportBtn').onclick = function(e) {
 		}
 	};
 
-	SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(expDoc, null, 2)), 'map-work.json', 'application/json', 'UTF-8');
+	smartJ$Browser.VirtualFileDownload(String(JSON.stringify(expDoc, null, 2)), 'map-work.json', 'application/json', 'UTF-8');
 
 /*
 	// Stringify the GeoJson

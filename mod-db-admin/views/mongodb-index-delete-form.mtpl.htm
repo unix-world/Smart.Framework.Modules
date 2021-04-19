@@ -15,7 +15,7 @@ pre.pre-hljs-code {
 [@@@SUB-TEMPLATE:!lib/core/plugins/templates/syntax-highlight-init-static.inc.htm!@@@]
 <script>
 function btnHandlerCancel() {
-	SmartJS_BrowserUtils.CloseDelayedModalPopUp();
+	smartJ$Browser.CloseDelayedModalPopUp();
 	return false;
 }
 function btnHandlerSubmit() {
@@ -24,8 +24,8 @@ function btnHandlerSubmit() {
 		jQuery.alertable.alert('No Index Selected').always(function(){});
 		return false;
 	}
-	jQuery.alertable.confirm('DROP the Index `' + SmartJS_CoreUtils.escape_html(idx) + '` ?' + '\n\n' + 'This action will permanently DROP the selected Index of this Collection.').then(function(){
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('index_drop_form', '[###ACTIONS-URL|js###]', 'yes');
+	jQuery.alertable.confirm('DROP the Index `' + smartJ$Utils.escape_html(idx) + '` ?' + '\n\n' + 'This action will permanently DROP the selected Index of this Collection.').then(function(){
+		smartJ$Browser.SubmitFormByAjax('index_drop_form', '[###ACTIONS-URL|js###]', 'yes');
 	});
 	return false;
 }

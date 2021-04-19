@@ -2,6 +2,15 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+April 19, 2021 :: :: Version 7.2.1 rev.20210419
+	* Optimizations for the new Javascript ES6
+	* MAJOR RELEASE (see below backward incompatible changes for Smart.Framework Javascript which was migrated from ES5 to ES6)
+
+April 18, 2021 :: :: Version 7.2.1 rev.20210418
+	* update compatibility with new class names from smart framework Javascript ES6 in all modules
+	* mod documentor JS have been fixed to support the ES6 features, includding arrow methods, let, const and freeze
+	* documentation updated
+
 April 03, 2021 :: :: Version 7.2.1 rev.20210403
 	* Mod Oauth2 support github and non-expiring tokens
 

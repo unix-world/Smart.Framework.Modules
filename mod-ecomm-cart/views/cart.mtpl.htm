@@ -1,5 +1,5 @@
 [@@@SUB-TEMPLATE:partials/base.inc.mtpl.htm@@@]
-<!-- cart r.20210318 -->
+<!-- cart r.20210413 -->
 <script>
 var ecommCartLastError = null;
 jQuery('#btn-goto-cart').hide();
@@ -130,7 +130,7 @@ table#cart-table .cart-icon {
 							<td width="40%">
 							[%%%IF:CART-MODE:?sales|inventory;%%%]
 							<!-- Editable -->
-							<input type="text" id="edit-att-[###CART-ITEMS.HASH|html###]" name="frm[[###CART-ITEMS.HASH|html###]][att][[###CART-ITEMS.ATTRIBUTES._-KEY-_|html###]]" value="[###CART-ITEMS.ATTRIBUTES._-VAL-_.VALUE|html###]" class="form-control" style="width:100%;" onKeyDown="SmartJS_BrowserUtils.catch_ENTERKey(event);" readonly>
+							<input type="text" id="edit-att-[###CART-ITEMS.HASH|html###]" name="frm[[###CART-ITEMS.HASH|html###]][att][[###CART-ITEMS.ATTRIBUTES._-KEY-_|html###]]" value="[###CART-ITEMS.ATTRIBUTES._-VAL-_.VALUE|html###]" class="form-control" style="width:100%;" onKeyDown="smartJ$Browser.catchKeyENTER(event);" readonly>
 							[%%%ELSE:CART-MODE%%%]
 							<!-- Display Only -->
 							<b>[###CART-ITEMS.ATTRIBUTES._-VAL-_.VALUE|html###]</b>
@@ -286,7 +286,7 @@ var cartErrFx = function(the_form_id, url, msg) {
 //	jQuery('#btn-finalize').attr('disabled', 'disabled');
 	ecommCartLastError = String(msg.message || 'Unknown Error');
 	var errStatus = String(msg.status || 'ERR!');
-	jQuery('#operation_notice').show().empty().html('<h3>' + SmartJS_CoreUtils.escape_html(errStatus + ': ' + ecommCartLastError) + '</h3>');
+	jQuery('#operation_notice').show().empty().html('<h3>' + smartJ$Utils.escape_html(errStatus + ': ' + ecommCartLastError) + '</h3>');
 }
 
 [%%%IF:CART-MODE:?sales|inventory;%%%]
@@ -308,8 +308,8 @@ var cartErrFx = function(the_form_id, url, msg) {
 		} //end if
 		var id = jQuery('#item-id-' + String(hash)).val();
 		var qty = jQuery('#item-qty-' + String(hash)).val();
-		var url = '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=replace&frx[id]=' + SmartJS_CoreUtils.escape_url(id) + '&frx[hash]=' + SmartJS_CoreUtils.escape_url(hash) + '&frx[qty]=' + SmartJS_CoreUtils.escape_url(qty);
-		SmartJS_BrowserUtils.confirm_Dialog('Are you sure you want to update item attributes for this item in the cart ?', function(){ if(url) { SmartJS_BrowserUtils.Submit_Form_By_Ajax('Form_Cart', String(url), 'yes', function(){ cartOkFx(); }, function(the_form_id, url, msg){ cartErrFx(the_form_id, url, msg); }); } }, 'Replace item attributes in Cart', 500, 155);
+		var url = '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=replace&frx[id]=' + smartJ$Utils.escape_url(id) + '&frx[hash]=' + smartJ$Utils.escape_url(hash) + '&frx[qty]=' + smartJ$Utils.escape_url(qty);
+		smartJ$Browser.ConfirmDialog('Are you sure you want to update item attributes for this item in the cart ?', function(){ if(url) { smartJ$Browser.SubmitFormByAjax('Form_Cart', String(url), 'yes', function(){ cartOkFx(); }, function(the_form_id, url, msg){ cartErrFx(the_form_id, url, msg); }); } }, 'Replace item attributes in Cart', 500, 155);
 		if(click === 'edit-mode') {
 			$btn.attr('data-click', '').removeClass('ux-button-highlight');
 			$iconOfBtn.removeClass('sfi-floppy-disk').addClass('sfi-pencil');
@@ -329,8 +329,8 @@ var cartErrFx = function(the_form_id, url, msg) {
 		}
 		var id = jQuery('#item-id-' + String(hash)).val();
 		var qty = jQuery('#item-qty-' + String(hash)).val();
-		var url = '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=update' + '&frm[id]=' + SmartJS_CoreUtils.escape_url(id) + '&frm[hash]=' + SmartJS_CoreUtils.escape_url(hash) + '&frm[qty]=' + SmartJS_CoreUtils.escape_url(qty);
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax(false, String(url), 'yes', function(){ cartOkFx(); }, function(the_form_id, url, msg){ cartErrFx(the_form_id, url, msg); });
+		var url = '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=update' + '&frm[id]=' + smartJ$Utils.escape_url(id) + '&frm[hash]=' + smartJ$Utils.escape_url(hash) + '&frm[qty]=' + smartJ$Utils.escape_url(qty);
+		smartJ$Browser.SubmitFormByAjax(false, String(url), 'yes', function(){ cartOkFx(); }, function(the_form_id, url, msg){ cartErrFx(the_form_id, url, msg); });
 		return false;
 	});
 
@@ -344,20 +344,20 @@ var cartErrFx = function(the_form_id, url, msg) {
 			console.error('eComm.Cart: btnRemove: Hash is Empty ...');
 		}
 		var id = jQuery('#item-id-' + String(hash)).val();
-		var url = '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=remove'+'&frm[id]=' + SmartJS_CoreUtils.escape_url(id) + '&frm[hash]=' + SmartJS_CoreUtils.escape_url(hash);
-		SmartJS_BrowserUtils.confirm_Dialog('Are you sure you want to delete this item from the cart ?', function(){ if(url) { SmartJS_BrowserUtils.Submit_Form_By_Ajax(false, String(url), 'yes', function(){ cartOkFx(); }, function(the_form_id, url, msg){ cartErrFx(the_form_id, url, msg); }); } }, 'Delete item from Cart', 500, 155);
+		var url = '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=remove'+'&frm[id]=' + smartJ$Utils.escape_url(id) + '&frm[hash]=' + smartJ$Utils.escape_url(hash);
+		smartJ$Browser.ConfirmDialog('Are you sure you want to delete this item from the cart ?', function(){ if(url) { smartJ$Browser.SubmitFormByAjax(false, String(url), 'yes', function(){ cartOkFx(); }, function(the_form_id, url, msg){ cartErrFx(the_form_id, url, msg); }); } }, 'Delete item from Cart', 500, 155);
 		return false;
 	});
 
 	jQuery('#btn-cart-update').on('click', function(e){
 		e.preventDefault();
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('Form_Cart', '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=update', 'yes', function(){ cartOkFx(); }, function(the_form_id, url, msg){ cartErrFx(the_form_id, url, msg); });
+		smartJ$Browser.SubmitFormByAjax('Form_Cart', '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=update', 'yes', function(){ cartOkFx(); }, function(the_form_id, url, msg){ cartErrFx(the_form_id, url, msg); });
 		return false;
 	});
 
 	jQuery('.btn-cart-empty').on('click', function(e){
 		e.preventDefault();
-		SmartJS_BrowserUtils.confirm_Dialog('Are you sure you want to clear the cart ?', function(){ SmartJS_BrowserUtils.Submit_Form_By_Ajax('Form_Cart', '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=empty', 'yes', function(){ cartOkFx(); }, function(the_form_id, url, msg){ cartErrFx(the_form_id, url, msg); }); }, 'Empty Cart', 500, 150);
+		smartJ$Browser.ConfirmDialog('Are you sure you want to clear the cart ?', function(){ smartJ$Browser.SubmitFormByAjax('Form_Cart', '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=empty', 'yes', function(){ cartOkFx(); }, function(the_form_id, url, msg){ cartErrFx(the_form_id, url, msg); }); }, 'Empty Cart', 500, 150);
 		return false;
 	});
 

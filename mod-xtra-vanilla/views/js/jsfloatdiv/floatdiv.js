@@ -1,9 +1,9 @@
 
 // NetVision JS - Float Div
-// (c) 2006-2019 unix-world.org
-// v.20191116
+// (c) 2006-2021 unix-world.org
+// v.20210413
 
-// DEPENDS: jQuery, Cross-Browser
+// DEPENDS: jQuery, smartJ$Browser
 
 //============================
 
@@ -139,7 +139,7 @@ this.FloatXLayer_Toggle = function(DivID, TitleID, iFrmID, iState, fURL, fWidth,
 			ifrm.height = '' + fHeight;
 			//--
 			obj.style.visibility = 'visible';
-			obj.style.zIndex = SmartJS_BrowserUtils.getHighestZIndex();
+			obj.style.zIndex = smartJ$Browser.getHighestZIndex();
 			obj.style.left = (parseInt($(window).width()) / 2) - (fWidth / 2) + 'px';
 			obj.style.top  = '25px';
 			//--
@@ -150,7 +150,7 @@ this.FloatXLayer_Toggle = function(DivID, TitleID, iFrmID, iState, fURL, fWidth,
 		obj.onDblclick = FloatXLayer_EndMove;
 		//--
 		try {
-			SmartJS_BrowserUtils.param_PageAway = false;
+			smartJ$Browser.setFlag('PageAway', false);
 		} catch(err){}
 		//--
 	} else {
@@ -169,7 +169,7 @@ this.FloatXLayer_Toggle = function(DivID, TitleID, iFrmID, iState, fURL, fWidth,
 		obj.onDblclick = function() {};
 		//--
 		try {
-			SmartJS_BrowserUtils.param_PageAway = true;
+			smartJ$Browser.setFlag('PageAway', true);
 		} catch(err){}
 		//--
 	} //end if

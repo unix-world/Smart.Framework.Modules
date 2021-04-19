@@ -34,12 +34,12 @@ h1, h2, h3, h4, h5, h6 {
 </script>
 <script>
 function sendMessage() {
-	var overlay = SmartJS_BrowserUtils.Overlay_Show();
-	var ajax = SmartJS_BrowserUtils.Ajax_XHR_GetByForm('webmail-form', 'admin.php?page=cloud.webmail&mbox=[###CURRENT-MBOX|url|js###]&box=[###CURRENT-BOX|url|js###]&op=send-json-msg', 'json');
+	var overlay = smartJ$Browser.OverlayShow();
+	var ajax = smartJ$Browser.AjaxRequestByForm('webmail-form', 'admin.php?page=cloud.webmail&mbox=[###CURRENT-MBOX|url|js###]&box=[###CURRENT-BOX|url|js###]&op=send-json-msg', 'json');
 	ajax.done(function(msg) {
 		if((msg.hasOwnProperty('completed')) && (msg.completed === 'DONE') && (msg.hasOwnProperty('status')) && (msg.hasOwnProperty('title')) && (msg.hasOwnProperty('message')) && (msg.hasOwnProperty('js_evcode')) && (msg.hasOwnProperty('redirect'))) {
 			if(msg.status === 'OK') {
-				SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(msg.title), SmartJS_CoreUtils.escape_html(msg.message), '', 5000, false, 'green');
+				smartJ$Browser.GrowlNotificationAdd(smartJ$Utils.escape_html(msg.title), smartJ$Utils.escape_html(msg.message), '', 5000, false, 'green');
 				if(msg.js_evcode) {
 					try {
 						eval('(function(){ ' + msg.js_evcode + ' })();'); // sandbox
@@ -47,17 +47,17 @@ function sendMessage() {
 						console.error('sendMessage Eval Code FAILED: ' + err);
 					}
 				}
-				setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 7500);
+				setTimeout(function(){ smartJ$Browser.OverlayHide(); }, 7500);
 			} else {
-				SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(msg.title), SmartJS_CoreUtils.escape_html(msg.message), '', 7500, false, 'red');
-				setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
+				smartJ$Browser.GrowlNotificationAdd(smartJ$Utils.escape_html(msg.title), smartJ$Utils.escape_html(msg.message), '', 7500, false, 'red');
+				setTimeout(function(){ smartJ$Browser.OverlayHide(); }, 500);
 			}
 		} else {
-			SmartJS_BrowserUtils.GrowlNotificationAdd('ERROR', 'Invalid JSON Answer', '', 7500, false, 'pink');
-			setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, 500);
+			smartJ$Browser.GrowlNotificationAdd('ERROR', 'Invalid JSON Answer', '', 7500, false, 'pink');
+			setTimeout(function(){ smartJ$Browser.OverlayHide(); }, 500);
 		}
 	}).fail(function (msg) {
-		SmartJS_BrowserUtils.alert_Dialog(SmartJS_CoreUtils.escape_html(msg.responseText), 'SmartJS_BrowserUtils.Overlay_Hide();', 'ERROR: Invalid Server Response ', 720, 400);
+		smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(msg.responseText), 'smartJ$Browser.OverlayHide();', 'ERROR: Invalid Server Response ', 720, 400);
 	});
 }
 </script>
@@ -76,7 +76,7 @@ function sendMessage() {
 				<button type="button" class="ux-button" onClick="self.location='[###BACK-URL|js|html###]'; return false;"><i class="sfi sfi-undo"></i> &nbsp; Back</button>
 				[%%%/IF:BACK-URL%%%]
 				<button type="button" class="ux-button ux-button-primary" onClick="sendMessage(); return false;"><i class="sfi sfi-mail3"></i> &nbsp; Send</button>
-				<button type="button" class="ux-button ux-button-highlight" onClick="SmartJS_BrowserUtils.CloseModalPopUp();"><i class="sfi sfi-cancel-circle"></i> &nbsp; Close</button>
+				<button type="button" class="ux-button ux-button-highlight" onClick="smartJ$Browser.CloseModalPopUp();"><i class="sfi sfi-cancel-circle"></i> &nbsp; Close</button>
 			</div>
 		</td>
 	</tr>
@@ -111,7 +111,7 @@ function sendMessage() {
 		[%%%ELSE:COMPOSER-ATTS%%%]
 			<div id="atts-list"><div class="atts-file"><input id="atts-file" class="attachment" type="file" name="webmail_attachments[]"></div></div>
 			<script type="text/javascript">
-				SmartJS_BrowserUtils.CloneElement('atts-file', 'atts-list', 'file-input', 9);
+				smartJ$Browser.CloneElement('atts-file', 'atts-list', 'file-input', 9);
 			</script>
 		[%%%/IF:COMPOSER-ATTS%%%]
 		</td>

@@ -1,5 +1,5 @@
 [@@@SUB-TEMPLATE:flowchart-init.inc.htm@@@]
-<!-- flowchart-editor.htm v.20200121 -->
+<!-- flowchart-editor.htm v.20210413 -->
 <link rel="stylesheet" href="modules/mod-wflow-components/views/flowchart/editor/flowchart-editor-edit.css">
 <style>
 #area-editable {
@@ -32,7 +32,7 @@
 	</select>
 	<button class="ux-button ux-button-small ux-button-regular" id="flowchartSaveBtn" onclick="" style="margin-left: 15px;">Save Flowchart</button>
 	[%%%IF:OP-MODE:==create;%%%]
-	<button class="ux-button ux-button-small ux-button-special" id="flowchartCancelBtn" onclick="SmartJS_BrowserUtils.CloseModalPopUp(); SmartJS_BrowserUtils.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
+	<button class="ux-button ux-button-small ux-button-special" id="flowchartCancelBtn" onclick="smartJ$Browser.CloseModalPopUp(); smartJ$Browser.RefreshParent(); return false;" style="margin-left: 15px;">Cancel Create</button>
 	[%%%ELSE:OP-MODE%%%]
 	<button class="ux-button ux-button-small ux-button-special" id="flowchartCancelBtn" onclick="self.location='admin.php?/page/agile.flowchart-editor/uuid/[###UUID|url|html###]'; return false;" style="margin-left: 15px;">Cancel Edit</button>
 	[%%%/IF:OP-MODE%%%]
@@ -45,7 +45,7 @@
 	var flowchartIsReadonly = false;
 	var flowchartAddDialogHelper = function(elemType, fxGenerateElement) {
 		if(elemType == 'note') {
-			SmartJS_BrowserUtils.confirm_Dialog('<h3>Create Element: ' + SmartJS_CoreUtils.escape_html(SmartJS_CoreUtils.stringUcFirst(elemType)) + '</h3><div class="flowchart-area"><div class="jtk-node ' + SmartJS_CoreUtils.escape_html(elemType) + '" style="position:absolute; top:82px; right:25px;"></div></div>', function(){ fxGenerateElement(elemType, null); }, 'New Flowchart Passive Element', 550, 200);
+			smartJ$Browser.ConfirmDialog('<h3>Create Element: ' + smartJ$Utils.escape_html(smartJ$Utils.stringUcFirst(elemType)) + '</h3><div class="flowchart-area"><div class="jtk-node ' + smartJ$Utils.escape_html(elemType) + '" style="position:absolute; top:82px; right:25px;"></div></div>', function(){ fxGenerateElement(elemType, null); }, 'New Flowchart Passive Element', 550, 200);
 		} else {
 			var extClass = '';
 			switch(elemType) {
@@ -65,7 +65,7 @@
 				default:
 					extClass = '';
 			}
-			SmartJS_BrowserUtils.confirm_Dialog('<h3>Create Element: ' + SmartJS_CoreUtils.escape_html(SmartJS_CoreUtils.stringUcFirst(elemType)) + '</h3><div>Select the Connector Type for Element: <select id="flowchart-add-element-type" class="ux-field"><option value="DEFAULT">Default</option><option value="INVERTED">Inverted</option><option value="PERIMETER">Perimeter</option></select></div><div class="flowchart-area"><div class="jtk-node' + SmartJS_CoreUtils.escape_html(extClass) + '" style="position:absolute; top:57px; right:25px;"></div></div>', function(){ var theLabel = $("#flowchart-add-element-type").val(); fxGenerateElement(elemType, theLabel); }, 'New Flowchart Active Element', 550, 235);
+			smartJ$Browser.ConfirmDialog('<h3>Create Element: ' + smartJ$Utils.escape_html(smartJ$Utils.stringUcFirst(elemType)) + '</h3><div>Select the Connector Type for Element: <select id="flowchart-add-element-type" class="ux-field"><option value="DEFAULT">Default</option><option value="INVERTED">Inverted</option><option value="PERIMETER">Perimeter</option></select></div><div class="flowchart-area"><div class="jtk-node' + smartJ$Utils.escape_html(extClass) + '" style="position:absolute; top:57px; right:25px;"></div></div>', function(){ var theLabel = $("#flowchart-add-element-type").val(); fxGenerateElement(elemType, theLabel); }, 'New Flowchart Active Element', 550, 235);
 		}
 	}
 	var flowchartEditDialogHelper = function(labelType, txtElemLabel, objElemLabel, fxSetLabel) {
@@ -74,10 +74,10 @@
 			var theList = '';
 			var theIcons = [###THE-ICONS|json###];
 			theList += '<h5 style="color:#555555;">SF.Icons</h5>';
-			theList += '<input type="hidden" id="flowchart-element-icon" value="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '">';
+			theList += '<input type="hidden" id="flowchart-element-icon" value="' + smartJ$Utils.escape_html(txtElemLabel) + '">';
 			if(theIcons.length) {
 				for(var i=0; i<theIcons.length; i++) {
-					theList += '<div title="Click to select SF.Icon: ' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" style="float:left; margin-right:3px; margin-bottom:3px; cursor:pointer; color:#778899; font-size:1rem!important;" class="' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" onclick="var theIconClass = jQuery(this).attr(\'class\'); jQuery(\'#flowchart-element-icon\').val(theIconClass); jQuery(\'#flowchart-element-selected-icon\').attr(\'class\', theIconClass).attr(\'title\', \'Selected Icon: \' + theIconClass);"></div>';
+					theList += '<div title="Click to select SF.Icon: ' + smartJ$Utils.escape_html(theIcons[i]) + '" style="float:left; margin-right:3px; margin-bottom:3px; cursor:pointer; color:#778899; font-size:1rem!important;" class="' + smartJ$Utils.escape_html(theIcons[i]) + '" onclick="var theIconClass = jQuery(this).attr(\'class\'); jQuery(\'#flowchart-element-icon\').val(theIconClass); jQuery(\'#flowchart-element-selected-icon\').attr(\'class\', theIconClass).attr(\'title\', \'Selected Icon: \' + theIconClass);"></div>';
 				}
 			}
 			[%%%IF:LOAD-FA:==yes;%%%]
@@ -86,28 +86,28 @@
 				theList += '<div style="clear:both;"></div><br>';
 				theList += '<h5 style="color:#555555;">Font Awesome</h5>';
 				for(var i=0; i<theIcons.length; i++) {
-					theList += '<div title="Click to select FontAwesome Icon: ' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" style="float:left; margin-right:3px; margin-bottom:3px; cursor:pointer; color:#778899; font-size:1rem!important;" class="' + SmartJS_CoreUtils.escape_html(theIcons[i]) + '" onclick="var theIconClass = jQuery(this).attr(\'class\'); jQuery(\'#flowchart-element-icon\').val(theIconClass); jQuery(\'#flowchart-element-selected-icon\').attr(\'class\', theIconClass).attr(\'title\', \'Selected Icon: \' + theIconClass);"></div>';
+					theList += '<div title="Click to select FontAwesome Icon: ' + smartJ$Utils.escape_html(theIcons[i]) + '" style="float:left; margin-right:3px; margin-bottom:3px; cursor:pointer; color:#778899; font-size:1rem!important;" class="' + smartJ$Utils.escape_html(theIcons[i]) + '" onclick="var theIconClass = jQuery(this).attr(\'class\'); jQuery(\'#flowchart-element-icon\').val(theIconClass); jQuery(\'#flowchart-element-selected-icon\').attr(\'class\', theIconClass).attr(\'title\', \'Selected Icon: \' + theIconClass);"></div>';
 				}
 			}
 			[%%%/IF:LOAD-FA%%%]
-			SmartJS_BrowserUtils.confirm_Dialog('<h3>' + SmartJS_CoreUtils.escape_html(labelType) + ' &nbsp; <span title="Selected Icon: ' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" style="font-size:1.5rem!important; cursor:help;" id="flowchart-element-selected-icon" class="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" onClick="jQuery(\'#flowchart-element-icon\').val(\'\'); jQuery(this).attr(\'class\', \'\').attr(\'title\', \'\');"></span></h3><div style="width:100%; height:200px; overflow:auto;">' + theList + '</div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-icon").val()); }, 'Modify Flowchart Element', 550, 355);
+			smartJ$Browser.ConfirmDialog('<h3>' + smartJ$Utils.escape_html(labelType) + ' &nbsp; <span title="Selected Icon: ' + smartJ$Utils.escape_html(txtElemLabel) + '" style="font-size:1.5rem!important; cursor:help;" id="flowchart-element-selected-icon" class="' + smartJ$Utils.escape_html(txtElemLabel) + '" onClick="jQuery(\'#flowchart-element-icon\').val(\'\'); jQuery(this).attr(\'class\', \'\').attr(\'title\', \'\');"></span></h3><div style="width:100%; height:200px; overflow:auto;">' + theList + '</div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-icon").val()); }, 'Modify Flowchart Element', 550, 355);
 		} else {
-			SmartJS_BrowserUtils.confirm_Dialog('<h3>' + SmartJS_CoreUtils.escape_html(labelType) + '</h3><div>Label:&nbsp; <input type="text" maxlength="50" value="' + SmartJS_CoreUtils.escape_html(txtElemLabel) + '" id="flowchart-element-label" class="ux-field" style="width:425px;"></div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-label").val()); }, 'Modify Flowchart Element', 550, 200);
+			smartJ$Browser.ConfirmDialog('<h3>' + smartJ$Utils.escape_html(labelType) + '</h3><div>Label:&nbsp; <input type="text" maxlength="50" value="' + smartJ$Utils.escape_html(txtElemLabel) + '" id="flowchart-element-label" class="ux-field" style="width:425px;"></div>', function(){ fxSetLabel(objElemLabel, $("#flowchart-element-label").val()); }, 'Modify Flowchart Element', 550, 200);
 		}
 	}
 	var flowchartDeleteDialogHelper = function(objType, objElemSel, fxRemoveElem) {
-		SmartJS_BrowserUtils.confirm_Dialog('<h3>Delete this ' + SmartJS_CoreUtils.escape_html(objType) + ' ?</h3>', function(){ fxRemoveElem(objElemSel); }, 'Confirm remove Flowchart ' + SmartJS_CoreUtils.escape_html(objType), 550, 170);
+		smartJ$Browser.ConfirmDialog('<h3>Delete this ' + smartJ$Utils.escape_html(objType) + ' ?</h3>', function(){ fxRemoveElem(objElemSel); }, 'Confirm remove Flowchart ' + smartJ$Utils.escape_html(objType), 550, 170);
 	}
 	var flowchartSaveDataHelper = function(data) {
 	//	data.docTitle = String($('#flowchart_title').val());
 		var theData = JSON.stringify(data);
 		$('#flowchart_data').val(theData);
-		SmartJS_BrowserUtils.RefreshParent();
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('flowchart_form', 'admin.php?page=agile.flowchart-save', 'yes');
+		smartJ$Browser.RefreshParent();
+		smartJ$Browser.SubmitFormByAjax('flowchart_form', 'admin.php?page=agile.flowchart-save', 'yes');
 	}
 	var flowchartExportDataHelper = null; /* function(data) {
 		data.docTitle = String($('#flowchart_title').val());
-		SmartJS_BrowserUtils.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'flowchart.json', 'application/json', 'UTF-8');
+		smartJ$Browser.VirtualFileDownload(String(JSON.stringify(data, null, 2)), 'flowchart.json', 'application/json', 'UTF-8');
 	} */
 </script>
 <script>
@@ -116,5 +116,5 @@
 	flowchartDataObj = null; // clear
 </script>
 <script>
-	SmartJS_BrowserUtils.PageAwayControl('Exit without Save ?');
+	smartJ$Browser.PageAwayControl('Exit without Save ?');
 </script>
