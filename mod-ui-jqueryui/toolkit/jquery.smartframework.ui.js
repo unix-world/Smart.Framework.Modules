@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210419
+var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210420
 
 	this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
