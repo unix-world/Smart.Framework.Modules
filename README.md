@@ -3,7 +3,7 @@
 ### This software project is open source. You must choose which license to use depending on your use case: BSD license or GPLv3 license (see LICENSE file)
 **(c) 2009 - 2021 unix-world.org** / support&#64;unix-world.org
 
-#### This software framework is compatible, stable and actively tested with PHP 7.2 / 7.3 / 7.4 / 8.0 versions.
+#### This software framework is compatible, stable and actively tested with PHP 7.3 / 7.4 / 8.0 versions.
 **Prefered PHP version** is: **7.4** (LTS).
 
 ## List of available Modules for Smart.Framework:

@@ -46,7 +46,7 @@ define('SMART_HTMLTOPDF_DOCUMENT_MODE', 		'color'); 							// PDF mode: `color` 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	executables: WkHtmlToPdf ; classes: Smart, SmartUtils, SmartFileSysUtils
- * @version 	v.20200121
+ * @version 	v.20210428
  * @package 	modules:PDF-Generate
  *
  */
@@ -133,7 +133,7 @@ final class HtmlUrlToPdfExport {
 								\Smart::log_warning(__CLASS__.' # ERROR: PDF Generator command failed to find the PDF Document: '.$file);
 							} //end if
 						} else {
-							if(\SmartFrameworkRuntime::ifDebug()) {
+							if(\SmartFrameworkRegistry::ifDebug()) {
 								\Smart::log_notice(__CLASS__.' # ERROR: PDF Generator command failed with code ['.$result_code.']: `'.$wkhtmltopdf.' '.$pdf_options.'`'."\n".print_r($arr_output,1));
 							} //end if
 						} //end if
@@ -142,7 +142,7 @@ final class HtmlUrlToPdfExport {
 					} //end if else
 				} else {
 					\Smart::log_warning(__CLASS__.' # ERROR: PDF Generator detected Invalid Options for the PDF Document: '.$file);
-					if(\SmartFrameworkRuntime::ifDebug()) {
+					if(\SmartFrameworkRegistry::ifDebug()) {
 						\Smart::log_notice(__CLASS__.' # ERROR: PDF Generator HTML URL: '.$y_html_url);
 					} //end if
 				} //end if else
@@ -150,13 +150,13 @@ final class HtmlUrlToPdfExport {
 			} else {
 				//--
 				\Smart::log_warning(__CLASS__.' # ERROR: PDF Generator Found the PDF Document before generation: '.$file);
-				if(\SmartFrameworkRuntime::ifDebug()) {
+				if(\SmartFrameworkRegistry::ifDebug()) {
 					\Smart::log_notice(__CLASS__.' # ERROR: PDF Generator HTML URL: '.$y_html_url);
 				} //end if
 				//--
 			} //end if else
 			//-- cleanup
-			if(!\SmartFrameworkRuntime::ifDebug()) { // if not debug, cleanup the dir
+			if(!\SmartFrameworkRegistry::ifDebug()) { // if not debug, cleanup the dir
 				if(\SmartFileSystem::is_type_dir($the_dir)) {
 					\SmartFileSystem::dir_delete($the_dir);
 				} //end if

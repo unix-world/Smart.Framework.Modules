@@ -49,7 +49,7 @@ define('SMART_HTMLTOPDF_DOCUMENT_MODE', 		'color'); 							// PDF mode: `color` 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	executables: HTMLDoc ; classes: Smart, SmartUtils, SmartFileSysUtils, SmartHtmlParser
- * @version 	v.20200121
+ * @version 	v.20210428
  * @package 	modules:PDF-Generate
  *
  */
@@ -178,7 +178,7 @@ final class HtmlToPdfExport {
 						$tmp_img_ext = (string) $tmp_getimg_arr['extension'];
 					} //end if
 					//--
-					if(\SmartFrameworkRuntime::ifDebug()) { // if debug, append information to log
+					if(\SmartFrameworkRegistry::ifDebug()) { // if debug, append information to log
 						\SmartFileSystem::write($logfile, '=========='."\n".'========== [FILE # '.$i.' = \''.$tmp_img_src.'\']'."\n\n".'=== [GUESS EXTENSION] :: '.$tmp_img_ext."\n\n".'=== LOG: '.$tmp_getimg_arr['log']."\n\n".'=========='."\n\n\n\n", 'a');
 					} //end if
 					//--
@@ -262,7 +262,7 @@ final class HtmlToPdfExport {
 					} //end if else
 				} else {
 					\Smart::log_warning(__CLASS__.' # ERROR: PDF Generator detected Invalid Options for the PDF Document: '.$file);
-					if(\SmartFrameworkRuntime::ifDebug()) {
+					if(\SmartFrameworkRegistry::ifDebug()) {
 						\Smart::log_notice(__CLASS__.' # ERROR: PDF Generator HTML Document: '.$y_html_content);
 					} //end if
 				} //end if else
@@ -270,13 +270,13 @@ final class HtmlToPdfExport {
 			} else {
 				//--
 				\Smart::log_warning(__CLASS__.' # ERROR: PDF Generator Failed to find the PDF Document: '.$file);
-				if(\SmartFrameworkRuntime::ifDebug()) {
+				if(\SmartFrameworkRegistry::ifDebug()) {
 					\Smart::log_notice(__CLASS__.' # ERROR: PDF Generator HTML Document: '.$y_html_content);
 				} //end if
 				//--
 			} //end if else
 			//-- cleanup
-			if(!\SmartFrameworkRuntime::ifDebug()) { // if not debug, cleanup the dir
+			if(!\SmartFrameworkRegistry::ifDebug()) { // if not debug, cleanup the dir
 				if(\SmartFileSystem::is_type_dir($the_dir)) {
 					\SmartFileSystem::dir_delete($the_dir);
 				} //end if

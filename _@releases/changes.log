@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+May 11, 2021 :: :: Version 7.2.1 rev.20210511
+	* sync with the major refactoring of framework
+	* removed deprecated class from Zend DBAL as framework only supports PHP 7.3+
+
 April 20, 2021 :: :: Version 7.2.1 rev.20210420
 	* garbage cleaning inside code: php, js, html, ..., comments
 

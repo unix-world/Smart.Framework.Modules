@@ -41,18 +41,18 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 		$this->PageViewSetCfg('rawpage', true);
 
-		if(strpos((string)strtolower((string)$_SERVER['HTTP_REFERER']), (string)$this->ControllerGetParam('url-addr')) !== 0) { // check referer
+		if(strpos((string)strtolower((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTP_REFERER'])), (string)$this->ControllerGetParam('url-addr')) !== 0) { // check referer
 			$this->PageViewSetErrorStatus(403, 'ERROR: Proxy Invalid Referer.');
 			return;
 		} //end if
 
-		if((string)$_SERVER['HTTP_Z_SFK'] == '') {
+		if((string)trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTP_Z_SFK'])) == '') {
 			$this->PageViewSetErrorStatus(403, 'ERROR: Proxy Empty Token.');
 			return;
 		} //end if
 		$crr_req_url = (string) $this->ControllerGetParam('url-proto-addr').$this->ControllerGetParam('url-domain').$this->ControllerGetParam('url-port-addr').$this->ControllerGetParam('url-path').$this->ControllerGetParam('url-script').$this->ControllerGetParam('uri-path').$this->ControllerGetParam('url-query');
 		$crr_req_ua = (string) SmartUtils::get_os_browser_ip('signature');
-		if((string)SmartHashCrypto::sha512((string)$crr_req_url.'^'.(string)$crr_req_ua) !== (string)$_SERVER['HTTP_Z_SFK']) {
+		if((string)SmartHashCrypto::sha512((string)$crr_req_url.'^'.(string)$crr_req_ua) !== (string)trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTP_Z_SFK']))) {
 			$this->PageViewSetErrorStatus(403, 'ERROR: Proxy Invalid Token.');
 			return;
 		} //end if
@@ -67,8 +67,8 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		} //end if
 		*/
 
-		$url = (string) $_SERVER['REQUEST_URI']; // (original) this works with both: ApacheRewrite and SmartFramework crafted PathInfo
-		$method = (string) $_SERVER['REQUEST_METHOD'];
+		$url = (string) SmartUtils::get_server_current_request_uri(); // (original) this works with both: ApacheRewrite and SmartFramework crafted PathInfo
+		$method = (string) SmartUtils::get_server_current_request_method();
 
 		$cors_headers = [
 			'Access-Control-Allow-Origin' 	=> '*',
@@ -106,7 +106,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 			// allow custom content types
 			if(isset($_SERVER['CONTENT_TYPE'])) {
-				$headers[] = 'Content-Type: '.str_replace(["\r", "\n"], [' ', ' '], (string)$_SERVER['CONTENT_TYPE']);
+				$headers[] = 'Content-Type: '.Smart::normalize_spaces((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['CONTENT_TYPE']));
 			} //end if
 
 			// check for media parameter

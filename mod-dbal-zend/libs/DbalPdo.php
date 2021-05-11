@@ -91,7 +91,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP PDO ; classes: \Zend\Db
- * @version 	v.20210401
+ * @version 	v.20210429
  * @package 	modules:Database:PDO:Zend-Dbal
  *
  */
@@ -227,7 +227,7 @@ final class DbalPdo {
 				return;
 		} //end switch
 		//--
-		$this->cfg['charset'] = (string) \SMART_FRAMEWORK_DBSQL_CHARSET;
+		$this->cfg['charset'] = (string) \SMART_FRAMEWORK_SQL_CHARSET;
 		$this->cfg['options'] = (array) ((isset($this->cfg['options']) && \is_array($this->cfg['options'])) ? $this->cfg['options'] : []);
 		$this->cfg['options']['buffer_results'] = true;
 		//--
@@ -237,7 +237,7 @@ final class DbalPdo {
 		//--
 		$this->platform = $this->connection->getPlatform();
 		//--
-		if(\SmartFrameworkRuntime::ifDebug()) {
+		if(\SmartFrameworkRegistry::ifDebug()) {
 			$this->profiler = new \Zend\Db\Adapter\Profiler\Profiler();
 			$this->connection->setProfiler($this->profiler);
 		} //end if
@@ -490,7 +490,7 @@ final class DbalPdo {
 	 */
 	public function __destruct() {
 		//--
-		if(!\SmartFrameworkRuntime::ifDebug()) {
+		if(!\SmartFrameworkRegistry::ifDebug()) {
 			return;
 		} //end if
 		if(!$this->profiler) {
@@ -506,7 +506,7 @@ final class DbalPdo {
 		//--
 		\SmartFrameworkRegistry::setDebugMsg('db', 'zend-db/'.$driver.'|log', [
 			'type' => 'metainfo',
-			'data' => 'Database Server: SQL ('.$driver.') / App Connector Version: '.$this->zend_db_version.' / Connection Charset: '.\SMART_FRAMEWORK_DBSQL_CHARSET
+			'data' => 'Database Server: SQL ('.$driver.') / App Connector Version: '.$this->zend_db_version.' / Connection Charset: '.\SMART_FRAMEWORK_SQL_CHARSET
 		]);
 		\SmartFrameworkRegistry::setDebugMsg('db', 'zend-db/'.$driver.'|log', [
 			'type' => 'metainfo',
@@ -568,7 +568,7 @@ final class DbalPdo {
 		//--
 		$def_warn = 'Execution Halted !';
 		$y_warning = (string) \trim((string)$y_warning);
-		if(\SmartFrameworkRuntime::ifDebug()) {
+		if(\SmartFrameworkRegistry::ifDebug()) {
 			$width = 750;
 			$the_area = (string) $y_area;
 			if((string)$y_warning == '') {
@@ -594,17 +594,17 @@ final class DbalPdo {
 			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
 		} //end if else
 		//--
-		$out = \SmartComponents::app_error_message(
+		$out = (string) \SmartComponents::app_error_message(
 			'Zend-Db Client',
 			(string) $driver,
 			'SQL/DB',
 			'Server',
 			'modules/mod-dbal-zend/libs/img/database.svg',
-			$width, // width
-			$the_area, // area
-			$the_error_message, // err msg
-			$the_params, // title or params
-			$the_query_info // sql statement
+			(int)    $width, // width
+			(string) $the_area, // area
+			(string) $the_error_message, // err msg
+			(string) $the_params, // title or params
+			(string) $the_query_info // sql statement
 		);
 		//--
 		\Smart::raise_error(

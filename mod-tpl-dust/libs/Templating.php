@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype ; classes: Dust
- * @version 	v.20210305
+ * @version 	v.20210428
  * @package 	modules:TemplatingEngine
  *
  */
@@ -85,7 +85,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		if($onlydebug !== true) {
 			$onlydebug = false;
 		} //end else
-		if(!\SmartFrameworkRuntime::ifDebug()) {
+		if(!\SmartFrameworkRegistry::ifDebug()) {
 			$onlydebug = false;
 		} //end if
 		//--
@@ -143,7 +143,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			return;
 		} //end if
 		//--
-		if(\SmartFrameworkRuntime::ifDebug()) {
+		if(\SmartFrameworkRegistry::ifDebug()) {
 			$bench = \microtime(true);
 			$pmu = 0;
 			if(\function_exists('\\memory_get_peak_usage')) {
@@ -158,7 +158,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		} //end if
 		$rendered = (string) $this->dust->renderTemplate($template, (array)$arr_vars);
 		//--
-		if(\SmartFrameworkRuntime::ifDebug()) {
+		if(\SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$optim_msg = [];
 			foreach((array)$this->dust->getFsRdRpls() as $key => $val) {
@@ -241,7 +241,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 	 */
 	public function debug($tpl) {
 		//--
-		if(!\SmartFrameworkRuntime::ifDebug()) {
+		if(!\SmartFrameworkRegistry::ifDebug()) {
 			return '';
 		} //end if
 		//--

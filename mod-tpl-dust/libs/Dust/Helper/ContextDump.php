@@ -8,7 +8,7 @@ class ContextDump {
 
 	public function __invoke(Evaluate\Chunk $chunk, Evaluate\Context $context, Evaluate\Bodies $bodies, Evaluate\Parameters $params) {
 		//get config
-		if(!\SmartFrameworkRuntime::ifDebug()) {
+		if(!\SmartFrameworkRegistry::ifDebug()) {
 			\Smart::log_warning(__METHOD__.' The Dust contextDump must not be enabled when Debug is OFF');
 			return $chunk;
 		}

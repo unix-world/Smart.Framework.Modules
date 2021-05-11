@@ -83,7 +83,7 @@ function autoload__RedbeanOrm_SFM($classname) {
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype, PHP PDO ; classes: \RedbeanOrm\Db
- * @version 	v.20200121
+ * @version 	v.20210428
  * @package 	modules:Database:PDO:Redbean-ORM
  *
  */
@@ -155,7 +155,7 @@ final class ORM extends \RedBeanPHP\Facade {
 		} //end switch
 		//--
 		if(self::$conexion) {
-			if(\SmartFrameworkRuntime::ifDebug()) {
+			if(\SmartFrameworkRegistry::ifDebug()) {
 				parent::debug(true, 1); //select mode 1 to suppress screen output
 				\SmartDebugProfiler::register_extra_debug_log((string)__CLASS__, 'registerToDebugLog');
 			} //end if
@@ -176,7 +176,7 @@ final class ORM extends \RedBeanPHP\Facade {
 		//--
 		// this must be called at the end
 		//--
-		if(!\SmartFrameworkRuntime::ifDebug()) {
+		if(!\SmartFrameworkRegistry::ifDebug()) {
 			return;
 		} //end if
 		//--

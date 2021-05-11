@@ -52,7 +52,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		$this->PageViewSetVars([
 			'VERSION' 		=> (string) $version,
 			'LOGO-TXT' 		=> (string) 'Smart.Cloud :: '.$version.' @ Powered by Smart.Framework / Server',
-			'LOGO-IMG' 		=> (string) 'modules/mod-cloud/views/img/globe.svg',
+			'LOGO-IMG' 		=> (string) 'lib/core/img/app/globe.svg',
 			'IMGS-PATH' 	=> (string) 'modules/mod-webdav/libs/img/',
 			'DATE-YEAR' 	=> (string) date('Y')
 		]);

@@ -49,13 +49,13 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 		//-- check IP (referer must come from javascript and must be the same as domain)
 		if(!$this->is_debug) {
-			if((string)$_SERVER['HTTP_REFERER'] == '') {
+			if((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTP_REFERER']) == '') {
 				Smart::log_notice('Empty Referer in Mapnik Proxy (101)');
 				$this->PageViewSetVar('main', SmartComponents::http_message_403_forbidden('Invalid Proxy Referer (101)'));
 				return;
 			} //end if
 			//--
-			$parsed_referer = (array) Smart::url_parse($_SERVER['HTTP_REFERER']);
+			$parsed_referer = (array) Smart::url_parse((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTP_REFERER']));
 			if((string)$parsed_referer['host'] == '') {
 				Smart::log_notice('Empty Referer in Mapnik Proxy / Parsed Host (102)');
 				$this->PageViewSetVar('main', SmartComponents::http_message_403_forbidden('Invalid Proxy Referer (102)'));

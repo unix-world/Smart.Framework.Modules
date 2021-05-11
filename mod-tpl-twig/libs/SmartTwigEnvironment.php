@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	extensions: PHP Ctype (optional) ; classes: \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20210305
+ * @version 	v.20210428
  * @package 	modules:TemplatingEngine
  *
  */
@@ -39,8 +39,12 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 
 	public function smartSetupCacheDir() {
 		//--
-		if(\SMART_FRAMEWORK_ADMIN_AREA === true) {
-			$the_twig_cache_dir = 'tmp/cache/twig#adm/v'.(int)self::MAJOR_VERSION;
+		if(\SmartFrameworkRegistry::isAdminArea() === true) {
+			if(\SmartFrameworkRegistry::isTaskArea() === true) {
+				$the_twig_cache_dir = 'tmp/cache/twig#tsk/v'.(int)self::MAJOR_VERSION;
+			} else {
+				$the_twig_cache_dir = 'tmp/cache/twig#adm/v'.(int)self::MAJOR_VERSION;
+			} //end if else
 		} else {
 			$the_twig_cache_dir = 'tmp/cache/twig#idx/v'.(int)self::MAJOR_VERSION;
 		} //end if else
@@ -58,7 +62,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 
 	public function smartDebugGetLoadedTemplates($mode) {
 		//--
-		if(!\SmartFrameworkRuntime::ifDebug()) {
+		if(!\SmartFrameworkRegistry::ifDebug()) {
 			return array();
 		} //end if
 		//--

@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SvnWebManager {
 
 	// ::
-	// v.20210402
+	// v.20210511
 
 	const MAX_FILESIZE_DISPLAY = 10000000; // 10MB
 
@@ -728,7 +728,7 @@ final class SvnWebManager {
 		$exearr = (array) \SmartUtils::run_proc_cmd((string)$cmd, null, (string)self::$svn_cache_dir); // avoid proc open in web root !!
 		if(($exearr['exitcode'] !== 0) OR ((string)$exearr['stderr'] != '')) {
 			//-- Fix: not raise error here ! in some cases when path renames going backward to select diff, props or view if path renames will have an error ; make this a nice error and do not raise fatal
-			if(\SmartFrameworkRuntime::ifDebug()) {
+			if(\SmartFrameworkRegistry::ifDebug()) {
 				\Smart::log_notice(__METHOD__.' #ERR# SVN Command:['.$cmd.'] Returned Some Errors ; ExitCode=['.$exearr['exitcode'].'] ; ErrorMsg: '.$exearr['stderr']);
 			} //end if
 			if(!\headers_sent()) {
@@ -737,11 +737,12 @@ final class SvnWebManager {
 			die((string)\SmartComponents::http_message_400_badrequest('Message: `'.$exearr['stderr'].'`', '<h6 style="color:#333333;">ExitCode:&nbsp;['.\Smart::escape_html($exearr['exitcode']).']</h6>'));
 			//-- #fix
 		} //end if
-		$out = (string) \trim((string)$exearr['stdout']);
+		$out = (string) $exearr['stdout']; // do no trim here ; only xml should be trimmed and will be done below
 		$exearr = array(); // free mem
 		//--
 		switch((string)$format) {
 			case 'xml-arr':
+				$out = (string) \trim((string)$out);
 				if((string)$out == '') {
 					\Smart::raise_error( // should be a fatal error or 404 ??
 						__METHOD__.' #ERR# SVN Command:['.$cmd.'] Returned Empty Output ...',
@@ -758,7 +759,7 @@ final class SvnWebManager {
 				return (array) $arr;
 				break;
 			case 'string':
-				return (string) $out;
+				return (string) $out; // do no trim here to avoid alter download files ; only xml should be trimmed and this is not the case
 				break;
 			case 'exit-code':
 				return true; // return TRUE as the real exit code was checked above

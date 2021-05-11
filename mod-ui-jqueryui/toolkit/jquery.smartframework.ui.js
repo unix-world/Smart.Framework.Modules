@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210420
+var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210504
 
 	this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
@@ -233,15 +233,20 @@ var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210420
 	//	modules/mod-ui-jqueryui/toolkit/listselect/i18n/jquery.multiselect.{lang}.js
 	//	modules/mod-ui-jqueryui/toolkit/listselect/jquery.multiselect.filter.js
 	//	modules/mod-ui-jqueryui/toolkit/listselect/i18n/jquery.multiselect.filter.{lang}.js
-	this.SelectList = function(elemID, dimW, dimH, allowMulti, useFilter) {
+	this.SelectList = function(elemID, dimW, dimH, isMulti, useFilter) {
 		//--
-		// evcode is taken from onBlur ; evcode params: elemID
+		// evcode is taken from onBlur, mostly used by multi-select lists ; single select lists can handle onChange
+		// evcode params: elemID, useFilter, isMulti
 		//--
 		var HtmlElement = $('#' + elemID);
 		//--
+		if(isMulti) {
+			dimH = dimH + 75; // correction factor
+		} //end if
+		//--
 		HtmlElement.multiselect({
 			header: true,
-			multiple: allowMulti,
+			multiple: !! isMulti,
 			selectedList: 1,
 			minWidth: dimW,
 			height: dimH,
@@ -256,7 +261,7 @@ var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210420
 				if((evcode != undefined) && (evcode != 'undefined') && (evcode != '')) { // undef tests also for null
 					try {
 						if(typeof(evcode) === 'function') {
-							evcode(elemID); // call :: sync params ui-selectlist
+							evcode(elemID, useFilter, isMulti); // call :: sync params ui-selectlist
 						} else { // sync :: eliminate javascript:
 							evcode = smartJ$Utils.stringTrim(evcode);
 							evcode = evcode.replace('javascript:', '');
@@ -452,7 +457,7 @@ var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210420
 			active: tab_selected,
 			select: function(event, ui) {},
 			beforeLoad: function(event, ui) {
-				if(prevent_reload === true) {
+				if(prevent_reload !== false) {
 					if(ui.tab.data('loaded')) {
 						event.preventDefault();
 						return;
@@ -604,108 +609,28 @@ var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210420
 	//	jQuery
 	//	lib/js/jquery/datatables/datatables-responsive.css
 	//	lib/js/jquery/datatables/datatables-responsive.js
+	//	lib/js/jquery/datatables/smart-datatables.js
 	this.DataTableInit = function(elem_id, options) {
+		//--
+		if(typeof(SmartDataTables) == undefined) {
+			console.error('smartJ$UI', 'DataTableInit', 'SmartDataTables is not loaded ...');
+			return;
+		} //end if
 		//--
 		if(!options || (typeof(options) !== 'object')) {
 			options = {};
 		} //end if
-		//--
-		if(!options.hasOwnProperty('responsive')) {
-			options['responsive'] = false; // default not responsive (here responsive is something else ... will collapse rows under header with a + sign)
-		} else {
-			options['responsive'] = !(!options['responsive']); // force boolean
-		} //end if
-		//--
-		if(!options.hasOwnProperty('filter')) {
-			options['filter'] = true;
-		} else {
-			options['filter'] = !(!options['filter']); // force boolean
-		} //end if
-		//--
-		if(!options.hasOwnProperty('sort')) {
-			options['sort'] = true;
-		} else {
-			options['sort'] = !(!options['sort']); // force boolean
-		} //end if
-		//--
-		if(!options.hasOwnProperty('paginate')) {
-			options['paginate'] = true;
-		} else {
-			options['paginate'] = !(!options['paginate']); // force boolean
-		} //end if
-		//--
-		if(!options.hasOwnProperty('pagesize')) {
-			options['pagesize'] = 10;
-		} else {
-			options['pagesize'] = parseInt(options['pagesize']); // force integer
-			if(options['pagesize'] < 1) {
-				options['pagesize'] = 1;
-			} //end if
-		} //end if
-		//--
-		var defPageSizes = [ 10, 25, 50, 100 ]; // default array
-		if(!options.hasOwnProperty('pagesizes')) {
-			options['pagesizes'] = defPageSizes;
-		} else if(!Array.isArray(options['pagesizes'])) {
-			options['pagesizes'] = defPageSizes;
-		} //end if else
-		//--
-		if(!(!!options.paginate)) {
-			options['pagesize'] = Number.MAX_SAFE_INTEGER;
-			options['pagesizes'] = [ Number.MAX_SAFE_INTEGER ];
-		} //end if
-		//--
 		if(!options.hasOwnProperty('classField')) {
 			options['classField'] = 'ui-widget'; // default class
 		} //end if
-		//--
 		if(!options.hasOwnProperty('classButton')) {
 			options['classButton'] = 'ui-button ui-corner-all ui-widget'; // default class
 		} //end if
-		//--
 		if(!options.hasOwnProperty('classActiveButton')) {
 			options['classActiveButton'] = 'ui-state-active'; // default class
 		} //end if
 		//--
-		var ordCols = []; // default array
-		if(!options.hasOwnProperty('colorder')) {
-			options['colorder'] = ordCols;
-		} else if(!Array.isArray(options['colorder'])) {
-			options['colorder'] = ordCols;
-		} //end if else
-		//--
-		var defCols = [{}]; // default array
-		if(!options.hasOwnProperty('coldefs')) {
-			options['coldefs'] = defCols;
-		} else if(!Array.isArray(options['coldefs'])) {
-			options['coldefs'] = defCols;
-		} //end if else
-		//--
-		var opts = {
-			responsive: 	!!options.responsive,
-			bFilter: 		!!options.filter,
-			bSort: 			!!options.sort,
-			bSortMulti: 	!!options.sort,
-			order: 			Array.from(options.colorder),
-			bPaginate: 		!!options.paginate,
-			iDisplayLength: parseInt(options.pagesize),
-			aLengthMenu: 	Array.from(options.pagesizes), // , x => parseInt(x)
-			uxmHidePagingIfNoMultiPages: 	true,
-			uxmCssClassLengthField: 		String(options.classField),
-			uxmCssClassFilterField: 		String(options.classField),
-			classes: {
-				sPageButton: 		String(options.classButton),
-				sPageButtonActive: 	String(options.classActiveButton)
-			},
-			columnDefs: 	Array.from(options.coldefs)
-		};
-		//--
-		var HtmlElement = $('table#' + elem_id);
-		//--
-		HtmlElement.DataTable(opts);
-		HtmlElement.data('smart-ui-elem-type', 'DataTable');
-		//--
-		return HtmlElement;
+		return SmartDataTables.DataTableInit(elem_id, options);
 		//--
 	} //END FUNCTION
 
@@ -715,37 +640,15 @@ var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210420
 	//	jQuery, smartJ$Utils
 	//	lib/js/jquery/datatables/datatables-responsive.css
 	//	lib/js/jquery/datatables/datatables-responsive.js
+	//	lib/js/jquery/datatables/smart-datatables.js
 	this.DataTableColumnsFilter = function(elem_id, filterColNumber, regexStr) {
 		//--
-		var HtmlElement = $('table#' + elem_id);
-		//--
-		if(HtmlElement.data('smart-ui-elem-type') !== 'DataTable') {
-			return null;
+		if(typeof(SmartDataTables) == undefined) {
+			console.error('smartJ$UI', 'DataTableColumnsFilter', 'SmartDataTables is not loaded ...');
+			return;
 		} //end if
 		//--
-		var obj = HtmlElement.DataTable();
-		//--
-		var col = parseInt(filterColNumber);
-		if((col < 0) || !smartJ$Utils.isFiniteNumber(col)) {
-			col = 0;
-		} //end if
-		if(regexStr) {
-			let testregex;
-			try {
-				testregex = new RegExp(String(regexStr));
-			} catch(err) { // catch regex errors
-				regexStr = '';
-				console.warn('smartJ$UI.DataTableColumnsFilter', 'ERR: Filter Expression', regexStr, err);
-			} //end try catch
-			testregex = null;
-		} //end if
-		if(regexStr) {
-			obj.columns(col).search(String(regexStr), true, false, true).draw();
-		} else {
-			obj.columns(col).search('').draw();
-		} //end if else
-		//--
-		return HtmlElement;
+		return SmartDataTables.DataTableColumnsFilter(elem_id, filterColNumber, regexStr);
 		//--
 	} //END FUNCTION
 

@@ -40,7 +40,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP GD Extension (w. TrueColor support) ; optional executables: imageMagick Utility (can replace PHP GD), FFMpeg (for movies), Pdf2HtmlEx (for PDF) ; classes: Smart, SmartUtils, SmartFileSystem
- * @version 	v.20200121
+ * @version 	v.20210428
  * @package 	modules:ViewComponents
  *
  */
@@ -371,7 +371,7 @@ public function draw($y_title, $y_dir, $y_process_previews_and_images='no', $y_r
 	//--
 
 	//--
-	if(!\SmartFrameworkRuntime::ifDebug()) {
+	if(!\SmartFrameworkRegistry::ifDebug()) {
 		if($processed > 0) {
 			$out = '<img src="'.$this->pict_reloading.'" alt="[Reloading Page ...]" title="[Reloading Page ...]"><script type="text/javascript">setTimeout(function(){ self.location = self.location; }, 2000);</script>'.'<br><hr><br>'.$out;
 			if(!defined('SMART_FRAMEWORK__MEDIA_GALLERY_IS_PROCESSING')) {
@@ -456,8 +456,8 @@ private function img_draw_box($y_dir, $y_big_img_file) {
 
 	//--
 	if((string)$this->use_secure_links == 'yes') { // OK
-		$the_preview = (string) $this->secure_download_link.\SmartUtils::create_download_link($image_preview, $this->secure_download_ctrl_key);
-		$the_img = (string) $this->secure_download_link.\SmartUtils::create_download_link($image_big, $this->secure_download_ctrl_key);
+		$the_preview = (string) $this->secure_download_link.\SmartFrameworkRuntime::Create_Download_Link($image_preview, $this->secure_download_ctrl_key);
+		$the_img = (string) $this->secure_download_link.\SmartFrameworkRuntime::Create_Download_Link($image_big, $this->secure_download_ctrl_key);
 	} else {
 		$the_preview = (string) $image_preview;
 		$the_img = (string) $image_big;
@@ -539,8 +539,8 @@ private function mov_draw_box($y_dir, $y_video_file, $y_type) {
 
 	//--
 	if((string)$this->use_secure_links == 'yes') { // OK
-		$the_preview = (string) $this->secure_download_link.\SmartUtils::create_download_link($preview_file, $this->secure_download_ctrl_key);
-		$the_video = (string) $this->secure_download_link.\SmartUtils::create_download_link($video_file, $this->secure_download_ctrl_key);
+		$the_preview = (string) $this->secure_download_link.\SmartFrameworkRuntime::Create_Download_Link($preview_file, $this->secure_download_ctrl_key);
+		$the_video = (string) $this->secure_download_link.\SmartFrameworkRuntime::Create_Download_Link($video_file, $this->secure_download_ctrl_key);
 	} else {
 		$the_preview = (string) $preview_file;
 		$the_video = (string) $video_file;

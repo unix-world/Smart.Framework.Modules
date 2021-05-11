@@ -24,10 +24,10 @@ body {
 <body>
 <div id="terminal" style="width:100vw; height:100vh; margin:0;"></div>
 <script>
-var theVersion = 'r.20210418';
+const theVersion = 'r.20210504';
 // (c) 2021 unix-world.org
 // license: BSD
-function sandboxedWorkerJsEval(untrustedCode, maxTimeOfExecution) {
+const sandboxedWorkerJsEval = function(untrustedCode, maxTimeOfExecution) {
 	// requires a browser that supports Workers
 	if(!window.Worker) {
 		throw new Error('sandboxedWorkerJsEval: Your browser does not support the Web Workers API required to create the Javascript Sandbox ...');
@@ -44,8 +44,8 @@ function sandboxedWorkerJsEval(untrustedCode, maxTimeOfExecution) {
 		throw new Error('sandboxedWorkerJsEval: maxTimeOfExecution is undefined ...');
 		return;
 	}
-	var defMinTime = 1000; 	// 1 sec
-	var defMaxTime = 10000; // 10 sec
+	let defMinTime = 1000; 	// 1 sec
+	let defMaxTime = 10000; // 10 sec
 	maxTimeOfExecution = parseInt(maxTimeOfExecution);
 	if(!isFinite(maxTimeOfExecution) || isNaN(maxTimeOfExecution)) {
 		maxTimeOfExecution = defMaxTime;
@@ -56,26 +56,26 @@ function sandboxedWorkerJsEval(untrustedCode, maxTimeOfExecution) {
 		maxTimeOfExecution = defMaxTime;
 	}
 	return new Promise(function (resolve, reject) {
-		var blobURL = URL.createObjectURL(
+		let blobURL = URL.createObjectURL(
 			new Blob(
 				[
 					"(",
 					function(){
-						var _postMessage = postMessage;
-						var _addEventListener = addEventListener;
+						let _postMessage = postMessage;
+						let _addEventListener = addEventListener;
 						(function (obj) {
 							"use strict";
-							var current = obj;
-							var keepProperties = [
+							let current = obj;
+							let keepProperties = [
 								// required
 								'Object', 'Function', 'Infinity', 'NaN', 'undefined', 'caches', 'TEMPORARY', 'PERSISTENT',
 								// optional, but trivial to get back
 								'Array', 'Boolean', 'Number', 'String', 'Symbol',
 								// optional
-								'Map', 'Math', 'Set',
+								'Map', 'Math', 'Set', 'encodeURIComponent', 'decodeURIComponent',
 							];
 							do {
-								Object.getOwnPropertyNames(current).forEach(function (name) {
+								Object.getOwnPropertyNames(current).forEach(function(name) {
 									if(keepProperties.indexOf(name) === -1) {
 										delete current[name];
 									}
@@ -85,7 +85,7 @@ function sandboxedWorkerJsEval(untrustedCode, maxTimeOfExecution) {
 							while(current !== Object.prototype);
 						})(this);
 						_addEventListener("message", function(e) {
-							var f = new Function("", "return (" + '(function(){' + e.data + '})()' + "\n);");
+							let f = new Function('', 'return (' + '(function(){' + e.data + '})()' + '\n' + ');');
 						//	try {
 								_postMessage(f());
 						//	} catch(err){
@@ -93,14 +93,14 @@ function sandboxedWorkerJsEval(untrustedCode, maxTimeOfExecution) {
 						//	}
 						});
 					}.toString(),
-					")();"
+					')();'
 				],
 				{
 					type: "application/javascript"
 				}
 			)
 		);
-		var worker = new window.Worker(blobURL);
+		let worker = new window.Worker(blobURL);
 		URL.revokeObjectURL(blobURL);
 		worker.onmessage = function(evt) {
 			worker.terminate();
@@ -121,35 +121,17 @@ function sandboxedWorkerJsEval(untrustedCode, maxTimeOfExecution) {
 </script>
 <script>
 //--
-var isFiniteNumber = function(num) { // http://stackoverflow.com/questions/5690071/why-check-for-isnan-after-isfinite
-	//-- v.20210322
-	// # https://www.w3schools.com/jsref/jsref_isfinite_number.asp
-	// Number.isFinite() is different from the global isFinite() function.
-	// The global isFinite() function converts the tested value to a Number, then tests it.
-	// Number.isFinite() does not convert the values to a Number, and will not return true for any value that is not of the type Number.
-	// thus, isFinite('') or isFinite(' ') will return TRUE while the Number.isFinite('') or Number.isFinite(' ') will return FALSE !!
-	// Number.isFinite() is N/A in Internet Explorer or older browsers, so will use here the global isFinite() with a fix
-	//--
-	if(typeof num != 'number') {
-		return false; // bug fix for the above notice
-	} //end if
-	//--
-	return Boolean(isFinite(num) && !isNaN(num));
-	//--
-} //END FUNCTION
-var isFiniteNumber2 = function(num) {
-	return Boolean(Number.isFinite(num) && !Number.isNaN(num));
-}
-var term;
-var termMaxExecution = 30000; // this is the default value in firefox
-var isTerminalRunning = false;
+const isFiniteNumber = (num) => !! (typeof(num) != 'number') ? false : !! (Number.isFinite(num) && (!Number.isNaN(num)));
+const termMaxExecution = 30000; // this is the default value in firefox
+let term;
+let isTerminalRunning = false;
 //--
-var highlights = [ 'clear', 'help', 'info', 'js-sandbox', 'js-quit' ];
-var keywords = highlights.concat(highlights.map(function(keyword) {
+const highlights = [ 'clear', 'help', 'info', 'js-sandbox', 'js-quit' ];
+const keywords = highlights.concat(highlights.map(function(keyword) {
 	return keyword.toLowerCase();
 }));
 const escapeHtml = (text) => { // this it performs better, particularly on large blocks of text # https://stackoverflow.com/questions/1787322/htmlspecialchars-equivalent-in-javascript
-	var map = {
+	const map = {
 		'&': '&amp;',
 		'<': '&lt;',
 		'>': '&gt;',
@@ -157,38 +139,42 @@ const escapeHtml = (text) => { // this it performs better, particularly on large
 	};
 	return text.replace(/[&\<\>"]/g, (m) => map[m]);
 }
+/*
 $.terminal.defaults.formatters.push(function(str) { // support highlights
 	return str.split(/([a-z0-9\-]+)/).map(function(s) {
 		if(keywords.indexOf(s) != -1) {
+			s = $.terminal.unescape_brackets(s);
 			return '[[b;#FFFFFF;]' + escapeHtml(s) + ']';
 		} else {
+			s = $.terminal.unescape_brackets(s);
 			return escapeHtml(s);
 		}
 	}).join('');
 });
-//--
-var termIcon = function(text) {
-	text = String(text);
-	return text.replace(/\{\{\s*([^|\s]+)\s*(?:\|\s*([^\s}]+)\s*)?\}\}/g, '[[;$2;;sfi sfi-$1;] ]');
-}
-var termEscapeText = function(text) {
-	if(typeof text == 'undefined') {
-		text = '';
-	}
-	text = String(text);
-	text = String($.terminal.escape_brackets(text));
-	text = String(text.split('{').join('&#123;'));
-	text = String(text.split('|').join('&#124;'));
-	text = String(text.split('}').join('&#125;'));
-	return String(escapeHtml(text));
-}
-//--
+*/
 /*
 $.terminal.new_formatter([ // support icons
 	/\{\{\s*([^|\s]+)\s*(?:\|\s*([^\s}]+)\s*)?\}\}/g,
 	'[[;$2;;sfi sfi-$1;] ]'
 ]);
 */
+//--
+const termIcon = function(text) {
+	text = String(text);
+	return text.replace(/\{\{\s*([^|\s]+)\s*(?:\|\s*([^\s}]+)\s*)?\}\}/g, '[[;$2;;sfi sfi-$1;] ]');
+}
+const termEscapeText = function(text) {
+	if(typeof text == 'undefined') {
+		text = '';
+	}
+	text = String(text);
+	text = String(escapeHtml(text));
+	text = String($.terminal.escape_brackets(text));
+	text = String(text.split('{').join('&#123;'));
+	text = String(text.split('|').join('&#124;'));
+	text = String(text.split('}').join('&#125;'));
+	return String(text);
+}
 //-- to explicit executa a command use: term.exec('command');
 jQuery(function($) {
 	term = $('#terminal').terminal(function(command, term) {
@@ -205,7 +191,7 @@ jQuery(function($) {
 			if(!window.Worker) {
 				term.echo(termIcon('{{cross|#FF5500}}') + '[[b;#FFFFFF;#FF5500]' + 'The Browser does not support the Web Workers API, required for Javascript Sandbox' + ']');
 			} else {
-				term.echo(termIcon('{{checkmark2|#B9F700}}') + '[[b;#111111;#B9F700]' + 'The Browser does supports the Web Workers API, required for Javascript Sandbox' + ']');
+				term.echo(termIcon('{{checkmark2|#B9F700}}') + '[[b;#111111;#B9F700]' + 'The Browser supports the Web Workers API, required for Javascript Sandbox' + ']');
 			}
 			term.echo(termIcon('{{earth|#778899}}') + 'Current URL: `' + termEscapeText(window.location.href) + '`');
 		} else if(command == 'js-sandbox') {
@@ -227,8 +213,8 @@ jQuery(function($) {
 					term.pause();
 					sandboxedWorkerJsEval(command, termMaxExecution).then(function(result){
 						//term.echo(typeof result);
-						var theType = typeof result;
-						var theTxtType = '';
+						let theType = typeof result;
+						let theTxtType = '';
 						if(typeof result === 'undefined') { // return null;
 							theType = 'Undefined';
 						} else if(result === null) { // return null;
@@ -271,7 +257,7 @@ jQuery(function($) {
 								}
 							} else if(typeof result === 'undefined') { // could not reproduce
 								theType = 'Undefined';
-							} else if(typeof result == 'function') { // could not reproduce, var a = function(){}; return a; // will return ERROR: `DataCloneError: The object could not be cloned.`
+							} else if(typeof result == 'function') { // could not reproduce, let a = function(){}; return a; // will return ERROR: `DataCloneError: The object could not be cloned.`
 								theType = 'Function';
 							} else {
 								theType = 'Unknown';

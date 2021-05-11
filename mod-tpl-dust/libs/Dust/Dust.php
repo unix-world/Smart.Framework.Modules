@@ -161,7 +161,7 @@ class Dust implements \Serializable {
 		$compiled = $this->compile((string)$fcontents, (string)$tplName);
 		$compiled->filePath = (string) $path;
 		//--
-		if(\SmartFrameworkRuntime::ifDebug()) {
+		if(\SmartFrameworkRegistry::ifDebug()) {
 			if(!\array_key_exists((string)$path, $this->fsRdRpls)) {
 				$this->fsRdRpls[(string)$path] = 0;
 			} //end if

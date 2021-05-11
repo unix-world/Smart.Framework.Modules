@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.20210318
+ * @version 	v.20210428
  * @package 	modules:TemplatingEngine
  *
  */
@@ -87,7 +87,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		if($onlydebug !== true) {
 			$onlydebug = false;
 		} //end else
-		if(!\SmartFrameworkRuntime::ifDebug()) {
+		if(!\SmartFrameworkRegistry::ifDebug()) {
 			$onlydebug = false;
 		} //end if
 		//--
@@ -164,8 +164,12 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 
 	private function smartSetupCacheDir() {
 		//--
-		if(\SMART_FRAMEWORK_ADMIN_AREA === true) {
-			$the_t3fluid_cache_dir = 'tmp/cache/typo3fluid#adm';
+		if(\SmartFrameworkRegistry::isAdminArea() === true) {
+			if(\SmartFrameworkRegistry::isTaskArea() === true) {
+				$the_t3fluid_cache_dir = 'tmp/cache/typo3fluid#tsk';
+			} else {
+				$the_t3fluid_cache_dir = 'tmp/cache/typo3fluid#adm';
+			} //end if else
 		} else {
 			$the_t3fluid_cache_dir = 'tmp/cache/typo3fluid#idx';
 		} //end if else
@@ -189,7 +193,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 	 */
 	public function debug($tpl) {
 		//--
-		if(!\SmartFrameworkRuntime::ifDebug()) {
+		if(!\SmartFrameworkRegistry::ifDebug()) {
 			return '';
 		} //end if
 		//--

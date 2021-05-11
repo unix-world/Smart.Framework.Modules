@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20210419
+ * @version 	v.20210429
  * @package 	Documentor
  *
  */
@@ -89,37 +89,42 @@ final class SmartClasses {
 		//--
 		return [
 			//--
-			'\\Smart',
+			'\\SmartFrameworkSecurity',
+			'\\SmartFrameworkRegistry',
 			'\\SmartUnicode',
-			'\\SmartParser',
-			'\\SmartValidator',
-			'\\SmartCache',
-			'\\SmartAbstractPersistentCache', // dev
-			'\\SmartPersistentCache',
-			'\\SmartInterfaceAdapterTextTranslations', // dev
-		//	'\\SmartAdapterTextTranslations', // custom
-			'\\SmartTextTranslator',
-			'\\SmartTextTranslations',
+			'\\Smart',
 			'\\SmartHashCrypto',
 			'\\SmartCipherCrypto',
 			'\\SmartFileSysUtils',
 			'\\SmartFileSystem',
 			'\\SmartGetFileSystem',
-			'\\SmartHttpClient',
 			'\\SmartHttpUtils',
-			'\\SmartMarkersTemplating',
+			'\\SmartHttpClient',
 			'\\SmartAuth',
+			'\\SmartParser',
+			'\\SmartValidator',
 			'\\SmartUtils',
+			'\\SmartCache',
+			'\\SmartAbstractPersistentCache', // dev
+			'\\SmartPersistentCache',
+			'\\SmartMarkersTemplating',
+			//--
+			'\\SmartInterfaceAdapterTextTranslations', // dev
+		//	'\\SmartAdapterTextTranslations', // custom
+			'\\SmartTextTranslator',
+			'\\SmartTextTranslations',
+			'\\SmartComponents',
+		//	'\\SmartFrameworkRuntime', // internal only
+		//	'\\SmartDebugProfiler', // internal only
 			//--
 			'\\SmartAbstractAppController', // dev
 			'\\SmartAppIndexController',
 			'\\SmartAppAdminController',
 			//--
+		//	'\\SmartAppBootstrap', // internal only
 			'\\SmartAppInfo',
-			'\\SmartComponents',
 			//--
 			'\\SmartPunycode',
-			'\\SmartDetectImages',
 			'\\SmartRobot',
 			'\\SmartMailerUtils',
 			'\\SmartMailerMimeDecode',
@@ -133,16 +138,17 @@ final class SmartClasses {
 			'\\SmartXmlComposer',
 			'\\SmartHtmlParser',
 			'\\SmartMarkdownToHTML',
+			'\\SmartDetectImages',
 			'\\SmartImageGdProcess',
 			'\\SmartCaptcha',
 			'\\SmartSVGCaptcha',
 			'\\SmartQR2DBarcode',
 			'\\SmartViewHtmlHelpers',
 			'\\SmartFtpClient',
+			'\\SmartRedisDb',
 			'\\SmartSQliteDb',
 			'\\SmartDbaUtilDb',
 			'\\SmartDbaDb',
-			'\\SmartRedisDb',
 			'\\SmartMysqliDb',
 			'\\SmartMysqliExtDb',
 			'\\SmartPgsqlDb',

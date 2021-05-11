@@ -194,8 +194,8 @@ class RPDO implements Driver
 			$err = $e->getMessage();
 			//-- #start: fix by unixman
 		//	if ( $this->loggingEnabled && $this->logger ) $this->logger->log( 'An error occurred: ' . $err ); // comment out to avoid poluate the logger
-			if(\SmartFrameworkRuntime::ifInternalDebug()) {
-				if(\SmartFrameworkRuntime::ifDebug()) {
+			if(\SmartFrameworkRegistry::ifInternalDebug()) {
+				if(\SmartFrameworkRegistry::ifDebug()) {
 					\Smart::log_notice('DEBUG @ RedBean ORM // '.__METHOD__.'() '.'An error occurred: '.$err."\n".$sql);
 				} //end if
 			} //end if

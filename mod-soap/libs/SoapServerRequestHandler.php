@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartXmlParser, PHP DomXML extension (DOMDocument), SmartMarkersTemplating
- * @version 	v.20200121
+ * @version 	v.20210430
  * @package 	modules:Network
  *
  */
@@ -296,7 +296,7 @@ final class SoapServerRequestHandler {
 			return false;
 		} //end if
 		//--
-		$url = (string) $_SERVER['HTTP_SOAPACTION'];
+		$url = (string) \SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTP_SOAPACTION']);
 		$url = (string) \trim((string)$url);
 		$url = (string) \trim((string)$url, '"\'');
 		$url = (string) \trim((string)$url);

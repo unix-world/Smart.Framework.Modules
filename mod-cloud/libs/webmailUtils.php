@@ -19,7 +19,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 final class webmailUtils {
 
-	// r.20200715
+	// r.20210428
 	// ::
 
 
@@ -1112,7 +1112,7 @@ final class webmailUtils {
 				//--
 				$mailget = new \SmartMailerImap4Client();
 				//--
-				if(\SmartFrameworkRuntime::ifDebug()) {
+				if(\SmartFrameworkRegistry::ifDebug()) {
 					$mailget->debug = true;
 				} //end if
 				//--

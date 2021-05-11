@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20210428
  *
  */
 class OpenMapsProxyCache {
@@ -252,7 +252,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 		//--
 		$httpclient = new \SmartHttpClient('1.0');
 		$httpclient->connect_timeout = (int) $y_timeout;
-		if(\SmartFrameworkRuntime::ifDebug()) {
+		if(\SmartFrameworkRegistry::ifDebug()) {
 			$httpclient->debug = 1;
 		} //end if
 		//--
@@ -265,7 +265,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 		$tmp_uniq_file = $tmp_uniq_prefix.'.download'.$ext;
 		$tmp_uniq_log = $tmp_uniq_prefix.'.debug-log.txt';
 		//--
-		if(\SmartFrameworkRuntime::ifDebug()) {
+		if(\SmartFrameworkRegistry::ifDebug()) {
 			\SmartFileSystem::write($tmp_uniq_log, '===== IsPngOrJpegByHeader: '.$tmp_validate_by_header."\n".'===== STATUS-CODE: '.$bwdata['code']."\n".'===== Header: '."\n".$bwdata['headers']."\n".'===== Debug-Log:'."\n".$bwdata['debuglog']."\n".'===== END #');
 		} //end if
 		//--

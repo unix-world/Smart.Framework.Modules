@@ -116,10 +116,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 				break;
 
-
-			case 'blame': // text files only
-
-				break;
+//			case 'blame': // text files only ; TODO
+//				break;
 
 			case 'diff': // text files only
 

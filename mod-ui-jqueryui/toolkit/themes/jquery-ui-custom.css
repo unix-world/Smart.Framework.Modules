@@ -1,4 +1,4 @@
-/* jQueryUI Fixes Fix */
+/* jQueryUI Fixes Fix r.20210504 */
 
 .ui-tooltip {
 	max-width: 300px;
@@ -17,12 +17,12 @@
 }
 
 .ui-dialog {
-	z-index: 2137483009;
+	z-index: 2147481002;
 	max-width: 92% !important;
 	max-height: 96% !important;
 }
 .ui-widget-overlay {
-	z-index: 2137483001;
+	z-index: 2147481001;
 }
 
 .ui-tabs-anchor {

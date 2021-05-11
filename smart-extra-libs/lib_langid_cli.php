@@ -55,7 +55,7 @@ $configs['langid']['auth-pass']		= '';										// LangId.Py Service Auth Pass
  * @hints		If the DEFAULT settings are not available will simply fallback for not using any service.
  *
  * @depends 	classes: Smart, SmartHttpClient
- * @version 	v.20200121
+ * @version 	v.20210428
  * @package 	extralibs:LanguageDetection
  *
  */
@@ -111,7 +111,7 @@ final class SmartLangIdClient {
 		} //end if
 		//--
 		$http_client = new SmartHttpClient();
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$http_client->debug = 1;
 		} //end if
 		//--

@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype (optional) ; classes: \SmartModExtLib\Tpl\AbstractTemplating, \SmartModExtLib\TplTwig\SmartTwigEnvironment, \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20200121
+ * @version 	v.20210428
  * @package 	modules:TemplatingEngine
  *
  */
@@ -86,7 +86,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		//--
 		$the_twig_cache_dir = (string) $this->twig->smartSetupCacheDir();
 		//--
-		if(\SmartFrameworkRuntime::ifDebug()) {
+		if(\SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$this->twprof = new \Twig\Profiler\Profile('main', \Twig\Profiler\Profile::ROOT, 'Twig-TPL.View');
 			$this->twig->addExtension(new \Twig\Extension\ProfilerExtension($this->twprof));
@@ -111,7 +111,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		if($onlydebug !== true) {
 			$onlydebug = false;
 		} //end else
-		if(!\SmartFrameworkRuntime::ifDebug()) {
+		if(!\SmartFrameworkRegistry::ifDebug()) {
 			$onlydebug = false;
 		} //end if
 		//--
@@ -161,7 +161,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			return;
 		} //end if
 		//--
-		if(\SmartFrameworkRuntime::ifDebug()) {
+		if(\SmartFrameworkRegistry::ifDebug()) {
 			$bench = \microtime(true);
 			$tpl = (object) $this->twig->load((string)$file);
 			$out = (string) $tpl->render((array)$arr_vars);
@@ -191,7 +191,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 	 */
 	public function debug($tpl) {
 		//--
-		if(!\SmartFrameworkRuntime::ifDebug()) {
+		if(!\SmartFrameworkRegistry::ifDebug()) {
 			return '';
 		} //end if
 		//--

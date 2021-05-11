@@ -77,7 +77,7 @@ if(!defined('SMART_FRAMEWORK_MEDIAGALLERY_PDF_EXTRACTOR')) {
  * @internal
  *
  * @depends 	extensions: plugins: \SmartModExtLib\MediaGallery\ImgProcImagick:: OR \SmartModExtLib\MediaGallery\ImgProcGd:: ;
- * @version 	v.20200121
+ * @version 	v.20210428
  * @package 	Media:Gallery
  *
  */
@@ -267,7 +267,7 @@ public static function img_process($y_mode, $iflowerpreserve, $y_file, $y_newfil
 	//--
 
 	//--
-	if(\SmartFrameworkRuntime::ifDebug()) {
+	if(\SmartFrameworkRegistry::ifDebug()) {
 		\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
 			'title' => '[INFO] :: MediaUTIL/Img/Process',
 			'data' => "'".SMART_FRAMEWORK_MEDIAGALLERY_IMG_CONVERTER."'".' :: '."'".SMART_FRAMEWORK_MEDIAGALLERY_IMG_COMPOSITE."'"
@@ -318,7 +318,7 @@ public static function img_process($y_mode, $iflowerpreserve, $y_file, $y_newfil
 					@exec($exec, $arr_result, $exitcode);
 					//--
 					$out .= '<tr><td>[DONE]</td></tr>';
-					if(\SmartFrameworkRuntime::ifDebug()) {
+					if(\SmartFrameworkRegistry::ifDebug()) {
 						\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
 							'title' => '[INFO] :: MediaUTIL/Img/Process/ImageMagick',
 							'data' => 'Runtime Result: '."'".$y_file."'".' -> '."'".$y_newfile."'".' = ['.$exitcode.'] @ '.@print_r($arr_result,1)
@@ -334,7 +334,7 @@ public static function img_process($y_mode, $iflowerpreserve, $y_file, $y_newfil
 					} //end if else
 					//--
 					$out .= '<tr><td>[*DONE*]</td></tr>';
-					if(\SmartFrameworkRuntime::ifDebug()) {
+					if(\SmartFrameworkRegistry::ifDebug()) {
 						\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
 							'title' => '[INFO] :: MediaUTIL/Img/Process/GD',
 							'data' => 'Runtime Result: '."'".$y_file."'".' -> '."'".$y_newfile."'".' = ['.$exitcode.']'
@@ -360,7 +360,7 @@ public static function img_process($y_mode, $iflowerpreserve, $y_file, $y_newfil
 							@exec($exec, $arr_result, $exitcode);
 							//--
 							$out .= '<tr><td><i>[WATERMARK]</i></td></tr>';
-							if(\SmartFrameworkRuntime::ifDebug()) {
+							if(\SmartFrameworkRegistry::ifDebug()) {
 								\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
 									'title' => '[INFO] :: MediaUTIL/Img/Process/Watermark/ImageMagick',
 									'data' => 'Runtime Result: '."'".$y_watermark."'".' -> '."'".$y_newfile."'".' = ['.$exitcode.'] @ '.@print_r($arr_result,1)
@@ -372,7 +372,7 @@ public static function img_process($y_mode, $iflowerpreserve, $y_file, $y_newfil
 							$exitcode = \SmartModExtLib\MediaGallery\ImgProcGd::apply_watermark($y_newfile, $y_watermark, $y_quality, $y_waterlocate);
 							//--
 							$out .= '<tr><td><i>[*WATERMARK*]</i></td></tr>';
-							if(\SmartFrameworkRuntime::ifDebug()) {
+							if(\SmartFrameworkRegistry::ifDebug()) {
 								\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
 									'title' => '[INFO] :: MediaUTIL/Img/Process/Watermark/GD',
 									'data' => 'Runtime Result: '."'".$y_watermark."'".' -> '."'".$y_newfile."'".' = ['.$exitcode.']'
@@ -519,7 +519,7 @@ public static function mov_pw_process($y_mov_file, $y_mov_img_preview, $y_qualit
 	//--
 
 	//--
-	if(\SmartFrameworkRuntime::ifDebug()) {
+	if(\SmartFrameworkRegistry::ifDebug()) {
 		\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
 			'title' => '[INFO] :: MediaUTIL/Mov/Process-Preview',
 			'data' => "'".SMART_FRAMEWORK_MEDIAGALLERY_MOV_THUMBNAILER."'".' :: '."'".SMART_FRAMEWORK_MEDIAGALLERY_IMG_COMPOSITE."'"
@@ -574,7 +574,7 @@ public static function mov_pw_process($y_mov_file, $y_mov_img_preview, $y_qualit
 			} //end if
 			//--
 			$out .= '<tr><td>[DONE]</td></tr>';
-			if(\SmartFrameworkRuntime::ifDebug()) {
+			if(\SmartFrameworkRegistry::ifDebug()) {
 				\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
 					'title' => '[INFO] :: MediaUTIL/Mov/Process-Preview/FFMpeg',
 					'data' => 'Runtime Result: '."'".$y_mov_file."'".' -> '."'".$y_mov_img_preview."'".' = ['.$exitcode.'] @ '.@print_r($arr_result,1)
