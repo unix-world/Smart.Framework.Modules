@@ -1,0 +1,51 @@
+[@@@SUB-TEMPLATE:back-btn.mtpl.inc.htm@@@]
+<h1>Translations Repository / Errors List</h1>
+<hr>
+[@@@SUB-TEMPLATE:status.mtpl.inc.htm@@@]
+<hr>
+<div id="tbl">
+	<table id="errors-list-data" class="display" style="width:100%">
+		<thead>
+			<tr>
+				<th>Text-EN</th>
+				<th>Translation</th>
+			</tr>
+		</thead>
+		<tbody>
+			[%%%LOOP:DATA-ARR%%%]
+			<tr>
+				<td>[###DATA-ARR.TEXT|html|nl2br###]</td>
+				<td>[###DATA-ARR.TRANSL|html|nl2br###]</td>
+			</tr>
+			[%%%/LOOP:DATA-ARR%%%]
+		</tbody>
+		<tfoot>
+			<tr>
+				<th>Text-EN</th>
+				<th>Translation</th>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+<script>
+jQuery('div#tbl').hide();
+jQuery(document).ready(function() {
+	jQuery('table.display').DataTable({
+		responsive: true,
+		bSort: true,
+		bSortMulti: true,
+		bPaginate: true,
+		iDisplayLength: 25,
+		aLengthMenu: [ 5, 10, 25, 50, 100, 500, 1000 ],
+		colReorder: true,
+		uxmHidePagingIfNoMultiPages: true,
+		uxmCssClassLengthField: 'ux-field',
+		uxmCssClassFilterField: 'ux-field',
+		classes: {
+			sPageButton: 'ux-button ux-button-small',
+			sPageButtonActive: 'ux-button-primary'
+		},
+	});
+	jQuery('div#tbl').show();
+});
+</script>
