@@ -258,7 +258,8 @@ class JS extends Minify
 		// of the RegExp methods (a `\` followed by a variable or value is
 		// likely part of a division, not a regex)
 		$keywords = array('do', 'in', 'new', 'else', 'throw', 'yield', 'delete', 'return',  'typeof');
-		$before = '([=:,;\+\-\*\/\}\(\{\[&\|!]|^|'.implode('|', $keywords).')\s*';
+	//	$before = '([=:,;\+\-\*\/\}\(\{\[&\|!]|^|'.implode('|', $keywords).')\s*';
+		$before = '(^|[=:,;\+\-\*\/\}\(\{\[&\|!]|'.implode('|', $keywords).')\s*'; // fix by unixman ; taken from v.1.3.66 (github)
 		$propertiesAndMethods = array(
 			// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp#Properties_2
 			'constructor',
@@ -387,7 +388,7 @@ class JS extends Minify
 		 */
 		$content = preg_replace('/\breturn\s+(["\'\/\+\-])/', 'return$1', $content);
 		$content = preg_replace('/\)\s+\{/', '){', $content);
-		$content = preg_replace('/}\n(else|catch|finally)\b/', '}$1', $content);
+	//	$content = preg_replace('/}\n(else|catch|finally)\b/', '}$1', $content); // commented out by unixman ; with these some minified scripts get JS syntax error !
 
 		/*
 		 * Get rid of double semicolons, except where they can be used like:
