@@ -1,6 +1,6 @@
 <?php
 
-// Smart.Framework.Modules/vendor/autoload, r.20200121 :: Psr, League, MatthiasMullie, PHPMathParser, MeyFaSvg, Medoo
+// Smart.Framework.Modules/vendor/autoload, r.20210526 :: Psr, League, MatthiasMullie, PHPMathParser, MeyFaSvg, Medoo
 
 define('SMART_FRAMEWORK_MODULES_VENDOR_LOADED', true);
 

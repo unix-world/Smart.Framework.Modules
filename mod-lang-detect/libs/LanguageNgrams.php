@@ -1,9 +1,7 @@
 <?php
 // Class: \SmartModExtLib\LangDetect\LanguageNgrams
-// Ngrams Language Detection :: for Smart.Framework
-// Module Library
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// Ngrams Language Detection :: Smart.Framework Module Library
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 

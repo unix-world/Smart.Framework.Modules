@@ -1,7 +1,7 @@
 
-# Smart.Framework.Modules: UI Bootstrap r.20210407 #
+# Smart.Framework.Modules: UI Bootstrap r.20210526 #
 ## Bootstrap v.4.6.0 and v.3.4.1 (3.4.1.1 with fixes for jQuery 3.5.0 and later) ##
 
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 ###

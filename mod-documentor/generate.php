@@ -1,9 +1,9 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Documentor/Generate (qunit:tasks)
-// Route: admin.php?page=documentor.generate
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// Route: task.php?page=documentor.generate
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -13,30 +13,30 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
-define('SMART_APP_MODULE_AREA', 'ADMIN'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'TASK'); // INDEX, ADMIN, TASK, SHARED
 define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 
 /**
- * Admin Area Controller
- * @version 20210309
+ * Task Area Controller
+ * @version 20210526
  * @ignore
  *
- * @requires define('SMART_FRAMEWORK_DOCUMENTOR_ALLOW', true);
+ * @requires define('SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW', true);
  */
-final class SmartAppAdminController extends SmartAbstractAppController {
+final class SmartAppTaskController extends SmartAbstractAppController {
 
 
 	public function Run() {
 
 		//--
-		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_ALLOW !== true)) {
-			$this->PageViewSetErrorStatus(503, 'ERROR: Documentor is disabled ...');
+		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW !== true)) {
+			$this->PageViewSetErrorStatus(503, 'INFO: Documentor Generate Mode is disabled. Must define SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW = TRUE to enable it.');
 			return;
 		} //end if
 		//--
-		if(!class_exists('DOMDocument')) {
-			$this->PageViewSetErrorStatus(503, 'ERROR: DOMDocument PHP extension is missing ...');
+		if((!class_exists('DOMDocument')) AND (!class_exists('tidy'))) { // req. for HTML Cleaner Safety
+			$this->PageViewSetErrorStatus(500, 'ERROR: At least one of: tidy or DOMDocument PHP extensions is required ...');
 			return;
 		} //end if
 		//--
@@ -86,7 +86,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 			]);
 			//-- #end sync
-			$url_base = 'admin.php?page='.Smart::escape_url($this->ControllerGetParam('controller')).'&action=run';
+			$url_base = 'task.php?page='.Smart::escape_url($this->ControllerGetParam('controller')).'&action=run';
 			$this->PageViewSetVar(
 				'main',
 				(string) SmartMarkersTemplating::render_file_template(

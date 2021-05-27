@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartModExtLib\DbOrmRedbean\ORM        final class \SmartModExtLib\DbOrmRedbean\ ORM  extends \RedBeanPHP\Facade   {   } ::    Class:">
-	<meta name="keywords" content="smartmodextlib dbormredbean orm, final, class, smartmodextlib dbormredbean, orm, extends, redbeanphp facade, provides, a, general, database, adapter, using, readbean, as, module, for, smart.framework, that, supports, the, following, drivers, such, sqlite, mysqli, postgresql, and, pdo sqlite, mysql, if, you, wish, to, use, an, in, your, projects, instead, of, direct, ones, supported, directly, by, this, is, good, solution, language, php, located, at, modules mod-db-orm-redbean libs orm.php, package, modules:database:pdo:redbean-orm, namespace, name, version, v.20200121, depends, extensions, ctype, pdo, classes, redbeanorm db, usage, dynamic, object, new, class method, only, methods, inheritance, chart, →, ↳, public, static, function, setup, string, dsn, null, username, password, boolean, frozen, true, partialbeans, false, toolbox, reimplemented, over, return, param">
+	<meta name="keywords" content="smartmodextlib dbormredbean orm, final, class, smartmodextlib dbormredbean, orm, extends, redbeanphp facade, provides, a, general, database, adapter, using, readbean, as, module, for, smart.framework, that, supports, the, following, drivers, such, sqlite, mysqli, postgresql, and, pdo sqlite, mysql, if, you, wish, to, use, an, in, your, projects, instead, of, direct, ones, supported, directly, by, this, is, good, solution, language, php, located, at, modules mod-db-orm-redbean libs orm.php, package, modules:database:pdo:redbean-orm, namespace, name, version, v.20210428, depends, extensions, ctype, pdo, classes, redbeanorm db, usage, dynamic, object, new, class method, only, methods, inheritance, chart, →, ↳, public, static, function, setup, string, dsn, null, username, password, boolean, frozen, true, partialbeans, false, toolbox, reimplemented, over, return, param">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 	<title>PHP Documentation for: \SmartModExtLib\DbOrmRedbean\ORM</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -463,7 +463,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -704,7 +704,7 @@ If you wish to use an ORM in your projects instead of the direct ones supported 
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\DbOrmRedbean\</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> ORM</span></li>
 		
-		<li><b>Version:</b> v.20200121</li>
+		<li><b>Version:</b> v.20210428</li>
 		<li><b>Depends:</b> extensions:  PHP Ctype, PHP PDO ; classes: \RedbeanOrm\Db</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -764,7 +764,7 @@ a bean.</div>
 
  R::setup( <span class="hljs-string">'mysql:host=localhost;dbname=mydatabase'</span>, <span class="hljs-string">'dba'</span>, <span class="hljs-string">'dbapassword'</span> );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><!-- Skip Internal-Priv Method: `registerToDebugLog()` --><div class="doc-container" id="Method--setAllowHybridMode">
@@ -845,7 +845,7 @@ Default is TRUE.</div>
 
 SELECT *
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--setAllowFluidTransactions">
@@ -923,7 +923,7 @@ Example:</div>
    R::store($accountTo);
  });
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--addDatabase">
@@ -957,7 +957,7 @@ to the facade. Adding a database with the same key will cause an exception.</div
  R::addDatabase( <span class="hljs-string">'database-1'</span>, <span class="hljs-string">'sqlite:/tmp/db1.txt'</span> );
  R::selectDatabase( <span class="hljs-string">'database-1'</span> ); <span class="hljs-comment">//to select database again</span>
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--createToolbox">
@@ -999,7 +999,7 @@ a connection is really required, for instance when attempting to load a bean.</d
 
  R::createToolbox( <span class="hljs-string">'mysql:host=localhost;dbname=mydatabase'</span>, <span class="hljs-string">'dba'</span>, <span class="hljs-string">'dbapassword'</span> );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--useMysqlSSL">
@@ -1177,7 +1177,7 @@ bean in case of an SQLException.</div>
  $post = R::load( <span class="hljs-string">'post'</span>, $id );
  R::trash( $post );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--freeze">
@@ -1224,7 +1224,7 @@ Usage:</div>
 
  <span class="hljs-keyword">list</span>( $author, $bio ) = R::loadMulti( <span class="hljs-string">'author, bio'</span>, $id );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--load">
@@ -1271,7 +1271,7 @@ ID to load the bean from the database again and delete it.</div>
  $post = R::load( <span class="hljs-string">'post'</span>, $id );
  R::trash( $post );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--loadForUpdate">
@@ -1299,7 +1299,7 @@ Usage:</div>
  ...update...
  R::store( $bean );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--findForUpdate">
@@ -1333,7 +1333,7 @@ Usage:</div>
  ...update...
  R::store( $bean );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--findOneForUpdate">
@@ -1390,7 +1390,7 @@ ID to load the bean from the database again and delete it.</div>
  $post = R::load( <span class="hljs-string">'post'</span>, $id );
  R::trash( $post );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--dispense">
@@ -1442,7 +1442,7 @@ $book = R::dispense( [
    <span class="hljs-string">'ownPageList'</span> =&gt; [ [<span class="hljs-string">'_type'</span>=&gt;<span class="hljs-string">'page'</span>, <span class="hljs-string">'text'</span> =&gt; <span class="hljs-string">'...'</span>] ]
  ] );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--dispenseAll">
@@ -1474,7 +1474,7 @@ containing 100 page beans.</div>
 
 <span class="hljs-keyword">list</span>($book, $pages) = R::dispenseAll(<span class="hljs-string">'book,page*100'</span>);
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--findOrDispense">
@@ -1712,7 +1712,8 @@ it's actually an SQL-like template SLOT, not real SQL.</div>
     }
  )</span>
 
-?&gt;</span></code></pre>
+// #<span class="hljs-title">end</span> <span class="hljs-title">php</span> <span class="hljs-title">code</span>
+</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--batch">
@@ -2094,7 +2095,7 @@ $rows = R::getAll( <span class="hljs-string">'SELECT FROM... COUNT(*) AS extra_c
  $data = $bean-&gt;getMeta( <span class="hljs-string">'data.bundle'</span> );
  $extra_count = $data[<span class="hljs-string">'extra_count'</span>];
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--convertToBean">
@@ -2150,7 +2151,7 @@ has been set to TRUE.</div>
 
  R::hasTag( $blog, <span class="hljs-string">'horror,movie'</span>, <span class="hljs-keyword">TRUE</span> );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--untag">
@@ -2178,7 +2179,7 @@ be associated with the tags 'smart' and 'interesting'.</div>
 
  R::untag( $blog, <span class="hljs-string">'smart,interesting'</span> );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--tag">
@@ -2210,7 +2211,7 @@ retrieve all tags attached to the meal object.</div>
  R::tag( $meal, <span class="hljs-string">&quot;TexMex,Mexican&quot;</span> );
  $tags = R::tag( $meal );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--addTags">
@@ -2238,7 +2239,7 @@ bean.</div>
 
  R::addTags( $blog, [<span class="hljs-string">&quot;halloween&quot;</span>] );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--tagged">
@@ -2276,7 +2277,7 @@ the number of movies to be returned to 10.</div>
    [ <span class="hljs-number">10</span> ]
  );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--taggedAll">
@@ -2314,7 +2315,7 @@ Query Snippet) that have been tagged as BOTH 'short' AND 'gothic'.</div>
     [ <span class="hljs-number">4</span> ]
  );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--countTaggedAll">
@@ -2449,7 +2450,7 @@ this function in fluid mode will depend on the database platform used.</div>
   R::rollback();
  }
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--commit">
@@ -2489,7 +2490,7 @@ this function in fluid mode will depend on the database platform used.</div>
   R::rollback();
  }
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--rollback">
@@ -2529,7 +2530,7 @@ this function in fluid mode will depend on the database platform used.</div>
   R::rollback();
  }
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--getColumns">
@@ -2580,7 +2581,7 @@ The statement in the example will produce the string:<br>
 
 R::genSlots( <span class="hljs-keyword">array</span>(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>), <span class="hljs-string">' IN( %s ) '</span> );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--loadJoined">
@@ -2618,7 +2619,7 @@ $all = R::findMulti(<span class="hljs-string">'country'</span>,
     [Finder::onmap(<span class="hljs-string">'country'</span>, $gebruikers)]
  );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--flat">
@@ -2642,7 +2643,7 @@ produces an array like: [ 'a', 'b', 'c' ]</div>
 
  R::flat( <span class="hljs-keyword">array</span>( <span class="hljs-string">'a'</span>, <span class="hljs-keyword">array</span>( <span class="hljs-string">'b'</span> ), <span class="hljs-string">'c'</span> ) );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--nuke">
@@ -2844,7 +2845,7 @@ R::enum(<span class="hljs-string">'flavour'</span>);
 
 R::gatherLabels( R::enum( <span class="hljs-string">'flavour'</span> ) );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--gatherLabels">
@@ -2886,7 +2887,7 @@ Usage:</div>
  ... <span class="hljs-keyword">do</span> stuff ...
  R::close();
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--isoDate">
@@ -3007,7 +3008,7 @@ will return NULL instead.</div>
 
  R::getDatabaseAdapter()-&gt;getDatabase()-&gt;getPDO();
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--getDuplicationManager">
@@ -3157,7 +3158,7 @@ This method returns the old mode and handler as an array.</div>
  	<span class="hljs-string">'method'</span> =&gt; string
  ) )
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--dump">
@@ -3186,7 +3187,7 @@ also be dumped.</div>
 
  <span class="hljs-keyword">echo</span> R::dump( $bean );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--bindFunc">
@@ -3220,7 +3221,7 @@ for this column/mode.</div>
  R::bindFunc( <span class="hljs-string">'read'</span>, <span class="hljs-string">'location.point'</span>, <span class="hljs-string">'asText'</span> );
  R::bindFunc( <span class="hljs-string">'write'</span>, <span class="hljs-string">'location.point'</span>, <span class="hljs-string">'GeomFromText'</span> );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--aliases">
@@ -3258,7 +3259,7 @@ will return a 'page' bean.</div>
  $cover = $book-&gt;cover;
  <span class="hljs-keyword">echo</span> $cover-&gt;getMeta( <span class="hljs-string">'type'</span> ); <span class="hljs-comment">//page</span>
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--findOrCreate">
@@ -3339,7 +3340,7 @@ special kind of logging.</div>
  print_r( $logs );
  R::stopLogging();
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--stopLogging">
@@ -3375,7 +3376,7 @@ query logs using R::getLogs()</div>
  print_r( $logs );
  R::stopLogging();
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--getLogs">
@@ -3417,7 +3418,7 @@ query logs using R::getLogs()</div>
  print_r( $logs );
  R::stopLogging();
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--resetQueryCount">
@@ -3441,7 +3442,7 @@ Usage:</div>
  R::resetQueryCount();
  <span class="hljs-keyword">echo</span> R::getQueryCount() . <span class="hljs-string">' queries processed.'</span>;
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--getQueryCount">
@@ -3463,7 +3464,7 @@ Usage:</div>
 
  <span class="hljs-keyword">echo</span> R::getQueryCount() . <span class="hljs-string">' queries processed.'</span>;
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--getLogger">
@@ -3553,7 +3554,7 @@ names of the cities and the population numbers respectively.</div>
           <span class="hljs-string">'/tmp/cities.csv'</span>
  );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--matchUp">
@@ -3666,7 +3667,7 @@ library the look() function can now directly be invoked from the facade.</div>
    <span class="hljs-string">&quot;\n&quot;</span>
  );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--diff">
@@ -3802,7 +3803,7 @@ method does not return anything (void).</div>
  AQueryWriter::useJSONColumns( $flag );
  OODBBean::convertArraysToJSON( $flag );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--children">
@@ -3934,7 +3935,7 @@ Usage:</div>
 
  R::useFeatureSet( <span class="hljs-string">'novice/latest'</span> );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--ext">
@@ -3963,7 +3964,7 @@ Now you can use your makeTea plugin like this:</div>
 
 R::makeTea();
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><div class="doc-container" id="Method--__callStatic">
@@ -4022,20 +4023,21 @@ intercept static calls and route them to the specified plugin.</div>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
-<br></span><span class="c2">use&nbsp;</span><span class="c1">\SmartModExtLib\DbOrmRedbean\ORM&nbsp;</span><span class="c2">as&nbsp;</span><span class="c1">R</span><span class="c2">;<br>
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
+<br></span><span style="color: #FFCC00; font-weight: bold">use&nbsp;</span><span style="color: #FFFFFF">\SmartModExtLib\DbOrmRedbean\ORM&nbsp;</span><span style="color: #FFCC00; font-weight: bold">as&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">;<br>
 <br>
-&nbsp;</span><span class="c1">R</span><span class="c2">::</span><span class="c1">setup</span><span class="c2">(</span><span class="c3">&#39;sqlite:tmp/redbean-dbfile.sqlite&#39;</span><span class="c2">);&nbsp;</span><span class="c4">//&nbsp;use&nbsp;a&nbsp;custom&nbsp;sqlite&nbsp;database&nbsp;with&nbsp;relative&nbsp;path&nbsp;to&nbsp;the&nbsp;project&nbsp;folder&nbsp;(will&nbsp;be&nbsp;stored&nbsp;in&nbsp;{project-folder}/tmp/redbean-dbfile.sqlite)<br>
+&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">setup</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;sqlite:tmp/redbean-dbfile.sqlite&#39;</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;use&nbsp;a&nbsp;custom&nbsp;sqlite&nbsp;database&nbsp;with&nbsp;relative&nbsp;path&nbsp;to&nbsp;the&nbsp;project&nbsp;folder&nbsp;(will&nbsp;be&nbsp;stored&nbsp;in&nbsp;{project-folder}/tmp/redbean-dbfile.sqlite)<br>
 &nbsp;//R::setup(&#39;mysqli:config&#39;);&nbsp;//&nbsp;use&nbsp;the&nbsp;values&nbsp;from&nbsp;Smart.Framework&nbsp;config&nbsp;(mysqli)<br>
 &nbsp;//R::setup(&#39;pgsql:config&#39;);&nbsp;//&nbsp;use&nbsp;the&nbsp;values&nbsp;from&nbsp;Smart.Framework&nbsp;config&nbsp;(pgsql)<br>
 <br>
-&nbsp;</span><span class="c1">R</span><span class="c2">::</span><span class="c1">freeze</span><span class="c2">(</span><span class="c1">false</span><span class="c2">);&nbsp;</span><span class="c4">//&nbsp;allow&nbsp;schema&nbsp;creation&nbsp;if&nbsp;not&nbsp;exists<br>
-&nbsp;</span><span class="c1">$book&nbsp;</span><span class="c2">=&nbsp;</span><span class="c1">R</span><span class="c2">::</span><span class="c1">dispense</span><span class="c2">(</span><span class="c3">&#39;book&#39;</span><span class="c2">);<br>
-&nbsp;</span><span class="c1">$book</span><span class="c2">-&gt;</span><span class="c1">title&nbsp;</span><span class="c2">=&nbsp;</span><span class="c3">&#39;Mr.&#39;</span><span class="c2">;<br>
-&nbsp;</span><span class="c1">$book</span><span class="c2">-&gt;</span><span class="c1">author&nbsp;</span><span class="c2">=&nbsp;</span><span class="c3">&#39;Test&nbsp;RedBean&#39;</span><span class="c2">;<br>
-&nbsp;</span><span class="c1">$id&nbsp;</span><span class="c2">=&nbsp;</span><span class="c1">R</span><span class="c2">::</span><span class="c1">store</span><span class="c2">(</span><span class="c1">$book</span><span class="c2">);&nbsp;</span><span class="c4">//&nbsp;write&nbsp;to&nbsp;db<br>
-&nbsp;</span><span class="c1">R</span><span class="c2">::</span><span class="c1">freeze</span><span class="c2">(</span><span class="c1">true</span><span class="c2">);&nbsp;</span><span class="c4">//&nbsp;freeze&nbsp;schema&nbsp;creations<br>
-<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
+&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">freeze</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">false</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;allow&nbsp;schema&nbsp;creation&nbsp;if&nbsp;not&nbsp;exists<br>
+&nbsp;</span><span style="color: #FFFFFF">$book&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">dispense</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;book&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;</span><span style="color: #FFFFFF">$book</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">title&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">&#39;Mr.&#39;</span><span style="color: #FFCC00; font-weight: bold">;<br>
+&nbsp;</span><span style="color: #FFFFFF">$book</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">author&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">&#39;Test&nbsp;RedBean&#39;</span><span style="color: #FFCC00; font-weight: bold">;<br>
+&nbsp;</span><span style="color: #FFFFFF">$id&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">store</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$book</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;write&nbsp;to&nbsp;db<br>
+&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">freeze</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;freeze&nbsp;schema&nbsp;creations<br>
+<br>
+//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -4477,7 +4479,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:36:41 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:43:12 +0000</small>
 <hr>
 <br>
 <!-- # -->

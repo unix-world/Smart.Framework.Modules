@@ -1,8 +1,7 @@
 <?php
 // Semacode DataMatrix Barcode 2D for Smart.Framework
 // Module Library
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -23,7 +22,6 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //============================================================
 // BarCode 2D: QRCode
 // License: GPLv3
-// (c) 2015-2020 unix-world.org
 //============================================================
 // Class to create QR-Code barcode arrays.
 // QR Code symbol is a 2D barcode that can be scanned by

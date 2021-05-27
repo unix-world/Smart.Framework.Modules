@@ -1,9 +1,9 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Documentor/ValidateSvgs (manual:task)
-// Route: admin.php?page=documentor.validate-svgs
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// Route: task.php?page=documentor.validate-svgs
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -13,18 +13,18 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
-define('SMART_APP_MODULE_AREA', 'ADMIN'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'TASK'); // INDEX, ADMIN, TASK, SHARED
 define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 
 /**
- * Admin Area Controller
+ * Task Area Controller
  * @version 20210309
  * @ignore
  *
  * @requires define('SMART_TESTUNIT_XML_DTD_SVG_URL', 'modules/mod-documentor/dtd/svg11/svg11.dtd');
  */
-final class SmartAppAdminController extends SmartAbstractAppController {
+final class SmartAppTaskController extends SmartAbstractAppController {
 
 
 	public function Run() {
@@ -50,7 +50,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		if(!class_exists('DOMDocument')) {
+		if(!class_exists('DOMDocument')) { // explicit require this for XML Validation ... tidy has nothing to do here !
 			$this->PageViewSetErrorStatus(503, 'ERROR: DOMDocument PHP extension is missing ...');
 			return;
 		} //end if

@@ -1,8 +1,7 @@
 <?php
 // Module Lib: OpenMaps Proxy Cache
 // Framework: Smart.Framework
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 namespace SmartModExtLib\MapsCache;
 

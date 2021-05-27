@@ -1,9 +1,9 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Documentor/Doc (display, save)
-// Route: admin.php?page=documentor.doc{&cls=SomeClass&ref={&action=save{&mode=multi}}}
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// Route: task.php?page=documentor.doc{&cls=SomeClass&ref={&action=save{&mode=multi}}}
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -19,16 +19,16 @@ define('SMART_FRAMEWORK_DOCUMENTOR_DIR_PKGS', 'tmp/documentor-php@packages/');
 //-----------------------------------------------------
 
 
-define('SMART_APP_MODULE_AREA', 'ADMIN'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'TASK'); // INDEX, ADMIN, TASK, SHARED
 define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 
 /**
- * Admin Area Controller
- * @version 20210309
+ * Task Area Controller
+ * @version 20210525
  * @package Application
  */
-final class SmartAppAdminController extends SmartAbstractAppController {
+final class SmartAppTaskController extends SmartAbstractAppController {
 
 
 	private $errMsg 	= null;
@@ -77,13 +77,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
-		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_ALLOW !== true)) {
-			$this->PageViewSetErrorStatus(503, 'ERROR: Documentor is disabled. Must defined SMART_FRAMEWORK_DOCUMENTOR_ALLOW = TRUE to allow it.');
-			return;
-		} //end if
-		//--
-		if(!class_exists('DOMDocument')) {
-			$this->PageViewSetErrorStatus(503, 'ERROR: DOMDocument PHP extension is missing ...');
+		if((!class_exists('DOMDocument')) AND (!class_exists('tidy'))) { // req. for HTML Cleaner Safety
+			$this->PageViewSetErrorStatus(500, 'ERROR: At least one of: tidy or DOMDocument PHP extensions is required ...');
 			return;
 		} //end if
 		//--
@@ -112,6 +107,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$mode = $this->RequestVarGet('mode', '', 'string');
 		$extra = $this->RequestVarGet('extra', '', 'string');
 		$heading = $this->RequestVarGet('heading', 'PHP Documentation', 'string');
+		//--
+		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW !== true)) {
+			if(((string)$action != '') OR ((string)$mode != '') OR ((string)$extra != '')) {
+				$this->PageViewSetErrorStatus(503, 'ERROR: Documentor Generate Mode is disabled. Must define SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW = TRUE to enable it.');
+				return;
+			} //end if
+		} //end if
 		//--
 
 		//-- {{{SYNC-DOCUMENTOR-SAVE-MODE}}}
@@ -372,13 +374,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$arr['constants'][$i]['doc-const-type'] = '';
 				//--
-				if(Smart::array_size($arr['constants'][$i]['doc-comments']['props']) > 0) {
+				if(array_key_exists('props', $arr['constants'][$i]['doc-comments']) AND (Smart::array_size($arr['constants'][$i]['doc-comments']['props']) > 0)) {
 					if(Smart::array_size($arr['constants'][$i]['doc-comments']['props']['const']) > 0) {
 						$arr['constants'][$i]['doc-const-type'] = (string) trim((string)$arr['constants'][$i]['doc-comments']['props']['const']['type']);
 					} //end if
 				} //end if
 				//--
-				$arr['constants'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html($arr['constants'][$i]['doc-comments']['comments'])), true);
+				$arr['constants'][$i]['comment-html'] = (string) SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::nl_2_br(Smart::escape_html((isset($arr['constants'][$i]['doc-comments']['comments']) ? $arr['constants'][$i]['doc-comments']['comments'] : null))), true);
 				//--
 			} //end for
 		} //end if
@@ -619,7 +621,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			'traits' 			=> (array)  $traits,
 			'is-instantiable' 	=> (bool)   $rc->isInstantiable(),
 			'constructor' 		=> (string) ($rc->getConstructor() ? $rc->getConstructor()->getName() : ''),
-		//	'is-iterable' 		=> (bool)   $rc->isIterable(), // PHP 7.2+
+		//	'is-iterable' 		=> (bool)   $rc->isIterable(), // [ PHP 7,2+ ]
 			'is-anonymous' 		=> (bool)   $rc->isAnonymous(),
 			'is-cloneable' 		=> (bool)   $rc->isCloneable(),
 			'is-user-defined' 	=> (bool)   $rc->isUserDefined(),
@@ -1398,7 +1400,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			return '';
 		} //end if
 		//--
-		$hl = (new \SmartModExtLib\HighlightSyntax\Highlighter())->highlight('php', (string)'<'.'?php'."\n\n".' '.trim((string)$code)."\n\n".'?'.'>');
+		$hl = (new \SmartModExtLib\HighlightSyntax\Highlighter())->highlight('php', (string)'<'.'?php'."\n\n".' '.trim((string)$code)."\n\n".'// #end php code'."\n");
 		//--
 		return (string) SmartUtils::comment_php_code((string)trim((string)$hl->value));
 		//--
@@ -1422,7 +1424,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			@ini_set((string)$key, $val); // set custom to INI for custom render
 		} //end for
 		//-- render
-		$code = (string) highlight_string((string)'<'.'?php'."\n\n".SmartUtils::comment_php_code(trim((string)$code), [])."\n\n".'?'.'>', true);
+		$code = (string) highlight_string((string)'<'.'?php'."\n\n".SmartUtils::comment_php_code(trim((string)$code), [])."\n\n".'// #end php code'."\n", true);
 		$code = (new SmartHtmlParser((string)$code, true, true, false))->get_clean_html(false); // fix XHTML Tags and deliver clean HTML
 		//-- restore render settings to INI
 		foreach($arr_highlight_default as $key => $val) {
@@ -1438,13 +1440,35 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 
 /**
+ * Admin Area Controller
+ * @version 20210526
+ * @package Application
+ */
+final class SmartAppAdminController extends SmartAbstractAppController {
+
+	// this is just for the purpose of documentation of Smart.Framework as this controller only serves TASK area
+
+	public function Initialize() {} // re-implement for documentation purposes
+
+	public function Run() { // re-implement for documentation purposes
+		//--
+		return 503;
+		//--
+	} //END FUNCTION
+
+	public function ShutDown() {} // re-implement for documentation purposes
+
+} //END CLASS
+
+
+/**
  * Index Area Controller
- * @version 20210309
+ * @version 20210525
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {
 
-	// this is just for the purpose of documentation of Smart.Framework as this controller only serves ADMIN area
+	// this is just for the purpose of documentation of Smart.Framework as this controller only serves TASK area
 
 	public function Initialize() {} // re-implement for documentation purposes
 

@@ -2,8 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Test Samples
 // Route: ?/page/pdf-generate.test-export (?page=pdf-generate.test-export)
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -12,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
 
 
 /**
@@ -26,12 +25,12 @@ class SmartAppIndexController extends SmartAbstractAppController {
 	public function Run() {
 
 		//-- dissalow run this sample if not test mode enabled
-		if(SMART_FRAMEWORK_TEST_MODE !== true) {
+		if(!defined('SMART_FRAMEWORK_TEST_MODE') OR (SMART_FRAMEWORK_TEST_MODE !== true)) {
 			$this->PageViewSetErrorStatus(503, 'ERROR: Test mode is disabled ...');
 			return;
 		} //end if
 		//--
-		if(SMART_FRAMEWORK_TESTUNIT_ALLOW_FILESYSTEM_TESTS !== true) {
+		if(!defined('SMART_FRAMEWORK_TESTUNIT_ALLOW_FILESYSTEM_TESTS') OR (SMART_FRAMEWORK_TESTUNIT_ALLOW_FILESYSTEM_TESTS !== true)) {
 			$this->PageViewSetErrorStatus(503, 'NOTICE: PDF Test mode is not active ...');
 			return;
 		} //end if
@@ -96,6 +95,32 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 	} //END FUNCTION
+
+} //END CLASS
+
+
+/**
+ * Admin Controller (optional)
+ *
+ * @ignore
+ *
+ */
+class SmartAppAdminController extends SmartAppIndexController {
+
+	// this will clone the SmartAppIndexController to run exactly the same action in admin.php
+
+} //END CLASS
+
+
+/**
+ * Task Controller (optional)
+ *
+ * @ignore
+ *
+ */
+class SmartAppTaskController extends SmartAppAdminController {
+
+	// this will clone the SmartAppIndexController to run exactly the same action in task.php
 
 } //END CLASS
 

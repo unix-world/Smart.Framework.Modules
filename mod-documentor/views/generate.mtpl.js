@@ -71,7 +71,7 @@ smartQUnitStartDelay = 500;
 		[%%%LOOP:PRE-TASKS%%%]
 		QUnit.test('Task #[###PRE-TASKS.-_INDEX_-|js###]: [###PRE-TASKS._-VAL-_|upper|js###]', function(assert) {
 			SmartQUnit.runAjaxTest(
-				'admin.php?page=[###PAGE|url|js###]&action=[###PRE-TASKS._-VAL-_|url|js###]&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
+				'task.php?page=[###PAGE|url|js###]&action=[###PRE-TASKS._-VAL-_|url|js###]&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
 				'GET',
 				'json', // data type
 				assert,
@@ -107,7 +107,7 @@ smartQUnitStartDelay = 500;
 		[%%%LOOP:TASKS%%%]
 		QUnit.test('Task #[###TASKS.-_INDEX_-|js###]: [###TASKS._-VAL-_|js###]', function(assert) {
 			SmartQUnit.runAjaxTest(
-				'admin.php?page=[###PAGE|url|js###]&cls=[###TASKS._-VAL-_|url|js###]&file=[###TASKS._-KEY-_|url|js###]&action=save&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
+				'task.php?page=[###PAGE|url|js###]&cls=[###TASKS._-VAL-_|url|js###]&file=[###TASKS._-KEY-_|url|js###]&action=save&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
 				'GET',
 				'json', // data type
 				assert,
@@ -143,7 +143,7 @@ smartQUnitStartDelay = 500;
 		[%%%LOOP:POST-TASKS%%%]
 		QUnit.test('Task #[###POST-TASKS.-_INDEX_-|js###]: [###POST-TASKS._-VAL-_|upper|js###]', function(assert) {
 			SmartQUnit.runAjaxTest(
-				'admin.php?page=[###PAGE|url|js###]&action=[###POST-TASKS._-VAL-_|url|js###]&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
+				'task.php?page=[###PAGE|url|js###]&action=[###POST-TASKS._-VAL-_|url|js###]&mode=[###MODE|url|js###]&extra=[###EXTRA|url|js###]&heading=[###HEADING|url|js###]',
 				'GET',
 				'json', // data type
 				assert,

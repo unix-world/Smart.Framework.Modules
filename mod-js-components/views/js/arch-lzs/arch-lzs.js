@@ -23,6 +23,8 @@
  * The purpose of this class is to compress/decompress cookies that can be shared also with PHP
  * The PHP version of this class is available in modules/mod-js-components/libs/ArchLzs.php
  *
+ * @package modules.Javascript:Archivers
+ *
  * @requires		smartJ$Utils
  * @requires		smartJ$CryptoHash
  *
@@ -30,7 +32,7 @@
  * @author unix-world.org
  * @license BSD
  * @file arch_utils.js
- * @version 20210413
+ * @version 20210526
  * @class ArchLzs
  * @static
  *
@@ -39,7 +41,7 @@
  * var archivedStr = ArchLzs.compressToBase64(plainStr);
  * var unArchivedStr = ArchLzs.decompressFromBase64(archivedStr);
  * if(plainStr !== unArchivedStr) {
- * 	alert('Js LZS Archiver Failed: Plain String is different after Archive/Unarchive operations !');
+ * 	alert('Javascript LZS Archiver Failed: Plain String is different after Archive/Unarchive operations !');
  * }
  * console.log(plainStr, archivedStr, unArchivedStr);
  */

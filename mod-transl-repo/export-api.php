@@ -1,8 +1,7 @@
 <?php
 // Controller: TranslRepo/ExportApi
 // Route: admin.php?/page/transl-repo.export-api (admin.php?page=transl-repo.export-api)
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT S EXECUTION
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application

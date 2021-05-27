@@ -1,7 +1,7 @@
 
-# Smart.Framework.Modules: UI W3 (CSS) r.20210331 #
+# Smart.Framework.Modules: UI W3 (CSS) r.20210526 #
 ## UI W3 (CSS) v.4.15 ##
 
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 ###

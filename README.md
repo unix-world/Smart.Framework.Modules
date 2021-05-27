@@ -26,17 +26,22 @@
 	* GeoIP: a GeoIP api for PHP using the geoiplookup / geoiplookup6 executables
 	* MediaGallery: a media gallery api for Smart.Framework
 	* Countries: json list of countries + svg flags for countries
+	* Translations Repository module (includes the PostgreSQL Adapter for Translations)
+	* Captcha (Image) module
+	* PHP Highlight Syntax module
 	* SocialMedia Facebook: Js + PHP API
 	* SocialMedia Twitter: Js + PHP API
 	* OAuth2 Api: Manager for XOAUTH2 based authentications (can be used as an external provider for: SMTP, IMAP and other protocols)
 	* SVN (manager): a web based SVN (subversion) manager
 	* DB Admin (manager): a web based DataBase administrator (currently supports just MongoDB)
+	* NLP (Natural Language Procesing) modules: Lemmatizer, Rake and Stemmer
 
 ### Extra App Modules (GPLv3 licensed ; can be used with Smart.Framework licensed under GPLv3 license only):
 	* Documentor: a PHP and JavaScript documentation generator
 	* Cloud App: an advanced Cloud Api and app module: WebDAV, CalDAV / WebCal and CardDAV / WebAddressbook
 	* Agile App: an document store API and app module for Smart.Framework
 	* Workflow Components: a collection of smart Javascript components and utilities
+	* BarCodes: libraries to generate barcodes: 2D (QRCode ; Aztec ; Semacode DataMatrix ; PDF417) ; 1D (EAN / UPC, Code 128B, Code 93, Code 39, RMS4 CBC, RMS4 KIX)
 
 ### Extra Libs (BSD licensed):
 	* PostgreSQL Extended connector: make life easier for the Smart.Framework PostgreSQL connector by providing an advanced functionality class

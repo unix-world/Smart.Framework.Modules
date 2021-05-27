@@ -2,8 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Facebook Api Test Sample
 // Route: ?/page/sm-facebook.test (?page=sm-facebook.test)
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -28,7 +27,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 	public function Run() {
 
 		//-- dissalow run this sample if not test mode enabled
-		if(SMART_FRAMEWORK_TEST_MODE !== true) {
+		if(!defined('SMART_FRAMEWORK_TEST_MODE') OR (SMART_FRAMEWORK_TEST_MODE !== true)) {
 			$this->PageViewSetErrorStatus(503, 'ERROR: Test mode is disabled ...');
 			return;
 		} //end if

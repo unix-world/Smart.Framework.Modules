@@ -2,8 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Media Gallery Test Sample
 // Route: ?/page/media-gallery.test (?page=media-gallery.test)
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -12,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
 
 /*
 define('SMART_FRAMEWORK_MEDIAGALLERY_IMG_CONVERTER', 	'/usr/local/bin/convert'); 				// `@gd` | path to ImagMagick Convert (change to match your system) ; can be `/usr/bin/convert` or `/usr/local/bin/convert` or `c:/open_runtime/image_magick/convert.exe`
@@ -32,19 +31,30 @@ define('SMART_FRAMEWORK_MEDIAGALLERY_MOV_THUMBNAILER', 	'/usr/local/bin/ffmpeg')
  */
 class SmartAppIndexController extends SmartAbstractAppController {
 
+
+	public function Initialize() {
+		//--
+		// this is pre-run
+		//--
+		$this->PageViewSetCfg('template-path', 'default');
+		$this->PageViewSetCfg('template-file', 'template.htm');
+		//--
+	} //END FUNCTION
+
+
 	public function Run() {
 
 		//-- dissalow run this sample if not test mode enabled
-		if(SMART_FRAMEWORK_TEST_MODE !== true) {
+		if(!defined('SMART_FRAMEWORK_TEST_MODE') OR (SMART_FRAMEWORK_TEST_MODE !== true)) {
 			$this->PageViewSetErrorStatus(503, 'ERROR: Test mode is disabled ...');
 			return;
 		} //end if
 		//--
 
 		//--
-		if(SMART_FRAMEWORK_MEDIAGALLERY_SECUREMODE === true) {
+		if(defined('SMART_FRAMEWORK_MEDIAGALLERY_SECUREMODE') AND (SMART_FRAMEWORK_MEDIAGALLERY_SECUREMODE === true)) {
 			//--
-			$key = sha1((string)SMART_FRAMEWORK_SECURITY_KEY.date('Y-m-d'));
+			$key = sha1((string)(defined('SMART_FRAMEWORK_SECURITY_KEY') ? SMART_FRAMEWORK_SECURITY_KEY : '').date('Y-m-d'));
 			//--
 			$lnk = $this->RequestVarGet('lnk', '', 'string');
 			if((string)$lnk != '') {
@@ -61,7 +71,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$mg = new \SmartModExtLib\MediaGallery\Manager();
 		//--
-		if(SMART_FRAMEWORK_MEDIAGALLERY_SECUREMODE === true) {
+		if(defined('SMART_FRAMEWORK_MEDIAGALLERY_SECUREMODE') AND (SMART_FRAMEWORK_MEDIAGALLERY_SECUREMODE === true)) {
 			//--
 			$mg->use_secure_links 			= 'yes';
 			$mg->secure_download_link 		= '?page='.Smart::escape_url($this->ControllerGetParam('controller')).'&lnk=';
@@ -70,8 +80,8 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		} //end if
 		//--
 		if(defined('SMART_FRAMEWORK_MEDIAGALLERY_WATERMARK')) {
-			$mg->img_watermark 			= (string) SMART_FRAMEWORK_MEDIAGALLERY_WATERMARK;
-			$mg->preview_watermark 		= (string) SMART_FRAMEWORK_MEDIAGALLERY_WATERMARK;
+			$mg->img_watermark 			= (string) (defined('SMART_FRAMEWORK_MEDIAGALLERY_WATERMARK') ? SMART_FRAMEWORK_MEDIAGALLERY_WATERMARK : '');
+			$mg->preview_watermark 		= (string) (defined('SMART_FRAMEWORK_MEDIAGALLERY_WATERMARK') ? SMART_FRAMEWORK_MEDIAGALLERY_WATERMARK : '');
 		} //end if
 		//--
 
@@ -102,6 +112,19 @@ class SmartAppIndexController extends SmartAbstractAppController {
 class SmartAppAdminController extends SmartAppIndexController {
 
 	// this will clone the SmartAppIndexController to run exactly the same action in admin.php
+
+} //END CLASS
+
+
+/**
+ * Task Controller (optional)
+ *
+ * @ignore
+ *
+ */
+class SmartAppTaskController extends SmartAppAdminController {
+
+	// this will clone the SmartAppIndexController to run exactly the same action in task.php
 
 } //END CLASS
 

@@ -1,8 +1,7 @@
 <?php
 // Class: \SmartModExtLib\PdfGenerate\HtmlUrlToPdfExport
 // [Smart.Framework.Modules - PdfGenerate / HTML URL to PDF Export]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 namespace SmartModExtLib\PdfGenerate;
 

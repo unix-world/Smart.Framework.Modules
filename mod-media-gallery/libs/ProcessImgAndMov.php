@@ -1,9 +1,7 @@
 <?php
 // Class: \SmartModExtLib\MediaGallery\ProcessImgAndMov
-// Media Gallery Process: Images and Movies :: for Smart.Framework
-// Module Library
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// Media Gallery Process: Images and Movies :: Smart.Framework Module Library
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -291,7 +289,7 @@ final class ProcessImgAndMov { // [OK]
 			//--
 			if((is_file($y_file)) AND (!\SmartFileSystem::path_exists($y_newfile)) AND (!\SmartFileSystem::path_exists($lock_file))) {
 				//--
-				@chmod($y_file, SMART_FRAMEWORK_CHMOD_FILES); //mark chmod
+				@chmod($y_file, (defined('SMART_FRAMEWORK_CHMOD_FILES') ? SMART_FRAMEWORK_CHMOD_FILES : 0666)); //mark chmod
 				//--
 				if(((string)SMART_FRAMEWORK_MEDIAGALLERY_IMG_CONVERTER == '@gd') OR (((string)SMART_FRAMEWORK_MEDIAGALLERY_IMG_CONVERTER != '@gd') AND (\SmartFileSystem::have_access_executable(SMART_FRAMEWORK_MEDIAGALLERY_IMG_CONVERTER)))) {
 					//--
@@ -381,7 +379,7 @@ final class ProcessImgAndMov { // [OK]
 					} //end if
 					//-- chmod
 					if(is_file($y_newfile)) {
-						@chmod($y_newfile, SMART_FRAMEWORK_CHMOD_FILES); //mark chmod
+						@chmod($y_newfile, (defined('SMART_FRAMEWORK_CHMOD_FILES') ? SMART_FRAMEWORK_CHMOD_FILES : 0666)); //mark chmod
 					} //end if
 					//-- release the lock file
 					\SmartFileSystem::delete($lock_file);
@@ -541,7 +539,7 @@ final class ProcessImgAndMov { // [OK]
 			//--
 			if((is_file($y_mov_file)) AND (!\SmartFileSystem::path_exists($y_mov_img_preview)) AND (!\SmartFileSystem::path_exists($lock_file))) {
 				//--
-				@chmod($y_mov_file, SMART_FRAMEWORK_CHMOD_FILES); //mark chmod
+				@chmod($y_mov_file, (defined('SMART_FRAMEWORK_CHMOD_FILES') ? SMART_FRAMEWORK_CHMOD_FILES : 0666)); //mark chmod
 				//--
 				$out .= '<table width="550" bgcolor="#74B83F">';
 				$out .= '<tr><td>Processing Movie Preview:'.' '."'".\Smart::escape_html(\Smart::base_name($y_mov_file))."'".' -&gt; '."'".\Smart::escape_html(\Smart::base_name($y_mov_img_preview))."'".'</td></tr>';
@@ -578,7 +576,7 @@ final class ProcessImgAndMov { // [OK]
 				//-- process and apply watermark if any
 				if(is_file($temporary_pw)) {
 					//--
-					@chmod($temporary_pw, SMART_FRAMEWORK_CHMOD_FILES); //mark chmod
+					@chmod($temporary_pw, (defined('SMART_FRAMEWORK_CHMOD_FILES') ? SMART_FRAMEWORK_CHMOD_FILES : 0666)); //mark chmod
 					//--
 					self::img_process('preview', 'no', $temporary_pw, $y_mov_img_preview, $y_quality, $y_width, $y_height, $y_watermark, $y_waterlocate);
 					//--

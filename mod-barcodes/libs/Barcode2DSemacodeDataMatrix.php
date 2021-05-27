@@ -1,8 +1,7 @@
 <?php
 // SemaCode DataMatrix Barcode 2D for Smart.Framework
 // Module Library
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -23,7 +22,6 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //============================================================
 // BarCode 2D: DataMatrix (Semacode)
 // License: GPLv3
-// (c) 2015-2020 unix-world.org
 //============================================================
 // Class to create DataMatrix ECC 200 barcode arrays.
 // DataMatrix (ISO/IEC 16022:2006) is a 2-D bar code.

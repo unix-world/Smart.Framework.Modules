@@ -1,7 +1,7 @@
 
 // [LIB - SmartFramework / JS / Browser UI Utils - jQueryUI]
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 // DEPENDS: jQuery, smartJ$Utils, smartJ$Date, smartJ$Browser, jQueryUI, jQuery.UI.ListSelect, jQuery.UI.TimePicker, jQuery.DataTable
 
@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210504
+var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210526
 
 	this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 

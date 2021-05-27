@@ -1,9 +1,9 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Documentor/DocJs (display, save)
-// Route: admin.php?page=documentor.docjs{&cls=SomeClass{&mode=multi}}
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// Route: task.php?page=documentor.docjs{&cls=SomeClass{&mode=multi}}
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -20,16 +20,16 @@ define('SMART_FRAMEWORK_DOCUMENTOR_DIR_PKGS', 'tmp/documentor-js@packages/');
 //-----------------------------------------------------
 
 
-define('SMART_APP_MODULE_AREA', 'ADMIN'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'TASK'); // INDEX, ADMIN, TASK, SHARED
 define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 
 /**
- * Admin Area Controller
- * @version 20210417
+ * Task Area Controller
+ * @version 20210526
  * @ignore
  */
-final class SmartAppAdminController extends SmartAbstractAppController {
+final class SmartAppTaskController extends SmartAbstractAppController {
 
 	private $sfjfile 	= '';
 	private $classes 	= [];
@@ -80,13 +80,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
-		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_ALLOW !== true)) {
-			$this->PageViewSetErrorStatus(503, 'ERROR: Documentor is disabled ...');
-			return;
-		} //end if
-		//--
-		if(!class_exists('DOMDocument')) {
-			$this->PageViewSetErrorStatus(503, 'ERROR: DOMDocument PHP extension is missing ...');
+		if((!class_exists('DOMDocument')) AND (!class_exists('tidy'))) { // req. for HTML Cleaner Safety
+			$this->PageViewSetErrorStatus(500, 'ERROR: At least one of: tidy or DOMDocument PHP extensions is required ...');
 			return;
 		} //end if
 		//--
@@ -110,6 +105,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		$mode = $this->RequestVarGet('mode', '', 'string');
 		$extra = $this->RequestVarGet('extra', '', 'string');
 		$heading = $this->RequestVarGet('heading', 'JavaScript Documentation', 'string');
+		//--
+		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW !== true)) {
+			if(((string)$action != '') OR ((string)$mode != '') OR ((string)$extra != '')) {
+				$this->PageViewSetErrorStatus(503, 'ERROR: Documentor Generate Mode is disabled. Must define SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW = TRUE to enable it.');
+				return;
+			} //end if
+		} //end if
 		//--
 
 		//-- {{{SYNC-DOCUMENTOR-SAVE-MODE}}}

@@ -1,7 +1,6 @@
 <?php
 // Class: \SmartModDataModel\TranslRepo\PgTranslRepoTranslationss
 // (c) 2019-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
 
 namespace SmartModDataModel\TranslRepo;
 

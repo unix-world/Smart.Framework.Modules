@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartSolrDb        final class \ SmartSolrDb    {   } -&gt;    Class Smart Solr (DB) Client     Language: PHP  Located at:">
-	<meta name="keywords" content="smartsolrdb, final, class, smart, solr, db, client, language, php, located, at, modules smart-extra-libs lib db solr.php, package, extralibs:database:solr, namespace, name, version, v.20210401, depends, extensions, v.2.0, or, later, classes, smartcomponents, usage, dynamic, object, new, class method, this, provides, only, methods, public, function, get ext version, string, return, extension, get, the, throwfatalerrors, raisefatalerrors, findquery, y query, y options, array mode, phrase, settings, array, sort, filters, facets, fields, boost, mlt, adddocument, arrdoc, use autocommit, deletedocument, id, properties, constants, sample, code, example, mysolr, data, word1, word2, is, a, real, query, and, must, be, escaped, in, proper, way, using, solrutils::escapequerychars, start, offset, rows, limit, score, id1, not, category, some, categ, subcategory, sub-categ, all">
+	<meta name="keywords" content="smartsolrdb, final, class, smart, solr, db, client, language, php, located, at, modules smart-extra-libs lib db solr.php, package, extralibs:database:solr, namespace, name, version, v.20210429, depends, extensions, v.2.0, or, later, classes, smartcomponents, usage, dynamic, object, new, class method, this, provides, only, methods, public, function, get ext version, string, return, extension, get, the, throwfatalerrors, raisefatalerrors, findquery, y query, y options, array mode, phrase, settings, array, sort, filters, facets, fields, boost, mlt, adddocument, arrdoc, use autocommit, deletedocument, id, properties, constants, sample, code, example, mysolr, data, word1, word2, is, a, real, query, and, must, be, escaped, in, proper, way, using, solrutils::escapequerychars, start, offset, rows, limit, score, id1, not, category, some, categ, subcategory, sub-categ, all">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation: \SmartSolrDb">
 	<title>PHP Documentation for: \SmartSolrDb</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -463,7 +463,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -703,7 +703,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartSolrDb</span></li>
 		
-		<li><b>Version:</b> v.20210401</li>
+		<li><b>Version:</b> v.20210429</li>
 		<li><b>Depends:</b> extensions:  PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartComponents</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -811,31 +811,32 @@ select#select-summary {
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
-<br></span><span class="c2">//&nbsp;Usage&nbsp;example:<br>
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
+<br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>
 &nbsp;//--<br>
-&nbsp;</span><span class="c1">$mySolr&nbsp;</span><span class="c3">=&nbsp;new&nbsp;</span><span class="c1">SmartSolrDb</span><span class="c3">();<br>
-&nbsp;</span><span class="c2">//--<br>
-&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c1">$data&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">$mySolr</span><span class="c3">-&gt;</span><span class="c1">findQuery</span><span class="c3">(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;word1&nbsp;word2&#39;</span><span class="c3">,&nbsp;</span><span class="c2">//&nbsp;this&nbsp;is&nbsp;a&nbsp;real&nbsp;Solr&nbsp;Query&nbsp;and&nbsp;must&nbsp;be&nbsp;escaped&nbsp;in&nbsp;a&nbsp;proper&nbsp;way&nbsp;using&nbsp;SolrUtils::escapeQueryChars()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c3">[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;settings&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;start&#39;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c1">0</span><span class="c3">,&nbsp;</span><span class="c2">//&nbsp;offset<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;rows&#39;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c1">10</span><span class="c3">,&nbsp;</span><span class="c2">//&nbsp;limit<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c3">],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;sort&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;score&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;-</span><span class="c1">1<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c3">],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;filters&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;!id&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c4">&#39;ID1&#39;</span><span class="c3">,&nbsp;</span><span class="c2">//&nbsp;not&nbsp;ID1<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;category&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c4">&#39;Some&nbsp;Categ&#39;</span><span class="c3">,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;subcategory&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c4">&#39;Some&nbsp;Sub-Categ&#39;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c3">],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;fields&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;[]&nbsp;</span><span class="c2">//&nbsp;all<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c3">]<br>
+&nbsp;</span><span style="color: #FFFFFF">$mySolr&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartSolrDb</span><span style="color: #FFCC00; font-weight: bold">();<br>
+&nbsp;</span><span style="color: #999999">//--<br>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$data&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$mySolr</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">findQuery</span><span style="color: #FFCC00; font-weight: bold">(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;word1&nbsp;word2&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;is&nbsp;a&nbsp;real&nbsp;Solr&nbsp;Query&nbsp;and&nbsp;must&nbsp;be&nbsp;escaped&nbsp;in&nbsp;a&nbsp;proper&nbsp;way&nbsp;using&nbsp;SolrUtils::escapeQueryChars()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;settings&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;start&#39;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">0</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;offset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;rows&#39;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">10</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;limit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;sort&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;score&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;-</span><span style="color: #FFFFFF">1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;filters&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;!id&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">&#39;ID1&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;not&nbsp;ID1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;category&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">&#39;Some&nbsp;Categ&#39;</span><span style="color: #FFCC00; font-weight: bold">,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;subcategory&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">&#39;Some&nbsp;Sub-Categ&#39;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;fields&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;[]&nbsp;</span><span style="color: #999999">//&nbsp;all<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;);<br>
-&nbsp;</span><span class="c2">//--<br>
-<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
+&nbsp;</span><span style="color: #999999">//--<br>
+<br>
+//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -909,7 +910,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:36:41 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:43:11 +0000</small>
 <hr>
 <br>
 <!-- # -->

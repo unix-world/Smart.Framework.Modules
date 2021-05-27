@@ -1,7 +1,6 @@
 <?php
 // Mapnik Cache Proxy: (index|admin).php?page=maps-cache.mapnik-proxy{&x=&y=&z=&r=}
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -10,9 +9,15 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
 
-//=======================================================
+
+/**
+ * Index Controller
+ *
+ * @ignore
+ *
+ */
 class SmartAppIndexController extends SmartAbstractAppController {
 
 	private $is_debug = false;
@@ -125,10 +130,31 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 } //END CLASS
 
+
+/**
+ * Admin Controller (optional)
+ *
+ * @ignore
+ *
+ */
 class SmartAppAdminController extends SmartAppIndexController {
 
 	// this will clone the IndexAppModule to run exactly the same action in admin.php
 
 } //END CLASS
+
+
+/**
+ * Task Controller (optional)
+ *
+ * @ignore
+ *
+ */
+class SmartAppTaskController extends SmartAppAdminController {
+
+	// this will clone the SmartAppIndexController to run exactly the same action in task.php
+
+} //END CLASS
+
 
 // end of php code

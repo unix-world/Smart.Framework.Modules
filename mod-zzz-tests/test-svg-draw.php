@@ -2,8 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: ZZZ Tests / SVG Draw (MeyFa SVG)
 // Route: ?page=zzz-tests.test-svg-draw
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -12,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
 
 /**
  * Index Controller
@@ -25,14 +24,14 @@ class SmartAppIndexController extends SmartAbstractAppController {
 	public function Run() {
 
 		//-- dissalow run this sample if not test mode enabled
-		if(SMART_FRAMEWORK_TEST_MODE !== true) {
+		if(!defined('SMART_FRAMEWORK_TEST_MODE') OR (SMART_FRAMEWORK_TEST_MODE !== true)) {
 			$this->PageViewSetErrorStatus(503, 'ERROR: Test mode is disabled ...');
 			return;
 		} //end if
 		//--
 
 		//--
-		if(!class_exists('\\SVG')) {
+		if(!class_exists('\\SVG\\SVG')) {
 			if(!is_file('modules/vendor/MeyFaSvg/autoload.php')) {
 				$this->PageViewSetErrorStatus(500, 'ERROR: Cannot Load SVG ...');
 				return;
@@ -93,6 +92,19 @@ class SmartAppIndexController extends SmartAbstractAppController {
 class SmartAppAdminController extends SmartAppIndexController {
 
 	// this will clone the SmartAppIndexController to run exactly the same action in admin.php
+
+} //END CLASS
+
+
+/**
+ * Task Controller (optional)
+ *
+ * @ignore
+ *
+ */
+class SmartAppTaskController extends SmartAppAdminController {
+
+	// this will clone the SmartAppIndexController to run exactly the same action in task.php
 
 } //END CLASS
 

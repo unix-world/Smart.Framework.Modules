@@ -1,8 +1,7 @@
 <?php
 // Code93 Barcode 1D for Smart.Framework
 // Module Library
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -24,7 +23,6 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //============================================================
 // BarCode 1D:	Code93 (USS-93)
 // License: GPLv3
-// (c) 2015-2020 unix-world.org
 //============================================================
 // Class to create Code93 1D barcodes.
 // Code similar to Code 39 or 128, but more compact, high density

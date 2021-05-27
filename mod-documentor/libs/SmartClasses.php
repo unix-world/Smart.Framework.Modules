@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\Documentor\SmartClasses
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\Documentor;
 
@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20210429
+ * @version 	v.20210525
  * @package 	Documentor
  *
  */
@@ -120,6 +120,7 @@ final class SmartClasses {
 			'\\SmartAbstractAppController', // dev
 			'\\SmartAppIndexController',
 			'\\SmartAppAdminController',
+			'\\SmartAppTaskController',
 			//--
 		//	'\\SmartAppBootstrap', // internal only
 			'\\SmartAppInfo',
@@ -141,6 +142,7 @@ final class SmartClasses {
 			'\\SmartDetectImages',
 			'\\SmartImageGdProcess',
 			'\\SmartCaptcha',
+			'\\SmartAsciiCaptcha',
 			'\\SmartSVGCaptcha',
 			'\\SmartQR2DBarcode',
 			'\\SmartViewHtmlHelpers',

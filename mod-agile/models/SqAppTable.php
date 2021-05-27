@@ -1,7 +1,6 @@
 <?php
 // Class: \SmartModDataModel\Agile\SqAppTable
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 namespace SmartModDataModel\Agile;
 
@@ -256,7 +255,7 @@ final protected function checkInstance() {
 //##### PRIVATES
 
 
-final private function initDBSchema() {
+private function initDBSchema() {
 	//--
 	if(!$this->checkInstance()) {
 		return 0;
@@ -280,7 +279,7 @@ final private function initDBSchema() {
 } //END FUNCTION
 
 
-final private function getSqlSchema($table) {
+private function getSqlSchema($table) {
 //--
 $table = (string) $table;
 //--

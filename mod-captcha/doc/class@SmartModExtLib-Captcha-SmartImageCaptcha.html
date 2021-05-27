@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -463,7 +463,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -887,26 +887,27 @@ possible values: 0..9</div>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
-<br></span><span class="c2">//--&nbsp;set&nbsp;the&nbsp;captcha&nbsp;options<br>
-&nbsp;</span><span class="c1">$captcha&nbsp;</span><span class="c3">=&nbsp;new&nbsp;</span><span class="c1">SmartImageCaptcha</span><span class="c3">();<br>
-&nbsp;</span><span class="c1">$captcha</span><span class="c3">-&gt;</span><span class="c1">format</span><span class="c3">=</span><span class="c4">&#39;png&#39;</span><span class="c3">;<br>
-&nbsp;</span><span class="c1">$captcha</span><span class="c3">-&gt;</span><span class="c1">width&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">100</span><span class="c3">;<br>
-&nbsp;</span><span class="c1">$captcha</span><span class="c3">-&gt;</span><span class="c1">height&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">50</span><span class="c3">;<br>
-&nbsp;</span><span class="c1">$captcha</span><span class="c3">-&gt;</span><span class="c1">noise&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">300</span><span class="c3">;<br>
-&nbsp;</span><span class="c1">$captcha</span><span class="c3">-&gt;</span><span class="c1">chars&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">5</span><span class="c3">;<br>
-&nbsp;</span><span class="c1">$captcha</span><span class="c3">-&gt;</span><span class="c1">charfont&nbsp;</span><span class="c3">=&nbsp;</span><span class="c4">&#39;modules/mod-captcha/fonts/barrio.ttf&#39;</span><span class="c3">;&nbsp;</span><span class="c2">//&nbsp;or&nbsp;a&nbsp;.gdf&nbsp;font&nbsp;if&nbsp;GD&nbsp;have&nbsp;no&nbsp;TTF&nbsp;support<br>
-&nbsp;</span><span class="c1">$captcha</span><span class="c3">-&gt;</span><span class="c1">charttfsize&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">24</span><span class="c3">;<br>
-&nbsp;</span><span class="c1">$captcha</span><span class="c3">-&gt;</span><span class="c1">charspace&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">18</span><span class="c3">;<br>
-&nbsp;</span><span class="c1">$captcha</span><span class="c3">-&gt;</span><span class="c1">charxvar&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">11</span><span class="c3">;<br>
-&nbsp;</span><span class="c1">$captcha</span><span class="c3">-&gt;</span><span class="c1">charyvar&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">22</span><span class="c3">;<br>
-&nbsp;</span><span class="c2">//--&nbsp;output&nbsp;captcha&nbsp;image<br>
-&nbsp;</span><span class="c1">header</span><span class="c3">(</span><span class="c4">&#39;Content-Type:&nbsp;image/png&#39;</span><span class="c3">);<br>
-&nbsp;echo&nbsp;</span><span class="c1">$captcha</span><span class="c3">-&gt;</span><span class="c1">draw_image</span><span class="c3">();&nbsp;</span><span class="c2">//&nbsp;raw&nbsp;output&nbsp;the&nbsp;captcha&nbsp;image<br>
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
+<br></span><span style="color: #999999">//--&nbsp;set&nbsp;the&nbsp;captcha&nbsp;options<br>
+&nbsp;</span><span style="color: #FFFFFF">$captcha&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartImageCaptcha</span><span style="color: #FFCC00; font-weight: bold">();<br>
+&nbsp;</span><span style="color: #FFFFFF">$captcha</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">format</span><span style="color: #FFCC00; font-weight: bold">=</span><span style="color: #5F9CCE">&#39;png&#39;</span><span style="color: #FFCC00; font-weight: bold">;<br>
+&nbsp;</span><span style="color: #FFFFFF">$captcha</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">width&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">100</span><span style="color: #FFCC00; font-weight: bold">;<br>
+&nbsp;</span><span style="color: #FFFFFF">$captcha</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">height&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">50</span><span style="color: #FFCC00; font-weight: bold">;<br>
+&nbsp;</span><span style="color: #FFFFFF">$captcha</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">noise&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">300</span><span style="color: #FFCC00; font-weight: bold">;<br>
+&nbsp;</span><span style="color: #FFFFFF">$captcha</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">chars&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">5</span><span style="color: #FFCC00; font-weight: bold">;<br>
+&nbsp;</span><span style="color: #FFFFFF">$captcha</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">charfont&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">&#39;modules/mod-captcha/fonts/barrio.ttf&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;</span><span style="color: #999999">//&nbsp;or&nbsp;a&nbsp;.gdf&nbsp;font&nbsp;if&nbsp;GD&nbsp;have&nbsp;no&nbsp;TTF&nbsp;support<br>
+&nbsp;</span><span style="color: #FFFFFF">$captcha</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">charttfsize&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">24</span><span style="color: #FFCC00; font-weight: bold">;<br>
+&nbsp;</span><span style="color: #FFFFFF">$captcha</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">charspace&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">18</span><span style="color: #FFCC00; font-weight: bold">;<br>
+&nbsp;</span><span style="color: #FFFFFF">$captcha</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">charxvar&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">11</span><span style="color: #FFCC00; font-weight: bold">;<br>
+&nbsp;</span><span style="color: #FFFFFF">$captcha</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">charyvar&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">22</span><span style="color: #FFCC00; font-weight: bold">;<br>
+&nbsp;</span><span style="color: #999999">//--&nbsp;output&nbsp;captcha&nbsp;image<br>
+&nbsp;</span><span style="color: #FFFFFF">header</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;Content-Type:&nbsp;image/png&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;echo&nbsp;</span><span style="color: #FFFFFF">$captcha</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">draw_image</span><span style="color: #FFCC00; font-weight: bold">();&nbsp;</span><span style="color: #999999">//&nbsp;raw&nbsp;output&nbsp;the&nbsp;captcha&nbsp;image<br>
 &nbsp;//--&nbsp;use&nbsp;captcha&nbsp;generated&nbsp;code&nbsp;to&nbsp;store&nbsp;somewhere<br>
-&nbsp;</span><span class="c3">echo&nbsp;</span><span class="c1">$captcha</span><span class="c3">-&gt;</span><span class="c1">get_code</span><span class="c3">();<br>
-&nbsp;</span><span class="c2">//--<br>
-<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
+&nbsp;</span><span style="color: #FFCC00; font-weight: bold">echo&nbsp;</span><span style="color: #FFFFFF">$captcha</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">get_code</span><span style="color: #FFCC00; font-weight: bold">();<br>
+&nbsp;</span><span style="color: #999999">//--<br>
+<br>
+//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1015,7 +1016,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:36:40 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:43:11 +0000</small>
 <hr>
 <br>
 <!-- # -->

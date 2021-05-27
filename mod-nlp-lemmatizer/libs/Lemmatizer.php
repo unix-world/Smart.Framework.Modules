@@ -1,6 +1,16 @@
 <?php
+// Class: \SmartModExtLib\NlpLemmatizer\Lemmatizer
+// [Smart.Framework.Modules - NLP Lemmatizer]
+// (c) 2006-2021 unix-world.org - all rights reserved
 
 namespace SmartModExtLib\NlpLemmatizer;
+
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
+} //end if
+//-----------------------------------------------------
 
 /**
  * Class Lemmatizer.
