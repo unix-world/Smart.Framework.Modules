@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Task Area Controller
- * @version 20210525
+ * @version 20210530
  * @package Application
  */
 final class SmartAppTaskController extends SmartAbstractAppController {
@@ -1380,16 +1380,18 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 		if(is_array($defval)) {
 			$arr = [];
 			foreach($defval as $key => $val) {
-				$arr[] = (string) $key.' => '.$this->prettyPrintMethodParam($val);
+				$arr[] = (string) $this->prettyPrintMethodParam($key).' => '.$this->prettyPrintMethodParam($val);
 			} //end foreach
-			$defval = (string) 'array('.implode(', ', (array)$arr).')';
+			$defval = (string) '['.implode(', ', (array)$arr).']';
 		} elseif(is_object($defval)) {
-			$defval = (string) 'object()';
-		} else {
-			$defval = (string) Smart::json_encode($defval, false, true, false);
+			$defval = (string) 'object({'.get_class($defval).'})';
+		} elseif(is_resource($defval)) {
+			$defval = (string) '#RESOURCE{'.$defval.'}';
+		} else { // null, bool, numeric, string ; IMPORTANT: using JSON Encode is better than var_export() because in PHP double quoted strings may contain \n which does not appear when using var_export()
+			$defval = (string) Smart::json_encode($defval, false, true, false); // no need to strip slashes ! Ex: in some regex or strings will appear double backslash not as they were written in PHP using single backslash ... that is actually correct !! this is the way they should be written in PHP, var_export() output exactly the same !!
 		} //end if
 		//--
-		return $defval; // mixed
+		return (string) $defval;
 		//--
 	} //END FUNCTION
 
@@ -1441,7 +1443,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 
 /**
  * Admin Area Controller
- * @version 20210526
+ * @version 20210530
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -1463,7 +1465,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 /**
  * Index Area Controller
- * @version 20210525
+ * @version 20210530
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {
