@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210327
+	// v.20210609
 
 	public function Run() {
 
@@ -168,7 +168,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						'FILE-SIZE' 		=> (string) $fsize,
 						'ICON-SUFFIX' 		=> (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$path),
 						'REVISION' 			=> (string) $rev,
-						'CODE-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body'),
+						'CODE-HIGHLIGHT' 	=> (string) \SmartModExtLib\HighlightSyntax\SmartViewHtmlHelpers::htmlJsLoadHilightCodeSyntax('body', 'dracula'),
 						'CODE-TYPE' 		=> 'diff',
 						'CODE-HTML' 		=> (string) (((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) ? $difftxt : ''),
 						'CODE-EXT-HTML' 	=> (string) (((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) ? '' : '<br><hr><center><h3 style="color:#666699;">File is too large to display diff here ...  File Size: '.(int)$bsize.' bytes ...</h3></center>'),
@@ -219,18 +219,12 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					} else {
 						$fhtml = '<br><hr><center><h3 style="color:#666699;">File is too large to display here ...  Size: '.(int)$bsize.' bytes ...</h3></center>';
 					} //end if
-					$highlight_arr = (array) SmartViewHtmlHelpers::get_highlightsyntax_by_filetype((string)$path);
-					$highlight_ext_arr = (array) \SmartModExtLib\HighlightSyntax\SmartViewHtmlHelpers::get_highlightsyntax_by_filetype((string)$path);
-
+					$highlight_arr = (array) \SmartModExtLib\HighlightSyntax\SmartViewHtmlHelpers::getSyntaxByFileType((string)$path);
 					$code_type = (string) $highlight_arr['type']; // first get from here
-					if((string)$highlight_ext_arr['type'] != '') { // if this is non-empty found a better value (ex: .htm is 'markertpl' but if .twig.htm is 'twig' is a better choice
-						$code_type = (string) $highlight_ext_arr['type'];
-					} //end if
 					if((string)$code_type == '') {
 						$code_type = 'plaintext'; // fallback
 					} //end if
 					$highlight_arr = null;
-					$highlight_ext_arr = null;
 					$main = (string) SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'web-manager-view-file.inc.htm',
 						[
@@ -244,7 +238,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'FILE-SIZE' 		=> (string) $fsize,
 							'ICON-SUFFIX' 		=> (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$path),
 							'REVISION' 			=> (string) $rev,
-							'CODE-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', null, 'github', true, false, (string)SmartModExtLib\HighlightSyntax\SmartViewHtmlHelpers::html_jsload_highlightsyntax(null, true, false)), // load all packs + all ext packs
+							'CODE-HIGHLIGHT' 	=> (string) \SmartModExtLib\HighlightSyntax\SmartViewHtmlHelpers::htmlJsLoadHilightCodeSyntax('body', 'dracula'),
 							'CODE-TYPE' 		=> (string) $code_type,
 							'CODE-HTML' 		=> (string) (((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) ? SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html((string)\SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev))) : ''),
 							'CODE-EXT-HTML' 	=> (string) $fhtml,

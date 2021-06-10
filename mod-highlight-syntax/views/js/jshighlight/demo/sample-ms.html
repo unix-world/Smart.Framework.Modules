@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>highlight.js - Microsoft Languages / Scripting Demo</title>
+
+  <link rel="stylesheet" href="../css/ocean.css">
+  <script type="text/javascript" src="../highlight.js"></script>
+
+  <script type="text/javascript" src="../syntax/ms/typescript.js"></script>
+  <script type="text/javascript" src="../syntax/ms/powershell.js"></script>
+  <script type="text/javascript" src="../syntax/ms/dos.js"></script>
+  <script type="text/javascript" src="../syntax/ms/vbnet.js"></script>
+  <script type="text/javascript" src="../syntax/ms/vbscript.js"></script>
+
+  <script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+  <script>
+  jQuery(document).ready(function() {
+    jQuery('div pre code').each(function(i, block) {
+      hljs.highlightBlock(block);
+    });
+  });
+  </script>
+
+</head>
+<body>
+
+<h1>Highlight.Js Demo: Microsoft Languages / Scripting</h1>
+<hr>
+
+<!-- TypeScript -->
+
+<div class="scripting">
+<h2>TypeScript</h2>
+<pre><code class="typescript">class MyClass {
+  public static myValue: string;
+  constructor(init: string) {
+    this.myValue = init;
+  }
+}
+import fs = require(&quot;fs&quot;);
+module MyModule {
+  export interface MyInterface extends Other {
+    myProperty: any;
+  }
+}
+declare magicNumber number;
+myArray.forEach(() =&gt; { }); // fat arrow syntax
+</code></pre>
+</div>
+
+<!-- PowerShell Scripting -->
+
+<div>
+<h2>PowerShell Scripting</h2>
+<pre><code class="powershell">$initialDate = [datetime]&#39;2013/1/8&#39;
+
+$rollingDate = $initialDate
+
+do {
+    $client = New-Object System.Net.WebClient
+    $results = $client.DownloadString(&quot;http://not.a.real.url&quot;)
+    Write-Host &quot;$rollingDate.ToShortDateString() - $results&quot;
+    $rollingDate = $rollingDate.AddDays(21)
+    $username = [System.Environment]::UserName
+} until ($rollingDate -ge [datetime]&#39;2013/12/31&#39;)
+</code></pre>
+</div>
+
+<!-- DOS Scripting -->
+
+<div>
+<h2>DOS Scripting (.bat .cmd)</h2>
+<pre><code class="dos">cd \
+copy a b
+ping 192.168.0.1
+@rem ping 192.168.0.1
+net stop sharedaccess
+del %tmp% /f /s /q
+del %temp% /f /s /q
+ipconfig /flushdns
+taskkill /F /IM JAVA.EXE /T
+
+cd MyProgr/Some Folder/BIN/
+if exist application.exe (
+    ren application.exe _application.exe
+) else (
+    ren _application.exe application.exe
+)
+
+taskkill /F /IM proquota.exe /T
+
+sfc /SCANNOW
+
+set path = test
+
+xcopy %1\*.* %2
+</code></pre>
+</div>
+
+<!-- VB.Net -->
+
+<div>
+<h2>VB.NET</h2>
+<pre><code class="vbnet">Import System
+Import System.IO
+#Const DEBUG = True
+
+Namespace Highlighter.Test
+  &#39;&#39;&#39; &lt;summary&gt;This is an example class.&lt;/summary&gt;
+  Public Class Program
+    Protected Shared hello As Integer = 3
+    Private Const ABC As Boolean = False
+
+#Region &quot;Code&quot;
+    &#39; Cheers!
+    &lt;STAThread()&gt; _
+    Public Shared Sub Main(ByVal args() As String, ParamArray arr As Object) Handles Form1.Click
+      On Error Resume Next
+      If ABC Then
+        While ABC : Console.WriteLine() : End While
+        For i As Long = 0 To 1000 Step 123
+          Try
+            System.Windows.Forms.MessageBox.Show(CInt(&quot;1&quot;).ToString())
+          Catch ex As Exception       &#39; What are you doing? Well...
+            Dim exp = CType(ex, IOException)
+            REM ORZ
+            Return
+          End Try
+        Next
+      Else
+        Dim l As New System.Collections.List&lt;String&gt;()
+        SyncLock l
+          If TypeOf l Is Decimal And l IsNot Nothing Then
+            RemoveHandler button1.Paint, delegate
+          End If
+          Dim d = New System.Threading.Thread(AddressOf ThreadProc)
+          Dim a = New Action(Sub(x, y) x + y)
+          Static u = From x As String In l Select x.Substring(2, 4) Where x.Length &gt; 0
+        End SyncLock
+        Do : Laugh() : Loop Until hello = 4
+      End If
+    End Sub
+#End Region
+  End Class
+End Namespace
+</code></pre>
+</div>
+
+<!-- VB Script -->
+
+<div>
+<h2>VBScript</h2>
+<pre><code class="vbscript">&#39; creating configuration storage and initializing with default values
+Set cfg = CreateObject(&quot;Scripting.Dictionary&quot;)
+
+&#39; reading ini file
+for i = 0 to ubound(ini_strings)
+    s = trim(ini_strings(i))
+
+    &#39; skipping empty strings and comments
+    if mid(s, 1, 1) &lt;&gt; &quot;#&quot; and len(s) &gt; 0 then
+      &#39; obtaining key and value
+      parts = split(s, &quot;=&quot;, -1, 1)
+
+      if ubound(parts)+1 = 2 then
+        parts(0) = trim(parts(0))
+        parts(1) = trim(parts(1))
+
+        &#39; reading configuration and filenames
+        select case lcase(parts(0))
+          case &quot;uncompressed&quot;&quot;_postfix&quot; cfg.item(&quot;uncompressed&quot;&quot;_postfix&quot;) = parts(1)
+          case &quot;f&quot;
+                    options = split(parts(1), &quot;|&quot;, -1, 1)
+                    if ubound(options)+1 = 2 then
+                      &#39; 0: filename,  1: options
+                      ff.add trim(options(0)), trim(options(1))
+                    end if
+        end select
+      end if
+    end if
+next</code></pre>
+</div>
+
+<!-- #END -->
+<br>
+<hr>
+<br>
+
+</body>
+</html>

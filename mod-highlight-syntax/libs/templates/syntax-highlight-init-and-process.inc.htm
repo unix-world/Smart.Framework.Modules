@@ -1,0 +1,21 @@
+<!-- Partial Template: JsHighLightSyntax.InitAndProcess r.20210526 -->
+<link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
+<style>
+code.hljs, code.hljs * {
+	font-family: 'IBM Plex Mono', mono;
+	font-smooth: always;
+}
+</style>
+<!-- HLjs -->
+<link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]modules/mod-highlight-syntax/views/js/jshighlight/css/[###CSS-THEME|html###].css">
+<script src="[###HLJS-PREFIX-URL|html###]modules/mod-highlight-syntax/views/js/jshighlight/highlight.js"></script>
+<script src="[###HLJS-PREFIX-URL|html###]modules/mod-highlight-syntax/views/js/jshighlight/syntax-base.pak.js"></script>
+<script src="[###HLJS-PREFIX-URL|html###]modules/mod-highlight-syntax/views/js/jshighlight/syntax-ext.pak.js"></script>
+<script>
+jQuery(document).ready(function() {
+	jQuery('[###AREAS-SELECTOR|js###] pre > code').each((i, block) => {
+		hljs.highlightBlock(block);
+	});
+});
+</script>
+<!-- #END :: Partial Template: JsHighLightSyntax.InitAndProcess -->

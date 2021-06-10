@@ -124,8 +124,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'DATABASE' 			=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName(),
 							'COLLECTION' 		=> (string) (((string)$param_collection == '@NEW@') ? $param_collection : $the_collection),
 							'DATA-JSON' 		=> '{'."\n\n".'}',
-							'LANG' 				=> (string) $this->ControllerGetParam('lang'), // codeMirror
-							'CODEED-PREFIX-URL' => (string) '', // codeMirror
 							'CHECKSUM-HASH' 	=> (string) sha1((string)\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().'/'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().'@'.(((string)$param_collection == '@NEW@') ? $param_collection : $the_collection)),
 							'RECORD-ID' 		=> (string) '',
 							'QMODE' 			=> (string) $mode // raw | visual
@@ -168,8 +166,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'DATABASE' 			=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName(),
 							'COLLECTION' 		=> (string) $the_collection,
 							'DATA-JSON' 		=> (string) Smart::json_encode((array)$data, true, true, false),
-							'LANG' 				=> (string) $this->ControllerGetParam('lang'), // codeMirror
-							'CODEED-PREFIX-URL' => (string) '', // codeMirror
 							'CHECKSUM-HASH' 	=> (string) sha1((string)\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().'/'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().'@'.$the_collection.'#'.$id_),
 							'RECORD-ID' 		=> (string) $id_,
 							'QMODE' 			=> (string) $mode // raw | visual
@@ -315,8 +311,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'DATABASE' 			=> (string) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName(),
 							'COLLECTION' 		=> (string) $the_collection,
 							'DATA-JSON' 		=> (string) '{'."\n".'"name": "",'."\n".'"key": { "": 1, "": -1 },'."\n".'"unique": false'."\n".'}',
-							'LANG' 				=> (string) $this->ControllerGetParam('lang'), // codeMirror
-							'CODEED-PREFIX-URL' => (string) '', // codeMirror
 							'CHECKSUM-HASH' 	=> (string) sha1((string)\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().'/'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().'@'.$the_collection)
 						]
 					)
@@ -832,8 +826,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						$this->ControllerGetParam('module-view-path').'mongodb-list.mtpl.htm',
 						[
 							'QMODE' 				=> (string) $mode, // raw | visual
-							'LANG' 					=> (string) $this->ControllerGetParam('lang'), // codeMirror
-							'CODEED-PREFIX-URL' 	=> (string) '', // codeMirror
 							'PAGE-URL' 				=> (string) $the_base_url,
 							'URL-DROP-COLLECTION' 	=> (string) $the_base_url.'&action=drop-collection-confirm',
 							'URL-NEW-RECORD' 		=> (string) $the_base_url.'&action=new-form'.'&mode='.Smart::escape_url((string)$mode),

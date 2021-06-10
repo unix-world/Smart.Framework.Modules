@@ -88,7 +88,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			'main' 			=> SmartMarkersTemplating::render_file_template(
 				$this->ControllerGetParam('module-path').'views/dbmodel-import-db.htm', // the view
 				[
-					'HTML-JS-HIGHLIGHT' => SmartViewHtmlHelpers::html_jsload_highlightsyntax('', ['web'])
+					'HTML-JS-HIGHLIGHT' => SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('')
 				]
 			)
 		]);

@@ -7,7 +7,7 @@
 }
 </style>
 [%%%IF:QMODE:==visual;%%%]
-[@@@SUB-TEMPLATE:!lib/core/plugins/templates/syntax-highlight-init-static.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!lib/js/jshilitecode/templates/syntax-hilitecode-init.inc.htm!@@@]
 [%%%ELSE:QMODE%%%]
 [@@@SUB-TEMPLATE:partials/code-editor.mtpl.inc.htm@@@]
 <script type="text/javascript">
@@ -196,7 +196,7 @@ function handleButtonShowJson() {
 	var json;
 	try {
 		json = jsonEditor.get();
-		SmartSimpleDialog.Dialog_Alert('<div id="hjls-div-dlg"><pre style="max-width:calc(100% - 5px) !important;"><code id="hljs-json-dlg" class="json">' + smartJ$Utils.escape_html(String(JSON.stringify(json, null, 2))) + '</code></pre></div><' + 'script' + '>setTimeout(function(){ SmartJS_Custom_Syntax_Highlight(\'#hjls-div-dlg\') }, 10);</' + 'script' + '>', null, 'Query: JSON', Math.floor(jQuery(window).width() * 0.8), Math.floor(jQuery(window).height() * 0.75));
+		SmartSimpleDialog.Dialog_Alert('<div id="hjls-div-dlg"><pre style="max-width:calc(100% - 5px) !important;"><code id="hilite-json-dlg" data-syntax="mongodb">' + smartJ$Utils.escape_html(String(JSON.stringify(json, null, 2))) + '</code></pre></div><' + 'script' + '>setTimeout(function(){ SmartJS_Custom_Syntax_Highlight(\'#hjls-div-dlg\') }, 10);</' + 'script' + '>', null, 'Query: JSON', Math.floor(jQuery(window).width() * 0.8), Math.floor(jQuery(window).height() * 0.75));
 	} catch(err){
 		jQuery.alertable.alert('Cannot Get Editor JSON. ' + err).always(function(){});
 	}

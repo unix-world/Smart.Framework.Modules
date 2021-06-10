@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>highlight.js - Templating Engines Demo</title>
+
+  <link rel="stylesheet" href="../css/github-dark.css">
+  <script type="text/javascript" src="../highlight.js"></script>
+
+  <script type="text/javascript" src="../syntax/web/xml.js"></script>
+  <script type="text/javascript" src="../syntax/tpl2/dust.js"></script>
+  <script type="text/javascript" src="../syntax/tpl2/twig.js"></script>
+  <script type="text/javascript" src="../syntax/tpl2/latte.js"></script>
+  <script type="text/javascript" src="../syntax/tpl2/django.js"></script>
+
+  <script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+  <script>
+  jQuery(document).ready(function() {
+    jQuery('div pre code').each(function(i, block) {
+      hljs.highlightBlock(block);
+    });
+  });
+  </script>
+
+</head>
+<body>
+
+<h1>Highlight.Js Demo: Templating Engines</h1>
+<hr>
+
+<!-- Dust -->
+
+<div>
+<h2>Dust (Javascript and PHP Templating)</h2>
+<pre><code class="dust">&lt;h3&gt;Hours&lt;/h3&gt;
+
+&lt;ul&gt;
+  {#users}
+  &lt;li {hello}&gt;{firstName}&lt;/li&gt;{~n}
+  {/users}
+&lt;/ul&gt;
+{! All Dust comments are
+multiline comments !}
+</code></pre>
+</div>
+
+<!-- Twig -->
+
+<div>
+<h2>Twig (PHP Templating)</h2>
+<pre><code class="twig">{% if posts|length %}
+  {% for article in articles %}
+  &amp;lt;div&amp;gt;
+  {{ article.title|upper() }}
+
+  {# outputs &#39;WELCOME&#39; #}
+  &amp;lt;/div&amp;gt;
+  {% endfor %}
+{% endif %}
+
+{% set user = json_encode(user) %}
+
+{{ random([&#39;apple&#39;, &#39;orange&#39;, &#39;citrus&#39;]) }}
+
+{{ include(template_from_string(&quot;Hello {{ name }}&quot;)) }}
+
+&lt;table&gt;
+&lt;tr class=&quot;stripped&quot;&gt;
+  &lt;td&gt;{{ article }}&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+{#
+Comments may be long and multiline.
+Markup is &amp;lt;em&amp;gt;not&amp;lt;/em&amp;gt; highlighted within comments.
+#}
+</code></pre>
+</div>
+
+<!-- Latte -->
+
+<div>
+<h2>nette/Latte (PHP Templating)</h2>
+<pre><code class="latte">{if count($menu) &gt; 1}
+  &lt;ul class=&quot;menu&quot;&gt;
+    {foreach $menu as $item}
+      &lt;li&gt;&lt;a href=&quot;{$item-&gt;href}&quot;&gt;{$item-&gt;caption|noescape}&lt;/a&gt;&lt;/li&gt;
+    {/foreach}
+  &lt;/ul&gt;
+{/if}
+{include 'partial.latte'}
+{* this is a comment *}
+</code></pre>
+</div>
+
+<!-- Django -->
+
+<div>
+<h2>Django (Python Templating)</h2>
+<pre><code class="django">{% if articles|length %}
+&lt;table&gt;
+{% for article in articles %}
+
+{% custom %}
+
+{# Striped table #}
+&lt;tr class=&quot;{% cycle odd,even %}&quot;&gt;
+  &lt;td&gt;{{ article|default:&quot;Hi... &quot; }}&lt;/td&gt;
+  &lt;td {% if article.today %}class=&quot;today&quot;{% endif %}&gt;
+    Published on {{ article.date }}
+  &lt;/td&gt;
+&lt;/tr&gt;
+
+{% endfor %}
+&lt;/table&gt;
+{% endif %}
+</code></pre>
+</div>
+
+<!-- #END -->
+<br>
+<hr>
+<br>
+
+</body>
+</html>

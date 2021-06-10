@@ -1,0 +1,96 @@
+[###HTML-EDITCODE-INIT###]
+<script src="modules/mod-docs/node-modules/turndown/lib/turndown.js"></script>
+<script src="modules/mod-docs/node-modules/turndown/lib/turndown-plugin-gfm.js"></script>
+<style>
+div.code-areas-container {
+	max-width: calc(100vw - 20px) !important;
+	max-height: calc(100vh - 120px) !important;
+}
+table.code-areas {
+	width: 100%;
+	height: 100%;
+}
+table.code-areas tr {
+	width: 100%;
+	height: 100%;
+}
+table.code-areas td {
+	height: 100%;
+}
+button.bttn-next-doc {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+}
+button.bttn-prev-doc {
+	position: fixed;
+	top: 20px;
+	right: 200px;
+}
+button.bttn-render-markdown {
+	position: fixed;
+	top: 20px;
+	right: 400px;
+}
+div.doc-have-images {
+	position: fixed;
+	top: 15px;
+	right: 700px;
+}
+div.doc-have-tables {
+	position: fixed;
+	top: 15px;
+	right: 750px;
+}
+</style>
+<div id="doc-have-tables" class="doc-have-tables" style="display:none;" title="Document Contain Tables"><i class="sfi sfi-table2 sfi-2x" style="color:#FF4455;"></i></div>
+[%%%IF:ALL-IMGS-AND-SVGS:>0;%%%]<div class="doc-have-images" title="Document Contain Images"><i class="sfi sfi-images sfi-2x" style="color:#FF4455;"></i></div>[%%%/IF:ALL-IMGS-AND-SVGS%%%]
+<button class="ux-button ux-button-primary bttn-render-markdown">Render Markdown as HTML</button>
+[%%%IF:URL-DOC-PREV:!=;%%%]<button class="ux-button ux-button-secondary bttn-prev-doc" onClick="self.location='[###URL-DOC-PREV|html###]';">&laquo; Prev Document</button>[%%%/IF:URL-DOC-PREV%%%]
+[%%%IF:URL-DOC-NEXT:!=;%%%]<button class="ux-button ux-button-secondary bttn-next-doc" onClick="self.location='[###URL-DOC-NEXT|html###]';">Next Document &raquo;</button>[%%%/IF:URL-DOC-NEXT%%%]
+<form id="form_doc" name="form_doc" method="post" action="#" autocomplete="off">
+<input type="hidden" name="realm" value="[###KEY-REALM|html###]">
+<input type="hidden" name="id" value="[###KEY-ID|html###]">
+<h1>Display Docs Source :: `[###KEY-REALM|html###]` @ `[###KEY-ID|html###]`</h1>
+<div class="code-areas-container">
+<center>
+[%%%IF:ERRORS-IMGS-OR-SVGS:==yes;%%%]
+<div class="operation_error">Some Data Images or Data SVGs could not be processed: ALL#[###ALL-IMGS-AND-SVGS|int###] ; IMG#[###IMGS|int###] ; SVG#[###SVGS|int###]</div>
+[%%%/IF:ERRORS-IMGS-OR-SVGS%%%]
+[%%%IF:INVALID-DATA-URLS:>0;%%%]
+<div class="operation_warn">Invalid Data URLs detected: #[###INVALID-DATA-URLS|int###]</div>
+[%%%/IF:INVALID-DATA-URLS%%%]
+[%%%IF:URLS-DISABLED:!=;%%%]
+<div class="operation_notice">Disabled URLs: `[###URLS-DISABLED|html###]`</div>
+[%%%/IF:URLS-DISABLED%%%]
+<table class="code-areas"><tr valign="top">
+	<td width="50%" align="left">[###HTML-EDITCODE-SOURCE###]</td>
+	<td width="50%" align="right">[###HTML-EDITCODE-PROCESSED###]</td>
+</tr></table>
+</center>
+</div>
+</form>
+<script>
+$(() => {
+	smartJ$Browser.GrowlNotificationAdd('<span style="background:#FFCC00; color:#333333;">&nbsp; ... working ... &nbsp;</span>', 'Composing the Markdown from HTML ...', null, 0, true, 'dark');
+	setTimeout(() => {
+		const turndownService = new TurndownService();
+		const gfm = turndownPluginGfm.gfm;
+		turndownService.use(gfm);
+		const markdown = turndownService.turndown(SmartCodeMirror__editareasource__Instance.getValue());
+		smartJ$Browser.GrowlNotificationRemove();
+		if(markdown.indexOf('{!DEF!=') != -1) { // {{{SYNC-TBL-DEFS-MARKER}}}
+			setTimeout(() => {
+				$('#doc-have-tables').show();
+			}, 500);
+		}
+		SmartCodeMirror__editareaprocessed__Instance.setValue(markdown);
+		let $form = $('form#form_doc');
+		$('button.bttn-render-markdown').click(() => {
+			$form.attr('action', '[###URL-SCRIPT|js###]?page=[###CONTROLLER|js###]&action=render-markdown');
+			smartJ$Browser.PopUpSendForm($form.get(0), 'doc_render', 0, 0, 1, 0, (objForm) => { $(objForm).attr('action', '#'); });
+		});
+	}, 500);
+	const theDocSource = '[###DOC-SOURCE|js###]';
+});
+</script>

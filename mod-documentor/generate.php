@@ -30,6 +30,13 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
+		if(defined('SMART_HTML_CLEANER_USE_TIDY')) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: a constant has been already defined and should not: `SMART_HTML_CLEANER_USE_TIDY` ...');
+			return;
+		} //end if
+		//--
+
+		//--
 		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW !== true)) {
 			$this->PageViewSetErrorStatus(503, 'INFO: Documentor Generate Mode is disabled. Must define SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW = TRUE to enable it.');
 			return;

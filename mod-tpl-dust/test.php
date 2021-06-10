@@ -70,11 +70,10 @@ class SmartAppIndexController extends SmartAbstractAppController {
 						'@SUB-TEMPLATES@' => [
 							'%the-tpl%|html' => (string) $tpl
 						],
-						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web','tpl']),
-						'HTML-HIGHLIGHT-CUSTOM' => '<script type="text/javascript" src="modules/mod-highlight-syntax/views/js/highlightjs-extra/syntax/tpl/dust.js"></script>',
-						'TPL-PATH' 				=> (string) $tpl,
-						'TPL-SYNTAX' 			=> 'dust',
-						'TPL-TYPE' 				=> 'Dust Template'
+						'HTML-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'light'),
+						'TPL-PATH' 			=> (string) $tpl,
+						'TPL-SYNTAX' 		=> 'dust',
+						'TPL-TYPE' 			=> 'Dust Template'
 					]
 				)
 			);
@@ -90,11 +89,10 @@ class SmartAppIndexController extends SmartAbstractAppController {
 						'@SUB-TEMPLATES@' => [
 							'%the-tpl%|html' => (string) $ptpl
 						],
-						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web','tpl']),
-						'HTML-HIGHLIGHT-CUSTOM' => '<script type="text/javascript" src="modules/mod-highlight-syntax/views/js/highlightjs-extra/syntax/tpl/dust.js"></script>',
-						'TPL-PATH' 				=> (string) $ptpl,
-						'TPL-SYNTAX' 			=> 'dust',
-						'TPL-TYPE' 				=> 'Dust Sub-Template'
+						'HTML-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'light'),
+						'TPL-PATH' 			=> (string) $ptpl,
+						'TPL-SYNTAX' 		=> 'dust',
+						'TPL-TYPE' 			=> 'Dust Sub-Template'
 					]
 				)
 			);

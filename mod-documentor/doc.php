@@ -39,6 +39,13 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 	public function Initialize() {
 
 		//--
+		if(defined('SMART_HTML_CLEANER_USE_TIDY')) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: a constant has been already defined and should not: `SMART_HTML_CLEANER_USE_TIDY` ...');
+			return;
+		} //end if
+		//--
+
+		//--
 		if(!defined('SMART_APP_MODULES_EXTRALIBS_VER')) {
 			if(SmartFileSystem::is_type_dir('modules/smart-extra-libs')) {
 				require_once('modules/smart-extra-libs/autoload.php');
@@ -1427,7 +1434,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 		} //end for
 		//-- render
 		$code = (string) highlight_string((string)'<'.'?php'."\n\n".SmartUtils::comment_php_code(trim((string)$code), [])."\n\n".'// #end php code'."\n", true);
-		$code = (new SmartHtmlParser((string)$code, true, true, false))->get_clean_html(false); // fix XHTML Tags and deliver clean HTML
+		$code = (new SmartHtmlParser((string)$code, true, 2, false))->get_clean_html(false); // fix XHTML Tags and deliver clean HTML ; use tidy if available
 		//-- restore render settings to INI
 		foreach($arr_highlight_default as $key => $val) {
 			@ini_set((string)$key, $val);

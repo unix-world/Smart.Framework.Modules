@@ -70,11 +70,10 @@ class SmartAppIndexController extends SmartAbstractAppController {
 						'@SUB-TEMPLATES@' => [
 							'%the-tpl%|html' => (string) $tpl
 						],
-						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web','tpl']),
-						'HTML-HIGHLIGHT-CUSTOM' => '', // lib/js/jshighlight/syntax/web/xml.js is already loaded above in the 'web' package
-						'TPL-PATH' 				=> (string) $tpl,
-						'TPL-SYNTAX' 			=> 'xml',
-						'TPL-TYPE' 				=> 'Typo3Fluid Template'
+						'HTML-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'light'),
+						'TPL-PATH' 			=> (string) $tpl,
+						'TPL-SYNTAX' 		=> 'xml',
+						'TPL-TYPE' 			=> 'Typo3Fluid Template'
 					]
 				)
 			);
@@ -90,11 +89,10 @@ class SmartAppIndexController extends SmartAbstractAppController {
 						'@SUB-TEMPLATES@' => [
 							'%the-tpl%|html' => (string) $ptpl
 						],
-						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web','tpl']),
-						'HTML-HIGHLIGHT-CUSTOM' => '', // lib/js/jshighlight/syntax/web/xml.js is already loaded above in the 'web' package
-						'TPL-PATH' 				=> (string) $ptpl,
-						'TPL-SYNTAX' 			=> 'xml',
-						'TPL-TYPE' 				=> 'Typo3Fluid Sub-Template'
+						'HTML-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'light'),
+						'TPL-PATH' 			=> (string) $ptpl,
+						'TPL-SYNTAX' 		=> 'xml',
+						'TPL-TYPE' 			=> 'Typo3Fluid Sub-Template'
 					]
 				)
 			);

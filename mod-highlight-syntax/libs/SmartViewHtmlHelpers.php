@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210327
+ * @version 	v.20210609
  * @package 	Plugins:ViewComponents
  *
  */
@@ -37,79 +37,51 @@ class SmartViewHtmlHelpers {
 
 	//================================================================
 	/**
-	 * Return the HTML / CSS / Javascript code to Load the extended syntax Javascripts for the Highlight.Js
+	 * Return the HTML / CSS / Javascript code to Load the required Javascripts for the prism.js
+	 * If a valid DOM Selector is specified all code areas in that dom selector will be highlighted
 	 * This function should not be rendered more than once in a HTML page
 	 *
-	 * @param MIXED 	$plugins 				NULL to load all or ARRAY with enum of packages to load (available Plugins: 'web', 'tpl', 'lnx', 'lnx', 'srv', 'net', 'lang') ; Default is set to load only 'web'
-	 * @param BOOL 		$loadpacks 				If TRUE will load syntax packed files instead of syntax single files which are many ; Default is TRUE
+	 * @param STRING 	$dom_selector			A valid jQuery HTML-DOM Selector as container(s) for Pre>Code (see jQuery ...) ; Can be: 'body', '#id-element', ...
+	 * @param ENUM 		$theme 					The Visual CSS Theme to Load ; By default is set to '' which loads the default theme ('github-gist') ; List of Available Themes: 'atom-one-light', 'dark', 'default', 'github', 'github-dark', 'googlecode', 'ocean', 'tomorrow-night-blue', 'xcode', 'zenburn'
 	 * @param BOOL 		$use_absolute_url 		If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE
 	 *
 	 * @return STRING							[HTML Code]
 	 */
-	public static function html_jsload_highlightsyntax($plugins, $loadpacks=true, $use_absolute_url=false) {
-		//--
-		if(!\is_array($plugins)) {
-			$plugins = [ 'tpl', 'lang', 'ms', 'net', 'hw' ];
-		} //end if
+	public static function htmlJsLoadHilightCodeSyntax($dom_selector, $theme='', $use_absolute_url=false) {
 		//--
 		if($use_absolute_url !== true) {
 			$the_abs_url = '';
 		} else {
-			$the_abs_url = (string) SmartUtils::get_server_current_url();
+			$the_abs_url = (string) \SmartUtils::get_server_current_url();
 		} //end if else
 		//--
-		$arr_packs = [ // {{{SYNC-HIGHLIGHT-FTYPE-PACK}}}
-			'tpl'  => 'dust, twig, latte, django',
-			'lang' => 'basic, cs, d, delphi, erlang, fortran, fsharp, groovy, haskell, haxe, java, kotlin, objectivec, ocaml, openscad, r, scala, swift',
-			'ms'  => 'dos, powershell, typescript, vbnet, vbscript',
-			'net'  => 'ldif, protobuf',
-			'hw'  => 'vhdl, llvm, x86asm, armasm, mipsasm'
-		];
-		//--
-		$arr_stx_plugs = [];
-		$arr_check_keys = [];
-		foreach($arr_packs as $key => $val) {
-			$key = (string) \strtolower((string)\trim((string)$key));
-			if((\Smart::array_size($plugins) <= 0) OR (\in_array((string)$key, (array)$plugins))) {
-				if((string)$key != '') {
-					if($loadpacks === false) { // load single files
-						//--
-						$tmp_arr = (array) \explode(',', (string)$val);
-						for($i=0; $i<\Smart::array_size($tmp_arr); $i++) {
-							$tmp_arr[$i] = (string) \trim((string)$tmp_arr[$i]);
-							if((string)$tmp_arr[$i] != '') {
-								$arr_stx_plugs[] = (string) 'syntax/'.$key.'/'.\strtolower((string)$tmp_arr[$i]);
-							} //end if
-						} //end if
-						$tmp_arr = [];
-						//--
-					} else { // load packs
-						//--
-						$arr_stx_plugs[] = (string) 'syntax-'.$key.'-ext.pak';
-						$arr_check_keys[] = (string) $key;
-						//--
-					} //end if else
-				} //end if
-			} //end if
-		} //end foreach
-		//--
-		if($loadpacks === false) { // load single files
-			$syntax_packs = 'src';
-		} else { // load packs
-			$syntax_packs = 'pak';
-			if(\Smart::array_size($arr_check_keys) > 0) {
-				if(\array_keys($arr_packs) === $arr_check_keys) {
-					$arr_stx_plugs = [ 'syntax-ext.pak' ]; // if all packs need to be loaded, replace with this one
-				} //end if
-			} //end if
-		} //end if
+		$theme = (string) \strtolower((string)$theme);
+		switch((string)$theme) {
+			case 'atom-one-light':
+			case 'dark':
+			case 'default':
+			case 'dracula':
+			case 'github':
+			case 'github-dark':
+			case 'googlecode':
+			case 'ocean':
+			case 'tomorrow-night-blue':
+			case 'xcode':
+			case 'zenburn':
+				$theme = (string) $theme;
+				break;
+			case 'github-gist':
+			case '':
+			default:
+				$theme = 'github-gist';
+		} //end switch
 		//--
 		return (string) \SmartMarkersTemplating::render_file_template(
-			'modules/mod-highlight-syntax/libs/templates/syntax-highlight-ext-plugins.inc.htm',
+			'modules/mod-highlight-syntax/libs/templates/syntax-highlight-init-and-process.inc.htm',
 			[
 				'HLJS-PREFIX-URL' 	=> (string) $the_abs_url,
-				'SYNTAX-PLUGINS' 	=> (array)  $arr_stx_plugs,
-				'SYNTAX-PACKS' 		=> (string) $syntax_packs
+				'CSS-THEME' 		=> (string) $theme,
+				'AREAS-SELECTOR' 	=> (string) $dom_selector,
 			]
 		);
 		//--
@@ -125,7 +97,7 @@ class SmartViewHtmlHelpers {
 	 *
 	 * @return ARRAY						[ type, pack ]
 	 */
-	public static function get_highlightsyntax_by_filetype($path) {
+	public static function getSyntaxByFileType(?string $path) {
 		//--
 		$path = (string) $path;
 		//--
@@ -133,194 +105,334 @@ class SmartViewHtmlHelpers {
 		$fext = (string) \SmartFileSysUtils::get_file_extension_from_path((string)$fname);
 		$fext = (string) \strtolower((string)\trim((string)$fext));
 		//--
-		$fpack = 'unknown'; // avoid return empty string on pack as this will load all packs
+		$packs = []; // avoid return empty string on pack as this will load all packs
 		$ftype = '';
+		//--
 		switch((string)$fext) { // {{{SYNC-HIGHLIGHT-FTYPE-PACK}}}
-			//-- tpl (depends on SF.web)
-			case 'dust':
-				$fpack = 'tpl';
-				$ftype = 'dust';
+			//-- web
+			case 'css':
+				$ftype = 'css';
 				break;
-			case 'twig':
-				$fpack = 'tpl';
-				$ftype = 'twig';
+			case 'diff':
+			case 'patch':
+				$ftype = 'diff';
 				break;
-			case 'latte':
-				$fpack = 'tpl';
-				$ftype = 'latte';
+			case 'ini':
+			case 'toml': // rust cargo def
+				$ftype = 'ini';
 				break;
-			case 'django':
-				$fpack = 'tpl';
-				$ftype = 'django';
+			case 'js':
+			case 'gjs':
+				$ftype = 'javascript';
 				break;
-			//-- lang
-			case 'r':
-				$fpack = 'lang';
-				$ftype = 'r';
+			case 'json':
+				$ftype = 'json';
 				break;
-			case 'd':
-				$fpack = 'lang';
-				$ftype = 'd';
+			case 'less':
+				$ftype = 'less';
 				break;
-			case 'basic':
-			case 'bas':
-				$fpack = 'lang';
-				$ftype = 'basic';
+			case 'rst': // similar with markdown
+			case 'md':
+			case 'markdown':
+				$ftype = 'markdown';
 				break;
-			case 'pas':
-				$fpack = 'lang';
-				$ftype = 'delphi';
+			case 'sql':
+				$ftype = 'sql';
 				break;
-			case 'f':
-				$fpack = 'lang';
-				$ftype = 'fortran';
+			case 'pgsql':
+				$ftype = 'pgsql';
 				break;
-			case 'fsharp':
-			case 'fs':
-				$fpack = 'lang';
-				$ftype = 'fsharp';
+			case 'php':
+			case 'phps':
+			case 'php3':
+			case 'php4':
+			case 'php5':
+			case 'php6': // n/a
+			case 'php7':
+			case 'php8':
+			case 'php9':
+			case 'hh': // hip hop, a kind of static PHP
+				$ftype = 'php';
 				break;
-			case 'csharp':
-			case 'cs':
-				$fpack = 'lang';
-				$ftype = 'cs';
+			case 'scss':
+				$ftype = 'scss';
 				break;
-			case 'swift':
-				$fpack = 'lang';
-				$ftype = 'swift';
+			case 'yaml':
+			case 'yml':
+				$ftype = 'yaml';
 				break;
-			case 'm':
-				$fpack = 'lang';
-				$ftype = 'objectivec';
 				break;
-			case 'hx':
-			case 'hxml':
-				$fpack = 'lang';
-				$ftype = 'haxe';
+			case 'xml':
+			case 'svg':
+			case 'html':
+			case 'glade': // gnome glade xml
+			case 'ui': // qt ui xml
+			case 'jsp': // java server page
+			case 'asp': // active server page
+				$ftype = 'xml';
 				break;
-			case 'hs':
-			case 'lhs':
-				$fpack = 'lang';
-				$ftype = 'haskell';
+			//-- tpl (depends on web)
+			case 'mtpl':
+			case 'htm':
+				$ftype = 'markertpl';
 				break;
-			case 'java':
-				$fpack = 'lang';
-				$ftype = 'java';
+			//-- lnx
+			case 'awk':
+				$ftype = 'awk';
 				break;
-			case 'groovy':
-			case 'gvy':
-			case 'gy':
-				$fpack = 'lang';
-				$ftype = 'groovy';
+			case 'pl':
+			case 'pm':
+				$ftype = 'perl';
 				break;
-			case 'kotlin':
-			case 'kt':
-			case 'ktm':
-				$fpack = 'lang';
-				$ftype = 'kotlin';
+			case 'bash':
+				$ftype = 'bash';
 				break;
-			case 'scala':
-			case 'sc':
-				$fpack = 'lang';
-				$ftype = 'scala';
+			case 'sh':
+				$ftype = 'shell';
 				break;
-			case 'ocaml':
-			case 'ml':
-				$fpack = 'lang';
-				$ftype = 'ocaml';
-				break;
-			case 'erl':
-			case 'hrl':
-				$fpack = 'lang';
-				$ftype = 'erlang';
-				break;
-			case 'openscad':
-			case 'jscad':
-			case 'scad':
-			case 'stl':
-			case 'obj':
-				$fpack = 'lang';
-				$ftype = 'openscad';
-				break;
-			//-- ms
-			case 'cmd':
-			case 'bat':
-				$fpack = 'ms';
-				$ftype = 'dos';
-				break;
-			case 'ps1':
-			case 'psm1':
-			case 'psd1':
-				$fpack = 'ms';
-				$ftype = 'powershell';
-				break;
-			case 'ts':
-			case 'tsx':
-				$fpack = 'ms';
-				$ftype = 'typescript';
-				break;
-			case 'vb':
-				$fpack = 'ms';
-				$ftype = 'vbnet';
-				break;
-			case 'vbs':
-				$fpack = 'ms';
-				$ftype = 'vbscript';
+			//-- srv
+			case 'dns':
+				$ftype = 'dns';
 				break;
 			//-- net
-			case 'ldif':
-				$fpack = 'net';
-				$ftype = 'ldif';
+			case 'csp':
+				$ftype = 'csp';
 				break;
-			case 'protobuf':
-			case 'pb':
-				$fpack = 'net';
-				$ftype = 'protobuf';
+			case 'httph':
+				$ftype = 'http';
 				break;
-			//-- hw
-			case 'vhd':
-				$fpack = 'net';
-				$ftype = 'vhdl';
+			//-- lang
+			case 'coffee':
+			case 'cson':
+				$ftype = 'coffeescript';
 				break;
-			case 'll':
-			case 's':
-				$fpack = 'net';
-				$ftype = 'llvm';
+			case 'c':
+			case 'h':
+			case 'cpp':
+			case 'hpp':
+			case 'cxx':
+			case 'hxx':
+				$ftype = 'cpp';
 				break;
-			case 'asm':
-				$fpack = 'net';
-				$ftype = 'x86asm';
+			case 'go':
+				$ftype = 'go';
 				break;
-			case 'aasm':
-				$fpack = 'net';
-				$ftype = 'armasm';
+			case 'dart':
+				$ftype = 'dart';
 				break;
-			case 'masm':
-				$fpack = 'net';
-				$ftype = 'mipsasm';
+			case 'lua':
+				$ftype = 'lua';
+				break;
+			case 'py':
+				$ftype = 'python';
+				break;
+			case 'rb':
+				$ftype = 'ruby';
+				break;
+			case 'rs':
+				$ftype = 'rust';
+				break;
+			case 'tcl':
+			case 'tk':
+				$ftype = 'tcl';
+				break;
+			case 'vala':
+			case 'vapi':
+				$ftype = 'vala';
 				break;
 			//--
 			default:
 				// no handler
 		} //end switch
 		//--
-		if(\stripos((string)$fname, '.dust.') !== false) {
-			$fpack = 'tpl';
-			$ftype = 'dust';
-		} elseif(\stripos((string)$fname, '.twig.') !== false) {
-			$fpack = 'tpl';
-			$ftype = 'twig';
-		} elseif(\stripos((string)$fname, '.latte.') !== false) {
-			$fpack = 'tpl';
-			$ftype = 'latte';
-		} elseif(\stripos((string)$fname, '.django.') !== false) {
-			$fpack = 'tpl';
-			$ftype = 'django';
+		if(\stripos((string)$fname, '.mtpl.') !== false) {
+			$ftype = 'markertpl';
+		} elseif(
+			(\in_array((string)$ftype, ['html', 'htm', 'js', 'json', 'css', 'xml', 'markdown', 'md', 'txt', 'log', 'yaml', 'yml'])) AND
+			((\stripos((string)$fname, '.inc.') !== false) OR (\stripos((string)$fname, '.tpl.') !== false))
+		) {
+			$ftype = 'markertpl';
+		} elseif(\stripos((string)$fname, '.t3fluid.') !== false) {
+			$ftype = 'xml';
+		} elseif((string)\strtolower((string)$fname) == 'cmake') {
+			$ftype = 'cmake';
+		} elseif((string)\strtolower((string)$fname) == 'makefile') {
+			$ftype = 'makefile';
+		} elseif((string)$fname == 'pf.conf') {
+			$ftype = 'pf';
+		} elseif(
+			((string)$fname == 'httpd.conf') OR
+			((string)$fname == 'httpd2.conf') OR
+			((string)$fname == 'apache.conf') OR
+			((string)$fname == 'apache2.conf') OR
+			((string)$fname == 'hosts.conf') OR
+			((string)$fname == 'svn.conf') OR // apache svn conf
+			((string)$fname == '.htaccess') OR // apache .htaccess (.htpasswd is plain text only)
+			((\strpos((string)$fname, 'php-') === 0) AND ((string)\substr((string)$fname, -5, 5) == '.conf')) OR // apache php conf
+			((\strpos((string)$fname, 'mod-') === 0) AND ((string)\substr((string)$fname, -5, 5) == '.conf')) OR // apache module conf
+			(((\strpos((string)$fname, 'httpd-') === 0) OR (\strpos((string)$fname, 'httpd_') === 0)) AND ((string)\substr((string)$fname, -5, 5) == '.conf'))
+		) {
+			$ftype = 'apache';
+		} //end if
+		//--
+		if((string)$ftype != '') {
+			$packs[] = 'base';
+		} else {
+			//--
+			switch((string)$fext) { // {{{SYNC-HIGHLIGHT-FTYPE-PACK}}}
+				//-- tpl (depends on SF.web)
+				case 'dust':
+					$ftype = 'dust';
+					break;
+				case 'twig':
+					$ftype = 'twig';
+					break;
+				case 'latte':
+					$ftype = 'latte';
+					break;
+				case 'django':
+					$ftype = 'django';
+					break;
+				//-- lang
+				case 'r':
+					$ftype = 'r';
+					break;
+				case 'd':
+					$ftype = 'd';
+					break;
+				case 'basic':
+				case 'bas':
+					$ftype = 'basic';
+					break;
+				case 'pas':
+					$ftype = 'delphi';
+					break;
+				case 'f':
+					$ftype = 'fortran';
+					break;
+				case 'fsharp':
+				case 'fs':
+					$ftype = 'fsharp';
+					break;
+				case 'csharp':
+				case 'cs':
+					$ftype = 'cs';
+					break;
+				case 'swift':
+					$ftype = 'swift';
+					break;
+				case 'm':
+					$ftype = 'objectivec';
+					break;
+				case 'hx':
+				case 'hxml':
+					$ftype = 'haxe';
+					break;
+				case 'hs':
+				case 'lhs':
+					$ftype = 'haskell';
+					break;
+				case 'java':
+					$ftype = 'java';
+					break;
+				case 'groovy':
+				case 'gvy':
+				case 'gy':
+					$ftype = 'groovy';
+					break;
+				case 'kotlin':
+				case 'kt':
+				case 'ktm':
+					$ftype = 'kotlin';
+					break;
+				case 'scala':
+				case 'sc':
+					$ftype = 'scala';
+					break;
+				case 'ocaml':
+				case 'ml':
+					$ftype = 'ocaml';
+					break;
+				case 'erl':
+				case 'hrl':
+					$ftype = 'erlang';
+					break;
+				case 'openscad':
+				case 'jscad':
+				case 'scad':
+				case 'stl':
+				case 'obj':
+					$ftype = 'openscad';
+					break;
+				//-- ms
+				case 'cmd':
+				case 'bat':
+					$ftype = 'dos';
+					break;
+				case 'ps1':
+				case 'psm1':
+				case 'psd1':
+					$ftype = 'powershell';
+					break;
+				case 'ts':
+				case 'tsx':
+					$ftype = 'typescript';
+					break;
+				case 'vb':
+					$ftype = 'vbnet';
+					break;
+				case 'vbs':
+					$ftype = 'vbscript';
+					break;
+				//-- net
+				case 'ldif':
+					$ftype = 'ldif';
+					break;
+				case 'protobuf':
+				case 'pb':
+					$ftype = 'protobuf';
+					break;
+				//-- hw
+				case 'vhd':
+					$ftype = 'vhdl';
+					break;
+				case 'll':
+				case 's':
+					$ftype = 'llvm';
+					break;
+				case 'asm':
+					$ftype = 'x86asm';
+					break;
+				case 'aasm':
+					$ftype = 'armasm';
+					break;
+				case 'masm':
+					$ftype = 'mipsasm';
+					break;
+				//--
+				default:
+					// no handler
+			} //end switch
+			//--
+			if(\stripos((string)$fname, '.dust.') !== false) {
+				$ftype = 'dust';
+			} elseif(\stripos((string)$fname, '.twig.') !== false) {
+				$ftype = 'twig';
+			} elseif(\stripos((string)$fname, '.latte.') !== false) {
+				$ftype = 'latte';
+			} elseif(\stripos((string)$fname, '.django.') !== false) {
+				$ftype = 'django';
+			} //end if
+			//--
+			if((string)$ftype != '') {
+				$packs[] = 'extra';
+			} //end if
+			//--
 		} //end if
 		//--
 		return array(
 			'type' => (string) $ftype,
-			'pack' => (array)  \explode(',', (string)$fpack)
+			'pack' => (array)  $packs,
 		);
 		//--
 	} //END FUNCTION

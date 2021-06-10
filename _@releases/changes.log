@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+June 10, 2021 :: Version 8.7 rev.20210610
+	* update Twig to version 3.3.2
+	* moved highlight.js from framework to mod highlight + upgraded to the latest v.9.x
+
 May 26, 2021 :: Version 8.7 rev.20210526
 	* v.8 release (version numbering is now different ; 8.7 shows that runs on both PHP 8 and PHP 7 with primary target on PHP 8 and continue to support PHP 7 ...) ; next version will be perhaps 9.8 when PHP 9 will be released and will support PHP 8 or event 9.8.7 if will supports all PHP 9, 8 and 7 :-)
 

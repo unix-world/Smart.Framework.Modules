@@ -1,0 +1,37 @@
+[@@@SUB-TEMPLATE:!modules/mod-docs/views/markdown-doc-styles.mtpl.htm!@@@]
+<style>
+button.bttn-next-doc {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+}
+button.bttn-prev-doc {
+	position: fixed;
+	top: 20px;
+	right: 200px;
+}
+</style>
+[%%%IF:URL-DOC-PREV:!=;%%%]<button class="ux-button ux-button-secondary bttn-prev-doc" onClick="self.location='[###URL-DOC-PREV|html###]';">&laquo; Prev Document</button>[%%%/IF:URL-DOC-PREV%%%]
+[%%%IF:URL-DOC-NEXT:!=;%%%]<button class="ux-button ux-button-secondary bttn-next-doc" onClick="self.location='[###URL-DOC-NEXT|html###]';">Next Document &raquo;</button>[%%%/IF:URL-DOC-NEXT%%%]
+<form id="form_doc" name="form_doc" method="post" action="#" autocomplete="off">
+<input type="hidden" name="realm" value="[###KEY-REALM|html###]">
+<input type="hidden" name="id" value="[###KEY-ID|html###]">
+<h1>Read JSON Markdown Docs :: Display Doc :: `[###KEY-REALM|html###]` @ `[###KEY-ID|html###]`</h1>
+<hr>
+[%%%IF:ERRORS:!=;%%%]
+<div class="operation_error">Markdown Source Errors: [###ERRORS|html###]</div>
+[%%%/IF:ERRORS%%%]
+<div id="docs">
+[###HTML-MARKDOWN###]
+</div>
+<br>
+<hr>
+<br>
+<div class="operation_important">Markdown Source</div>
+<div id="markdown-source">
+<pre><code class="markdown" data-syntax="markdown">[###MARKDOWN-SOURCE|html###]</code></pre>
+</div>
+</form>
+<br>
+<hr>
+<br>

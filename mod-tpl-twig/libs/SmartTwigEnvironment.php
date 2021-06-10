@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	extensions: PHP Ctype (optional) ; classes: \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20210428
+ * @version 	v.20210610
  * @package 	modules:TemplatingEngine
  *
  */
@@ -179,7 +179,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 			} elseif($node instanceof \Twig\Node\Expression\NameExpression) {
 				$name = $node->getAttribute('name');
 			//	if(!$node->getAttribute('always_defined')) { // internal twig defined variables
-				$collected[(string)$name] += 1; // get real usage
+				$collected[(string)$name] = ($collected[(string)$name] ?? 0) + 1; // get real usage
 			//	} //end if
 			} //end if else
 		} //end foreach

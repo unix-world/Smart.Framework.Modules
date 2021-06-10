@@ -70,11 +70,10 @@ class SmartAppIndexController extends SmartAbstractAppController {
 						'@SUB-TEMPLATES@' => [
 							'%the-tpl%|html' => (string) $tpl
 						],
-						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web','tpl']),
-						'HTML-HIGHLIGHT-CUSTOM' => '<script type="text/javascript" src="modules/mod-highlight-syntax/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>',
-						'TPL-PATH' 				=> (string) $tpl,
-						'TPL-SYNTAX' 			=> 'twig',
-						'TPL-TYPE' 				=> 'Twig Template'
+						'HTML-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'dark'),
+						'TPL-PATH' 			=> (string) $tpl,
+						'TPL-SYNTAX' 		=> 'twig',
+						'TPL-TYPE' 			=> 'Twig Template'
 					]
 				)
 			);
@@ -90,11 +89,10 @@ class SmartAppIndexController extends SmartAbstractAppController {
 						'@SUB-TEMPLATES@' => [
 							'%the-tpl%|html' => (string) $ptpl
 						],
-						'HTML-HIGHLIGHT-BASE' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web','tpl']),
-						'HTML-HIGHLIGHT-CUSTOM' => '<script type="text/javascript" src="modules/mod-highlight-syntax/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>',
-						'TPL-PATH' 				=> (string) $ptpl,
-						'TPL-SYNTAX' 			=> 'twig',
-						'TPL-TYPE' 				=> 'Twig Sub-Template'
+						'HTML-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'dark'),
+						'TPL-PATH' 			=> (string) $ptpl,
+						'TPL-SYNTAX' 		=> 'twig',
+						'TPL-TYPE' 			=> 'Twig Sub-Template'
 					]
 				)
 			);

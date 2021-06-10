@@ -1,0 +1,156 @@
+/*
+// css/github-dark.css
+// HighlightJs: github@head.20210515
+*/
+
+/*
+github.com dark style (c) @Hirse
+modified by unixman r.20210601, (c) 2021 unix-world.org
+*/
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	padding: 0.5rem;
+	color: #F7F7F7; /* #EBF3FB */
+	background: #3F3F3F; /* #3E414C | #1A2441 */
+	line-height: 1.25;
+}
+
+.hljs-keyword {
+	color: #EBCB8B;
+	font-weight: bold;
+}
+
+.hljs-class .hljs-title,
+.hljs-function .hljs-title {
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+.hljs-doctag,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type {
+	color: #ff7b72;
+}
+
+.hljs-title,
+.hljs-class .hljs-keyword {
+	color: #FF4455;
+}
+
+.hljs-title,
+.hljs-attr {
+	font-weight: bold;
+}
+
+.hljs-literal {
+	color: #FFCC00;
+	font-weight: bold;
+}
+.hljs-meta {
+	color: #A2C261;
+	font-weight: bold;
+}
+
+.hljs-number {
+	color: #8FF898;
+	font-weight: bold;
+}
+
+.hljs-operator {
+	color: #D6AFCF;
+	font-weight: bold;
+}
+
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id {
+	color: #00acd7;
+}
+
+.hljs-params,
+.hljs-property {
+	color: #BBCCDD;
+}
+
+.hljs-params,
+.hljs-property,
+.hljs-variable {
+	font-weight: bold;
+}
+
+.hljs-regexp,
+.hljs-string,
+.hljs-meta .hljs-string {
+	color: #BE9FFF;
+}
+
+.hljs-built_in,
+.hljs-symbol {
+	color: #ffa657;
+}
+
+.hljs-comment {
+	color: #8b949e;
+}
+
+.hljs-code,
+.hljs-formula {
+	color: #FF4455;
+}
+
+.hljs-name,
+.hljs-quote,
+.hljs-selector-tag,
+.hljs-selector-pseudo {
+	color: #7ee787;
+}
+
+.hljs-subst {
+	color: #c9d1d9;
+}
+
+.hljs-section {
+	color: #FFCC00;
+	font-weight: bold;
+}
+
+.hljs-bullet {
+	color: #f2cc60;
+}
+
+.hljs-emphasis {
+	color: #B8C0C8;
+	font-style: italic;
+}
+
+.hljs-strong {
+	color: #B8C0C8;
+	font-weight: bold;
+}
+
+.hljs-addition {
+	color: #222222;
+	background-color: #8FF898;
+	font-weight: bold;
+}
+
+.hljs-deletion {
+	color: #333333;
+	background-color: #FF4455;
+	font-weight: bold;
+}
+
+.hljs-link,
+.hljs-punctuation,
+.hljs-tag {
+	/* purposely ignored */
+}
+
+/* END */
