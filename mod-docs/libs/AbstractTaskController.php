@@ -13,9 +13,9 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 } //end if
 //-----------------------------------------------------
 
-if(!\SmartAppInfo::TestIfModuleExists('mod-qunit')) {
-	\SmartFrameworkRuntime::Raise500Error('Mod QUnit is missing !');
-	die('Mod QUnit is missing !');
+if(!\SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
+	\SmartFrameworkRuntime::Raise500Error('Mod AuthAdmins is missing !');
+	die('Mod AuthAdmins is missing !');
 } //end if
 
 // SMART_APP_MODULE_DIRECT_OUTPUT :: TRUE :: # by parent class
@@ -30,10 +30,10 @@ if(!\SmartAppInfo::TestIfModuleExists('mod-qunit')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20210604
+ * @version 	v.20210611
  *
  */
-abstract class AbstractTaskController extends \SmartModExtLib\Qunit\AbstractTaskController {
+abstract class AbstractTaskController extends \SmartModExtLib\AuthAdmins\AbstractTaskController {
 
 	protected const DOCS_PATH = 'wpub/devdocs/';
 	protected const DOCS_FILE = 'db.json';
@@ -70,7 +70,7 @@ abstract class AbstractTaskController extends \SmartModExtLib\Qunit\AbstractTask
 		$this->name_suffix = 'Task';
 		//--
 		$this->app_tpl = '';
-		$this->app_main_url = $this->ControllerGetParam('url-script').'?page='.\Smart::escape_url((string)$this->ControllerGetParam('module').'.tasks');
+		$this->app_main_url = (string) $this->ControllerGetParam('url-script').'?page=auth-admins.tasks';
 		//--
 		return null;
 		//--
