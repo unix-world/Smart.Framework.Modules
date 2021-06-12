@@ -27,6 +27,21 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 final class SmartAppTaskController extends SmartAbstractAppController {
 
 
+	public function Initialize() {
+		//--
+		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
+			$this->PageViewSetErrorStatus(500, ' # Mod AuthAdmins is missing !');
+			return false;
+		} //end if
+		//--
+		$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
+		$this->PageViewSetCfg('template-file', 'template-simple.htm');
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
 	public function Run() {
 
 		//--

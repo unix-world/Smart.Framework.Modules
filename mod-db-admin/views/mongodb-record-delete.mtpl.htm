@@ -5,7 +5,7 @@ code#hljs-json-area {
 	height: calc(100% - 16px);
 }
 pre.pre-hljs-code {
-	width: calc(100% - 25px) !important;
+	width: calc(100% - 100px) !important;
 	height: calc(100vh - 295px);
 	min-height: 200px;
 	border:1px solid #ECECEC;
@@ -31,7 +31,7 @@ function btnHandlerSubmit() {
 <form id="record_form" name="record_form" class="ux-form" onSubmit="return false;">
 <input type="hidden" name="frm[chk]" value="[###CHECKSUM-HASH|html###]">
 </form>
-<div id="hljs-json-div" style="width: 90vw !important; min-width:320px !important; overflow:auto; text-align:left;"><pre class="pre-hljs-code"><code id="hljs-json-area" class="json">[###DATA-JSON|html###]</code></pre></div>
+<div id="hljs-json-div" style="width: 90vw !important; min-width:320px !important; overflow:auto; text-align:left;"><pre class="pre-hljs-code"><code id="hljs-json-area" data-syntax="json">[###DATA-JSON|html###]</code></pre></div>
 <script type="text/javascript">
 var SmartViewHelpersSyntaxHighlightAreas = '#hljs-json-div';
 </script>

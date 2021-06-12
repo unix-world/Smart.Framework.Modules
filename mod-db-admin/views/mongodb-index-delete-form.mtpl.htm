@@ -5,7 +5,7 @@ code#hljs-json-area {
 	height: calc(100% - 16px);
 }
 pre.pre-hljs-code {
-	width: calc(100% - 25px) !important;
+	width: calc(100% - 100px) !important;
 	height: calc(100vh - 375px);
 	min-height: 200px;
 	border:1px solid #ECECEC;
@@ -45,7 +45,7 @@ function btnHandlerSubmit() {
 <span style="color:#FF3300;"><b>There are No Indexes to be Dropped for this collection.</b></span>
 [%%%/IF:ARR-INDEXES%%%]
 <input type="hidden" name="frm[chk]" value="[###CHECKSUM-HASH|html###]">
-<div id="hljs-json-div" style="width: 80vw !important; max-width: 960px; overflow:auto; min-width:320px !important; text-align:left;"><pre class="pre-hljs-code"><code id="hljs-json-area" class="json">[###COLLINDEXES|html###]</code></pre></div>
+<div id="hljs-json-div" style="width: 80vw !important; max-width: 960px; overflow:auto; min-width:320px !important; text-align:left;"><pre class="pre-hljs-code"><code id="hljs-json-area" data-syntax="mongodb">[###COLLINDEXES|html###]</code></pre></div>
 <script type="text/javascript">
 var SmartViewHelpersSyntaxHighlightAreas = '#hljs-json-div';
 </script>

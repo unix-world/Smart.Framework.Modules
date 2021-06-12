@@ -15,11 +15,24 @@ define('SMART_APP_MODULE_AUTH', true);
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20200121
+	// v.20210612
+
+	public function Initialize() {
+		//--
+		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
+			$this->PageViewSetErrorStatus(500, ' # Mod AuthAdmins is missing !');
+			return false;
+		} //end if
+		//--
+		$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
+		$this->PageViewSetCfg('template-file', 'template-modal.htm');
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
 
 	public function Run() {
-
-		$this->PageViewSetCfg('template-file', 'template-modal.htm');
 
 		$uuid = (string) $this->RequestVarGet('uuid', '', 'string');
 		$edit = (string) $this->RequestVarGet('edit', '', 'string');
@@ -136,20 +149,18 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$arr_markers = [
 				'VIEWS-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
 				'OP-MODE' 		=> (string) $opmode,
-
 				'DOC-DATA' 		=> (string) SmartMarkersTemplating::render_file_template(
-												(string) $this->ControllerGetParam('module-view-path').'partials/reader-ifrm.htm', // the view
-												[
-													'CHARSET' 					=> (string) $this->ControllerGetParam('charset'),
-													'TITLE' 					=> (string) 'Textdoc :: '.$sq_rd['dtime'].' @ '.$sq_rd['user'].' / '.$sq_rd['uuid'],
-													'HTML-STYLES-BASE' 			=> (string) SmartFileSystem::read('lib/core/templates/base-html-styles.inc.htm'),
-													'HTML-STYLES-DOC-ELEMENTS' 	=> (string) $rd_extstyles.SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-print-styles.css')."\n\n".SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-table-styles.css')."\n\n".SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-pagebreak.css'),
-													'HTML-STYLE-CLASS' 			=> (string) 'note-printable',
-													'HTML-DOC-DATA' 			=> (string) $old_doc_data['textDoc']
-												]
-											),
+					(string) $this->ControllerGetParam('module-view-path').'partials/reader-ifrm.htm', // the view
+					[
+						'CHARSET' 					=> (string) $this->ControllerGetParam('charset'),
+						'TITLE' 					=> (string) 'Textdoc :: '.$sq_rd['dtime'].' @ '.$sq_rd['user'].' / '.$sq_rd['uuid'],
+						'HTML-STYLES-BASE' 			=> (string) '<style>'."\n".trim((string)SmartFileSystem::read('lib/core/css/base.css'))."\n".'</style>',
+						'HTML-STYLES-DOC-ELEMENTS' 	=> (string) $rd_extstyles.SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-print-styles.css')."\n\n".SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-table-styles.css')."\n\n".SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-pagebreak.css'),
+						'HTML-STYLE-CLASS' 			=> (string) 'note-printable',
+						'HTML-DOC-DATA' 			=> (string) $old_doc_data['textDoc']
+					]
+				),
 				'DOC-W' 		=> (string) $rd_width,
-
 				'JSON-DATA'		=> (string) $old_data,
 				'UUID' 			=> (string) $sq_rd['uuid'],
 				'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled TextDocument',

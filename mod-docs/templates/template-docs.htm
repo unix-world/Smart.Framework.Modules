@@ -10,18 +10,20 @@
 <meta name="description" content="[###SEO-DESCRIPTION|html###]">
 <meta name="keywords" content="[###SEO-KEYWORDS|html###]">
 <meta name="summary" content="[###SEO-SUMMARY|html###]">
+<link rel="icon" href="data:,">
 <title>[###TITLE|html###]</title>
 <!-- Meta -->
 [###HEAD-META###]
 <!-- Styles -->
-[@@@SUB-TEMPLATE:!etc/templates/default/css-app.inc.htm!@@@]
-<link rel="stylesheet" type="text/css" href="etc/templates/default/styles.css?[###RELEASE-HASH|url|html###]">
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/css-app.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-media.inc.htm!@@@]
 [###HEAD-CSS###]
 <!-- Scripts -->
-[@@@SUB-TEMPLATE:!etc/templates/default/js-base.inc.htm!@@@]
-[@@@SUB-TEMPLATE:!etc/templates/default/js-ui.inc.htm!@@@]
-[@@@SUB-TEMPLATE:!etc/templates/default/js-settings.inc.htm!@@@]
-[###HEAD-JS###]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-base.inc.htm!@@@]
+<!-- CSS -->
+[%%%IF:HEAD-CSS:==;%%%]<!-- no head css -->[%%%ELSE:HEAD-CSS%%%][###HEAD-CSS###][%%%/IF:HEAD-CSS%%%]
+<!-- JS -->
+[%%%IF:HEAD-JS:==;%%%]<!-- no head js -->[%%%ELSE:HEAD-JS%%%][###HEAD-JS###][%%%/IF:HEAD-JS%%%]
 <!-- #.# -->
 </head>
 <body>
@@ -30,6 +32,6 @@
 [###MAIN###][###ASIDE###]
 </div>
 [###FOOTER###]
-[@@@SUB-TEMPLATE:!etc/templates/default/tpl-foot.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/tpl-foot.inc.htm!@@@]
 </body>
 </html>

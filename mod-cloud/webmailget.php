@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
 
 
 /**
- * Admin Controller r.20200420
+ * Admin Controller r.20210612
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 

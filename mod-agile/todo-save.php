@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true);
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20200121
+	// v.20210612
 
 	public function Run() {
 

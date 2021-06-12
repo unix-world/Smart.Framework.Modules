@@ -1,15 +1,15 @@
-<!-- Smart.Cloud [###VERSION|html###] -->
+<!-- Smart.Cloud [###VERSION|html###] r.20210612 -->
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="[###CHARSET|html###]">
 <meta http-equiv="Content-Type" content="text/html; charset=[###CHARSET|html###]">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Smart.Framework">
+<link rel="icon" href="data:,">
 <title>Smart.Cloud :: Welcome</title>
 <!-- Styles -->
-[@@@SUB-TEMPLATE:!etc/templates/default/css-app.inc.htm!@@@]
-<link rel="stylesheet" type="text/css" href="etc/templates/default/styles.css?[###RELEASE-HASH|url|html###]">
-<!-- Scripts -->
-[@@@SUB-TEMPLATE:!etc/templates/default/js-base.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/css-app.inc.htm!@@@]
 </head>
 <body>
 <div><center>
@@ -21,9 +21,9 @@
 			</td>
 		</tr>
 		<tr>
-			<td width="276" align="left"><img src="[###IMGS-PATH|html###]abook.svg" width="256" height="256" alt="Cloud.AddressBook (CardDAV Server)" title="Cloud.AddressBook (CardDAV Server)" onClick="javascript:self.location='admin.php/page/cloud.abook/~';" style="cursor:pointer;"></td>
-			<td width="276" align="center"><img src="[###IMGS-PATH|html###]ical.svg" width="256" height="256" alt="Cloud.iCalendar (CalDAV Server)" title="Cloud.iCalendar (CalDAV Server)" onClick="javascript:self.location='admin.php/page/cloud.ical/~';" style="cursor:pointer;"></td>
-			<td width="276" align="right"><img src="[###IMGS-PATH|html###]files.svg" width="256" height="256" alt="Cloud.Files (WebDAV Server)" title="Cloud.Files (WebDAV Server)" onClick="javascript:self.location='admin.php/page/cloud.files/~';" style="cursor:pointer;"></td>
+			<td width="276" align="left"><img src="[###IMGS-PATH|html###]abook.svg" width="256" height="256" alt="Cloud.AddressBook (CardDAV Server)" title="Cloud.AddressBook (CardDAV Server)" onClick="self.location='admin.php#!carddav';" style="cursor:pointer;"></td>
+			<td width="276" align="center"><img src="[###IMGS-PATH|html###]ical.svg" width="256" height="256" alt="Cloud.iCalendar (CalDAV Server)" title="Cloud.iCalendar (CalDAV Server)" onClick="self.location='admin.php#!caldav';" style="cursor:pointer;"></td>
+			<td width="276" align="right"><img src="[###IMGS-PATH|html###]files.svg" width="256" height="256" alt="Cloud.Files (WebDAV Server)" title="Cloud.Files (WebDAV Server)" onClick="self.location='admin.php#!webdav';" style="cursor:pointer;"></td>
 		</tr>
 	</table>
 	<br>

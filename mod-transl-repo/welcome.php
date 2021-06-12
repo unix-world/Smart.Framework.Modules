@@ -17,6 +17,21 @@ define('SMART_APP_MODULE_AUTH', true);
 class SmartAppAdminController extends SmartAbstractAppController {
 
 
+	public function Initialize() {
+		//--
+		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
+			$this->PageViewSetErrorStatus(500, ' # Mod AuthAdmins is missing !');
+			return false;
+		} //end if
+		//--
+		$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
+		$this->PageViewSetCfg('template-file', 'template.htm');
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
 	public function Run() {
 
 		//--
@@ -52,11 +67,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		$action = $this->RequestVarGet('action', '', 'string');
-		//--
-
-		//--
-		$this->PageViewSetCfg('template-path', 'default'); // set template path to this module
-		$this->PageViewSetCfg('template-file', 'template.htm'); // the default template
 		//--
 
 		//--

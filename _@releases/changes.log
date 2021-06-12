@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+June 12, 2021 :: Version 8.7 rev.20210612
+	* update modules after a major refactoring of default, admin and task templates in smart framework
+	* re-generate documentation: PHP and JS
+
 June 10, 2021 :: Version 8.7 rev.20210610
 	* update Twig to version 3.3.2
 	* moved highlight.js from framework to mod highlight + upgraded to the latest v.9.x

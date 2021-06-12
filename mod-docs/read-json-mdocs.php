@@ -31,7 +31,12 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 
 	public function Initialize() {
 		//--
-		$this->PageViewSetCfg('template-path', 'default');
+		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
+			$this->PageViewSetErrorStatus(500, ' # Mod AuthAdmins is missing !');
+			return false;
+		} //end if
+		//--
+		$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 		$this->PageViewSetCfg('template-file', 'template.htm');
 		//--
 		if(defined('SMART_HTML_CLEANER_USE_TIDY')) {

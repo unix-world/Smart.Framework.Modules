@@ -24,10 +24,15 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 	public function Initialize() {
 		//--
-		// this is pre-run
+		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
+			$this->PageViewSetErrorStatus(500, ' # Mod AuthAdmins is missing !');
+			return false;
+		} //end if
 		//--
-		$this->PageViewSetCfg('template-path', 'default');
+		$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 		$this->PageViewSetCfg('template-file', 'template.htm');
+		//--
+		return true;
 		//--
 	} //END FUNCTION
 
