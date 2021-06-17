@@ -1,44 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
 
 class BlockquoteConverter implements ConverterInterface
 {
-	/**
-	 * @param ElementInterface $element
-	 *
-	 * @return string
-	 */
-	public function convert(ElementInterface $element)
-	{
-		// Contents should have already been converted to Markdown by this point,
-		// so we just need to add '>' symbols to each line.
+    public function convert(ElementInterface $element): string
+    {
+        // Contents should have already been converted to Markdown by this point,
+        // so we just need to add '>' symbols to each line.
 
-		$markdown = '';
+        $markdown = '';
 
-		$quote_content = trim($element->getValue());
+        $quoteContent = \trim($element->getValue());
 
-		$lines = preg_split('/\r\n|\r|\n/', $quote_content);
+        $lines = \preg_split('/\r\n|\r|\n/', $quoteContent);
+        \assert(\is_array($lines));
 
-		$total_lines = count($lines);
+        $totalLines = \count($lines);
 
-		foreach ($lines as $i => $line) {
-			$markdown .= '> ' . $line . "\n";
-			if ($i + 1 === $total_lines) {
-				$markdown .= "\n";
-			}
-		}
+        foreach ($lines as $i => $line) {
+            $markdown .= '> ' . $line . "\n";
+            if ($i + 1 === $totalLines) {
+                $markdown .= "\n";
+            }
+        }
 
-		return $markdown;
-	}
+        return $markdown;
+    }
 
-	/**
-	 * @return string[]
-	 */
-	public function getSupportedTags()
-	{
-		return array('blockquote');
-	}
+    /**
+     * @return string[]
+     */
+    public function getSupportedTags(): array
+    {
+        return ['blockquote'];
+    }
 }

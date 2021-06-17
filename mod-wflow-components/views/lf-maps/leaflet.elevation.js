@@ -1,14 +1,14 @@
 
-// (c) 2017-2019 unix-world.org
+// (c) 2017-2021 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20210617
 
 // file: leaflet.elevation.js
 // version: 0.0.4
 // https://github.com/MrMufflon/Leaflet.Elevation
 
 // modified by unixman:
-// 		* fixed to support d3js v4
+// 		* fixed to support d3js v6 and later
 // 		* fixed bug L.Browser.touch replaced with L.Browser.mobile
 
 L.Control.Elevation = L.Control.extend({
@@ -92,10 +92,13 @@ L.Control.Elevation = L.Control.extend({
 
 		var line = d3.line();
 		line = line
-			.x(function(d) {
-				return d3.mouse(svg.select("g"))[0];
+		//	.x(function(d) {
+		//		return d3.mouse(svg.select("g"))[0];
+			.x(function(evnt, d) { // d3 v6+
+				return d3.pointer(evnt, svg.select("g"))[0]; // d3 v6+
 			})
-			.y(function(d) {
+		//	.y(function(d) {
+			.y(function(evnt, d) { // d3 v6+
 				return this._height();
 			});
 
@@ -155,28 +158,29 @@ L.Control.Elevation = L.Control.extend({
 		return container;
 	},
 
-	_dragHandler: function() {
+	_dragHandler: function(evnt) {
 
 		//we don't want map events to occur here
-		d3.event.preventDefault();
-		d3.event.stopPropagation();
+		evnt.preventDefault();
+		evnt.stopPropagation();
 
 		this._gotDragged = true;
 
-		this._drawDragRectangle();
+		this._drawDragRectangle(evnt);
 
 	},
 
 	/*
 	 * Draws the currently dragged rectabgle over the chart.
 	 */
-	_drawDragRectangle: function() {
+	_drawDragRectangle: function(evnt) {
 
 		if (!this._dragStartCoords) {
 			return;
 		}
 
-		var dragEndCoords = this._dragCurrentCoords = d3.mouse(this._background.node());
+	//	var dragEndCoords = this._dragCurrentCoords = d3.mouse(this._background.node());
+		var dragEndCoords = this._dragCurrentCoords = d3.pointer(evnt, this._background.node()); // d3 v6+
 
 		var x1 = Math.min(this._dragStartCoords[0], dragEndCoords[0]),
 			x2 = Math.max(this._dragStartCoords[0], dragEndCoords[0]);
@@ -242,14 +246,15 @@ L.Control.Elevation = L.Control.extend({
 
 	},
 
-	_dragStartHandler: function() {
+	_dragStartHandler: function(evnt) {
 
-		d3.event.preventDefault();
-		d3.event.stopPropagation();
+		evnt.preventDefault();
+		evnt.stopPropagation();
 
 		this._gotDragged = false;
 
-		this._dragStartCoords = d3.mouse(this._background.node());
+	//	this._dragStartCoords = d3.mouse(this._background.node());
+		this._dragStartCoords = d3.pointer(evnt, this._background.node()); // d3 v6+
 
 	},
 
@@ -474,11 +479,13 @@ L.Control.Elevation = L.Control.extend({
 	/*
 	 * Handles the moueseover the chart and displays distance and altitude level
 	 */
-	_mousemoveHandler: function(d, i, ctx) {
+//	_mousemoveHandler: function(d, i, ctx) {
+	_mousemoveHandler: function(evnt, d, i, ctx) { // d3 v6+
 		if (!this._data || this._data.length === 0) {
 			return;
 		}
-		var coords = d3.mouse(this._background.node());
+	//	var coords = d3.mouse(this._background.node());
+		var coords = d3.pointer(evnt, this._background.node()); // d3 v6+
 		var opts = this.options;
 
 		var item = this._data[this._findItemForX(coords[0])],

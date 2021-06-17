@@ -2,7 +2,17 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+June 17, 2021 :: Version 8.7 rev.20210617
+	* upgrade d3.js from v4 to v6 + extra samples + docs
+	* fix leaflet maps js plugin (elevation) to work with new d3.js v6
+	* fix mongo db admin
+	* upgrade + add a lot of fixes and changes to (vendor libs) League Markdown To Html
+	* update Slim Select in mod documentor
+	* mod docs, stable
+	* SVN Fix icon sizes + br after migrating to auth admin templates (see below @12 june)
+
 June 12, 2021 :: Version 8.7 rev.20210612
+	* Avoid Expose URLs on Mod Cloud Index
 	* update modules after a major refactoring of default, admin and task templates in smart framework
 	* re-generate documentation: PHP and JS
 

@@ -5,6 +5,9 @@ svg * { /* req. for font adjust */
 	font-family: 'IBM Plex Sans' !important;
 	font-size-adjust: 0.5 !important;
 }
+div#docs * {
+	line-height: 1.5 !important;
+}
 div#docs h1,
 div#docs h2,
 div#docs h3,
@@ -37,10 +40,13 @@ div#docs div.markdown h6 {
 
 div#docs .markdown a,
 div#docs .markdown a:link,
-div#docs .markdown a:visited,
-div#docs .markdown a:hover {
+div#docs .markdown a:visited {
 	font-weight: bold !important;
 	color: #E4862A !important;
+	text-decoration: none !important;
+	border-bottom: none !important;
+}
+div#docs .markdown a:hover {
 	text-decoration: none !important;
 	border-bottom: 2px dotted #E4862A !important;
 }

@@ -47,8 +47,7 @@ var tree = d3.cluster()
 var stratify = d3.stratify()
 	.parentId(function(d) { return d.id.substring(0, d.id.lastIndexOf(".")); });
 
-d3.csv("sample1.csv", function(error, data) {
-  if (error) throw error;
+d3.csv("sample1.csv").then(function(data) {
 
   var root = stratify(data)
 	  .sort(function(a, b) { return (a.height - b.height) || a.id.localeCompare(b.id); });

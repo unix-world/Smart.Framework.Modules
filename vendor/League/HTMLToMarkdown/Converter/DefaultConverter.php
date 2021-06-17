@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\Configuration;
@@ -8,49 +10,42 @@ use League\HTMLToMarkdown\ElementInterface;
 
 class DefaultConverter implements ConverterInterface, ConfigurationAwareInterface
 {
-	const DEFAULT_CONVERTER = '_default';
+	public const DEFAULT_CONVERTER = '_default';
 
-	/**
-	 * @var Configuration
-	 */
+	/** @var Configuration */
 	protected $config;
 
-	/**
-	 * @param Configuration $config
-	 */
-	public function setConfig(Configuration $config)
+	public function setConfig(Configuration $config): void
 	{
 		$this->config = $config;
 	}
 
-	/**
-	 * @param ElementInterface $element
-	 *
-	 * @return string
-	 */
-	public function convert(ElementInterface $element)
+	public function convert(ElementInterface $element): string
 	{
+		//-- #fix by unixman
 		// If strip_tags is false (the default), preserve tags that don't have Markdown equivalents,
 		// such as <span> nodes on their own. C14N() canonicalizes the node to a string.
 		// See: http://www.php.net/manual/en/domnode.c14n.php
-		if ($this->config->getOption('strip_tags', false)) {
-			return $element->getValue();
+		if ($this->config->getOption('strip_tags', false)) { // this condition is tricky, actually it is: if strip tags is TRUE
+		//	return $element->getValue();
+			return (string) \League\HTMLToMarkdown\SmartFixes::stripTags((string)$element->getChildrenAsString());
 		}
+		$markdown = \html_entity_decode($element->getChildrenAsString());
+		//-- #fix
 
-		$markdown = html_entity_decode($element->getChildrenAsString());
-
+		// Tables are only handled here if TableConverter is not used
 		if ($element->getTagName() === 'table') {
 			$markdown .= "\n\n";
 		}
 
-		return $markdown;
+		return (string) $markdown;
 	}
 
 	/**
 	 * @return string[]
 	 */
-	public function getSupportedTags()
+	public function getSupportedTags(): array
 	{
-		return array(self::DEFAULT_CONVERTER);
+		return [self::DEFAULT_CONVERTER];
 	}
 }

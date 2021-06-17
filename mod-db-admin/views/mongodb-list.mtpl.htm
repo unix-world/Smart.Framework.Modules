@@ -280,6 +280,31 @@ function handleButtonShowJson() {
 <div id="operation_info">The filter query returned no records ...</div>
 [%%%/IF:IS-QUERY%%%]
 [%%%ELSE:RECORDS%%%]
+<style>
+code.wrap-off {
+	white-space: pre;
+}
+</style>
+<script>
+const toggleWrap = ($el) => {
+	if(!$el) {
+		return;
+	}
+	if($el.attr('id') != 'json-renderer') {
+		return;
+	}
+	const isWrapOff = $el.data('wrap-off');
+	if(!isWrapOff) {
+		$el.addClass('wrap-off').data('wrap-off', true);
+	} else {
+		$el.removeClass('wrap-off').data('wrap-off', false);
+	}
+	const toggler = $el.find('a.json-toggle');
+	if(toggler.hasClass('collapsed')) {
+		toggler.trigger('click');
+	}
+};
+</script>
 <div id="records-list">
 [%%%LOOP:RECORDS%%%]
 	<div class="record-area" title="#[###RECORDS.-NUM|int###]">
@@ -287,10 +312,12 @@ function handleButtonShowJson() {
 		<div align="right"><span style="font-weight:bold;"><span style="color:#7777AA; font-size:0.9375rem!important;" title="Record ID">[###RECORDS.-ID|html###]</span></span></div>
 		[%%%/IF:RECORDS.-ID%%%]
 		<span style="color:#778899;">[###RECORDS.-NUM|int###].</span>
-		<a title="Edit Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-highlight" href="[###URL-EDIT-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-file-text2"></i></a><a title="Delete Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-special" href="[###URL-DELETE-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-bin2"></i></a>
+		<a title="Delete Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-special" href="[###URL-DELETE-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-bin2"></i></a>
+		<a title="Edit Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-highlight" href="[###URL-EDIT-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-file-text2"></i></a>
+		<button title="Wrap ON/OFF" class="ux-button ux-button-xsmall ux-button-secondary" onClick="toggleWrap($(this).parent().find('code'));"><i class="sfi sfi-paragraph-justify"></i></button>
 		<span style="font-weight:bold;"><span class="json-key">[%%%IF:QMODE:!=visual;%%%]&quot;[%%%/IF:QMODE%%%]_id[%%%IF:QMODE:!=visual;%%%]&quot;[%%%/IF:QMODE%%%]</span>&nbsp;:&nbsp;<span class="json-string" title="Record UID">&quot;[###RECORDS._ID|html###]&quot;</span></span>
 		<br>
-		<pre id="json-renderer" class="json-render-area" data-id="[###RECORDS._ID|html###]" data-json="[###RECORDS.-JSON|json|html###]"></pre>
+		<code id="json-renderer" class="json-render-area" data-id="[###RECORDS._ID|html###]" data-json="[###RECORDS.-JSON|json|html###]"></code>
 	</div>
 [%%%/LOOP:RECORDS%%%]
 </div>

@@ -16,17 +16,13 @@ var svg = d3.select("svg"),
 
 var format = d3.format(",d");
 
-var color = d3.scaleOrdinal(d3.schemeCategory20c);
+var color = d3.scaleOrdinal(d3.schemePaired);
 
 var pack = d3.pack()
 	.size([width, height])
 	.padding(1.5);
 
-d3.csv("sample1.csv", function(d) {
-  d.value = +d.value;
-  if (d.value) return d;
-}, function(error, classes) {
-  if (error) throw error;
+d3.csv("sample1.csv").then(function(classes) {
 
   var root = d3.hierarchy({children: classes})
 	  .sum(function(d) { return d.value; })

@@ -1,26 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
 
 class ListBlockConverter implements ConverterInterface
 {
-	/**
-	 * @param ElementInterface $element
-	 *
-	 * @return string
-	 */
-	public function convert(ElementInterface $element)
-	{
-		return $element->getValue() . "\n";
-	}
+    public function convert(ElementInterface $element): string
+    {
+        return $element->getValue() . "\n";
+    }
 
-	/**
-	 * @return string[]
-	 */
-	public function getSupportedTags()
-	{
-		return array('ol', 'ul');
-	}
+    /**
+     * @return string[]
+     */
+    public function getSupportedTags(): array
+    {
+        return ['ol', 'ul'];
+    }
 }

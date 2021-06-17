@@ -1,11 +1,9 @@
 HTML To Markdown for PHP
 ========================
 
-[![Join the chat at https://gitter.im/thephpleague/html-to-markdown](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/thephpleague/html-to-markdown?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Latest Version](https://img.shields.io/packagist/v/league/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/league/html-to-markdown)
 [![Software License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Build Status](https://img.shields.io/travis/thephpleague/html-to-markdown/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/html-to-markdown)
+[![Build Status](https://img.shields.io/github/workflow/status/thephpleague/html-to-markdown/Tests/master.svg?style=flat-square)](https://github.com/thephpleague/html-to-markdown/actions?query=workflow%3ATests+branch%3Amaster)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/html-to-markdown/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/html-to-markdown.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/html-to-markdown)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/html-to-markdown.svg?style=flat-square)](https://packagist.org/packages/league/html-to-markdown)
@@ -13,7 +11,7 @@ HTML To Markdown for PHP
 Library which converts HTML to [Markdown](http://daringfireball.net/projects/markdown/) for your sanity and convenience.
 
 
-**Requires**: PHP 5.3+ or PHP 7.0+
+**Requires**: PHP 7.2+
 
 **Lead Developer**: [@colinodell](http://twitter.com/colinodell)
 
@@ -28,7 +26,7 @@ Typically you would convert HTML to Markdown if:
 
 1. You have an existing HTML document that needs to be edited by people with good taste.
 2. You want to store new content in HTML format but edit it as Markdown.
-3. You want to convert HTML email to plain text email. 
+3. You want to convert HTML email to plain text email.
 4. You know a guy who's been converting HTML to Markdown for years, and now he can speak Elvish. You'd quite like to be able to speak Elvish.
 5. You just really like Markdown.
 
@@ -95,6 +93,33 @@ $html = '<span>Turnips!</span><div>Monkeys!</div>';
 $markdown = $converter->convert($html); // $markdown now contains ""
 ```
 
+By default, all comments are stripped from the content. To preserve them, use the `preserve_comments` option, like this:
+
+```php
+$converter = new HtmlConverter(array('preserve_comments' => true));
+
+$html = '<span>Turnips!</span><!-- Monkeys! -->';
+$markdown = $converter->convert($html); // $markdown now contains "Turnips!<!-- Monkeys! -->"
+```
+
+To preserve only specific comments, set `preserve_comments` with an array of strings, like this:
+
+```php
+$converter = new HtmlConverter(array('preserve_comments' => array('Eggs!')));
+
+$html = '<span>Turnips!</span><!-- Monkeys! --><!-- Eggs! -->';
+$markdown = $converter->convert($html); // $markdown now contains "Turnips!<!-- Eggs! -->"
+```
+
+By default, placeholder links are preserved. To strip the placeholder links, use the `strip_placeholder_links` option, like this:
+
+```php
+$converter = new HtmlConverter(array('strip_placeholder_links' => true));
+
+$html = '<a>Github</a>';
+$markdown = $converter->convert($html); // $markdown now contains "Github"
+```
+
 ### Style options
 
 By default bold tags are converted using the asterisk syntax, and italic tags are converted using the underlined syntax. Change these by using the `bold_style` and `italic_style` options.
@@ -123,6 +148,21 @@ $converter->getConfig()->setOption('hard_break', false); // default
 $markdown = $converter->convert($html); // $markdown now contains "test  \nline break"
 ```
 
+### Autolinking options
+
+By default, `a` tags are converted to the easiest possible link syntax, i.e. if no text or title is available, then the `<url>` syntax will be used rather than the full `[url](url)` syntax. Set `use_autolinks` to `false` to change this behavior to always use the full link syntax.
+
+```php
+$converter = new HtmlConverter();
+$html = '<p><a href="https://thephpleague.com">https://thephpleague.com</a></p>';
+
+$converter->getConfig()->setOption('use_autolinks', true);
+$markdown = $converter->convert($html); // $markdown now contains "<https://thephpleague.com>"
+
+$converter->getConfig()->setOption('use_autolinks', false); // default
+$markdown = $converter->convert($html); // $markdown now contains "[https://google.com](https://google.com)"
+```
+
 ### Passing custom Environment object
 
 You can pass current `Environment` object to customize i.e. which converters should be used.
@@ -141,17 +181,24 @@ $html = '<h3>Header</h3>
 $markdown = $converter->convert($html); // $markdown now contains "### Header" and "<img src="" />"
 ```
 
+### Table support
+
+Support for Markdown tables is not enabled by default because it is not part of the original Markdown syntax. To use tables add the converter explicitly:
+
+```php
+use League\HTMLToMarkdown\HtmlConverter;
+use League\HTMLToMarkdown\Converter\TableConverter;
+
+$converter = new HtmlConverter();
+$converter->getEnvironment()->addConverter(new TableConverter());
+
+$html = "<table><tr><th>A</th></tr><tr><td>a</td></tr></table>";
+$markdown = $converter->convert($html);
+```
+
 ### Limitations
 
 - Markdown Extra, MultiMarkdown and other variants aren't supported – just Markdown.
-
-### Known issues
-
-- Nested lists and lists containing multiple paragraphs aren't converted correctly.
-- Lists inside blockquotes aren't converted correctly.
-- Any reported [open issues here](https://github.com/thephpleague/html-to-markdown/issues?state=open).
-
-[Report your issue or request a feature here.](https://github.com/thephpleague/html-to-markdown/issues/new) Issues with patches or failing tests are especially welcome.
 
 ### Style notes
 
@@ -161,7 +208,7 @@ $markdown = $converter->convert($html); // $markdown now contains "### Header" a
 
      Headers of H3 priority and lower always use atx style.
 
-- Links and images are referenced inline. Footnote references (where image src and anchor href attributes are listed in the footnotes) are not used. 
+- Links and images are referenced inline. Footnote references (where image src and anchor href attributes are listed in the footnotes) are not used.
 - Blockquotes aren't line wrapped – it makes the converted Markdown easier to edit.
 
 ### Dependencies
@@ -193,4 +240,3 @@ Use one of these great libraries:
  - [Parsedown](https://github.com/erusev/parsedown)
 
 No guarantees about the Elvish, though.
-

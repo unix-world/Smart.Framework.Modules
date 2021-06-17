@@ -30,7 +30,7 @@ var svg = d3.select("svg"),
 	height = +svg.attr("height");
 
 var fader = function(color) { return d3.interpolateRgb(color, "#fff")(0.2); },
-	color = d3.scaleOrdinal(d3.schemeCategory20.map(fader)),
+	color = d3.scaleOrdinal(d3.schemeDark2.map(fader)),
 	format = d3.format(",d");
 
 var treemap = d3.treemap()
@@ -39,8 +39,7 @@ var treemap = d3.treemap()
 	.round(true)
 	.paddingInner(1);
 
-d3.json("sample4.json", function(error, data) {
-  if (error) throw error;
+d3.json("sample4.json").then(function(data) {
 
   var root = d3.hierarchy(data)
 	  .eachBefore(function(d) { d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.name; })
@@ -87,7 +86,7 @@ d3.json("sample4.json", function(error, data) {
 		.dispatch("change");
   }, 2000);
 
-  function changed(sum) {
+  function changed(evt, sum) {
 	timeout.stop();
 
 	treemap(root.sum(sum));

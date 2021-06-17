@@ -1,18 +1,21 @@
 
-// slimselect.js v.1.23.1
+// slimselect.js v.1.27
 // github.com/brianvoe/slim-select
-// (c) 2017 Brian Voelker
+// (c) 2017-2021 Brian Voelker
 // License: MIT
+// changes by unixman :: (c) 2021, r.20210617
+//	* fixes: add option title from original
 
 (function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
+	if(typeof exports === 'object' && typeof module === 'object') {
 		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
+	} else if(typeof define === 'function' && define.amd) {
 		define([], factory);
-	else if(typeof exports === 'object')
+	} else if(typeof exports === 'object') {
 		exports["SlimSelect"] = factory();
-	else
+	} else {
 		root["SlimSelect"] = factory();
+	}
 })(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -206,6 +209,13 @@ function highlight(str, search, className) {
 	return completedString;
 }
 exports.highlight = highlight;
+function kebabCase(str) {
+	var result = str.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, function (match) { return '-' + match.toLowerCase(); });
+	return (str[0] === str[0].toUpperCase())
+		? result.substring(1)
+		: result;
+}
+exports.kebabCase = kebabCase;
 (function () {
 	var w = window;
 	if (typeof w.CustomEvent === 'function') {
@@ -252,7 +262,8 @@ var Data = (function () {
 			disabled: (info.disabled ? info.disabled : false),
 			placeholder: (info.placeholder ? info.placeholder : false),
 			"class": (info["class"] ? info["class"] : undefined),
-			data: (info.data ? info.data : {})
+			data: (info.data ? info.data : {}),
+			mandatory: (info.mandatory ? info.mandatory : false)
 		};
 	};
 	Data.prototype.add = function (data) {
@@ -266,6 +277,7 @@ var Data = (function () {
 			disabled: false,
 			placeholder: false,
 			"class": undefined,
+			mandatory: data.mandatory,
 			data: {}
 		});
 	};
@@ -313,7 +325,9 @@ var Data = (function () {
 			placeholder: option.dataset.placeholder === 'true',
 			"class": option.className,
 			style: option.style.cssText,
-			data: option.dataset
+			data: option.dataset,
+			mandatory: (option.dataset ? option.dataset.mandatory === 'true' : false),
+			title: option.title, // added by unixman
 		};
 	};
 	Data.prototype.setSelectedFromSelect = function () {
@@ -579,6 +593,21 @@ var SlimSelect = (function () {
 		this.afterOpen = null;
 		this.beforeClose = null;
 		this.afterClose = null;
+		this.windowScroll = helper_1.debounce(function (e) {
+			if (_this.data.contentOpen) {
+				if (helper_1.putContent(_this.slim.content, _this.data.contentPosition, _this.data.contentOpen) === 'above') {
+					_this.moveContentAbove();
+				}
+				else {
+					_this.moveContentBelow();
+				}
+			}
+		});
+		this.documentClick = function (e) {
+			if (e.target && !helper_1.hasClassInTree(e.target, _this.config.id)) {
+				_this.close();
+			}
+		};
 		var selectElement = this.validate(info);
 		if (selectElement.dataset.ssid) {
 			this.destroy(selectElement.dataset.ssid);
@@ -611,7 +640,8 @@ var SlimSelect = (function () {
 			showOptionTooltips: info.showOptionTooltips,
 			selectByGroup: info.selectByGroup,
 			limit: info.limit,
-			timeoutDelay: info.timeoutDelay
+			timeoutDelay: info.timeoutDelay,
+			addToBody: info.addToBody
 		});
 		this.select = new select_1.Select({
 			select: selectElement,
@@ -628,21 +658,10 @@ var SlimSelect = (function () {
 		else {
 			this.render();
 		}
-		document.addEventListener('click', function (e) {
-			if (e.target && !helper_1.hasClassInTree(e.target, _this.config.id)) {
-				_this.close();
-			}
-		});
-		window.addEventListener('scroll', helper_1.debounce(function (e) {
-			if (_this.data.contentOpen && _this.config.showContent === 'auto') {
-				if (helper_1.putContent(_this.slim.content, _this.data.contentPosition, _this.data.contentOpen) === 'above') {
-					_this.moveContentAbove();
-				}
-				else {
-					_this.moveContentBelow();
-				}
-			}
-		}), false);
+		document.addEventListener('click', this.documentClick);
+		if (this.config.showContent === 'auto') {
+			window.addEventListener('scroll', this.windowScroll, false);
+		}
 		if (info.beforeOnChange) {
 			this.beforeOnChange = info.beforeOnChange;
 		}
@@ -721,6 +740,11 @@ var SlimSelect = (function () {
 		}
 		var newData = JSON.parse(JSON.stringify(data));
 		var selected = this.data.getSelected();
+		for (var i = 0; i < newData.length; i++) {
+			if (!newData[i].value && !newData[i].placeholder) {
+				newData[i].value = newData[i].text;
+			}
+		}
 		if (this.config.isAjax && selected) {
 			if (this.config.isMultiple) {
 				var reverseSelected = selected.reverse();
@@ -730,8 +754,21 @@ var SlimSelect = (function () {
 				}
 			}
 			else {
-				newData.unshift(this.data.getSelected());
-				newData.unshift({ text: '', placeholder: true });
+				newData.unshift(selected);
+				for (var i = 0; i < newData.length; i++) {
+					if (!newData[i].placeholder && newData[i].value === selected.value && newData[i].text === selected.text) {
+						delete newData[i];
+					}
+				}
+				var hasPlaceholder = false;
+				for (var i = 0; i < newData.length; i++) {
+					if (newData[i].placeholder) {
+						hasPlaceholder = true;
+					}
+				}
+				if (!hasPlaceholder) {
+					newData.unshift({ text: '', placeholder: true });
+				}
 			}
 		}
 		this.select.create(newData);
@@ -769,6 +806,12 @@ var SlimSelect = (function () {
 			this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up');
 		}
 		this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow));
+		if (this.config.addToBody) {
+			var containerRect = this.slim.container.getBoundingClientRect();
+			this.slim.content.style.top = (containerRect.top + containerRect.height + window.scrollY) + 'px';
+			this.slim.content.style.left = (containerRect.left + window.scrollX) + 'px';
+			this.slim.content.style.width = containerRect.width + 'px';
+		}
 		this.slim.content.classList.add(this.config.open);
 		if (this.config.showContent.toLowerCase() === 'up') {
 			this.moveContentAbove();
@@ -867,7 +910,6 @@ var SlimSelect = (function () {
 		}
 	};
 	SlimSelect.prototype.moveContentBelow = function () {
-		this.slim.content.removeAttribute('style');
 		this.data.contentPosition = 'below';
 		if (this.config.isMultiple && this.slim.multiSelected) {
 			this.slim.multiSelected.container.classList.remove(this.config.openAbove);
@@ -905,34 +947,35 @@ var SlimSelect = (function () {
 		this.select.triggerMutationObserver = true;
 	};
 	SlimSelect.prototype.search = function (value) {
-		if (this.data.searchValue !== value) {
-			this.slim.search.input.value = value;
-			if (this.config.isAjax) {
-				var master_1 = this;
-				this.config.isSearching = true;
-				this.render();
-				if (this.ajax) {
-					this.ajax(value, function (info) {
-						master_1.config.isSearching = false;
-						if (Array.isArray(info)) {
-							info.unshift({ text: '', placeholder: true });
-							master_1.setData(info);
-							master_1.data.search(value);
-							master_1.render();
-						}
-						else if (typeof info === 'string') {
-							master_1.slim.options(info);
-						}
-						else {
-							master_1.render();
-						}
-					});
-				}
+		if (this.data.searchValue === value) {
+			return;
+		}
+		this.slim.search.input.value = value;
+		if (this.config.isAjax) {
+			var master_1 = this;
+			this.config.isSearching = true;
+			this.render();
+			if (this.ajax) {
+				this.ajax(value, function (info) {
+					master_1.config.isSearching = false;
+					if (Array.isArray(info)) {
+						info.unshift({ text: '', placeholder: true });
+						master_1.setData(info);
+						master_1.data.search(value);
+						master_1.render();
+					}
+					else if (typeof info === 'string') {
+						master_1.slim.options(info);
+					}
+					else {
+						master_1.render();
+					}
+				});
 			}
-			else {
-				this.data.search(value);
-				this.render();
-			}
+		}
+		else {
+			this.data.search(value);
+			this.render();
 		}
 	};
 	SlimSelect.prototype.setSearchText = function (text) {
@@ -950,17 +993,28 @@ var SlimSelect = (function () {
 	};
 	SlimSelect.prototype.destroy = function (id) {
 		if (id === void 0) { id = null; }
-		var slim = (id ? document.querySelector('.' + id) : this.slim.container);
+		var slim = (id ? document.querySelector('.' + id + '.ss-main') : this.slim.container);
 		var select = (id ? document.querySelector("[data-ssid=" + id + "]") : this.select.element);
 		if (!slim || !select) {
 			return;
 		}
-		select.style.display = null;
+		document.removeEventListener('click', this.documentClick);
+		if (this.config.showContent === 'auto') {
+			window.removeEventListener('scroll', this.windowScroll, false);
+		}
+		select.style.display = '';
 		delete select.dataset.ssid;
 		var el = select;
 		el.slim = null;
 		if (slim.parentElement) {
 			slim.parentElement.removeChild(slim);
+		}
+		if (this.config.addToBody) {
+			var slimContent = (id ? document.querySelector('.' + id + '.ss-content') : this.slim.content);
+			if (!slimContent) {
+				return;
+			}
+			document.body.removeChild(slimContent);
 		}
 	};
 	return SlimSelect;
@@ -1000,6 +1054,7 @@ var Config = (function () {
 		this.selectByGroup = false;
 		this.limit = 0;
 		this.timeoutDelay = 200;
+		this.addToBody = false;
 		this.main = 'ss-main';
 		this.singleSelected = 'ss-single-selected';
 		this.arrow = 'ss-arrow';
@@ -1075,6 +1130,7 @@ var Config = (function () {
 		if (info.timeoutDelay != null) {
 			this.timeoutDelay = info.timeoutDelay;
 		}
+		this.addToBody = (info.addToBody === true ? true : false);
 	}
 	Config.prototype.searchFilter = function (opt, search) {
 		return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1;
@@ -1091,6 +1147,7 @@ exports.Config = Config;
 "use strict";
 
 exports.__esModule = true;
+var helper_1 = __webpack_require__(0);
 var Select = (function () {
 	function Select(info) {
 		this.triggerMutationObserver = true;
@@ -1202,16 +1259,22 @@ var Select = (function () {
 	};
 	Select.prototype.createOption = function (info) {
 		var optionEl = document.createElement('option');
-		optionEl.value = info.value || info.text;
+		optionEl.value = info.value !== '' ? info.value : info.text;
 		optionEl.innerHTML = info.innerHTML || info.text;
 		if (info.selected) {
 			optionEl.selected = info.selected;
+		}
+		if (info.display === false) {
+			optionEl.style.display = 'none';
 		}
 		if (info.disabled) {
 			optionEl.disabled = true;
 		}
 		if (info.placeholder) {
 			optionEl.setAttribute('data-placeholder', 'true');
+		}
+		if (info.mandatory) {
+			optionEl.setAttribute('data-mandatory', 'true');
 		}
 		if (info["class"]) {
 			info["class"].split(' ').forEach(function (optionClass) {
@@ -1220,7 +1283,7 @@ var Select = (function () {
 		}
 		if (info.data && typeof info.data === 'object') {
 			Object.keys(info.data).forEach(function (key) {
-				optionEl.setAttribute('data-' + key, info.data[key]);
+				optionEl.setAttribute('data-' + helper_1.kebabCase(key), info.data[key]);
 			});
 		}
 		return optionEl;
@@ -1259,7 +1322,13 @@ var Slim = (function () {
 			this.singleSelected = this.singleSelectedDiv();
 			this.container.appendChild(this.singleSelected.container);
 		}
-		this.container.appendChild(this.content);
+		if (this.main.config.addToBody) {
+			this.content.classList.add(this.main.config.id);
+			document.body.appendChild(this.content);
+		}
+		else {
+			this.container.appendChild(this.content);
+		}
 		this.content.appendChild(this.search.container);
 		this.content.appendChild(this.list);
 	}
@@ -1453,40 +1522,39 @@ var Slim = (function () {
 		text.classList.add(this.main.config.valueText);
 		text.innerHTML = (optionObj.innerHTML && this.main.config.valuesUseText !== true ? optionObj.innerHTML : optionObj.text);
 		value.appendChild(text);
-		var deleteSpan = document.createElement('span');
-		deleteSpan.classList.add(this.main.config.valueDelete);
-		deleteSpan.innerHTML = this.main.config.deselectLabel;
-		deleteSpan.onclick = function (e) {
-			e.preventDefault();
-			e.stopPropagation();
-			var shouldUpdate = false;
-			if (!_this.main.config.isEnabled) {
-				return;
-			}
-			if (!_this.main.beforeOnChange) {
-				shouldUpdate = true;
-			}
-			if (_this.main.beforeOnChange) {
-				var selected = _this.main.data.getSelected();
-				var currentValues = JSON.parse(JSON.stringify(selected));
-				for (var i = 0; i < currentValues.length; i++) {
-					if (currentValues[i].id === optionObj.id) {
-						currentValues.splice(i, 1);
-					}
-				}
-				var beforeOnchange = _this.main.beforeOnChange(currentValues);
-				if (beforeOnchange !== false) {
+		if (!optionObj.mandatory) {
+			var deleteSpan = document.createElement('span');
+			deleteSpan.classList.add(this.main.config.valueDelete);
+			deleteSpan.innerHTML = this.main.config.deselectLabel;
+			deleteSpan.onclick = function (e) {
+				e.preventDefault();
+				e.stopPropagation();
+				var shouldUpdate = false;
+				if (!_this.main.beforeOnChange) {
 					shouldUpdate = true;
 				}
-			}
-			if (shouldUpdate) {
-				_this.main.data.removeFromSelected(optionObj.id, 'id');
-				_this.main.render();
-				_this.main.select.setValue();
-				_this.main.data.onDataChange();
-			}
-		};
-		value.appendChild(deleteSpan);
+				if (_this.main.beforeOnChange) {
+					var selected = _this.main.data.getSelected();
+					var currentValues = JSON.parse(JSON.stringify(selected));
+					for (var i = 0; i < currentValues.length; i++) {
+						if (currentValues[i].id === optionObj.id) {
+							currentValues.splice(i, 1);
+						}
+					}
+					var beforeOnchange = _this.main.beforeOnChange(currentValues);
+					if (beforeOnchange !== false) {
+						shouldUpdate = true;
+					}
+				}
+				if (shouldUpdate) {
+					_this.main.data.removeFromSelected(optionObj.id, 'id');
+					_this.main.render();
+					_this.main.select.setValue();
+					_this.main.data.onDataChange();
+				}
+			};
+			value.appendChild(deleteSpan);
+		}
 		return value;
 	};
 	Slim.prototype.contentDiv = function () {
@@ -1512,6 +1580,9 @@ var Slim = (function () {
 		input.placeholder = this.main.config.searchPlaceholder;
 		input.tabIndex = 0;
 		input.setAttribute('aria-label', this.main.config.searchPlaceholder);
+		input.setAttribute('autocapitalize', 'off');
+		input.setAttribute('autocomplete', 'off');
+		input.setAttribute('autocorrect', 'off');
 		input.onclick = function (e) {
 			setTimeout(function () {
 				var target = e.target;
@@ -1802,6 +1873,8 @@ var Slim = (function () {
 		}
 		if (this.main.config.showOptionTooltips && optionEl.textContent) {
 			optionEl.setAttribute('title', optionEl.textContent);
+		} else {
+			optionEl.setAttribute('title', data.title); // added by unixman
 		}
 		var master = this;
 		optionEl.addEventListener('click', function (e) {
@@ -1894,4 +1967,4 @@ exports.Slim = Slim;
 /******/ ])["default"];
 });
 
-// END
+// #END

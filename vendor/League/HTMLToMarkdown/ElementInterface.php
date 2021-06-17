@@ -1,80 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown;
 
 interface ElementInterface
 {
-	/**
-	 * @return bool
-	 */
-	public function isBlock();
+    public function isBlock(): bool;
 
-	/**
-	 * @return bool
-	 */
-	public function isText();
+    public function isText(): bool;
 
-	/**
-	 * @return bool
-	 */
-	public function isWhitespace();
+    public function isWhitespace(): bool;
 
-	/**
-	 * @return string
-	 */
-	public function getTagName();
+    public function getTagName(): string;
 
-	/**
-	 * @return string
-	 */
-	public function getValue();
+    public function getValue(): string;
 
-	/**
-	 * @return ElementInterface|null
-	 */
-	public function getParent();
+    public function hasParent(): bool;
 
-	/**
-	 * @param string|string[] $tagNames
-	 *
-	 * @return bool
-	 */
-	public function isDescendantOf($tagNames);
+    public function getParent(): ?ElementInterface;
 
-	/**
-	 * @return bool
-	 */
-	public function hasChildren();
+    public function getNextSibling(): ?ElementInterface;
 
-	/**
-	 * @return ElementInterface[]
-	 */
-	public function getChildren();
+    public function getPreviousSibling(): ?ElementInterface;
 
-	/**
-	 * @return ElementInterface|null
-	 */
-	public function getNext();
+    /**
+     * @param string|string[] $tagNames
+     */
+    public function isDescendantOf($tagNames): bool;
 
-	/**
-	 * @return int
-	 */
-	public function getSiblingPosition();
+    public function hasChildren(): bool;
 
-	/**
-	 * @return string
-	 */
-	public function getChildrenAsString();
+    /**
+     * @return ElementInterface[]
+     */
+    public function getChildren(): array;
 
-	/**
-	 * @param string $markdown
-	 */
-	public function setFinalMarkdown($markdown);
+    public function getNext(): ?ElementInterface;
 
-	/**
-	 * @param string $name
-	 *
-	 * @return string
-	 */
-	public function getAttribute($name);
+    public function getSiblingPosition(): int;
+
+    public function getChildrenAsString(): string;
+
+    public function setFinalMarkdown(string $markdown): void;
+
+    public function getListItemLevel(): int;
+
+    public function getAttribute(string $name): string;
 }

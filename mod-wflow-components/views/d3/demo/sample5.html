@@ -38,8 +38,7 @@ var svg = d3.select("svg"),
 var pack = d3.pack()
 	.size([diameter - 4, diameter - 4]);
 
-d3.json("sample4.json", function(error, root) {
-  if (error) throw error;
+d3.json("sample4.json").then(function(root) {
 
   root = d3.hierarchy(root)
 	  .sum(function(d) { return d.size; })

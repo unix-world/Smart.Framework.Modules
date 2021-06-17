@@ -1,18 +1,24 @@
 
 /*
-// slimselect.js v.1.23.1
+// slimselect.js v.1.27
 // github.com/brianvoe/slim-select
-// (c) 2017 Brian Voelker
+// (c) 2017-2021 Brian Voelker
 // License: MIT
+// contains fixes by unixman
+// 	* improved readability
 */
-
 
 .ss-main {
 	position: relative;
 	display: inline-block;
 	user-select: none;
-	color: #666666;
+	color: #444444;
+	font-weight: bold;
 	width: 100%;
+}
+
+.ss-main * {
+	font-size: 1rem !important;
 }
 
 .ss-main .ss-single-selected {
@@ -21,12 +27,12 @@
 	width: 100%;
 	height: 30px;
 	padding: 6px;
-	border: 1px solid #dcdee2;
-	border-radius: 4px;
-	background-color: #ffffff;
+	border: 1px solid #DCDEE2;
+	border-radius: 3px;
+	background-color: #FFFFFF;
 	outline: 0;
 	box-sizing: border-box;
-	transition: background-color .2s;
+	transition: background-color 0.2s;
 }
 
 .ss-main .ss-single-selected.ss-disabled {
@@ -99,7 +105,7 @@
 	border-width: 0 2px 2px 0;
 	display: inline-block;
 	padding: 3px;
-	transition: transform .2s, margin .2s;
+	transition: transform 0.2s, margin 0.2s;
 }
 
 .ss-main .ss-single-selected .ss-arrow span.arrow-up {
@@ -120,7 +126,7 @@
 	width: 100%;
 	padding: 0 0 0 3px;
 	border: 1px solid #dcdee2;
-	border-radius: 4px;
+	border-radius: 3px;
 	background-color: #ffffff;
 	outline: 0;
 	box-sizing: border-box;
@@ -197,12 +203,11 @@
 	display: flex;
 	user-select: none;
 	align-items: center;
-	font-size: 12px;
 	padding: 3px 5px;
 	margin: 3px 5px 3px 0px;
 	color: #ffffff;
 	background-color: #3c4663;
-	border-radius: 4px;
+	border-radius: 3px;
 	animation-name: scaleIn;
 	animation-duration: .2s;
 	animation-timing-function: ease-out;
@@ -325,7 +330,7 @@
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
-	font-size: 22px;
+	font-size: 1.375rem;
 	font-weight: bold;
 	flex: 0 0 30px;
 	height: 30px;

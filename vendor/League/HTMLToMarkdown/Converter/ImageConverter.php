@@ -1,35 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
 
-class ImageConverter implements ConverterInterface
-{
-	/**
-	 * @param ElementInterface $element
-	 *
-	 * @return string
-	 */
-	public function convert(ElementInterface $element)
-	{
-		$src = $element->getAttribute('src');
-		$alt = $element->getAttribute('alt');
+class ImageConverter implements ConverterInterface {
+
+
+	public function convert(ElementInterface $element): string {
+		$src   = $element->getAttribute('src');
+		$alt   = $element->getAttribute('alt');
 		$title = $element->getAttribute('title');
-
-		if ($title !== '') {
+		if($title !== '') {
 			// No newlines added. <img> should be in a block-level element.
-			return '![' . $alt . '](' . $src . ' "' . $title . '")';
+		//	return '![' . $alt . '](' . $src . ' "' . $title . '")';
+			return '![' . \str_replace(['[',']'], ['\\[','\\]'], (string)$alt) . '](' . \str_replace(['(', ')'], ['\\(', '\\)'], (string)$src) . ' "' . \str_replace(['(', ')', '"'], ['\\(', '\\)', "'"], (string)$title) . '")'; // fix by unixman
 		}
-
-		return '![' . $alt . '](' . $src . ')';
+	//	return '![' . $alt . '](' . $src . ')';
+		return '![' . \str_replace(['[',']'], ['\\[','\\]'], (string)$alt) . '](' . \str_replace(['(', ')'], ['\\(', '\\)'], (string)$src) . ')'; // fix by unixman
 	}
+
 
 	/**
 	 * @return string[]
 	 */
-	public function getSupportedTags()
-	{
-		return array('img');
+	public function getSupportedTags(): array {
+		return ['img'];
 	}
-}
+
+
+} //END CLASS
+
+// #end

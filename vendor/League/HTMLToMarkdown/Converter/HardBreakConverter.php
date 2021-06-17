@@ -1,56 +1,57 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
 
-class HardBreakConverter implements ConverterInterface, ConfigurationAwareInterface
-{
-	/**
-	 * @var Configuration
-	 */
+
+class HardBreakConverter implements ConverterInterface, ConfigurationAwareInterface {
+
+	/** @var Configuration */
 	protected $config;
 
-	/**
-	 * @param Configuration $config
-	 */
-	public function setConfig(Configuration $config)
-	{
+
+	public function setConfig(Configuration $config): void {
 		$this->config = $config;
-	}
+	} //END FUNCTION
 
-	/**
-	 * @param ElementInterface $element
-	 *
-	 * @return string
-	 */
-	public function convert(ElementInterface $element)
-	{
-		$return = $this->config->getOption('hard_break') ? "\n" : "  \n";
 
+	public function convert(ElementInterface $element): string {
+		//--
+	//  $return = $this->config->getOption('hard_break') ? "\n" : "  \n";
+		$return = "\n".'\\'."\n"; // fix by unixman
+		//--
 		$next = $element->getNext();
 		if ($next) {
-			$next_value = $next->getValue();
-			if ($next_value) {
-				if (in_array(substr($next_value, 0, 2), array('- ', '* ', '+ '))) {
+			$nextValue = $next->getValue();
+			if ($nextValue) {
+				if (\in_array(\substr($nextValue, 0, 2), ['- ', '* ', '+ '], true)) {
 					$parent = $element->getParent();
-					if ($parent && $parent->getTagName() == 'li') {
+					if ($parent && $parent->getTagName() === 'li') {
 						$return .= '\\';
 					}
 				}
 			}
 		}
-
+		//--
 		return $return;
-	}
+		//--
+	} //END FUNCTION
+
 
 	/**
 	 * @return string[]
 	 */
-	public function getSupportedTags()
-	{
-		return array('br');
-	}
-}
+	public function getSupportedTags(): array {
+		return ['br'];
+	} //END FUNCTION
+
+
+} //END CLASS
+
+
+// #end

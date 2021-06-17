@@ -1,45 +1,43 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
 
-class DivConverter implements ConverterInterface, ConfigurationAwareInterface
-{
-	/**
-	 * @var Configuration
-	 */
+
+class DivConverter implements ConverterInterface, ConfigurationAwareInterface {
+
+	/** @var Configuration */
 	protected $config;
 
-	/**
-	 * @param Configuration $config
-	 */
-	public function setConfig(Configuration $config)
-	{
+
+	public function setConfig(Configuration $config): void {
 		$this->config = $config;
-	}
+	} //END FUNCTION
 
-	/**
-	 * @param ElementInterface $element
-	 *
-	 * @return string
-	 */
-	public function convert(ElementInterface $element)
-	{
-		if ($this->config->getOption('strip_tags', false)) {
-			return $element->getValue() . "\n\n";
+
+	public function convert(ElementInterface $element): string {
+		if ($this->config->getOption('strip_tags', false)) { // this condition is tricky, actually it is: if strip tags is TRUE
+		//	return $element->getValue() . "\n\n";
+			return (string) \League\HTMLToMarkdown\SmartFixes::stripTags((string)$element->getChildrenAsString()) . "\n\n";
 		}
+		return \html_entity_decode($element->getChildrenAsString());
+	} //END FUNCTION
 
-		return html_entity_decode($element->getChildrenAsString());
-	}
 
 	/**
 	 * @return string[]
 	 */
-	public function getSupportedTags()
-	{
-		return array('div');
-	}
-}
+	public function getSupportedTags(): array {
+		return ['div'];
+	} //END FUNCTION
+
+
+} //END CLASS
+
+
+// #end

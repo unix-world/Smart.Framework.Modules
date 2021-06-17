@@ -1,76 +1,65 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown;
 
-class Configuration
-{
+
+class Configuration {
+
+	/** @var array<string, mixed> */
 	protected $config;
 
+
 	/**
-	 * @param array $config
+	 * @param array<string, mixed> $config
 	 */
-	public function __construct(array $config = array())
-	{
+	public function __construct(array $config = []) {
 		$this->config = $config;
+	} //END FUNCTION
 
-		$this->checkForDeprecatedOptions($config);
-	}
-
-	/**
-	 * @param array $config
-	 */
-	public function merge(array $config = array())
-	{
-		$this->checkForDeprecatedOptions($config);
-		$this->config = array_replace_recursive($this->config, $config);
-	}
 
 	/**
-	 * @param array $config
+	 * @param array<string, mixed> $config
 	 */
-	public function replace(array $config = array())
-	{
-		$this->checkForDeprecatedOptions($config);
+	public function merge(array $config = []): void {
+		$this->config = \array_replace_recursive($this->config, $config);
+	} //END FUNCTION
+
+
+	/**
+	 * @param array<string, mixed> $config
+	 */
+	public function replace(array $config = []): void {
 		$this->config = $config;
-	}
+	} //END FUNCTION
+
 
 	/**
-	 * @param string $key
-	 * @param mixed  $value
+	 * @param mixed $value
 	 */
-	public function setOption($key, $value)
-	{
-		$this->checkForDeprecatedOptions(array($key => $value));
+	public function setOption(string $key, $value): void {
 		$this->config[$key] = $value;
-	}
+	} //END FUNCTION
+
 
 	/**
-	 * @param string|null $key
-	 * @param mixed|null  $default
+	 * @param mixed|null $default
 	 *
 	 * @return mixed|null
 	 */
-	public function getOption($key = null, $default = null)
-	{
+	public function getOption(?string $key = null, $default = null) {
 		if ($key === null) {
 			return $this->config;
 		}
-
-		if (!isset($this->config[$key])) {
+		if (! isset($this->config[$key])) {
 			return $default;
 		}
-
 		return $this->config[$key];
-	}
+	} //END FUNCTION
 
-	private function checkForDeprecatedOptions(array $config)
-	{
-		foreach ($config as $key => $value) {
-			if ($key === 'bold_style' && $value !== '**') {
-				@trigger_error('Customizing the bold_style option is deprecated and may be removed in the next major version', E_USER_DEPRECATED);
-			} elseif ($key === 'italic_style' && $value !== '*') {
-				@trigger_error('Customizing the italic_style option is deprecated and may be removed in the next major version', E_USER_DEPRECATED);
-			}
-		}
-	}
-}
+
+} //END CLASS
+
+
+// #end

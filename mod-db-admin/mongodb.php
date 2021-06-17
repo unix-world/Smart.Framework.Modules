@@ -874,7 +874,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								(int) $limit,
 								(int) $ofs,
 								false,
-								5,
+								25,
 								[
 									'show-first' => true,
 									'show-last' => true

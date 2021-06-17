@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Controller: AppRelease/CodeCleanup
-// Route: ?/page/app-release.code-cleanup (?page=app-release.code-cleanup)
+// Controller: Docs/OptimizeJson (to Optimized Safe HTML)
+// Route: ?page=docs.task-optimize-json-docs
 // (c) 2013-2021 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -24,12 +24,12 @@ define('SMART_APP_MODULE_AUTH', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210605
+ * @version 	v.20210614
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\Docs\AbstractTaskController {
 
-	private const OPTIMIZATIONS_MAX_RUN_TIMEOUT = 2105;
+	private const OPTIMIZATIONS_MAX_RUN_TIMEOUT = 2105; // {{{SYNC-DOCS-OPTIMIZATIONS-TIMEOUT}}}
 
 	protected $title = 'Task: JSON Docs :: Optimize and Validate Images and SVGs, Validate HTML';
 
@@ -44,7 +44,18 @@ final class SmartAppTaskController extends \SmartModExtLib\Docs\AbstractTaskCont
 	public function Run() {
 
 		//--
-		$this->sficon = 'stack';
+		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
+			$this->err = 'Mod AuthAdmins is missing !';
+			return;
+		} //end if
+		if(!SmartAppInfo::TestIfModuleExists('vendor')) {
+			$this->err = 'Vendor module is missing !';
+			return;
+		} //end if
+		//--
+
+		//--
+		$this->sficon = 'html-five';
 		//--
 
 		//--
@@ -57,8 +68,9 @@ final class SmartAppTaskController extends \SmartModExtLib\Docs\AbstractTaskCont
 
 		//--
 		$this->EchoTextMessage('Starting ...', true);
-		$this->EchoTextMessage('JSON Docs Dir: `'.self::DOCS_PATH.'`');
-		$this->EchoTextMessage('JSON Docs File: `'.self::DOCS_FILE.'`');
+		$this->EchoTextMessage('JSON Docs Dir: `'.\SmartModExtLib\Docs\OptimizationUtils::THE_DOCS_PATH.'`');
+		$this->EchoTextMessage('JSON Docs File: `'.\SmartModExtLib\Docs\OptimizationUtils::THE_DOCS_FILE.'`');
+		$this->EchoTextMessage('JSON Optimized Docs File: `'.\SmartModExtLib\Docs\OptimizationUtils::THE_DOCS_OPT_FILE.'`');
 		//--
 
 		//--
@@ -71,15 +83,20 @@ final class SmartAppTaskController extends \SmartModExtLib\Docs\AbstractTaskCont
 			$this->err = 'Invalid Realm, Unsafe Name: `'.$realm.'`';
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)self::DOCS_PATH.$realm)) {
+		if(!SmartFileSysUtils::check_if_safe_path((string)\SmartModExtLib\Docs\OptimizationUtils::THE_DOCS_PATH.$realm)) {
 			$this->err = 'Invalid Realm, Unsafe Path: `'.$realm.'`';
 			return;
 		} //end if
-		if(!SmartFileSystem::is_type_dir((string)self::DOCS_PATH.$realm)) {
-			$this->err = 'Invalid Realm, N/A: `'.self::DOCS_PATH.$realm.'`';
+		if(!SmartFileSystem::is_type_dir((string)\SmartModExtLib\Docs\OptimizationUtils::THE_DOCS_PATH.$realm)) {
+			$this->err = 'Invalid Realm, N/A: `'.\SmartModExtLib\Docs\OptimizationUtils::THE_DOCS_PATH.$realm.'`';
 			return;
 		} //end if
-		$jsondb = (string) SmartFileSysUtils::add_dir_last_slash(self::DOCS_PATH.$realm).Smart::safe_filename((string)self::DOCS_FILE);
+		//--
+		$this->EchoTextMessage('REALM: `'.$realm.'`', true);
+		//--
+
+		//--
+		$jsondb = (string) SmartFileSysUtils::add_dir_last_slash(\SmartModExtLib\Docs\OptimizationUtils::THE_DOCS_PATH.$realm).Smart::safe_filename((string)\SmartModExtLib\Docs\OptimizationUtils::THE_DOCS_FILE);
 		if(!SmartFileSysUtils::check_if_safe_path((string)$jsondb)) {
 			$this->err = 'Invalid Realm JSON DB, Unsafe Path: `'.$jsondb.'`';
 			return;
@@ -91,15 +108,17 @@ final class SmartAppTaskController extends \SmartModExtLib\Docs\AbstractTaskCont
 		//--
 
 		//--
-		$jsondb = (string) SmartFileSysUtils::add_dir_last_slash(self::DOCS_PATH.$realm).Smart::safe_filename((string)self::DOCS_FILE);
-		if(!SmartFileSysUtils::check_if_safe_path((string)$jsondb)) {
-			$this->err = 'Invalid Realm JSON DB, Unsafe Path: `'.$jsondb.'`';
+		$jsonoptdb = (string) SmartFileSysUtils::add_dir_last_slash(\SmartModExtLib\Docs\OptimizationUtils::THE_DOCS_PATH.$realm).Smart::safe_filename((string)\SmartModExtLib\Docs\OptimizationUtils::THE_DOCS_OPT_FILE);
+		if(!SmartFileSysUtils::check_if_safe_path((string)$jsonoptdb)) {
+			$this->err = 'Invalid Realm JSON OPT DB, Unsafe Path: `'.$jsonoptdb.'`';
 			return;
 		} //end if
-		if(!SmartFileSystem::is_type_file((string)$jsondb)) {
-			$this->err = 'Invalid Realm JSON DB, N/A: `'.$jsondb.'`';
+		if(SmartFileSystem::is_type_dir((string)$jsonoptdb)) {
+			$this->err = 'Invalid Realm JSON OPT DB, N/A: `'.$jsonoptdb.'`';
 			return;
 		} //end if
+		//--
+
 		//--
 		$this->EchoTextMessage('Decoding JSON ...', true);
 		$arr = Smart::json_decode((string)SmartFileSystem::read((string)$jsondb)); // mixed
@@ -115,17 +134,16 @@ final class SmartAppTaskController extends \SmartModExtLib\Docs\AbstractTaskCont
 		$arr_disabled = [];
 		foreach($arr as $key => $val) {
 			//--
-			$source = (string) $val;
-			//--
-			$source = (string) (new SmartHtmlParser((string)$source, false, 2, false))->get_clean_html(); // do not use signature here
-			//--
-			$arr_process = (array) \SmartModExtLib\Docs\OptimizationUtils::validateSvgAndImagesCompressToWebp((string)$source);
+			$arr_process 		= (array) \SmartModExtLib\Docs\OptimizationUtils::processHtml((string)$val, (string)$realm);
 			$source 			= (string) $arr_process['source'];
+			//--
 			$all_imgs_and_svgs 	= (int)    $arr_process['all-imgs-and-svgs'];
 			$svgs 				= (int)    $arr_process['svgs'];
 			$imgs 				= (int)    $arr_process['imgs'];
 			$invalid_data_urls 	= (int)    $arr_process['invalid-data-urls'];
 			$urls_disabled 		= (array)  $arr_process['urls-disabled'];
+			//--
+			$arr_process 		= null; // free mem
 			//--
 			if((int)Smart::array_size($urls_disabled) > 0) {
 				$arr_disabled[(string)$key] = (array) $urls_disabled;
@@ -155,38 +173,42 @@ final class SmartAppTaskController extends \SmartModExtLib\Docs\AbstractTaskCont
 		//--
 
 		//--
-		if(SmartFileSystem::is_type_file((string)$jsondb.'.optimized.json')) {
-			SmartFileSystem::delete((string)$jsondb.'.optimized.json');
+		if(SmartFileSystem::is_type_file((string)$jsonoptdb)) {
+			SmartFileSystem::delete((string)$jsonoptdb);
 		} //end if
-		if(SmartFileSystem::path_exists((string)$jsondb.'.optimized.json')) {
-			$this->err = 'Failed to delete the Optimized JSON DB: `'.$jsondb.'.optimized.json'.'`';
+		if(SmartFileSystem::path_exists((string)$jsonoptdb)) {
+			$this->err = 'Failed to delete the Optimized JSON DB: `'.$jsonoptdb.'`';
 			return;
 		} //end if
 		//--
-		SmartFileSystem::write((string)$jsondb.'.optimized.json', (string)Smart::json_encode(
+		SmartFileSystem::write((string)$jsonoptdb, (string)Smart::json_encode(
 			(array) $optimized_arr,
 			false,
 			true,
 			false
 		));
 		//--
-		if(!SmartFileSystem::is_type_file((string)$jsondb.'.optimized.json')) {
-			$this->err = 'Failed to save the Optimized JSON DB: `'.$jsondb.'.optimized.json'.'`';
+		if(!SmartFileSystem::is_type_file((string)$jsonoptdb)) {
+			$this->err = 'Failed to save the Optimized JSON DB: `'.$jsonoptdb.'`';
 			return;
 		} //end if
-		if(SmartFileSystem::get_file_size((string)$jsondb.'.optimized.json') <= 0) {
-			$this->err = 'The saved Optimized JSON DB: `'.$jsondb.'.optimized.json'.'` have size zero !';
+		if(SmartFileSystem::get_file_size((string)$jsonoptdb) <= 0) {
+			$this->err = 'The saved Optimized JSON DB: `'.$jsonoptdb.'` have size zero !';
 			return;
 		} //end if
 		//--
+
+		//--
 		if(Smart::array_size($arr_disabled) > 0) {
+			$this->EchoHtmlMessage('<br><hr>');
 			$this->EchoTextMessage('DISABLED URLs List for Keys', true);
 			$this->EchoHtmlMessage('<pre>');
 			$this->EchoTextMessage(SmartUtils::pretty_print_var($arr_disabled));
 			$this->EchoHtmlMessage('</pre>');
+			$this->EchoHtmlMessage((string)SmartComponents::operation_notice('URLs Disabled: #'.(int)Smart::array_size($arr_disabled)));
 		} //end if
 		//--
-		$this->msg = 'DONE ... URLs Disabled: #'.(int)Smart::array_size($urls_disabled);
+		$this->msg = 'DONE ...';
 		//--
 
 	} //END FUNCTION

@@ -30,13 +30,11 @@ if(!\SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20210611
+ * @version 	v.20210612
  *
  */
 abstract class AbstractTaskController extends \SmartModExtLib\AuthAdmins\AbstractTaskController {
 
-	protected const DOCS_PATH = 'wpub/devdocs/';
-	protected const DOCS_FILE = 'db.json';
 	protected const REQ_MAX_MEMORY_SIZE = '1024M';
 
 	protected $title = 'Docs Task (Abstract)';

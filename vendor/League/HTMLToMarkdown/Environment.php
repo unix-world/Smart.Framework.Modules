@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown;
 
 use League\HTMLToMarkdown\Converter\BlockquoteConverter;
@@ -8,6 +10,7 @@ use League\HTMLToMarkdown\Converter\CommentConverter;
 use League\HTMLToMarkdown\Converter\ConverterInterface;
 use League\HTMLToMarkdown\Converter\DefaultConverter;
 use League\HTMLToMarkdown\Converter\DivConverter;
+use League\HTMLToMarkdown\Converter\SpanConverter;
 use League\HTMLToMarkdown\Converter\EmphasisConverter;
 use League\HTMLToMarkdown\Converter\HardBreakConverter;
 use League\HTMLToMarkdown\Converter\HeaderConverter;
@@ -19,86 +22,75 @@ use League\HTMLToMarkdown\Converter\ListItemConverter;
 use League\HTMLToMarkdown\Converter\ParagraphConverter;
 use League\HTMLToMarkdown\Converter\PreformattedConverter;
 use League\HTMLToMarkdown\Converter\TextConverter;
+use League\HTMLToMarkdown\Converter\TableConverter;
 
 final class Environment
 {
-	/**
-	 * @var Configuration
-	 */
-	protected $config;
+    /** @var Configuration */
+    protected $config;
 
-	/**
-	 * @var ConverterInterface[]
-	 */
-	protected $converters = array();
+    /** @var ConverterInterface[] */
+    protected $converters = [];
 
-	public function __construct(array $config = array())
-	{
-		$this->config = new Configuration($config);
-		$this->addConverter(new DefaultConverter());
-	}
+    /**
+     * @param array<string, mixed> $config
+     */
+    public function __construct(array $config = [])
+    {
+        $this->config = new Configuration($config);
+        $this->addConverter(new DefaultConverter());
+    }
 
-	/**
-	 * @return Configuration
-	 */
-	public function getConfig()
-	{
-		return $this->config;
-	}
+    public function getConfig(): Configuration
+    {
+        return $this->config;
+    }
 
-	/**
-	 * @param ConverterInterface $converter
-	 */
-	public function addConverter(ConverterInterface $converter)
-	{
-		if ($converter instanceof ConfigurationAwareInterface) {
-			$converter->setConfig($this->config);
-		}
+    public function addConverter(ConverterInterface $converter): void
+    {
+        if ($converter instanceof ConfigurationAwareInterface) {
+            $converter->setConfig($this->config);
+        }
 
-		foreach ($converter->getSupportedTags() as $tag) {
-			$this->converters[$tag] = $converter;
-		}
-	}
+        foreach ($converter->getSupportedTags() as $tag) {
+            $this->converters[$tag] = $converter;
+        }
+    }
 
-	/**
-	 * @param string $tag
-	 *
-	 * @return ConverterInterface
-	 */
-	public function getConverterByTag($tag)
-	{
-		if (isset($this->converters[$tag])) {
-			return $this->converters[$tag];
-		}
+    public function getConverterByTag(string $tag): ConverterInterface
+    {
+        if (isset($this->converters[$tag])) {
+            return $this->converters[$tag];
+        }
 
-		return $this->converters[DefaultConverter::DEFAULT_CONVERTER];
-	}
+        return $this->converters[DefaultConverter::DEFAULT_CONVERTER];
+    }
 
-	/**
-	 * @param array $config
-	 *
-	 * @return Environment
-	 */
-	public static function createDefaultEnvironment(array $config = array())
-	{
-		$environment = new static($config);
+    /**
+     * @param array<string, mixed> $config
+     */
+    public static function createDefaultEnvironment(array $config = []): Environment
+    {
+        $environment = new static($config);
 
-		$environment->addConverter(new BlockquoteConverter());
-		$environment->addConverter(new CodeConverter());
-		$environment->addConverter(new CommentConverter());
-		$environment->addConverter(new DivConverter());
-		$environment->addConverter(new EmphasisConverter());
-		$environment->addConverter(new HardBreakConverter());
-		$environment->addConverter(new HeaderConverter());
-		$environment->addConverter(new HorizontalRuleConverter());
-		$environment->addConverter(new ImageConverter());
-		$environment->addConverter(new LinkConverter());
-		$environment->addConverter(new ListBlockConverter());
-		$environment->addConverter(new ListItemConverter());
-		$environment->addConverter(new ParagraphConverter());
-		$environment->addConverter(new PreformattedConverter());
-		$environment->addConverter(new TextConverter());
+        $environment->addConverter(new BlockquoteConverter());
+        $environment->addConverter(new CodeConverter());
+        $environment->addConverter(new CommentConverter());
+        $environment->addConverter(new DivConverter());
+        $environment->addConverter(new SpanConverter());
+        $environment->addConverter(new EmphasisConverter());
+        $environment->addConverter(new HardBreakConverter());
+        $environment->addConverter(new HeaderConverter());
+        $environment->addConverter(new HorizontalRuleConverter());
+        $environment->addConverter(new ImageConverter());
+        $environment->addConverter(new LinkConverter());
+        $environment->addConverter(new ListBlockConverter());
+        $environment->addConverter(new ListItemConverter());
+        $environment->addConverter(new ParagraphConverter());
+        $environment->addConverter(new PreformattedConverter());
+        $environment->addConverter(new TextConverter());
+        $environment->addConverter(new TableConverter());
 
-		return $environment;
-	}
+        return $environment;
+    }
 }

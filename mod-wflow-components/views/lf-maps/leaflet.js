@@ -1,24 +1,25 @@
 
-// (c) 2017-2019 unix-world.org
+// (c) 2017-2021 unix-world.org
 // License: GPLv3
-// v.20190207
+// v.20210617
 
 /*
  Leaflet Js: A javascript library for interactive maps # https://github.com/Leaflet/Leaflet
  Version: 1.0.3+ed36a04 (2017-01-23) :: r.20190129
  License: https://github.com/Leaflet/Leaflet/blob/v1.0.3/LICENSE
  (c) 2010-2017 Vladimir Agafonkin, (c) 2010-2011 CloudMade
- (c) 2017-2019 unix-world.org
+
 */
 
 // includes fixes by unixman
 // 	* fix export/import circle geoJson
 // 	* don't show popup if empty popup content
+// * fix for MouseEvent.mozPressure is deprecated
 
 (function (window, document, undefined) {
 
 var L = {
-	version: "1.0.3+ed36a04"
+	version: "1.0.3+uxm.20210617" // based on: "1.0.3+ed36a04"
 };
 
 function expose() {
@@ -61,10 +62,22 @@ L.Util = {
 	extend: function (dest) {
 		var i, j, len, src;
 
+		//-- fix by unixman: clicking on a path logs: `MouseEvent.mozPressure is deprecated. Use PointerEvent.pressure instead`
+		var deprecated = { // https://github.com/tinymce/tinymce/blob/7b6e5f16dffaf3bf9158431da88ad69bf6cb9d44/modules/tinymce/src/core/main/ts/api/dom/EventUtils.ts#L46
+			keyLocation: 1, layerX: 1, layerY: 1, returnValue: 1,
+			webkitMovementX: 1, webkitMovementY: 1, keyIdentifier: 1, mozPressure: 1
+		};
+		//-- #fix
+
 		for (j = 1, len = arguments.length; j < len; j++) {
 			src = arguments[j];
 			for (i in src) {
-				dest[i] = src[i];
+				//-- fix by unixman: avoid copy deprecated events
+				//dest[i] = src[i];
+				if(!deprecated[i]) {
+					dest[i] = src[i];
+				}
+				//-- #fix
 			}
 		}
 		return dest;
