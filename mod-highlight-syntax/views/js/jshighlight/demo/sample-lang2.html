@@ -24,6 +24,7 @@
   <script type="text/javascript" src="../syntax/lang2/d.js"></script>
   <script type="text/javascript" src="../syntax/lang2/r.js"></script>
   <script type="text/javascript" src="../syntax/lang2/swift.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/scheme.js"></script>
   <script type="text/javascript" src="../syntax/lang2/haxe.js"></script>
 
   <script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
@@ -322,6 +323,39 @@ pingUDPPort s a = sendTo s (Strict.singleton 0) a &gt;&gt; return ()
     return &quot;\(name) is \(age + offset) years old&quot;
   }
 }
+</code></pre>
+</div>
+
+<!-- Scheme -->
+
+<div class="system">
+<h2>Scheme</h2>
+<pre><code class="scheme">(define (hofstadter-male-female n)
+(letrec ((female (lambda (n)
+           (if (= n 0)
+           1
+           (- n (male (female (- n 1)))))))
+     (male (lambda (n)
+         (if (= n 0)
+             0
+             (- n (female (male (- n 1))))))))
+  (let loop ((i 0))
+    (if (> i n)
+    '()
+    (cons (cons (female i)
+            (male i))
+      (loop (+ i 1)))))))
+
+(hofstadter-male-female 8)
+
+(define (find-first func lst)
+(call-with-current-continuation
+ (lambda (return-immediately)
+   (for-each (lambda (x)
+       (if (func x)
+           (return-immediately x)))
+         lst)
+   #f)))
 </code></pre>
 </div>
 
