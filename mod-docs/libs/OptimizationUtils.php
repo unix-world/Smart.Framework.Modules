@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210612
+ * @version 	v.20210716
  * @package 	Docs
  *
  */
@@ -40,6 +40,7 @@ final class OptimizationUtils {
 	public const THE_DOCS_FILE = 'db.json';
 	public const THE_DOCS_OPT_FILE = 'db.optimized.json'; // {{{SYNC-MOD-DOCS-OPT-FILE}}}
 	public const THE_DOCS_MD_FILE = 'db-md.json'; // {{{SYNC-MOD-DOCS-MARKDOWN-FILE}}}
+	public const THE_DOCS_IDX_FILE = 'index.json';
 
 
 	public static function convertHtml2Markdown(?string $source) {

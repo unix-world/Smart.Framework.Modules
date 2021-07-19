@@ -33,7 +33,7 @@ class DivConverter implements ConverterInterface, ConfigurationAwareInterface {
 	 * @return string[]
 	 */
 	public function getSupportedTags(): array {
-		return ['div'];
+		return ['div', 'dt', 'dd'];
 	} //END FUNCTION
 
 
