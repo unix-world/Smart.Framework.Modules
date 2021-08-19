@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210716
+ * @version 	v.20210812
  * @package 	Docs
  *
  */
@@ -144,7 +144,7 @@ final class OptimizationUtils {
 		$img_processed_num = 0;
 		$invalid_processed_num = 0;
 		$urls_disabled = [];
-		$original_checksum = (string) \SmartHashCrypto::sha384((string)$source);
+		$original_checksum = (string) \SmartHashCrypto::sha512((string)$source);
 		$original_size = (int) \strlen((string)$source);
 		//--
 		$arr_imgs = (new \SmartHtmlParser((string)$source))->get_tags('img'); // {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}}
@@ -305,7 +305,7 @@ final class OptimizationUtils {
 			} //end for
 		} //end if
 		//--
-		$post_processing_checksum = (string) \SmartHashCrypto::sha384((string)$source);
+		$post_processing_checksum = (string) \SmartHashCrypto::sha512((string)$source);
 		//--
 		$source = '<!-- ['.\Smart::escape_html((string)__FUNCTION__.': ALL#'.(int)$all_processed_num.' ; IMG#'.(int)$img_processed_num.' ; SVG#'.(int)$svgs_processed_num.' ; INVALID#'.(int)$invalid_processed_num.' ; DISABLED#'.(int)\Smart::array_size($urls_disabled).' :: '.' OriginalSize='.(int)$original_size.' ; CurrentSize='.(int)\strlen((string)$source)).'] -->'."\n".$source;
 		//--

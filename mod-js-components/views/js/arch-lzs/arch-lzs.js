@@ -223,7 +223,7 @@ var ArchLzs = new function() { // START CLASS
 			return '';
 		} //end if
 		//--
-		var arch = smartJ$Utils.bin2hex(uncompressed).toUpperCase();
+		var arch = smartJ$Utils.bin2hex(uncompressed);
 		//--
 		return String(RawDeflate(String(arch + '#CHECKSUM-SHA1#' + smartJ$CryptoHash.sha1(arch))));
 		//--
@@ -264,7 +264,7 @@ var ArchLzs = new function() { // START CLASS
 			return '';
 		} //end if
 		//--
-		return String(smartJ$Utils.hex2bin(unarch.toLowerCase()));
+		return String(smartJ$Utils.hex2bin(unarch));
 		//--
 	} //END FUNCTION
 

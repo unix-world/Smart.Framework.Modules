@@ -18,7 +18,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 final class webmailUtils {
 
-	// r.20210428
+	// r.20210812
 	// ::
 
 
@@ -762,7 +762,7 @@ final class webmailUtils {
 
 	public static function checksumAttachmentComposerData($relative_file_path) {
 		//--
-		return (string) \SmartHashCrypto::sha384('SmartFrameworkCloudWebMail//'.\SmartUtils::get_visitor_tracking_uid().'@'.\SmartUtils::unique_auth_client_private_key().'#'.$relative_file_path.'#'.\SmartHashCrypto::sha256($relative_file_path));
+		return (string) \SmartHashCrypto::sha512('SmartFrameworkCloudWebMail//'.\SmartUtils::get_visitor_tracking_uid().'@'.\SmartUtils::unique_auth_client_private_key().'#'.$relative_file_path.'#'.\SmartHashCrypto::sha512($relative_file_path,true).'#'.\SmartHashCrypto::sha256($relative_file_path,true).'#'.\SmartHashCrypto::sha1($relative_file_path,true).'#'.\SmartHashCrypto::md5($relative_file_path,true).'#'.\SmartHashCrypto::crc32b($relative_file_path));
 		//--
 	} //END FUNCTION
 
