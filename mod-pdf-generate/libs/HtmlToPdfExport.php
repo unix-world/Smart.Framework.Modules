@@ -164,6 +164,8 @@ final class HtmlToPdfExport {
 				//--
 				$tmp_img_src = (string) \trim((string)$arr_imgs[$i]['src']);
 				//--
+				$chk_duplicates_arr[(string)$tmp_img_src] = $chk_duplicates_arr[(string)$tmp_img_src] ?? null;
+				//--
 				if(!$chk_duplicates_arr[(string)$tmp_img_src]) {
 					//--
 					$tmp_fcontent = '';

@@ -426,7 +426,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 	private function secretKey() {
 		//--
-		return (string) $this->ControllerGetParam('controller').':'.sha1(SMART_FRAMEWORK_SECURITY_KEY.'|'.$this->username.'|'.$this->userpath);
+		return (string) $this->ControllerGetParam('controller').':'.sha1($this->userpath.'|'.$this->username.'|'.SMART_FRAMEWORK_SECURITY_KEY);
 		//--
 	} //END FUNCTION
 

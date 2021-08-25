@@ -958,7 +958,7 @@ final class webmailUtils {
 			$max_atts_num = 9;
 		} //end if
 		//--
-		if(\Smart::array_size($form['attachments']) > 0) {
+		if(isset($form['attachments']) AND (\Smart::array_size($form['attachments']) > 0)) {
 			//--
 			for($i=0; $i<$max_atts_num; $i++) {
 				//--
@@ -1012,7 +1012,7 @@ final class webmailUtils {
 					'' // allowed_extensions (all)
 				);
 				//--
-				if(((string)$tmp_att['status'] == 'WARN') AND ((string)$tmp_att['msg-code'] == '3')) {
+				if(((string)$tmp_att['status'] == 'WARN') AND (((string)$tmp_att['msg-code'] == '1') OR ((string)$tmp_att['msg-code'] == '3'))) { // fix: add also #1
 					// no file uploaded :: OK
 				} elseif(((string)$tmp_att['status'] == 'OK') AND ((string)$tmp_att['msg-code'] == '0')) {
 					// OK

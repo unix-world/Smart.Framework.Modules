@@ -54,7 +54,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		if(defined('SMART_FRAMEWORK_MEDIAGALLERY_SECUREMODE') AND (SMART_FRAMEWORK_MEDIAGALLERY_SECUREMODE === true)) {
 			//--
-			$key = sha1((string)(defined('SMART_FRAMEWORK_SECURITY_KEY') ? SMART_FRAMEWORK_SECURITY_KEY : '').date('Y-m-d'));
+			$key = sha1((string)date('Y-m-d').(defined('SMART_FRAMEWORK_SECURITY_KEY') ? SMART_FRAMEWORK_SECURITY_KEY : ''));
 			//--
 			$lnk = $this->RequestVarGet('lnk', '', 'string');
 			if((string)$lnk != '') {
