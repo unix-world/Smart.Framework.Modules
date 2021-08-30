@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 
 /**
- * Admin Controller r.20210612
+ * Admin Controller r.20210830
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
@@ -586,7 +586,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$test_rawmime = $this->RequestVarGet('mime', '', 'string');
 			$enforce_better_detect_mime_and_disp = null;
 			if((string)$test_rawmime != '') {
-				$test_rawmime = (string) SmartUtils::url_hex_decode((string)$test_rawmime);
+				$test_rawmime = (string) SmartUtils::url_obfs_decode((string)$test_rawmime);
 				if((string)$test_rawmime == 'image') { // {{{SYNC-BETTER-CID-IMGS-DETECTION-OF-MIMETYPE}}} FIX: SVGs don't function with mime type 'image', they need 'image/svg+xml'
 					$test_img_type = (string) SmartDetectImages::guess_image_extension_by_img_content((string)$main, false); // don't use GD, too expensive
 					if((string)$test_img_type != '') {
@@ -603,7 +603,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			} else {
 				$test_rawdisp = $this->RequestVarGet('disp', '', 'string');
 				if((string)$test_rawdisp != '') {
-					$test_rawdisp = (string) SmartUtils::url_hex_decode((string)$test_rawdisp);
+					$test_rawdisp = (string) SmartUtils::url_obfs_decode((string)$test_rawdisp);
 					$this->PageViewSetCfg('rawdisp', (string)$test_rawdisp);
 				} //end if
 			} //end if else
