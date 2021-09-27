@@ -196,7 +196,7 @@ table#cart-table .cart-icon {
 					[%%%IF:CART-ITEMS.PRICE_:!=;%%%]
 					<!-- No Discount on Custom Price -->
 					[%%%ELSE:CART-ITEMS.PRICE_%%%]
-					<br><span class="cart-discount" title="Price-Discount: [###CART-ITEMS._DISCOUNT|html###]">Discount: [###CART-ITEMS.DISCOUNT_|html###]</span>
+					<br><span class="cart-discount" title="Discount: [###CART-ITEMS._DISCOUNT|html###] * [###CART-ITEMS._PRICE|html###] = [###CART-ITEMS._DISCOUNT_|html###] ; Discounted-Price: [###CART-ITEMS._PRICE_|html###]">Discount: [###CART-ITEMS.DISCOUNT_|html###]</span>
 					[%%%/IF:CART-ITEMS.PRICE_%%%]
 				[%%%/IF:CART-ITEMS.DISCOUNT_%%%]
 			</td>

@@ -41,21 +41,28 @@ final class cartUtils {
 							$tmp_arr['id'] 				= (string) (isset($item['id']) ? $item['id'] : null);
 							$tmp_arr['type'] 			= (string) (isset($item['type']) ? $item['type'] : null);
 							$tmp_arr['name'] 			= (string) ((isset($item['data']) && \is_array($item['data']) && isset($item['data']['name'])) ? $item['data']['name'] : null);
-							$tmp_arr['quantity'] 		= (float)  (0 + \Smart::format_number_dec((isset($item['quantity']) ? $item['quantity'] : null), 4, '.', ''));
-							$tmp_arr['qtyerg'] 			= (float)  (0 + \Smart::format_number_dec((isset($item['qtyerg']) ? $item['qtyerg'] : null), 4, '.', ''));
+							$tmp_arr['quantity'] 		= (float)  \Smart::format_number_dec((isset($item['quantity']) ? $item['quantity'] : null), 4, '.', '');
+							$tmp_arr['qtyerg'] 			= (float)  \Smart::format_number_dec((isset($item['qtyerg']) ? $item['qtyerg'] : null), 4, '.', '');
 							$tmp_arr['currency'] 		= (string) (isset($item['currency']) ? $item['currency'] : null);
-							$tmp_arr['price'] 			= (float)  (0 + \Smart::format_number_dec((isset($item['price']) ? $item['price'] : null), 2, '.', ''));
-							$tmp_arr['tax'] 			= (float)  (0 + \Smart::format_number_dec((isset($item['tax']) ? $item['tax'] : null), 2, '.', ''));
+							$tmp_arr['price'] 			= (float)  \Smart::format_number_dec((isset($item['price']) ? $item['price'] : null), 2, '.', '');
+							$tmp_arr['tax'] 			= (float)  \Smart::format_number_dec((isset($item['tax']) ? $item['tax'] : null), 2, '.', '');
 							$tmp_arr['price_'] 			= (string) (isset($item['price_']) ? $item['price_'] : null);
-							$tmp_arr['_price'] 			= (string) (isset($item['_price']) ? $item['_price'] : null);
+							$tmp_arr['_price'] 			= (float)  (isset($item['_price']) ? $item['_price'] : null);
+							$tmp_arr['discount'] 		= (string) \Smart::format_number_dec((isset($item['discount']) ? $item['discount'] : null), 2, '.', '');
 							$tmp_arr['discount_'] 		= (string) (isset($item['discount_']) ? $item['discount_'] : null);
-							$tmp_arr['_discount'] 		= (string) (isset($item['_discount']) ? $item['_discount'] : null);
+							$tmp_arr['_discount'] 		= (float)  (isset($item['_discount']) ? $item['_discount'] : null);
+							$tmp_arr['_discount_'] 		= (float)  \Smart::format_number_dec($tmp_arr['_discount'] * $tmp_arr['_price'], 2, '.', '');
+							$tmp_arr['_price_'] 		= (float)  \Smart::format_number_dec(($tmp_arr['_price'] - $tmp_arr['_discount_']), 2, '.', '');
 							$tmp_arr['_currency'] 		= (string) (isset($item['_currency']) ? $item['_currency'] : null);
-							$tmp_arr['_exchrate'] 		= (string) (isset($item['_exchrate']) ? $item['_exchrate'] : null);
+							$tmp_arr['_exchrate'] 		= (string) \Smart::format_number_dec((isset($item['_exchrate']) ? $item['_exchrate'] : null), 4, '.', '');
 							//-- {{{SYNC-CART-CALC-TOTALS}}}
 							$tmp_arr['tax-ratio'] 		= (float)  (0 + \Smart::format_number_dec(($tmp_arr['tax'] / 100), 4, '.', '')); // {{{SYNC-CART-TAX-RATIO}}} tax / 100 must have 4 decimals as tax % can have 2 decimals !!!
 							$tmp_arr['tot-price-notax'] = (float)  (0 + \Smart::format_number_dec(($tmp_arr['quantity'] * $tmp_arr['price']), 2, '.', ''));
 							$tmp_arr['tot-price-tax'] 	= (float)  (0 + \Smart::format_number_dec(($tmp_arr['quantity'] * $tmp_arr['price'] * $tmp_arr['tax-ratio']), 2, '.', ''));
+							$tmp_arr['tot-disc-notax'] 	= (float)  (0 + \Smart::format_number_dec($tmp_arr['_discount_'] * $tmp_arr['quantity'], 2, '.', ''));
+							$tmp_arr['tot-disc-tax'] 	= (float)  (0 + \Smart::format_number_dec($tmp_arr['_discount_'] * $tmp_arr['quantity'] * $tmp_arr['tax-ratio'], 2, '.', ''));
+							$tmp_arr['tot-amount'] 		= (float)  (0 + \Smart::format_number_dec($tmp_arr['tot-price-notax'] - $tmp_arr['tot-disc-notax'], 2, '.', ''));
+							$tmp_arr['tot-tax'] 		= (float)  (0 + \Smart::format_number_dec($tmp_arr['tot-price-tax'] - $tmp_arr['tot-disc-tax'], 2, '.', ''));
 							//--
 							$tmp_arr['um'] 				= (string) '';
 							$tmp_arr['umtype'] 			= (string) '';
@@ -153,6 +160,8 @@ final class cartUtils {
 	 */
 	public static function getDisplayTotals($all_items) { // {{{SYNC-CART-CALC-TOTALS}}}
 		//--
+		$total_disc_notax = 0;
+		$total_disc_tax = 0;
 		$total_notax = 0;
 		$total_tax = 0;
 		$grand_total = 0;
@@ -165,9 +174,10 @@ final class cartUtils {
 			if(\is_array($items)) {
 				foreach($items as $kk => $item) {
 					if(\is_array($item)) {
-						$tmp_item_qty   = \Smart::format_number_dec((isset($item['quantity']) ? $item['quantity'] : null), 4, '.', '');
-						$tmp_item_price = \Smart::format_number_dec((isset($item['price']) ? $item['price'] : null), 2, '.', '');
-						$tmp_item_tax   = \Smart::format_number_dec(((float)(isset($item['tax']) ? $item['tax'] : null) / 100), 4, '.', ''); // {{{SYNC-CART-TAX-RATIO}}} tax / 100 must have 4 decimals as tax % can have 2 decimals !!!
+						$tmp_item_disc = 0;
+						$tmp_item_qty   = \Smart::format_number_dec(($item['quantity'] ?? null), 4, '.', '');
+						$tmp_item_price = \Smart::format_number_dec(($item['price'] ?? null), 2, '.', '');
+						$tmp_item_tax   = \Smart::format_number_dec(((float)($item['tax'] ?? null) / 100), 4, '.', ''); // {{{SYNC-CART-TAX-RATIO}}} tax / 100 must have 4 decimals as tax % can have 2 decimals !!!
 						$tmp_item_tot_price_notax = \Smart::format_number_dec(($tmp_item_qty * $tmp_item_price), 2, '.', '');
 						$tmp_item_tot_price_tax = \Smart::format_number_dec(($tmp_item_qty * $tmp_item_price * $tmp_item_tax), 2, '.', '');
 						$tmp_item_tot_price_all = \Smart::format_number_dec(($tmp_item_tot_price_notax + $tmp_item_tot_price_tax), 2, '.', '');
@@ -175,15 +185,22 @@ final class cartUtils {
 						$total_notax += $tmp_item_tot_price_notax;
 						$total_tax += $tmp_item_tot_price_tax;
 						$grand_total += $tmp_item_tot_price_all;
+						if(isset($item['_discount']) AND ($item['_discount'] > 0)) {
+							$tmp_item_disc = \Smart::format_number_dec($item['_discount'], 4, '.', '');
+							$total_disc_notax += \Smart::format_number_dec($tmp_item_disc * $total_notax, 2, '.', '');
+							$total_disc_tax += \Smart::format_number_dec($tmp_item_disc * $total_tax, 2, '.', '');
+						} //end if
 					} //end if
 				} //end foreach
 			} //end if
 		} //end foreach
 		//--
 		return array(
-			'total-notax' => (float) (0 + \Smart::format_number_dec($total_notax, 2, '.', '')),
-			'total-tax'   => (float) (0 + \Smart::format_number_dec($total_tax,   2, '.', '')),
-			'grand-total' => (float) (0 + \Smart::format_number_dec($grand_total, 2, '.', ''))
+			'discount-notax' => (float) (0 + \Smart::format_number_dec($total_disc_notax, 2, '.', '')),
+			'discount-tax' => (float) (0 + \Smart::format_number_dec($total_disc_tax, 2, '.', '')),
+			'total-notax' => (float) (0 + \Smart::format_number_dec($total_notax - $total_disc_notax, 2, '.', '')),
+			'total-tax'   => (float) (0 + \Smart::format_number_dec($total_tax - $total_disc_tax,   2, '.', '')),
+			'grand-total' => (float) (0 + \Smart::format_number_dec($grand_total - $total_disc_notax - $total_disc_tax, 2, '.', ''))
 		);
 		//--
 	} //END FUNCTION

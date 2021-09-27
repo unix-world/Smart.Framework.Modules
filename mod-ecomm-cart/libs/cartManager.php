@@ -12,7 +12,7 @@ namespace SmartModExtLib\EcommCart;
 
 final class cartManager {
 
-	// r.20210318
+	// r.20210908
 
 	/**
 	 * An unique ID for the cart.
@@ -799,7 +799,7 @@ final class cartManager {
 			'price_'     => (string) '', // keep original calculated price using exchange rate if using a custom price (if this is non empty string it means the price is custom !)
 			'_price'     => (string) $fix_price, // keep original price as calculated by attributes in the original item _currency
 			'discount_'  => (string) (isset($data['discounts'][(string)$this->cartDiscountLevel]) ? $data['discounts'][(string)$this->cartDiscountLevel] : null), // keep original discount as percent
-			'_discount'  => (string) \Smart::format_number_dec(($this->fixPercentDiscountAsNumeric((isset($data['discounts'][(string)$this->cartDiscountLevel]) ? $data['discounts'][(string)$this->cartDiscountLevel] : null)) / 100), 2, '.', ''),
+			'_discount'  => (string) \Smart::format_number_dec(($this->fixPercentDiscountAsNumeric((isset($data['discounts'][(string)$this->cartDiscountLevel]) ? $data['discounts'][(string)$this->cartDiscountLevel] : null)) / 100), 4, '.', ''), // {{{SYNC-CART-DISCOUNT-NUMERIC-DECIMAL4}}} ; must use 4 decimals to can use by ex: 10.55%
 			'_currency'  => (string) $fix_currency, // keep original item currency
 			'_exchrate'  => (string) $fix_exchrate, // the exchage rate as: item-currency / cart-currency
 			'data'       => (array)  $data,
@@ -952,7 +952,7 @@ final class cartManager {
 						$this->items[$id][$index]['quantity'] = ($this->itemMaxQuantity < $this->items[$id][$index]['quantity'] && $this->itemMaxQuantity != 0) ? $this->itemMaxQuantity : $this->items[$id][$index]['quantity'];
 						//--
 						$this->items[$id][$index]['discount_'] = (string) (isset($data['discounts'][(string)$this->cartDiscountLevel]) ? $data['discounts'][(string)$this->cartDiscountLevel] : null);
-						$this->items[$id][$index]['_discount'] = (string) \Smart::format_number_dec(($this->fixPercentDiscountAsNumeric((isset($data['discounts'][(string)$this->cartDiscountLevel]) ? $data['discounts'][(string)$this->cartDiscountLevel] : null)) / 100), 2, '.', '');
+						$this->items[$id][$index]['_discount'] = (string) \Smart::format_number_dec(($this->fixPercentDiscountAsNumeric((isset($data['discounts'][(string)$this->cartDiscountLevel]) ? $data['discounts'][(string)$this->cartDiscountLevel] : null)) / 100), 4, '.', ''); // {{{SYNC-CART-DISCOUNT-NUMERIC-DECIMAL4}}} ; must use 4 decimals to can use by ex: 10.55%
 						//--
 						if((string)$price != '') {
 							if($price >= 0) {

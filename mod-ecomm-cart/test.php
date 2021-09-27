@@ -71,7 +71,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			'cartCurrency' 		=> 'US$',
 		//	'cartShowEmptyAtts' => true, // debug only
 		//	'noPrice' 			=> true, // special operating mode with no prices
-			'cartMode' 			=> 'customer' // inventory | sales | customer (default)
+			'cartMode' 			=> 'sales' // inventory | sales | customer (default)
 		]);
 		//--
 
