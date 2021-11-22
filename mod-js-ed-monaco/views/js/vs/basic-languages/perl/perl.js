@@ -531,20 +531,14 @@ define('vs/basic-languages/perl/perl',["require", "exports"], function (require,
                 [/(q|qw|tr|y)\s*\{/, { token: 'string.delim', switchTo: '@qstring.{.}' }],
                 [/(q|qw|tr|y)\s*</, { token: 'string.delim', switchTo: '@qstring.<.>' }],
                 [/(q|qw|tr|y)#/, { token: 'string.delim', switchTo: '@qstring.#.#' }],
-                [
-                    /(q|qw|tr|y)\s*([^A-Za-z0-9#\s])/,
-                    { token: 'string.delim', switchTo: '@qstring.$2.$2' }
-                ],
+                [/(q|qw|tr|y)\s*([^A-Za-z0-9#\s])/, { token: 'string.delim', switchTo: '@qstring.$2.$2' }],
                 [/(q|qw|tr|y)\s+(\w)/, { token: 'string.delim', switchTo: '@qstring.$2.$2' }],
                 [/(qr|m|s)\s*\(/, { token: 'regexp.delim', switchTo: '@qregexp.(.)' }],
                 [/(qr|m|s)\s*\[/, { token: 'regexp.delim', switchTo: '@qregexp.[.]' }],
                 [/(qr|m|s)\s*\{/, { token: 'regexp.delim', switchTo: '@qregexp.{.}' }],
                 [/(qr|m|s)\s*</, { token: 'regexp.delim', switchTo: '@qregexp.<.>' }],
                 [/(qr|m|s)#/, { token: 'regexp.delim', switchTo: '@qregexp.#.#' }],
-                [
-                    /(qr|m|s)\s*([^A-Za-z0-9_#\s])/,
-                    { token: 'regexp.delim', switchTo: '@qregexp.$2.$2' }
-                ],
+                [/(qr|m|s)\s*([^A-Za-z0-9_#\s])/, { token: 'regexp.delim', switchTo: '@qregexp.$2.$2' }],
                 [/(qr|m|s)\s+(\w)/, { token: 'regexp.delim', switchTo: '@qregexp.$2.$2' }],
                 [/(qq|qx)\s*\(/, { token: 'string.delim', switchTo: '@qqstring.(.)' }],
                 [/(qq|qx)\s*\[/, { token: 'string.delim', switchTo: '@qqstring.[.]' }],
@@ -599,10 +593,7 @@ define('vs/basic-languages/perl/perl',["require", "exports"], function (require,
             //  close = close delimiter
             qqstring: [{ include: '@variables' }, { include: '@qstring' }],
             heredoc: [
-                [
-                    /<<\s*['"`]?([\w\-]+)['"`]?/,
-                    { token: 'string.heredoc.delimiter', next: '@heredocBody.$1' }
-                ]
+                [/<<\s*['"`]?([\w\-]+)['"`]?/, { token: 'string.heredoc.delimiter', next: '@heredocBody.$1' }]
             ],
             heredocBody: [
                 [

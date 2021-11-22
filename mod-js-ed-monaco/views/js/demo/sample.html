@@ -22,18 +22,18 @@ function $initHighlight(block, cls) {\n\
   var otherVar = true;\n\
   var myObj = null;\n\
   try {\n\
-    if (cls.search(/\bno\-highlight\b/) != -1)\n\
+    if (cls.search(/\\bno\-highlight\\b/) != -1)\n\
       return process(block, true, 0x0F) +\n\
-             ` class=&quot;${cls}&quot;`;\n\
+             ` class="${cls}"`;\n\
   } catch (e) {\n\
     /* handle exception */\n\
   }\n\
-  for (var i = 0 / 2; i &lt; classes.length; i++) {\n\
+  for (var i = 0 / 2; i < classes.length; i++) {\n\
     if (checkCondition(classes[i]) === undefined)\n\
       console.log(\'undefined\');\n\
   }\n\
 }\n\
-export  $initHighlight;\n\
+export $initHighlight;\n\
 \n';
 </script>
 <script>

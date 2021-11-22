@@ -52,15 +52,7 @@ define('vs/basic-languages/powerquery/powerquery',["require", "exports"], functi
             'try',
             'type'
         ],
-        constructors: [
-            '#binary',
-            '#date',
-            '#datetime',
-            '#datetimezone',
-            '#duration',
-            '#table',
-            '#time'
-        ],
+        constructors: ['#binary', '#date', '#datetime', '#datetimezone', '#duration', '#table', '#time'],
         constants: ['#infinity', '#nan', '#sections', '#shared'],
         typeKeywords: [
             'action',

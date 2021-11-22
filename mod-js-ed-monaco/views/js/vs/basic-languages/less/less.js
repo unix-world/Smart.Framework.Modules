@@ -131,10 +131,7 @@ define('vs/basic-languages/less/less',["require", "exports"], function (require,
                 ['.', 'comment']
             ],
             numbers: [
-                [
-                    '(\\d*\\.)?\\d+([eE][\\-+]?\\d+)?',
-                    { token: 'attribute.value.number', next: '@units' }
-                ],
+                ['(\\d*\\.)?\\d+([eE][\\-+]?\\d+)?', { token: 'attribute.value.number', next: '@units' }],
                 ['#[0-9a-fA-F_]+(?!\\w)', 'attribute.value.hex']
             ],
             units: [

@@ -67,18 +67,12 @@ define('vs/basic-languages/xml/xml',["require", "exports", "../fillers/monaco-ed
             ],
             tag: [
                 [/[ \t\r\n]+/, ''],
-                [
-                    /(@qualifiedName)(\s*=\s*)("[^"]*"|'[^']*')/,
-                    ['attribute.name', '', 'attribute.value']
-                ],
+                [/(@qualifiedName)(\s*=\s*)("[^"]*"|'[^']*')/, ['attribute.name', '', 'attribute.value']],
                 [
                     /(@qualifiedName)(\s*=\s*)("[^">?\/]*|'[^'>?\/]*)(?=[\?\/]\>)/,
                     ['attribute.name', '', 'attribute.value']
                 ],
-                [
-                    /(@qualifiedName)(\s*=\s*)("[^">]*|'[^'>]*)/,
-                    ['attribute.name', '', 'attribute.value']
-                ],
+                [/(@qualifiedName)(\s*=\s*)("[^">]*|'[^'>]*)/, ['attribute.name', '', 'attribute.value']],
                 [/@qualifiedName/, 'attribute.name'],
                 [/\?>/, { token: 'delimiter', next: '@pop' }],
                 [/(\/)(>)/, [{ token: 'tag' }, { token: 'delimiter', next: '@pop' }]],

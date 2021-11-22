@@ -84,10 +84,7 @@ define('vs/basic-languages/scss/scss',["require", "exports"], function (require,
                 ['#{', { token: 'meta', next: '@variableinterpolation' }],
                 ['(\\.|#(?=[^{])|%|(@identifier)|:)+', 'tag'] // selector (.foo, div, ...)
             ],
-            selectorattribute: [
-                { include: '@term' },
-                [']', { token: 'delimiter.bracket', next: '@pop' }]
-            ],
+            selectorattribute: [{ include: '@term' }, [']', { token: 'delimiter.bracket', next: '@pop' }]],
             term: [
                 { include: '@comments' },
                 ['url(\\-prefix)?\\(', { token: 'meta', next: '@urldeclaration' }],

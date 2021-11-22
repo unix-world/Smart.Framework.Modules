@@ -178,10 +178,7 @@ define('vs/basic-languages/scala/scala',["require", "exports"], function (requir
                 [/'[a-zA-Z$][\w$]*(?!')/, 'attribute.name'],
                 // characters
                 [/'[^\\']'/, 'string', '@allowMethod'],
-                [
-                    /(')(@escapes)(')/,
-                    ['string', 'string.escape', { token: 'string', next: '@allowMethod' }]
-                ],
+                [/(')(@escapes)(')/, ['string', 'string.escape', { token: 'string', next: '@allowMethod' }]],
                 [/'/, 'string.invalid']
             ],
             import: [

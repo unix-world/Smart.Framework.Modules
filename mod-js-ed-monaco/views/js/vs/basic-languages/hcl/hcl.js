@@ -8,7 +8,7 @@ define('vs/basic-languages/hcl/hcl',["require", "exports"], function (require, e
     exports.language = exports.conf = void 0;
     exports.conf = {
         comments: {
-            lineComment: '//',
+            lineComment: '#',
             blockComment: ['/*', '*/']
         },
         brackets: [
@@ -133,10 +133,7 @@ define('vs/basic-languages/hcl/hcl',["require", "exports"], function (require, e
                 [/'/, 'invalid']
             ],
             heredoc: [
-                [
-                    /<<[-]*\s*["]?([\w\-]+)["]?/,
-                    { token: 'string.heredoc.delimiter', next: '@heredocBody.$1' }
-                ]
+                [/<<[-]*\s*["]?([\w\-]+)["]?/, { token: 'string.heredoc.delimiter', next: '@heredocBody.$1' }]
             ],
             heredocBody: [
                 [

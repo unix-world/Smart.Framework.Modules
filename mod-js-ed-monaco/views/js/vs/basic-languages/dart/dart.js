@@ -248,10 +248,7 @@ define('vs/basic-languages/dart/dart',["require", "exports"], function (require,
                 [/[^\\\/]/, 'regexp'],
                 [/@regexpesc/, 'regexp.escape'],
                 [/\\\./, 'regexp.invalid'],
-                [
-                    /(\/)([gimsuy]*)/,
-                    [{ token: 'regexp', bracket: '@close', next: '@pop' }, 'keyword.other']
-                ]
+                [/(\/)([gimsuy]*)/, [{ token: 'regexp', bracket: '@close', next: '@pop' }, 'keyword.other']]
             ],
             regexrange: [
                 [/-/, 'regexp.escape.control'],

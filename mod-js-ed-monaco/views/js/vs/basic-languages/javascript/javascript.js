@@ -124,6 +124,7 @@ define('vs/basic-languages/typescript/typescript',["require", "exports", "../fil
             'private',
             'protected',
             'public',
+            'override',
             'readonly',
             'require',
             'global',
@@ -226,7 +227,7 @@ define('vs/basic-languages/typescript/typescript',["require", "exports", "../fil
                 { include: '@whitespace' },
                 // regular expression: ensure it is terminated before beginning (otherwise it is an opeator)
                 [
-                    /\/(?=([^\\\/]|\\.)+\/([gimsuy]*)(\s*)(\.|;|,|\)|\]|\}|$))/,
+                    /\/(?=([^\\\/]|\\.)+\/([dgimsuy]*)(\s*)(\.|;|,|\)|\]|\}|$))/,
                     { token: 'regexp', bracket: '@open', next: '@regexp' }
                 ],
                 // delimiters and operators
@@ -290,10 +291,7 @@ define('vs/basic-languages/typescript/typescript',["require", "exports", "../fil
                 [/[^\\\/]/, 'regexp'],
                 [/@regexpesc/, 'regexp.escape'],
                 [/\\\./, 'regexp.invalid'],
-                [
-                    /(\/)([gimsuy]*)/,
-                    [{ token: 'regexp', bracket: '@close', next: '@pop' }, 'keyword.other']
-                ]
+                [/(\/)([dgimsuy]*)/, [{ token: 'regexp', bracket: '@close', next: '@pop' }, 'keyword.other']]
             ],
             regexrange: [
                 [/-/, 'regexp.escape.control'],

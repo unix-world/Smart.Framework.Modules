@@ -548,9 +548,7 @@ define('vs/basic-languages/elixir/elixir',["require", "exports"], function (requ
             sigilContent: [[/./, 'sigil']],
             docstringContent: [[/./, 'comment.block.documentation']],
             escapeChar: [[/@escape/, 'constant.character.escape']],
-            interpolation: [
-                [/#{/, { token: 'delimiter.bracket.embed', next: '@interpolationContinue' }]
-            ],
+            interpolation: [[/#{/, { token: 'delimiter.bracket.embed', next: '@interpolationContinue' }]],
             interpolationContinue: [
                 [/}/, { token: 'delimiter.bracket.embed', next: '@pop' }],
                 // Interpolation brackets may contain arbitrary code,

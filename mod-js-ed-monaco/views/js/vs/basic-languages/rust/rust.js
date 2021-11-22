@@ -20,7 +20,6 @@ define('vs/basic-languages/rust/rust',["require", "exports"], function (require,
             { open: '[', close: ']' },
             { open: '{', close: '}' },
             { open: '(', close: ')' },
-            { open: "'", close: "'", notIn: ['string', 'comment'] },
             { open: '"', close: '"', notIn: ['string'] }
         ],
         surroundingPairs: [
@@ -263,6 +262,8 @@ define('vs/basic-languages/rust/rust',["require", "exports"], function (require,
         floatSuffixes: /f(32|64)/,
         tokenizer: {
             root: [
+                // Raw string literals
+                [/r(#*)"/, { token: 'string.quote', bracket: '@open', next: '@stringraw.$1' }],
                 [
                     /[a-zA-Z][a-zA-Z0-9_]*!?|_[a-zA-Z0-9_]+/,
                     {
@@ -281,7 +282,7 @@ define('vs/basic-languages/rust/rust',["require", "exports"], function (require,
                 // Lifetime annotations
                 [/'[a-zA-Z_][a-zA-Z0-9_]*(?=[^\'])/, 'identifier'],
                 // Byte literal
-                [/'\S'/, 'string.byteliteral'],
+                [/'(\S|@escapes)'/, 'string.byteliteral'],
                 // Strings
                 [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
                 { include: '@numbers' },
@@ -315,6 +316,19 @@ define('vs/basic-languages/rust/rust',["require", "exports"], function (require,
                 [/@escapes/, 'string.escape'],
                 [/\\./, 'string.escape.invalid'],
                 [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
+            ],
+            stringraw: [
+                [/[^"#]+/, { token: 'string' }],
+                [
+                    /"(#*)/,
+                    {
+                        cases: {
+                            '$1==$S2': { token: 'string.quote', bracket: '@close', next: '@pop' },
+                            '@default': { token: 'string' }
+                        }
+                    }
+                ],
+                [/["#]/, { token: 'string' }]
             ],
             numbers: [
                 //Octal

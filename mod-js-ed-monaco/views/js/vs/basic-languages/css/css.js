@@ -82,10 +82,7 @@ define('vs/basic-languages/css/css',["require", "exports"], function (require, e
             selectorname: [
                 ['(\\.|#(?=[^{])|%|(@identifier)|:)+', 'tag'] // selector (.foo, div, ...)
             ],
-            selectorattribute: [
-                { include: '@term' },
-                [']', { token: 'delimiter.bracket', next: '@pop' }]
-            ],
+            selectorattribute: [{ include: '@term' }, [']', { token: 'delimiter.bracket', next: '@pop' }]],
             term: [
                 { include: '@comments' },
                 [
@@ -138,10 +135,7 @@ define('vs/basic-languages/css/css',["require", "exports"], function (require, e
             ],
             name: [['@identifier', 'attribute.value']],
             numbers: [
-                [
-                    '-?(\\d*\\.)?\\d+([eE][\\-+]?\\d+)?',
-                    { token: 'attribute.value.number', next: '@units' }
-                ],
+                ['-?(\\d*\\.)?\\d+([eE][\\-+]?\\d+)?', { token: 'attribute.value.number', next: '@units' }],
                 ['#[0-9a-fA-F_]+(?!\\w)', 'attribute.value.hex']
             ],
             units: [

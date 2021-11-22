@@ -63,10 +63,7 @@ define('vs/basic-languages/markdown/markdown',["require", "exports"], function (
                 // markdown tables
                 [/^\s*\|/, '@rematch', '@table_header'],
                 // headers (with #)
-                [
-                    /^(\s{0,3})(#+)((?:[^\\#]|@escapes)+)((?:#+)?)/,
-                    ['white', 'keyword', 'keyword', 'keyword']
-                ],
+                [/^(\s{0,3})(#+)((?:[^\\#]|@escapes)+)((?:#+)?)/, ['white', 'keyword', 'keyword', 'keyword']],
                 // headers (with =)
                 [/^\s*(=+|\-+)\s*$/, 'keyword'],
                 // headers (with ***)
@@ -116,7 +113,7 @@ define('vs/basic-languages/markdown/markdown',["require", "exports"], function (
             ],
             // github style code blocks
             codeblockgh: [
-                [/```\s*$/, { token: 'variable.source', next: '@pop', nextEmbedded: '@pop' }],
+                [/```\s*$/, { token: 'string', next: '@pop', nextEmbedded: '@pop' }],
                 [/[^`]+/, 'variable.source']
             ],
             linecontent: [
@@ -185,10 +182,7 @@ define('vs/basic-languages/markdown/markdown',["require", "exports"], function (
                         'string.html'
                     ]
                 ],
-                [
-                    /(\w+)(\s*=\s*)("[^"]*"|'[^']*')/,
-                    ['attribute.name.html', 'delimiter.html', 'string.html']
-                ],
+                [/(\w+)(\s*=\s*)("[^"]*"|'[^']*')/, ['attribute.name.html', 'delimiter.html', 'string.html']],
                 [/\w+/, 'attribute.name.html'],
                 [/\/>/, 'tag', '@pop'],
                 [

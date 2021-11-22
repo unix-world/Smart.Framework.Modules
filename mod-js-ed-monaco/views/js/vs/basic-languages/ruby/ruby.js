@@ -266,10 +266,7 @@ define('vs/basic-languages/ruby/ruby',["require", "exports"], function (require,
                 [/@@@[\w]*/, 'namespace.class.identifier'],
                 // here document
                 [/<<[-~](@heredelim).*/, { token: 'string.heredoc.delimiter', next: '@heredoc.$1' }],
-                [
-                    /[ \t\r\n]+<<(@heredelim).*/,
-                    { token: 'string.heredoc.delimiter', next: '@heredoc.$1' }
-                ],
+                [/[ \t\r\n]+<<(@heredelim).*/, { token: 'string.heredoc.delimiter', next: '@heredoc.$1' }],
                 [/^<<(@heredelim).*/, { token: 'string.heredoc.delimiter', next: '@heredoc.$1' }],
                 // whitespace
                 { include: '@whitespace' },
@@ -396,10 +393,7 @@ define('vs/basic-languages/ruby/ruby',["require", "exports"], function (require,
                     /^(\s*)(@heredelim)$/,
                     {
                         cases: {
-                            '$2==$S2': [
-                                'string.heredoc',
-                                { token: 'string.heredoc.delimiter', next: '@pop' }
-                            ],
+                            '$2==$S2': ['string.heredoc', { token: 'string.heredoc.delimiter', next: '@pop' }],
                             '@default': ['string.heredoc', 'string.heredoc']
                         }
                     }
@@ -463,10 +457,7 @@ define('vs/basic-languages/ruby/ruby',["require", "exports"], function (require,
                 ],
                 [
                     /(\[)(\^?)/,
-                    [
-                        '@brackets.regexp.escape.control',
-                        { token: 'regexp.escape.control', next: '@regexrange' }
-                    ]
+                    ['@brackets.regexp.escape.control', { token: 'regexp.escape.control', next: '@regexrange' }]
                 ],
                 [/(\()(\?[:=!])/, ['@brackets.regexp.escape.control', 'regexp.escape.control']],
                 [/\(\?#/, { token: 'regexp.escape.control', next: '@regexpcomment' }],

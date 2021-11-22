@@ -277,11 +277,7 @@ define('vs/basic-languages/pug/pug',["require", "exports"], function (require, e
                                     next: '@popall'
                                 }
                             ],
-                            '@default': [
-                                'interpolation.delimiter',
-                                'interpolation',
-                                'interpolation.delimiter'
-                            ]
+                            '@default': ['interpolation.delimiter', 'interpolation', 'interpolation.delimiter']
                         }
                     }
                 ],
@@ -365,10 +361,7 @@ define('vs/basic-languages/pug/pug',["require", "exports"], function (require, e
                     }
                 ],
                 // interpolation
-                [
-                    /(#{)([^}]*)(})/,
-                    ['interpolation.delimiter', 'interpolation', 'interpolation.delimiter']
-                ],
+                [/(#{)([^}]*)(})/, ['interpolation.delimiter', 'interpolation', 'interpolation.delimiter']],
                 [/#/, 'string'],
                 [
                     /["']/,
