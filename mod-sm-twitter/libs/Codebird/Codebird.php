@@ -6,7 +6,7 @@ namespace Codebird;
  * A Twitter library in PHP.
  *
  * @package   codebird
- * @version   4.0.0-beta.1.uxm-20210305 [PHP8]
+ * @version   4.0.0-beta.1.uxm-20211127 [PHP8]
  * @author    Jublo Limited <support@jublo.net>
  * @copyright 2010-2018 Jublo Limited <support@jublo.net>
  * @license   https://opensource.org/licenses/GPL-3.0 GNU General Public License 3.0
@@ -26,7 +26,7 @@ class Codebird {
 	/**
 	 * The current Codebird version
 	 */
-	protected static $_version = '4.0.0-beta.1.uxm-181002';
+	protected static $_version = '4.0.0-beta.1.uxm-20211127';
 
 	private static $CONST_CURLXE_SSL_CERTPROBLEM = 58;
 	private static $CONST_CURLXE_SSL_CACERT_ISSUE = 60;
@@ -53,6 +53,11 @@ class Codebird {
 	 * The app-only bearer token. Used to authorize app-only requests
 	 */
 	protected static $_bearer_token = null;
+
+	// Fix for PHP 8.1 (moved from inside setProxy() static var)
+	protected static $types_str = [
+		'HTTP', 'SOCKS4', 'SOCKS5', 'SOCKS4A', 'SOCKS5_HOSTNAME'
+	];
 
 	/**
 	 * The API endpoints to use
@@ -735,11 +740,9 @@ class Codebird {
 	 */
 	public function setProxy($host, $port, $type = CURLPROXY_HTTP)
 	{
-		static $types_str = [
-			'HTTP', 'SOCKS4', 'SOCKS5', 'SOCKS4A', 'SOCKS5_HOSTNAME'
-		];
+
 		$types = [];
-		foreach($types_str as $type_str) {
+		foreach(self::$types_str as $type_str) {
 			if(\defined('CURLPROXY_'.$type_str)) {
 				$types[] = \constant('CURLPROXY_'.$type_str);
 			}

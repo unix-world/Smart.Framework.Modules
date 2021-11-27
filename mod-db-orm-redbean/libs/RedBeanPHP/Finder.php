@@ -153,7 +153,7 @@ class Finder
 	 *    R::genSlots( $users,
 	 *       'SELECT country.* FROM country WHERE id IN ( %s )' ),
 	 *    array_column( $users, 'country_id' ),
-	 *    [Finder::onmap('country', $gebruikers)]
+	 *    [Finder::onmap('country', $users)]
 	 * );
 	 * </code>
 	 *
@@ -327,23 +327,26 @@ class Finder
 	 * Format of criteria set: property => value
 	 * The criteria set also supports OR-conditions: property => array( value1, orValue2 )
 	 *
-	 * @param string $type type of bean to search for
-	 * @param array  $like criteria set describing bean to search for
+	 * @param string  $type type of bean to search for
+	 * @param array   $like criteria set describing bean to search for
+	 * @param boolean $hasBeenCreated set to TRUE if bean has been created
 	 *
 	 * @return OODBBean
 	 */
-	public function findOrCreate( $type, $like = array(), $sql = '' )
+	public function findOrCreate( $type, $like = array(), $sql = '', &$hasBeenCreated = false )
 	{
 			$sql = $this->toolbox->getWriter()->glueLimitOne( $sql );
 			$beans = $this->findLike( $type, $like, $sql );
 			if ( count( $beans ) ) {
 				$bean = reset( $beans );
+				$hasBeenCreated = false;
 				return $bean;
 			}
 
 			$bean = $this->redbean->dispense( $type );
 			$bean->import( $like );
 			$this->redbean->store( $bean );
+			$hasBeenCreated = true;
 			return $bean;
 	}
 

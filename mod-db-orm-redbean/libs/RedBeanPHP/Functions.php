@@ -76,3 +76,40 @@ if ( !function_exists( 'array_flatten' ) ) {
 		return \RedBeanPHP\Facade::flat( $array );
 	}
 }
+
+/**
+ * Function pstr() generates [ $value, \PDO::PARAM_STR ]
+ * Ensures that your parameter is being treated as a string.
+ *
+ * Usage:
+ *
+ * <code>
+ * R::find('book', 'title = ?', [ pstr('1') ]);
+ * </code>
+ */
+if ( !function_exists( 'pstr' ) ) {
+
+	function pstr( $value )
+	{
+		return array( strval( $value ) , \PDO::PARAM_STR );
+	}
+}
+
+
+/**
+ * Function pint() generates [ $value, \PDO::PARAM_INT ]
+ * Ensures that your parameter is being treated as an integer.
+ *
+ * Usage:
+ *
+ * <code>
+ * R::find('book', ' pages > ? ', [ pint(2) ] );
+ * </code>
+ */
+if ( !function_exists( 'pint' ) ) {
+
+	function pint( $value )
+	{
+		return array( intval( $value ) , \PDO::PARAM_INT );
+	}
+}

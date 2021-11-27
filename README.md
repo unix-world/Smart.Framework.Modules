@@ -21,7 +21,6 @@
 	* Dust Templating Engine (by LinkedIn) integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-dust into smart-framework/modules/
 	* Twig Templating Engine (by Symfony): integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-twig into smart-framework/modules/
 	* TYPO3Flow Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-typo3-fluid into smart-framework/modules/
-	* Zend DBAL: PDO based connector for: PgSQL, MySQL and SQLite ; to start use just copy the mod-dbal-zend into smart-framework/modules/
 	* Redbean ORM: an ORM based connector for: PgSQL, MySQL and SQLite ; to start use just copy the mod-db-orm-redbean into smart-framework/modules/
 	* GeoIP: a GeoIP api for PHP using the geoiplookup / geoiplookup6 executables
 	* MediaGallery: a media gallery api for Smart.Framework

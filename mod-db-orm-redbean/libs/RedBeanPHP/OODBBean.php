@@ -477,6 +477,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 *
 	 * @return ArrayIterator
 	 */
+	 #[\ReturnTypeWillChange]
 	public function getIterator()
 	{
 		return new \ArrayIterator( $this->properties );
@@ -1282,6 +1283,22 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	}
 
 	/**
+	 * Returns a value from the data bundle.
+	 * The data bundle might contain additional data send from an SQL query,
+	 * for instance, the total number of rows. If the property cannot be
+	 * found, the default value will be returned. If no default has
+	 * been specified, this method returns NULL.
+	 *
+	 * @param string $key     key
+	 * @param mixed  $default default (defaults to NULL)
+	 *
+	 * @return mixed;
+	 */
+	public function info( $key, $default = NULL ) {
+		return ( isset( $this->__info['data.bundle'][$key] ) ) ? $this->__info['data.bundle'][$key] : $default;
+	}
+
+	/**
 	 * Gets and unsets a meta property.
 	 * Moves a meta property out of the bean.
 	 * This is a short-cut method that can be used instead
@@ -1374,7 +1391,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 			$overrideDontFail = TRUE;
 		}
 
-		if ( !method_exists( $this->__info['model'], $method ) ) {
+		if ( !is_callable( array( $this->__info['model'], $method ) ) ) {
 
 			if ( self::$errorHandlingFUSE === FALSE || $overrideDontFail ) {
 				return NULL;
@@ -1454,6 +1471,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 *
 	 * @return void
 	 */
+	 #[\ReturnTypeWillChange]
 	public function offsetSet( $offset, $value )
 	{
 		$this->__set( $offset, $value );
@@ -1471,6 +1489,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 *
 	 * @return boolean
 	 */
+	 #[\ReturnTypeWillChange]
 	public function offsetExists( $offset )
 	{
 		return $this->__isset( $offset );
@@ -1489,6 +1508,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 *
 	 * @return void
 	 */
+	 #[\ReturnTypeWillChange]
 	public function offsetUnset( $offset )
 	{
 		$this->__unset( $offset );
@@ -1507,6 +1527,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 *
 	 * @return mixed
 	 */
+	 #[\ReturnTypeWillChange]
 	public function &offsetGet( $offset )
 	{
 		return $this->__get( $offset );
@@ -1647,6 +1668,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 *
 	 * @return integer
 	 */
+	 #[\ReturnTypeWillChange]
 	public function count()
 	{
 		return count( $this->properties );
@@ -2223,12 +2245,14 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 * the flavour label attachec to the $coffee bean. This illustrates
 	 * how to use equals() with RedBeanPHP-style enums.
 	 *
-	 * @param OODBBean $bean other bean
+	 * @param OODBBean|null $bean other bean
 	 *
 	 * @return boolean
 	 */
 	public function equals(OODBBean $bean)
 	{
+		if ( is_null($bean) ) return false;
+
 		return (bool) (
 			   ( (string) $this->properties['id'] === (string) $bean->properties['id'] )
 			&& ( (string) $this->__info['type']   === (string) $bean->__info['type']   )
@@ -2252,6 +2276,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 *
 	 * @return array
 	 */
+	 #[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		$json = $this->__call( '@__jsonSerialize', array( ) );

@@ -175,4 +175,20 @@ interface Driver
 	 * @return integer
 	 */
 	public function getQueryCount();
+
+	/**
+	 * Sets initialization code for connection.
+	 *
+	 * @param callable $code code
+	 *
+	 * @return void
+	 */
+	public function setInitCode( $code );
+
+	/**
+	 * Returns the version string from the database server.
+	 *
+	 * @return string
+	 */
+	public function DatabaseServerVersion();
 }

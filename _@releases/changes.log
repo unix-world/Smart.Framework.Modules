@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+November 26, 2021 :: Version 8.7 rev.20211127
+	* PHP 8.1 compatibility fixes
+	* removed deprecated DBAL Zend (cannot achieve compatibility with PHP 8.1+ as many parts need to be rewritten from the scratch ; the Zend DBAL project was abandoned long time ago ...)
+
 June 17, 2021 :: Version 8.7 rev.20210617
 	* upgrade d3.js from v4 to v6 + extra samples + docs
 	* fix leaflet maps js plugin (elevation) to work with new d3.js v6

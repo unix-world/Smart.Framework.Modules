@@ -29,7 +29,7 @@ use RedBeanPHP\Util\Feature;
  * RedBean Facade
  *
  * Version Information
- * RedBean Version @version 5.5
+ * RedBean Version @version 5.7
  *
  * This class hides the object landscape of
  * RedBeanPHP behind a single letter class providing
@@ -49,7 +49,7 @@ class Facade
 	/**
 	 * RedBeanPHP version constant.
 	 */
-	const C_REDBEANPHP_VERSION = '5.5';
+	const C_REDBEANPHP_VERSION = '5.7';
 
 	/**
 	 * @var ToolBox
@@ -206,6 +206,16 @@ class Facade
 	}
 
 	/**
+	 * Returns the version string from the database server.
+	 *
+	 * @return string
+	 */
+	public static function getDatabaseServerVersion()
+	{
+		return self::$adapter->getDatabaseServerVersion();
+	}
+
+	/**
 	 * Tests the database connection.
 	 * Returns TRUE if connection has been established and
 	 * FALSE otherwise. Suppresses any warnings that may
@@ -251,20 +261,22 @@ class Facade
 	 * a connection is really required, for instance when attempting to load
 	 * a bean.
 	 *
-	 * @param string  $dsn      Database connection string
-	 * @param string  $username Username for database
-	 * @param string  $password Password for database
-	 * @param boolean $frozen   TRUE if you want to setup in frozen mode
+	 * @param string  $dsn          Database connection string
+	 * @param string  $username     Username for database
+	 * @param string  $password     Password for database
+	 * @param boolean $frozen       TRUE if you want to setup in frozen mode
+	 * @param boolean $partialBeans TRUE to enable partial bean updates
+	 * @param array   $options      Additional (PDO) options to pass
 	 *
 	 * @return ToolBox
 	 */
-	public static function setup( $dsn = NULL, $username = NULL, $password = NULL, $frozen = FALSE, $partialBeans = FALSE )
+	public static function setup( $dsn = NULL, $username = NULL, $password = NULL, $frozen = FALSE, $partialBeans = FALSE, $options = array() )
 	{
 		if ( is_null( $dsn ) ) {
-			$dsn = 'sqlite:/' . sys_get_temp_dir() . '/red.db';
+			$dsn = 'sqlite:' . DIRECTORY_SEPARATOR . sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'red.db';
 		}
 
-		self::addDatabase( 'default', $dsn, $username, $password, $frozen, $partialBeans );
+		self::addDatabase( 'default', $dsn, $username, $password, $frozen, $partialBeans, $options );
 		self::selectDatabase( 'default' );
 
 		return self::$toolbox;
@@ -392,13 +404,13 @@ class Facade
 	 *
 	 * @return void
 	 */
-	public static function addDatabase( $key, $dsn, $user = NULL, $pass = NULL, $frozen = FALSE, $partialBeans = FALSE )
+	public static function addDatabase( $key, $dsn, $user = NULL, $pass = NULL, $frozen = FALSE, $partialBeans = FALSE, $options = array() )
 	{
 		if ( isset( self::$toolboxes[$key] ) ) {
 			throw new RedException( 'A database has already been specified for this key.' );
 		}
 
-		self::$toolboxes[$key] = self::createToolbox($dsn, $user, $pass, $frozen, $partialBeans);
+		self::$toolboxes[$key] = self::createToolbox($dsn, $user, $pass, $frozen, $partialBeans, $options);
 	}
 
 	/**
@@ -434,13 +446,13 @@ class Facade
 	 *
 	 * @return ToolBox
 	 */
-  public static function createToolbox( $dsn = NULL, $username = NULL, $password = NULL, $frozen = FALSE, $partialBeans = FALSE )
+  public static function createToolbox( $dsn = NULL, $username = NULL, $password = NULL, $frozen = FALSE, $partialBeans = FALSE, $options = array() )
   {
 		if ( is_object($dsn) ) {
 			$db  = new RPDO( $dsn );
 			$dbType = $db->getDatabaseType();
 		} else {
-			$db = new RPDO( $dsn, $username, $password, TRUE );
+			$db = new RPDO( $dsn, $username, $password, $options );
 			$dbType = substr( $dsn, 0, strpos( $dsn, ':' ) );
 		}
 
@@ -468,21 +480,6 @@ class Facade
 		}
 
 		return new ToolBox( $redbean, $adapter, $writer );
-  }
-
-	/**
-	 * Sets PDO attributes for MySQL SSL connection.
-	 *
-	 * @param string $key  path client key i.e. '/etc/mysql/ssl/client-key.pem'
-	 * @param string $cert path client cert i.e. '/etc/mysql/ssl/client-cert.pem'
-	 * @param string $ca   path certifying agent certificate '/etc/mysql/ssl/ca-cert.pem'
-	 * @param string $id   apply to toolbox (default = 'default')
-	 */
-	public static function useMysqlSSL( $key, $cert, $ca, $id = 'default' ) {
-		$pdo = self::$toolboxes[$id]->getDatabaseAdapter()->getDatabase()->getPDO();
-		$pdo->setAttribute( \PDO::MYSQL_ATTR_SSL_KEY,  $key);
-		$pdo->setAttribute( \PDO::MYSQL_ATTR_SSL_CERT,  $cert);
-		$pdo->setAttribute( \PDO::MYSQL_ATTR_SSL_CA,  $ca);
 	}
 
 	/**
@@ -812,7 +809,7 @@ class Facade
 	 * @param string $sql      SQL query to find the desired bean, starting right after WHERE clause
 	 * @param array  $bindings array of values to be bound to parameters in query
 	 *
-	 * @return array
+	 * @return OODBBean|NULL
 	 */
 	public static function findOneForUpdate( $type, $sql = NULL, $bindings = array() )
 	{
@@ -987,6 +984,9 @@ class Facade
 	 * @param string $sql      SQL query to find the desired bean, starting right after WHERE clause
 	 * @param array  $bindings array of values to be bound to parameters in query
 	 * @param string $snippet  SQL snippet to include in query (for example: FOR UPDATE)
+	 *
+	 * @phpstan-param literal-string|null $sql
+	 * @psalm-param   literal-string|null $sql
 	 *
 	 * @return array
 	 */
@@ -1367,7 +1367,7 @@ class Facade
 	 * @param boolean  $pid     for internal usage
 	 * @param array    $filters white list filter with bean types to duplicate
 	 *
-	 * @return array
+	 * @return OODBBean
 	 */
 	public static function dup( $bean, $trail = array(), $pid = FALSE, $filters = array() )
 	{
@@ -1397,7 +1397,7 @@ class Facade
 	 * @param OODBBean $bean  bean to be copied
 	 * @param array    $white white list filter with bean types to duplicate
 	 *
-	 * @return array
+	 * @return OODBBean
 	 */
 	public static function duplicate( $bean, $filters = array() )
 	{
@@ -1469,7 +1469,7 @@ class Facade
 	 *
 	 * <code>
 	 * $rows = R::getAll( 'SELECT FROM... COUNT(*) AS extra_count ...' );
-	 * $beans = R::convertToBeans( $rows );
+	 * $beans = R::convertToBeans( $rows, 'extra_' );
 	 * $bean = reset( $beans );
 	 * $data = $bean->getMeta( 'data.bundle' );
 	 * $extra_count = $data['extra_count'];
@@ -1507,6 +1507,65 @@ class Facade
 		$beans = self::$redbean->convertToBeans( $type, array( $row ), $metamask );
 		$bean  = reset( $beans );
 		return $bean;
+	}
+
+	/**
+	 * Convenience function to 'find' beans from an SQL query.
+	 * Used mostly to obtain a series of beans as well as
+	 * pagination data (to paginate results) and optionally
+	 * other data as well (that should not be considered part of
+	 * a bean).
+	 *
+	 * Example:
+	 *
+	 *  $books = R::findFromSQL('book',"
+	 *  SELECT *, count(*) OVER() AS total
+	 *  FROM book
+	 *  WHERE {$filter}
+	 *  OFFSET {$from} LIMIT {$to} ", ['total']);
+	 *
+	 * This is the same as doing (example uses PostgreSQL dialect):
+	 *
+	 *  $rows = R::getAll("
+	 *  SELECT *, count(*) OVER() AS total
+	 *  FROM book
+	 *  WHERE {$filter}
+	 *  OFFSET {$from} LIMIT {$to}
+	 *  ", $params);
+	 *  $books = R::convertToBeans('book', $rows, ['total']);
+	 *
+	 * The additional data can be obtained using:
+	 *
+	 * $book->info('total');
+	 *
+	 * For further details see R::convertToBeans().
+	 * If you set $autoExtract to TRUE and meta mask is an array,
+	 * an array will be returned containing two nested arrays, the
+	 * first of those nested arrays will contain the meta values
+	 * you requested, the second array will contain the beans.
+	 *
+	 * @param string  $type        Type of bean to produce
+	 * @param string  $sql         SQL query snippet to use
+	 * @param array   $bindings    bindings for query (optional)
+	 * @param mixed   $metamask    meta mask (optional, defaults to 'extra_')
+	 * @param boolean $autoExtract TRUE to return meta mask values as first item of array
+	 *
+	 * @return array
+	 */
+	public static function findFromSQL( $type, $sql, $bindings = array(), $metamask = 'extra_', $autoExtract = false) {
+		$rows = self::query( 'get', $sql, $bindings );
+		$beans = array();
+		if (count($rows)) $beans = self::$redbean->convertToBeans( $type, $rows, $metamask );
+		if ($autoExtract && is_array($metamask)) {
+			$values = array();
+			$firstBean = NULL;
+			if (count($beans)) $firstBean = reset($beans);
+			foreach($metamask as $key) {
+				$values[$key] = ($firstBean) ? $firstBean->info($key) : NULL;
+			}
+			return array( $values, $beans );
+		}
+		return $beans;
 	}
 
 	/**
@@ -2606,12 +2665,13 @@ class Facade
 	 *
 	 * @param string $type type of bean to search for
 	 * @param array  $like criteria set describing the bean to search for
+	 * @param boolean $hasBeenCreated set to TRUE if bean has been created
 	 *
 	 * @return OODBBean
 	 */
-	public static function findOrCreate( $type, $like = array(), $sql = '' )
+	public static function findOrCreate( $type, $like = array(), $sql = '', &$hasBeenCreated = false )
 	{
-		return self::$finder->findOrCreate( $type, $like, $sql = '' );
+		return self::$finder->findOrCreate( $type, $like, $sql = '', $hasBeenCreated );
 	}
 
 	/**
@@ -3137,13 +3197,27 @@ class Facade
 	 * a warning mechanism in case your database does not support this
 	 * functionality.
 	 *
-	 * @param OODBBean $bean     bean to find children of
-	 * @param string   $sql      optional SQL snippet
-	 * @param array    $bindings SQL snippet parameter bindings
+	 * @note:
+	 * You are allowed to use named parameter bindings as well as
+	 * numeric parameter bindings (using the question mark notation).
+	 * However, you can not mix. Also, if using named parameter bindings,
+	 * parameter binding key ':slot0' is reserved for the ID of the bean
+	 * and used in the query.
+	 *
+	 * @note:
+	 * By default, if no select is given or select=TRUE this method will subtract 1 of
+	 * the total count to omit the starting bean. If you provide your own select,
+	 * this method assumes you take control of the resulting total yourself since
+	 * it cannot 'predict' what or how you are trying to 'count'.
+	 *
+	 * @param OODBBean       $bean     bean to find children of
+	 * @param string         $sql      optional SQL snippet
+	 * @param array          $bindings SQL snippet parameter bindings
+	 * @param string|boolean $select   select snippet to use (advanced, optional, see QueryWriter::queryRecursiveCommonTableExpression)
 	 */
-	public static function countChildren( OODBBean $bean, $sql = NULL, $bindings = array() )
+	public static function countChildren( OODBBean $bean, $sql = NULL, $bindings = array(), $select = QueryWriter::C_CTE_SELECT_COUNT )
 	{
-		return self::$tree->countChildren( $bean, $sql, $bindings );
+		return self::$tree->countChildren( $bean, $sql, $bindings, $select );
 	}
 
 	/**
@@ -3156,13 +3230,27 @@ class Facade
 	 * a warning mechanism in case your database does not support this
 	 * functionality.
 	 *
-	 * @param OODBBean $bean     bean to find children of
-	 * @param string   $sql      optional SQL snippet
-	 * @param array    $bindings SQL snippet parameter bindings
+	 * @note:
+	 * You are allowed to use named parameter bindings as well as
+	 * numeric parameter bindings (using the question mark notation).
+	 * However, you can not mix. Also, if using named parameter bindings,
+	 * parameter binding key ':slot0' is reserved for the ID of the bean
+	 * and used in the query.
+	 *
+	 * @note:
+	 * By default, if no select is given or select=TRUE this method will subtract 1 of
+	 * the total count to omit the starting bean. If you provide your own select,
+	 * this method assumes you take control of the resulting total yourself since
+	 * it cannot 'predict' what or how you are trying to 'count'.
+	 *
+	 * @param OODBBean       $bean     bean to find children of
+	 * @param string         $sql      optional SQL snippet
+	 * @param array          $bindings SQL snippet parameter bindings
+	 * @param string|boolean $select   select snippet to use (advanced, optional, see QueryWriter::queryRecursiveCommonTableExpression)
 	 */
-	public static function countParents( OODBBean $bean, $sql = NULL, $bindings = array() )
+	public static function countParents( OODBBean $bean, $sql = NULL, $bindings = array(), $select = QueryWriter::C_CTE_SELECT_COUNT )
 	{
-		return self::$tree->countParents( $bean, $sql, $bindings );
+		return self::$tree->countParents( $bean, $sql, $bindings, $select );
 	}
 
 	/**
@@ -3195,6 +3283,58 @@ class Facade
 	 */
 	public static function noNuke( $yesNo ) {
 		return AQueryWriter::forbidNuke( $yesNo );
+	}
+
+	/**
+	 * Globally available service method for RedBeanPHP.
+	 * Converts a snake cased string to a camel cased string.
+	 * If the parameter is an array, the keys will be converted.
+	 *
+	 * @param string|array $snake snake_cased string to convert to camelCase
+	 * @param boolean $dolphin exception for Ids - (bookId -> bookID)
+	 *                         too complicated for the human mind, only dolphins can understand this
+	 *
+	 * @return string|array
+	 */
+	public static function camelfy( $snake, $dolphin = false )
+	{
+		if ( is_array( $snake ) ) {
+			$newArray = array();
+			foreach( $snake as $key => $value ) {
+				$newKey = self::camelfy( $key, $dolphin );
+				if ( is_array( $value ) ) {
+					$value = self::camelfy( $value, $dolphin );
+				}
+				$newArray[ $newKey ] = $value;
+			}
+			return $newArray;
+		}
+		return AQueryWriter::snakeCamel( $snake, $dolphin );
+	}
+
+	/**
+	 * Globally available service method for RedBeanPHP.
+	 * Converts a camel cased string to a snake cased string.
+	 * If the parameter is an array, the keys will be converted.
+	 *
+	 * @param string|array $camel camelCased string to convert to snake case
+	 *
+	 * @return string|array
+	 */
+	public static function uncamelfy( $camel )
+	{
+		if ( is_array( $camel ) ) {
+			$newArray = array();
+			foreach( $camel as $key => $value ) {
+				$newKey = self::uncamelfy( $key );
+				if ( is_array( $value ) ) {
+					$value = self::uncamelfy( $value );
+				}
+				$newArray[ $newKey ] = $value;
+			}
+			return $newArray;
+		}
+		return AQueryWriter::camelsSnake( $camel );
 	}
 
 	/**

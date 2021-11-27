@@ -21,7 +21,7 @@ define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
  * @ignore
  *
  */
-class SmartAppIndexController extends SmartAbstractAppController {
+class SmartAppIndexController extends SmartAbstractAppController { // r.20211127
 
 	public function Run() {
 
@@ -66,15 +66,16 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		} //end if
 		//--
 		R::freeze(false); // enable create schema on need
-		$book = R::dispense('book');
-		if(R::count('book') >= 5) {
-			R::count('book', ' id > ? ', [0]);
-			$test = R::getAll('SELECT * from book WHERE id > ?', [0]);
+		$tblname = 'readbeantest';
+		$table = R::dispense((string)$tblname);
+		if(R::count((string)$tblname) >= 5) {
+			R::count((string)$tblname, ' id > ? ', [0]);
+			$test = R::getAll('SELECT * from '.$tblname.' WHERE id > ?', [0]);
 		//	print_r($test); die();
 		} else {
-			$book->title = 'Mr.';
-			$book->author = 'Test RedBean';
-			$id = R::store($book);
+			$table->title = 'Mr.';
+			$table->author = 'Test RedBean';
+			$id = R::store($table);
 		} //end if else
 		R::freeze(true); // disable create schema on need (restore as default)
 		R::close();

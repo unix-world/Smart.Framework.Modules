@@ -82,7 +82,7 @@ function autoload__RedbeanOrm_SFM($classname) {
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype, PHP PDO ; classes: \RedbeanOrm\Db
- * @version 	v.20210428
+ * @version 	v.20211127
  * @package 	modules:Database:PDO:Redbean-ORM
  *
  */
@@ -92,7 +92,7 @@ final class ORM extends \RedBeanPHP\Facade {
 
 	private static $conexion = null;
 
-	public static function setup($dsn=null, $username=null, $password=null, $frozen=true, $partialBeans=false) {
+	public static function setup($dsn=null, $username=null, $password=null, $frozen=true, $partialBeans=false, $pdo_options=[]) {
 		//--
 		if(!\function_exists('\\ctype_alnum')) {
 			\Smart::raise_error(__METHOD__.'() # PHP Ctype extension is required but not found ...');
@@ -115,11 +115,12 @@ final class ORM extends \RedBeanPHP\Facade {
 				$conex_usr = (string) (string)$arr_cfg['username'];
 				$conex_pwd = (string) ($arr_cfg['password'] ? \base64_decode((string)$arr_cfg['password']) : '');
 				self::$conexion = parent::setup(
-					(string) $conex_str,
-					(string) $conex_usr,
-					(string) $conex_pwd,
-					(bool)   $frozen,
-					(bool)   $partialBeans
+					(string) $conex_str, 	// DSN
+					(string) $conex_usr, 	// username
+					(string) $conex_pwd, 	// password
+					(bool)   $frozen, 		// frozen
+					(bool)   $partialBeans, // partial beans
+					(array)  $pdo_options 	// additional (PDO) options
 				);
 				break;
 			case 'pgsql:config':
@@ -132,11 +133,12 @@ final class ORM extends \RedBeanPHP\Facade {
 				$conex_usr = (string) $arr_cfg['username'];
 				$conex_pwd = (string) ($arr_cfg['password'] ? \base64_decode((string)$arr_cfg['password']) : '');
 				self::$conexion = parent::setup(
-					(string) $conex_str,
-					(string) $conex_usr,
-					(string) $conex_pwd,
-					(bool)   $frozen,
-					(bool)   $partialBeans
+					(string) $conex_str, 	// DSN
+					(string) $conex_usr, 	// username
+					(string) $conex_pwd, 	// password
+					(bool)   $frozen, 		// frozen
+					(bool)   $partialBeans, // partial beans
+					(array)  $pdo_options 	// additional (PDO) options
 				);
 				break;
 			default: // sqlite:tmp/sample-dbfile.sqlite OR custom DSN
@@ -145,11 +147,12 @@ final class ORM extends \RedBeanPHP\Facade {
 					return false;
 				} //end if
 				self::$conexion = parent::setup(
-					(string) $dsn,
-					$username ? (string)$username : null,
-					$password ? (string)$password : null,
-					(bool) $frozen,
-					(bool) $partialBeans
+					(string) $dsn, 							// DSN
+					$username ? (string)$username : null, 	// username
+					$password ? (string)$password : null, 	// password
+					(bool) $frozen, 						// frozen
+					(bool) $partialBeans, 					// partial beans
+					(array)  $pdo_options 					// additional (PDO) options
 				);
 		} //end switch
 		//--
@@ -183,6 +186,8 @@ final class ORM extends \RedBeanPHP\Facade {
 		$logs = (array) $logger->getLogs();
 		$logger->clear();
 		//--
+		$db_type = (string) parent::getDatabaseAdapter()->getDatabase()->getDatabaseType();
+		//--
 		for($i=0; $i<\Smart::array_size($logs); $i++) {
 			$query = (string) \trim((string)$logs[$i]);
 			$params = (string) \trim((string)$logs[$i+1]);
@@ -200,13 +205,13 @@ final class ORM extends \RedBeanPHP\Facade {
 				} //end if
 			} //end if
 			$affected = '';
-			if(\strpos($logs[$i+2], 'resultset: ') === 0) { // the 3rd column is optional
-				$affected = (string) $logs[$i+2];
+			if(\strpos((string)($logs[$i+2] ?? null), 'resultset: ') === 0) { // the 3rd column is optional
+				$affected = (string) ($logs[$i+2] ?? null);
 				if($affected) {
 					$matches = array();
 					\preg_match_all('/\d+/', (string)$affected, $matches);
 					if(\is_array($matches[0])) {
-						$affected = (string) \trim((string)$matches[0][0]);
+						$affected = (string) \trim((string)($matches[0][0] ?? null));
 					} else {
 						$affected = '';
 					} //end if else
@@ -223,7 +228,7 @@ final class ORM extends \RedBeanPHP\Facade {
 					'params' => (array) $params,
 					'rows' => (string) $affected,
 					'time' => -1,
-					'connection' => '@'
+					'connection' => 'pdo:'.$db_type
 				]);
 			} //end if
 			//--

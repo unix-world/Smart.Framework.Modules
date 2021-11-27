@@ -109,6 +109,56 @@ abstract class AQueryWriter
 	protected static $noNuke = false;
 
 	/**
+	 * Sets a data definition template to change the data
+	 * creation statements per type.
+	 *
+	 * For instance to add  ROW_FORMAT=DYNAMIC to all MySQL tables
+	 * upon creation:
+	 *
+	 * <code>
+	 * $sql = $writer->getDDLTemplate( 'createTable', '*' );
+	 * $writer->setDDLTemplate( 'createTable', '*', $sql . '  ROW_FORMAT=DYNAMIC ' );
+	 * </code>
+	 *
+	 * For property-specific templates set $beanType to:
+	 * account.username -- then the template will only be applied to SQL statements relating
+	 * to that column/property.
+	 *
+	 * @param string $type     ( 'createTable' | 'widenColumn' | 'addColumn' )
+	 * @param string $beanType ( type of bean or '*' to apply to all types )
+	 * @param string $template SQL template, contains %s for slots
+	 *
+	 * @return void
+	 */
+	public function setDDLTemplate( $type, $beanType, $template )
+	{
+		$this->DDLTemplates[ $type ][ $beanType ] = $template;
+	}
+
+	/**
+	 * Returns the specified data definition template.
+	 * If no template can be found for the specified type, the template for
+	 * '*' will be returned instead.
+	 *
+	 * @param string $type     ( 'createTable' | 'widenColumn' | 'addColumn' )
+	 * @param string $beanType ( type of bean or '*' to apply to all types )
+	 * @param string $property specify if you're looking for a property-specific template
+	 *
+	 * @return string
+	 */
+	public function getDDLTemplate( $type, $beanType = '*', $property = NULL )
+	{
+		$key = ( $property ) ? "{$beanType}.{$property}" : $beanType;
+		if ( isset( $this->DDLTemplates[ $type ][ $key ] ) ) {
+			return $this->DDLTemplates[ $type ][ $key ];
+		}
+		if ( isset( $this->DDLTemplates[ $type ][ $beanType ] ) ) {
+			return $this->DDLTemplates[ $type ][ $beanType ];
+		}
+		return $this->DDLTemplates[ $type ][ '*' ];
+	}
+
+	/**
 	 * Toggles support for IS-NULL-conditions.
 	 * If IS-NULL-conditions are enabled condition arrays
 	 * for functions including findLike() are treated so that
@@ -203,13 +253,32 @@ abstract class AQueryWriter
 	 * Globally available service method for RedBeanPHP.
 	 * Converts a camel cased string to a snake cased string.
 	 *
-	 * @param string $camel camelCased string to converty to snake case
+	 * @param string $camel camelCased string to convert to snake case
 	 *
 	 * @return string
 	 */
 	public static function camelsSnake( $camel )
 	{
 		return strtolower( preg_replace( '/(?<=[a-z])([A-Z])|([A-Z])(?=[a-z])/', '_$1$2', $camel ) );
+	}
+
+	/**
+	 * Globally available service method for RedBeanPHP.
+	 * Converts a snake cased string to a camel cased string.
+	 *
+	 * @param string  $snake   snake_cased string to convert to camelCase
+	 * @param boolean $dolphin exception for Ids - (bookId -> bookID)
+	 *                         too complicated for the human mind, only dolphins can understand this
+	 *
+	 * @return string
+	 */
+	public static function snakeCamel( $snake, $dolphinMode = false )
+	{
+		$camel = lcfirst( str_replace(' ', '', ucwords( str_replace('_', ' ', $snake ) ) ) );
+		if ( $dolphinMode ) {
+			$camel = preg_replace( '/(\w)Id$/', '$1ID', $camel );
+		}
+		return $camel;
 	}
 
 	/**
@@ -843,16 +912,16 @@ abstract class AQueryWriter
 	/**
 	 * @see QueryWriter::addColumn
 	 */
-	public function addColumn( $type, $column, $field )
+	public function addColumn( $beanType, $column, $field )
 	{
-		$table  = $type;
+		$table  = $beanType;
 		$type   = $field;
 		$table  = $this->esc( $table );
 		$column = $this->esc( $column );
 
 		$type = ( isset( $this->typeno_sqltype[$type] ) ) ? $this->typeno_sqltype[$type] : '';
 
-		$this->adapter->exec( "ALTER TABLE $table ADD $column $type " );
+		$this->adapter->exec( sprintf( $this->getDDLTemplate('addColumn', $beanType, $column ), $table, $column, $type ) );
 	}
 
 	/**
@@ -1260,7 +1329,8 @@ abstract class AQueryWriter
 
 		$sqlFilterStr = '';
 		if ( count( self::$sqlFilters ) ) {
-			$sqlFilterStr = $this->getSQLFilterSnippet( $destType );
+			$linkType = $this->getAssocTable( array( $sourceType, $destType ) );
+			$sqlFilterStr = $this->getSQLFilterSnippet( "{$linkType}" );
 		}
 
 		if ( $sourceTable === $destTable ) {
@@ -1432,8 +1502,13 @@ abstract class AQueryWriter
 	/**
 	 * @see QueryWriter::queryRecursiveCommonTableExpression
 	 */
-	public function queryRecursiveCommonTableExpression( $type, $id, $up = TRUE, $addSql = NULL, $bindings = array(), $count = FALSE )
+	public function queryRecursiveCommonTableExpression( $type, $id, $up = TRUE, $addSql = NULL, $bindings = array(), $selectForm = FALSE )
 	{
+		if ($selectForm === QueryWriter::C_CTE_SELECT_COUNT) {
+			$selectForm = "count(redbeantree.*)";
+		} elseif ( $selectForm === QueryWriter::C_CTE_SELECT_NORMAL ) {
+			$selectForm = "redbeantree.*";
+		}
 		$alias     = $up ? 'parent' : 'child';
 		$direction = $up ? " {$alias}.{$type}_id = {$type}.id " : " {$alias}.id = {$type}.{$type}_id ";
 		/* allow numeric and named param bindings, if '0' exists then numeric */
@@ -1455,7 +1530,7 @@ abstract class AQueryWriter
 				SELECT {$type}.* FROM {$type}
 				INNER JOIN redbeantree {$alias} ON {$direction}
 			)
-			SELECT ".($count ? "count(redbeantree.*)" : "redbeantree.*" )." FROM redbeantree {$sql};",
+			SELECT {$selectForm} FROM redbeantree {$sql};",
 			$bindings
 		);
 		return $rows;
@@ -1513,7 +1588,7 @@ abstract class AQueryWriter
 
 		$newType = $this->typeno_sqltype[$dataType];
 
-		$this->adapter->exec( "ALTER TABLE $table CHANGE $column $column $newType " );
+		$this->adapter->exec( sprintf( $this->getDDLTemplate( 'widenColumn', $type, $column ), $type, $column, $column, $newType ) );
 
 		return TRUE;
 	}

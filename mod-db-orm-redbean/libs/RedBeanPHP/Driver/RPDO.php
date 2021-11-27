@@ -106,6 +106,11 @@ class RPDO implements Driver
 	protected $initSQL = NULL;
 
 	/**
+	 * @var callable
+	 */
+	protected $initCode = NULL;
+
+	/**
 	 * Binds parameters. This method binds parameters to a PDOStatement for
 	 * Query Execution. This method binds parameters as NULL, INTEGER or STRING
 	 * and supports both named keys and question mark keys.
@@ -166,8 +171,11 @@ class RPDO implements Driver
 		}
 		try {
 			if ( strpos( 'pgsql', $this->dsn ) === 0 ) {
-				//one line because unable to test this otherwise (coverage trick).
-				if ( defined( '\PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT' ) ) { $statement = $this->pdo->prepare( $sql, array( \PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT => TRUE ) ); } else { $statement = $this->pdo->prepare( $sql ); }
+				if (defined('\\PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT')) {
+                 			$statement = @$this->pdo->prepare($sql, array(\PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT => TRUE));
+             			} else {
+                 			$statement = $this->pdo->prepare($sql);
+             			}
 			} else {
 				$statement = $this->pdo->prepare( $sql );
 			}
@@ -181,7 +189,11 @@ class RPDO implements Driver
 					$this->resultArray = array();
 					return $statement;
 				}
-				$this->resultArray = $statement->fetchAll( $fetchStyle );
+				if ( is_null( $fetchStyle) ) {
+					$this->resultArray = $statement->fetchAll();
+				} else {
+					$this->resultArray = $statement->fetchAll( $fetchStyle );
+				}
 				if ( $this->loggingEnabled && $this->logger ) {
 					$this->logger->log( 'resultset: ' . count( $this->resultArray ) . ' rows' );
 				}
@@ -306,7 +318,7 @@ class RPDO implements Driver
 	 *
 	 * @return void
 	 */
-	public function __construct( $dsn, $user = NULL, $pass = NULL )
+	public function __construct( $dsn, $user = NULL, $pass = NULL, $options = array() )
 	{
 		if ( is_object( $dsn ) ) {
 			$this->pdo = $dsn;
@@ -319,6 +331,7 @@ class RPDO implements Driver
 		} else {
 			$this->dsn = $dsn;
 			$this->connectInfo = array( 'pass' => $pass, 'user' => $user );
+			if (is_array($options)) $this->connectInfo['options'] = $options;
 		}
 
 		//PHP 5.3 PDO SQLite has a bug with large numbers:
@@ -417,6 +430,18 @@ class RPDO implements Driver
 	}
 
 	/**
+	 * Sets initialization code to execute upon connecting.
+	 *
+	 * @param callable $code
+	 *
+	 * @return void
+	 */
+	public function setInitCode($code)
+	{
+		$this->initCode= $code;
+	}
+
+	/**
 	 * Establishes a connection to the database using PHP\PDO
 	 * functionality. If a connection has already been established this
 	 * method will simply return directly. This method also turns on
@@ -431,7 +456,11 @@ class RPDO implements Driver
 		try {
 			$user = $this->connectInfo['user'];
 			$pass = $this->connectInfo['pass'];
-			$this->pdo = new \PDO( $this->dsn, $user, $pass );
+			$options = array();
+			if (isset($this->connectInfo['options']) && is_array($this->connectInfo['options'])) {
+				$options = $this->connectInfo['options'];
+			}
+			$this->pdo = new \PDO( $this->dsn, $user, $pass, $options );
 			$this->setEncoding();
 			$this->pdo->setAttribute( \PDO::ATTR_STRINGIFY_FETCHES, $this->stringifyFetches );
 			//cant pass these as argument to constructor, CUBRID driver does not understand...
@@ -442,6 +471,10 @@ class RPDO implements Driver
 			if ( $this->initSQL !== NULL ) {
 				$this->Execute( $this->initSQL );
 				$this->initSQL = NULL;
+			}
+			if ( $this->initCode !== NULL ) {
+				$code = $this->initCode;
+				$code( $this->pdo->getAttribute( \PDO::ATTR_SERVER_VERSION ) );
 			}
 		} catch ( \PDOException $exception ) {
 			$matches = array();
@@ -457,12 +490,58 @@ class RPDO implements Driver
 	 * this method if you are an expert on RedBeanPHP, PDO and UTF8 connections and
 	 * you know your database server VERY WELL.
 	 *
-	 * @param PDO $pdo PDO instance
+	 * - connected     TRUE|FALSE (treat this instance as connected, default: TRUE)
+	 * - setEncoding   TRUE|FALSE (let RedBeanPHP set encoding for you, default: TRUE)
+	 * - setAttributes TRUE|FALSE (let RedBeanPHP set attributes for you, default: TRUE)*
+	 * - setDSNString  TRUE|FALSE (extract DSN string from PDO instance, default: TRUE)
+	 * - stringFetch   TRUE|FALSE (whether you want to stringify fetches or not, default: TRUE)
+	 * - runInitCode   TRUE|FALSE (run init code if any, default: TRUE)
+	 *
+	 * *attributes:
+	 * - RedBeanPHP will ask database driver to throw Exceptions on errors (recommended for compatibility)
+         * - RedBeanPHP will ask database driver to use associative arrays when fetching (recommended for compatibility)
+	 *
+	 * @param PDO     $pdo       PDO instance
+	 * @param array   $options   Options to apply
 	 *
 	 * @return void
 	 */
-	public function setPDO( \PDO $pdo ) {
+	public function setPDO( \PDO $pdo, $options = array() ) {
 		$this->pdo = $pdo;
+
+		$connected     = TRUE;
+		$setEncoding   = TRUE;
+		$setAttributes = TRUE;
+		$setDSNString  = TRUE;
+		$runInitCode   = TRUE;
+		$stringFetch   = TRUE;
+
+		if ( isset($options['connected']) )     $connected     = $options['connected'];
+		if ( isset($options['setEncoding']) )   $setEncoding   = $options['setEncoding'];
+		if ( isset($options['setAttributes']) ) $setAttributes = $options['setAttributes'];
+		if ( isset($options['setDSNString']) )  $setDSNString  = $options['setDSNString'];
+		if ( isset($options['runInitCode']) )   $runInitCode   = $options['runInitCode'];
+		if ( isset($options['stringFetch']) )   $stringFetch   = $options['stringFetch'];
+
+		if ($connected) $this->isConnected = $connected;
+		if ($setEncoding) $this->setEncoding();
+		if ($setAttributes) {
+			$this->pdo->setAttribute( \PDO::ATTR_ERRMODE,\PDO::ERRMODE_EXCEPTION );
+			$this->pdo->setAttribute( \PDO::ATTR_DEFAULT_FETCH_MODE,\PDO::FETCH_ASSOC );
+			$this->pdo->setAttribute( \PDO::ATTR_STRINGIFY_FETCHES, $stringFetch );
+		}
+		if ($runInitCode) {
+			/* run initialisation query if any */
+			if ( $this->initSQL !== NULL ) {
+				$this->Execute( $this->initSQL );
+				$this->initSQL = NULL;
+			}
+			if ( $this->initCode !== NULL ) {
+				$code = $this->initCode;
+				$code( $this->pdo->getAttribute( \PDO::ATTR_SERVER_VERSION ) );
+			}
+		}
+		if ($setDSNString) $this->dsn = $this->getDatabaseType();
 	}
 
 	/**
@@ -699,9 +778,9 @@ class RPDO implements Driver
 	}
 
 	/**
-	 * Returns the version identifier string of the database.
+	 * Returns the version identifier string of the database client.
 	 * This method can be used to identify the currently installed
-	 * database. Note that this method will also establish a connection
+	 * database client. Note that this method will also establish a connection
 	 * (because this is required to obtain the version information).
 	 *
 	 * Example of a version string:
@@ -721,6 +800,9 @@ class RPDO implements Driver
 	 * Note that this is a driver-specific method, not part of the
 	 * driver interface. This method might not be available in other
 	 * drivers since it relies on PDO.
+	 *
+	 * To obtain the database server version, use getDatabaseServerVersion()
+	 * instead.
 	 *
 	 * @return mixed
 	 */
@@ -868,5 +950,17 @@ class RPDO implements Driver
 	public function setInitQuery( $sql ) {
 		$this->initSQL = $sql;
 		return $this;
+	}
+
+	/**
+	 * Returns the version string from the database server.
+	 *
+	 * @return string
+	 */
+	public function DatabaseServerVersion() {
+		//-- #start: fix by unixman
+		$this->connect();
+		//-- #end: fix by unixman
+		return trim( strval( $this->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION) ) );
 	}
 }
