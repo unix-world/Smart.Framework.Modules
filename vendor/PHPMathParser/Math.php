@@ -130,7 +130,8 @@ class Math
 
 	protected function tokenize($string)
 	{
-		$parts = preg_split('((\d+\.?\d+|\+|-|\(|\)|\*|/)|\s+)', $string, null, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+	//	$parts = preg_split('((\d+\.?\d+|\+|-|\(|\)|\*|/)|\s+)', $string, null, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		$parts = preg_split('((\d+\.?\d+|\+|-|\(|\)|\*|/)|\s+)', $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE); // PHP 8.1+ fix (unixman)
 		$parts = array_map('trim', $parts);
 		foreach ($parts as $key => &$value) {
 			//if this is the first token or we've already had an operator or open paren, this is unary

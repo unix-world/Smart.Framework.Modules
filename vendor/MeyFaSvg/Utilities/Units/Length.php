@@ -17,6 +17,13 @@ final class Length
      */
     public static function convert($unit, $viewLength)
     {
+        //-- #fix: PHP 8.1+ fix (unixman)
+        $unit = (string) trim((string)$unit);
+        if((string)$unit == '') {
+            return null;
+        }
+        $matches = [];
+        //-- #end fix
         $regex = '/^([+-]?\d*\.?\d*)(px|pt|pc|cm|mm|in|%)?$/';
         if (!preg_match($regex, $unit, $matches) || $matches[1] === '') {
             return null;

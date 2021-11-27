@@ -42,7 +42,7 @@ if(!defined('SMART_FRAMEWORK_BARCODE_1D_MODE')) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	Smart.Framework
- * @version 	v.20210307
+ * @version 	v.20211127
  * @package 	modules:Barcodes
  *
  */
@@ -492,7 +492,7 @@ final class SmartBarcodes1D {
 					//--
 					$y = \round(($v['p'] * $h / $barcode_arr['maxh']), 3);
 					//--
-					@\imagefilledrectangle($png, $x, $y, ($x + $bw - 1), ($y + $bh - 1), $fgcol); // draw a vertical bar
+					@\imagefilledrectangle($png, (int)$x, (int)$y, (int)($x + $bw - 1), (int)($y + $bh - 1), $fgcol); // draw a vertical bar
 					//--
 				} //end if
 				//--

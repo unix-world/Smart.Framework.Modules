@@ -51,7 +51,7 @@ if(!defined('SMART_FRAMEWORK_BARCODE_2D_OPTS')) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	Smart.Framework
- * @version 	v.20210307
+ * @version 	v.20211127
  * @package 	modules:Barcodes
  *
  */

@@ -72,7 +72,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20211127
  * @package 	modules:Barcodes2D
  *
  */
@@ -771,11 +771,11 @@ final class Barcode2DQRCode {
 			if($col >= $this->rsblocks[0]['dataLength']) {
 				$row += $this->b1;
 			} //end if
-			$ret = $this->rsblocks[$row]['data'][$col];
+			$ret = $this->rsblocks[$row]['data'][(int)$col];
 		} elseif($this->count < $this->dataLength + $this->eccLength) {
 			$row = ($this->count - $this->dataLength) % $this->blocks;
 			$col = ($this->count - $this->dataLength) / $this->blocks;
-			$ret = $this->rsblocks[$row]['ecc'][$col];
+			$ret = $this->rsblocks[$row]['ecc'][(int)$col];
 		} else {
 			return 0;
 		} //end if else
@@ -783,6 +783,7 @@ final class Barcode2DQRCode {
 		$this->count++;
 		//--
 		return $ret;
+		//--
 	} //END FUNCTION
 
 

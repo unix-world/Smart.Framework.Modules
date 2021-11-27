@@ -244,8 +244,12 @@ abstract class SVGNode
      */
     public function getIdAndClassPattern()
     {
-        $id = trim($this->getAttribute('id'));
-        $class = trim($this->getAttribute('class'));
+    //  $id = trim($this->getAttribute('id'));
+    //  $class = trim($this->getAttribute('class'));
+        //-- #fix: PHP 8.1+ fix (unixman)
+        $id = trim((string)$this->getAttribute('id'));
+        $class = trim((string)$this->getAttribute('class'));
+        //-- #end fix
 
         $pattern = '';
         if ($id !== '') {
@@ -269,7 +273,8 @@ abstract class SVGNode
      */
     public function getViewBox()
     {
-        $attr = trim($this->getAttribute('viewBox'));
+    //  $attr = trim($this->getAttribute('viewBox'));
+        $attr = trim((string)$this->getAttribute('viewBox')); // PHP 8.1+ fix (unixman)
         $result = preg_split('/[\s,]+/', $attr);
         if (count($result) !== 4) {
             return null;

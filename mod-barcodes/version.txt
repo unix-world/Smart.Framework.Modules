@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: BarCodes r.20210526 #
+# Smart.Framework.Modules: BarCodes r.20211127 #
 ## Metzli Aztec BarCode (github.head.20191214) ##
 
 // r.8.7 / smart.framework.v.8.7

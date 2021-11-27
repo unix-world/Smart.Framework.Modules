@@ -6,9 +6,10 @@
 
 namespace Dust;
 
-class Dust implements \Serializable {
+//class Dust implements \Serializable {
+class Dust { // unixman
 
-	const VERSION = 'v.0.1.91-r.20210305.sfm'; // github.com/Bloafer/dust-php
+	const VERSION = 'v.0.1.91-r.20211127.sfm'; // github.com/Bloafer/dust-php
 
 	private $parser;
 

@@ -118,7 +118,8 @@ abstract class MultiPassRenderer extends Renderer
     private static function getPaintOrder(SVGNode $context)
     {
         $paintOrder = $context->getComputedStyle('paint-order');
-        $paintOrder = preg_replace('#\s{2,}#', ' ', trim($paintOrder));
+    //  $paintOrder = preg_replace('#\s{2,}#', ' ', trim($paintOrder));
+        $paintOrder = preg_replace('#\s{2,}#', ' ', trim((string)$paintOrder)); // PHP 8.1+ fix (unixman)
 
         $defaultOrder = array('fill', 'stroke', 'markers');
 

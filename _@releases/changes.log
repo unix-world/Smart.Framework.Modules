@@ -3,7 +3,8 @@
 ## This apply only for for Milestone Releases
 
 November 26, 2021 :: Version 8.7 rev.20211127
-	* PHP 8.1 compatibility fixes
+	* PHP 8.1 compatibility fixes for: BarCodes, Dust, Vendor (Math and MeyFaSvg)
+	* Upgrade Twig, Typo3Fluid, Redbean ORM to be PHP 8.1+ ready
 	* removed deprecated DBAL Zend (cannot achieve compatibility with PHP 8.1+ as many parts need to be rewritten from the scratch ; the Zend DBAL project was abandoned long time ago ...)
 
 June 17, 2021 :: Version 8.7 rev.20210617

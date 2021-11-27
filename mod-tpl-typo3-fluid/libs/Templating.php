@@ -46,7 +46,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.20210428
+ * @version 	v.20211127
  * @package 	modules:TemplatingEngine
  *
  */
@@ -54,7 +54,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 
 	// ->
 
-	const FLUID_VERSION = 'master@20210318';
+	const FLUID_VERSION = '2.7.1';
 
 	private $dir;
 	private $t3fluid;

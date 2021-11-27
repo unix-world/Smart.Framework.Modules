@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: Vendor r.20210617 #
+# Smart.Framework.Modules: Vendor r.20211127 #
 
 // r.8.7 / smart.framework.v.8.7
 
