@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP CURL, PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
- * @version 	v.20200708
+ * @version 	v.20211208
  * @package 	extralibs:Network
  *
  */
@@ -721,32 +721,36 @@ final class SmartCurlHttpFtpClient {
 	private function answer($errcode, $errmsg, $result, $url, $ssl_version, $user, $curl_getinfo=array()) {
 		//--
 		return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
-			'client' 		=> (string) __CLASS__,
-			'date-time' 	=> (string) date('Y-m-d H:i:s O'),
-			'protocol' 		=> (string) $this->protocol,
-			'method' 		=> (string) $this->method,
-			'url' 			=> (string) $url,
-			'ssl'			=> (string) $ssl_version,
-			'ssl-ca' 		=> (string) ($this->cafile ? $this->cafile : (defined('SMART_FRAMEWORK_SSL_CA_FILE') ? SMART_FRAMEWORK_SSL_CA_FILE : '')),
-			'auth-user' 	=> (string) $user,
-			'cookies-len' 	=> (int)    Smart::array_size($this->cookies),
-			'post-file' 	=> (string) $this->postfile,
-			'post-vars-len' => (int)    Smart::array_size($this->postvars),
-			'post-str-len' 	=> (int)    strlen($this->poststring),
-			'json-req-len' 	=> (int)    strlen($this->jsonrequest),
-			'xml-req-len' 	=> (int)    strlen($this->xmlrequest),
-			'mode' 			=> (string) trim((string)$this->url_parts['protocol']),
-			'result' 		=> (int)    $result,
-			'code' 			=> (string) $this->status,
-			'headers' 		=> (string) $this->header,
-			'content' 		=> (string) $this->body,
-			'log' 			=> (string) 'User-Agent: '.$this->useragent."\n", // this is reserved for calltime functions
-			'debuglog' 		=> (string) $this->log, // this is for internal use
+			'client' 			=> (string) __CLASS__,
+			'date-time' 		=> (string) date('Y-m-d H:i:s O'),
+			'protocol' 			=> (string) $this->protocol,
+			'method' 			=> (string) $this->method,
+			'url' 				=> (string) $url,
+			'ssl'				=> (string) $ssl_version,
+			'ssl-ca' 			=> (string) ($this->cafile ? $this->cafile : (defined('SMART_FRAMEWORK_SSL_CA_FILE') ? SMART_FRAMEWORK_SSL_CA_FILE : '')),
+			'auth-user' 		=> (string) $user,
+			'cookies-len' 		=> (int)    Smart::array_size($this->cookies),
+			'post-str-len' 		=> (int)    strlen($this->poststring),
+			'post-vars-len' 	=> (int)    Smart::array_size($this->postvars),
+			'post-files-len' 	=> (int)    Smart::array_size($this->postfiles),
+			'put-resource' 		=> (string) Smart::text_cut_by_limit((string)(strlen($this->jsonrequest) ? $this->jsonrequest : (strlen($this->xmlrequest) ? $this->xmlrequest : '')), 255, true, '...'),
+			'put-res-mode' 		=> (string) (strlen($this->jsonrequest) ? 'json' : (strlen($this->xmlrequest) ? 'xml' : '')),
+			'put-body-len' 		=> (int)    (strlen($this->jsonrequest) + strlen($this->xmlrequest)),
+			'mode' 				=> (string) trim((string)($this->url_parts['protocol'] ?? '')),
+			'errmsg' 			=> (string) $errmsg,
+			'result' 			=> (int)    $result,
+			'pre-code' 			=> (string) '', // TODO: if 100-continue, this is the HTTP 1.1 Pre-Status
+			'pre-headers' 		=> (string) '', // TODO: if 100-continue, this is the HTTP 1.1 Pre-Header
+			'redirect-url' 		=> (string) '', // TODO
+			'code' 				=> (string) $this->status,
+			'headers' 			=> (string) $this->header,
+			'content' 			=> (string) $this->body,
+			'log' 				=> (string) 'User-Agent: '.$this->useragent."\n", // this is reserved for calltime functions
+			'debuglog' 			=> (string) $this->log, // this is for internal use
 			//--
-			'curl-errno' 	=> (int)    $errcode,
-			'curl-ermsg' 	=> (string) $errmsg,
-			'curl-proxy' 	=> (array)  $this->cproxy, // the Proxy if Any
-			'curl-info' 	=> (array)  $curl_getinfo // CUSTOM (just for CURL)
+			'curl-proxy' 		=> (array)  $this->cproxy, // the Proxy if Any
+			'curl-errno' 		=> (int)    $errcode,
+			'curl-info' 		=> (array)  $curl_getinfo // CUSTOM (just for CURL)
 		);
 		//--
 	} //END FUNCTION
