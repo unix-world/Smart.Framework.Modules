@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+December 16, 2021 :: Version 8.7 rev.20211216
+	* Fix Cloud WebMail SQLite LIKES
+
 November 26, 2021 :: Version 8.7 rev.20211127
 	* PHP 8.1 compatibility fixes for: BarCodes, Dust, Vendor (Math and MeyFaSvg)
 	* Upgrade Twig, Typo3Fluid, Redbean ORM to be PHP 8.1+ ready

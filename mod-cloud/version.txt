@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: Cloud r.20210830 #
+# Smart.Framework.Modules: Cloud r.20211216 #
 
 // r.8.7 / smart.framework.v.8.7
 

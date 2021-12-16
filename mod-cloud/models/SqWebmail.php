@@ -20,7 +20,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 final class SqWebmail {
 
 	// ->
-	// r.20200420
+	// r.20211216
 
 	private $db;
 	private $version = 'Smart.Cloud.WebMail#r.2020-04-20';
@@ -495,7 +495,7 @@ final class SqWebmail {
 					break;
 				case 'keywds':
 				case 'atts':
-					$where .= ' AND (`'.$srcby.'` LIKE \'%'.$this->db->escape_str((string)$src, 'likes').'%\')';
+					$where .= ' AND (`'.$srcby.'` LIKE \'%'.$this->db->escape_str((string)$src, 'likes').'%\' ESCAPE \''.$this->db->likes_escaper().'\')';
 					break;
 				default:
 					// nothing, leave as is set above
