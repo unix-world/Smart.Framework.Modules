@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+December 28, 2021 :: Version 8.7 rev.20211228
+	* Upgrade Twig
+
 December 16, 2021 :: Version 8.7 rev.20211216
 	* Fix Cloud WebMail SQLite LIKES
 
