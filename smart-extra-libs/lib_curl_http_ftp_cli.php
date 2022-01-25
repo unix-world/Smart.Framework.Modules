@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP CURL, PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
- * @version 	v.20211208
+ * @version 	v.20220125
  * @package 	extralibs:Network
  *
  */
@@ -310,7 +310,7 @@ final class SmartCurlHttpFtpClient {
 			if((string)$proxy['ip:port'] != '') {
 				//--
 				$pxy_type = '';
-				switch((string)strtoupper(trim((string)$proxy['type']))) {
+				switch((string)strtoupper((string)trim((string)$proxy['type']))) {
 					case 'SOCKS4':
 						$is_using_proxy = true;
 						$pxy_type = CURLPROXY_SOCKS4;
@@ -531,6 +531,8 @@ final class SmartCurlHttpFtpClient {
 			//--
 			switch((string)$this->method) {
 				case 'HEAD':
+					@curl_setopt($this->curl, CURLOPT_NOBODY, true);
+					break;
 				case 'GET':
 					break;
 				case 'POST':
@@ -547,10 +549,11 @@ final class SmartCurlHttpFtpClient {
 				@curl_setopt($this->curl, CURLOPT_HTTPHEADER, (array)$this->raw_headers);
 			} //end if
 			//--
-		} else {
+		} else { // is FTP
 			//--
 			switch((string)$this->method) {
 				case 'HEAD':
+					break;
 				case 'GET':
 					break;
 				case 'POST':
@@ -603,7 +606,11 @@ final class SmartCurlHttpFtpClient {
 			//--
 			$is_ok = 1;
 			//--
-			$bw_info = (array) array_change_key_case((array)@curl_getinfo($this->curl), CASE_LOWER);
+			$the_info = @curl_getinfo($this->curl);
+			if(!is_array($the_info)) {
+				$the_info = [];
+			} //end if
+			$bw_info = (array) array_change_key_case((array)$the_info, CASE_LOWER);
 			//--
 			if($is_ftp) {
 				//--
@@ -617,7 +624,11 @@ final class SmartCurlHttpFtpClient {
 				if($hd_len > 0) {
 					//--
 					$this->header = (string) substr((string)$results, 0, $hd_len);
-					$this->body = (string) substr((string)$results, $hd_len);
+					if((string)$this->method == 'HEAD') {
+						$this->body = (string) 'Response Headers:'."\n".'Method HEAD'."\n".$this->header;
+					} else {
+						$this->body = (string) substr((string)$results, $hd_len);
+					} //end if else
 					//--
 				} else {
 					//--

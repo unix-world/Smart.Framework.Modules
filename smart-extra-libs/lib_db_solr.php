@@ -78,7 +78,7 @@ $configs['solr']['slowtime']	= 0.4500;									// 0.0500 .. 0.7500 slow query ti
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartComponents
- * @version 	v.20210429
+ * @version 	v.20220115
  * @package 	extralibs:Database:Solr
  *
  */
@@ -141,18 +141,20 @@ final class SmartSolrDb {
 	 */
 	public function __construct($mode='json', $host='', $port='', $ssl='', $db='', $user='', $password='', $timeout=5, $y_debug_exch_slowtime=0.3300, $y_description='DEFAULT') {
 		//--
-		global $configs;
+		$cfg = (array) Smart::get_from_config('solr', 'array');
 		//--
-		if(((string)$host == '') AND ((string)$port == '') AND ((string)$db == '')) {
-			$mode = (string) $configs['solr']['mode'];
-			$host = (string) $configs['solr']['server-host'];
-			$port = (int) $configs['solr']['server-port'];
-			$ssl = (bool) $configs['solr']['server-ssl'];
-			$db = (string) $configs['solr']['db'];
-			$user = (string) $configs['solr']['username'];
-			$password = (string) base64_decode((string)$configs['solr']['password']);
-			$timeout = (int) $configs['solr']['timeout'];
-			$y_debug_exch_slowtime = (float) $configs['solr']['slowtime'];
+		if(((string)$host == '') AND ((string)$port == '') AND ((string)$db == '') AND (Smart::array_size($cfg) > 0)) {
+			//--
+			$mode 		= (string) ($cfg['mode'] ?? null);
+			$host 		= (string) ($cfg['server-host'] ?? null);
+			$port 		= (int)    ($cfg['server-port'] ?? null);
+			$ssl 		= (bool)   ($cfg['server-ssl'] ?? null);
+			$db 		= (string) ($cfg['db']  ?? null);
+			$user 		= (string) ($cfg['username']  ?? null);
+			$password 	= (string) base64_decode((string)($cfg['password'] ?? null));
+			$timeout 	= (int)    ($cfg['timeout']  ?? null);
+			$y_debug_exch_slowtime = (float) ($cfg['slowtime'] ?? null);
+			//--
 		} //end if
 		//--
 		if((string)$mode != 'xml') { // need to be before raising any errors as it is used in error display
