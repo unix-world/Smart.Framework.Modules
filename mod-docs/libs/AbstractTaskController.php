@@ -54,10 +54,10 @@ abstract class AbstractTaskController extends \SmartModExtLib\AuthAdmins\Abstrac
 			return 'ERROR: Direct Output is not enabled ...';
 		} //end if
 		//--
-		if(\defined('\\SMART_HTML_CLEANER_USE_TIDY')) {
-			return 'ERROR: a constant has been already defined and should not: `SMART_HTML_CLEANER_USE_TIDY` ...';
+		if(\defined('\\SMART_HTML_CLEANER_USE_VALIDATOR')) {
+			return 'ERROR: a constant has been already defined and should not: `SMART_HTML_CLEANER_USE_VALIDATOR` ...';
 		} //end if
-		define('SMART_HTML_CLEANER_USE_TIDY', 'tidy');
+		define('SMART_HTML_CLEANER_USE_VALIDATOR', 'tidy:required');
 		//--
 		ini_set('memory_limit', (string)self::REQ_MAX_MEMORY_SIZE);
 		if((string)ini_get('memory_limit') !== (string)self::REQ_MAX_MEMORY_SIZE) {

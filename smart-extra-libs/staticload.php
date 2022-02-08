@@ -15,9 +15,11 @@ require_once('modules/smart-extra-libs/version.php'); 						// extra libs versio
 //--
 
 //--
-// StaticLoad Extra Libs from (Smart.Framework.Modules), v.20210526
+// StaticLoad Extra Libs from (Smart.Framework.Modules), v.20220204
 //--
 require_once('modules/smart-extra-libs/lib_templating_ext.php'); 			// extended templating
+//--
+require_once('modules/smart-extra-libs/lib_pmarkdown.php'); 				// markdown to html parser, v1, classic (parsedown flavor)
 //--
 require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); 		// curl http/ftp connector
 //--

@@ -940,7 +940,7 @@ final class webmailUtils {
 		//--
 
 		//--
-		$form['htmlbody'] = (string) \trim((string)(new \SmartHtmlParser((string)$form['htmlbody']))->get_clean_html(false)); // clean, without html comments
+		$form['htmlbody'] = (string) \trim((string)(new \SmartHtmlParser((string)$form['htmlbody'], true, 'any:required', false))->get_clean_html(false)); // clean, without html comments
 		if((string)$form['htmlbody'] == '') {
 			return 'Invalid Message';
 		} //end if

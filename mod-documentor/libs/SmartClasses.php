@@ -139,6 +139,7 @@ final class SmartClasses {
 			'\\SmartXmlComposer',
 			'\\SmartHtmlParser',
 			'\\SmartMarkdownToHTML',
+			'\\SmartPMarkdownToHTML',
 			'\\SmartDetectImages',
 			'\\SmartImageGdProcess',
 			'\\SmartCaptcha',

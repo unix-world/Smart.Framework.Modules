@@ -42,8 +42,8 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 	public function Initialize() {
 
 		//--
-		if(defined('SMART_HTML_CLEANER_USE_TIDY')) {
-			$this->PageViewSetErrorStatus(503, 'ERROR: a constant has been already defined and should not: `SMART_HTML_CLEANER_USE_TIDY` ...');
+		if(defined('SMART_HTML_CLEANER_USE_VALIDATOR')) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: a constant has been already defined and should not: `SMART_HTML_CLEANER_USE_VALIDATOR` ...');
 			return;
 		} //end if
 		//--

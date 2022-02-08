@@ -243,7 +243,7 @@ final class HtmlToPdfExport {
 			$y_html_content = (string) $orientation."\n".$y_html_content;
 			//--
 			$y_html_content = (string) \str_replace(['<hr ','<hr>'], ['<hr size="1" noshade ', '<hr size="1" noshade>'], (string)$y_html_content);
-			$y_html_content = (string) (new \SmartHtmlParser((string)$y_html_content))->get_clean_html(); // security fix: cleanup HTML to avoid security issues with the old HTMLDoc
+			$y_html_content = (string) (new \SmartHtmlParser((string)$y_html_content, true, 'any:required:tidy', false))->get_clean_html(); // security fix: cleanup HTML to avoid security issues with the old HTMLDoc
 			if(\stripos($y_html_content, '<html') === false) {
 				$y_html_content = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>PDF</title></head><body>'.$y_html_content.'</body></html>';
 			} //end if

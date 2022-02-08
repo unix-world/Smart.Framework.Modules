@@ -21,7 +21,7 @@ require_once('modules/smart-extra-libs/version.php'); // extra libs version
  * @access 		private
  * @internal
  *
- * @version 	20210526
+ * @version 	20220204
  *
  */
 function autoload__SmartFrameworkModulesExtraLibs($classname) {
@@ -34,11 +34,14 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 	//--
 	switch((string)$classname) {
 		//--
-		//--
 		case 'SmartTypo3FluidTemplating':
 		case 'SmartTwigTemplating':
 		case 'SmartTemplating':
 			require_once('modules/smart-extra-libs/lib_templating_ext.php'); 		// extended templating
+			break;
+		//--
+		case 'SmartPMarkdownToHTML':
+			require_once('modules/smart-extra-libs/lib_pmarkdown.php'); 			// markdown to html parser, v1, classic (parsedown flavor)
 			break;
 		//--
 		case 'SmartCurlHttpFtpClient':

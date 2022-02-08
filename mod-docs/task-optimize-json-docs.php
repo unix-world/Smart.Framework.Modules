@@ -159,7 +159,7 @@ final class SmartAppTaskController extends \SmartModExtLib\Docs\AbstractTaskCont
 				break;
 			} //end if
 			//--
-			$source = (string) (new SmartHtmlParser((string)$source, true, 2, false))->get_clean_html();
+			$source = (string) (new SmartHtmlParser((string)$source, true, 'any:required:tidy', false))->get_clean_html();
 			//--
 			$optimized_arr[(string)$key] = (string) $source;
 			//--

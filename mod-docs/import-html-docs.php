@@ -42,11 +42,11 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 		$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 		$this->PageViewSetCfg('template-file', 'template.htm');
 		//--
-		if(defined('SMART_HTML_CLEANER_USE_TIDY')) {
-			$this->PageViewSetErrorStatus(503, 'ERROR: a constant has been already defined and should not: `SMART_HTML_CLEANER_USE_TIDY` ...');
+		if(defined('SMART_HTML_CLEANER_USE_VALIDATOR')) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: a constant has been already defined and should not: `SMART_HTML_CLEANER_USE_VALIDATOR` ...');
 			return;
 		} //end if
-		define('SMART_HTML_CLEANER_USE_TIDY', 'tidy');
+		define('SMART_HTML_CLEANER_USE_VALIDATOR', 'tidy:required');
 		//--
 		ini_set('memory_limit', (string)self::MAX_MEMORY_SIZE);
 		if((string)ini_get('memory_limit') !== (string)self::MAX_MEMORY_SIZE) {
@@ -115,7 +115,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 						return;
 					} //end if
 					//--
-					$markdown = (string) \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$code, 2, '#!R='.Smart::escape_url((string)$realm).';L='); // prefer tidy
+					$markdown = (string) \SmartModExtLib\Docs\OptimizationUtils::renderDocMarkdown((string)$code, '<validate:html:tidy:required>', '#!R='.Smart::escape_url((string)$realm).';L='); // prefer tidy
 					$code = null; // free mem
 					//--
 					$errors = [];

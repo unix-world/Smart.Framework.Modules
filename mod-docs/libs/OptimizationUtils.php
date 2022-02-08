@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210812
+ * @version 	v.20220207
  * @package 	Docs
  *
  */
@@ -41,6 +41,13 @@ final class OptimizationUtils {
 	public const THE_DOCS_OPT_FILE = 'db.optimized.json'; // {{{SYNC-MOD-DOCS-OPT-FILE}}}
 	public const THE_DOCS_MD_FILE = 'db-md.json'; // {{{SYNC-MOD-DOCS-MARKDOWN-FILE}}}
 	public const THE_DOCS_IDX_FILE = 'index.json';
+
+
+	public static function renderDocMarkdown(?string $markdown_code, ?string $options='<validate:html:tidy>', ?string $relative_url_prefix='', bool $log_render_notices=true) : string {
+		//--
+		return (string) (new \SmartMarkdownToHTML(true, true, false, (string)$options, (string)$relative_url_prefix, (bool)$log_render_notices, null, false))->parse((string)$markdown_code); // C:0
+		//--
+	} //END FUNCTION
 
 
 	public static function convertHtml2Markdown(?string $source) {
@@ -73,7 +80,7 @@ final class OptimizationUtils {
 		} //end if
 		//--
 		$source = (string) \SmartModExtLib\Docs\OptimizationUtils::fixHtml((string)$source, (string)$realm); // document must be re-validated with tidy, it makes some replacements
-		$source = (string) (new \SmartHtmlParser((string)$source, true, 2, false))->get_clean_html(); // prefer Tidy here, it is more safe for untrusted inputs ...
+		$source = (string) (new \SmartHtmlParser((string)$source, true, 'any:required:tidy', false))->get_clean_html(); // prefer Tidy here, it is more safe for untrusted inputs ...
 		//--
 		return (array) \SmartModExtLib\Docs\OptimizationUtils::validateSvgAndImagesCompressToWebp((string)$source, (string)$prefix_url);
 		//--
@@ -87,7 +94,7 @@ final class OptimizationUtils {
 			return '';
 		} //end if
 		//--
-		$source = (string) (new \SmartHtmlParser((string)$source, false, 2, false))->get_clean_html(); // do not use signature here ; // prefer Tidy here, it is more safe for untrusted inputs ...
+		$source = (string) (new \SmartHtmlParser((string)$source, false, 'any:required:tidy', false))->get_clean_html(); // do not use signature here ; // prefer Tidy here, it is more safe for untrusted inputs ...
 		//--
 		$realm = (array) explode('/', (string)$realm);
 		$realm = (string) ($realm[0] ?? '');
@@ -310,7 +317,7 @@ final class OptimizationUtils {
 		$source = '<!-- ['.\Smart::escape_html((string)__FUNCTION__.': ALL#'.(int)$all_processed_num.' ; IMG#'.(int)$img_processed_num.' ; SVG#'.(int)$svgs_processed_num.' ; INVALID#'.(int)$invalid_processed_num.' ; DISABLED#'.(int)\Smart::array_size($urls_disabled).' :: '.' OriginalSize='.(int)$original_size.' ; CurrentSize='.(int)\strlen((string)$source)).'] -->'."\n".$source;
 		//--
 		if((string)$post_processing_checksum != (string)$original_checksum) {
-			$source = (string) (new \SmartHtmlParser((string)$source, true, 2, false))->get_clean_html();
+			$source = (string) (new \SmartHtmlParser((string)$source, true, 'any:required:tidy', false))->get_clean_html();
 		} //end if
 		//--
 		$out['urls-disabled'] 		= (array) $urls_disabled;
