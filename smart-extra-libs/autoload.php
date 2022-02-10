@@ -21,7 +21,7 @@ require_once('modules/smart-extra-libs/version.php'); // extra libs version
  * @access 		private
  * @internal
  *
- * @version 	20220204
+ * @version 	20220210
  *
  */
 function autoload__SmartFrameworkModulesExtraLibs($classname) {
@@ -44,6 +44,9 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 			require_once('modules/smart-extra-libs/lib_pmarkdown.php'); 			// markdown to html parser, v1, classic (parsedown flavor)
 			break;
 		//--
+		case 'SmartFtpClient':
+			require_once('modules/smart-extra-libs/lib_ftp_cli.php');				// ftp client
+			break;
 		case 'SmartCurlHttpFtpClient':
 			require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); 	// curl http/ftp connector
 			break;

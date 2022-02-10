@@ -47,7 +47,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartParser
  * @version 	v.20220207
- * @package 	Plugins:ConvertersAndParsers
+ * @package 	extralibs:Network
  *
  * <code>
  * $markdown = new SmartPMarkdownToHTML();
