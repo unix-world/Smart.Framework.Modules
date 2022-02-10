@@ -772,17 +772,10 @@ The Javascript version of this class is available in modules/mod-js-components/v
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
-<br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>
-&nbsp;</span><span style="color: #FFFFFF">$myString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">&#39;Some&nbsp;string&nbsp;to&nbsp;archive&nbsp;as&nbsp;LZS&#39;</span><span style="color: #FFCC00; font-weight: bold">;<br>
-&nbsp;</span><span style="color: #FFFFFF">$archString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">\SmartModExtLib\JsComponents\ArchLzs</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">compressToBase64</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$myString</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;archive&nbsp;the&nbsp;string<br>
-&nbsp;</span><span style="color: #FFFFFF">$unarchString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">\SmartModExtLib\JsComponents\ArchLzs</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">decompressFromBase64</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$archString</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;unarchive&nbsp;it&nbsp;back<br>
-&nbsp;</span><span style="color: #FFCC00; font-weight: bold">if((string)</span><span style="color: #FFFFFF">$unarchString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">!==&nbsp;(string)</span><span style="color: #FFFFFF">$myString</span><span style="color: #FFCC00; font-weight: bold">)&nbsp;{&nbsp;</span><span style="color: #999999">//&nbsp;Test:&nbsp;check&nbsp;if&nbsp;unarchive&nbsp;is&nbsp;the&nbsp;same&nbsp;as&nbsp;archive<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">@</span><span style="color: #FFFFFF">http_response_code</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">500</span><span style="color: #FFCC00; font-weight: bold">);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;die(</span><span style="color: #5F9CCE">&#39;LZS&nbsp;Archive&nbsp;test&nbsp;Failed&nbsp;!&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
-&nbsp;}&nbsp;</span><span style="color: #999999">//end&nbsp;if<br>
-<br>
-//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">$myString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">'Some&nbsp;string&nbsp;to&nbsp;archive&nbsp;as&nbsp;LZS'</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;</span><span style="color: #FFFFFF">$archString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">\SmartModExtLib\JsComponents\ArchLzs</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">compressToBase64</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$myString</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;archive&nbsp;the&nbsp;string<br>&nbsp;</span><span style="color: #FFFFFF">$unarchString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">\SmartModExtLib\JsComponents\ArchLzs</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">decompressFromBase64</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$archString</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;unarchive&nbsp;it&nbsp;back<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">if((string)</span><span style="color: #FFFFFF">$unarchString&nbsp;</span><span style="color: #FFCC00; font-weight: bold">!==&nbsp;(string)</span><span style="color: #FFFFFF">$myString</span><span style="color: #FFCC00; font-weight: bold">)&nbsp;{&nbsp;</span><span style="color: #999999">//&nbsp;Test:&nbsp;check&nbsp;if&nbsp;unarchive&nbsp;is&nbsp;the&nbsp;same&nbsp;as&nbsp;archive<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">@</span><span style="color: #FFFFFF">http_response_code</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">500</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;die(</span><span style="color: #5F9CCE">'LZS&nbsp;Archive&nbsp;test&nbsp;Failed&nbsp;!'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;}&nbsp;</span><span style="color: #999999">//end&nbsp;if<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+</span>
+</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -844,13 +837,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:45:24 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:31:25 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
 </center></div>
 </body>
 </html>

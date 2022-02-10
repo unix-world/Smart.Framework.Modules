@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20210525
+ * @version 	v.20220210
  * @package 	Documentor
  *
  */
@@ -139,7 +139,6 @@ final class SmartClasses {
 			'\\SmartXmlComposer',
 			'\\SmartHtmlParser',
 			'\\SmartMarkdownToHTML',
-			'\\SmartPMarkdownToHTML',
 			'\\SmartDetectImages',
 			'\\SmartImageGdProcess',
 			'\\SmartCaptcha',
@@ -147,7 +146,6 @@ final class SmartClasses {
 			'\\SmartSVGCaptcha',
 			'\\SmartQR2DBarcode',
 			'\\SmartViewHtmlHelpers',
-			'\\SmartFtpClient',
 			'\\SmartRedisDb',
 			'\\SmartSQliteDb',
 			'\\SmartDbaUtilDb',
@@ -193,11 +191,13 @@ final class SmartClasses {
 			'\\SmartModExtLib\\TplTwig\\SmartTwigTemplating',
 			'\\SmartModExtLib\\TplTypo3Fluid\\SmartTypo3FluidTemplating',
 			//--
+			'\\SmartPMarkdownToHTML',
+			//--
 			'\\SmartSolrDb',
 			'\\SmartAbstractPgsqlExtDb', // dev
-			'\\SmartModExtLib\\DbalZend\\DbalPdo',
 			'\\SmartModExtLib\\DbOrmRedbean\\ORM',
 			//--
+			'\\SmartFtpClient',
 			'\\SmartCurlHttpFtpClient',
 			'\\SmartModExtLib\\Soap\\SoapServerRequestHandler',
 			//--

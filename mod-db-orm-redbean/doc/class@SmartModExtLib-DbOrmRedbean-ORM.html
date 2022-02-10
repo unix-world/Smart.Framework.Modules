@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartModExtLib\DbOrmRedbean\ORM        final class \SmartModExtLib\DbOrmRedbean\ ORM  extends \RedBeanPHP\Facade   {   } ::    Class:">
-<meta name="keywords" content="smartmodextlib dbormredbean orm, final, class, smartmodextlib dbormredbean, orm, extends, redbeanphp facade, provides, a, general, database, adapter, using, readbean, as, module, for, smart.framework, that, supports, the, following, drivers, such, sqlite, mysqli, postgresql, and, pdo sqlite, mysql, if, you, wish, to, use, an, in, your, projects, instead, of, direct, ones, supported, directly, by, this, is, good, solution, language, php, located, at, modules mod-db-orm-redbean libs orm.php, package, modules:database:pdo:redbean-orm, namespace, name, version, v.20210428, depends, extensions, ctype, pdo, classes, redbeanorm db, usage, dynamic, object, new, class method, only, methods, inheritance, chart, →, ↳, public, static, function, setup, string, dsn, null, username, password, boolean, frozen, true, partialbeans, false, toolbox, reimplemented, over, return, param">
+<meta name="keywords" content="smartmodextlib dbormredbean orm, final, class, smartmodextlib dbormredbean, orm, extends, redbeanphp facade, provides, a, general, database, adapter, using, readbean, as, module, for, smart.framework, that, supports, the, following, drivers, such, sqlite, mysqli, postgresql, and, pdo sqlite, mysql, if, you, wish, to, use, an, in, your, projects, instead, of, direct, ones, supported, directly, by, this, is, good, solution, language, php, located, at, modules mod-db-orm-redbean libs orm.php, package, modules:database:pdo:redbean-orm, namespace, name, version, v.20211127, depends, extensions, ctype, pdo, classes, redbeanorm db, usage, dynamic, object, new, class method, only, methods, inheritance, chart, →, ↳, public, static, function, setup, string, dsn, null, username, password, boolean, frozen, true, partialbeans, false, pdo options, toolbox, reimplemented, over, return">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartModExtLib\DbOrmRedbean\ORM</title>
@@ -704,7 +704,7 @@ If you wish to use an ORM in your projects instead of the direct ones supported 
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\DbOrmRedbean\</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> ORM</span></li>
 		
-		<li><b>Version:</b> v.20210428</li>
+		<li><b>Version:</b> v.20211127</li>
 		<li><b>Depends:</b> extensions:  PHP Ctype, PHP PDO ; classes: \RedbeanOrm\Db</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -731,7 +731,8 @@ If you wish to use an ORM in your projects instead of the direct ones supported 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$username` Parameter is OPTIONAL, with the Default Value: null">$username</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$password` Parameter is OPTIONAL, with the Default Value: null">$password</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
 			<i>boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$frozen` Parameter is OPTIONAL, with the Default Value: true">$frozen</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$partialBeans` Parameter is OPTIONAL, with the Default Value: false">$partialBeans</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+			<i>boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$partialBeans` Parameter is OPTIONAL, with the Default Value: false">$partialBeans</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$pdo_options` Parameter is OPTIONAL, with the Default Value: []">$pdo_options</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ToolBox
@@ -741,7 +742,9 @@ If you wish to use an ORM in your projects instead of the direct ones supported 
 @param: {string} $dsn: Database connection string<br>
 @param: {string} $username: Username for database<br>
 @param: {string} $password: Password for database<br>
-@param: {boolean} $frozen: TRUE if you want to setup in frozen mode</div>
+@param: {boolean} $frozen: TRUE if you want to setup in frozen mode<br>
+@param: {boolean} $partialBeans: TRUE to enable partial bean updates<br>
+@param: {array} $options: Additional (PDO) options to pass</div>
 	
 			<div class="doc-method-comments">Kickstarts redbean for you. This method should be called before you start using<br>
 RedBeanPHP. The Setup() method can be called without any arguments, in this case it will<br>
@@ -798,6 +801,19 @@ flag.</div>
 The RedBeanPHP version string always has the same format &quot;X.Y&quot;<br>
 where X is the major version number and Y is the minor version number.<br>
 Point releases are not mentioned in the version string.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--getDatabaseServerVersion">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getDatabaseServerVersion</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;string
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
+	
+			<div class="doc-method-ret-params">@return: {string}</div>
+	
+			<div class="doc-method-comments">Returns the version string from the database server.</div>
 	
 	
 	
@@ -933,7 +949,8 @@ Example:</div>
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$user` Parameter is OPTIONAL, with the Default Value: null">$user</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
 			<i>NULL|string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$pass` Parameter is OPTIONAL, with the Default Value: null">$pass</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
 			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$frozen` Parameter is OPTIONAL, with the Default Value: false">$frozen</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$partialBeans` Parameter is OPTIONAL, with the Default Value: false">$partialBeans</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$partialBeans` Parameter is OPTIONAL, with the Default Value: false">$partialBeans</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$options` Parameter is OPTIONAL, with the Default Value: []">$options</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;void
@@ -966,7 +983,8 @@ to the facade. Adding a database with the same key will cause an exception.</div
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$username` Parameter is OPTIONAL, with the Default Value: null">$username</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$password` Parameter is OPTIONAL, with the Default Value: null">$password</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
 			<i>boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$frozen` Parameter is OPTIONAL, with the Default Value: false">$frozen</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$partialBeans` Parameter is OPTIONAL, with the Default Value: false">$partialBeans</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$partialBeans` Parameter is OPTIONAL, with the Default Value: false">$partialBeans</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$options` Parameter is OPTIONAL, with the Default Value: []">$options</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ToolBox
@@ -1000,26 +1018,6 @@ a connection is really required, for instance when attempting to load a bean.</d
  R::createToolbox( <span class="hljs-string">'mysql:host=localhost;dbname=mydatabase'</span>, <span class="hljs-string">'dba'</span>, <span class="hljs-string">'dbapassword'</span> );
 
 <span class="hljs-comment">// #end php code</span></code></pre>
-	
-	
-</div><div class="doc-container" id="Method--useMysqlSSL">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>useMysqlSSL</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cert` Parameter is REQUIRED">$cert</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ca` Parameter is REQUIRED">$ca</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$id` Parameter is OPTIONAL, with the Default Value: &quot;default&quot;">$id</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;default&quot;</b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
-	
-			<div class="doc-method-ret-params">@param: {string} $key: path client key i.e. '/etc/mysql/ssl/client-key.pem'<br>
-@param: {string} $cert: path client cert i.e. '/etc/mysql/ssl/client-cert.pem'<br>
-@param: {string} $ca: path certifying agent certificate '/etc/mysql/ssl/ca-cert.pem'<br>
-@param: {string} $id: apply to toolbox (default = 'default')</div>
-	
-			<div class="doc-method-comments">Sets PDO attributes for MySQL SSL connection.</div>
-	
 	
 	
 </div><div class="doc-container" id="Method--hasDatabase">
@@ -1343,10 +1341,10 @@ Usage:</div>
 			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bindings` Parameter is OPTIONAL, with the Default Value: []">$bindings</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;array
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;OODBBean|NULL
 	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
 	
-			<div class="doc-method-ret-params">@return: {array}<br>
+			<div class="doc-method-ret-params">@return: {OODBBean|NULL}<br>
 @param: {string} $type: the type of bean you are looking for<br>
 @param: {string} $sql: SQL query to find the desired bean, starting right after WHERE clause<br>
 @param: {array} $bindings: array of values to be bound to parameters in query</div>
@@ -1950,10 +1948,10 @@ functionality. Alias for R::getAdapter()-&gt;getInsertID().</div>
 			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$filters` Parameter is OPTIONAL, with the Default Value: []">$filters</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;array
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;OODBBean
 	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
 	
-			<div class="doc-method-ret-params">@return: {array}<br>
+			<div class="doc-method-ret-params">@return: {OODBBean}<br>
 @param: {OODBBean} $bean: bean to be copied<br>
 @param: {array} $trail: for internal usage, pass array()<br>
 @param: {boolean} $pid: for internal usage<br>
@@ -1982,10 +1980,10 @@ only accepts two arguments: bean and filters.</div>
 			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$filters` Parameter is OPTIONAL, with the Default Value: []">$filters</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;array
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;OODBBean
 	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
 	
-			<div class="doc-method-ret-params">@return: {array}<br>
+			<div class="doc-method-ret-params">@return: {OODBBean}<br>
 @param: {OODBBean} $bean: bean to be copied<br>
 @param: {array} $white: white list filter with bean types to duplicate</div>
 	
@@ -2090,7 +2088,7 @@ transferred to the meta section of the bean under key 'data.bundle'.</div>
  $beans = R::convertToBeans( $rows );
 
 $rows = R::getAll( <span class="hljs-string">'SELECT FROM... COUNT(*) AS extra_count ...'</span> );
- $beans = R::convertToBeans( $rows );
+ $beans = R::convertToBeans( $rows, <span class="hljs-string">'extra_'</span> );
  $bean = reset( $beans );
  $data = $bean-&gt;getMeta( <span class="hljs-string">'data.bundle'</span> );
  $extra_count = $data[<span class="hljs-string">'extra_count'</span>];
@@ -2114,6 +2112,54 @@ $rows = R::getAll( <span class="hljs-string">'SELECT FROM... COUNT(*) AS extra_c
 @param: {string} $metamask: metamask (see convertToBeans)</div>
 	
 			<div class="doc-method-comments">Just like converToBeans, but for one bean.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--findFromSQL">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>findFromSQL</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$type` Parameter is REQUIRED">$type</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$sql` Parameter is REQUIRED">$sql</span></b></span>, 
+			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bindings` Parameter is OPTIONAL, with the Default Value: []">$bindings</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+			<i>mixed</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$metamask` Parameter is OPTIONAL, with the Default Value: &quot;extra_&quot;">$metamask</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;extra_&quot;</b></span>, 
+			<i>boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$autoExtract` Parameter is OPTIONAL, with the Default Value: false">$autoExtract</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;array
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
+	
+			<div class="doc-method-ret-params">@return: {array}<br>
+@param: {string} $type: Type of bean to produce<br>
+@param: {string} $sql: SQL query snippet to use<br>
+@param: {array} $bindings: bindings for query (optional)<br>
+@param: {mixed} $metamask: meta mask (optional, defaults to 'extra_')<br>
+@param: {boolean} $autoExtract: TRUE to return meta mask values as first item of array</div>
+	
+			<div class="doc-method-comments">Convenience function to 'find' beans from an SQL query.<br>
+Used mostly to obtain a series of beans as well as<br>
+pagination data (to paginate results) and optionally<br>
+other data as well (that should not be considered part of<br>
+a bean).<br>
+Example:<br>
+$books = R::findFromSQL('book',&quot;<br>
+SELECT *, count(*) OVER() AS total<br>
+FROM book<br>
+WHERE {$filter}<br>
+OFFSET {$from} LIMIT {$to} &quot;, ['total']);<br>
+This is the same as doing (example uses PostgreSQL dialect):<br>
+$rows = R::getAll(&quot;<br>
+SELECT *, count(*) OVER() AS total<br>
+FROM book<br>
+WHERE {$filter}<br>
+OFFSET {$from} LIMIT {$to}<br>
+&quot;, $params);<br>
+$books = R::convertToBeans('book', $rows, ['total']);<br>
+The additional data can be obtained using:<br>
+$book-&gt;info('total');<br>
+For further details see R::convertToBeans().<br>
+If you set $autoExtract to TRUE and meta mask is an array,<br>
+an array will be returned containing two nested arrays, the<br>
+first of those nested arrays will contain the meta values<br>
+you requested, the second array will contain the beans.</div>
 	
 	
 	
@@ -3266,7 +3312,8 @@ will return a 'page' bean.</div>
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>findOrCreate</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$type` Parameter is REQUIRED">$type</span></b></span>, 
 			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$like` Parameter is OPTIONAL, with the Default Value: []">$like</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$sql` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$sql</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$sql` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$sql</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+			<i>boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$hasBeenCreated` Parameter is OPTIONAL, with the Default Value: false">$hasBeenCreated</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;OODBBean
@@ -3274,7 +3321,8 @@ will return a 'page' bean.</div>
 	
 			<div class="doc-method-ret-params">@return: {OODBBean}<br>
 @param: {string} $type: type of bean to search for<br>
-@param: {array} $like: criteria set describing the bean to search for</div>
+@param: {array} $like: criteria set describing the bean to search for<br>
+@param: {boolean} $hasBeenCreated: set to TRUE if bean has been created</div>
 	
 			<div class="doc-method-comments">Tries to find a bean matching a certain type and<br>
 criteria set. If no beans are found a new bean<br>
@@ -3834,7 +3882,8 @@ functionality.</div>
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countChildren</b></span>&nbsp;(
 				<i>RedBeanPHP\OODBBean</i>&nbsp;<span class="doc-param-name"><b><span title="`$bean` Parameter is REQUIRED">$bean</span></b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$sql` Parameter is OPTIONAL, with the Default Value: null">$sql</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
-			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bindings` Parameter is OPTIONAL, with the Default Value: []">$bindings</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bindings` Parameter is OPTIONAL, with the Default Value: []">$bindings</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+			<i>string|boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$select` Parameter is OPTIONAL, with the Default Value: RedBeanPHP\QueryWriter::C_CTE_SELECT_COUNT">$select</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>RedBeanPHP\QueryWriter::C_CTE_SELECT_COUNT</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
@@ -3842,14 +3891,24 @@ functionality.</div>
 	
 			<div class="doc-method-ret-params">@param: {OODBBean} $bean: bean to find children of<br>
 @param: {string} $sql: optional SQL snippet<br>
-@param: {array} $bindings: SQL snippet parameter bindings</div>
+@param: {array} $bindings: SQL snippet parameter bindings<br>
+@param: {string|boolean} $select: select snippet to use (advanced, optional, see QueryWriter::queryRecursiveCommonTableExpression)</div>
 	
 			<div class="doc-method-comments">Given a bean and an optional SQL snippet,<br>
 this method will count all child beans in a hierarchically structured<br>
 bean table.<br>
 at least MariaDB 10.2.2 or Postgres. This method does not include<br>
 a warning mechanism in case your database does not support this<br>
-functionality.</div>
+functionality.<br>
+You are allowed to use named parameter bindings as well as<br>
+numeric parameter bindings (using the question mark notation).<br>
+However, you can not mix. Also, if using named parameter bindings,<br>
+parameter binding key ':slot0' is reserved for the ID of the bean<br>
+and used in the query.<br>
+By default, if no select is given or select=TRUE this method will subtract 1 of<br>
+the total count to omit the starting bean. If you provide your own select,<br>
+this method assumes you take control of the resulting total yourself since<br>
+it cannot 'predict' what or how you are trying to 'count'.</div>
 	
 	
 	
@@ -3857,7 +3916,8 @@ functionality.</div>
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countParents</b></span>&nbsp;(
 				<i>RedBeanPHP\OODBBean</i>&nbsp;<span class="doc-param-name"><b><span title="`$bean` Parameter is REQUIRED">$bean</span></b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$sql` Parameter is OPTIONAL, with the Default Value: null">$sql</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
-			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bindings` Parameter is OPTIONAL, with the Default Value: []">$bindings</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bindings` Parameter is OPTIONAL, with the Default Value: []">$bindings</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+			<i>string|boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$select` Parameter is OPTIONAL, with the Default Value: RedBeanPHP\QueryWriter::C_CTE_SELECT_COUNT">$select</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>RedBeanPHP\QueryWriter::C_CTE_SELECT_COUNT</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
@@ -3865,14 +3925,24 @@ functionality.</div>
 	
 			<div class="doc-method-ret-params">@param: {OODBBean} $bean: bean to find children of<br>
 @param: {string} $sql: optional SQL snippet<br>
-@param: {array} $bindings: SQL snippet parameter bindings</div>
+@param: {array} $bindings: SQL snippet parameter bindings<br>
+@param: {string|boolean} $select: select snippet to use (advanced, optional, see QueryWriter::queryRecursiveCommonTableExpression)</div>
 	
 			<div class="doc-method-comments">Given a bean and an optional SQL snippet,<br>
 this method will count all parent beans in a hierarchically structured<br>
 bean table.<br>
 at least MariaDB 10.2.2 or Postgres. This method does not include<br>
 a warning mechanism in case your database does not support this<br>
-functionality.</div>
+functionality.<br>
+You are allowed to use named parameter bindings as well as<br>
+numeric parameter bindings (using the question mark notation).<br>
+However, you can not mix. Also, if using named parameter bindings,<br>
+parameter binding key ':slot0' is reserved for the ID of the bean<br>
+and used in the query.<br>
+By default, if no select is given or select=TRUE this method will subtract 1 of<br>
+the total count to omit the starting bean. If you provide your own select,<br>
+this method assumes you take control of the resulting total yourself since<br>
+it cannot 'predict' what or how you are trying to 'count'.</div>
 	
 	
 	
@@ -3913,6 +3983,43 @@ functionality.</div>
 			<div class="doc-method-comments">Toggles support for nuke().<br>
 Can be used to turn off the nuke() feature for security reasons.<br>
 Returns the old flag value.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--camelfy">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>camelfy</b></span>&nbsp;(
+				<i>string|array</i>&nbsp;<span class="doc-param-name"><b><span title="`$snake` Parameter is REQUIRED">$snake</span></b></span>, 
+			<i>boolean</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$dolphin` Parameter is OPTIONAL, with the Default Value: false">$dolphin</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;string|array
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
+	
+			<div class="doc-method-ret-params">@return: {string|array}<br>
+@param: {string|array} $snake: snake_cased string to convert to camelCase<br>
+@param: {boolean} $dolphin: exception for Ids - (bookId -&gt; bookID)</div>
+	
+			<div class="doc-method-comments">Globally available service method for RedBeanPHP.<br>
+Converts a snake cased string to a camel cased string.<br>
+If the parameter is an array, the keys will be converted.<br>
+too complicated for the human mind, only dolphins can understand this</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--uncamelfy">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>uncamelfy</b></span>&nbsp;(
+				<i>string|array</i>&nbsp;<span class="doc-param-name"><b><span title="`$camel` Parameter is REQUIRED">$camel</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;string|array
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\RedBeanPHP\Facade</b></span>
+	
+			<div class="doc-method-ret-params">@return: {string|array}<br>
+@param: {string|array} $camel: camelCased string to convert to snake case</div>
+	
+			<div class="doc-method-comments">Globally available service method for RedBeanPHP.<br>
+Converts a camel cased string to a snake cased string.<br>
+If the parameter is an array, the keys will be converted.</div>
 	
 	
 	
@@ -4013,7 +4120,7 @@ intercept static calls and route them to the specified plugin.</div>
 </div>
 <!-- constants r.20200121 -->
 <div class="doc-container" id="Constant--C_REDBEANPHP_VERSION">
-	<span class="doc-modifiers">public</span> <i>const</i> <b>C_REDBEANPHP_VERSION</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;5.5&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	<span class="doc-modifiers">public</span> <i>const</i> <b>C_REDBEANPHP_VERSION</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;5.7&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
 			<div class="doc-method-comments">RedBeanPHP version constant.</div>
 	
 </div>
@@ -4023,21 +4130,10 @@ intercept static calls and route them to the specified plugin.</div>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
-<br></span><span style="color: #FFCC00; font-weight: bold">use&nbsp;</span><span style="color: #FFFFFF">\SmartModExtLib\DbOrmRedbean\ORM&nbsp;</span><span style="color: #FFCC00; font-weight: bold">as&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">;<br>
-<br>
-&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">setup</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;sqlite:tmp/redbean-dbfile.sqlite&#39;</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;use&nbsp;a&nbsp;custom&nbsp;sqlite&nbsp;database&nbsp;with&nbsp;relative&nbsp;path&nbsp;to&nbsp;the&nbsp;project&nbsp;folder&nbsp;(will&nbsp;be&nbsp;stored&nbsp;in&nbsp;{project-folder}/tmp/redbean-dbfile.sqlite)<br>
-&nbsp;//R::setup(&#39;mysqli:config&#39;);&nbsp;//&nbsp;use&nbsp;the&nbsp;values&nbsp;from&nbsp;Smart.Framework&nbsp;config&nbsp;(mysqli)<br>
-&nbsp;//R::setup(&#39;pgsql:config&#39;);&nbsp;//&nbsp;use&nbsp;the&nbsp;values&nbsp;from&nbsp;Smart.Framework&nbsp;config&nbsp;(pgsql)<br>
-<br>
-&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">freeze</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">false</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;allow&nbsp;schema&nbsp;creation&nbsp;if&nbsp;not&nbsp;exists<br>
-&nbsp;</span><span style="color: #FFFFFF">$book&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">dispense</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;book&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
-&nbsp;</span><span style="color: #FFFFFF">$book</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">title&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">&#39;Mr.&#39;</span><span style="color: #FFCC00; font-weight: bold">;<br>
-&nbsp;</span><span style="color: #FFFFFF">$book</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">author&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">&#39;Test&nbsp;RedBean&#39;</span><span style="color: #FFCC00; font-weight: bold">;<br>
-&nbsp;</span><span style="color: #FFFFFF">$id&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">store</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$book</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;write&nbsp;to&nbsp;db<br>
-&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">freeze</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;freeze&nbsp;schema&nbsp;creations<br>
-<br>
-//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #FFCC00; font-weight: bold">use&nbsp;</span><span style="color: #FFFFFF">\SmartModExtLib\DbOrmRedbean\ORM&nbsp;</span><span style="color: #FFCC00; font-weight: bold">as&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">;<br><br>&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">setup</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'sqlite:tmp/redbean-dbfile.sqlite'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;use&nbsp;a&nbsp;custom&nbsp;sqlite&nbsp;database&nbsp;with&nbsp;relative&nbsp;path&nbsp;to&nbsp;the&nbsp;project&nbsp;folder&nbsp;(will&nbsp;be&nbsp;stored&nbsp;in&nbsp;{project-folder}/tmp/redbean-dbfile.sqlite)<br>&nbsp;//R::setup('mysqli:config');&nbsp;//&nbsp;use&nbsp;the&nbsp;values&nbsp;from&nbsp;Smart.Framework&nbsp;config&nbsp;(mysqli)<br>&nbsp;//R::setup('pgsql:config');&nbsp;//&nbsp;use&nbsp;the&nbsp;values&nbsp;from&nbsp;Smart.Framework&nbsp;config&nbsp;(pgsql)<br><br>&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">freeze</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">false</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;allow&nbsp;schema&nbsp;creation&nbsp;if&nbsp;not&nbsp;exists<br>&nbsp;</span><span style="color: #FFFFFF">$book&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">dispense</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'book'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$book</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">title&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">'Mr.'</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;</span><span style="color: #FFFFFF">$book</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">author&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">'Test&nbsp;RedBean'</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;</span><span style="color: #FFFFFF">$id&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">store</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$book</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;write&nbsp;to&nbsp;db<br>&nbsp;</span><span style="color: #FFFFFF">R</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">freeze</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;freeze&nbsp;schema&nbsp;creations<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+</span>
+</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -4080,6 +4176,9 @@ function smartHandleDocSelector(obj) {
 									<option value="Method--getVersion"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getVersion()</option>
 			
 			
+									<option value="Method--getDatabaseServerVersion"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getDatabaseServerVersion()</option>
+			
+			
 									<option value="Method--testConnection"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;testConnection()</option>
 			
 			
@@ -4099,9 +4198,6 @@ function smartHandleDocSelector(obj) {
 			
 			
 									<option value="Method--createToolbox"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;createToolbox()</option>
-			
-			
-									<option value="Method--useMysqlSSL"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;useMysqlSSL()</option>
 			
 			
 									<option value="Method--hasDatabase"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;hasDatabase()</option>
@@ -4225,6 +4321,9 @@ function smartHandleDocSelector(obj) {
 			
 			
 									<option value="Method--convertToBean"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;convertToBean()</option>
+			
+			
+									<option value="Method--findFromSQL"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findFromSQL()</option>
 			
 			
 									<option value="Method--hasTag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;hasTag()</option>
@@ -4440,6 +4539,12 @@ function smartHandleDocSelector(obj) {
 									<option value="Method--noNuke"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;noNuke()</option>
 			
 			
+									<option value="Method--camelfy"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;camelfy()</option>
+			
+			
+									<option value="Method--uncamelfy"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;uncamelfy()</option>
+			
+			
 									<option value="Method--useFeatureSet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;useFeatureSet()</option>
 			
 			
@@ -4479,13 +4584,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:45:22 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:31:23 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
 </center></div>
 </body>
 </html>
