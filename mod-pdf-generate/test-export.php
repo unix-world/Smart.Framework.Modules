@@ -44,7 +44,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$action = $this->RequestVarGet('action', '', 'string');
 		//--
-		$html = (string) (new SmartMarkdownToHTML(true, false, false, null, null, true, null, true))->parse((string)SmartFileSystem::read('README.md')); // generate HTML from markdown ; C:1
+		$html = (string) (new SmartMarkdownToHTML(true, false, true, null, null, true, null, true))->parse((string)SmartFileSystem::read('README.md')); // generate HTML from markdown ; C:1
 		$html = (string) '<img src="modules/mod-pdf-generate/views/img/pdfexport/pdf-logo.svg" alt="pdf-logo-svg" width="52" height="64" align="right">'.'<img src="modules/mod-pdf-generate/views/img/pdfexport/pdf-logo.png" alt="pdf-logo-png" width="52" height="64" align="left"><div style="height:96px;">&nbsp;</div>'.$html;
 		$html = (string) '<!DOCTYPE html>'."\n".'<html>'."\n".'<head><meta charset="UTF-8"><title>Sample HTML</title></head>'."\n".'<body>'."\n".$html.'</body>'."\n".'</html>'."\n";
 		//--
