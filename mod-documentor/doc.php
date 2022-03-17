@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Task Area Controller
- * @version 20210530
+ * @version 20220221
  * @package Application
  */
 final class SmartAppTaskController extends SmartAbstractAppController {
@@ -1067,6 +1067,12 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 							} //end if
 						} //end if
 						//-- # end sync
+						if($method->hasReturnType()) {
+							if((string)trim((string)$method->getReturnType()) != '') {
+								$returns = (string) trim((string)$method->getReturnType()); // if method have a defined return type use it, overrides what is in comments
+							} //end if
+						} //end if
+						//--
 						$params = $method->getParameters();
 						$cparams = [];
 						if(Smart::array_size($params) > 0) {
@@ -1176,7 +1182,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 							'is-destructor' 	=> (bool)   $method->isDestructor(),
 							'is-magic' 			=> (bool)   $is_magic,
 							'is-internal-priv' 	=> (bool)   $is_internal_priv,
-							'returns' 			=> (string) $returns,
+							'returns' 			=> (string) strtoupper((string)$returns),
 							'params' 			=> (array)  $cparams,
 							'doc-comments' 		=> (array)  $comments
 						];

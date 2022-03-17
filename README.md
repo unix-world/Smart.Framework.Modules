@@ -3,7 +3,7 @@
 ### This software project is open source. You must choose which license to use depending on your use case: BSD license or GPLv3 license (see LICENSE file)
 **(c) 2009 - 2021 unix-world.org** / support&#64;unix-world.org
 
-#### This software framework is compatible, stable and actively tested with PHP 7.3 / 7.4 / 8.0 versions.
+#### This software framework is compatible, stable and actively tested with PHP 7.3 / 7.4 / 8.0 / 8.1 versions.
 **Prefered PHP version** is: **7.4** (LTS).
 
 ## List of available Modules for Smart.Framework:
@@ -21,7 +21,8 @@
 	* Dust Templating Engine (by LinkedIn) integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-dust into smart-framework/modules/
 	* Twig Templating Engine (by Symfony): integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-twig into smart-framework/modules/
 	* TYPO3Flow Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-typo3-fluid into smart-framework/modules/
-	* Redbean ORM: an ORM based connector for: PgSQL, MySQL and SQLite ; to start use just copy the mod-db-orm-redbean into smart-framework/modules/
+	* Laminas DBAL: PDO based connector for: PgSQL, MySQL and SQLite ; to start use just copy the mod-dbal-laminas into smart-framework/modules/ and setup connection(s) in config
+	* Redbean ORM: an ORM based connector for: PgSQL, MySQL and SQLite ; to start use just copy the mod-db-orm-redbean into smart-framework/modules/ and setup connection(s) in config
 	* GeoIP: a GeoIP api for PHP using the geoiplookup / geoiplookup6 executables
 	* MediaGallery: a media gallery api for Smart.Framework
 	* Countries: json list of countries + svg flags for countries
