@@ -1,42 +1,52 @@
 <?php
 
-declare(strict_types=1);
-
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\ElementInterface;
 
 class BlockquoteConverter implements ConverterInterface
 {
-    public function convert(ElementInterface $element): string
-    {
-        // Contents should have already been converted to Markdown by this point,
-        // so we just need to add '>' symbols to each line.
+	public function convert(ElementInterface $element): string
+	{
+		// Contents should have already been converted to Markdown by this point,
+		// so we just need to add between blockquote.
 
-        $markdown = '';
+		// fixed by unixman
+		$v1 = false;
 
-        $quoteContent = \trim($element->getValue());
+		$quoteContent = (string) \trim((string)$element->getValue());
+		$quoteContent = (string) \str_replace(["\r\n", "\r"], "\n", (string)$quoteContent);
+		if((string)$quoteContent == '') {
+			return '';
+		} //end if
 
-        $lines = \preg_split('/\r\n|\r|\n/', $quoteContent);
-        \assert(\is_array($lines));
+		$lines = (array) \explode("\n", (string)$quoteContent);
+		$totalLines = \count($lines);
 
-        $totalLines = \count($lines);
+		$markdown = '';
+		foreach($lines as $i => $line) {
+			if($v1) {
+				$markdown .= '> '.$line."\n";
+			} else {
+				$markdown .= $line."\n";
+			}
+			if((int)($i + 1) == (int)$totalLines) {
+				$markdown .= "\n";
+			}
+		}
 
-        foreach ($lines as $i => $line) {
-            $markdown .= '> ' . $line . "\n";
-            if ($i + 1 === $totalLines) {
-                $markdown .= "\n";
-            }
-        }
+		if($v1) {
+			return "\n".\trim((string)$markdown)."\n";
+		} else {
+			return "\n".'<<<'."\n".\trim((string)$markdown)."\n".'<<<'."\n";
+		}
+	}
 
-        return $markdown;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getSupportedTags(): array
-    {
-        return ['blockquote'];
-    }
+	/**
+	 * @return string[]
+	 */
+	public function getSupportedTags(): array
+	{
+		return ['blockquote'];
+	}
 }

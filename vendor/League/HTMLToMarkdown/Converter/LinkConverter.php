@@ -1,12 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
+use League\HTMLToMarkdown\SmartFixes;
 
 
 class LinkConverter implements ConverterInterface, ConfigurationAwareInterface {
@@ -21,18 +20,19 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface {
 
 
 	public function convert(ElementInterface $element): string {
-		$href  = $element->getAttribute('href');
-		$title = $element->getAttribute('title');
-		$text  = \trim($element->getValue(), "\t\n\r\0\x0B");
+		$href  = (string) $element->getAttribute('href');
+		$title = (string) $element->getAttribute('title');
+		$text  = (string) \trim((string)$element->getValue(), "\t\n\r\0\x0B");
 
-		if ($title !== '') {
+		if((string)$title != '') {
 			$markdown = '[' . \str_replace(['[',']'], ['\\[','\\]'], (string)$text) . '](' . \str_replace(['(', ')'], ['\\(', '\\)'], (string)$href) . ' "' . \str_replace(['(', ')', '"'], ['\\(', '\\)', "'"], (string)$title) . '")';
 		} elseif ($href === $text && $this->isValidAutolink($href)) {
 			$markdown = '<' . \str_replace(['<', '>'], ['\\<', '\\>'], (string)$href) . '>';
 		} elseif ($href === 'mailto:' . $text && $this->isValidEmail($text)) {
 			$markdown = '<' . \str_replace(['<', '>'], ['\\<', '\\>'], (string)$text) . '>';
 		} else {
-			if (\stristr($href, ' ')) {
+		//	if(\stristr($href, ' ')) {
+			if(\strpos($href, ' ') !== false) {
 				$href = '<' . \str_replace(['<', '>'], ['\\<', '\\>'], (string)$href) . '>';
 			}
 			$markdown = '[' . \str_replace(['[',']'], ['\\[','\\]'], (string)$text) . '](' . \str_replace(['(', ')'], ['\\(', '\\)'], (string)$href) . ')';
@@ -40,13 +40,14 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface {
 
 		if (! $href) {
 			if ($this->shouldStrip()) {
-				$markdown = $text;
+				$markdown = (string) $text;
 			} else {
-				$markdown = \html_entity_decode($element->getChildrenAsString());
+			//	$markdown = \html_entity_decode($element->getChildrenAsString());
+				$markdown = (string) SmartFixes::decodeHtmlEntity((string)$element->getChildrenAsString()); // fix by unixman
 			}
 		}
 
-		return $markdown;
+		return (string) $markdown;
 	} //END FUNCTION
 
 

@@ -101,6 +101,40 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 		$action = (string) $this->RequestVarGet('action', '', 'string');
 		if((string)trim((string)$action) != '') {
 			switch((string)$action) {
+				case 'render-html':
+					//--
+					$id = (string) trim((string)$this->RequestVarGet('id', '', 'string'));
+					if((string)trim((string)$id) == '') {
+						$this->PageViewSetErrorStatus(400, 'Empty ID name for render action `'.$action.'` ...');
+						return;
+					} //end if
+					//--
+					$code = (string) $this->RequestVarGet('htmlcode', '', 'string');
+					if((string)trim((string)$code) == '') {
+						$this->PageViewSetErrorStatus(400, 'Empty code for render action `'.$action.'` ...');
+						return;
+					} //end if
+					//--
+					$this->PageViewSetVars([
+						'semaphore' 		=> (string) Smart::array_to_list($semaphores),
+						'title' 			=> 'Docs :: Render JSON Docs',
+						'main' 				=> SmartMarkersTemplating::render_file_template(
+							$this->ControllerGetParam('module-view-path').'tasks/import-docs-render.mtpl.htm',
+							[
+								'RENDER-MODE' 	=> (string) 'Live HTML (Optimized)',
+								'URL-SCRIPT' 	=> (string) $this->ControllerGetParam('url-script'),
+								'CONTROLLER' 	=> (string) $this->ControllerGetParam('controller'),
+								'KEY-REALM' 	=> (string) $realm,
+								'KEY-ID' 		=> (string) $id,
+								'HTML-CODE' 	=> (string) $code,
+								'ERRORS' 		=> (string) '',
+							]
+						)
+					]);
+					//--
+					return;
+					//--
+					break;
 				case 'render-markdown':
 					//--
 					$id = (string) trim((string)$this->RequestVarGet('id', '', 'string'));
@@ -218,7 +252,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 					'HTML-EDITCODE-INIT' 		=> (string) SmartViewHtmlHelpers::html_jsload_editarea(false, [ 'oceanic-next', 'zenburn', 'neo' ]),
 					'HTML-EDITCODE-SOURCE' 		=> (string) SmartViewHtmlHelpers::html_js_editarea(
 						'edit-area-source',
-						'',
+						'htmlcode',
 						(string) $source, // value
 						'html', // mode
 						false, // editable

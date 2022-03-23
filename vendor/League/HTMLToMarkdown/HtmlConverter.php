@@ -1,8 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace League\HTMLToMarkdown;
+
+use League\HTMLToMarkdown\SmartFixes;
 
 /**
  * A helper class to convert HTML to Markdown.
@@ -19,34 +19,31 @@ class HtmlConverter implements HtmlConverterInterface {
 	/** @var Environment */
 	protected $environment;
 
-
 	/**
 	 * Constructor
 	 *
 	 * @param Environment|array<string, mixed> $options Environment object or configuration options
 	 */
-	public function __construct($options = []) {
-		if ($options instanceof Environment) {
-			$this->environment = $options;
-		} elseif (\is_array($options)) {
-			$defaults = [
-				'header_style' => 'atx', // Set to 'atx' to output H1 and H2 headers as # Header1 and ## Header2 ; 'setext' mode disabled by unixman, it was performing bad in some situations when converting some nested html syntax
-				'suppress_errors' => true, // Set to false to show warnings when loading malformed HTML
-				'strip_tags' => true, // Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
-				'strip_placeholder_links' => false, // Set to true to remove <a> that doesn't have href.
-				'bold_style' => '**', // DEPRECATED: Set to '__' if you prefer the underlined style
-				'italic_style' => '_', // DEPRECATED: Set to '_' if you prefer the underlined style
-				'remove_nodes' => '', // space-separated list of dom nodes that should be removed. example: 'meta style script'
-				'hard_break' => false, // Set to true to turn <br> into `\n` instead of `  \n`
-				'list_item_style' => '-', // Set the default character for each <li> in a <ul>. Can be '-', '*', or '+'
-				'preserve_comments' => false, // Set to true to preserve comments, or set to an array of strings to preserve specific comments
-				'use_autolinks' => true, // Set to true to use simple link syntax if possible. Will always use []() if set to false
-				'table_pipe_escape' => '\|', // Replacement string for pipe characters inside markdown table cells
-				'table_caption_side' => 'top', // Set to 'top' or 'bottom' to show <caption> content before or after table, null to suppress
-			];
-			$this->environment = Environment::createDefaultEnvironment($defaults);
-			$this->environment->getConfig()->merge($options);
-		} //end if else
+	public function __construct(array $options=[]) {
+		$defaults = [
+			//--
+			'suppress_errors' 			=> true, 	// Set to false to show warnings when loading malformed HTML
+			'strip_tags' 				=> true, 	// Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
+			'strip_placeholder_links' 	=> false, 	// Set to true to remove <a> that doesn't have href.
+			'hard_break' 				=> false, 	// Set to true to turn <br> into `\n` instead of `  \n`
+			'preserve_comments' 		=> false, 	// Set to true to preserve comments, or set to an array of strings to preserve specific comments
+			'use_autolinks' 			=> true, 	// Set to true to use simple link syntax if possible. Will always use []() if set to false
+			'remove_nodes' 				=> [], 		// space-separated list of dom nodes that should be removed. example: 'meta style script'
+			//--
+			'header_style' 				=> 'atx', 	// Set to 'atx' to output H1 and H2 headers as # Header1 and ## Header2 ; 'setext' mode disabled by unixman, it was performing bad in some situations when converting some nested html syntax
+			'bold_style' 				=> '**', 	// v2 bold
+			'italic_style' 				=> '==', 	// v2 emphasys
+			'list_item_style' 			=> '-', 	// Set the default character for each <li> in a <ul>. Can be '-', '*', or '+'
+			'table_pipe_escape' 		=> '\|', 	// Replacement string for pipe characters inside markdown table cells
+			'table_caption_side' 		=> 'top', 	// Set to 'top' or 'bottom' to show <caption> content before or after table, null to suppress
+		];
+		$this->environment = Environment::createDefaultEnvironment($defaults);
+		$this->environment->getConfig()->merge($options);
 	} //END FUNCTION
 
 
@@ -124,9 +121,9 @@ class HtmlConverter implements HtmlConverterInterface {
 			//--
 		} //end if
 		//--
-		$dom = new \DOMDocument('5', (string)\SMART_FRAMEWORK_CHARSET);
+		$dom = new \DOMDocument('5', (string)SmartFixes::getCharset());
 		//--
-		$dom->encoding = (string) \SMART_FRAMEWORK_CHARSET;
+		$dom->encoding = (string) SmartFixes::getCharset();
 		$dom->strictErrorChecking = false; 	// do not throw errors
 		$dom->preserveWhiteSpace = false; 	// set this to false in order to real format HTML ...
 		$dom->formatOutput = false; 		// try to format pretty-print the code (will work just partial as the preserve white space is true ...)
@@ -147,7 +144,7 @@ class HtmlConverter implements HtmlConverterInterface {
 			\libxml_use_internal_errors(false);
 		}
 	//	return $document;
-		return $dom; // fux by unixman
+		return $dom; // fix by unixman
 	} //END FUNCTION
 
 
@@ -177,7 +174,7 @@ class HtmlConverter implements HtmlConverterInterface {
 //			OR
 //			($element->isDescendantOf(['th']) && $element->getTagName() !== 'code')
 		) {
-		//	$element->setFinalMarkdown((string)\Smart::striptags((string)$element->getValue())); // this is worst than without it, will loose some spaces within td/th ...
+		//	$element->setFinalMarkdown((string)SmartFixes::stripTags((string)$element->getValue())); // this is worst than without it, will loose some spaces within td/th ...
 			return;
 		}
 		//--
@@ -210,43 +207,44 @@ class HtmlConverter implements HtmlConverterInterface {
 	 * @return string The converted HTML as Markdown
 	 */
 	protected function convertToMarkdown(ElementInterface $element): string {
-		$tag = $element->getTagName();
-		// Strip nodes named in remove_nodes
-		$tagsToRemove = \explode(' ', $this->getConfig()->getOption('remove_nodes') ?? '');
-		if (\in_array($tag, $tagsToRemove, true)) {
-			return '';
-		}
+		$tag = (string) $element->getTagName();
+		$tagsToRemove = (array) $this->getConfig()->getOption('remove_nodes'); // Strip nodes named in remove_nodes
+		if(\count($tagsToRemove) > 0) {
+			if(\in_array((string)$tag, $tagsToRemove)) {
+				return '';
+			} //end if
+		} //end if
 		$converter = $this->environment->getConverterByTag($tag);
 		return $converter->convert($element);
 	} //END FUNCTION
 
 
 	protected function sanitize(string $markdown): string {
-		$markdown = \html_entity_decode($markdown, ENT_QUOTES, 'UTF-8');
-		$markdown = \preg_replace('/<!DOCTYPE [^>]+>/', '', $markdown); // Strip doctype declaration
-		\assert($markdown !== null);
-		$markdown = \trim($markdown); // Remove blank spaces at the beggining of the html
-		/*
-		 * Removing unwanted tags. Tags should be added to the array in the order they are expected.
-		 * XML, html and body opening tags should be in that order. Same case with closing tags
-		 */
+		$markdown = (string) SmartFixes::decodeHtmlEntity((string)$markdown); // fix by unixman
+		$markdown = (string) \preg_replace('/<!DOCTYPE [^>]+>/', '', (string)$markdown); // Strip doctype declaration
+		$markdown = (string) \trim((string)$markdown); // Remove blank spaces at the beggining of the html
+		if((string)$markdown == '') {
+			return '';
+		} //end if
+		//-- Removing unwanted tags. Tags should be added to the array in the order they are expected. XML, html and body opening tags should be in that order. Same case with closing tags
 		$unwanted = ['<?xml encoding="UTF-8">', '<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '&#xD;'];
-		foreach ($unwanted as $tag) {
-			if (\strpos($tag, '/') === false) {
-				// Opening tags
-				if (\strpos($markdown, $tag) === 0) {
-					$markdown = \substr($markdown, \strlen($tag));
+		foreach($unwanted as $kk => $tag) {
+			if(\strpos((string)$tag, '/') === false) { // Opening tags
+				if(\strpos((string)$markdown, (string)$tag) === 0) {
+					$markdown = (string) \substr((string)$markdown, (int)\strlen((string)$tag));
 				}
-			} else {
-				// Closing tags
-				if (\strpos($markdown, $tag) === \strlen($markdown) - \strlen($tag)) {
-					$markdown = \substr($markdown, 0, -\strlen($tag));
+			} else { // Closing tags
+				if((int)\strpos((string)$markdown, (string)$tag) === (int)((int)\strlen((string)$markdown) - (int)\strlen((string)$tag))) {
+					$markdown = (string) \substr((string)$markdown, 0, (int)(-1 * (int)\strlen($tag)));
 				}
 			}
 		} //end foreach
 		//-- #fix by unixman
 		$markdown = (string) \str_replace(' \\ ', ' ', (string)$markdown); // fix by unixman: this comes from malformed conversions of newline ... it was \n\\\n and get newline converted to space
-		return \trim($markdown);
+		//--
+		$markdown = (string) str_replace(['&Prime;', '″'], '"', (string)$markdown); // fix back &quot; (from DOM)
+		//--
+		return (string) \trim((string)$markdown);
 		//return \trim($markdown, "\n\r\0\x0B");
 		//-- #end fix
 	} //END FUNCTION

@@ -1,13 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
 use League\HTMLToMarkdown\PreConverterInterface;
+use League\HTMLToMarkdown\SmartFixes;
 
 
 class TableConverter implements ConverterInterface, PreConverterInterface, ConfigurationAwareInterface {
@@ -16,19 +15,14 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 	protected $config;
 
 
-	/** @var array<string, string> */
-	private static $alignments = [
-		'left' => ':--',
-		'right' => '--:',
-		'center' => ':-:',
+	private const TBL_ALIGNMENTS = [
+		'left' 		=> ':--',
+		'right' 	=> '--:',
+		'center' 	=> ':-:',
 	];
 
-	/** @var array<int, string>|null */
 	private $columnAlignments = [];
-
-	/** @var string|null */
 	private $caption = null;
-
 	private $rownum = 0;
 	private $cellnum = 0;
 	private $maxcells = 0;
@@ -73,84 +67,99 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 
 
 	public function convert(ElementInterface $element): string {
-		$value = $element->getValue();
-		switch ($element->getTagName()) {
+		//--
+		$value = (string) $element->getValue();
+		//--
+		switch((string)$element->getTagName()) {
 			case 'table':
+				//--
 				$this->rownum = 0;
 				$this->cellnum = 0;
 				$this->maxcells = 0;
 				$this->columnAlignments = [];
+				//--
 				/* test by unixman
 				if($element->isDescendantOf(['table'])) {
-					return (string) \Smart::striptags((string)$value);
-				}
+					return (string) SmartFixes::stripTags((string)$value);
+				} //end if
 				*/
-				if ($this->caption) {
+				//--
+				if($this->caption) {
 					$side = $this->config->getOption('table_caption_side');
-					if ($side === 'top') {
-						$value = $this->caption . "\n" . $value;
-					} elseif ($side === 'bottom') {
-						$value .= $this->caption;
-					}
+					if((string)$side == 'top') {
+						$value = (string) $this->caption."\n".$value;
+					} elseif((string)$side == 'bottom') {
+						$value .= (string) $this->caption;
+					} //end if else
 					$this->caption = null;
-				}
-				return $value . "\n";
-			case 'caption':
-				$this->caption = \trim($value);
+				} //end if
+				//--
+				return (string) $value."\n";
+				//--
+			case 'caption': // TODO ...
+				//--
+				$this->caption = (string) \trim((string)$value);
+				//--
 				return '';
+				//--
 			case 'tr':
 				$value .= "|\n";
-				if ($this->columnAlignments !== null) {
+			//	if($this->columnAlignments !== null) { // below will be set to null, in this case !
+				if(\is_array($this->columnAlignments)) { // below will be set to null, in this case !
 					//-- #fix by unixman to fill the head mark cells with max cells of the table
-					if(count($this->columnAlignments) < $this->maxcells) {
-						for($i=count($this->columnAlignments); $i<$this->maxcells; $i++) {
+					if(\count($this->columnAlignments) < $this->maxcells) {
+						for($i=\count($this->columnAlignments); $i<$this->maxcells; $i++) {
 							$this->columnAlignments[] = '---';
-						}
-					}
+						} //end for
+					} //end if
 					//-- #fix
-					$value .= '|' . \implode('|', $this->columnAlignments) . "|\n";
+					$value .= '|'.\implode('|', (array)$this->columnAlignments)."|\n";
 					$this->columnAlignments = null;
-				}
-				return $value;
+					//--
+				} //end if
+				//--
+				return (string) $value;
+				//--
 			case 'th':
 			case 'td':
-				//-- #fix by unixman
-				$rowspan = $element->getAttribute('rowspan');
-				if($rowspan) {
-					if($element->getTagName() != 'th') { // on TH should not ... on TD, is really complicated, stop here and eliminate the cell
+				//-- #fix by unixman ; TODO: find a real fix for rowspan ...
+				$rowspan = (string) $element->getAttribute('rowspan');
+				if((string)$rowspan != '') {
+					if($element->getTagName() != 'th') { // on TH should not ... on TD, is really complicated, stop here and eliminate that cell
 						return '';
-					}
-				}
+					} //end if
+				} //end if
 				$colspan = (int) ($element->getAttribute('colspan') ?? 0);
-				if($colspan > 0) {
+				if((int)$colspan > 0) {
 					$colspan = (string) ' {T: @colspan='.(int)$colspan.'} ';
 				} else {
 					$colspan = '';
-				}
+				} //end if else
 				//-- #fix
 				$this->cellnum++;
-				if ($this->columnAlignments !== null) {
-					$align = $element->getAttribute('align');
-					$this->columnAlignments[] = self::$alignments[$align] ?? '---';
-				}
+			//	if($this->columnAlignments !== null) {
+				if(\is_array($this->columnAlignments)) {
+					$align = (string) $element->getAttribute('align');
+					$this->columnAlignments[] = (string) (self::TBL_ALIGNMENTS[(string)$align] ?? '---');
+				} //end if
 				//-- #fix by unixman
 				$tblsep = '';
 				$tblstyles = '';
-				if($this->cellnum === 1) {
+				if((int)$this->cellnum == 1) {
 				//	$tblsep = "\n:::\n:::\n";
-					$tblsep = "\n".'\\'."\n";
-				//	$tblsep = "\n".' '."\n";
-					if($this->rownum < 2) {
+				//	$tblsep = "\n".'\\'."\n"; // this was prev, ok
+					$tblsep = "\n".' '."\n";
+					if((int)$this->rownum < 2) {
 						$tblstyles = '{!DEF!=AUTO-WIDTH;ALIGN-HEAD-LEFT;ALIGN-LEFT;NO-TABLE-HEAD;.bordered;.stripped;.doc-table;.max-cells-'.(int)$this->maxcells.';.max-rows-'.(int)$this->rownum.';}';
 					} else {
 						$tblstyles = '{!DEF!=AUTO-WIDTH;ALIGN-HEAD-CENTER;ALIGN-AUTO;.bordered;.stripped;.doc-table;.max-cells-'.(int)$this->maxcells.';.max-rows-'.(int)$this->rownum.';}';
-					}
-				}
+					} //end if
+				} //end if
 				//-- #fix
-				$value = \str_replace("\n", ' ', $value);
-				$value = \str_replace('|', $this->config->getOption('table_pipe_escape') ?? '\|', $value);
+				$value = (string) \str_replace("\n", ' ', (string)$value);
+				$value = (string) \str_replace('|', (string)($this->config->getOption('table_pipe_escape') ?? '\|'), (string)$value);
 				//-- #fix by unixman
-				$value = (string) \preg_replace('/^( )*(\#){1,6}( )(.*)/m', '**${4}**', $value); // fix by unixman: transform H1..H6 inside a table cell with bold, as inline headings are not supported in markdown ... yet ... # https://github.com/mysticmind/reversemarkdown-net/issues/44
+			//	$value = (string) \preg_replace('/^( )*(\#){1,6}( )(.*)/m', '**${4}**', (string)$value); // fix by unixman: transform H1..H6 inside a table cell with bold, as inline headings are not supported in markdown ... yet ... # https://github.com/mysticmind/reversemarkdown-net/issues/44
 				//-- #fix
 				return (string) $tblsep . '|' .$tblstyles . ' ' . \trim((string)$value) . $colspan . ' '; // includes fixes by unixman
 			case 'thead':
@@ -158,9 +167,13 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 			case 'tfoot':
 			case 'colgroup':
 			case 'col':
-				return $value;
+				//--
+				return (string) $value;
+				//--
 			default:
+				//--
 				return '';
+				//--
 		} //end switch
 	} //END FUNCTION
 

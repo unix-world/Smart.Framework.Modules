@@ -1,12 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
+use League\HTMLToMarkdown\SmartFixes;
 
 class DefaultConverter implements ConverterInterface, ConfigurationAwareInterface
 {
@@ -28,9 +27,10 @@ class DefaultConverter implements ConverterInterface, ConfigurationAwareInterfac
 		// See: http://www.php.net/manual/en/domnode.c14n.php
 		if ($this->config->getOption('strip_tags', false)) { // this condition is tricky, actually it is: if strip tags is TRUE
 		//	return $element->getValue();
-			return (string) \League\HTMLToMarkdown\SmartFixes::stripTags((string)$element->getChildrenAsString());
+			return (string) SmartFixes::stripTags((string)$element->getChildrenAsString());
 		}
-		$markdown = \html_entity_decode($element->getChildrenAsString());
+	//	$markdown = \html_entity_decode($element->getChildrenAsString());
+		$markdown = (string) SmartFixes::decodeHtmlEntity((string)$element->getChildrenAsString()); // fix by unixman
 		//-- #fix
 
 		// Tables are only handled here if TableConverter is not used

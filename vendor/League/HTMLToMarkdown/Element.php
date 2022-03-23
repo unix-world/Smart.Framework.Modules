@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace League\HTMLToMarkdown;
 
 class Element implements ElementInterface {
@@ -61,6 +59,11 @@ class Element implements ElementInterface {
 
 	public function getTagName(): string {
 		return $this->node->nodeName;
+	} //END FUNCTION
+
+
+	public function getTextValue(): string {
+		return $this->node->textContent;
 	} //END FUNCTION
 
 
