@@ -18,7 +18,6 @@ interface HtmlConverterInterface
 	 *
 	 * @return string The Markdown version of the html
 	 *
-	 * @throws \InvalidArgumentException
 	 */
 	public function convert(string $html): string;
 }

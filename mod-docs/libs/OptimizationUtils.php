@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220207
+ * @version 	v.20220323
  * @package 	Docs
  *
  */
@@ -60,12 +60,7 @@ final class OptimizationUtils {
 			require_once('modules/vendor/League/autoload.php');
 		} //end if
 		//--
-		$out = '';
-//		try {
-			$out = (string) (new \League\HTMLToMarkdown\HtmlConverter([ 'header_style' => 'atx', 'strip_tags' => true, 'strip_placeholder_links' => true, 'preserve_comments' => false ]))->convert((string)$source);
-//		} catch(\Exception $e) {
-//			$out = '';
-//		} //end try catch
+		$out = (string) (new \League\HTMLToMarkdown\HtmlConverter([ 'strip_tags' => true, 'strip_placeholder_links' => true, 'preserve_comments' => false ]))->convert((string)$source);
 		//--
 		return (string) $out;
 		//--

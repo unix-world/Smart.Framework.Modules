@@ -9,15 +9,19 @@ use League\HTMLToMarkdown\SmartFixes;
  *
  * @author Colin O'Dell <colinodell@gmail.com>
  * @author Nick Cernis <nick@cern.is>
- *
  * @link https://github.com/thephpleague/html-to-markdown/ Latest version on GitHub.
- *
  * @license http://www.opensource.org/licenses/mit-license.php MIT
+ *
+ * @author unixman <iradu@unix-world.org>
+ * @link https://github.com/unix-world/Smart.Framework.Modules Latest version on GitHub.
+ * @license https://github.com/unix-world/Smart.Framework.Modules/blob/master/LICENSE-BSD BSD
+ *
  */
 class HtmlConverter implements HtmlConverterInterface {
 
 	/** @var Environment */
 	protected $environment;
+
 
 	/**
 	 * Constructor
@@ -25,16 +29,17 @@ class HtmlConverter implements HtmlConverterInterface {
 	 * @param Environment|array<string, mixed> $options Environment object or configuration options
 	 */
 	public function __construct(array $options=[]) {
+		//--
 		$defaults = [
-			//--
+			//-- settings that can be set by options
 			'suppress_errors' 			=> true, 	// Set to false to show warnings when loading malformed HTML
 			'strip_tags' 				=> true, 	// Set to true to strip tags that don't have markdown equivalents. N.B. Strips tags, not their content. Useful to clean MS Word HTML output.
-			'strip_placeholder_links' 	=> false, 	// Set to true to remove <a> that doesn't have href.
-			'hard_break' 				=> false, 	// Set to true to turn <br> into `\n` instead of `  \n`
+			'strip_placeholder_links' 	=> true, 	// Set to true to remove <a> that doesn't have href.
 			'preserve_comments' 		=> false, 	// Set to true to preserve comments, or set to an array of strings to preserve specific comments
-			'use_autolinks' 			=> true, 	// Set to true to use simple link syntax if possible. Will always use []() if set to false
+			'hard_break' 				=> false, 	// Set to true to turn <br> into `\n` instead of `  \n`
+			'use_autolinks' 			=> false, 	// Set to true to use simple link syntax if possible. Will always use []() if set to false
 			'remove_nodes' 				=> [], 		// space-separated list of dom nodes that should be removed. example: 'meta style script'
-			//--
+			//-- fixed settings
 			'header_style' 				=> 'atx', 	// Set to 'atx' to output H1 and H2 headers as # Header1 and ## Header2 ; 'setext' mode disabled by unixman, it was performing bad in some situations when converting some nested html syntax
 			'bold_style' 				=> '**', 	// v2 bold
 			'italic_style' 				=> '==', 	// v2 emphasys
@@ -42,8 +47,46 @@ class HtmlConverter implements HtmlConverterInterface {
 			'table_pipe_escape' 		=> '\|', 	// Replacement string for pipe characters inside markdown table cells
 			'table_caption_side' 		=> 'top', 	// Set to 'top' or 'bottom' to show <caption> content before or after table, null to suppress
 		];
+		//--
+		if(\is_array($options)) {
+			if(\array_key_exists('suppress_errors', (array)$options)) {
+				$defaults['suppress_errors'] = (bool) $options['suppress_errors'];
+			} //end if
+			if(\array_key_exists('strip_tags', (array)$options)) {
+				$defaults['strip_tags'] = (bool) $options['strip_tags'];
+			} //end if
+			if(\array_key_exists('strip_placeholder_links', (array)$options)) {
+				$defaults['strip_placeholder_links'] = (bool) $options['strip_placeholder_links'];
+			} //end if
+			if(\array_key_exists('preserve_comments', (array)$options)) {
+				$defaults['preserve_comments'] = (bool) $options['preserve_comments'];
+			} //end if
+			if(\array_key_exists('hard_break', (array)$options)) {
+				$defaults['hard_break'] = (bool) $options['hard_break'];
+			} //end if
+			if(\array_key_exists('use_autolinks', (array)$options)) {
+				$defaults['use_autolinks'] = (bool) $options['use_autolinks'];
+			} //end if
+			if(\array_key_exists('remove_nodes', (array)$options)) {
+				if(\is_array($options['remove_nodes'])) {
+					$defaults['remove_nodes'] = [];
+					foreach($options['remove_nodes'] as $key => $val) {
+						$val = (string) \strtolower((string)\trim((string)$val));
+						if((string)$val != '') {
+							if(!\in_array((string)$val, (array)$defaults['remove_nodes'])) { // avoid duplicates
+								if(\preg_match('/^[a-z]+$/', (string)$val)) { // must be a tag name
+									$defaults['remove_nodes'][] = (string) $val;
+								} //end if
+							} //end if
+						} //end if
+					} //end foreach
+				} //end if
+			} //end if
+		} //end if
+		//--
 		$this->environment = Environment::createDefaultEnvironment($defaults);
 		$this->environment->getConfig()->merge($options);
+		//--
 	} //END FUNCTION
 
 
@@ -71,30 +114,29 @@ class HtmlConverter implements HtmlConverterInterface {
 
 	/**
 	 * Convert
-	 *
 	 * Loads HTML and passes to getMarkdown()
-	 *
 	 * @return string The Markdown version of the html
 	 *
-	 * @throws \InvalidArgumentException|\RuntimeException
 	 */
 	public function convert(string $html): string {
 		$html = (string) \preg_replace('/<!--(.|\s)*?-->/', '', (string)$html); // fix by unixman
-		if(\trim($html) === '') {
+		if((string)\trim((string)$html) == '') {
 			return '';
-		}
+		} //end if
 		$document = $this->createDOMDocument($html);
 		// Work on the entire DOM tree (including head and body)
-		if (! ($root = $document->getElementsByTagName('html')->item(0))) {
-			throw new \InvalidArgumentException('Invalid HTML was provided');
-		}
+		if(!($root = $document->getElementsByTagName('html')->item(0))) {
+			SmartFixes::logWarning((string)__METHOD__, 'Invalid HTML was provided');
+			return '';
+		} //end if
 		$rootElement = new Element($root);
 		$this->convertChildren($rootElement);
 		// Store the now-modified DOMDocument as a string
 		$markdown = $document->saveHTML();
-		if ($markdown === false) {
-			throw new \RuntimeException('Unknown error occurred during HTML to Markdown conversion');
-		}
+		if($markdown === false) {
+			SmartFixes::logWarning((string)__METHOD__, 'Unknown error occurred during HTML to Markdown conversion');
+			return '';
+		} //end if
 		return $this->sanitize($markdown);
 	} //END FUNCTION
 
@@ -124,7 +166,7 @@ class HtmlConverter implements HtmlConverterInterface {
 		$dom = new \DOMDocument('5', (string)SmartFixes::getCharset());
 		//--
 		$dom->encoding = (string) SmartFixes::getCharset();
-		$dom->strictErrorChecking = false; 	// do not throw errors
+		$dom->strictErrorChecking = false; 	// do not log errors
 		$dom->preserveWhiteSpace = false; 	// set this to false in order to real format HTML ...
 		$dom->formatOutput = false; 		// try to format pretty-print the code (will work just partial as the preserve white space is true ...)
 		$dom->resolveExternals = false; 	// disable load external entities from a doctype declaration

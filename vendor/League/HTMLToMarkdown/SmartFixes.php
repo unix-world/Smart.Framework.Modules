@@ -79,6 +79,20 @@ final class SmartFixes {
 	} //END FUNCTION
 
 
+	public static function logNotice(?string $where, ?string $text) : void {
+		//--
+		\Smart::log_notice((string)$where.' # '.$text);
+		//--
+	} //END FUNCTION
+
+
+	public static function logWarning(?string $where, ?string $text) : void {
+		//--
+		\Smart::log_warning((string)$where.' # '.$text);
+		//--
+	} //END FUNCTION
+
+
 } //END CLASS
 
 

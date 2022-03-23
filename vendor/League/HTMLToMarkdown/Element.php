@@ -2,6 +2,9 @@
 
 namespace League\HTMLToMarkdown;
 
+use League\HTMLToMarkdown\SmartFixes;
+
+
 class Element implements ElementInterface {
 
 	/** @var \DOMNode */
@@ -155,10 +158,12 @@ class Element implements ElementInterface {
 
 	public function setFinalMarkdown(string $markdown): void {
 		if($this->node->ownerDocument === null) {
-			throw new \RuntimeException('Unowned node');
+			SmartFixes::logNotice((string)__METHOD__, 'Unowned node');
+			return;
 		} //end if
 		if ($this->node->parentNode === null) {
-			throw new \RuntimeException('Cannot setFinalMarkdown() on a node without a parent');
+			SmartFixes::logNotice((string)__METHOD__, 'Cannot use this method on a node without a parent');
+			return;
 		} //end if
 		$markdownNode = $this->node->ownerDocument->createTextNode($markdown);
 		$this->node->parentNode->replaceChild($markdownNode, $this->node);
