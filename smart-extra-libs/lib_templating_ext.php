@@ -23,7 +23,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * some-file.mtpl.htm 		: SmartMarkersTemplating 									(Marker-TPL syntax: .mtpl.)
  *
- * some-file.dust.htm 		: \SmartModExtLib\TplDust\SmartDustTemplating 				(Dust-TPL syntax: .dust.)
+ * some-file.twist.htm 		: \SmartModExtLib\TplTwist\SmartTwistTemplating 			(Twist-TPL syntax: .twist.)
  *
  * some-file.twig.htm 		: \SmartModExtLib\TplTwig\SmartTwigTemplating 				(Twig-TPL syntax: .twig.)
  *
@@ -35,7 +35,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * $this->PageViewSetVar(
  *     'main',
  *     SmartTemplating::render_file_template(
- *         'modules/my-module-name/views/my-view.(mtpl|dust|twig|t3fluid).htm',
+ *         'modules/my-module-name/views/my-view.(mtpl|twist|twig|t3fluid).htm',
  *         [
  *             'someVar' => 'Hello World',
  *             'otherVar' => date('Y-m-d H:i:s')
@@ -48,8 +48,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	classes: SmartMarkersTemplating, \SmartModExtLib\TplDust\SmartDustTemplating, \SmartModExtLib\TplTwig\SmartTwigTemplating, \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating
- * @version 	v.20210303
+ * @depends 	classes: SmartMarkersTemplating, \SmartModExtLib\TplTwist\SmartTwistTemplating, \SmartModExtLib\TplTwig\SmartTwigTemplating, \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating
+ * @version 	v.20220330
  * @package 	extralibs:TemplatingEngine
  *
  */
@@ -82,9 +82,9 @@ final class SmartTemplating {
 				(string) $options['use-caching'] // no / yes
 			);
 			//--
-		} elseif(strpos((string)$file, '.dust.') !== false) { // dust TPL
+		} elseif(strpos((string)$file, '.twist.') !== false) { // Twist TPL
 			//--
-			return (string) \SmartModExtLib\TplDust\SmartDustTemplating::render_file_template(
+			return (string) \SmartModExtLib\TplTwist\SmartTwistTemplating::render_file_template(
 				(string) $file,
 				(array)  $arr_vars,
 				(bool)   $options['only-debug'] // false / true

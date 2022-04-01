@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220323
+ * @version 	v.20220331
  * @package 	Docs
  *
  */
@@ -46,23 +46,6 @@ final class OptimizationUtils {
 	public static function renderDocMarkdown(?string $markdown_code, ?string $options='<validate:html:tidy>', ?string $relative_url_prefix='', bool $log_render_notices=true) : string {
 		//--
 		return (string) (new \SmartMarkdownToHTML(true, true, false, (string)$options, (string)$relative_url_prefix, (bool)$log_render_notices, null, false))->parse((string)$markdown_code); // C:0
-		//--
-	} //END FUNCTION
-
-
-	public static function convertHtml2Markdown(?string $source) {
-		//--
-		if(!\class_exists('\\League\\HTMLToMarkdown\\HtmlConverter')) {
-			if(!\is_file('modules/vendor/League/autoload.php')) {
-				\SmartFrameworkRuntime::Raise500Error('ERROR: Cannot Load League/HTMLToMarkdown/HtmlConverter ...');
-				return '';
-			} //end if
-			require_once('modules/vendor/League/autoload.php');
-		} //end if
-		//--
-		$out = (string) (new \League\HTMLToMarkdown\HtmlConverter([ 'strip_tags' => true, 'strip_placeholder_links' => true, 'preserve_comments' => false ]))->convert((string)$source);
-		//--
-		return (string) $out;
 		//--
 	} //END FUNCTION
 

@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Documentor/Generate (qunit:tasks)
 // Route: task.php?page=documentor.generate
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Task Area Controller
- * @version 20210526
+ * @version 20220331
  * @ignore
  *
  * @requires define('SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW', true);

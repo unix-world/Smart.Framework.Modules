@@ -284,6 +284,7 @@ class SmartViewHtmlHelpers {
 				case 'dust':
 					$ftype = 'dust';
 					break;
+				case 'twist':
 				case 'twig':
 					$ftype = 'twig';
 					break;
@@ -416,6 +417,8 @@ class SmartViewHtmlHelpers {
 			//--
 			if(\stripos((string)$fname, '.dust.') !== false) {
 				$ftype = 'dust';
+			} elseif(\stripos((string)$fname, '.twist.') !== false) {
+				$ftype = 'twig';
 			} elseif(\stripos((string)$fname, '.twig.') !== false) {
 				$ftype = 'twig';
 			} elseif(\stripos((string)$fname, '.latte.') !== false) {

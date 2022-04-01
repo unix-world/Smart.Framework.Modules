@@ -3,7 +3,7 @@
 // github.com/brianvoe/slim-select
 // (c) 2017-2021 Brian Voelker
 // License: MIT
-// changes by unixman :: (c) 2021, r.20210617
+// changes by unixman :: (c) 2021-2022, r.20220331
 //	* fixes: add option title from original
 
 (function webpackUniversalModuleDefinition(root, factory) {

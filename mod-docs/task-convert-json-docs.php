@@ -134,7 +134,7 @@ final class SmartAppTaskController extends \SmartModExtLib\Docs\AbstractTaskCont
 		$arr_disabled = [];
 		foreach($arr as $key => $val) {
 			//--
-			$markdown = (string) \SmartModExtLib\Docs\OptimizationUtils::convertHtml2Markdown((string)$val); // prefer tidy
+			$markdown = (string) \SmartModExtLib\Docs\SmartHTML2Markdown::convert((string)$val);
 			//--
 			if((string)trim((string)$markdown) == '') {
 				$this->err = 'KEY: `'.$key.'` :: Markdown is EMPTY !';

@@ -4,6 +4,28 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [5.1.0] - 2022-03-02
+
+### Changed
+
+ - Changed horizontal rule style (#218, #219)
+
+### Fixed
+
+ - Fixed `Element::getValue()` not handling possible nulls
+
+## [5.0.2] - 2021-11-06
+
+### Fixed
+
+ - Fixed missplaced comment nodes appearing at the start of the HTML input (#212)
+
+## [5.0.1] - 2021-09-17
+
+### Fixed
+
+ - Fixed lists not using the correct amount of indentation (#211)
+
 ## [5.0.0] - 2021-03-28
 
 ### Added
@@ -293,7 +315,10 @@ not ideally set, so this releases fixes that. Moving forwards this should reduce
 ### Added
  - Initial release
 
-[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.0.0...master
+[unreleased]: https://github.com/thephpleague/html-to-markdown/compare/5.1.0...master
+[5.1.0]: https://github.com/thephpleague/html-to-markdown/compare/5.0.2...5.1.0
+[5.0.2]: https://github.com/thephpleague/html-to-markdown/compare/5.0.1...5.0.2
+[5.0.1]: https://github.com/thephpleague/html-to-markdown/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/thephpleague/html-to-markdown/compare/4.10.0...5.0.0
 [4.10.0]: https://github.com/thephpleague/html-to-markdown/compare/4.9.1...4.10.0
 [4.9.1]: https://github.com/thephpleague/html-to-markdown/compare/4.9.0...4.9.1

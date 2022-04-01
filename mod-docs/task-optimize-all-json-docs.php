@@ -1,4 +1,5 @@
 <?php
+// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Docs/OptimizeJson:ALL (to Optimized Safe HTML, ALL, QUnit)
 // Route: ?page=docs.task-optimize-all-json-docs
 // (c) 2006-2021 unix-world.org - all rights reserved
@@ -63,7 +64,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 			'title' 	=> 'QUnit Engine :: Optimize Docs in '.\SmartModExtLib\Docs\OptimizationUtils::THE_DOCS_PATH,
 			'semaphore' => 'Optimizations Completed ...',
 			'main' 		=> SmartMarkersTemplating::render_file_template(
-				$this->ControllerGetParam('module-view-path').$this->ControllerGetParam('action').'.mtpl.js',
+				$this->ControllerGetParam('module-view-path').'tasks/'.$this->ControllerGetParam('action').'.mtpl.js',
 				[
 					//--
 					'TIMEOUT-TEST' 			=> (int)    self::OPTIMIZATIONS_MAX_RUN_TIMEOUT,

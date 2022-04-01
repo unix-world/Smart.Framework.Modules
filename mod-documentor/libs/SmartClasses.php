@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\Documentor\SmartClasses
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\Documentor;
@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20220210
+ * @version 	v.20220331
  * @package 	Documentor
  *
  */
@@ -49,7 +49,7 @@ final class SmartClasses {
 	// ::
 
 
-	const DOCGENERATOR_VERSION = '20210419';
+	const DOCGENERATOR_VERSION = '20220331';
 
 
 	public static function getJavascriptSfFile() {
@@ -187,7 +187,7 @@ final class SmartClasses {
 			'\\SmartModExtLib\\HighlightSyntax\\Highlighter',
 			//--
 			'\\SmartTemplating',
-			'\\SmartModExtLib\\TplDust\\SmartDustTemplating',
+			'\\SmartModExtLib\\TplTwist\\SmartTwistTemplating',
 			'\\SmartModExtLib\\TplTwig\\SmartTwigTemplating',
 			'\\SmartModExtLib\\TplTypo3Fluid\\SmartTypo3FluidTemplating',
 			//--

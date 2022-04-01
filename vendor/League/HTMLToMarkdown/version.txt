@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: League PHP Html To Markdown Converter # github@head.20210615 + fixes/changes by unixman #20220323
+# Smart.Framework.Modules: League PHP Html To Markdown Converter # 5.1.0
 
 // r.8.7 / smart.framework.v.8.7
 

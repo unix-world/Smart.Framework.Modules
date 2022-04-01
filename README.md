@@ -18,7 +18,7 @@
 	* SOAP (Server) Request Handler, built over DomDocument XML - handle SOAP server requests without need of SoapServer class from PHP SOAP extension
 	* Maps Cache: a caching API for Open Map types
 	* Language Detect: NGrams Language Detection library
-	* Dust Templating Engine (by LinkedIn) integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-dust into smart-framework/modules/
+	* Twist Templating Engine (Twig like grammar, Liquid like safety) integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-twist into smart-framework/modules/
 	* Twig Templating Engine (by Symfony): integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-twig into smart-framework/modules/
 	* TYPO3Flow Templating Engine: integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup, just copy the mod-tpl and mod-tpl-typo3-fluid into smart-framework/modules/
 	* Laminas DBAL: PDO based connector for: PgSQL, MySQL and SQLite ; to start use just copy the mod-dbal-laminas into smart-framework/modules/ and setup connection(s) in config
@@ -49,7 +49,7 @@
 	* CURL based HTTP Client Lib with proxy support
 	* LangID.py client wrapper (a language detection utility based on external service)
 	* Charts library for PHP
-	* TPL wrapper Lib for the includded TPL engines (this make life easier with existing TPL engines in Smart.Framework: MarkersTPL and Smart.Framework.Modules: Dust, Twig and Typo3Fluid)
+	* TPL wrapper Lib for the includded TPL engines (this make life easier with existing TPL engines in Smart.Framework: MarkersTPL and Smart.Framework.Modules: Twist, Twig and Typo3Fluid)
 
 ### Vendor Libs (BSD licensed):
 	* CSS and JS Minify, Geo, Scrapbook: vendor/MatthiasMullie

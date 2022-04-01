@@ -3,7 +3,7 @@
 &copy;&nbsp;&nbsp;2015-2022&nbsp;unix-world.org
 Extended Markdown v.I // Test :: v.20220205
 
-# (H1) Markdown v2 (smart flavour) comes with many new features, optimizations but several old bad features have been dropped, see below ...
+# (H1) Markdown v1 (smart flavour)
 
 ## (H2) "Unicode" &reg; <Test> ăĂîÎâÂşŞţŢ &quot;&nbsp;&quot; &lt;&quot;&gt;
 

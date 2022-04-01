@@ -1,4 +1,5 @@
 <?php
+// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Docs/ConvertJson:ALL (from Optimized Safe HTML, ALL, QUnit, to Markdown)
 // Route: ?page=docs.task-convert-all-json-docs
 // (c) 2006-2021 unix-world.org - all rights reserved
@@ -67,7 +68,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 			'title' 	=> 'QUnit Engine :: Convert Docs in '.\SmartModExtLib\Docs\OptimizationUtils::THE_DOCS_PATH,
 			'semaphore' => 'Conversions Completed ...',
 			'main' 		=> SmartMarkersTemplating::render_file_template(
-				$this->ControllerGetParam('module-view-path').$this->ControllerGetParam('action').'.mtpl.js',
+				$this->ControllerGetParam('module-view-path').'tasks/'.$this->ControllerGetParam('action').'.mtpl.js',
 				[
 					//--
 					'TIMEOUT-TEST' 			=> (int)    self::CONVERSIONS_MAX_RUN_TIMEOUT,

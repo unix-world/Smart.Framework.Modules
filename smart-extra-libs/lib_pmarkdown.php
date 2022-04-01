@@ -46,7 +46,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartParser
- * @version 	v.20220207
+ * @version 	v.20220330
  * @package 	extralibs:Network
  *
  * <code>
@@ -66,7 +66,7 @@ final class SmartPMarkdownToHTML {
 	// 	* fixed multiple security vulnerabilities: character encoding fixes, fixed regex escapings, fixed html escapings, code and regex optimizations
 	// 	* extend the syntax to support attributes, added pandoc style block divs
 
-	private const MKDW_VERSION = 'Smart.PMarkdown.parser@v.1.8.0-r.20220205';
+	private const MKDW_VERSION = 'Smart.PMarkdown.parser@v.1.8.0-r.20220330';
 
 	//===================================
 
@@ -187,7 +187,7 @@ final class SmartPMarkdownToHTML {
 		$this->relative_url_prefix 		= (string) trim((string)$y_relative_url_prefix); // if provided use this prefix for all relative urls
 		$this->use_all_unveil 			= (bool) $y_use_all_unveil;
 		//--
-		$this->special_nbsp_space 		= (string) utf8_encode("\xA0"); // need to be UTF-8 encoded to avoid break the unicode string
+		$this->special_nbsp_space 		= (string) "\u{00A0}"; // utf8_encode("\xA0"); // need to be UTF-8 encoded to avoid break the unicode string
 		//--
 	} //END FUNCTION
 

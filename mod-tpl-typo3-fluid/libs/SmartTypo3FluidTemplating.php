@@ -43,7 +43,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	classes: Typo3Fluid, \SmartModExtLib\TplTypo3Fluid\Templating
- * @version 	v.20211127
+ * @version 	v.20220331
  * @package 	modules:TemplatingEngine
  *
  */
@@ -54,7 +54,14 @@ final class SmartTypo3FluidTemplating implements \SmartModExtLib\Tpl\InterfaceSm
 	private static $engine = null;
 
 
-	public static function render_file_template($file, $arr_vars=array(), $onlydebug=false) {
+	public static function version() : string {
+		//--
+		return (string) \SmartModExtLib\TplTypo3Fluid\Templating::getVersion();
+		//--
+	} //END FUNCTION
+
+
+	public static function render_file_template(?string $file, ?array $arr_vars=[]) : string {
 		//--
 		if(!\SmartAppInfo::TestIfModuleExists('mod-tpl')) {
 			return '{# ERROR: '.__CLASS__.' ('.\SMART_APP_MODULES_EXTRALIBS_VER.') :: The module mod-tpl cannot be found ... #}';
@@ -66,7 +73,27 @@ final class SmartTypo3FluidTemplating implements \SmartModExtLib\Tpl\InterfaceSm
 		//--
 		self::startEngine();
 		//--
-		return (string) self::$engine->render_file_template((string)$file, (array)$arr_vars, (bool)$onlydebug);
+		$out = '';
+		try {
+			$out = (string) self::$engine->renderFileTemplate((string)$file, (array)$arr_vars);
+		} catch(\Exception $e) {
+			$out = '{### ERROR: Typo3Fluid TPL Render Failed ###}';
+			\Smart::raise_error(
+				'Typo3Fluid Template Render Error ['.$file.'] '.$e->getMessage(),
+				'Typo3Fluid-TPL Render Error (see errors log for details)' // msg to display
+			);
+		} //end try catch
+		//--
+		return (string) self::prepare_nosyntax_content((string)$out); // this applies also \SmartMarkersTemplating::prepare_nosyntax_content()
+		//--
+	} //END FUNCTION
+
+
+	public static function prepare_nosyntax_content(?string $str) : string {
+		//--
+		self::startEngine();
+		//--
+		return (string) self::$engine->escapeSyntax((string)$str); // this applies also \SmartMarkersTemplating::prepare_nosyntax_content()
 		//--
 	} //END FUNCTION
 
@@ -75,7 +102,7 @@ final class SmartTypo3FluidTemplating implements \SmartModExtLib\Tpl\InterfaceSm
 	 * @access 		private
 	 * @internal
 	 */
-	public static function debug($tpl) {
+	public static function debug(?string $tpl) : string {
 		//--
 		return 'N/A';
 		//--

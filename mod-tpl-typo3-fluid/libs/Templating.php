@@ -22,6 +22,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 /**
  * Provides connector for TYPO3 Fluid Templating inside the Smart.Framework.
+ * Using this class directly in Smart.Framework context is not secure ; Use instead SmartTypo3FluidTemplating !
  *
  * <code>
  *
@@ -46,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.20211127
+ * @version 	v.20220331
  * @package 	modules:TemplatingEngine
  *
  */
@@ -56,12 +57,15 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 
 	const FLUID_VERSION = '2.7.1';
 
+	private const VERSION_MAJOR = 2;
+	private const VERSION_MINOR = 7;
+
 	private $dir;
 	private $t3fluid;
 	private $t3fpaths;
 
 
-	public static function getVersion() {
+	public static function getVersion() : string {
 		//--
 		return (string) self::FLUID_VERSION;
 		//--
@@ -76,12 +80,81 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		$this->t3fpaths = $this->t3fluid->getTemplatePaths();
 		//--
 		$the_t3fluid_cache_dir = (string) $this->smartSetupCacheDir();
-		$this->t3fluid->setCache(new \TYPO3Fluid\Fluid\Core\Cache\SimpleFileCache($the_t3fluid_cache_dir));
+		$this->t3fluid->setCache(new \TYPO3Fluid\Fluid\Core\Cache\SimpleFileCache((string)$the_t3fluid_cache_dir));
 		//--
 	} //END FUNCTION
 
 
-	public function render_file_template($file, $arr_vars=array(), $onlydebug=false) {
+	public function renderFileTemplate(?string $file, ?array $arr_vars=[]) : string {
+		//--
+		return (string) $this->render_file_template((string)$file, (array)$arr_vars, false);
+		//--
+	} //END FUNCTION
+
+
+	public function escapeSyntax(?string $str) : string {
+		//-- {{{SYNC-ESCAPE-BRACKET-SYNTAX-T3FLUID}}}
+		return (string) \strtr(
+			(string)\SmartMarkersTemplating::prepare_nosyntax_content((string)$str),
+			[
+				'<f:' 	=> '<tplt3f-',
+				'</f:' 	=> '</tplt3f-'
+			]
+		);
+		//--
+	} //END FUNCTION
+
+
+	/**
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public function getDebugInfo(?string $tpl) : string {
+		//--
+		if(!\SmartFrameworkRegistry::ifDebug()) {
+			return '';
+		} //end if
+		//--
+		if((string)\trim((string)$tpl) == '') {
+			return '';
+		} //end if
+		//--
+		return '<h1>Debug N/A for this TPL Engine ...</h1>';
+		//--
+	} //END FUNCTION
+
+
+	//======= PRIVATES
+
+
+	private function smartSetupCacheDir() {
+		//--
+		$the_t3fluid_cache_dir = 'tmp/cache/tpl-t3fluid/v.'.(int)self::VERSION_MAJOR.'.'.(int)self::VERSION_MINOR.'/';
+		//--
+		if(\SmartFrameworkRegistry::isAdminArea() === true) {
+			if(\SmartFrameworkRegistry::isTaskArea() === true) {
+				$the_t3fluid_cache_dir .= 'tsk';
+			} else {
+				$the_t3fluid_cache_dir .= 'adm';
+			} //end if else
+		} else {
+			$the_t3fluid_cache_dir .= 'idx';
+		} //end if else
+		if(!\SmartFileSystem::is_type_dir((string)$the_t3fluid_cache_dir)) {
+			if(!\SmartFileSystem::dir_create((string)$the_t3fluid_cache_dir, true)) {
+				throw new \Exception('Typo3Fluid Templating / Initialize / Could not create the Cache Directory: '.$the_t3fluid_cache_dir);
+				return '';
+			} //end if
+		} //end if
+		//--
+		return (string) $the_t3fluid_cache_dir;
+		//--
+	} //END FUNCTION
+
+
+	private function render_file_template($file, $arr_vars=array(), $onlydebug=false) {
 		//--
 		if($onlydebug !== true) {
 			$onlydebug = false;
@@ -94,7 +167,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			$arr_vars = array();
 		} //end if
 		// allow camelCase keys
-		$arr_vars = (array) $this->fix_array_keys($arr_vars, true); // make keys compatible with PHP variable names, LOWER and UPPER (only 1st level, not nested)
+		$arr_vars = (array) $this->fixArrayKeys($arr_vars, true); // make keys compatible with PHP variable names, LOWER and UPPER (only 1st level, not nested)
 		//--
 		if((string)\trim((string)$file) == '') {
 			throw new \Exception('Typo3Fluid Templating / Render File / The file name is Empty');
@@ -157,50 +230,6 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			(array) $arr_vars, //array $variables,
 			true // ignoreUnknown
 		);
-		//--
-	} //END FUNCTION
-
-
-	private function smartSetupCacheDir() {
-		//--
-		if(\SmartFrameworkRegistry::isAdminArea() === true) {
-			if(\SmartFrameworkRegistry::isTaskArea() === true) {
-				$the_t3fluid_cache_dir = 'tmp/cache/typo3fluid#tsk';
-			} else {
-				$the_t3fluid_cache_dir = 'tmp/cache/typo3fluid#adm';
-			} //end if else
-		} else {
-			$the_t3fluid_cache_dir = 'tmp/cache/typo3fluid#idx';
-		} //end if else
-		if(!\SmartFileSystem::is_type_dir((string)$the_t3fluid_cache_dir)) {
-			if(!\SmartFileSystem::dir_create((string)$the_t3fluid_cache_dir, true)) {
-				throw new \Exception('Typo3Fluid Templating / Initialize / Could not create the Cache Directory: '.$the_t3fluid_cache_dir);
-				return '';
-			} //end if
-		} //end if
-		//--
-		return (string) $the_t3fluid_cache_dir;
-		//--
-	} //END FUNCTION
-
-
-	/**
-	 *
-	 * @access 		private
-	 * @internal
-	 *
-	 */
-	public function debug($tpl) {
-		//--
-		if(!\SmartFrameworkRegistry::ifDebug()) {
-			return '';
-		} //end if
-		//--
-		if((string)\trim((string)$tpl) == '') {
-			return '';
-		} //end if
-		//--
-		return '<h1>Debug N/A for this TPL Engine ...</h1>';
 		//--
 	} //END FUNCTION
 

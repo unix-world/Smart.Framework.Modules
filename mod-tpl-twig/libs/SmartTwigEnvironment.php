@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	extensions: PHP Ctype (optional) ; classes: \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20210610
+ * @version 	v.20220331
  * @package 	modules:TemplatingEngine
  *
  */
@@ -38,14 +38,16 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 
 	public function smartSetupCacheDir() {
 		//--
+		$the_twig_cache_dir = 'tmp/cache/tpl-twig/v'.(int)self::MAJOR_VERSION.'.'.(int)self::MINOR_VERSION.'/';
+		//--
 		if(\SmartFrameworkRegistry::isAdminArea() === true) {
 			if(\SmartFrameworkRegistry::isTaskArea() === true) {
-				$the_twig_cache_dir = 'tmp/cache/twig#tsk/v'.(int)self::MAJOR_VERSION;
+				$the_twig_cache_dir .= 'tsk';
 			} else {
-				$the_twig_cache_dir = 'tmp/cache/twig#adm/v'.(int)self::MAJOR_VERSION;
+				$the_twig_cache_dir .= 'adm';
 			} //end if else
 		} else {
-			$the_twig_cache_dir = 'tmp/cache/twig#idx/v'.(int)self::MAJOR_VERSION;
+			$the_twig_cache_dir .= 'idx';
 		} //end if else
 		if(!\SmartFileSystem::is_type_dir((string)$the_twig_cache_dir)) {
 			if(!\SmartFileSystem::dir_create((string)$the_twig_cache_dir, true)) {

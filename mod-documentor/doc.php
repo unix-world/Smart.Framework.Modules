@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Documentor/Doc (display, save)
 // Route: task.php?page=documentor.doc{&cls=SomeClass&ref={&action=save{&mode=multi}}}
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Task Area Controller
- * @version 20220221
+ * @version 20220331
  * @package Application
  */
 final class SmartAppTaskController extends SmartAbstractAppController {
@@ -1456,7 +1456,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 
 /**
  * Admin Area Controller
- * @version 20210530
+ * @version 20220331
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -1478,7 +1478,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 /**
  * Index Area Controller
- * @version 20210530
+ * @version 20220331
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {

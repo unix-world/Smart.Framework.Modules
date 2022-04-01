@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\Documentor\Utils
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\Documentor;
@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210418
+ * @version 	v.20220331
  * @package 	Documentor
  *
  */

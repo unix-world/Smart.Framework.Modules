@@ -300,7 +300,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 					'HTML-EDITCODE-PROCESSED' 	=> (string) SmartViewHtmlHelpers::html_js_editarea(
 						'edit-area-processed',
 						'code',
-						(string) \SmartModExtLib\Docs\OptimizationUtils::convertHtml2Markdown((string)$source), //(string)
+						(string) \SmartModExtLib\Docs\SmartHTML2Markdown::convert((string)$source),
 						'markdown',
 						true, // editable
 						'calc(50vw - 15px)',

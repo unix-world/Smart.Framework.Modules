@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\HTMLToMarkdown\Converter;
 
 use League\HTMLToMarkdown\Configuration;
 use League\HTMLToMarkdown\ConfigurationAwareInterface;
 use League\HTMLToMarkdown\ElementInterface;
 
-class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterface {
-
+class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterface
+{
 	/** @var Configuration */
 	protected $config;
 
-
-	protected function getNormTag(?ElementInterface $element): string {
+	protected function getNormTag(?ElementInterface $element): string
+	{
 		if ($element !== null && ! $element->isText()) {
 			$tag = $element->getTagName();
 			if ($tag === 'i' || $tag === 'em') {
@@ -25,14 +27,15 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
 		}
 
 		return '';
-	} //END FUNCTION
+	}
 
-
-	public function setConfig(Configuration $config): void {
+	public function setConfig(Configuration $config): void
+	{
 		$this->config = $config;
-	} //END FUNCTION
+	}
 
-	public function convert(ElementInterface $element): string {
+	public function convert(ElementInterface $element): string
+	{
 		$tag   = $this->getNormTag($element);
 		$value = $element->getValue();
 
@@ -56,19 +59,14 @@ class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterfa
 		$preStyle  = $this->getNormTag($element->getPreviousSibling()) === $tag ? '' : $style;
 		$postStyle = $this->getNormTag($element->getNextSibling()) === $tag ? '' : $style;
 
-	//	return $prefix . $preStyle . \trim($value) . $postStyle . $suffix;
-		return $prefix . $preStyle . \trim($value) . $postStyle . $suffix . ' '; // fix by unixman ; see realm=php&key=7390 ... (missing space between words: `WarningThis function is currently not documented`);
-
-	} //END FUNCTION
-
+		return $prefix . $preStyle . \trim($value) . $postStyle . $suffix;
+	}
 
 	/**
 	 * @return string[]
 	 */
-	public function getSupportedTags(): array {
+	public function getSupportedTags(): array
+	{
 		return ['em', 'i', 'strong', 'b'];
-	} //END FUNCTION
-
-
-} //END CLASS
-
+	}
+}

@@ -1,3 +1,4 @@
 github@HEAD@20191107
 
 requires: Psr/Cache, Psr/SimpleCache
+removed: Flysystem
