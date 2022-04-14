@@ -18,10 +18,19 @@ namespace TwistTPL;
 /**
  * A selection of standard filters.
  */
-final class StandardFilters {
+final class Filters {
+
+	// ::
+
+	// {{{SYNC-TPL-TWIST-FILTER-NAMES}}}
 
 	// TODO: finalize all filters here ...
 	// IMPORTANT: syntax or syntaxhtml escaping is not quite possible under this kind of TPL systems {{ ... }}
+
+// MTPL, TODO:
+//		dec1..4
+//		subtxt
+//		substr
 
 
 	/**
@@ -31,11 +40,77 @@ final class StandardFilters {
 	 * @param string $input
 	 * @return string
 	 */
-	public static function raw($input) {
+	public static function filter__raw($input) {
 		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
 			$input = null;
 		} //end if
 		return (string) $input;
+	} //END FUNCTION
+
+
+	public static function filter__bool($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		if($input) {
+			return 'true';
+		} //end if
+		return 'false';
+	} //END FUNCTION
+
+
+	public static function filter__int($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) (int) $input;
+	} //END FUNCTION
+
+
+	public static function filter__num($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) (float) $input;
+	} //END FUNCTION
+
+
+	/**
+	 * Replace each newline (\n) with a html break
+	 *
+	 * @param string $input
+	 *
+	 * @return string
+	 */
+	public static function filter__nl2br($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::nl_2_br((string)$input);
+	} //END FUNCTION
+
+
+	public static function filter__idtxt($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::create_idtxt((string)$input);
+	} //END FUNCTION
+
+
+	public static function filter__slug($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::create_slug((string)$input);
+	} //END FUNCTION
+
+
+	public static function filter__htmid($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::create_htmid((string)$input);
 	} //END FUNCTION
 
 
@@ -47,7 +122,7 @@ final class StandardFilters {
 	 * @param string $input
 	 * @return string
 	 */
-	public static function html($input) {
+	public static function filter__html($input) {
 		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
 			$input = null;
 		} //end if
@@ -65,11 +140,27 @@ final class StandardFilters {
 	 * @param string $input
 	 * @return string
 	 */
-	public static function js($input) {
+	public static function filter__js($input) {
 		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
 			$input = null;
 		} //end if
 		return (string) \TwistTPL\SmartTwist::escape_js((string)$input);
+	} //END FUNCTION
+
+
+	public static function filter__json($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::escape_json((string)$input);
+	} //END FUNCTION
+
+
+	public static function filter__jsvar($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::create_jsvar((string)$input);
 	} //END FUNCTION
 
 
@@ -83,7 +174,7 @@ final class StandardFilters {
 	 * @param string $input
 	 * @return string
 	 */
-	public static function url($input) {
+	public static function filter__url($input) {
 		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
 			$input = null;
 		} //end if
@@ -97,7 +188,7 @@ final class StandardFilters {
 	 * @param string $input
 	 * @return string
 	 */
-	public static function css($input) {
+	public static function filter__css($input) {
 		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
 			$input = null;
 		} //end if
@@ -112,7 +203,7 @@ final class StandardFilters {
 	 *
 	 * @return string
 	 */
-	public static function ucwords($input) {
+	public static function filter__ucwords($input) {
 		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
 			$input = null;
 		} //end if
@@ -127,7 +218,7 @@ final class StandardFilters {
 	 *
 	 * @return string
 	 */
-	public static function ucfirst($input) {
+	public static function filter__ucfirst($input) {
 		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
 			$input = null;
 		} //end if
@@ -142,7 +233,7 @@ final class StandardFilters {
 	 *
 	 * @return string
 	 */
-	public static function upper($input) {
+	public static function filter__upper($input) {
 		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
 			$input = null;
 		} //end if
@@ -157,7 +248,7 @@ final class StandardFilters {
 	 *
 	 * @return string
 	 */
-	public static function lower($input) {
+	public static function filter__lower($input) {
 		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
 			$input = null;
 		} //end if
@@ -165,16 +256,62 @@ final class StandardFilters {
 	} //END FUNCTION
 
 
-	/**
-	 * Replace each newline (\n) with a html break
-	 *
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-	public static function nl2br($input) {
-		return is_string($input) ? str_replace([ "\r\n", "\r", "\n" ], "<br>\n", $input) : $input;
-	}
+	public static function filter__trim($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::trim_whitespaces((string)$input);
+	} //END FUNCTION
+
+
+	public static function filter__smartlist($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::smart_list((string)$input);
+	} //END FUNCTION
+
+
+	public static function filter__hex($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::encode_bin2hex((string)$input);
+	} //END FUNCTION
+
+
+	public static function filter__b64($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::encode_base64((string)$input);
+	} //END FUNCTION
+
+
+	public static function filter__sha1($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::hash_sha1((string)$input);
+	} //END FUNCTION
+
+
+	//----------------
+
+
+	public static function filter__arrsize($input) {
+		return (int) \TwistTPL\SmartTwist::arr_size($input); // int
+	} //END FUNCTION
+
+
+	public static function filter__arrfirst($input) {
+		return \TwistTPL\SmartTwist::arr_first($input); // mixed
+	} //END FUNCTION
+
+
+	public static function filter__arrlast($input) {
+		return \TwistTPL\SmartTwist::arr_last($input); // mixed
+	} //END FUNCTION
 
 
 	//----------------
@@ -188,7 +325,7 @@ final class StandardFilters {
 	 *
 	 * @return string | mixed
 	 */
-	public static function _default($input, $default_value) {
+	public static function filter__default($input, $default_value) {
 		//--
 	//	$isBlank = $input == '' || $input === false || $input === null;
 		$isBlank = $input == '' || $input === null || empty($input);
@@ -200,7 +337,7 @@ final class StandardFilters {
 
 	//----------------
 
-
+//
 //	/**
 //	 * Add one string to another
 //	 *
@@ -219,6 +356,18 @@ final class StandardFilters {
 //		return (string) $input.$string;
 //	}
 //
+//	/**
+//	 * Prepend a string to another
+//	 *
+//	 * @param string $input
+//	 * @param string $string
+//	 *
+//	 * @return string
+//	 */
+//	public static function prepend($input, $string)
+//	{
+//		return $string . $input;
+//	}
 //
 //	/**
 //	 * @param mixed $input number
@@ -230,6 +379,15 @@ final class StandardFilters {
 //		return (int) ceil((float)$input);
 //	}
 //
+//	/**
+//	 * @param mixed $input number
+//	 *
+//	 * @return int
+//	 */
+//	public static function floor($input)
+//	{
+//		return (int) floor((float)$input);
+//	}
 //
 //	/**
 //	 * Formats a date using strftime
@@ -269,34 +427,6 @@ final class StandardFilters {
 //
 //
 //	/**
-//	 * Returns the first element of an array
-//	 *
-//	 * @param array|\Iterator $input
-//	 *
-//	 * @return mixed
-//	 */
-//	public static function first($input)
-//	{
-//		if ($input instanceof \Iterator) {
-//			$input->rewind();
-//			return $input->current();
-//		}
-//		return is_array($input) ? reset($input) : $input;
-//	}
-//
-//
-//	/**
-//	 * @param mixed $input number
-//	 *
-//	 * @return int
-//	 */
-//	public static function floor($input)
-//	{
-//		return (int) floor((float)$input);
-//	}
-//
-//
-//	/**
 //	 * Joins elements of an array with a given character between them
 //	 *
 //	 * @param array|\Traversable $input
@@ -320,25 +450,6 @@ final class StandardFilters {
 //	}
 //
 //
-//	/**
-//	 * Returns the last element of an array
-//	 *
-//	 * @param array|\Traversable $input
-//	 *
-//	 * @return mixed
-//	 */
-//	public static function last($input)
-//	{
-//		if ($input instanceof \Traversable) {
-//			$last = null;
-//			foreach ($input as $elem) {
-//				$last = $elem;
-//			}
-//			return $last;
-//		}
-//		return is_array($input) ? end($input) : $input;
-//	}
-//
 //
 //	/**
 //	 * @param string $input
@@ -350,32 +461,6 @@ final class StandardFilters {
 //		return ltrim($input);
 //	}
 //
-//
-//	/**
-//	 * Map/collect on a given property
-//	 *
-//	 * @param array|\Traversable $input
-//	 * @param string $property
-//	 *
-//	 * @return string
-//	 */
-//	public static function map($input, $property)
-//	{
-//		if ($input instanceof \Traversable) {
-//			$input = iterator_to_array($input);
-//		}
-//		if (!is_array($input)) {
-//			return $input;
-//		}
-//		return array_map(function ($elem) use ($property) {
-//			if (is_callable($elem)) {
-//				return $elem();
-//			} elseif (is_array($elem) && array_key_exists($property, $elem)) {
-//				return $elem[$property];
-//			}
-//			return null;
-//		}, $input);
-//	}
 //
 //
 //	/**
@@ -419,25 +504,6 @@ final class StandardFilters {
 //		return fmod((float)$input, (float)$operand);
 //	}
 //
-//
-//
-//
-//
-//
-//
-//
-//	/**
-//	 * Prepend a string to another
-//	 *
-//	 * @param string $input
-//	 * @param string $string
-//	 *
-//	 * @return string
-//	 */
-//	public static function prepend($input, $string)
-//	{
-//		return $string . $input;
-//	}
 //
 //
 //	/**

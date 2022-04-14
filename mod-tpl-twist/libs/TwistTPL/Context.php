@@ -300,23 +300,23 @@ final class Context {
 			} //end if
 			//--
 			if(\is_array($val)) {
-				//-- if the last part of the context variable is .first we return the first array element
-				if(($nextPartName === 'first') && ((int)\count($parts) == 0) && (!\array_key_exists('first', $val))) {
-					return \TwistTPL\StandardFilters::first($val);
-				} //end if
-				//-- if the last part of the context variable is .last we return the last array element
-				if(($nextPartName === 'last') && ((int)\count($parts) == 0) && (!\array_key_exists('last', $val))) {
-					return StandardFilters::last($val);
-				} //end if
-				//-- if the last part of the context variable is .size we just return the count
-				if(($nextPartName === 'size') && ((int)\count($parts) == 0) && (!\array_key_exists('size', $val))) {
-					return (int) \count($val);
+				//--
+				if((int)\count($parts) == 0) {
+					//--
+					if(($nextPartName === 'size') && (!\array_key_exists('size', $val))) { 			// if the last part of the context variable is .size we just return the count
+						return (int) \TwistTPL\SmartTwist::arr_size($val); // int
+					} elseif(($nextPartName === 'first') && (!\array_key_exists('first', $val))) { 	// if the last part of the context variable is .first we return the first array element
+						return \TwistTPL\SmartTwist::arr_first($val); // mixed
+					} elseif(($nextPartName === 'last') && (!\array_key_exists('last', $val))) { 	// if the last part of the context variable is .last we return the last array element
+						return \TwistTPL\SmartTwist::arr_last($val); // mixed
+					} //end if
+					//--
 				} //end if
 				//-- no key / no value
-				if(!\array_key_exists($nextPartName, $val)) {
+				if(((string)\trim((string)$nextPartName) == '') || (!\array_key_exists((string)$nextPartName, $val))) {
 					return null;
 				} //end if
-				$val = $val[$nextPartName];
+				$val = $val[(string)$nextPartName];
 				//--
 				continue;
 				//--
