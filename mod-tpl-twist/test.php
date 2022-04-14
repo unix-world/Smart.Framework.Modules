@@ -117,7 +117,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				['a1' => '2.1', 'a2' => '2.2', 'a3' => '2.3'],
 				['a1' => '3.1', 'a2' => '3.2', 'a3' => '3.3']
 			],
-			'tcount' => 3,
+			'tCount' => 3,
 			'a' => 'Test-1',
 			'b' => 'Test-2'
 		];

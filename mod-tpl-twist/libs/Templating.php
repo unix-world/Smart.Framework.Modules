@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TwistTPL
- * @version 	v.20220331
+ * @version 	v.20220414
  * @package 	modules:TemplatingEngine
  *
  */
@@ -109,13 +109,6 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 	} //END FUNCTION
 
 
-	public function escapeSyntax(?string $str) : string {
-		//--
-		return (string) \TwistTPL\SmartTwist::escapeSyntax((string)$str, true); // this applies also \SmartMarkersTemplating::prepare_nosyntax_content()
-		//--
-	} //END FUNCTION
-
-
 	/**
 	 *
 	 * @access 		private
@@ -155,8 +148,8 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		if(!\is_array($arr_vars)) {
 			$arr_vars = array();
 		} //end if
-	//	$arr_vars = (array) \array_change_key_case((array)$arr_vars, \CASE_LOWER); // make all keys lower (only 1st level, not nested) ; allow camelCase keys ; variables are case sensitive in Twist
-		$arr_vars = (array) $this->fixArrayKeys($arr_vars, false); // make keys compatible with PHP variable names, LOWER only (only 1st level, not nested)
+		//-- allow camelCase keys
+		$arr_vars = (array) $this->fixArrayKeys($arr_vars, true); // make keys compatible with PHP variable names, LOWER and UPPER (only 1st level, not nested)
 		//--
 		if((string)\trim((string)$file) == '') {
 			throw new \Exception('Twist Templating / Render File / The file name is Empty');

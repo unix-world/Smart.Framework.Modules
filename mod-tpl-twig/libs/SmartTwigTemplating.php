@@ -42,7 +42,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype (optional) ; classes: \SmartModExtLib\Tpl\InterfaceSmartTemplating, \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20220331
+ * @version 	v.20220414
  * @package 	modules:TemplatingEngine
  *
  */
@@ -83,16 +83,7 @@ final class SmartTwigTemplating implements \SmartModExtLib\Tpl\InterfaceSmartTem
 			);
 		} //end try catch
 		//--
-		return (string) self::prepare_nosyntax_content((string)$out); // this applies also \SmartMarkersTemplating::prepare_nosyntax_content()
-		//--
-	} //END FUNCTION
-
-
-	public static function prepare_nosyntax_content(?string $str) : string {
-		//--
-		self::startEngine();
-		//--
-		return (string) self::$engine->escapeSyntax((string)$str); // this applies also \SmartMarkersTemplating::prepare_nosyntax_content()
+		return (string) self::$engine->prepareNoSyntaxContent((string)$out);
 		//--
 	} //END FUNCTION
 
@@ -112,7 +103,7 @@ final class SmartTwigTemplating implements \SmartModExtLib\Tpl\InterfaceSmartTem
 			$out = '{### ERROR: Twig TPL Debug Failed: '.$e->getMessage().' ###}';
 		} //end try catch
 		//--
-		return (string) self::prepare_nosyntax_content((string)$out); // this applies also \SmartMarkersTemplating::prepare_nosyntax_content()
+		return (string) self::$engine->prepareNoSyntaxContent((string)$out);
 		//--
 	} //END FUNCTION
 

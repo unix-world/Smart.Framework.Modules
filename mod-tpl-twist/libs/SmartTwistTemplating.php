@@ -42,7 +42,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype ; classes: TwistTPL, \SmartModExtLib\TplTwist\Templating
- * @version 	v.20220331
+ * @version 	v.20220414
  * @package 	modules:TemplatingEngine
  *
  */
@@ -88,16 +88,7 @@ final class SmartTwistTemplating implements \SmartModExtLib\Tpl\InterfaceSmartTe
 			);
 		} //end try catch
 		//--
-		return (string) self::prepare_nosyntax_content((string)$out); // this applies also \SmartMarkersTemplating::prepare_nosyntax_content()
-		//--
-	} //END FUNCTION
-
-
-	public static function prepare_nosyntax_content(?string $str) : string {
-		//--
-		self::startEngine();
-		//--
-		return (string) self::$engine->escapeSyntax((string)$str); // this applies also \SmartMarkersTemplating::prepare_nosyntax_content()
+		return (string) self::$engine->prepareNoSyntaxContent((string)$out);
 		//--
 	} //END FUNCTION
 
@@ -117,7 +108,7 @@ final class SmartTwistTemplating implements \SmartModExtLib\Tpl\InterfaceSmartTe
 			$out = '{### ERROR: Twist TPL Debug Failed: '.$e->getMessage().' ###}';
 		} //end try catch
 		//--
-		return (string) self::prepare_nosyntax_content((string)$out); // this applies also \SmartMarkersTemplating::prepare_nosyntax_content()
+		return (string) self::$engine->prepareNoSyntaxContent((string)$out);
 		//--
 	} //END FUNCTION
 

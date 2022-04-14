@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.20220331
+ * @version 	v.20220414
  * @package 	modules:TemplatingEngine
  *
  */
@@ -92,19 +92,6 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 	} //END FUNCTION
 
 
-	public function escapeSyntax(?string $str) : string {
-		//-- {{{SYNC-ESCAPE-BRACKET-SYNTAX-T3FLUID}}}
-		return (string) \strtr(
-			(string)\SmartMarkersTemplating::prepare_nosyntax_content((string)$str),
-			[
-				'<f:' 	=> '<tplt3f-',
-				'</f:' 	=> '</tplt3f-'
-			]
-		);
-		//--
-	} //END FUNCTION
-
-
 	/**
 	 *
 	 * @access 		private
@@ -131,7 +118,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 
 	private function smartSetupCacheDir() {
 		//--
-		$the_t3fluid_cache_dir = 'tmp/cache/tpl-t3fluid/v.'.(int)self::VERSION_MAJOR.'.'.(int)self::VERSION_MINOR.'/';
+		$the_t3fluid_cache_dir = 'tmp/cache/tpl-t3fluid/v'.(int)self::VERSION_MAJOR.'.'.(int)self::VERSION_MINOR.'/';
 		//--
 		if(\SmartFrameworkRegistry::isAdminArea() === true) {
 			if(\SmartFrameworkRegistry::isTaskArea() === true) {
@@ -166,7 +153,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		if(!\is_array($arr_vars)) {
 			$arr_vars = array();
 		} //end if
-		// allow camelCase keys
+		//-- allow camelCase keys
 		$arr_vars = (array) $this->fixArrayKeys($arr_vars, true); // make keys compatible with PHP variable names, LOWER and UPPER (only 1st level, not nested)
 		//--
 		if((string)\trim((string)$file) == '') {

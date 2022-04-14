@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210331
+ * @version 	v.20220414
  * @package 	development:modules:TemplatingEngine
  *
  */
@@ -64,14 +64,6 @@ abstract class AbstractTemplating {
 	//=====
 
 
-	//====
-	/**
-	 * RETURN: a TPL String with Safe Escaped Syntax
-	 */
-	abstract public function escapeSyntax(?string $str) : string;
-	//====
-
-
 	//=====
 	/**
 	 * RETURN: the Debug TPL String
@@ -104,6 +96,15 @@ abstract class AbstractTemplating {
 		} //end foreach
 		//--
 		return (array) $new_arr;
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	final public function prepareNoSyntaxContent(?string $str) : string {
+		//--
+		return (string) \SmartMarkersTemplating::prepare_nosyntax_content((string)$str);
 		//--
 	} //END FUNCTION
 	//=====

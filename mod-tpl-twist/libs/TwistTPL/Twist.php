@@ -19,10 +19,10 @@ final class Twist {
 	// ::
 
 	public const MAJOR_VERSION = 1;
-	public const MINOR_VERSION = 3;
-	public const EXTRA_VERSION = 0;
+	public const MINOR_VERSION = 4;
+	public const EXTRA_VERSION = 2;
 
-	public const VERSION = '1.3.0'; // branch derived from 1.2.1
+	public const VERSION = '1.4.2'; // branch derived from 1.2.1
 
 	public const INVALID_PATH = [ '.', '..', '/', './', '../', '/.', '/..', ':', '@', '@/', '|' ]; // spaces are not includded here, must be trimmed !
 

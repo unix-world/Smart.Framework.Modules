@@ -43,7 +43,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	classes: Typo3Fluid, \SmartModExtLib\TplTypo3Fluid\Templating
- * @version 	v.20220331
+ * @version 	v.20220414
  * @package 	modules:TemplatingEngine
  *
  */
@@ -84,16 +84,7 @@ final class SmartTypo3FluidTemplating implements \SmartModExtLib\Tpl\InterfaceSm
 			);
 		} //end try catch
 		//--
-		return (string) self::prepare_nosyntax_content((string)$out); // this applies also \SmartMarkersTemplating::prepare_nosyntax_content()
-		//--
-	} //END FUNCTION
-
-
-	public static function prepare_nosyntax_content(?string $str) : string {
-		//--
-		self::startEngine();
-		//--
-		return (string) self::$engine->escapeSyntax((string)$str); // this applies also \SmartMarkersTemplating::prepare_nosyntax_content()
+		return (string) self::$engine->prepareNoSyntaxContent((string)$out);
 		//--
 	} //END FUNCTION
 

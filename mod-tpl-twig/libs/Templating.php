@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype (optional) ; classes: \SmartModExtLib\Tpl\AbstractTemplating, \SmartModExtLib\TplTwig\SmartTwigEnvironment, \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20220331
+ * @version 	v.20220414
  * @package 	modules:TemplatingEngine
  *
  */
@@ -58,8 +58,6 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 	private $dir;
 	private $twig;
 	private $twprof;
-
-	private const SPECIAL_SOFT_HYPHEN = "\u{00AD}"; // {{{SYNC-ESCAPE-BRACKET-SYNTAX-TWIST-TWIG}}}
 
 
 	public static function getVersion() : string {
@@ -111,23 +109,6 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 	public function renderFileTemplate(?string $file, ?array $arr_vars=[]) : string {
 		//--
 		return (string) $this->render_file_template((string)$file, (array)$arr_vars, false);
-		//--
-	} //END FUNCTION
-
-
-	public function escapeSyntax(?string $str) : string {
-		//-- {{{SYNC-ESCAPE-BRACKET-SYNTAX-TWIST-TWIG}}}
-		return (string) \strtr(
-			(string)\SmartMarkersTemplating::prepare_nosyntax_content((string)$str),
-			[
-				'{{' => '{'.self::SPECIAL_SOFT_HYPHEN.'{',
-				'}}' => '}'.self::SPECIAL_SOFT_HYPHEN.'}',
-				'{%' => '{'.self::SPECIAL_SOFT_HYPHEN.'%',
-				'%}' => '%'.self::SPECIAL_SOFT_HYPHEN.'}',
-				'{#' => '{'.self::SPECIAL_SOFT_HYPHEN.'#',
-				'#}' => '#'.self::SPECIAL_SOFT_HYPHEN.'}',
-			]
-		);
 		//--
 	} //END FUNCTION
 
@@ -285,7 +266,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		if(!\is_array($arr_vars)) {
 			$arr_vars = array();
 		} //end if
-	//	$arr_vars = (array) \array_change_key_case((array)$arr_vars, \CASE_LOWER); // make all keys lower (only 1st level, not nested) ; allow camelCase keys ; variables are case sensitive in Twig
+		//-- allow camelCase keys
 		$arr_vars = (array) $this->fixArrayKeys($arr_vars, true); // make keys compatible with PHP variable names, LOWER and UPPER (only 1st level, not nested)
 		//--
 		if((string)\trim((string)$file) == '') {

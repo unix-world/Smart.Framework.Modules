@@ -21,31 +21,7 @@ namespace TwistTPL;
 final class StandardFilters {
 
 	// TODO: finalize all filters here ...
-
-	/**
-	 * Escape TPL Syntax (as Text)
-	 * @param string $input
-	 * @return string
-	 */
-	public static function syntax($input) {
-		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
-			$input = null;
-		} //end if
-		return (string) \TwistTPL\SmartTwist::escapeSyntax((string)$input, true);
-	} //END FUNCTION
-
-
-	/**
-	 * Escape TPL Syntax (as HTML)
-	 * @param string $input
-	 * @return string
-	 */
-	public static function syntaxhtml($input) {
-		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
-			$input = null;
-		} //end if
-		return (string) \TwistTPL\SmartTwist::escapeSyntax((string)$input, false);
-	} //END FUNCTION
+	// IMPORTANT: syntax or syntaxhtml escaping is not quite possible under this kind of TPL systems {{ ... }}
 
 
 	/**
@@ -129,6 +105,80 @@ final class StandardFilters {
 	} //END FUNCTION
 
 
+	/**
+	 * Capitalize words in the input string
+	 *
+	 * @param string $input
+	 *
+	 * @return string
+	 */
+	public static function ucwords($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::uc_words((string)$input);
+	} //END FUNCTION
+
+
+	/**
+	 * Capitalize first word in the input string
+	 *
+	 * @param string $input
+	 *
+	 * @return string
+	 */
+	public static function ucfirst($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::uc_first((string)$input);
+	} //END FUNCTION
+
+
+	/**
+	 * Make the input string uppercase
+	 *
+	 * @param string $input
+	 *
+	 * @return string
+	 */
+	public static function upper($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::str_toupper((string)$input);
+	} //END FUNCTION
+
+
+	/**
+	 * Make the input string lowercase
+	 *
+	 * @param string $input
+	 *
+	 * @return string
+	 */
+	public static function lower($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::str_tolower((string)$input);
+	} //END FUNCTION
+
+
+	/**
+	 * Replace each newline (\n) with a html break
+	 *
+	 * @param string $input
+	 *
+	 * @return string
+	 */
+	public static function nl2br($input) {
+		return is_string($input) ? str_replace([ "\r\n", "\r", "\n" ], "<br>\n", $input) : $input;
+	}
+
+
+	//----------------
+
 
 	/**
 	 * Default, as a Value if empty or null
@@ -148,637 +198,555 @@ final class StandardFilters {
 	} //END FUNCTION
 
 
-	/**
-	 * Add one string to another
-	 *
-	 * @param string $input
-	 * @param string $string
-	 *
-	 * @return string
-	 */
-	public static function append($input, $string) {
-		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
-			$input = null;
-		} //end if
-		if(!\TwistTPL\SmartTwist::is_nscalar($string)) { // arrays are not supported by this filter
-			$string = null;
-		} //end if
-		return (string) $input.$string;
-	}
+	//----------------
+
+
+//	/**
+//	 * Add one string to another
+//	 *
+//	 * @param string $input
+//	 * @param string $string
+//	 *
+//	 * @return string
+//	 */
+//	public static function append($input, $string) {
+//		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+//			$input = null;
+//		} //end if
+//		if(!\TwistTPL\SmartTwist::is_nscalar($string)) { // arrays are not supported by this filter
+//			$string = null;
+//		} //end if
+//		return (string) $input.$string;
+//	}
+//
+//
+//	/**
+//	 * @param mixed $input number
+//	 *
+//	 * @return int
+//	 */
+//	public static function ceil($input)
+//	{
+//		return (int) ceil((float)$input);
+//	}
+//
+//
+//	/**
+//	 * Formats a date using strftime
+//	 *
+//	 * @param mixed $input
+//	 * @param string $format
+//	 *
+//	 * @return string
+//	 */
+//	public static function date($input, $format)
+//	{
+//		if (!is_numeric($input)) {
+//			$input = strtotime($input);
+//		}
+//
+//		if ($format == 'r') {
+//			return date($format, $input);
+//		}
+//
+//		return strftime($format, $input);
+//	}
+//
+//	/**
+//	 * division
+//	 *
+//	 * @param float $input
+//	 * @param float $operand
+//	 *
+//	 * @return float
+//	 */
+//	public static function divided_by($input, $operand) {
+//		if((float)$operand == 0) {
+//			return 'NAN'; // avoid division by zero
+//		}
+//		return (float)$input / (float)$operand;
+//	}
+//
+//
+//	/**
+//	 * Returns the first element of an array
+//	 *
+//	 * @param array|\Iterator $input
+//	 *
+//	 * @return mixed
+//	 */
+//	public static function first($input)
+//	{
+//		if ($input instanceof \Iterator) {
+//			$input->rewind();
+//			return $input->current();
+//		}
+//		return is_array($input) ? reset($input) : $input;
+//	}
+//
+//
+//	/**
+//	 * @param mixed $input number
+//	 *
+//	 * @return int
+//	 */
+//	public static function floor($input)
+//	{
+//		return (int) floor((float)$input);
+//	}
+//
+//
+//	/**
+//	 * Joins elements of an array with a given character between them
+//	 *
+//	 * @param array|\Traversable $input
+//	 * @param string $glue
+//	 *
+//	 * @return string
+//	 */
+//	public static function join($input, $glue = ' ')
+//	{
+//		if ($input instanceof \Traversable) {
+//			$str = '';
+//			foreach ($input as $elem) {
+//				if ($str) {
+//					$str .= $glue;
+//				}
+//				$str .= $elem;
+//			}
+//			return $str;
+//		}
+//		return is_array($input) ? implode($glue, $input) : $input;
+//	}
+//
+//
+//	/**
+//	 * Returns the last element of an array
+//	 *
+//	 * @param array|\Traversable $input
+//	 *
+//	 * @return mixed
+//	 */
+//	public static function last($input)
+//	{
+//		if ($input instanceof \Traversable) {
+//			$last = null;
+//			foreach ($input as $elem) {
+//				$last = $elem;
+//			}
+//			return $last;
+//		}
+//		return is_array($input) ? end($input) : $input;
+//	}
+//
+//
+//	/**
+//	 * @param string $input
+//	 *
+//	 * @return string
+//	 */
+//	public static function lstrip($input)
+//	{
+//		return ltrim($input);
+//	}
+//
+//
+//	/**
+//	 * Map/collect on a given property
+//	 *
+//	 * @param array|\Traversable $input
+//	 * @param string $property
+//	 *
+//	 * @return string
+//	 */
+//	public static function map($input, $property)
+//	{
+//		if ($input instanceof \Traversable) {
+//			$input = iterator_to_array($input);
+//		}
+//		if (!is_array($input)) {
+//			return $input;
+//		}
+//		return array_map(function ($elem) use ($property) {
+//			if (is_callable($elem)) {
+//				return $elem();
+//			} elseif (is_array($elem) && array_key_exists($property, $elem)) {
+//				return $elem[$property];
+//			}
+//			return null;
+//		}, $input);
+//	}
+//
+//
+//	/**
+//	 * addition
+//	 *
+//	 * @param float $input
+//	 * @param float $operand
+//	 *
+//	 * @return float
+//	 */
+//	public static function plus($input, $operand)
+//	{
+//		return (float)$input + (float)$operand;
+//	}
+//
+//
+//	/**
+//	 * subtraction
+//	 *
+//	 * @param float $input
+//	 * @param float $operand
+//	 *
+//	 * @return float
+//	 */
+//	public static function minus($input, $operand)
+//	{
+//		return (float)$input - (float)$operand;
+//	}
+//
+//
+//	/**
+//	 * modulo
+//	 *
+//	 * @param float $input
+//	 * @param float $operand
+//	 *
+//	 * @return float
+//	 */
+//	public static function modulo($input, $operand)
+//	{
+//		return fmod((float)$input, (float)$operand);
+//	}
+//
+//
+//
+//
+//
+//
+//
+//
+//	/**
+//	 * Prepend a string to another
+//	 *
+//	 * @param string $input
+//	 * @param string $string
+//	 *
+//	 * @return string
+//	 */
+//	public static function prepend($input, $string)
+//	{
+//		return $string . $input;
+//	}
+//
+//
+//	/**
+//	 * Remove a substring
+//	 *
+//	 * @param string $input
+//	 * @param string $string
+//	 *
+//	 * @return string
+//	 */
+//	public static function remove($input, $string)
+//	{
+//		return str_replace($string, '', $input);
+//	}
+//
+//
+//	/**
+//	 * Remove the first occurrences of a substring
+//	 *
+//	 * @param string $input
+//	 * @param string $string
+//	 *
+//	 * @return string
+//	 */
+//	public static function remove_first($input, $string)
+//	{
+//		if (($pos = strpos($input, $string)) !== false) {
+//			$input = substr_replace($input, '', $pos, strlen($string));
+//		}
+//
+//		return $input;
+//	}
+//
+//
+//	/**
+//	 * Replace occurrences of a string with another
+//	 *
+//	 * @param string $input
+//	 * @param string $string
+//	 * @param string $replacement
+//	 *
+//	 * @return string
+//	 */
+//	public static function replace($input, $string, $replacement = '')
+//	{
+//		return str_replace($string, $replacement, $input);
+//	}
+//
+//
+//	/**
+//	 * Replace the first occurrences of a string with another
+//	 *
+//	 * @param string $input
+//	 * @param string $string
+//	 * @param string $replacement
+//	 *
+//	 * @return string
+//	 */
+//	public static function replace_first($input, $string, $replacement = '')
+//	{
+//		if (($pos = strpos($input, $string)) !== false) {
+//			$input = substr_replace($input, $replacement, $pos, strlen($string));
+//		}
+//
+//		return $input;
+//	}
+//
+//
+//	/**
+//	 * Reverse the elements of an array
+//	 *
+//	 * @param array|\Traversable $input
+//	 *
+//	 * @return array
+//	 */
+//	public static function reverse($input)
+//	{
+//		return array_reverse($input);
+//	}
+//
+//
+//	/**
+//	 * Round a number
+//	 *
+//	 * @param float $input
+//	 * @param int $n precision
+//	 *
+//	 * @return float
+//	 */
+//	public static function round($input, $n = 0)
+//	{
+//		return round((float)$input, (int)$n);
+//	}
+//
+//
+//	/**
+//	 * @param string $input
+//	 *
+//	 * @return string
+//	 */
+//	public static function rstrip($input)
+//	{
+//		return rtrim($input);
+//	}
+//
+//
+//	/**
+//	 * Return the size of an array or of an string
+//	 *
+//	 * @param mixed $input
+//	 * @throws \Exception
+//	 * @return int
+//	 */
+//	public static function size($input)
+//	{
+//
+//		if (is_array($input)) {
+//			return count($input);
+//		}
+//
+//		// only plain values and stringable objects left at this point
+//		return strlen($input);
+//	}
+//
+//
+//	/**
+//	 * @param array|\Iterator|string $input
+//	 * @param int $offset
+//	 * @param int $length
+//	 *
+//	 * @return array|\Iterator|string
+//	 */
+//	public static function slice($input, $offset, $length = null)
+//	{
+//		if (is_array($input)) {
+//			$input = array_slice($input, $offset, $length);
+//		} else { // if (is_string($input)) {
+//			$input = mb_substr($input, $offset, $length);
+//		}
+//
+//		return $input;
+//	}
+//
+//
+//	/**
+//	 * Sort the elements of an array
+//	 *
+//	 * @param array $input
+//	 * @param string $property use this property of an array element
+//	 *
+//	 * @return array
+//	 */
+//	public static function sort($input, $property = null)
+//	{
+//		if ($property === null) {
+//			asort($input);
+//		} else {
+//			$first = reset($input);
+//			if ($first !== false && is_array($first) && array_key_exists($property, $first)) {
+//				uasort($input, function ($a, $b) use ($property) {
+//					if ($a[$property] == $b[$property]) {
+//						return 0;
+//					}
+//
+//					return $a[$property] < $b[$property] ? -1 : 1;
+//				});
+//			}
+//		}
+//
+//		return $input;
+//	}
+//
+//	/**
+//	 * Explicit string conversion.
+//	 *
+//	 * @param mixed $input
+//	 *
+//	 * @return string
+//	 */
+///*
+//	public static function string($input)
+//	{
+//		return strval($input);
+//	}
+//*/
+//
+//	/**
+//	 * Split input string into an array of substrings separated by given pattern.
+//	 *
+//	 * @param string $input
+//	 * @param string $pattern
+//	 *
+//	 * @return array
+//	 */
+//	public static function split($input, $pattern)
+//	{
+//		return explode($pattern, $input);
+//	}
+//
+//
+//	/**
+//	 * @param string $input
+//	 *
+//	 * @return string
+//	 */
+//	public static function strip($input)
+//	{
+//		return trim($input);
+//	}
+//
+//
+//	/**
+//	 * Removes html tags from text
+//	 *
+//	 * @param string $input
+//	 *
+//	 * @return string
+//	 */
+//	public static function strip_html($input)
+//	{
+//		return is_string($input) ? strip_tags($input) : $input;
+//	}
+//
+//
+//	/**
+//	 * Strip all newlines (\n, \r) from string
+//	 *
+//	 * @param string $input
+//	 *
+//	 * @return string
+//	 */
+//	public static function strip_newlines($input)
+//	{
+//		return is_string($input) ? str_replace(array(
+//			"\n", "\r"
+//		), '', $input) : $input;
+//	}
+//
+//
+//	/**
+//	 * multiplication
+//	 *
+//	 * @param float $input
+//	 * @param float $operand
+//	 *
+//	 * @return float
+//	 */
+//	public static function times($input, $operand)
+//	{
+//		return (float)$input * (float)$operand;
+//	}
+//
+//
+//	/**
+//	 * Truncate a string down to x characters
+//	 *
+//	 * @param string $input
+//	 * @param int $characters
+//	 * @param string $ending string to append if truncated
+//	 *
+//	 * @return string
+//	 */
+//	public static function truncate($input, $characters = 100, $ending = '...')
+//	{
+//		if (is_string($input) || is_numeric($input)) {
+//			if (strlen($input) > $characters) {
+//				return mb_substr($input, 0, $characters) . $ending;
+//			}
+//		}
+//
+//		return $input;
+//	}
+//
+//
+//	/**
+//	 * Truncate string down to x words
+//	 *
+//	 * @param string $input
+//	 * @param int $words
+//	 * @param string $ending string to append if truncated
+//	 *
+//	 * @return string
+//	 */
+//	public static function truncatewords($input, $words = 3, $ending = '...')
+//	{
+//		if (is_string($input)) {
+//			$wordlist = explode(" ", $input);
+//
+//			if (count($wordlist) > $words) {
+//				return implode(" ", array_slice($wordlist, 0, $words)) . $ending;
+//			}
+//		}
+//
+//		return $input;
+//	}
+//
+//
+//	/**
+//	 * Remove duplicate elements from an array
+//	 *
+//	 * @param array|\Traversable $input
+//	 *
+//	 * @return array
+//	 */
+//	public static function uniq($input)
+//	{
+//		return array_unique($input);
+//	}
 
-
-	/**
-	 * Capitalize words in the input sentence
-	 *
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-	public static function capitalize($input)
-	{
-		return preg_replace_callback("/(^|[^\p{L}'])([\p{Ll}])/u", function ($matches) {
-			$first_char = mb_substr($matches[2], 0, 1);
-			return $matches[1] . mb_strtoupper($first_char) . mb_substr($matches[2], 1);
-		}, ucwords($input));
-	}
-
-
-	/**
-	 * @param mixed $input number
-	 *
-	 * @return int
-	 */
-	public static function ceil($input)
-	{
-		return (int) ceil((float)$input);
-	}
-
-
-	/**
-	 * Formats a date using strftime
-	 *
-	 * @param mixed $input
-	 * @param string $format
-	 *
-	 * @return string
-	 */
-	public static function date($input, $format)
-	{
-		if (!is_numeric($input)) {
-			$input = strtotime($input);
-		}
-
-		if ($format == 'r') {
-			return date($format, $input);
-		}
-
-		return strftime($format, $input);
-	}
-
-	/**
-	 * division
-	 *
-	 * @param float $input
-	 * @param float $operand
-	 *
-	 * @return float
-	 */
-	public static function divided_by($input, $operand) {
-		if((float)$operand == 0) {
-			return 'NAN'; // avoid division by zero
-		}
-		return (float)$input / (float)$operand;
-	}
-
-
-	/**
-	 * Convert an input to lowercase
-	 *
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-	public static function downcase($input)
-	{
-		return is_string($input) ? mb_strtolower($input) : $input;
-	}
-
-
-
-
-
-
-
-
-	/**
-	 * Returns the first element of an array
-	 *
-	 * @param array|\Iterator $input
-	 *
-	 * @return mixed
-	 */
-	public static function first($input)
-	{
-		if ($input instanceof \Iterator) {
-			$input->rewind();
-			return $input->current();
-		}
-		return is_array($input) ? reset($input) : $input;
-	}
-
-
-	/**
-	 * @param mixed $input number
-	 *
-	 * @return int
-	 */
-	public static function floor($input)
-	{
-		return (int) floor((float)$input);
-	}
-
-
-	/**
-	 * Joins elements of an array with a given character between them
-	 *
-	 * @param array|\Traversable $input
-	 * @param string $glue
-	 *
-	 * @return string
-	 */
-	public static function join($input, $glue = ' ')
-	{
-		if ($input instanceof \Traversable) {
-			$str = '';
-			foreach ($input as $elem) {
-				if ($str) {
-					$str .= $glue;
-				}
-				$str .= $elem;
-			}
-			return $str;
-		}
-		return is_array($input) ? implode($glue, $input) : $input;
-	}
-
-
-	/**
-	 * Returns the last element of an array
-	 *
-	 * @param array|\Traversable $input
-	 *
-	 * @return mixed
-	 */
-	public static function last($input)
-	{
-		if ($input instanceof \Traversable) {
-			$last = null;
-			foreach ($input as $elem) {
-				$last = $elem;
-			}
-			return $last;
-		}
-		return is_array($input) ? end($input) : $input;
-	}
-
-
-	/**
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-	public static function lstrip($input)
-	{
-		return ltrim($input);
-	}
-
-
-	/**
-	 * Map/collect on a given property
-	 *
-	 * @param array|\Traversable $input
-	 * @param string $property
-	 *
-	 * @return string
-	 */
-	public static function map($input, $property)
-	{
-		if ($input instanceof \Traversable) {
-			$input = iterator_to_array($input);
-		}
-		if (!is_array($input)) {
-			return $input;
-		}
-		return array_map(function ($elem) use ($property) {
-			if (is_callable($elem)) {
-				return $elem();
-			} elseif (is_array($elem) && array_key_exists($property, $elem)) {
-				return $elem[$property];
-			}
-			return null;
-		}, $input);
-	}
-
-
-	/**
-	 * addition
-	 *
-	 * @param float $input
-	 * @param float $operand
-	 *
-	 * @return float
-	 */
-	public static function plus($input, $operand)
-	{
-		return (float)$input + (float)$operand;
-	}
-
-
-	/**
-	 * subtraction
-	 *
-	 * @param float $input
-	 * @param float $operand
-	 *
-	 * @return float
-	 */
-	public static function minus($input, $operand)
-	{
-		return (float)$input - (float)$operand;
-	}
-
-
-	/**
-	 * modulo
-	 *
-	 * @param float $input
-	 * @param float $operand
-	 *
-	 * @return float
-	 */
-	public static function modulo($input, $operand)
-	{
-		return fmod((float)$input, (float)$operand);
-	}
-
-
-	/**
-	 * Replace each newline (\n) with a html break
-	 *
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-	public static function nl2br($input) {
-		return is_string($input) ? str_replace([ "\r\n", "\r", "\n" ], "<br>\n", $input) : $input;
-	}
-
-
-
-
-
-	/**
-	 * Prepend a string to another
-	 *
-	 * @param string $input
-	 * @param string $string
-	 *
-	 * @return string
-	 */
-	public static function prepend($input, $string)
-	{
-		return $string . $input;
-	}
-
-
-	/**
-	 * Remove a substring
-	 *
-	 * @param string $input
-	 * @param string $string
-	 *
-	 * @return string
-	 */
-	public static function remove($input, $string)
-	{
-		return str_replace($string, '', $input);
-	}
-
-
-	/**
-	 * Remove the first occurrences of a substring
-	 *
-	 * @param string $input
-	 * @param string $string
-	 *
-	 * @return string
-	 */
-	public static function remove_first($input, $string)
-	{
-		if (($pos = strpos($input, $string)) !== false) {
-			$input = substr_replace($input, '', $pos, strlen($string));
-		}
-
-		return $input;
-	}
-
-
-	/**
-	 * Replace occurrences of a string with another
-	 *
-	 * @param string $input
-	 * @param string $string
-	 * @param string $replacement
-	 *
-	 * @return string
-	 */
-	public static function replace($input, $string, $replacement = '')
-	{
-		return str_replace($string, $replacement, $input);
-	}
-
-
-	/**
-	 * Replace the first occurrences of a string with another
-	 *
-	 * @param string $input
-	 * @param string $string
-	 * @param string $replacement
-	 *
-	 * @return string
-	 */
-	public static function replace_first($input, $string, $replacement = '')
-	{
-		if (($pos = strpos($input, $string)) !== false) {
-			$input = substr_replace($input, $replacement, $pos, strlen($string));
-		}
-
-		return $input;
-	}
-
-
-	/**
-	 * Reverse the elements of an array
-	 *
-	 * @param array|\Traversable $input
-	 *
-	 * @return array
-	 */
-	public static function reverse($input)
-	{
-		return array_reverse($input);
-	}
-
-
-	/**
-	 * Round a number
-	 *
-	 * @param float $input
-	 * @param int $n precision
-	 *
-	 * @return float
-	 */
-	public static function round($input, $n = 0)
-	{
-		return round((float)$input, (int)$n);
-	}
-
-
-	/**
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-	public static function rstrip($input)
-	{
-		return rtrim($input);
-	}
-
-
-	/**
-	 * Return the size of an array or of an string
-	 *
-	 * @param mixed $input
-	 * @throws \Exception
-	 * @return int
-	 */
-	public static function size($input)
-	{
-
-		if (is_array($input)) {
-			return count($input);
-		}
-
-		// only plain values and stringable objects left at this point
-		return strlen($input);
-	}
-
-
-	/**
-	 * @param array|\Iterator|string $input
-	 * @param int $offset
-	 * @param int $length
-	 *
-	 * @return array|\Iterator|string
-	 */
-	public static function slice($input, $offset, $length = null)
-	{
-		if (is_array($input)) {
-			$input = array_slice($input, $offset, $length);
-		} else { // if (is_string($input)) {
-			$input = mb_substr($input, $offset, $length);
-		}
-
-		return $input;
-	}
-
-
-	/**
-	 * Sort the elements of an array
-	 *
-	 * @param array $input
-	 * @param string $property use this property of an array element
-	 *
-	 * @return array
-	 */
-	public static function sort($input, $property = null)
-	{
-		if ($property === null) {
-			asort($input);
-		} else {
-			$first = reset($input);
-			if ($first !== false && is_array($first) && array_key_exists($property, $first)) {
-				uasort($input, function ($a, $b) use ($property) {
-					if ($a[$property] == $b[$property]) {
-						return 0;
-					}
-
-					return $a[$property] < $b[$property] ? -1 : 1;
-				});
-			}
-		}
-
-		return $input;
-	}
-
-	/**
-	 * Explicit string conversion.
-	 *
-	 * @param mixed $input
-	 *
-	 * @return string
-	 */
-/*
-	public static function string($input)
-	{
-		return strval($input);
-	}
-*/
-
-	/**
-	 * Split input string into an array of substrings separated by given pattern.
-	 *
-	 * @param string $input
-	 * @param string $pattern
-	 *
-	 * @return array
-	 */
-	public static function split($input, $pattern)
-	{
-		return explode($pattern, $input);
-	}
-
-
-	/**
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-	public static function strip($input)
-	{
-		return trim($input);
-	}
-
-
-	/**
-	 * Removes html tags from text
-	 *
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-	public static function strip_html($input)
-	{
-		return is_string($input) ? strip_tags($input) : $input;
-	}
-
-
-	/**
-	 * Strip all newlines (\n, \r) from string
-	 *
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-	public static function strip_newlines($input)
-	{
-		return is_string($input) ? str_replace(array(
-			"\n", "\r"
-		), '', $input) : $input;
-	}
-
-
-	/**
-	 * multiplication
-	 *
-	 * @param float $input
-	 * @param float $operand
-	 *
-	 * @return float
-	 */
-	public static function times($input, $operand)
-	{
-		return (float)$input * (float)$operand;
-	}
-
-
-	/**
-	 * Truncate a string down to x characters
-	 *
-	 * @param string $input
-	 * @param int $characters
-	 * @param string $ending string to append if truncated
-	 *
-	 * @return string
-	 */
-	public static function truncate($input, $characters = 100, $ending = '...')
-	{
-		if (is_string($input) || is_numeric($input)) {
-			if (strlen($input) > $characters) {
-				return mb_substr($input, 0, $characters) . $ending;
-			}
-		}
-
-		return $input;
-	}
-
-
-	/**
-	 * Truncate string down to x words
-	 *
-	 * @param string $input
-	 * @param int $words
-	 * @param string $ending string to append if truncated
-	 *
-	 * @return string
-	 */
-	public static function truncatewords($input, $words = 3, $ending = '...')
-	{
-		if (is_string($input)) {
-			$wordlist = explode(" ", $input);
-
-			if (count($wordlist) > $words) {
-				return implode(" ", array_slice($wordlist, 0, $words)) . $ending;
-			}
-		}
-
-		return $input;
-	}
-
-
-	/**
-	 * Remove duplicate elements from an array
-	 *
-	 * @param array|\Traversable $input
-	 *
-	 * @return array
-	 */
-	public static function uniq($input)
-	{
-		return array_unique($input);
-	}
-
-
-	/**
-	 * Convert an input to uppercase
-	 *
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-	public static function upcase($input)
-	{
-		return is_string($input) ? mb_strtoupper($input) : $input;
-	}
-
-
-	/**
-	 * URL encodes a string
-	 *
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-/*
-	public static function url_encode($input)
-	{
-		return rawurlencode($input);
-	}
-*/
-
-	/**
-	 * Decodes a URL-encoded string
-	 *
-	 * @param string $input
-	 *
-	 * @return string
-	 */
-/*
-	public static function url_decode($input)
-	{
-		return rawurldecode($input);
-	}
-*/
 
 } //END CLASS
 

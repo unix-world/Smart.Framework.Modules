@@ -18,39 +18,6 @@ final class SmartTwist {
 
 	// ::
 
-	private const SPECIAL_SOFT_HYPHEN = "\u{00AD}"; // {{{SYNC-ESCAPE-BRACKET-SYNTAX-TWIST-TWIG}}}
-
-
-	public static function escapeSyntax(?string $str, bool $safe=true) : string {
-		//-- {{{SYNC-ESCAPE-BRACKET-SYNTAX-TWIST-TWIG}}}
-		if($safe === false) { // use this with care ... the html entities may be converted back if post processed by DOM/Tidy ... which may lead to possible insecure injections
-			return (string) \strtr(
-				(string)\SmartMarkersTemplating::prepare_nosyntax_html_template((string)$str),
-				[
-					'{{' => '&lbrace;&lbrace;',
-					'}}' => '&rbrace;&rbrace;',
-					'{%' => '&lbrace;&percnt;',
-					'%}' => '&percnt;&rbrace;',
-					'{#' => '&lbrace;&num;',
-					'#}' => '&num;&rbrace;',
-				]
-			);
-		} else {
-			return (string) \strtr(
-				(string)\SmartMarkersTemplating::prepare_nosyntax_content((string)$str),
-				[
-					'{{' => '{'.self::SPECIAL_SOFT_HYPHEN.'{',
-					'}}' => '}'.self::SPECIAL_SOFT_HYPHEN.'}',
-					'{%' => '{'.self::SPECIAL_SOFT_HYPHEN.'%',
-					'%}' => '%'.self::SPECIAL_SOFT_HYPHEN.'}',
-					'{#' => '{'.self::SPECIAL_SOFT_HYPHEN.'#',
-					'#}' => '#'.self::SPECIAL_SOFT_HYPHEN.'}',
-				]
-			);
-		} //end if else
-		//--
-	} //END FUNCTION
-
 
 	public static function escape_html(?string $str) {
 		return (string) \Smart::escape_html((string)$str);
@@ -68,6 +35,26 @@ final class SmartTwist {
 
 	public static function escape_url(?string $str) {
 		return (string) \Smart::escape_url((string)$str);
+	} //END FUNCTION
+
+
+	public static function uc_words(?string $str) {
+		return (string) \SmartUnicode::uc_words((string)$str);
+	} //END FUNCTION
+
+
+	public static function uc_first(?string $str) {
+		return (string) \SmartUnicode::uc_first((string)$str);
+	} //END FUNCTION
+
+
+	public static function str_toupper(?string $str) {
+		return (string) \SmartUnicode::str_toupper((string)$str);
+	} //END FUNCTION
+
+
+	public static function str_tolower(?string $str) {
+		return (string) \SmartUnicode::str_tolower((string)$str);
 	} //END FUNCTION
 
 

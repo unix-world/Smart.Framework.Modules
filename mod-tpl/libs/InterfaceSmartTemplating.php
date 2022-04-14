@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210331
+ * @version 	v.20220414
  * @package 	development:modules:TemplatingEngine
  *
  */
@@ -44,11 +44,6 @@ interface InterfaceSmartTemplating {
 	//=====
 	public static function render_file_template(?string $file, ?array $arr_vars=[]) : string;
 	//=====
-
-
-	//====
-	public static function prepare_nosyntax_content(?string $str) : string;
-	//====
 
 
 	//=====

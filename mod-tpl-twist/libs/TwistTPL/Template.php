@@ -17,8 +17,8 @@ namespace TwistTPL;
  * Example:
  *
  *     $tpl = new \TwistTPL\Template();
- *     $tpl->parseString('template...source');
- *     $tpl->render(array('foo'=>1, 'bar'=>2);
+ *     $tpl->parseFile('file.twist.htm', 'views/');
+ *     $tpl->render([ 'foo'=>1, 'bar'=>2 ]);
  */
 final class Template {
 
@@ -60,24 +60,8 @@ final class Template {
 
 
 	/**
-	 * Parses the given source string
-	 *
-	 * @param string $source
-	 *
-	 * @return \TwistTPL\Template
-	 */
-	public function parseString(string $source) : \TwistTPL\Template {
-		//--
-		return (object) $this->parseTpl(
-			(string) $this->fileSystem->readTemplateFile((string)$templateFile, (string)$templatePath),
-			(string) '' // string, not a file
-		);
-		//--
-	} //END FUNCTION
-
-
-	/**
 	 * Parses the given template file
+	 * !!! Important !!! Never allow Rendering a string template, but just file ; If string template is re-rendered without special syntax escaping could lead to severe syntax injections ... which cannot actually be proper escaped because of the common syntax that this kind of TPL systems are using {{ ... }}
 	 *
 	 * @param string $templateFile
 	 * @param string $templatePath
