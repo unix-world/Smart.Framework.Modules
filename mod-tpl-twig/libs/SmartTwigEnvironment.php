@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	extensions: PHP Ctype (optional) ; classes: \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20220331
+ * @version 	v.20220706
  * @package 	modules:TemplatingEngine
  *
  */
@@ -94,7 +94,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 			if($key) {
 				if(\is_object($val)) {
 					//--
-					$hash_key = (string) \SmartHashCrypto::sha256((string)$key); // hash('sha256',$key) :: sync with \Twig\Environment->getTemplateClass()
+					$hash_key = (string) \hash(\PHP_VERSION_ID < 80100 ? 'sha256' : 'xxh128', (string)$key, false); // :: sync with \Twig\Environment->getTemplateClass()
 					$real_cache_file = (string) $the_twig_cache_dir.\SmartFileSysUtils::add_dir_last_slash(\substr($hash_key, 0, 2)).$hash_key.'.php';
 					//--
 					$tpl_path = (string) $val->getTemplateName();
