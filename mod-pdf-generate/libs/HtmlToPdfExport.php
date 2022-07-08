@@ -48,7 +48,7 @@ define('SMART_HTMLTOPDF_DOCUMENT_MODE', 		'color'); 							// PDF mode: `color` 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	executables: HTMLDoc ; classes: Smart, SmartUtils, SmartFileSysUtils, SmartHtmlParser
- * @version 	v.20210428
+ * @version 	v.20220708
  * @package 	modules:PDF-Generate
  *
  */
@@ -407,7 +407,7 @@ final class HtmlToPdfExport {
 	 */
 	private static function safe_charset($html) {
 		//--
-		return (string) \SmartUnicode::html_entities($html);
+		return (string) \SmartUnicode::html_entities((string)$html, '', true); // detect charset ; force ISO-8859-1
 		//--
 	} //END FUNCTION
 	//=====================================================================
