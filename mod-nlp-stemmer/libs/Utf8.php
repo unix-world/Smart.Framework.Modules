@@ -203,7 +203,8 @@ final class Utf8 {
 	 * @see    utf8_decode()
 	 */
 	public static function strlen(string $string) {
-		return \strlen(\utf8_decode($string));
+	//	return \strlen(\utf8_decode($string)); // utf8_decode() is deprecated since PHP 8.2
+		return \strlen(\mb_convert_encoding($string, 'ISO-8859-1', 'UTF-8')); // fix by unixman
 	} //END FUNCTION
 
 

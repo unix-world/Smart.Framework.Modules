@@ -46,7 +46,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartParser
- * @version 	v.20220330
+ * @version 	v.20220708
  * @package 	extralibs:Network
  *
  * <code>
@@ -187,7 +187,7 @@ final class SmartPMarkdownToHTML {
 		$this->relative_url_prefix 		= (string) trim((string)$y_relative_url_prefix); // if provided use this prefix for all relative urls
 		$this->use_all_unveil 			= (bool) $y_use_all_unveil;
 		//--
-		$this->special_nbsp_space 		= (string) "\u{00A0}"; // utf8_encode("\xA0"); // need to be UTF-8 encoded to avoid break the unicode string
+		$this->special_nbsp_space 		= (string) "\u{00A0}"; // SmartUnicode::utf8_enc("\xA0"); // need to be UTF-8 encoded to avoid break the unicode string
 		//--
 	} //END FUNCTION
 
