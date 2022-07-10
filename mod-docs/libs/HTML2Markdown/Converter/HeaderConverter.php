@@ -5,6 +5,7 @@ namespace HTML2Markdown\Converter;
 use HTML2Markdown\Configuration;
 use HTML2Markdown\ConfigurationAwareInterface;
 use HTML2Markdown\ElementInterface;
+use HTML2Markdown\SmartFixes;
 
 
 class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface {
@@ -32,13 +33,22 @@ class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
 	//		return $this->createSetextHeader($level, $element->getValue());
 	//	}
 		//-- fix headers inside UL/OL LI
-		$css_style = '';
+		$ext_defs = [];
 		if($element->isDescendantOf('li')) {
 			//return (string) '**' . $element->getValue() . '**';
-			$css_style = '{H:@style=display:inline-block}';
-		}
+			$ext_defs[] = '@style=display:inline-block'; // '{H:@style=display:inline-block}';
+		} //end if
+		$the_id = (string) SmartFixes::createHtmid((string)$element->getAttribute('id'));
+		if($the_id) {
+			$ext_defs[] = '@id='.$the_id;
+		} //end if
+		if(\count($ext_defs) > 0) {
+			$ext_defs = (string) '{H:'.\implode(' ', (array)$ext_defs).'}';
+		} else {
+			$ext_defs = '';
+		} //end if else
 		//-- #fix
-		return $this->createAtxHeader($level, $element->getValue(), $css_style);
+		return $this->createAtxHeader($level, $element->getValue(), (string)$ext_defs);
 	} //END FUNCTION
 
 
@@ -57,12 +67,12 @@ class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
 	} //END FUNCTION
 */
 
-	private function createAtxHeader(int $level, string $content, ?string $css_style=null): string {
-		$css_style = (string) \trim((string)$css_style);
+	private function createAtxHeader(int $level, string $content, ?string $ext_defs=null): string {
+		$ext_defs = (string) \trim((string)$ext_defs);
 		$prefix = \str_repeat('#', $level) . ' ';
 	//	return $prefix . $content . "\n\n";
 	//	return "\n".'\\'."\n".$prefix . $content . "\n \n";
-		return "\n".' '."\n".$prefix . $content . ($css_style ? ' '.$css_style : '') . "\n \n";
+		return "\n".' '."\n".$prefix.$content.($ext_defs ? ' '.$ext_defs : '')."\n \n";
 	} //END FUNCTION
 
 

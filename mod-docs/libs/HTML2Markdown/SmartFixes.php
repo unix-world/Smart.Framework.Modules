@@ -12,6 +12,13 @@ final class SmartFixes {
 	} //END FUNCTION
 
 
+	public static function createHtmid(?string $code) : string {
+		//--
+		return (string) \Smart::create_htmid((string)$code);
+		//--
+	} //END FUNCTION
+
+
 	public static function normalizeSpaces(?string $code) : string {
 		//--
 		return (string) \Smart::normalize_spaces((string)$code);

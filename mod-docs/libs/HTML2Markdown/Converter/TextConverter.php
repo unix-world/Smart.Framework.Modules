@@ -17,12 +17,19 @@ class TextConverter implements ConverterInterface {
 	public function convert(ElementInterface $element): string {
 		//--
 		$markdown = (string) $element->getValue();
-		//--
-		$markdown = (string) \ltrim((string)$markdown, "\n"); // Remove leftover \n at the beginning of the line
-	//	$markdown = (string) \preg_replace('~\s+~', ' ', (string)$markdown); // Replace sequences of invisible characters with spaces
-		$markdown = (string) SmartFixes::normalizeSpaces((string)$markdown);
-		//--
-		if((string)$markdown == '') {
+		//-- #FIX#: this is breaking some headings, need to preserve lines @ docs.import-json-docs&realm=css&key=9
+//		$markdown = (string) \ltrim((string)$markdown, "\n"); // Remove leftover \n at the beginning of the line
+//	//	$markdown = (string) \preg_replace('~\s+~', ' ', (string)$markdown); // Replace sequences of invisible characters with spaces
+//		$markdown = (string) SmartFixes::normalizeSpaces((string)$markdown);
+		//-- the above is fixed here
+		$arr = (array) \explode("\n", (string)$markdown);
+		for($i=0; $i<\count($arr); $i++) {
+			$arr[$i] = (string) SmartFixes::normalizeSpaces((string)$arr[$i]); // do not trim ; will break spaces between words ; docs.import-json-docs&realm=css&key=0
+		} //end for
+		$markdown = (string) \implode("\n", (array)$arr);
+		$arr = null;
+		//-- #END#FIX#
+		if((string)$markdown == '') { // DO NOT TRIM !!
 			return '';
 		} //end if
 		//--
