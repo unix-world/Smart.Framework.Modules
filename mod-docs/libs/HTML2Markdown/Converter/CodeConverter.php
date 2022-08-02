@@ -39,6 +39,7 @@ class CodeConverter implements ConverterInterface {
 		$code = (string) $element->getValue();
 		$code = (string) SmartFixes::escapeCodeElementContent((string)$code); // {{{SYNC-MKDW-CODE-FIX-SPECIALS}}}
 		//--
+		// TODO: escape '```' => '\\`\\`\\`' inside code !?
 		if($element->isDescendantOf(['pre'])) {
 			$markdown .= "\n".$code."\n";
 		} else {
@@ -48,7 +49,15 @@ class CodeConverter implements ConverterInterface {
 				$markdown .= (string) $spacer.'```'.$language."\n".\trim((string)$code)."\n".'```'.$spacer; //-- IMPORTANT: because the original internal mechanism of HTML2Markdown will add the markdown to the DOM will loose trailing and pre newlines, more than one ... force using a backslash as this
 			} else {
 			//	$markdown .= '```'.\preg_replace('/\r\n|\r|\n/', ' ', (string)$code).'```';
-				$markdown .= '```'.\str_replace(["\r\n", "\r", "\n"], ' ', (string)$code).'```';
+				if($element->isDescendantOf(['a'])) { // code inside links is not extracted due to limitations in rendering ...
+					if(\preg_match('/\[|\]|\(|\)|"/', (string)$code)) {
+						$markdown .= '```'.'?URL@ENC:'.\str_replace(["\r\n", "\r", "\n"], ' ', (string)SmartFixes::escapeUrl((string)$code)).':URL@ENC?'.'```'; // inline code need to be escaped, especially if occurs inside links ...
+					} else {
+						$markdown .= '```'.\str_replace(["\r\n", "\r", "\n"], ' ', (string)SmartFixes::escapeElementContent((string)$code, 'code')).'```'; // inline code need to be escaped, especially if occurs inside links ...
+					} //end if else
+				} else {
+					$markdown .= '```'.\str_replace(["\r\n", "\r", "\n"], ' ', (string)$code).'```';
+				} //end if else
 			} //end if else
 		} //end if else
 		//-- #fix

@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: HighlightSyntax r.20210610 #
+# Smart.Framework.Modules: HighlightSyntax r.20220730 #
 
 // r.8.7 / smart.framework.v.8.7
 

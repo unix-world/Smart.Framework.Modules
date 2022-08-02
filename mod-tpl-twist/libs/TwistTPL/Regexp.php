@@ -117,6 +117,9 @@ final class Regexp {
 	 * @return array
 	 */
 	public function split($string, $limit = null) {
+		if($limit === null) {
+			$limit = -1; // fix deprecation in PHP 8.1
+		}
 		return \preg_split($this->pattern, $string, $limit);
 	}
 

@@ -26,6 +26,7 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 	private $rownum = 0;
 	private $cellnum = 0;
 	private $maxcells = 0;
+	private $isInList = false;
 
 
 	public function setConfig(Configuration $config): void {
@@ -35,6 +36,13 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 
 	public function preConvert(ElementInterface $element): void {
 		$tag = $element->getTagName();
+		if($tag === 'table') {
+			if($element->isDescendantOf(['li'])) {
+				$this->isInList = true;
+			} else {
+				$this->isInList = false;
+			} //end if
+		} //end if
 		// Only table cells and caption are allowed to contain content.
 		// Remove all text between other table elements.
 		//-- # fix by unixman
@@ -150,7 +158,7 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 				//	$tblsep = "\n".'\\'."\n"; // this was prev, ok
 					$tblsep = "\n".' '."\n";
 					if((int)$this->rownum < 2) {
-						$tblstyles = '{!DEF!=AUTO-WIDTH;ALIGN-HEAD-LEFT;ALIGN-LEFT;NO-TABLE-HEAD;.bordered;.stripped;.doc-table;.max-cells-'.(int)$this->maxcells.';.max-rows-'.(int)$this->rownum.';}';
+						$tblstyles = '{!DEF!=AUTO-WIDTH;ALIGN-HEAD-LEFT;ALIGN-LEFT;NO-TABLE-HEAD;'.($this->isInList ? '.list-table;' : '').'.bordered;.stripped;.doc-table;.max-cells-'.(int)$this->maxcells.';.max-rows-'.(int)$this->rownum.';}';
 					} else {
 						$tblstyles = '{!DEF!=AUTO-WIDTH;ALIGN-HEAD-CENTER;ALIGN-AUTO;.bordered;.stripped;.doc-table;.max-cells-'.(int)$this->maxcells.';.max-rows-'.(int)$this->rownum.';}';
 					} //end if

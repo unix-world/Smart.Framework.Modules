@@ -706,7 +706,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$composer_title = 'Reply to Message';
 			$composer_replytoaddr = (string) trim((string)$msg_arr['from']);
 			$composer_inreplyto = (string) trim((string)$msg_arr['message-id']);
-			$composer_to = (string) trim((string)$msg_arr['from']);
+			$composer_to = (string) (strpos((string)$msg_arr['reply-to'], '@') !== false) ? trim((string)$msg_arr['reply-to']) : trim((string)$msg_arr['from']);
 			$composer_subject = (string) trim((string)$msg_arr['subject']);
 			if(stripos((string)$composer_subject, 'Re:') !== 0) {
 				$composer_subject = 'Re: '.$composer_subject;

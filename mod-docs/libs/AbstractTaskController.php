@@ -1,5 +1,4 @@
 <?php
-// [@[#[!SF.DEV-ONLY!]#]@]
 // Class: \SmartModExtLib\Docs\AbstractTaskController
 // (c) 2006-2021 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7

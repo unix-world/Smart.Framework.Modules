@@ -23,9 +23,9 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SvnWebManager {
 
 	// ::
-	// v.20210511
+	// v.20220730
 
-	const MAX_FILESIZE_DISPLAY = 10000000; // 10MB
+	const MAX_FILESIZE_DISPLAY = 8388608; // 8MB
 
 	private static $svn_cache_dir = 'tmp/cache/svn/'; 		// must have trailing slash :: the svn proc jail root
 	private static $configs = null;
@@ -523,9 +523,16 @@ final class SvnWebManager {
 			return array();
 		} //end if
 		//--
-		switch((string)$archtype) {
-			case '7z':
-				// OK
+		$mime_type = 'application/octet-stream'; // unknown
+		switch((string)$archtype) { // {{{SYNC-SVN-EXP-ARCHS}}}
+			case '7z': // OK
+				$mime_type = 'application/x-7z-compressed';
+				break;
+			case 'zip': // OK
+				$mime_type = 'application/zip';
+				break;
+			case 'tar.gz': // OK
+				$mime_type = 'application/x-compressed';
 				break;
 			default:
 				// NOT OK
@@ -564,7 +571,7 @@ final class SvnWebManager {
 		$archname = '';
 		$fcontent = '';
 		if(($ok) AND (\SmartFileSystem::is_type_dir((string)self::$svn_cache_dir.$archdir))) {
-			$archname = (string) self::buildArchive((string)$expdir, (string)$expname, '7z');
+			$archname = (string) self::buildArchive((string)$expdir, (string)$expname, (string)$archtype);
 			if((string)$archname != '') {
 				$fcontent = (string) \SmartFileSystem::read((string)$archname);
 			} //end if
@@ -574,8 +581,8 @@ final class SvnWebManager {
 		//--
 		return array(
 			'f-content' => (string) $fcontent,
-			'f-mime' 	=> (string) ($archname ? 'application/x-7z-compressed' : ''), // 'application/zip'
-			'f-name' 	=> (string) ($archname ? (string) \SmartFileSysUtils::get_file_name_from_path((string)$archname) : '')
+			'f-mime' 	=> (string) ($archname ? (string)$mime_type : ''), // 'application/zip'
+			'f-name' 	=> (string) ($archname ? (string)\SmartFileSysUtils::get_file_name_from_path((string)$archname) : '')
 		);
 		//--
 	} //END FUNCTION
@@ -920,24 +927,69 @@ final class SvnWebManager {
 	//============================================================ OK
 	private static function buildArchive($dir, $archname, $format) {
 		//--
+		switch((string)$format) { // {{{SYNC-SVN-EXP-ARCHS}}}
+			case '7z':
+			case 'zip':
+			case 'tar.gz':
+				// OK
+				break;
+			default:
+				// NOT OK
+				\Smart::log_warning((string)__METHOD__.' #ERR# SVN Export: Invalid Archive Type:['.$format.']');
+				return '';
+		} //end switch
+		//--
 		$dir = (string) \Smart::safe_pathname((string)\SmartFileSysUtils::add_dir_last_slash((string)$dir));
 		\SmartFileSysUtils::raise_error_if_unsafe_path($dir);
 		$arch_dir = (string) \SmartFileSysUtils::add_dir_last_slash(\Smart::safe_filename((string)$archname)); // archive name dir
 		\SmartFileSysUtils::raise_error_if_unsafe_path($arch_dir);
-		$arch_file = (string) \Smart::safe_filename((string)$archname.'.7z'); // archive name
+		$arch_file = (string) \Smart::safe_filename((string)$archname.'.'.$format); // archive name
 		\SmartFileSysUtils::raise_error_if_unsafe_path($arch_file);
 		$fpatharch = (string) \Smart::safe_pathname((string)self::$svn_cache_dir.$dir.$arch_file);
 		\SmartFileSysUtils::raise_error_if_unsafe_path($fpatharch);
 		//--
-		$cmd7za = (string) \trim((string)\Smart::get_from_config('svn.7za'));
-		if((string)$cmd7za == '') {
+		$cmdarch = '';
+		switch((string)$format) { // {{{SYNC-SVN-EXP-ARCHS}}}
+			case '7z':
+				$cmdarch = (string) \trim((string)\Smart::get_from_config('svn.7za'));
+				break;
+			case 'zip':
+				$cmdarch = (string) \trim((string)\Smart::get_from_config('svn.7za'));
+				break;
+			case 'tar.gz':
+				$cmdarch = (string) \trim((string)\Smart::get_from_config('svn.tar'));
+				break;
+			default:
+				$cmdarch = '';
+		} //end switch
+		if((string)$cmdarch == '') {
 			\Smart::raise_error(
-				__METHOD__.' #ERR# Empty Archive Command: 7za',
+				__METHOD__.' #ERR# Empty Archive Command for Archive Type: '.$format,
 				'ERR: Empty Archive Command' // msg to display
 			);
 		} //end if
 		//--
-		$cmd = (string) self::escapeCmdExe((string)$cmd7za).' a -ssc -t7z -m0=lzma '.self::escapeCmdArg((string)$arch_file).' '.self::escapeCmdArg((string)$arch_dir);
+		$cmd = '';
+		switch((string)$format) { // {{{SYNC-SVN-EXP-ARCHS}}}
+			case '7z':
+				$cmd = (string) self::escapeCmdExe((string)$cmdarch).' a -ssc -t7z -m0=lzma '.self::escapeCmdArg((string)$arch_file).' '.self::escapeCmdArg((string)$arch_dir);
+				break;
+			case 'zip':
+				$cmd = (string) self::escapeCmdExe((string)$cmdarch).' a -tzip '.self::escapeCmdArg((string)$arch_file).' '.self::escapeCmdArg((string)$arch_dir);
+				break;
+			case 'tar.gz':
+				$cmd = (string) self::escapeCmdExe((string)$cmdarch).' -czf '.self::escapeCmdArg((string)$arch_file).' '.self::escapeCmdArg((string)$arch_dir);
+				break;
+			default:
+				$cmd = '';
+		} //end switch
+		if((string)$cmd == '') {
+			\Smart::raise_error(
+				__METHOD__.' #ERR# Empty Archive Command Switches for Archive Type: '.$format,
+				'ERR: Empty Archive Command Switches' // msg to display
+			);
+		} //end if
+		//--
 		$exearr = (array) \SmartUtils::run_proc_cmd((string)$cmd, null, (string)self::$svn_cache_dir.$dir);
 		if(($exearr['exitcode'] !== 0) OR ((string)$exearr['stderr'] != '')) {
 			\Smart::raise_error(
@@ -950,11 +1002,33 @@ final class SvnWebManager {
 		if(\SmartFileSystem::is_type_file((string)$fpatharch)) {
 			if(\filesize((string)$fpatharch) > 0) {
 				//--
-				$cmd = (string) self::escapeCmdExe((string)$cmd7za).' t '.self::escapeCmdArg((string)$arch_file);
-				$exearr = (array) \SmartUtils::run_proc_cmd((string)$cmd, null, (string)self::$svn_cache_dir.$dir);
-				if(($exearr['exitcode'] !== 0) OR ((string)$exearr['stderr'] != '') OR (\stripos((string)$exearr['stdout'], "\n".'Everything is Ok'."\n") === false)) {
+				$testcmd = '';
+				$testtxt = '';
+				switch((string)$format) { // {{{SYNC-SVN-EXP-ARCHS}}}
+					case '7z':
+					case 'zip':
+						$testcmd = (string) self::escapeCmdExe((string)$cmdarch).' t '.self::escapeCmdArg((string)$arch_file);
+						$testtxt = "\n".'Everything is Ok'."\n";
+						break;
+					case 'tar.gz':
+						$testcmd = (string) self::escapeCmdExe((string)$cmdarch).' -tzf '.self::escapeCmdArg((string)$arch_file);
+						$testtxt = '';
+						break;
+					default:
+						$testcmd = '';
+						$testtxt = '';
+				} //end switch
+				if((string)$testcmd == '') {
 					\Smart::raise_error(
-						__METHOD__.' #ERR# Archive Test Command:['.$cmd.'] Returned Some Errors ; ExitCode=['.$exearr['exitcode'].'] ; ErrorMsg: '.$exearr['stderr'].' ; StdOut: '.$exearr['stdout'],
+						__METHOD__.' #ERR# Empty Archive Test Command Switches for Archive Type: '.$format,
+						'ERR: Empty Archive Test Command Switches' // msg to display
+					);
+				} //end if
+				//--
+				$exearr = (array) \SmartUtils::run_proc_cmd((string)$testcmd, null, (string)self::$svn_cache_dir.$dir);
+				if(($exearr['exitcode'] !== 0) OR ((string)$exearr['stderr'] != '') OR (((string)$testtxt != '') AND (\stripos((string)$exearr['stdout'], (string)$testtxt) === false))) {
+					\Smart::raise_error(
+						__METHOD__.' #ERR# Archive Test Command:['.$testcmd.'] Returned Some Errors ; ExitCode=['.$exearr['exitcode'].'] ; ErrorMsg: '.$exearr['stderr'].' ; StdOut: '.$exearr['stdout'],
 						'ERR: Errors when running archive test command' // msg to display
 					);
 				} //end if

@@ -14,6 +14,8 @@ use HTML2Markdown\Converter\HardBreakConverter;
 use HTML2Markdown\Converter\HeaderConverter;
 use HTML2Markdown\Converter\HorizontalRuleConverter;
 use HTML2Markdown\Converter\ImageConverter;
+use HTML2Markdown\Converter\SvgConverter;
+use HTML2Markdown\Converter\ButtonConverter;
 use HTML2Markdown\Converter\LinkConverter;
 use HTML2Markdown\Converter\ListBlockConverter;
 use HTML2Markdown\Converter\ListItemConverter;
@@ -72,6 +74,8 @@ final class Environment {
 		$environment->addConverter(new HeaderConverter());
 		$environment->addConverter(new HorizontalRuleConverter());
 		$environment->addConverter(new ImageConverter());
+		$environment->addConverter(new SvgConverter());
+		$environment->addConverter(new ButtonConverter());
 		$environment->addConverter(new LinkConverter());
 		$environment->addConverter(new ListBlockConverter());
 		$environment->addConverter(new ListItemConverter());

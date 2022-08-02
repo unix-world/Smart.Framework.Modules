@@ -5,6 +5,30 @@ namespace HTML2Markdown;
 final class SmartFixes {
 
 
+	public const FIX_ESCAPES_ENTITIES_VBRACKS = [
+		'\\<' 	=> '&lt;',
+		'\\>' 	=> '&gt;',
+		'<' 	=> '&lt;',
+		'>' 	=> '&gt;',
+	];
+
+	public const FIX_ESCAPES_ENTITIES_RBRACKS = [
+		'\\[' 	=> '&lbrack;',
+		'\\]' 	=> '&rbrack;',
+		'[' 	=> '&lbrack;',
+		']' 	=> '&rbrack;',
+	];
+
+	public const FIX_ESCAPES_ENTITIES_BRACKS = [
+		'\\"' 	=> '&quot;',
+		'\\(' 	=> '&lpar;',
+		'\\)' 	=> '&rpar;',
+		'"' 	=> '&quot;',
+		'(' 	=> '&lpar;',
+		')' 	=> '&rpar;',
+	];
+
+
 	public static function getCharset() : string {
 		//--
 		return (string) \SMART_FRAMEWORK_CHARSET;
@@ -47,6 +71,13 @@ final class SmartFixes {
 	} //END FUNCTION
 
 
+	public static function escapeUrl(?string $code): string {
+		//--
+		return (string) \Smart::escape_url((string)$code);
+		//--
+	} //END FUNCTION
+
+
 	public static function escapeCodeElementContent(?string $code): string {
 		//--
 		return (string) \str_replace( // {{{SYNC-MKDW-CODE-FIX-SPECIALS}}}
@@ -81,7 +112,7 @@ final class SmartFixes {
 				break;
 		} //end switch
 		//--
-		return (string) strtr((string)$content, (array)$arr);
+		return (string) \strtr((string)$content, (array)$arr);
 		//--
 	} //END FUNCTION
 

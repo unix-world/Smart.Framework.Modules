@@ -20,9 +20,9 @@ final class Twist {
 
 	public const MAJOR_VERSION = 1;
 	public const MINOR_VERSION = 4;
-	public const EXTRA_VERSION = 2;
+	public const EXTRA_VERSION = 3;
 
-	public const VERSION = '1.4.2'; // branch derived from 1.2.1
+	public const VERSION = '1.4.3'; // branch derived from 1.2.1
 
 	public const INVALID_PATH = [ '.', '..', '/', './', '../', '/.', '/..', ':', '@', '@/', '|' ]; // spaces are not includded here, must be trimmed !
 
@@ -223,7 +223,7 @@ final class Twist {
 			self::$tpls[] 	= [ 'type' => 'string',  'hash' => (string)self::tplHash((string)$source, (string)'',        null), 'name' => null ];
 		} //end if else
 		//--
-		return (array) \preg_split(self::get('TOKENIZATION_REGEXP'), (string)$source, null, \PREG_SPLIT_NO_EMPTY | \PREG_SPLIT_DELIM_CAPTURE);
+		return (array) \preg_split(self::get('TOKENIZATION_REGEXP'), (string)$source, -1, \PREG_SPLIT_NO_EMPTY | \PREG_SPLIT_DELIM_CAPTURE);
 		//--
 	} //END FUNCTION
 

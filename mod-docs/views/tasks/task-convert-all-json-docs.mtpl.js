@@ -51,7 +51,7 @@ smartQUnitStartDelay = 500;
 
 	[%%%IF:TASKS:@>0;%%%]
 	const msgOkTask = 'OK: Completed ... DONE ...';
-	QUnit.module('Optimized Docs Convert to Markdown using League/HTMLToMarkdown ]', () => {
+	QUnit.module('Optimized Docs Convert to Markdown using [ HTML2Markdown ]', () => {
 		[%%%LOOP:TASKS%%%]
 		QUnit.test('Task #[###TASKS.-_INDEX_-|js###]: [###TASKS._-VAL-_|js###]', (assert) => {
 			SmartQUnit.runAjaxTest(

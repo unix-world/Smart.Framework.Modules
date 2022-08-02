@@ -22,20 +22,25 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface {
 	public function convert(ElementInterface $element): string {
 		$href  = (string) $element->getAttribute('href');
 		$title = (string) $element->getAttribute('title');
-		$text  = (string) \trim((string)$element->getValue(), "\t\n\r\0\x0B");
+		$text  = (string) \trim((string)$element->getValue(), "\0\x0B"); // \trim((string)$element->getValue(), "\t\n\r\0\x0B"); // in links if there is a <br> will remain as \, so trim only specials
 
 		if((string)$title != '') {
-			$markdown = '[' . \str_replace(['[',']'], ['\\[','\\]'], (string)$text) . '](' . \str_replace(['(', ')'], ['\\(', '\\)'], (string)$href) . ' "' . \str_replace(['(', ')', '"'], ['\\(', '\\)', "'"], (string)$title) . '")';
+		//	$markdown = '[' . \str_replace(['[',']'], ['\\[','\\]'], (string)$text) . '](' . \str_replace(['(', ')'], ['\\(', '\\)'], (string)$href) . ' "' . \str_replace(['(', ')', '"'], ['\\(', '\\)', "'"], (string)$title) . '")';
+			$markdown = '[' . \strtr((string)$text, (array)SmartFixes::FIX_ESCAPES_ENTITIES_RBRACKS) . '](' . \strtr((string)$href, (array)SmartFixes::FIX_ESCAPES_ENTITIES_BRACKS) . ' "' . \strtr((string)$title, (array)SmartFixes::FIX_ESCAPES_ENTITIES_BRACKS) . '")';
 		} elseif ($href === $text && $this->isValidAutolink($href)) {
-			$markdown = '<' . \str_replace(['<', '>'], ['\\<', '\\>'], (string)$href) . '>';
+		//	$markdown = '<' . \str_replace(['<', '>'], ['\\<', '\\>'], (string)$href) . '>';
+			$markdown = '<' . \strtr((string)$href, (array)SmartFixes::FIX_ESCAPES_ENTITIES_VBRACKS) . '>';
 		} elseif ($href === 'mailto:' . $text && $this->isValidEmail($text)) {
-			$markdown = '<' . \str_replace(['<', '>'], ['\\<', '\\>'], (string)$text) . '>';
+		//	$markdown = '<' . \str_replace(['<', '>'], ['\\<', '\\>'], (string)$text) . '>';
+			$markdown = '<' . \strtr((string)$text, (array)SmartFixes::FIX_ESCAPES_ENTITIES_VBRACKS) . '>';
 		} else {
 		//	if(\stristr($href, ' ')) {
 			if(\strpos($href, ' ') !== false) {
-				$href = '<' . \str_replace(['<', '>'], ['\\<', '\\>'], (string)$href) . '>';
+			//	$href = '<' . \str_replace(['<', '>'], ['\\<', '\\>'], (string)$href) . '>';
+				$href = '<' . \strtr((string)$href, (array)SmartFixes::FIX_ESCAPES_ENTITIES_VBRACKS) . '>';
 			}
-			$markdown = '[' . \str_replace(['[',']'], ['\\[','\\]'], (string)$text) . '](' . \str_replace(['(', ')'], ['\\(', '\\)'], (string)$href) . ')';
+		//	$markdown = '[' . \str_replace(['[',']'], ['\\[','\\]'], (string)$text) . '](' . \str_replace(['(', ')'], ['\\(', '\\)'], (string)$href) . ')';
+			$markdown = '[' . \strtr((string)$text, (array)SmartFixes::FIX_ESCAPES_ENTITIES_RBRACKS) . '](' . \strtr((string)$href, (array)SmartFixes::FIX_ESCAPES_ENTITIES_BRACKS) . ')';
 		}
 
 		if (! $href) {
