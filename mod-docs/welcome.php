@@ -1,4 +1,5 @@
 <?php
+// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Docs/Welcome
 // Route: ?page=docs.welcome
 // (c) 2006-2021 unix-world.org - all rights reserved

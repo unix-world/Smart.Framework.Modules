@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Docs/ImportHtmlDocs
-// Route: ?page=docs.import-html-docs
+// Route: ?page=docs.import-html-docs # Example: docs.import-html-docs&realm=vala:atk&id=Atk.Action.html
 // (c) 2006-2021 unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -78,6 +78,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 
 		//--
 		$realm = (string) trim((string)$this->RequestVarGet('realm', '', 'string'));
+		$realm = (string) strtr((string)$realm, [ ':' => '/' ]);
 		$realm = (string) trim((string)$realm, '/');
 		if((string)$realm == '') {
 			$this->PageViewSetErrorStatus(400, 'Empty Realm ...');

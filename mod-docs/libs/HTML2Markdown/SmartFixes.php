@@ -4,6 +4,7 @@ namespace HTML2Markdown;
 
 final class SmartFixes {
 
+	public const PATTERN_INLINE_CODE = '/[`]{3}.*?[`]{3}/s'; // Inline Code ; sync with lib markdown v2
 
 	public const FIX_ESCAPES_ENTITIES_VBRACKS = [
 		'\\<' 	=> '&lt;',

@@ -14,7 +14,6 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 	/** @var Configuration */
 	protected $config;
 
-
 	private const TBL_ALIGNMENTS = [
 		'left' 		=> ':--',
 		'right' 	=> '--:',
@@ -164,8 +163,18 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 					} //end if
 				} //end if
 				//-- #fix
+				$uuidHash = (string) \sha1((string)$value);
 				$value = (string) \str_replace("\n", ' ', (string)$value);
+				$arr_inline_code = (array) $this->getDataInlineCodes($value);
+				foreach($arr_inline_code as $key => $val) { // extract code in table cells # fix: | inside inline code must NOT be escaped below
+					$value = (string) strtr($value, [ (string)$val => '^^^^^^^'.$uuidHash.':::::::'.$uuidHash.'{'.rawurlencode((string)$key).'}'.'$$$$$$$' ]);
+				} //end foreach
 				$value = (string) \str_replace('|', (string)($this->config->getOption('table_pipe_escape') ?? '\|'), (string)$value);
+				foreach($arr_inline_code as $key => $val) { // restore code in table cells
+					$value = (string) strtr($value, [ '^^^^^^^'.$uuidHash.':::::::'.$uuidHash.'{'.rawurlencode((string)$key).'}'.'$$$$$$$' => (string)$val ]);
+				} //end foreach
+				$arr_inline_code = null;
+				$uuidHash = null;
 				//-- #fix by unixman
 			//	$value = (string) \preg_replace('/^( )*(\#){1,6}( )(.*)/m', '**${4}**', (string)$value); // fix by unixman: transform H1..H6 inside a table cell with bold, as inline headings are not supported in markdown ... yet ... # https://github.com/mysticmind/reversemarkdown-net/issues/44
 				//-- #fix
@@ -191,6 +200,19 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 	 */
 	public function getSupportedTags(): array {
 		return ['table', 'tr', 'th', 'td', 'thead', 'tbody', 'tfoot', 'colgroup', 'col', 'caption'];
+	} //END FUNCTION
+
+
+	private function getDataInlineCodes(?string $text) : array { // Inline Code
+		//--
+		$matches = array();
+		$pcre = \preg_match_all((string)SmartFixes::PATTERN_INLINE_CODE, (string)$text, $matches, \PREG_PATTERN_ORDER, 0);
+		if($pcre === false) {
+			return [];
+		} //end if
+		//--
+		return (array) ((isset($matches[0]) && is_array($matches[0])) ? $matches[0] : []);
+		//--
 	} //END FUNCTION
 
 
