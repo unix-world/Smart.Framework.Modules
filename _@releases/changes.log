@@ -2,6 +2,12 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+August 16, 2022
+	* mod docs fixes to use JSON Docs Index and overrides
+
+August 10, 2022
+	* doc module: HTML2Markdown fix to support newer markdown parser with extended lists which may include almost all supported elements
+
 July 30, 2022
 	* Mark as PHP 8.0 STABLE (previous was marked as PHP 7.4 STABLE)
 	* Mark as PHP 8.1 STABLE

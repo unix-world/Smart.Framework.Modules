@@ -174,7 +174,12 @@ class HtmlConverter implements HtmlConverterInterface {
 		$dom->recover = true; // trying to parse non-well formed documents, for HTML make sense but not for XML
 	//	$dom->substituteEntities = false; 	// this attribute ir proprietary for LibXML, it does not make any difference ... still buggy with replacing &quot; with " (it's decoded value)
 		//-- pre fixes
-		$html = (string) \str_replace('&quot;', '&Prime;', (string)$html); // fix: DomDocument will decode the &quot; to ", thus substitute with &Prime; (&#8243;) which is a unicode verion of it ″ and restore back thereafter ; if there are any &Prime; already converting &Prime; to &quot; later is not a problem ...
+	//	$html = (string) \str_replace((string)SmartFixes::SPECIAL_CHAR_NEWLINE_MARK, (string)SmartFixes::SPECIAL_CHAR_NEWLINE_REPL, (string)$html);
+	//	$html = (string) \str_replace('&quot;', '&Prime;', (string)$html); // fix: DomDocument will decode the &quot; to ", thus substitute with &Prime; (&#8243;) which is a unicode verion of it ″ and restore back thereafter ; if there are any &Prime; already converting &Prime; to &quot; later is not a problem ...
+		$html = (string) \strtr((string)$html, [
+			(string)SmartFixes::SPECIAL_CHAR_NEWLINE_MARK => (string)SmartFixes::SPECIAL_CHAR_NEWLINE_REPL, // fix special character
+			'&quot;' => '&Prime;', // fix: DomDocument will decode the &quot; to ", thus substitute with &Prime; (&#8243;) which is a unicode verion of it ″ and restore back thereafter ; if there are any &Prime; already converting &Prime; to &quot; later is not a problem ...
+		]);
 		//--
 		@$dom->loadHTML(
 			(string) $html, // fix: in some versions of DomDocument or LibXML if not enclosed in a body container there are some strange behaviours when getting back the HTML code, so need this function: compose_html_document
@@ -282,9 +287,18 @@ class HtmlConverter implements HtmlConverterInterface {
 			}
 		} //end foreach
 		//-- #fix by unixman
-		$markdown = (string) \str_replace(' \\ ', ' ', (string)$markdown); // fix by unixman: this comes from malformed conversions of newline ... it was \n\\\n and get newline converted to space
+	//	$markdown = (string) \str_replace(' \\ ', ' ', (string)$markdown); // fix by unixman: this comes from malformed conversions of newline ... it was \n\\\n and get newline converted to space
+	//	$markdown = (string) \str_replace([(string)"\n".SmartFixes::SPECIAL_CHAR_NEWLINE_MARK, (string)SmartFixes::SPECIAL_CHAR_NEWLINE_MARK], ['', (string)SmartFixes::SPECIAL_CHAR_NEWLINE_REPL], (string)$markdown);
+	//	$markdown = (string) \str_replace(['&Prime;', '″'], '"', (string)$markdown); // fix back &quot; (from DOM)
+		$markdown = (string) \strtr($markdown, [
+			(string) "\n".SmartFixes::SPECIAL_CHAR_NEWLINE_MARK => '', // handle newline enforce clear newline
+			(string) ' '.SmartFixes::SPECIAL_CHAR_NEWLINE_MARK  => '', // like above but can happen after newline to space conversions
+			(string) SmartFixes::SPECIAL_CHAR_NEWLINE_MARK  	=> '',  // final fix (prior this has been converted to the coresponding html entity)
+			'&Prime;' 											=> '"', // fix back &quot; (from DOM)
+			'″' 												=> '"', // fix back &quot; (from DOM)
+		]);
+
 		//--
-		$markdown = (string) str_replace(['&Prime;', '″'], '"', (string)$markdown); // fix back &quot; (from DOM)
 		//--
 		return (string) \trim((string)$markdown);
 		//return \trim($markdown, "\n\r\0\x0B");

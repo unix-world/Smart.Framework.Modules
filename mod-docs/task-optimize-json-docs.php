@@ -134,7 +134,7 @@ final class SmartAppTaskController extends \SmartModExtLib\Docs\AbstractTaskCont
 		$arr_disabled = [];
 		foreach($arr as $key => $val) {
 			//--
-			$arr_process 		= (array) \SmartModExtLib\Docs\OptimizationUtils::processHtml((string)$val, (string)$realm);
+			$arr_process 		= (array) \SmartModExtLib\Docs\OptimizationUtils::processHtml((string)$val, (string)$realm, (string)$key);
 			$source 			= (string) $arr_process['source'];
 			//--
 			$all_imgs_and_svgs 	= (int)    $arr_process['all-imgs-and-svgs'];

@@ -19,7 +19,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 
 /**
- * Class: Optimization Utils
+ * Class: Optimization Utils :: DevDocs
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
@@ -36,10 +36,68 @@ final class OptimizationUtils {
 
 	public const THE_HDOCS_PATH = 'wpub/devdocs-html/';
 	public const THE_DOCS_PATH = 'wpub/devdocs/';
+	public const THE_DOCS_IDX_FILE = 'index.json';
 	public const THE_DOCS_FILE = 'db.json';
 	public const THE_DOCS_OPT_FILE = 'db.optimized.json'; // {{{SYNC-MOD-DOCS-OPT-FILE}}}
 	public const THE_DOCS_MD_FILE = 'db-md.json'; // {{{SYNC-MOD-DOCS-MARKDOWN-FILE}}}
-	public const THE_DOCS_IDX_FILE = 'index.json';
+
+	private static $dbIndexes = [];
+
+
+	private static function isDbIndexesInitialized(?string $realm) {
+		//--
+		$init_log = false;
+		if((!\is_array(self::$dbIndexes)) OR (!\array_key_exists((string)$realm, (array)self::$dbIndexes)) OR (!\is_array(self::$dbIndexes[(string)$realm]))) {
+			$init_log = true;
+		} //end if
+		//--
+		return (bool) $init_log;
+		//--
+	} //END FUNCTION
+
+
+	private static function getDbIndexes(?string $realm) {
+		//--
+		$realm = (string) \trim((string)$realm);
+		if((string)$realm == '') {
+			\Smart::log_warning(__METHOD__.' # Empty Indexes DB Realm');
+			return [];
+		} //end if
+		if(!\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$realm)) {
+			\Smart::log_warning(__METHOD__.' # Invalid Indexes DB Realm (Unsafe): `'.$realm.'`');
+			return [];
+		} //end if
+		//--
+		if(!\is_array(self::$dbIndexes)) {
+			self::$dbIndexes = [];
+		} //end if
+		if((\array_key_exists((string)$realm, (array)self::$dbIndexes)) AND (\is_array(self::$dbIndexes[(string)$realm]))) {
+			return (array) self::$dbIndexes[(string)$realm];
+		} //end if
+		//--
+		self::$dbIndexes[(string)$realm] = [];
+		//--
+		$indexdb = (string) \SmartFileSysUtils::add_dir_last_slash(self::THE_DOCS_PATH.$realm).\Smart::safe_filename((string)self::THE_DOCS_IDX_FILE);
+		if(!\SmartFileSysUtils::check_if_safe_path((string)$indexdb)) {
+			\Smart::log_warning(__METHOD__.' # Invalid Indexes DB Path (Unsafe): `'.$indexdb.'`');
+			return [];
+		} //end if
+		if(!\SmartFileSystem::is_type_file((string)$indexdb)) {
+			\Smart::log_warning(__METHOD__.' # Invalid Indexes DB Path (N/A): `'.$indexdb.'`');
+			return [];
+		} //end if
+		//--
+		$arr = \Smart::json_decode((string)\SmartFileSystem::read((string)$indexdb)); // mixed
+		if(\Smart::array_size($arr) <= 0) {
+			\Smart::log_warning(__METHOD__.' # Malformed Realm Indexes DB: `'.$indexdb.'`');
+			return [];
+		} //end if
+		//--
+		self::$dbIndexes[(string)$realm] = (array) $arr;
+		//--
+		return (array) $arr;
+		//--
+	} //END FUNCTION
 
 
 	public static function renderDocMarkdown(?string $markdown_code, ?string $options='<validate:html:tidy>', ?string $relative_url_prefix='', bool $log_render_notices=true) : string {
@@ -49,22 +107,22 @@ final class OptimizationUtils {
 	} //END FUNCTION
 
 
-	public static function processHtml(?string $source, ?string $realm, ?string $prefix_url='') {
+	public static function processHtml(?string $source, ?string $realm, ?string $idkey, ?string $prefix_url='') {
 		//--
 		$source = (string) \trim((string)$source);
 		if((string)$source == '') {
 			return '';
 		} //end if
 		//--
-		$source = (string) \SmartModExtLib\Docs\OptimizationUtils::fixHtml((string)$source, (string)$realm); // document must be re-validated with tidy, it makes some replacements
+		$source = (string) self::fixHtml((string)$source, (string)$realm, (string)$idkey); // document must be re-validated with tidy, it makes some replacements
 		$source = (string) (new \SmartHtmlParser((string)$source, true, 'any:required:tidy', false))->get_clean_html(); // prefer Tidy here, it is more safe for untrusted inputs ...
 		//--
-		return (array) \SmartModExtLib\Docs\OptimizationUtils::validateSvgAndImagesCompressToWebp((string)$source, (string)$prefix_url);
+		return (array) self::validateSvgAndImagesCompressToWebp((string)$source, (string)$prefix_url);
 		//--
 	} //END FUNCTION
 
 
-	public static function fixHtml(?string $source, ?string $realm) {
+	public static function fixHtml(?string $source, ?string $realm, ?string $idkey) {
 		//--
 		$source = (string) \trim((string)$source);
 		if((string)$source == '') {
@@ -77,7 +135,8 @@ final class OptimizationUtils {
 		$realm = (string) ($realm[0] ?? '');
 		//--
 		switch((string)$realm) {
-			case 'vala':
+			case 'vala': // TODO: put this outside of this method !
+				//--
 				$source = (string) \str_ireplace(
 					[
 						'<pre class="main_source">',
@@ -89,19 +148,303 @@ final class OptimizationUtils {
 					],
 					(string) $source
 				);
+				//--
 				break;
-			case 'json-docs':
-			default:
-				$source = (string) \str_ireplace( // this must be after standardization from above ; document must be re-validated with tidy after these replacements
-					[
-						'<a href="#" class="show-all">Show all</a>',
-					],
-					[
-						'',
-					],
-					(string) $source // other replacements like '</span|div|p><' with '</span|div|p> <' must be done by turndown, it must be done by the converter ...
-				);
+			default: // fix in-page links looking into the indexes ; there are different strategies implemented below because some links are only relative, others have ../backward/path ...
+				//--
+				$init_log = (bool) self::isDbIndexesInitialized((string)$realm);
+				$arrIdx = (array) self::getDbIndexes((string)$realm);
+				$arrIdx['entries'] = (array) ($arrIdx['entries'] ?? []);
+				$log_broken_links = (string) 'tmp/logs/docs-optimize-json-broken-links-'.\Smart::safe_filename((string)$realm).'.log';
+				//--
+				if($init_log === true) {
+					\SmartFileSystem::write((string)$log_broken_links, '####### Docs Optimize JSON: `'.$realm.'` ; Indexes: #'.(int)\Smart::array_size($arrIdx['entries'])."\n", 'w');
+				} else {
+					\SmartFileSystem::write((string)$log_broken_links, '#### Docs Optimize JSON: `'.$realm.'` ; Key: `'.$idkey.'`'."\n", 'a');
+				} //end if
+				//--
+				$arr_idx_paths = [];
+				if((int)\Smart::array_size($arrIdx['entries']) > 0) {
+					foreach($arrIdx['entries'] as $key => $val) { // search as is
+						if(\is_array($val)) {
+							$tmp_idx_path = (string) trim((string)($val['path'] ?? null));
+							if((string)$tmp_idx_path != '') {
+								if(!\array_key_exists((string)$tmp_idx_path, (array)$arr_idx_paths)) {
+									$arr_idx_paths[(string)$tmp_idx_path] = [];
+								} //end if
+								$arr_idx_paths[(string)$tmp_idx_path][] = (array) $val;
+							} //end if
+						} //end if
+					} //end foreach
+				} //end if
+				//--
+				if((int)\Smart::array_size($arr_idx_paths) > 0) {
+					//--
+					// \Smart::log_notice(print_r(\array_keys($arr_idx_paths),1));
+					//--
+					$matches = [];
+					$pcre = \preg_match_all('/[\s]href[\s]?\=[\s]?"([^"]+)"/s', (string)$source, $matches, \PREG_PATTERN_ORDER, 0);
+					if($pcre === false) {
+						//--
+						\Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+						//--
+					} else {
+						//--
+						$all_hrefs = (array) ((isset($matches[0]) && is_array($matches[0])) ? $matches[0] : []);
+						$all_links = (array) ((isset($matches[1]) && is_array($matches[1])) ? $matches[1] : []);
+						$max = (int) \max((int)\Smart::array_size($all_hrefs), (int)\Smart::array_size($all_links));
+						$matches = null;
+						//die(print_r($matches,1));
+						if((int)$max > 0) {
+							for($i=0; $i<$max; $i++) {
+								$all_hrefs[$i] = (string) \trim((string)$all_hrefs[$i]);
+								$all_links[$i] = (string) \trim((string)$all_links[$i]);
+								$all_links[$i] = (string) \strtolower((string)$all_links[$i]); // some links are upper or camel case ; realm=perl&key=88
+								$is_relative_link = false;
+								if(
+									(\stripos((string)\trim((string)$all_links[$i]), 'http://') !== 0)
+									AND
+									(\stripos((string)\trim((string)$all_links[$i]), 'https://') !== 0)
+									AND
+									(\strpos((string)\trim((string)$all_links[$i]), '//') !== 0)
+								//	AND
+								//	(\strpos((string)\trim((string)$all_links[$i]), '://') === false)
+								) {
+									$is_relative_link = true;
+								} //end if
+								if(\strpos((string)\trim((string)$all_links[$i]), '#') === 0) {
+									$is_relative_link = false; // skip hash links
+								} //end if
+								if($is_relative_link === true) {
+									if((int)\strpos((string)$all_links[$i], '#') > 0) {
+										$all_links[$i] = (string) \substr((string)$all_links[$i], 0, (int)\strpos((string)$all_links[$i], '#'));
+									} //end if
+									if(((string)$all_hrefs[$i] != '') AND ((string)$all_links[$i] != '')) {
+										$found = false;
+										$tmp_apply_fixnum = 0;
+										$tmp_fixed_key = '';
+										$tmp_saved_key = '';
+										$tmp_fixed_idkey = (string) $idkey;
+										$tmp_fixed_key = (string) $all_links[$i];
+										if(((string)$tmp_fixed_key == 'index') OR ((string)\substr((string)$tmp_fixed_key, -6, 6) == '/index')) { // can be also as /index ../index and line this
+											$found = true; // index always exists
+										} else {
+											if((string)\substr((string)$tmp_fixed_key, 0, 3) == '../') { // backward links
+												if((string)\substr((string)$tmp_fixed_key, 0, 12) == '../../../../') { // apply 5 times dirname
+													$tmp_apply_fixnum = 5;
+													$tmp_fixed_key = (string) \substr((string)$tmp_fixed_key, 12);
+												} elseif((string)\substr((string)$tmp_fixed_key, 0, 9) == '../../../') { // apply 4 times dirname
+													$tmp_apply_fixnum = 4;
+													$tmp_fixed_key = (string) \substr((string)$tmp_fixed_key, 9);
+												} elseif((string)\substr((string)$tmp_fixed_key, 0, 6) == '../../') { // apply 3 times dirname
+													$tmp_apply_fixnum = 3;
+													$tmp_fixed_key = (string) \substr((string)$tmp_fixed_key, 6);
+												} else { // apply 2 times dirname
+													$tmp_apply_fixnum = 2;
+													$tmp_fixed_key = (string) \substr((string)$tmp_fixed_key, 3);
+												} //end if else
+												$tmp_fixed_key = (string) \trim((string)$tmp_fixed_key, '/.');
+												$tmp_fixed_idkey = (string) $idkey;
+												$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+												$tmp_fixed_idkey = (string) \dirname((string)$tmp_fixed_idkey);
+												$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+												if((string)$tmp_fixed_idkey != '') {
+													if((string)\substr((string)$tmp_fixed_key, 0, 12) == '../../../../') { // apply 4 times dirname
+														if((string)$tmp_fixed_idkey != '') {
+															$tmp_fixed_idkey = (string) \dirname((string)$tmp_fixed_idkey);
+															$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+														} //end if
+														if((string)$tmp_fixed_idkey != '') {
+															$tmp_fixed_idkey = (string) \dirname((string)$tmp_fixed_idkey);
+															$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+														} //end if
+														if((string)$tmp_fixed_idkey != '') {
+															$tmp_fixed_idkey = (string) \dirname((string)$tmp_fixed_idkey);
+															$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+														} //end if
+														if((string)$tmp_fixed_idkey != '') {
+															$tmp_fixed_idkey = (string) \dirname((string)$tmp_fixed_idkey);
+															$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+														} //end if
+													} elseif((string)\substr((string)$tmp_fixed_key, 0, 9) == '../../../') { // apply 3 times dirname
+														if((string)$tmp_fixed_idkey != '') {
+															$tmp_fixed_idkey = (string) \dirname((string)$tmp_fixed_idkey);
+															$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+														} //end if
+														if((string)$tmp_fixed_idkey != '') {
+															$tmp_fixed_idkey = (string) \dirname((string)$tmp_fixed_idkey);
+															$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+														} //end if
+														if((string)$tmp_fixed_idkey != '') {
+															$tmp_fixed_idkey = (string) \dirname((string)$tmp_fixed_idkey);
+															$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+														} //end if
+													} elseif((string)\substr((string)$tmp_fixed_key, 0, 6) == '../../') { // apply 2 times dirname
+														if((string)$tmp_fixed_idkey != '') {
+															$tmp_fixed_idkey = (string) \dirname((string)$tmp_fixed_idkey);
+															$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+														} //end if
+														if((string)$tmp_fixed_idkey != '') {
+															$tmp_fixed_idkey = (string) \dirname((string)$tmp_fixed_idkey);
+															$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+														} //end if
+													} else { // apply 1 times dirname
+														if((string)$tmp_fixed_idkey != '') {
+															$tmp_fixed_idkey = (string) \dirname((string)$tmp_fixed_idkey);
+															$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+														} //end if
+													} //end if else
+												} //end if
+												$tmp_saved_key = (string) $tmp_fixed_key;
+												if((string)$tmp_fixed_idkey != '') {
+													$tmp_fixed_key = (string) $tmp_fixed_idkey.'/'.$tmp_fixed_key;
+												} //end if
+											} //end if
+											$found = (bool) \array_key_exists((string)$tmp_fixed_key, (array)$arr_idx_paths);
+											if($found !== true) { // sometimes going backward is not enough, the above fix may not work due to wrong links !
+												if($tmp_saved_key != '') {
+													$found = (bool) \array_key_exists((string)$tmp_saved_key, (array)$arr_idx_paths);
+													if($found === true) {
+														$tmp_apply_fixnum = (int) ($tmp_apply_fixnum * 10);
+														$tmp_fixed_key = (string) $tmp_saved_key;
+													} //end if
+												} //end if
+											} //end if
+											if($found !== true) { // try with the current realm as prefix
+												$tmp_apply_fixnum = 1;
+												$tmp_fixed_key = (string) \trim((string)$all_links[$i], '/.'); // eliminate prefix/suffix ../ or others like
+												if((string)$tmp_fixed_key == '') {
+													$tmp_fixed_key = (string) $all_links[$i];
+												} //end if
+												$tmp_fixed_idkey = (string) $idkey;
+												if(strpos((string)$tmp_fixed_idkey, '/') !== false) { // relative links
+													$arr_expl = (array) \explode('/', (string)$tmp_fixed_idkey);
+												//	for($j=0; $j<\Smart::array_size($arr_expl)+1; $j++) {
+													for($j=0; $j<\Smart::array_size($arr_expl); $j++) {
+														$tmp_apply_fixnum = (int) ($tmp_apply_fixnum * 10) + $j;
+														if((string)$tmp_fixed_idkey != '') {
+															$found = (bool) \array_key_exists((string)$tmp_fixed_idkey.'/'.$tmp_fixed_key, (array)$arr_idx_paths);
+														} //end if
+														if($found === true) {
+															$tmp_fixed_key = (string) $tmp_fixed_idkey.'/'.$tmp_fixed_key;
+														//	\SmartFileSystem::write((string)$log_broken_links, '*** Testing Link Found for key `'.$tmp_fixed_key.'`: `'.$tmp_fixed_idkey.'`'."\n", 'a');
+															break;
+														} else {
+														//	\SmartFileSystem::write((string)$log_broken_links, '!!! Testing Link NOT Found for key `'.$tmp_fixed_key.'`: `'.(((string)$tmp_fixed_idkey != '') ? $tmp_fixed_idkey.'/' : '').$tmp_fixed_key.'`'."\n", 'a');
+														} //end if
+														$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+														$tmp_fixed_idkey = (string) \dirname((string)$tmp_fixed_idkey);
+														$tmp_fixed_idkey = (string) \trim((string)$tmp_fixed_idkey, '/.');
+													} //end for
+													$arr_expl = null;
+												} else {
+													$found = (bool) \array_key_exists((string)$tmp_fixed_idkey.'/'.$tmp_fixed_key, (array)$arr_idx_paths);
+												} //end if
+											} //end if
+										} //end if else
+										if($found !== true) {
+											$replace_link = (string) $all_links[$i];
+											if(stripos((string)$all_links[$i], 'mailto:') === 0) {
+												$replace_link = 'mailto:';
+											} elseif(stripos((string)$all_links[$i], 'ftp://') === 0) {
+												$replace_link = 'ftp:';
+											} elseif(stripos((string)$all_links[$i], 'ftps://') === 0) {
+												$replace_link = 'ftps:';
+											} elseif(stripos((string)$all_links[$i], 'sftp://') === 0) {
+												$replace_link = 'sftp:';
+											} elseif(stripos((string)$all_links[$i], 'ssh://') === 0) {
+												$replace_link = 'ssh:';
+											} elseif(stripos((string)$all_links[$i], 'smtp://') === 0) {
+												$replace_link = 'smtp:';
+											} elseif(stripos((string)$all_links[$i], 'vnc://') === 0) {
+												$replace_link = 'vnc:';
+											} elseif(stripos((string)$all_links[$i], 'news://') === 0) {
+												$replace_link = 'news:';
+											} elseif(stripos((string)$all_links[$i], 'rtsp://') === 0) {
+												$replace_link = 'rtsp:';
+											} elseif(stripos((string)$all_links[$i], 'rtmp://') === 0) {
+												$replace_link = 'rtmp:';
+											} elseif(stripos((string)$all_links[$i], 'rtp://') === 0) {
+												$replace_link = 'rtp:';
+											} elseif(stripos((string)$all_links[$i], 'hls://') === 0) {
+												$replace_link = 'hls:';
+											} elseif(stripos((string)$all_links[$i], 'srt://') === 0) {
+												$replace_link = 'srt:';
+											} elseif(stripos((string)$all_links[$i], 'mss://') === 0) {
+												$replace_link = 'mss:';
+											} elseif(stripos((string)$all_links[$i], 'wss://') === 0) {
+												$replace_link = 'wss:';
+											} elseif(stripos((string)$all_links[$i], 'ws://') === 0) {
+												$replace_link = 'ws:';
+											} elseif(stripos((string)$all_links[$i], 'chrome://') === 0) {
+												$replace_link = 'chromium:';
+											} elseif(stripos((string)$all_links[$i], 'about://') === 0) {
+												$replace_link = 'firefox:';
+											} elseif(stripos((string)$all_links[$i], 'file://') === 0) {
+												$replace_link = 'file:';
+											} elseif(stripos((string)$all_links[$i], '://') === 0) {
+												$replace_link = 'unknown:';
+											} elseif(stripos((string)$all_links[$i], '/contributors.txt') !== false) {
+												$replace_link = 'contributors:txt';
+											} //end if
+											$source = (string) \strtr((string)$source, [ (string)$all_hrefs[$i] => 'href="'.'#'.$replace_link.'" data-docs-smart-fix="bk"' ]);
+											\SmartFileSystem::write((string)$log_broken_links, 'Broken Link Found `'.$all_links[$i].'`: Try-Fix#'.(int)$tmp_apply_fixnum.' `'.$tmp_fixed_key.'` commented as `'.'#'.$replace_link.'`'."\n", 'a');
+										} else { // found ; fixed found
+											if((int)$tmp_apply_fixnum > 0) {
+												$source = (string) \strtr((string)$source, [ (string)$all_hrefs[$i] => 'href="'.$tmp_fixed_key.'" data-docs-smart-fix="fl:'.(int)$tmp_apply_fixnum.'"' ]);
+											//	\SmartFileSystem::write((string)$log_broken_links, 'OK, Fixed Link Found (Fix#'.(int)$tmp_apply_fixnum.'): `'.$all_links[$i].'` as: `'.$tmp_fixed_key.'`'."\n", 'a');
+											} else {
+												if((string)$all_links[$i] != (string)$tmp_fixed_key) {
+													$source = (string) \strtr((string)$source, [ (string)$all_hrefs[$i] => 'href="'.'#'.$all_links[$i].'" data-docs-smart-fix="err"' ]);
+													\SmartFileSystem::write((string)$log_broken_links, 'ERROR, Link Found: `'.$all_links[$i].'` as `'.$tmp_fixed_key.'`'."\n", 'a');
+												} else {
+												//	\SmartFileSystem::write((string)$log_broken_links, 'OK, Link Found: `'.$tmp_fixed_key.'`'."\n", 'a');
+												} //end if else
+											} //end if
+										} //end if else
+									} //end if
+								} //end if
+							} //end for
+						} //end if
+						//--
+					} //end if else
+					//--
+				} //end if else
+				//--
+				\SmartFileSystem::write((string)$log_broken_links, '### END'."\n", 'a');
+				//--
 		} //end switch
+		//--
+		if((string)$realm != 'vala') { // all:json-docs
+			//-- this is a general fix for all json docs
+			$source = (string) \str_ireplace( // this must be after standardization from above ; document must be re-validated with tidy after these replacements
+				[
+					'<a href="#" class="show-all">Show all</a>',
+				],
+				[
+					'',
+				],
+				(string) $source // other replacements like '</span|div|p><' with '</span|div|p> <' must be done by turndown, it must be done by the converter ...
+			);
+			//--
+			$fixes_aside_regex_file = (string) self::THE_DOCS_PATH.\Smart::safe_filename((string)$realm).'/fix-remove-aside-regex--@all.txt';
+			if(\SmartFileSystem::is_type_file((string)$fixes_aside_regex_file)) {
+				$fix_regex = (string) \trim((string)\SmartFileSystem::read((string)$fixes_aside_regex_file));
+				if((string)$fix_regex != '') {
+					$source = (string) \preg_replace((string)$fix_regex, '<br><br><!-- remove aside regex -->', (string)$source);
+				} //end if
+			} //end if
+			//--
+			$fixes_file = (string) self::THE_DOCS_PATH.\Smart::safe_filename((string)$realm).'/fix-append--'.\Smart::safe_filename((string)\Smart::create_slug((string)$idkey)).'.htm';
+			if(\SmartFileSystem::is_type_file((string)$fixes_file)) {
+				$fix_content = (string) \trim((string)\SmartFileSystem::read((string)$fixes_file));
+				if((string)$fix_content != '') {
+					$source .= (string) "\n".$fix_content;
+				} //end if
+				$fix_content = null;
+			} //end if
+			//--
+		} //end if
 		//--
 		return (string) $source;
 		//--

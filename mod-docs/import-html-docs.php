@@ -220,7 +220,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 		//--
 		$img_prefix_url = (string) SmartUtils::get_server_current_url().SmartFileSysUtils::add_dir_last_slash((string)\SmartModExtLib\Docs\OptimizationUtils::THE_HDOCS_PATH.$realm);
 		//--
-		$arr_process 		= (array) \SmartModExtLib\Docs\OptimizationUtils::processHtml((string)$source, (string)$realm, (string)$img_prefix_url);
+		$arr_process 		= (array) \SmartModExtLib\Docs\OptimizationUtils::processHtml((string)$source, (string)$realm, (string)$key_id, (string)$img_prefix_url);
 		$source 			= (string) $arr_process['source'];
 		//--
 		$all_imgs_and_svgs 	= (int)    $arr_process['all-imgs-and-svgs'];

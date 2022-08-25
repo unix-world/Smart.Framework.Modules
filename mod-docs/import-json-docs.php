@@ -255,7 +255,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$arr_process 		= (array) \SmartModExtLib\Docs\OptimizationUtils::processHtml((string)$source, (string)$realm);
+		$arr_process 		= (array) \SmartModExtLib\Docs\OptimizationUtils::processHtml((string)$source, (string)$realm, (string)$key_id);
 		$source 			= (string) $arr_process['source'];
 		//--
 		$all_imgs_and_svgs 	= (int)    $arr_process['all-imgs-and-svgs'];

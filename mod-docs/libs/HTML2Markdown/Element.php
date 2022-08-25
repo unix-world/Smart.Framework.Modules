@@ -26,19 +26,19 @@ class Element implements ElementInterface {
 	public function isBlock(): bool {
 		//--
 		switch ($this->getTagName()) {
-			case 'blockquote':
+			case 'html':
+			case 'hr':
 			case 'body':
-			case 'div':
 			case 'h1':
 			case 'h2':
 			case 'h3':
 			case 'h4':
 			case 'h5':
 			case 'h6':
-			case 'hr':
-			case 'html':
-			case 'li':
+			case 'blockquote':
+			case 'div':
 			case 'p':
+			case 'li':
 			case 'ol':
 			case 'ul':
 		//	case 'pre': // added by unixman ? is this needed ?

@@ -34,10 +34,10 @@ class HeaderConverter implements ConverterInterface, ConfigurationAwareInterface
 	//	}
 		//-- fix headers inside UL/OL LI
 		$ext_defs = [];
-		if($element->isDescendantOf('li')) {
-			//return (string) '**' . $element->getValue() . '**';
-			$ext_defs[] = '@style=display:inline-block'; // '{H:@style=display:inline-block}';
-		} //end if
+	//	if($element->isDescendantOf('li')) {
+	//		//return (string) '**' . $element->getValue() . '**';
+	//		$ext_defs[] = '@style=display:inline-block'; // '{H:@style=display:inline-block}';
+	//	} //end if
 		$the_id = (string) SmartFixes::createHtmid((string)$element->getAttribute('id'));
 		if($the_id) {
 			$ext_defs[] = '@id='.$the_id;

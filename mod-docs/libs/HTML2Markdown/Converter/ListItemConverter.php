@@ -33,7 +33,7 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
 		// If list item is the first in a nested list, add a newline before it
 		$prefix = '';
 		if ($level > 0 && $element->getSiblingPosition() === 1) {
-			$prefix = "\n";
+		//	$prefix = "\n";
 		}
 
 		if ($listType === 'ul') {
@@ -47,7 +47,7 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
 				$this->listItemStyle = $this->listItemStyle === $listItemStyle ? $listItemStyleAlternate : $listItemStyle;
 			}
 
-			return $prefix . $this->listItemStyle . ' ' . $value . "\n";
+			return $prefix . $this->listItemStyle . ' ' . $value; // . "\n";
 		}
 
 		if ($listType === 'ol' && ($parent = $element->getParent()) && ($start = \intval($parent->getAttribute('start')))) {
@@ -56,7 +56,7 @@ class ListItemConverter implements ConverterInterface, ConfigurationAwareInterfa
 			$number = $element->getSiblingPosition();
 		}
 
-		return $prefix . $number . '. ' . $value . "\n";
+		return $prefix . $number . '. ' . $value; // . "\n";
 	}
 
 	/**

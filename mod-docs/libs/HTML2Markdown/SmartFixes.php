@@ -4,6 +4,11 @@ namespace HTML2Markdown;
 
 final class SmartFixes {
 
+	//-- {{{SYNC-SPECIAL-CHARACTER-MKDW-CONVERTER}}}
+	public const SPECIAL_CHAR_NEWLINE_MARK = "\u{2051}"; // unicode ⁑
+	public const SPECIAL_CHAR_NEWLINE_REPL = '&#8273;'; // restore as html entity
+	//-- #end {{{SYNC-SPECIAL-CHARACTER-MKDW-CONVERTER}}}
+
 	public const PATTERN_INLINE_CODE = '/[`]{3}.*?[`]{3}/s'; // Inline Code ; sync with lib markdown v2
 
 	public const FIX_ESCAPES_ENTITIES_VBRACKS = [
