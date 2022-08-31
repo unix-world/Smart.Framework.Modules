@@ -24,6 +24,8 @@ class LinkConverter implements ConverterInterface, ConfigurationAwareInterface {
 		$title = (string) $element->getAttribute('title');
 		$text  = (string) \trim((string)$element->getValue(), "\0\x0B"); // \trim((string)$element->getValue(), "\t\n\r\0\x0B"); // in links if there is a <br> will remain as \, so trim only specials
 
+		$text = (string) \strtr($text, (array)SmartFixes::FIX_BACK_ESCAPES_GENERAL);
+
 		if((string)$title != '') {
 		//	$markdown = '[' . \str_replace(['[',']'], ['\\[','\\]'], (string)$text) . '](' . \str_replace(['(', ')'], ['\\(', '\\)'], (string)$href) . ' "' . \str_replace(['(', ')', '"'], ['\\(', '\\)', "'"], (string)$title) . '")';
 			$markdown = '[' . \strtr((string)$text, (array)SmartFixes::FIX_ESCAPES_ENTITIES_RBRACKS) . '](' . \strtr((string)$href, (array)SmartFixes::FIX_ESCAPES_ENTITIES_BRACKS) . ' "' . \strtr((string)$title, (array)SmartFixes::FIX_ESCAPES_ENTITIES_BRACKS) . '")';

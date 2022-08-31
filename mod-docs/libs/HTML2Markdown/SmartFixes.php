@@ -34,6 +34,10 @@ final class SmartFixes {
 		')' 	=> '&rpar;',
 	];
 
+	public const FIX_BACK_ESCAPES_GENERAL = [
+		'\\*' 	=> '*',
+	];
+
 
 	public static function getCharset() : string {
 		//--
