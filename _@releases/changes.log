@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+August 31, 2022
+	* optimizations
+	* mod docs fixes for HTML2Markdown parser
+
 August 16, 2022
 	* mod docs fixes to use JSON Docs Index and overrides
 
