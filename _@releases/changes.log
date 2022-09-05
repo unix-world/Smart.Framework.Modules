@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+September 05, 2022
+	* Math Latex Formula Parse to Markdown from HTML2Markdown
+
 August 31, 2022
 	* optimizations
 	* mod docs fixes for HTML2Markdown parser

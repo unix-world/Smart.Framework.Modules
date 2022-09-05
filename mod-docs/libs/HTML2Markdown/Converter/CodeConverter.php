@@ -44,9 +44,10 @@ class CodeConverter implements ConverterInterface {
 			$markdown .= "\n".$code."\n";
 		} else {
 			if($this->shouldBeBlock($element, $code)) {
-				$spacer = "\n".'\\'."\n";
 			//	$spacer = "\n".' '."\n";
-				$markdown .= (string) $spacer.'```'.$language."\n".\trim((string)$code)."\n".'```'.$spacer; //-- IMPORTANT: because the original internal mechanism of HTML2Markdown will add the markdown to the DOM will loose trailing and pre newlines, more than one ... force using a backslash as this
+				$spacer = "\n".'\\'."\n";
+				$hspacer = "\n".SmartFixes::SPECIAL_CHAR_NEWLINE_MARK."\n";
+				$markdown .= (string) $hspacer.'```'.$language."\n".\trim((string)$code)."\n".'```'.$spacer.$hspacer; //-- IMPORTANT: because the original internal mechanism of HTML2Markdown will add the markdown to the DOM will loose trailing and pre newlines, more than one ... force using a backslash as this
 			} else {
 			//	$markdown .= '```'.\preg_replace('/\r\n|\r|\n/', ' ', (string)$code).'```';
 				if($element->isDescendantOf(['a'])) { // code inside links is not extracted due to limitations in rendering ...

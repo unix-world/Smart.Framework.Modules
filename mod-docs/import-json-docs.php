@@ -88,6 +88,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 	//	$semaphores[] = 'load:searchterm-highlight-js';
 		$semaphores[] = 'load:code-highlight-js';
 		$semaphores[] = 'theme:dark';
+		$semaphores[] = 'load:math-latex-js';
 		$semaphores[] = 'skip:unveil-js';
 		//--
 

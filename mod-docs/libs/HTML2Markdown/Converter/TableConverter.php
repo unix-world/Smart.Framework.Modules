@@ -155,7 +155,8 @@ class TableConverter implements ConverterInterface, PreConverterInterface, Confi
 				if((int)$this->cellnum == 1) {
 				//	$tblsep = "\n:::\n:::\n";
 				//	$tblsep = "\n".'\\'."\n"; // this was prev, ok
-					$tblsep = "\n".' '."\n";
+				//	$tblsep = "\n".' '."\n";
+					$tblsep = "\n".SmartFixes::SPECIAL_CHAR_NEWLINE_MARK."\n";
 					if((int)$this->rownum < 2) {
 						$tblstyles = '{!DEF!=AUTO-WIDTH;ALIGN-HEAD-LEFT;ALIGN-LEFT;NO-TABLE-HEAD;.bordered;.stripped;.doc-table;.max-cells-'.(int)$this->maxcells.';.max-rows-'.(int)$this->rownum.';}';
 					} else {

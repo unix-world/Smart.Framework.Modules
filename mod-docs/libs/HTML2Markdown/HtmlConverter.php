@@ -210,9 +210,12 @@ class HtmlConverter implements HtmlConverterInterface {
 		}
 		// Don't convert HTML code inside <code> and <pre> blocks to Markdown - that should stay as HTML
 		// except if the current node is a code tag, which needs to be converted by the CodeConverter.
-		if ($element->isDescendantOf(['pre', 'code']) && $element->getTagName() !== 'code') {
-			return;
+		if($element->isDescendantOf(['pre', 'code']) && $element->getTagName() !== 'code') {
+			return; // fix: don't re-escape
 		}
+		if($element->isDescendantOf(['annotation'])) {
+			return; // fix: don't re-escape
+		} //end if
 		//-- fix by unixman
 		if(
 			($element->isDescendantOf(['table']) && $element->getTagName() === 'table')

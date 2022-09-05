@@ -2,10 +2,11 @@
 
 namespace HTML2Markdown;
 
+use HTML2Markdown\Converter\ConverterInterface;
 use HTML2Markdown\Converter\BlockquoteConverter;
 use HTML2Markdown\Converter\CodeConverter;
+use HTML2Markdown\Converter\MathConverter;
 use HTML2Markdown\Converter\CommentConverter;
-use HTML2Markdown\Converter\ConverterInterface;
 use HTML2Markdown\Converter\DefaultConverter;
 use HTML2Markdown\Converter\DivConverter;
 use HTML2Markdown\Converter\SpanConverter;
@@ -67,6 +68,7 @@ final class Environment {
 		//--
 		$environment->addConverter(new BlockquoteConverter());
 		$environment->addConverter(new CodeConverter());
+		$environment->addConverter(new MathConverter());
 		$environment->addConverter(new CommentConverter());
 		$environment->addConverter(new DivConverter());
 		$environment->addConverter(new EmphasisConverter());
