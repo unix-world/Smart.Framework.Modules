@@ -26,7 +26,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Task Area Controller
- * @version 20220331
+ * @version 20220906
  * @ignore
  */
 final class SmartAppTaskController extends SmartAbstractAppController {
@@ -215,7 +215,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 				$main = (string) $this->displayDocs(
 					(string) $file,
 					(string) $cls,
-					(string) $this->ControllerGetParam('module-view-path').'js/',
+					(string) 'lib/js/jsselect/',
 					(string) $url_index.$url_cls
 				);
 				//--

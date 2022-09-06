@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Task Area Controller
- * @version 20220331
+ * @version 20220906
  * @package Application
  */
 final class SmartAppTaskController extends SmartAbstractAppController {
@@ -238,7 +238,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 				//--
 				$main = (string) $this->displayDocs(
 					(string) $cls,
-					(string) $this->ControllerGetParam('module-view-path').'js/',
+					(string) 'lib/js/jsselect/',
 					(string) $url_index.$url_cls,
 					(string) $url_ref
 				);
@@ -1456,7 +1456,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 
 /**
  * Admin Area Controller
- * @version 20220331
+ * @version 20220906
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -1478,7 +1478,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 /**
  * Index Area Controller
- * @version 20220331
+ * @version 20220906
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {

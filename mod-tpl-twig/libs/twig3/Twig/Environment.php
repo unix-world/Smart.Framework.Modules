@@ -40,11 +40,11 @@ use Twig\TokenParser\TokenParserInterface;
  */
 class Environment
 {
-    public const VERSION = '3.4.1';
-    public const VERSION_ID = 30401;
+    public const VERSION = '3.4.2';
+    public const VERSION_ID = 30402;
     public const MAJOR_VERSION = 3;
     public const MINOR_VERSION = 4;
-    public const RELEASE_VERSION = 1;
+    public const RELEASE_VERSION = 2;
     public const EXTRA_VERSION = '';
 
     private $charset;
@@ -123,9 +123,7 @@ class Environment
         $this->addExtension(new OptimizerExtension($options['optimizations']));
     }
 
-
     protected function smart__getLoadedTemplates() { return $this->loadedTemplates; } // unixman
-
 
     /**
      * Enables debugging mode.
