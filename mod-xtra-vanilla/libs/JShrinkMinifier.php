@@ -6,10 +6,10 @@
 namespace SmartModExtLib\Vanilla;
 
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
@@ -146,17 +146,17 @@ final class JShrinkMinifier {
 	public function lock($js) {
 		//-- lock things like <code>"asd" + ++x;</code>
 		//$lock = '"LOCK---'.crc32(time()).'"';
-		$lock = '"LOCK---'.sha1((string)microtime()).'"';
+		$lock = '"LOCK---'.\sha1((string)\microtime()).'"';
 		$js = (string) $js;
 		$matches = array();
-		preg_match('/([+-])(\s+)([+-])/S', $js, $matches);
+		\preg_match('/([+-])(\s+)([+-])/S', $js, $matches);
 		if(empty($matches)) {
 			return (string) $js;
 		} //end if
 		//--
 		$this->locks[$lock] = $matches[2];
 		//--
-		$js = preg_replace('/([+-])\s+([+-])/S', "$1{$lock}$2", $js);
+		$js = \preg_replace('/([+-])\s+([+-])/S', "$1{$lock}$2", $js);
 		//--
 		return (string) $js;
 		//--
@@ -176,7 +176,7 @@ final class JShrinkMinifier {
 		} //end if
 		//--
 		foreach($this->locks as $lock => $replacement) {
-			$js = str_replace($lock, $replacement, $js);
+			$js = \str_replace($lock, $replacement, $js);
 		} //end foreach
 		//--
 		return (string) $js;
@@ -192,21 +192,21 @@ final class JShrinkMinifier {
 	 */
 	private function initialize($js, $options=array()) {
 		//--
-		if(!is_array($options)) {
+		if(!\is_array($options)) {
 			$options = array();
 		} //end if
 		//--
-		$this->options = array_merge($this->defaultOptions, $options);
+		$this->options = \array_merge($this->defaultOptions, $options);
 		//--
 		$js = (string) $js;
-		$js = str_replace("\r\n", "\n", $js);
-		$js = str_replace('/**/', '', $js);
-		$this->input = str_replace("\r", "\n", $js);
+		$js = \str_replace("\r\n", "\n", $js);
+		$js = \str_replace('/**/', '', $js);
+		$this->input = \str_replace("\r", "\n", $js);
 		//--
 		// We add a newline to the end of the script to make it easier to deal
 		// with comments at the bottom of the script- this prevents the unclosed
 		// comment error that can otherwise occur.
-		$this->input .= (string) PHP_EOL;
+		$this->input .= (string) \PHP_EOL;
 		//--
 		// Populate "a" with a new line, "b" with the first character, before
 		// entering the loop
@@ -222,13 +222,13 @@ final class JShrinkMinifier {
 	 */
 	private function loop() {
 		//--
-		while($this->a !== false && !is_null($this->a) && $this->a !== '') {
+		while($this->a !== false && !\is_null($this->a) && $this->a !== '') {
 			//--
 			switch($this->a) {
 				//-- new lines
 				case "\n":
 					//-- if the next line is something that can't stand alone preserve the newline
-					if(strpos('(-+[@', $this->b) !== false) {
+					if(\strpos('(-+[@', $this->b) !== false) {
 						$this->output .= (string) $this->a;
 						$this->saveString();
 						break;
@@ -287,7 +287,7 @@ final class JShrinkMinifier {
 			//-- do reg check of doom
 			$this->b = $this->getReal();
 			//--
-			if(((string)$this->b == '/' && strpos('(,=:[!&|?', $this->a) !== false)) {
+			if(((string)$this->b == '/' && \strpos('(,=:[!&|?', $this->a) !== false)) {
 				$this->saveRegex();
 			} //end if
 			//--
@@ -326,7 +326,7 @@ final class JShrinkMinifier {
 			//--
 		} else { // otherwise we start pulling from the input
 			//--
-			$char = substr($this->input, $this->index, 1);
+			$char = \substr($this->input, $this->index, 1);
 			//-- if the next character doesn't exist return false.
 			if(isset($char) && $char === false) {
 				return false;
@@ -388,7 +388,7 @@ final class JShrinkMinifier {
 	 */
 	private function processOneLineComments($startIndex) {
 		//--
-		$thirdCommentString = substr($this->input, $this->index, 1);
+		$thirdCommentString = \substr($this->input, $this->index, 1);
 		//-- kill rest of line
 		$this->getNext("\n");
 		//--
@@ -396,7 +396,7 @@ final class JShrinkMinifier {
 		//--
 		if((string)$thirdCommentString == '@') {
 			$endPoint = $this->index - $startIndex;
-			$this->c = "\n".substr($this->input, $startIndex, $endPoint);
+			$this->c = "\n".\substr($this->input, $startIndex, $endPoint);
 		} //end if
 		//--
 	} //END FUNCTION
@@ -435,7 +435,7 @@ final class JShrinkMinifier {
 				} //end if
 				//--
 				$endPoint = ($this->index - 1) - $startIndex;
-				$this->output .= (string) substr($this->input, $startIndex, $endPoint);
+				$this->output .= (string) \substr($this->input, $startIndex, $endPoint);
 				//--
 				$this->c = $char;
 				//--
@@ -468,7 +468,7 @@ final class JShrinkMinifier {
 	 */
 	private function getNext($string) {
 		//-- find the next occurrence of "string" after the current position.
-		$pos = strpos($this->input, $string, $this->index);
+		$pos = \strpos($this->input, $string, $this->index);
 		//-- if it's not there return false.
 		if($pos === false) {
 			return false;
@@ -476,7 +476,7 @@ final class JShrinkMinifier {
 		//-- adjust position of index to jump ahead to the asked for string
 		$this->index = $pos;
 		//-- return the first character of that string.
-		return substr($this->input, $this->index, 1);
+		return \substr($this->input, $this->index, 1);
 		//--
 	} //END FUNCTION
 
@@ -589,7 +589,7 @@ final class JShrinkMinifier {
 	 */
 	private function isAlphaNumeric($char) {
 		//--
-		if((preg_match('/^[\w\$\pL]$/', $char) === 1) || ((string)$char == '/')) {
+		if((\preg_match('/^[\w\$\pL]$/', $char) === 1) || ((string)$char == '/')) {
 			return true;
 		} else {
 			return false;

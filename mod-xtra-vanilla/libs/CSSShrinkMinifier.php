@@ -6,10 +6,10 @@
 namespace SmartModExtLib\Vanilla;
 
 
-//----------------------------------------------------- PREVENT DIRECT EXECUTION
-if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+//----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
+if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@\http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
 
@@ -41,19 +41,19 @@ final class CSSShrinkMinifier {
 
 	public static function minifyCssCode($input) {
 		//--
-		if((string)trim((string)$input) == '') {
+		if((string)\trim((string)$input) == '') {
 			return '';
 		} //end if
 		//--
 		$regex = [
-			(string) APPCODE_REGEX_STRIP_MULTILINE_CSS_COMMENTS => ' ', // remove multi-line comments (this is OK for CSS)
+			(string) \APPCODE_REGEX_STRIP_MULTILINE_CSS_COMMENTS => ' ', // remove multi-line comments (this is OK for CSS)
 			"`^([\t\s]+)`ism" => '', // remove line start spaces
 			"`(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+`ism" => "\n" // normalize line endings
 		];
 		//--
-		$output = (string) preg_replace(array_keys($regex), array_values($regex), (string)$input);
+		$output = (string) \preg_replace(\array_keys($regex), \array_values($regex), (string)$input);
 		//--
-		return (string) trim((string)$output);
+		return (string) \trim((string)$output);
 		//--
 	} //END FUNCTION
 

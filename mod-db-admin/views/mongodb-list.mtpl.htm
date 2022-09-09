@@ -204,12 +204,12 @@ function handleButtonShowJson() {
 [%%%/IF:QMODE%%%]
 </script>
 <img src="lib/core/img/db/mongodb-logo.svg" width="48" height="48" align="right" style="margin-right:5px; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|html###]">
-<h2><span style="color:#778899;">MongoDB :: </span>Database:&nbsp;<span style="color:#666699; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;[@@@SUB-TEMPLATE:partials/mongodb-collections.mtpl.inc.htm@@@] <a class="ux-button ux-button-special" data-smart="open.modal" href="[###URL-DROP-COLLECTION|html###]" title="Drop Collection and Delete All Records"><i class="sfi sfi-bin"></i>&nbsp;&nbsp;Drop&nbsp;Collection</a></h2>
+<h2><span style="color:#778899;">MongoDB :: </span>Database:&nbsp;<span style="color:#5E6885; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;[@@@SUB-TEMPLATE:partials/mongodb-collections.mtpl.inc.htm@@@] <a class="ux-button ux-button-special" data-smart="open.modal" href="[###URL-DROP-COLLECTION|html###]" title="Drop Collection and Delete All Records"><i class="sfi sfi-bin"></i>&nbsp;&nbsp;Drop&nbsp;Collection</a></h2>
 <div class="query-builder">
 	<table width="96%">
 		<tr>
 			<td>
-				<b>_id:</b> <input id="filter-_id" name="filter[_id]" type="text" maxlength="255" size="65" class="ux-field" value="[###FILTER-ID_|html###]"> <button class="ux-button ux-button-small ux-button-dark" onClick="handleButtonSelectById();" title="Find One Record by UID"><i class="sfi sfi-filter"></i>&nbsp;&nbsp;Select&nbsp;by&nbsp;UID</button>
+				<b>_id:</b> <input id="filter-_id" name="filter[_id]" type="text" maxlength="255" size="65" class="ux-field" value="[###FILTER-ID_|html###]"> <button class="ux-button ux-button-small ux-button-details" onClick="handleButtonSelectById();" title="Find One Record by UID"><i class="sfi sfi-filter"></i>&nbsp;&nbsp;Select&nbsp;by&nbsp;UID</button>
 			</td>
 			<td align="right">
 				<span style="font-size:0.625rem; font-weight:bold;">Server:&nbsp;<span style="color:#FF5500;">[###HOST|html###]:[###PORT|html###]</span></span>
@@ -286,7 +286,7 @@ code.wrap-off {
 }
 </style>
 <script>
-const toggleWrap = ($el) => {
+const toggleWrap = ($el, $btn) => {
 	if(!$el) {
 		return;
 	}
@@ -296,8 +296,10 @@ const toggleWrap = ($el) => {
 	const isWrapOff = $el.data('wrap-off');
 	if(!isWrapOff) {
 		$el.addClass('wrap-off').data('wrap-off', true);
+		$btn.removeClass('ux-button-secondary').addClass('ux-button-dark').attr('title', 'Wrap ON/OFF: OFF');
 	} else {
 		$el.removeClass('wrap-off').data('wrap-off', false);
+		$btn.removeClass('ux-button-dark').addClass('ux-button-secondary').attr('title', 'Wrap ON/OFF: ON');
 	}
 	const toggler = $el.find('a.json-toggle');
 	if(toggler.hasClass('collapsed')) {
@@ -309,12 +311,12 @@ const toggleWrap = ($el) => {
 [%%%LOOP:RECORDS%%%]
 	<div class="record-area" title="#[###RECORDS.-NUM|int###]">
 		[%%%IF:RECORDS.-ID:!=;%%%]
-		<div align="right"><span style="font-weight:bold;"><span style="color:#7777AA; font-size:0.9375rem!important;" title="Record ID">[###RECORDS.-ID|html###]</span></span></div>
+		<div align="right"><span style="font-weight:bold;"><span style="color:#4D5774; font-size:0.9375rem!important;" title="Record ID">[###RECORDS.-ID|html###]</span></span></div>
 		[%%%/IF:RECORDS.-ID%%%]
 		<span style="color:#778899;">[###RECORDS.-NUM|int###].</span>
 		<a title="Delete Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-special" href="[###URL-DELETE-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-bin2"></i></a>
 		<a title="Edit Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-highlight" href="[###URL-EDIT-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-file-text2"></i></a>
-		<button title="Wrap ON/OFF" class="ux-button ux-button-xsmall ux-button-secondary" onClick="toggleWrap($(this).parent().find('code'));"><i class="sfi sfi-paragraph-justify"></i></button>
+		<button title="Wrap ON/OFF" class="ux-button ux-button-xsmall ux-button-secondary" onClick="toggleWrap($(this).parent().find('code'), $(this));"><i class="sfi sfi-paragraph-justify"></i></button>
 		<span style="font-weight:bold;"><span class="json-key">[%%%IF:QMODE:!=visual;%%%]&quot;[%%%/IF:QMODE%%%]_id[%%%IF:QMODE:!=visual;%%%]&quot;[%%%/IF:QMODE%%%]</span>&nbsp;:&nbsp;<span class="json-string" title="Record UID">&quot;[###RECORDS._ID|html###]&quot;</span></span>
 		<br>
 		<code id="json-renderer" class="json-render-area" data-id="[###RECORDS._ID|html###]" data-json="[###RECORDS.-JSON|json|html###]"></code>

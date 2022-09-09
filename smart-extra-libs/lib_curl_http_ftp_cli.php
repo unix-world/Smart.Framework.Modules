@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP CURL, PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
- * @version 	v.20220125
+ * @version 	v.20220909
  * @package 	extralibs:Network
  *
  */
@@ -51,6 +51,7 @@ final class SmartCurlHttpFtpClient {
 	public $postvars;										// Not for FTP ; Associative Array of PostVars (to send) as [ var1 => val1, var2 => val2, ... ]. Cannot be combined with post string or json or xml request.
 	public $postfiles; 										// Not for FTP ; Array of PostFiles (to send) ; This can be used only in combination with $postvars ; Example [ 'filename' => 'file.txt', 'content' => 'the contents go here' ]
 	public $poststring;										// Not for FTP ; Pre-Built Post String (as alternative to PostVars) ; must not contain unencoded \r\n ; must use the RFC 3986 standard. Cannot be combined with post vars or post files.
+	public $posttype;										// Not for FTP ; Used to set the Content-Type header
 	public $jsonrequest;									// Not for FTP ; JSON Request (to send) ; must not contain unencoded \r\n but only \n ; hint: can be json-encoded without pretty-print. Cannot be combined with post vars or post files or xml request.
 	public $xmlrequest;										// Not for FTP ; XML Request (to send) ; must not contain \r\n but only \n. Cannot be combined with post vars or post files or json request.
 	//--
@@ -102,6 +103,7 @@ final class SmartCurlHttpFtpClient {
 		//-- inits
 		$this->rawheaders = array();
 		$this->cookies = array();
+		$this->posttype = '';
 		$this->poststring = '';
 		$this->postvars = array();
 		$this->postfiles = array();
@@ -490,6 +492,9 @@ final class SmartCurlHttpFtpClient {
 			$post_string = '';
 			if((string)$this->poststring != '') {
 				$post_string = (string) $this->poststring; // send raw post string
+				if((string)$this->posttype != '') {
+					$this->raw_headers[] = 'Content-Type: '.$this->posttype;
+				} //end if
 			} elseif(Smart::array_size($this->postfiles) > 0) { // build multipart form data with/without extra post vars (files have anyway)
 				$boundary = (string) SmartHttpUtils::http_multipart_form_delimiter();
 				$post_string = (string) SmartHttpUtils::http_multipart_form_build($boundary, $this->postvars, $this->postfiles);

@@ -5,7 +5,7 @@ function btnHandlerCancel() {
 	return false;
 }
 function btnHandlerSubmit() {
-	jQuery.alertable.confirm('DROP the Collection `[###COLLECTION|js###]` ?' + '\n\n' + 'This action will permanently DROP the selected Collection and will DELETE all the records of this Collection.').then(function(){
+	jQuery.alertable.confirm('<h4><span style="color:#FF5500;">DROP the Collection</span> `<span style="color:#FF1100;">[###COLLECTION|html|js###]</span>`&nbsp;?<br><br>This action will <i>permanently DROP</i> the selected <i>Collection</i> and will <i>DELETE all the records</i> of this <i>Collection</i>.</h4>', { html:true }).then(function(){
 		smartJ$Browser.SubmitFormByAjax('collection_drop_form', '[###ACTIONS-URL|js###]', 'yes');
 	});
 	return false;

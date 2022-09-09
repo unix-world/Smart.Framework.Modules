@@ -2,7 +2,8 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
-September 07, 2022
+September 08, 2022
+	* Mod DBAdmin Fix Styles
 	* Move SlimSelect Js from Mod Documentor to framework
 	* Upgrade Twig to version 3.4.2
 	* Math Latex Formula Parse to Markdown from HTML2Markdown

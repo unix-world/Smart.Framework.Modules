@@ -25,7 +25,7 @@ HTML;
 echo $html;
 */
 
-class SmartJsfObfuscate {
+final class SmartJsfObfuscate {
 
 	const MIN = 32;
 	const MAX = 126;

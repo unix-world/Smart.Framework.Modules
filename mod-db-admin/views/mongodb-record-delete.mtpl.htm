@@ -19,7 +19,7 @@ function btnHandlerCancel() {
 	return false;
 }
 function btnHandlerSubmit() {
-	jQuery.alertable.confirm('DELETE this Record ?' + '\n\n' + 'This action will permanent delete the selected Record from the Collection.').then(function(){
+	jQuery.alertable.confirm('<h4><span style="color:#FF5500;">DELETE this</span> <span style="color:#FF1100;">Record</span>&nbsp;?<br><br>This action will <i>permanent DELETE</i> the selected <i>Record</i> from the Collection.</h4>', { html:true }).then(function(){
 		smartJ$Browser.SubmitFormByAjax('record_form', '[###ACTIONS-URL|js###]', 'yes');
 	});
 	return false;

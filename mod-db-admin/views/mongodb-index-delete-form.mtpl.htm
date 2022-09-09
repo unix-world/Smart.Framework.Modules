@@ -21,10 +21,10 @@ function btnHandlerCancel() {
 function btnHandlerSubmit() {
 	var idx = jQuery('#idx-selector').val();
 	if(!idx) {
-		jQuery.alertable.alert('No Index Selected').always(function(){});
+		jQuery.alertable.alert('<h3>No Index Selected</h3>', { html:true }).always(function(){});
 		return false;
 	}
-	jQuery.alertable.confirm('DROP the Index `' + smartJ$Utils.escape_html(idx) + '` ?' + '\n\n' + 'This action will permanently DROP the selected Index of this Collection.').then(function(){
+	jQuery.alertable.confirm('<h4><span style="color:#FF5500;">DROP the Index</span> `<span style="color:#FF1100;">' + smartJ$Utils.escape_html(idx) + '</span>`&nbsp;?<br><br>This action will <i>permanently DROP</i> the selected <i>Index</i> of this Collection.</h4>', { html:true }).then(function(){
 		smartJ$Browser.SubmitFormByAjax('index_drop_form', '[###ACTIONS-URL|js###]', 'yes');
 	});
 	return false;
@@ -53,7 +53,7 @@ var SmartViewHelpersSyntaxHighlightAreas = '#hljs-json-div';
 <br>
 <div class="ux-controls">
 	<button type="button" class="ux-button" style="margin-right:10px; margin-bottom:5px;" onClick="btnHandlerCancel();"> Cancel &nbsp; <i class="sfi sfi-spinner11"></i></button>
-	<button type="button" class="ux-button ux-button-info" style="margin-right:10px; margin-bottom:5px;" onClick="btnHandlerSubmit();"> [###ACTION-TXT|html###] &nbsp; <i class="sfi sfi-checkmark"></i></button>
+	<button type="button" class="ux-button ux-button-highlight" style="margin-right:10px; margin-bottom:5px;" onClick="btnHandlerSubmit();"> [###ACTION-TXT|html###] &nbsp; <i class="sfi sfi-checkmark"></i></button>
 </div>
 </form>
 <!-- # MongoDB Index Delete (Drop) Form -->
