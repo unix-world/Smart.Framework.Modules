@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
 
 
 /**
- * Admin Controller r.20210612
+ * Admin Controller r.20220910
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
@@ -164,7 +164,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$err = 'Empty Error !...';
 		} //end if
 		//--
-		echo '<br><font color="#FF0000">'.Smart::escape_html((string)$err).'</font>';
+		echo '<div style="color:#FF0000;">'.Smart::escape_html((string)$err).'</div>';
 		//--
 	} //END FUNCTION
 
@@ -592,7 +592,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								*/
 								//-- WARNING: check if need to delete on IMAP4 !!!
 								//echo '.';
-								//echo ' <font color="#778899"><b>[EXISTS]</b></font>';
+								//echo ' <span style="color:#778899"><b>[EXISTS]</b></span>';
 								//--
 							} else { // if message is not yet downloaded, download it
 								//--
@@ -767,7 +767,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						} else {
 							//--
 							$errors += 1;
-							echo '<br><font color="#FF0000">'.'Message #'.(int)$key.' have NO / VALID UID !'.'</font><br>';
+							echo '<div style="color:#FF0000;">'.'Message #'.(int)$key.' have NO / VALID UID !'.'</div>';
 							//-- CHECK IF MESSAGES DELETION IS SET TO IMMEDIATELY DELETE FROM SERVER ! (Notes must NOT be deleted from Server !!!)
 							/*
 							$mailget->delete($key); // delete this message from server by number

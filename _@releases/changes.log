@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+September 10, 2022
+	* Add PostType to SmartCurlHttpFtpClient to be able to set other content type than application/x-www-form-urlencoded with POST
+
 September 08, 2022
 	* Mod DBAdmin Fix Styles
 	* Move SlimSelect Js from Mod Documentor to framework

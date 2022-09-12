@@ -20,7 +20,7 @@ abstract class AbstractMongoGenericCollection {
 
 	protected static $errfatal = true; // by default use fatal errors
 	protected static $collection = 'GenericCollection'; // change it
-	protected static $version = '2022-09-08 21:28'; // change it ; the version for the search collection structure ; each time will change it will drop the collection with all data and will re-initialize the collection, recreate indexes ...
+	protected static $version = '2022-09-12 02:58'; // change it ; the version for the search collection structure ; each time will change it will drop the collection with all data and will re-initialize the collection, recreate indexes ...
 	protected static $indexes = [
 		[
 			'name' 				=> 'dt',
@@ -205,7 +205,7 @@ abstract class AbstractMongoGenericCollection {
 	} //END FUNCTION
 
 
-	final public static function insertRecord(string $area, string $id, array $doc) : array {
+	final public static function insertRecord(string $area, string $id, array $doc, bool $overwrite=false) : array {
 		//--
 		// $doc must NOT contain the following keys: _id, id, area, date
 		//--
@@ -262,15 +262,23 @@ abstract class AbstractMongoGenericCollection {
 		//--
 		$arr = [];
 		try {
-			$arr = (array) $mongo->upsert(
-				(string) static::getCollection(),
-				[ // filter by Unique
-					'area'		=> (string) $area,
-					'id' 		=> (string) $id,
-				],
-				'$set', 		// operation
-				(array) $idoc 	// update array
-			);
+			$filter = [ // filter by Unique
+				'area'		=> (string) $area,
+				'id' 		=> (string) $id,
+			];
+			if($overwrite === true) {
+				$arr = (array) $mongo->upsert(
+					(string) static::getCollection(),
+					(array) $filter, // filter
+					'$set', 		// operation
+					(array) $idoc 	// update array
+				);
+			} else {
+				$arr = (array) $mongo->insert(
+					(string) static::getCollection(),
+					(array) $idoc
+				);
+			} //end if else
 		} catch(\Exception $err) {
 			// only log notice, not warning ... as in production this may occur on high concurrency over big data, there is no DB lock, just record lock !!
 			\Smart::log_warning(__METHOD__.'() # MongoDB Insert Record :: Upsert Exception: '.$err->getMessage());

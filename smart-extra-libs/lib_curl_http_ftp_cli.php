@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP CURL, PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
- * @version 	v.20220909
+ * @version 	v.20220910
  * @package 	extralibs:Network
  *
  */
@@ -51,7 +51,7 @@ final class SmartCurlHttpFtpClient {
 	public $postvars;										// Not for FTP ; Associative Array of PostVars (to send) as [ var1 => val1, var2 => val2, ... ]. Cannot be combined with post string or json or xml request.
 	public $postfiles; 										// Not for FTP ; Array of PostFiles (to send) ; This can be used only in combination with $postvars ; Example [ 'filename' => 'file.txt', 'content' => 'the contents go here' ]
 	public $poststring;										// Not for FTP ; Pre-Built Post String (as alternative to PostVars) ; must not contain unencoded \r\n ; must use the RFC 3986 standard. Cannot be combined with post vars or post files.
-	public $posttype;										// Not for FTP ; Used to set the Content-Type header
+	public $posttype;										// Not for FTP ; Used only with $poststring to set a different Content-Type header than default which is 'application/x-www-form-urlencoded'
 	public $jsonrequest;									// Not for FTP ; JSON Request (to send) ; must not contain unencoded \r\n but only \n ; hint: can be json-encoded without pretty-print. Cannot be combined with post vars or post files or xml request.
 	public $xmlrequest;										// Not for FTP ; XML Request (to send) ; must not contain \r\n but only \n. Cannot be combined with post vars or post files or json request.
 	//--

@@ -830,7 +830,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 
 				//--
-				$num_pages = ceil((int)$count / (int)$limit);
+				$num_pages = (int) ceil((int)$count / (int)$limit);
 				if($num_pages <= 0) {
 					$num_pages = 1;
 				} //end if
