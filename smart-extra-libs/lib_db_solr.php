@@ -19,7 +19,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // DEPENDS-EXT: PHP Solr / PECL (v.2.0 or later)
 //======================================================
 // Tested and Stable on Solr versions:
-// 3.x / 4.x / 5.x / 6.x / 7.x
+// 3.x / 4.x / 5.x / 6.x / 7.x / 8.x
 //======================================================
 // # Sample Configuration #
 /*
@@ -78,8 +78,10 @@ $configs['solr']['slowtime']	= 0.4500;									// 0.0500 .. 0.7500 slow query ti
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartComponents
- * @version 	v.20220115
+ * @version 	v.20220912
  * @package 	extralibs:Database:Solr
+ *
+ * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
  *
  */
 final class SmartSolrDb {
@@ -123,7 +125,7 @@ final class SmartSolrDb {
 	private $slow_time = 0.3300;
 
 	/** @var fatal_err */
-	private $fatal_err = true;
+	private $fatal_err = false;
 
 	/** @var connid */
 	private $connid = '';
@@ -139,21 +141,23 @@ final class SmartSolrDb {
 	 * @internal
 	 *
 	 */
-	public function __construct($mode='json', $host='', $port='', $ssl='', $db='', $user='', $password='', $timeout=5, $y_debug_exch_slowtime=0.3300, $y_description='DEFAULT') {
+	public function __construct(?string $mode='json', bool $y_fatal_err=false, ?string $host='', ?string $port='', ?string $ssl='', ?string $db='', ?string $user='', ?string $password='', int $timeout=5, float $y_debug_exch_slowtime=0.3300, ?string $y_description='DEFAULT') {
+		//--
+		$this->fatal_err = (bool) $y_fatal_err;
 		//--
 		$cfg = (array) Smart::get_from_config('solr', 'array');
 		//--
 		if(((string)$host == '') AND ((string)$port == '') AND ((string)$db == '') AND (Smart::array_size($cfg) > 0)) {
 			//--
-			$mode 		= (string) ($cfg['mode'] ?? null);
-			$host 		= (string) ($cfg['server-host'] ?? null);
-			$port 		= (int)    ($cfg['server-port'] ?? null);
-			$ssl 		= (bool)   ($cfg['server-ssl'] ?? null);
-			$db 		= (string) ($cfg['db']  ?? null);
-			$user 		= (string) ($cfg['username']  ?? null);
-			$password 	= (string) base64_decode((string)($cfg['password'] ?? null));
-			$timeout 	= (int)    ($cfg['timeout']  ?? null);
-			$y_debug_exch_slowtime = (float) ($cfg['slowtime'] ?? null);
+			$mode 					= (string) ($cfg['mode'] ?? null);
+			$host 					= (string) ($cfg['server-host'] ?? null);
+			$port 					= (int)    ($cfg['server-port'] ?? null);
+			$ssl 					= (bool)   ($cfg['server-ssl'] ?? null);
+			$db 					= (string) ($cfg['db']  ?? null);
+			$user 					= (string) ($cfg['username']  ?? null);
+			$password 				= (string) ($cfg['password'] ?? null);
+			$timeout 				= (int)    ($cfg['timeout']  ?? null);
+			$y_debug_exch_slowtime 	= (float)  ($cfg['slowtime'] ?? null);
 			//--
 		} //end if
 		//--
@@ -170,7 +174,7 @@ final class SmartSolrDb {
 		} //end if
 		//--
 		if(((string)$host == '') OR ((string)$port == '') OR ((string)$db == '') OR ((string)$timeout == '')) {
-			throw new Exception('Solr Configuration Init: Some Required Parameters are Empty. CHECK the Connection Params ...'); // this must be catcheable exception !!!
+			$this->error('Solr Configuration Init', 'Some Required Parameters are Empty', 'CHECK the Connection Params ...');
 			return;
 		} //end if
 		//--
@@ -181,6 +185,10 @@ final class SmartSolrDb {
 		$this->db = (string) $db;
 		//--
 		$this->user = (string) $user;
+		//--
+		if((string)$password != '') {
+			$password = (string) base64_decode((string)$password);
+		} //end if
 		$this->password = (string) $password;
 		//--
 		$this->timeout = Smart::format_number_int($timeout, '+');
@@ -211,9 +219,15 @@ final class SmartSolrDb {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'solr|slow-time', number_format($this->slow_time, 7, '.', ''), '=');
 			//--
+			if($this->fatal_err === true) {
+				$txt_conn = 'FATAL ERRORS';
+			} else {
+				$txt_conn = 'IGNORED BUT LOGGED AS WARNINGS';
+			} //end if else
+			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
 				'type' => 'metainfo',
-				'data' => 'Solr App Connector Version: '.SMART_APP_MODULES_EXTRALIBS_VER
+				'data' => 'Solr App Connector Version: '.SMART_APP_MODULES_EXTRALIBS_VER.' // Connection Errors are: '.$txt_conn
 			]);
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
@@ -269,24 +283,6 @@ final class SmartSolrDb {
 		return (string) $this->extver;
 		//--
 
-	} //END FUNCTION
-	//======================================================
-
-
-	//======================================================
-	public function throwFatalErrors() {
-		//--
-		$this->fatal_err = false;
-		//--
-	} //END FUNCTION
-	//======================================================
-
-
-	//======================================================
-	public function raiseFatalErrors() {
-		//--
-		$this->fatal_err = true;
-		//--
 	} //END FUNCTION
 	//======================================================
 
@@ -814,9 +810,19 @@ final class SmartSolrDb {
 	 * @return :: HALT EXECUTION WITH ERROR MESSAGE
 	 *
 	 */
-	private function error($y_area, $y_error_message, $y_query='', $y_warning='') {
+	private function error($y_area, $y_error_message, $y_query='', $y_warning='', $y_is_fatal=null) {
 		//--
-		if($this->fatal_err === false) {
+		if(($y_is_fatal === true) OR ($y_is_fatal === false)) { // depends on how is set, conform
+			$y_is_fatal = (bool) $y_is_fatal;
+		} else { // NULL :: default, depend on how $this->fatal_err is
+			if($this->fatal_err === false) {
+				$y_is_fatal = false;
+			} else {
+				$y_is_fatal = true;
+			} //end if else
+		} //end if else
+		//--
+		if($y_is_fatal === false) {
 			throw new Exception('#SOLR-DB@'.$this->connid.'# :: Q# // Solr Client :: EXCEPTION :: '.$y_area."\n".$y_error_message);
 			return;
 		} //end if

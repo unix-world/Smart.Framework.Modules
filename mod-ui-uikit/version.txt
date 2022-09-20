@@ -1,7 +1,0 @@
-
-# Smart.Framework.Modules: UI UiKit r.20210526 #
-## UI UiKit v.2.27.5.r1 ##
-
-// r.8.7 / smart.framework.v.8.7
-
-###

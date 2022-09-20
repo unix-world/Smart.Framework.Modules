@@ -1,5 +1,0 @@
-RATINGSTARS: +200 OK
-8
-Thank you for your vote !
-RATINGSTARS: END
--- v.2015.02.15 --

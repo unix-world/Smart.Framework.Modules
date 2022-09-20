@@ -52,7 +52,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			'title' => 'Sample Server-Side Syntax Highlight',
 			'main' => '<h1 id="qunit-test-result">Syntax Highlight (Server-Side): '.strtoupper((string)$syntax).'.</h1>'.
 			'<link rel="stylesheet" type="text/css" href="modules/mod-highlight-syntax/views/css/atelier-sulphurpool-dark.css">'.
-			'<pre><code class="hljs '.Smart::escape_html($hl->language).'" title="SYNTAX: '.$syntax.' @ '.Smart::escape_html($hl->language).'">'.SmartMarkersTemplating::prepare_nosyntax_html_template($hl->value).'</code></pre>'
+			'<pre><code class="hljs syntax '.Smart::escape_html($hl->language).'" title="SYNTAX: '.$syntax.' @ '.Smart::escape_html($hl->language).'">'.SmartMarkersTemplating::prepare_nosyntax_html_template($hl->value).'</code></pre>'
 		]);
 		//--
 

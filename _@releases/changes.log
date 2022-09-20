@@ -2,6 +2,15 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+September 16, 2022
+	* Refactoring CSS file name for jQuery Pager in modules
+	* Cloud Webmail UI fixes
+
+September 15, 2022
+	* Mod Docs, HTML2Markdown: separe dt/dd from div, test support for extended Markdown with dd
+	* Move Mod DB Admin from Smart.Framework.Modules to Smart.Framework
+	* Mod DB Admin - Refactoring and fixes
+
 September 10, 2022
 	* Add PostType to SmartCurlHttpFtpClient to be able to set other content type than application/x-www-form-urlencoded with POST
 

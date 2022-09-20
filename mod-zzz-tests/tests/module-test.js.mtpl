@@ -12,13 +12,13 @@
 				baseScript + '?page=zzz-tests.test-pmarkdowntohtml',
 				500,
 				assert,
-				'Markdown (v1) To HTML Test: OK'
+				'Test OK: PHP PMarkdown Render.'
 			);
 			SmartQUnit.runiFrameTest(
 				baseScript + '?page=zzz-tests.test-htmltopmarkdown',
 				500,
 				assert,
-				'HTML To Markdown (v1) Test: OK'
+				'HTML2Markdown Test: OK'
 			);
 			SmartQUnit.runiFrameTest(
 				baseScript + '?page=zzz-tests.test-db-medoo',

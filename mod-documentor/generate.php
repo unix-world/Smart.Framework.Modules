@@ -30,17 +30,19 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
+		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW !== true)) {
+			$this->PageViewSetErrorStatus(403, 'INFO: The access to this Mod Documentor Area is disabled. Read the module documentation how to enable it ...');
+			return;
+		} //end if
+		//--
+
+		//--
 		if(defined('SMART_HTML_CLEANER_USE_VALIDATOR')) {
 			$this->PageViewSetErrorStatus(503, 'ERROR: a constant has been already defined and should not: `SMART_HTML_CLEANER_USE_VALIDATOR` ...');
 			return;
 		} //end if
 		//--
 
-		//--
-		if(!defined('SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW') OR (SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW !== true)) {
-			$this->PageViewSetErrorStatus(503, 'INFO: Documentor Generate Mode is disabled. Must define SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW = TRUE to enable it.');
-			return;
-		} //end if
 		//--
 		if((!class_exists('DOMDocument')) AND (!class_exists('tidy'))) { // req. for HTML Cleaner Safety
 			$this->PageViewSetErrorStatus(500, 'ERROR: At least one of: tidy or DOMDocument PHP extensions is required ...');

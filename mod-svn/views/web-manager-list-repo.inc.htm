@@ -1,11 +1,4 @@
-<style>
-.div_line {
-	border: 1px solid #FFFFFF;
-}
-.div_line:hover {
-	border: 1px solid #FFCC00;
-}
-</style>
+[@@@SUB-TEMPLATE:partials/web-manager-styles.inc.htm@@@]
 <div class="ux-grid-row">
 	<div class="ux-grid-col s3">
 		[@@@SUB-TEMPLATE:partials/web-manager-home.inc.htm@@@]
@@ -37,21 +30,21 @@
 				[%%%/IF:REVSDATA._-ITERATOR-_(1)%%%]
 					<div style="margin-top:3px!important;"><i class="sfi sfi-ticket"></i></div>
 				</div>
-				<div class="vtml-timeline-content div_line">
-					<h2>Rev.&nbsp;[###REVSDATA.REVISION|html###]</h2>
+				<div class="vtml-timeline-content svn-line">
+					<h6>Rev.&nbsp;[###REVSDATA.REVISION|html###]</h6>
 					&nbsp;
 				[%%%IF:TYPE:==file;%%%]
 					[%%%IF:COMPARE-FILE-DIFF-URL:!=;%%%]
-					<a data-smart="open.modal" href="[###COMPARE-FILE-DIFF-URL|html###][###REVSDATA.REVISION|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/diff.svg" alt="View Modifications / Diff for Rev. #[###REVSDATA.REVISION|html###] for Current File: [###COMPARE-PATH|html###]" title="View Modifications / Diff for Rev. #[###REVSDATA.REVISION|html###] for Current File: [###COMPARE-PATH|html###]"></a>
+					<a data-smart="open.modal" href="[###COMPARE-FILE-DIFF-URL|html###][###REVSDATA.REVISION|url|html###]"><img class="noborder" width="16" height="16" src="[###VIEWS-PATH|html###]img/diff.svg" alt="View Modifications / Diff for Rev. #[###REVSDATA.REVISION|html###] for Current File: [###COMPARE-PATH|html###]" title="View Modifications / Diff for Rev. #[###REVSDATA.REVISION|html###] for Current File: [###COMPARE-PATH|html###]"></a>
 					[%%%/IF:COMPARE-FILE-DIFF-URL%%%]
 					[%%%IF:COMPARE-FILE-VIEW-URL:!=;%%%]
-					<a data-smart="open.modal" href="[###COMPARE-FILE-VIEW-URL|html###][###REVSDATA.REVISION|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/view.svg" alt="View the Current File: [###COMPARE-PATH|html###] as in Rev. #[###REVSDATA.REVISION|html###]" title="View the Current File: [###COMPARE-PATH|html###] as in Rev. #[###REVSDATA.REVISION|html###]"></a>
+					<a data-smart="open.modal" href="[###COMPARE-FILE-VIEW-URL|html###][###REVSDATA.REVISION|url|html###]"><img class="noborder" width="16" height="16" src="[###VIEWS-PATH|html###]img/view.svg" alt="View the Current File: [###COMPARE-PATH|html###] as in Rev. #[###REVSDATA.REVISION|html###]" title="View the Current File: [###COMPARE-PATH|html###] as in Rev. #[###REVSDATA.REVISION|html###]"></a>
 					[%%%/IF:COMPARE-FILE-VIEW-URL%%%]
 				[%%%/IF:TYPE%%%]
-					<a data-smart="open.modal" href="[###PROPS-URL|html###][###REVSDATA.REVISION|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/props.svg" alt="View Props for Revision #[###REVSDATA.REVISION|html###] Log for Current Path: [###COMPARE-PATH|html###]" title="View Props for Revision #[###REVSDATA.REVISION|html###] Log for Current Path: [###COMPARE-PATH|html###]"></a>
-					&nbsp; <a data-smart="open.modal" href="[###COMPARE-ROOT-URL|html###][###REVSDATA.REVISION|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/changes.svg" alt="View Revision #[###REVSDATA.REVISION|html###] Log for Root Path: /" title="View Revision #[###REVSDATA.REVISION|html###] Log for Root Path: /"></a>
+					<a data-smart="open.modal" href="[###PROPS-URL|html###][###REVSDATA.REVISION|url|html###]"><img class="noborder" width="16" height="16" src="[###VIEWS-PATH|html###]img/props.svg" alt="View Props for Revision #[###REVSDATA.REVISION|html###] Log for Current Path: [###COMPARE-PATH|html###]" title="View Props for Revision #[###REVSDATA.REVISION|html###] Log for Current Path: [###COMPARE-PATH|html###]"></a>
+					&nbsp; <a data-smart="open.modal" href="[###COMPARE-ROOT-URL|html###][###REVSDATA.REVISION|url|html###]"><img class="noborder" width="16" height="16" src="[###VIEWS-PATH|html###]img/changes.svg" alt="View Revision #[###REVSDATA.REVISION|html###] Log for Root Path: /" title="View Revision #[###REVSDATA.REVISION|html###] Log for Root Path: /"></a>
 					[%%%IF:REVSDATA.REVISION:!=###REV-CRR###;%%%]
-					<a href="[###SELECT-URLBASE|html###]&rev=[###REVSDATA.REVISION|url|html###]&prev=[###REV-CRR|url|html###]&type=[###TYPE|url|html###]"><img width="16" height="16" src="[###VIEWS-PATH|html###]img/revselect.svg" alt="Select and Display the Revision #[###REVSDATA.REVISION|html###]" title="Select and Display the Revision #[###REVSDATA.REVISION|html###]"></a>
+					<a href="[###SELECT-URLBASE|html###]&rev=[###REVSDATA.REVISION|url|html###]&prev=[###REV-CRR|url|html###]&type=[###TYPE|url|html###]"><img class="noborder" width="16" height="16" src="[###VIEWS-PATH|html###]img/revselect.svg" alt="Select and Display the Revision #[###REVSDATA.REVISION|html###]" title="Select and Display the Revision #[###REVSDATA.REVISION|html###]"></a>
 					[%%%/IF:REVSDATA.REVISION%%%]
 					<p style="color:#778899; font-weight:bold;">[###REVSDATA.AUTHOR|html###]</p>
 					<p style="color:#778899; font-style:italic;">[###REVSDATA.MSG|html|nl2br###]</p>
@@ -112,7 +105,7 @@
 	[%%%IF:TYPE:==file;%%%]
 		[%%%IF:REPODATA:@>0;%%%]
 			[%%%LOOP:REPODATA%%%]
-		<div class="div_line" style="height:28px;">
+		<div class="svn-line" style="height:28px;">
 			<div class="ux-grid-col s4" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
 				<img width="16" height="16" src="modules/mod-webdav/libs/img/ftype-icons/file[###REPODATA.ICON-SUFFIX|html###].svg" alt="file: [###MIMETYPE|html###]" title="file: [###MIMETYPE|html###]">
 				&nbsp;
@@ -137,7 +130,7 @@
 		</div>
 			[%%%/LOOP:REPODATA%%%]
 		[%%%ELSE:REPODATA%%%]
-		<div class="div_line" style="height:28px;">
+		<div class="svn-line" style="height:28px;">
 			<div class="ux-grid-col s12" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
 				<span style="font-weight:normal; font-style:italic; color:#CCCCCC;">Invalid File !</span>
 			</div>
@@ -146,7 +139,7 @@
 	[%%%ELSE:TYPE%%%]
 		[%%%IF:REPODATA:@>0;%%%]
 			[%%%LOOP:REPODATA%%%]
-		<div class="div_line" style="height:28px;">
+		<div class="svn-line" style="height:28px;">
 			<div class="ux-grid-col s4" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;" title="[###REPODATA.TYPE|html###]: [###REPODATA.NAME|html###]">
 				[%%%IF:REPODATA.TYPE:==file;%%%]
 					<img width="16" height="16" src="modules/mod-webdav/libs/img/ftype-icons/file[###REPODATA.ICON-SUFFIX|html###].svg" alt="file" title="file">
@@ -173,7 +166,7 @@
 		</div>
 			[%%%/LOOP:REPODATA%%%]
 		[%%%ELSE:REPODATA%%%]
-		<div class="div_line" style="height:28px;">
+		<div class="svn-line" style="height:28px;">
 			<div class="ux-grid-col s12" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
 				<span style="font-weight:normal; font-style:italic; color:#CCCCCC;">Empty</span>
 			</div>

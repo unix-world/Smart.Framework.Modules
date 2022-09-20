@@ -1,6 +1,0 @@
-
-# Smart.Framework.Modules: Xtra-Bizz r.20210526 #
-
-// r.8.7 / smart.framework.v.8.7
-
-###

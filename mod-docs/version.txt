@@ -1,6 +1,0 @@
-
-# Smart.Framework.Modules: Docs r.20220904 #
-
-// r.8.7 / smart.framework.v.8.7
-
-###

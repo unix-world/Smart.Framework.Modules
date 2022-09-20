@@ -1,19 +1,12 @@
-<style>
-.div_line {
-	border: 1px solid #FFFFFF;
-}
-.div_line:hover {
-	border: 1px solid #FFCC00;
-}
-</style>
+[@@@SUB-TEMPLATE:partials/web-manager-styles.inc.htm@@@]
 <div>
-	[@@@SUB-TEMPLATE:partials/web-manager-home.inc.htm@@@]
+[@@@SUB-TEMPLATE:partials/web-manager-home.inc.htm@@@]
 </div>
 <div>
 	<h2> &nbsp; SVN Repositories</h2>
 	<div class="ux-grid-row ux-border" style="padding:8px;">
 	[%%%LOOP:REPOS%%%]
-	<div class="div_line" style="height:28px;">
+	<div class="svn-line" style="height:28px;">
 		<div class="ux-grid-col s4" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
 			<img src="[###VIEWS-PATH|html###]img/repo.svg" alt="repo" title="Repository"> &nbsp; [%%%IF:REPOS.LAST-REV-NUM:>0;%%%]<a class="ux-link" style="color:#556677!important;" href="[###SELECT-URLBASE|html###][###REPOS.REPO-NAME|url|html###]">[%%%/IF:REPOS.LAST-REV-NUM%%%]<span style="font-weight:bold;">[###REPOS.REPO-NAME|html###][%%%IF:REPOS.REPO-PATH:!=;%%%]&nbsp;[[###REPOS.REPO-PATH|html###]][%%%/IF:REPOS.REPO-PATH%%%]</span>[%%%IF:REPOS.LAST-REV-NUM:>0;%%%]</a>[%%%/IF:REPOS.LAST-REV-NUM%%%]
 		</div>

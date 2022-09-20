@@ -1,11 +1,4 @@
-<style>
-.div_line {
-	border: 1px solid #FFFFFF;
-}
-.div_line:hover {
-	border: 1px solid #FFCC00;
-}
-</style>
+[@@@SUB-TEMPLATE:partials/web-manager-styles.inc.htm@@@]
 <div class="ux-grid-row">
 	<div class="ux-grid-col s12">
 		<h2 style="display:inline;">SVN Repository: <span style="color:#72C100;">[###REPO-NAME|html###]</span></h2>
@@ -23,7 +16,7 @@
 <div class="ux-grid-row ux-border" style="padding:8px; text-align:left; height:75vh; overflow:auto;">
 	[%%%IF:COMPARR:@>0;%%%]
 	[%%%LOOP:COMPARR%%%]
-	<div class="div_line" style="height:28px;">
+	<div class="svn-line" style="height:28px;">
 		<div class="ux-grid-col s6" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
 			[%%%IF:COMPARR.TYPE:==file;%%%]
 			<img width="16" height="16" style="cursor:help;" src="modules/mod-webdav/libs/img/ftype-icons/file[###COMPARR.ICON-SUFFIX|html###].svg" alt="Type: [###COMPARR.TYPE|html###] ; Text-Mods: [###COMPARR.TXTMOD|html###] ; Prop-Mods: [###COMPARR.PROPSMOD|html###]" title="Type: [###COMPARR.TYPE|html###] ; Text-Mods: [###COMPARR.TXTMOD|html###] ; Prop-Mods: [###COMPARR.PROPSMOD|html###]">
