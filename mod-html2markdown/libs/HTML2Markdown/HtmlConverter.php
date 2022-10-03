@@ -129,7 +129,7 @@ final class HtmlConverter {
 			\libxml_use_internal_errors(true);
 		} //end if
 		//--
-		if(stripos($html, '<body') === false) {
+		if(\stripos($html, '<body') === false) {
 			//--
 			// THIS IS A FIX for Tidy and DomDocument as some version of these parsers fail if only body provided ...
 			// Trick: the meta charset have not be supplied because if set to UTF-8 the DomDocument will decode all possible entities, includding &Prime; thus the fixback to &quot; is no more available to force &quot; instead of " when using DomDocument
