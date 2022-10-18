@@ -146,7 +146,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					[
 						'CHARSET' 					=> (string) $this->ControllerGetParam('charset'),
 						'TITLE' 					=> (string) 'Mockup :: '.$sq_rd['dtime'].' @ '.$sq_rd['user'].' / '.$sq_rd['uuid'],
-						'HTML-STYLES-BASE' 			=> (string) '<style>'."\n".trim((string)SmartFileSystem::read('lib/core/css/base.css'))."\n".'</style>',
+						'HTML-STYLES-BASE' 			=> (string) '<style>'."\n".SmartComponents::app_default_css()."\n".'</style>',
 						'HTML-STYLES-DOC-ELEMENTS' 	=> (string) SmartFileSystem::read('modules/mod-wflow-components/views/qmockup/qmockup-elements.css'),
 						'HTML-STYLE-CLASS' 			=> (string) 'mockup-printable',
 						'HTML-DOC-DATA' 			=> (string) $old_doc_data['canvasData']

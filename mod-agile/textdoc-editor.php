@@ -154,7 +154,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					[
 						'CHARSET' 					=> (string) $this->ControllerGetParam('charset'),
 						'TITLE' 					=> (string) 'Textdoc :: '.$sq_rd['dtime'].' @ '.$sq_rd['user'].' / '.$sq_rd['uuid'],
-						'HTML-STYLES-BASE' 			=> (string) '<style>'."\n".trim((string)SmartFileSystem::read('lib/core/css/base.css'))."\n".'</style>',
+						'HTML-STYLES-BASE' 			=> (string) '<style>'."\n".SmartComponents::app_default_css()."\n".'</style>',
 						'HTML-STYLES-DOC-ELEMENTS' 	=> (string) $rd_extstyles.SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-print-styles.css')."\n\n".SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-table-styles.css')."\n\n".SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-pagebreak.css'),
 						'HTML-STYLE-CLASS' 			=> (string) 'note-printable',
 						'HTML-DOC-DATA' 			=> (string) $old_doc_data['textDoc']
