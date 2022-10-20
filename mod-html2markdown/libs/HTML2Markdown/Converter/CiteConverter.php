@@ -10,22 +10,25 @@ use HTML2Markdown\ConverterInterface;
 use HTML2Markdown\ElementInterface;
 
 
-final class DivConverter extends AbstractConverterConfig implements ConverterInterface {
+final class CiteConverter extends AbstractConverterConfig implements ConverterInterface {
 
 	// OK
 
 	public function getSupportedTags() : array {
 		//--
-		return [ 'div' ];
+		return [ 'cite' ];
 		//--
 	} //END FUNCTION
 
 
 	public function convert(ElementInterface $element) : string { // strip tags behaviour only
 		//--
-		$code = (string) SmartFixes::stripTags((string)$element->getChildrenAsString());
+		$value = (string) $element->getValue();
 		//--
-		return (string) "\n\n".$code."\n";
+		$prefix = \ltrim($value) !== $value ? ' ' : '';
+		$suffix = \rtrim($value) !== $value ? ' ' : '';
+		//--
+		return (string) $prefix.'??'.$value.'??'.$suffix;
 		//--
 	} //END FUNCTION
 

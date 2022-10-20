@@ -10,13 +10,13 @@ use HTML2Markdown\ConverterInterface;
 use HTML2Markdown\ElementInterface;
 
 
-final class DivConverter extends AbstractConverterConfig implements ConverterInterface {
+final class ParagraphConverter extends AbstractConverterConfig implements ConverterInterface {
 
 	// OK
 
 	public function getSupportedTags() : array {
 		//--
-		return [ 'div' ];
+		return [ 'p' ];
 		//--
 	} //END FUNCTION
 
@@ -25,7 +25,7 @@ final class DivConverter extends AbstractConverterConfig implements ConverterInt
 		//--
 		$code = (string) SmartFixes::stripTags((string)$element->getChildrenAsString());
 		//--
-		return (string) "\n\n".$code."\n";
+		return (string) "\n".$code."\n";
 		//--
 	} //END FUNCTION
 

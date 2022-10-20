@@ -10,22 +10,21 @@ use HTML2Markdown\ConverterInterface;
 use HTML2Markdown\ElementInterface;
 
 
-final class DivConverter extends AbstractConverterConfig implements ConverterInterface {
+final class HorizontalRuleConverter extends AbstractConverterConfig implements ConverterInterface {
 
 	// OK
 
 	public function getSupportedTags() : array {
 		//--
-		return [ 'div' ];
+		return [ 'hr' ];
 		//--
 	} //END FUNCTION
 
 
 	public function convert(ElementInterface $element) : string { // strip tags behaviour only
 		//--
-		$code = (string) SmartFixes::stripTags((string)$element->getChildrenAsString());
-		//--
-		return (string) "\n\n".$code."\n";
+	//	return '- - - -'."\n"."\n";
+		return "\n".'- - - -'."\n".SmartFixes::SPECIAL_CHAR_NEWLINE_MARK;
 		//--
 	} //END FUNCTION
 

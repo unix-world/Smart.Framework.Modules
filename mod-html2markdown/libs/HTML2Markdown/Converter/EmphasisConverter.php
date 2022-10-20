@@ -2,66 +2,69 @@
 
 //declare(strict_types=1);
 
-namespace League\HTMLToMarkdown\Converter;
+namespace HTML2Markdown\Converter;
 
-use League\HTMLToMarkdown\Configuration;
-use League\HTMLToMarkdown\ConfigurationAwareInterface;
-use League\HTMLToMarkdown\ElementInterface;
+use HTML2Markdown\SmartFixes;
+use HTML2Markdown\AbstractConverterConfig;
+use HTML2Markdown\ConverterInterface;
+use HTML2Markdown\ElementInterface;
 
-class EmphasisConverter implements ConverterInterface, ConfigurationAwareInterface {
 
-	/** @var Configuration */
+final class EmphasisConverter extends AbstractConverterConfig implements ConverterInterface {
+
+	// OK
+
 	protected $config;
 
 
 	public function getSupportedTags(): array {
+		//--
 		return ['em', 'i', 'strong', 'b'];
+		//--
 	} //END FUNCTION
 
 
 	public function convert(ElementInterface $element): string {
-		$tag   = $this->getNormTag($element);
-		$value = $element->getValue();
-
-		if (! \trim($value)) {
-			return $value;
-		}
-
-		if ($tag === 'em') {
-			$style = $this->config->getOption('italic_style');
+		//--
+		$tag   = (string) $this->getNormTag($element);
+		$value = (string) $element->getValue();
+		//--
+		if(!\trim((string)$value)) {
+			return (string) $value;
+		} //end if
+		//--
+		if((string)$tag == 'em') {
+			$style = (string) $this->getConfig('italic_style', (string)SmartFixes::MKDW_TAG_ITALIC);
 		} else {
-			$style = $this->config->getOption('bold_style');
-		}
-
+			$style = (string) $this->getConfig('bold_style', (string)SmartFixes::MKDW_TAG_BOLD);
+		} //end if else
+		//--
 		$prefix = \ltrim($value) !== $value ? ' ' : '';
 		$suffix = \rtrim($value) !== $value ? ' ' : '';
-
-		/* If this node is immediately preceded or followed by one of the same type don't emit
-		 * the start or end $style, respectively. This prevents <em>foo</em><em>bar</em> from
-		 * being converted to *foo**bar* which is incorrect. We want *foobar* instead.
-		 */
-		$preStyle  = $this->getNormTag($element->getPreviousSibling()) === $tag ? '' : $style;
-		$postStyle = $this->getNormTag($element->getNextSibling()) === $tag ? '' : $style;
-
-		return $prefix . $preStyle . \trim($value) . $postStyle . $suffix;
-	}
+		//--
+		$preStyle = (string) $style; // fix by unixman
+		$postStyle = (string) $style; // fix by unixman
+		//--
+		return (string) $prefix.$preStyle.$value.$postStyle.$suffix; // fix by unixman: test with: realm=php&key=7076 ... (missing space between words: `WarningThis function is currently not documented`);
+		//--
+	} //END FUNCTION
 
 
 	private function getNormTag(?ElementInterface $element): string {
-		if ($element !== null && ! $element->isText()) {
-			$tag = $element->getTagName();
-			if ($tag === 'i' || $tag === 'em') {
+		//--
+		if($element !== null && !$element->isText()) {
+			$tag = (string) \strtolower((string)\trim((string)$element->getTagName()));
+			if(((string)$tag == 'i') || ((string)$tag == 'em')) {
 				return 'em';
-			}
-
-			if ($tag === 'b' || $tag === 'strong') {
+			} elseif(($tag === 'b') || ($tag === 'strong')) {
 				return 'strong';
-			}
-		}
-
+			} //end if else
+		} //end if
+		//--
 		return '';
-	}
+		//--
+	} //END FUNCTION
 
-}
+} //END CLASS
 
 // #end

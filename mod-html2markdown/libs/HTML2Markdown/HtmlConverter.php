@@ -8,8 +8,33 @@ use HTML2Markdown\SmartFixes;
 
 use HTML2Markdown\Converter\DefaultConverter;
 
+use HTML2Markdown\Converter\HardBreakConverter;
+use HTML2Markdown\Converter\HeaderConverter;
 use HTML2Markdown\Converter\DivConverter;
+use HTML2Markdown\Converter\ParagraphConverter;
+use HTML2Markdown\Converter\EmphasisConverter;
+use HTML2Markdown\Converter\UnderlineConverter;
+use HTML2Markdown\Converter\StrikeConverter;
+use HTML2Markdown\Converter\QuoteConverter;
+use HTML2Markdown\Converter\MarkConverter;
+use HTML2Markdown\Converter\CiteConverter;
+use HTML2Markdown\Converter\VarConverter;
+use HTML2Markdown\Converter\DelConverter;
+use HTML2Markdown\Converter\InsConverter;
+use HTML2Markdown\Converter\SubConverter;
+use HTML2Markdown\Converter\SupConverter;
 use HTML2Markdown\Converter\LinkConverter;
+use HTML2Markdown\Converter\ListBlockConverter;
+use HTML2Markdown\Converter\ListItemConverter;
+use HTML2Markdown\Converter\PreformattedConverter;
+use HTML2Markdown\Converter\CodeConverter;
+use HTML2Markdown\Converter\BlockquoteConverter;
+use HTML2Markdown\Converter\TableConverter;
+use HTML2Markdown\Converter\HorizontalRuleConverter;
+use HTML2Markdown\Converter\ImageConverter;
+use HTML2Markdown\Converter\MathConverter;
+use HTML2Markdown\Converter\ButtonConverter;
+use HTML2Markdown\Converter\CommentConverter;
 
 use HTML2Markdown\Converter\TextConverter;
 
@@ -24,17 +49,18 @@ use HTML2Markdown\Converter\TextConverter;
 final class HtmlConverter {
 
 	private $options = [
-		'suppress_errors' 			=> true, 		// Set to false to show warnings when loading malformed HTML
-		'hard_break' 				=> false, 		// Set to true to turn <br> into `\n` instead of `  \n`
-		'preserve_comments' 		=> false, 		// Set to true to preserve comments, or set to an array of strings to preserve specific comments
-		'table_pipe_escape' 		=> '\|', 		// Replacement string for pipe characters inside markdown table cells
-		'table_caption_side' 		=> 'top', 		// Set to 'top' or 'bottom' to show <caption> content before or after table, null to suppress
+		'suppress_errors' 			=> true, 							// Set to false to show warnings when loading malformed HTML
+		'hard_break' 				=> false, 							// Set to true to turn <br> into `\n` instead of `  \n`
+		'preserve_comments' 		=> false, 							// Set to true to preserve comments, or set to an array of strings to preserve specific comments
+		'table_pipe_escape' 		=> '\|', 							// Replacement string for pipe characters inside markdown table cells
+		'table_caption_side' 		=> 'top', 							// Set to 'top' or 'bottom' to show <caption> content before or after table, null to suppress
 		//-- unixman changed
-		'remove_nodes' 				=> [ 'svg' ], 	// array list of dom nodes that should be removed ; example: [ 'meta', 'style', 'script' ]
-		'header_style' 				=> 'atx', 		// Set to 'atx' to output H1 and H2 headers as # Header1 and ## Header2
-		'bold_style' 				=> '**', 		// v2 bold
-		'italic_style' 				=> '==', 		// v2 emphasys
-		'list_item_style' 			=> '-', 		// Set the default character for each <li> in a <ul>. Can be '-', '*', or '+'
+		'remove_nodes' 				=> [ 'svg' ], 						// array list of dom nodes that should be removed ; example: [ 'meta', 'style', 'script' ]
+		'header_style' 				=> 'atx', 							// Set to 'atx' to output H1 and H2 headers as # Header1 and ## Header2
+		'bold_style' 				=> SmartFixes::MKDW_TAG_BOLD, 		// v2 bold
+		'italic_style' 				=> SmartFixes::MKDW_TAG_ITALIC, 	// v2 emphasys
+		'list_item_style' 			=> SmartFixes::MKDW_TAG_LI, 		// Set the default character for each <li> in a <ul>. Can be '-', '*', or '+'
+		'list_item_style_alternate' => SmartFixes::MKDW_TAG_LI_ALT, 	// alternate list item style
 	];
 
 	private const UNWANTED_TAGS = [ '<?xml encoding="UTF-8">', '<html>', '</html>', '<body>', '</body>', '<head>', '</head>', '&#xD;' ];
@@ -78,8 +104,33 @@ final class HtmlConverter {
 		//--
 		$this->addConverter(new DefaultConverter((array)$this->options)); // this is the fallback for elements that have no converter
 		//--
+		$this->addConverter(new HardBreakConverter((array)$this->options));
+		$this->addConverter(new HeaderConverter((array)$this->options));
 		$this->addConverter(new DivConverter((array)$this->options));
+		$this->addConverter(new ParagraphConverter((array)$this->options));
+		$this->addConverter(new EmphasisConverter((array)$this->options));
+		$this->addConverter(new UnderlineConverter((array)$this->options));
+		$this->addConverter(new StrikeConverter((array)$this->options));
+		$this->addConverter(new QuoteConverter((array)$this->options));
+		$this->addConverter(new MarkConverter((array)$this->options));
+		$this->addConverter(new CiteConverter((array)$this->options));
+		$this->addConverter(new VarConverter((array)$this->options));
+		$this->addConverter(new DelConverter((array)$this->options));
+		$this->addConverter(new InsConverter((array)$this->options));
+		$this->addConverter(new SubConverter((array)$this->options));
+		$this->addConverter(new SupConverter((array)$this->options));
 		$this->addConverter(new LinkConverter((array)$this->options));
+		$this->addConverter(new ListBlockConverter((array)$this->options));
+		$this->addConverter(new ListItemConverter((array)$this->options));
+		$this->addConverter(new PreformattedConverter((array)$this->options));
+		$this->addConverter(new CodeConverter((array)$this->options));
+		$this->addConverter(new BlockquoteConverter((array)$this->options));
+		$this->addConverter(new TableConverter((array)$this->options));
+		$this->addConverter(new HorizontalRuleConverter((array)$this->options));
+		$this->addConverter(new ImageConverter((array)$this->options));
+		$this->addConverter(new MathConverter((array)$this->options));
+		$this->addConverter(new ButtonConverter((array)$this->options));
+		$this->addConverter(new CommentConverter((array)$this->options));
 		//--
 		$this->addConverter(new TextConverter((array)$this->options)); // this is the final #text converter !
 		//--
@@ -95,6 +146,19 @@ final class HtmlConverter {
 	public function convert(?string $html): string {
 		//--
 		$html = (string) \preg_replace('/<!--(.|\s)*?-->/', '', (string)$html); // fix by unixman
+		//-- fix leading spaces before tags in a line ... this breaks LI and others
+	//	$html = \str_replace("\t", '    ', (string)$html); // fix for preserve leading spaces in code : TODO
+		$html = (string) SmartFixes::normalizeNewLines((string)$html);
+		$arr = (array) explode("\n", (string)$html);
+		$html = [];
+		foreach($arr as $idx => $line) {
+			if(\strpos((string)\ltrim((string)$line), '<') === 0) {
+				$line = (string) \ltrim((string)$line);
+			} //end if
+			$html[] = (string) $line;
+		} //end foreach
+		$html = (string) \implode("\n", (array)$html);
+	//	$html = (string) SmartFixes::normalizeMultiConsecutiveEmptyLines((string)$html);
 		//--
 		$html = (string) \trim((string)$html);
 		if((string)$html == '') {
@@ -178,8 +242,12 @@ final class HtmlConverter {
 	 */
 	private function convertChildren(ElementInterface $element): void {
 
+		//--
+		$tag = (string) $element->getTagName();
+		//--
+
 		//-- add fix by unixman: fix for jQuery # realm=jquery&key=16
-		if($element->isDescendantOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']) && ($element->getTagName() === 'a')) {
+		if($element->isDescendantOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']) && ((string)$tag == 'a')) {
 		//	return;
 		} //end if
 		//-- #fix
@@ -227,7 +295,32 @@ final class HtmlConverter {
 		//--
 
 		//-- now the child nodes have been converted, convert the original node
-		$markdown = $this->convertToMarkdown($element);
+		$markdown = (string) $this->convertToMarkdown($element);
+		//--
+
+		//--
+		if(((string)$tag == 'ul') || ((string)$tag == 'ol')) {
+			$markdown = (string) SmartFixes::normalizeMultiConsecutiveEmptyLines($markdown);
+			$marr = (array) \explode("\n", (string)$markdown);
+			$markdown = [];
+			foreach($marr as $ky => $ln) {
+				if(
+					((\strpos((string)$ln, '-') === 0) && ((string)\trim((string)$ln) == '-'))
+					OR
+					((\strpos((string)$ln, '+') === 0) && ((string)\trim((string)$ln) == '+'))
+					OR
+					((\strpos((string)$ln, '*') === 0) && ((string)\trim((string)$ln) == '*'))
+					OR
+					((\strpos((string)$ln, '1.') === 0) && ((string)\trim((string)$ln) == '1.')) // {{{SYNC-HTML2MKDW-FIX-OL}}} ; use just 1. not 1. 2. 3. because here is too complicated ...
+				) {
+					$ln .= ' &nbsp;';
+				} //end if
+				$markdown[] = (string) $ln;
+			} //end foreach
+			$marr = null;
+			$markdown = (string) \implode("\n", (array)$markdown);
+			$markdown = (string) "\n".$markdown."\n";
+		} //end if
 		//--
 
 		//--
@@ -291,12 +384,10 @@ final class HtmlConverter {
 			} //end if else
 		} //end foreach
 		//-- fix by unixman
+		$markdown = (string) SmartFixes::revertSpecials((string)$markdown);
 		$markdown = (string) \strtr((string)$markdown, [
-			(string) "\n".SmartFixes::SPECIAL_CHAR_NEWLINE_MARK => '', // handle newline enforce clear newline
-			(string) ' '.SmartFixes::SPECIAL_CHAR_NEWLINE_MARK  => '', // like above but can happen after newline to space conversions
-			(string) SmartFixes::SPECIAL_CHAR_NEWLINE_MARK  	=> '',  // final fix (prior this has been converted to the coresponding html entity)
-			'&Prime;' 											=> '"', // fix back &quot; (from DOM)
-			'″' 												=> '"', // fix back &quot; (from DOM)
+			'&Prime;' 	=> '"', // fix back &quot; (from DOM)
+			'″' 		=> '"', // fix back &quot; (from DOM)
 		]);
 		//-- #fix
 	//	return (string) \trim((string)$markdown, "\n\r\0\x0B");
@@ -318,7 +409,7 @@ final class HtmlConverter {
 
 	private function addConverter(ConverterInterface $converter): void {
 		//--
-		if(!is_subclass_of($converter, '\\HTML2Markdown\\AbstractConverterConfig')) {
+		if(!\is_subclass_of($converter, '\\HTML2Markdown\\AbstractConverterConfig')) {
 			SmartFixes::logNotice((string)__METHOD__, 'Invalid Converter Class: `'.\get_class($converter).'`'); // fix by unixman
 			return;
 		} //end if

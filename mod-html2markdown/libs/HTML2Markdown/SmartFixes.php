@@ -4,6 +4,11 @@ namespace HTML2Markdown;
 
 final class SmartFixes {
 
+	public const MKDW_TAG_BOLD = '**';
+	public const MKDW_TAG_ITALIC = '==';
+	public const MKDW_TAG_LI = '-';
+	public const MKDW_TAG_LI_ALT = '+';
+
 	//-- {{{SYNC-SPECIAL-CHARACTER-MKDW-CONVERTER}}}
 	public const SPECIAL_CHAR_NEWLINE_MARK = "\u{2051}"; // unicode ⁑
 	public const SPECIAL_CHAR_NEWLINE_REPL = '&#8273;'; // restore as html entity
@@ -68,12 +73,64 @@ final class SmartFixes {
 	} //END FUNCTION
 
 
-	public static function normalizeSpaces(?string $code) : string {
+	public static function createHtmSafeClassName(?string $code) : string {
 		//--
-	//	return (string) \Smart::normalize_spaces((string)$code); // this will convert also \n which is unwanted !
+		$code = (string) self::normalizeWhiteSpaces((string)\trim((string)$code));
+		$arr = (array) \explode(' ', (string)$code);
+		$code = '';
+		$classes = [];
+		foreach($arr as $key => $val) {
+			$val = (string) \trim((string)$val);
+			if((string)$val != '') {
+				$val = (string) \Smart::create_htmid((string)$val);
+				if((string)$val != '') {
+					$cls = 'h2m_'.$val;
+					if(!\in_array((string)$cls, (array)$classes)) {
+						$classes[] = (string) $cls;
+					} //end if
+				} //end if
+			} //end if
+		} //end foreach
+		//--
+		return (string) \trim((string)\implode('$', (array)$classes));
+		//--
+	} //END FUNCTION
+
+
+	public static function normalizeWhiteSpaces(?string $code) : string {
+		//--
+		return (string) \Smart::normalize_spaces((string)$code);
+		//--
+	} //END FUNCTION
+
+
+	public static function normalizeNewLines(?string $code) : string { // renamed from normalizeSpaces
+		//--
 		$code = (string) \str_replace([ "\r\n", "\r" ], "\n", (string)$code);
 		$code = (string) str_replace([ "\t", "\x0B", "\0", "\f" ], ' ', (string)$code);
 		return (string) $code;
+		//--
+	} //END FUNCTION
+
+
+	public static function normalizeMultiConsecutiveEmptyLines(?string $code) : string {
+		//--
+		$code = (string) self::revertSpecials((string)$code);
+		$code = (string) preg_replace('/^\s*[\n]{1,}/m', '', (string)$code); // fix: replace multiple consecutive lines that may also contain before optional leading spaces
+		$code = (string) preg_replace('/[^\S\r\n]+$/m', '', (string)$code); // remove trailing spaces on each line
+		//--
+		return (string) $code;
+		//--
+	} //END FUNCTION
+
+
+	public static function revertSpecials(?string $code) {
+		//--
+		return (string) \strtr((string)$code, [
+			(string) "\n".self::SPECIAL_CHAR_NEWLINE_MARK => "\n", 	// handle newline enforce clear newline
+			(string)  ' '.self::SPECIAL_CHAR_NEWLINE_MARK => '', 	// like above but can happen after newline to space conversions
+			(string)      self::SPECIAL_CHAR_NEWLINE_MARK => '',  	// final fix (prior this has been converted to the coresponding html entity)
+		]);
 		//--
 	} //END FUNCTION
 

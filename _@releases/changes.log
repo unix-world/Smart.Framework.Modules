@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+October 20, 2022
+	* module mod Html2Markdown marked as stable
+
 September 16, 2022
 	* Refactoring CSS file name for jQuery Pager in modules
 	* Cloud Webmail UI fixes

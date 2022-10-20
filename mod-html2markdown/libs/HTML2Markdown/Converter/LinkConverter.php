@@ -10,11 +10,14 @@ use HTML2Markdown\ConverterInterface;
 use HTML2Markdown\ElementInterface;
 
 
-class LinkConverter extends AbstractConverterConfig implements ConverterInterface {
+final class LinkConverter extends AbstractConverterConfig implements ConverterInterface {
 
+	// OK
 
 	public function getSupportedTags(): array {
+		//--
 		return [ 'a' ];
+		//--
 	} //END FUNCTION
 
 
@@ -28,29 +31,34 @@ class LinkConverter extends AbstractConverterConfig implements ConverterInterfac
 		$isValid = true;
 		if(\strpos((string)$href, ' ') !== false) {
 			$isValid = false; // invalid link, can't contain spaces !
-		} elseif(stripos((string)$href, 'mailto:') !== false) {
+	//	} elseif(stripos((string)$href, 'mailto:') !== false) {
+		} elseif(\stripos((string)$href, 'mailto:') === 0) {
 			$isValid = false; // emails not supported in docs by default ... maybe make an option to support if enabled
 		} //end if else
 		if($isValid !== true) {
 			return '';
 		} //end if
 		//--
-	//	$markdown = '['.$text.']('.$href.' "'.$title.'")';
+		$href = (string) \strtr((string)$href, (array)SmartFixes::FIX_ESCAPES_ENTITIES_BRACKS);
+		$text = (string) \strtr((string)$text, (array)SmartFixes::FIX_ESCAPES_ENTITIES_RBRACKS);
+		if((string)\trim((string)$text) == '') {
+			if((string)\trim((string)$href) == '') {
+				return ''; // no href, no text, discard
+			} else {
+				$text = (string) $href;
+			} //end if
+		} //end if
+		if((string)\trim((string)$href) == '') {
+			$href = '#-'; // this is a fix, without this the links with empty refs are broken on rendering
+		} //end if
+		//--
 		$markdown = '';
-		$markdown .= '['.\strtr((string)$text, (array)SmartFixes::FIX_ESCAPES_ENTITIES_RBRACKS).']';
-		$markdown .= '('.\strtr((string)$href, (array)SmartFixes::FIX_ESCAPES_ENTITIES_BRACKS);
+		$markdown .= '['.$text.']';
+		$markdown .= '('.$href;
 		if((string)$title != '') {
 			$markdown .= ' "'.\strtr((string)$title, (array)SmartFixes::FIX_ESCAPES_ENTITIES_BRACKS).'"';
 		} //end if
 		$markdown .= ')';
-		//--
-//if(strpos($element->getValue(), '<') === false) { // does not contain tags
-//print_r($element->getValue()); die();
-//print_r($element->getChildren()); die();
-//		if(!$element->hasChildren()) {
-//die('ah');
-//			$markdown = (string) SmartFixes::escapeElementContent((string)$markdown, 'a');
-//		} //end if
 		//--
 		return (string) $markdown;
 		//--

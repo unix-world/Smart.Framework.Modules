@@ -9,10 +9,15 @@ use HTML2Markdown\AbstractConverterConfig;
 use HTML2Markdown\ConverterInterface;
 use HTML2Markdown\ElementInterface;
 
-class TextConverter extends AbstractConverterConfig implements ConverterInterface {
+
+final class TextConverter extends AbstractConverterConfig implements ConverterInterface {
+
+	// OK
 
 	public function getSupportedTags(): array {
-		return [ '#text' ];
+		//--
+		return [ '#text' ]; // this is for the DOM #text node !
+		//--
 	} //END FUNCTION
 
 
@@ -23,7 +28,8 @@ class TextConverter extends AbstractConverterConfig implements ConverterInterfac
 		//-- #FIX#: this is breaking some headings, need to preserve lines @ docs.import-json-docs&realm=css&key=9
 //		$markdown = (string) \ltrim((string)$markdown, "\n"); // Remove leftover \n at the beginning of the line
 //	//	$markdown = (string) \preg_replace('~\s+~', ' ', (string)$markdown); // Replace sequences of invisible characters with spaces
-		$markdown = (string) SmartFixes::normalizeSpaces((string)$markdown);
+		$markdown = (string) SmartFixes::normalizeWhiteSpaces((string)$markdown);
+	//	$markdown = (string) \trim((string)$markdown); // !!! EXTRA !!! will fix the spaces between texts !!!
 		//-- #END#FIX#
 		if((string)$markdown == '') { // DO NOT TRIM !!
 			return '';
@@ -32,8 +38,8 @@ class TextConverter extends AbstractConverterConfig implements ConverterInterfac
 		$type = '';
 		if(($parent = $element->getParent()) && $parent->getTagName() === 'div') {
 			$type = 'div';
-		} else { // {{{SYNC-MKDW-CONVERT-SKIP-ESCAPES}}}
-		//	$markdown = (string) \preg_replace('~([*_\\[\\]\\\\])~', '\\\\$1', (string)$markdown); // Escape the following characters: '*', '_', '[', ']' and '\'
+	//	} else { // {{{SYNC-MKDW-CONVERT-SKIP-ESCAPES}}}
+	//		$markdown = (string) \preg_replace('~([*_\\[\\]\\\\])~', '\\\\$1', (string)$markdown); // Escape the following characters: '*', '_', '[', ']' and '\'
 		} //end if
 		if(!$element->isDescendantOf(['tr'])) {
 		//	$markdown = (string) \preg_replace('~^#~', '\\\\#', (string)$markdown);
