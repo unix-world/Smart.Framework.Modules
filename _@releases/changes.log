@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+November 05, 2022
+	* lib SOLR avoid check version and log warning if empty config (perhaps disabled by intention)
+
 October 20, 2022
 	* module mod Html2Markdown marked as stable
 

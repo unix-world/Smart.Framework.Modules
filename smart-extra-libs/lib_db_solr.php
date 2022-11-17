@@ -78,7 +78,7 @@ $configs['solr']['slowtime']	= 0.4500;									// 0.0500 .. 0.7500 slow query ti
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartComponents
- * @version 	v.20220912
+ * @version 	v.20221105
  * @package 	extralibs:Database:Solr
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -133,6 +133,9 @@ final class SmartSolrDb {
 	/** @var extver */
 	private $extver;
 
+	/** @var noconnect */
+	private $noconnect;
+
 	//======================================================
 	/**
 	 * Object Constructor
@@ -144,21 +147,33 @@ final class SmartSolrDb {
 	public function __construct(?string $mode='json', bool $y_fatal_err=false, ?string $host='', ?string $port='', ?string $ssl='', ?string $db='', ?string $user='', ?string $password='', int $timeout=5, float $y_debug_exch_slowtime=0.3300, ?string $y_description='DEFAULT') {
 		//--
 		$this->fatal_err = (bool) $y_fatal_err;
+		$this->noconnect = false;
 		//--
 		$cfg = (array) Smart::get_from_config('solr', 'array');
 		//--
-		if(((string)$host == '') AND ((string)$port == '') AND ((string)$db == '') AND (Smart::array_size($cfg) > 0)) {
+		if(((string)$host == '') AND ((string)$port == '') AND ((string)$db == '')) {
 			//--
-			$mode 					= (string) ($cfg['mode'] ?? null);
-			$host 					= (string) ($cfg['server-host'] ?? null);
-			$port 					= (int)    ($cfg['server-port'] ?? null);
-			$ssl 					= (bool)   ($cfg['server-ssl'] ?? null);
-			$db 					= (string) ($cfg['db']  ?? null);
-			$user 					= (string) ($cfg['username']  ?? null);
-			$password 				= (string) ($cfg['password'] ?? null);
-			$timeout 				= (int)    ($cfg['timeout']  ?? null);
-			$y_debug_exch_slowtime 	= (float)  ($cfg['slowtime'] ?? null);
-			//--
+			if(Smart::array_size($cfg) > 0) {
+				//--
+				$mode 					= (string) ($cfg['mode'] ?? null);
+				$host 					= (string) ($cfg['server-host'] ?? null);
+				$port 					= (int)    ($cfg['server-port'] ?? null);
+				$ssl 					= (bool)   ($cfg['server-ssl'] ?? null);
+				$db 					= (string) ($cfg['db']  ?? null);
+				$user 					= (string) ($cfg['username']  ?? null);
+				$password 				= (string) ($cfg['password'] ?? null);
+				$timeout 				= (int)    ($cfg['timeout']  ?? null);
+				$y_debug_exch_slowtime 	= (float)  ($cfg['slowtime'] ?? null);
+				//--
+			} else {
+				//--
+				$this->noconnect = true;
+				if(SmartFrameworkRegistry::ifDebug()) {
+					Smart::log_notice('Solr Configuration Init: Empty Config');
+				} //end if
+				return;
+				//--
+			} //end if else
 		} //end if
 		//--
 		if((string)$mode != 'xml') { // need to be before raising any errors as it is used in error display
@@ -277,12 +292,10 @@ final class SmartSolrDb {
 	 *
 	 * @return 	STRING						:: Solr extension version
 	 */
-	public function get_ext_version() {
-
+	public function get_ext_version() : string {
 		//--
 		return (string) $this->extver;
 		//--
-
 	} //END FUNCTION
 	//======================================================
 
@@ -325,9 +338,12 @@ final class SmartSolrDb {
 	 *			]
 	 *
 	 */
-	public function findQuery($y_query, $y_options=array('mode' => 'phrase', 'settings' => array(), 'sort' => array(), 'filters' => array(), 'facets' => array(), 'fields' => array(), 'boost'=>array(), 'mlt'=>array())) {
+	public function findQuery(?string $y_query, array $y_options=['mode' => 'phrase', 'settings' => array(), 'sort' => [], 'filters' => [], 'facets' => [], 'fields' => [], 'boost' => [], 'mlt' => []]) : array {
 		//--
 		$connect = $this->solr_connect();
+		if($connect !== true) {
+			return array();
+		} //end if
 		//--
 		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
@@ -551,9 +567,12 @@ final class SmartSolrDb {
 
 
 	//======================================================
-	public function addDocument($arrdoc, $use_autocommit=0) {
+	public function addDocument(?array $arrdoc, ?int $use_autocommit=0) : int {
 		//--
 		$connect = $this->solr_connect();
+		if($connect !== true) {
+			return -10;
+		} //end if
 		//--
 		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
@@ -656,9 +675,12 @@ final class SmartSolrDb {
 
 
 	//======================================================
-	public function deleteDocument($id) {
+	public function deleteDocument(?string $id) : int {
 		//--
 		$connect = $this->solr_connect();
+		if($connect !== true) {
+			return -10;
+		} //end if
 		//--
 		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
@@ -738,60 +760,61 @@ final class SmartSolrDb {
 
 
 	//======================================================
-	private function solr_connect() {
+	private function solr_connect() : bool {
 		//--
-		if(!is_object($this->instance)) {
-			//--
-			$options = array(
-				'hostname' => $this->host,
-				'port' => $this->port
-			);
-			//--
-			$this->protocol = 'http://';
-			if((string)$this->ssl === true) {
-				$options['secure'] = true;
-				$this->protocol = 'https://';
-			} //end if
-			//--
-			if((string)$this->user != '') {
-				$options['login'] = $this->user;
-				$options['login'] = $this->password;
-			} //end if
-			//--
-			$options['timeout'] = $this->timeout;
-			//--
-			$options['path'] = $this->db;
-			//--
-			$options['wt'] = $this->mode;
-			//--
-			$this->connid = (string) $this->protocol.$this->host.':'.$this->port.'@'.$this->db.'('.$this->mode.')'.' # '.$this->user;
-			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
-				//--
-				SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
-					'type' => 'open-close',
-					'data' => 'Solr DB :: Open Connection ['.$this->mode.'] to DB: '.$this->db.' :: '.$this->description.' @ HOST: '.$this->protocol.$this->host.':'.$this->port.' # User: '.$this->user
-				]);
-				//--
-			} //end if
-			//--
-			try {
-				//--
-				$this->instance = new SolrClient($options);
-				//--
-			} catch (Exception $e) {
-				//--
-				Smart::log_warning('Solr ERROR # Connect # '.$e->getMessage());
-				//--
-			} //end try catch
-			//--
+		if($this->noconnect === false) {
 			return false;
-			//--
-		} else {
-			//--
+		} //end if
+		//--
+		if(is_object($this->instance)) {
 			return true;
+		} //end if
+		//--
+		$options = array(
+			'hostname' => $this->host,
+			'port' => $this->port
+		);
+		//--
+		$this->protocol = 'http://';
+		if((string)$this->ssl === true) {
+			$options['secure'] = true;
+			$this->protocol = 'https://';
+		} //end if
+		//--
+		if((string)$this->user != '') {
+			$options['login'] = $this->user;
+			$options['login'] = $this->password;
+		} //end if
+		//--
+		$options['timeout'] = $this->timeout;
+		//--
+		$options['path'] = $this->db;
+		//--
+		$options['wt'] = $this->mode;
+		//--
+		$this->connid = (string) $this->protocol.$this->host.':'.$this->port.'@'.$this->db.'('.$this->mode.')'.' # '.$this->user;
+		//--
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
-		} //end if else
+			SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
+				'type' => 'open-close',
+				'data' => 'Solr DB :: Open Connection ['.$this->mode.'] to DB: '.$this->db.' :: '.$this->description.' @ HOST: '.$this->protocol.$this->host.':'.$this->port.' # User: '.$this->user
+			]);
+			//--
+		} //end if
+		//--
+		try {
+			//--
+			$this->instance = new SolrClient($options);
+			//--
+		} catch (Exception $e) {
+			//--
+			$this->instance = null;
+			Smart::log_warning('Solr ERROR # Connect # '.$e->getMessage());
+			//--
+		} //end try catch
+		//--
+		return (bool) is_object($this->instance);
 		//--
 	} //END FUNCTION
 	//======================================================
