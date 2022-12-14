@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\TplTwig\Templating
 // [Smart.Framework.Modules - Twig / Templating]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype (optional) ; classes: \SmartModExtLib\Tpl\AbstractTemplating, \SmartModExtLib\TplTwig\SmartTwigEnvironment, \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20220414
+ * @version 	v.20221208
  * @package 	modules:TemplatingEngine
  *
  */
@@ -297,7 +297,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			return;
 		} //end if
 		//--
-		$arr_vars['Tpl_Dir__'] = (string) $dir_of_tpl;
+		$arr_vars[(string)$this->getTplPathVar().'__'] = (string) $dir_of_tpl;
 		//--
 		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
 			throw new \Exception('Twig Templating / Render File / The file name / path contains invalid characters: '.$file);
@@ -373,7 +373,7 @@ function autoload__TwigTemplating_SFM($classname) {
 		//--
 		if((string)\substr((string)$classname, 0, 5) === 'Twig\\') { // if class name is starting with Twig\
 			//--
-			$path = 'modules/mod-tpl-twig/libs/twig3/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
+			$path = 'modules/mod-tpl-twig/libs/twig/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
 			//--
 		} //end if
 		//--

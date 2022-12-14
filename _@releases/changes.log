@@ -2,6 +2,13 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+December 08, 2022
+	* Upgrade Twig
+	* TPL refactoring: standardize the TPL variable 'Tpl_Dir__' as 'Tpl_Path__'
+
+December 05, 2022
+	* Change Smart::striptags to Smart::stripTags + change yes/no params to bool
+
 November 05, 2022
 	* lib SOLR avoid check version and log warning if empty config (perhaps disabled by intention)
 

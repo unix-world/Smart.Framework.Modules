@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\Tpl\InterfaceSmartTemplating
 // [Smart.Framework.Modules - INTERFACE / SmartTemplating]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 

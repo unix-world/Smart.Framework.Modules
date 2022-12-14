@@ -144,7 +144,7 @@ final class SmartFixes {
 
 	public static function stripTags(?string $html): string {
 		//--
-		return (string) \Smart::striptags((string)$html, 'yes', 'no');
+		return (string) \Smart::stripTags((string)$html, true, false);
 		//--
 	} //END FUNCTION
 

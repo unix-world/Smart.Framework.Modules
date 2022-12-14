@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\Tpl\AbstractTemplating
 // [Smart.Framework.Modules - ABSTRACT / Templating]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -27,13 +27,15 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220414
+ * @version 	v.20221208
  * @package 	development:modules:TemplatingEngine
  *
  */
 abstract class AbstractTemplating {
 
 	// :: ABSTRACT CLASS
+
+	private const TPL_PATH_VAR = 'Tpl_Path';
 
 
 	//=====
@@ -105,6 +107,15 @@ abstract class AbstractTemplating {
 	final public function prepareNoSyntaxContent(?string $str) : string {
 		//--
 		return (string) \SmartMarkersTemplating::prepare_nosyntax_content((string)$str);
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	final protected function getTplPathVar() : string {
+		//--
+		return (string) self::TPL_PATH_VAR;
 		//--
 	} //END FUNCTION
 	//=====

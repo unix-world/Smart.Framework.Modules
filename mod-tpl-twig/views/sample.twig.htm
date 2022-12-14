@@ -1,8 +1,8 @@
-<!-- start twig template v.20200121 -->
+<!-- start twig template v.20221208 -->
 {# Template: sample.twig.htm #}<!-- comments are removed -->
 <center><div>
 	<div>
-		<a href="//twig.symfony.com/doc/3.x/" target="_blank"><img src="{{Tpl_Dir__}}img/twig.svg" width="160" height="160"></a>
+		<a href="//twig.symfony.com/doc/3.x/" target="_blank"><img src="{{Tpl_Path__}}img/twig.svg" width="160" height="160"></a>
 		<br>
 		{% if version != '' %}<span style="color:#778899;"><b><i>Twig</i></b> <i>Templating</i> Engine v.{{ version }}</span>{% endif %}
 	</div>
@@ -16,7 +16,7 @@
 	</div>
 	<br>
 	<div style="color:#777777;">{{date_time}}</div>
-	{% include Tpl_Dir__ ~ 'sample-partial.twig.inc.htm' %}
+	{% include Tpl_Path__ ~ 'sample-partial.twig.inc.htm' %}
 </div></center>
 <!-- end twig template -->
 {# <pre>{{ dump() }}</pre> #}

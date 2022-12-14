@@ -48,38 +48,49 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * //];
  *
  * $db = new \SmartModExtLib\DbalLaminas\DbalPdo((array)$conf_driver);
- * $adapter = $db->getConnection();
+ * //$adapter = $db->getConnection();
  *
  * // write test using the Laminas DB Objects
- * $db->write_data('DROP TABLE IF EXISTS sf_laminas_dbal_test', 'QUERY_MODE_EXECUTE');
+ * $db->queryExecute('DROP TABLE IF EXISTS sf_laminas_dbal_test');
  * $table = new \Laminas\Db\Sql\Ddl\CreateTable('sf_laminas_dbal_test');
  * $table->addColumn(new \Laminas\Db\Sql\Ddl\Column\Integer('id'));
  * $table->addConstraint(new \Laminas\Db\Sql\Ddl\Constraint\PrimaryKey('id'));
  * $table->addColumn(new \Laminas\Db\Sql\Ddl\Column\Varchar('name', 100));
  * $table->addColumn(new \Laminas\Db\Sql\Ddl\Column\Text('descr'));
  * $table->addColumn(new \Laminas\Db\Sql\Ddl\Column\Integer('cnt'));
- * $sql = new \Laminas\Db\Sql\Sql($adapter);
- * $adapter->query(
- * 		$sql->getSqlStringForSqlObject($table),
- * 		$adapter::QUERY_MODE_EXECUTE
- * );
+ * $sql = $db->getSqlBuilder();
+ * $db->queryExecute((string)$sql->buildSqlString($table));
  *
  * // read test using the Laminas DB Objects
- * $sql = new \Laminas\Db\Sql\Sql($adapter);
+ * $sql = $db->getSqlBuilder();
  * $select = $sql->select();
  * $select->from('sf_laminas_dbal_test');
+ * // $select->from([ 't' => 'sf_laminas_dbal_test' ]);
+ * // $select->columns([ 'id', 'name' ]);
  * $select->where(array('id' => 1));
- * $sqlstr = (string) $sql->getSqlStringForSqlObject($select);
- * $results = (array) $adapter->query($sqlstr, [])->toArray();
+ * //$select->join(
+ * //  [ 'u' => 'table2' ],
+ * //  't.t_id = u.id',
+ * //  [
+ * //    'email',
+ * //  ]
+ * //);
+ * $select->order([ 'id' => 'ASC' ]);
+ * $select->limit(100);
+ * $select->offset(0);
+ * $sqlstr = (string) $sql->buildSqlString($select);
+ * $results = (array) $db->queryReadMultiRecords((string)$sqlstr);
  *
  * // tests using Smart.Framework DB compatibility: count, read, write
- * $db->write_data('DELETE FROM sf_laminas_dbal_test');
- * $count = $db->count_data('SELECT COUNT(1) FROM sf_laminas_dbal_test');
- * $results = $db->read_adata( // get many rows 0..n [field1, field2, ..., fieldn]
+ * $db->queryExecute('BEGIN'); // start transaction
+ * $db->queryWrite('DELETE FROM sf_laminas_dbal_test');
+ * $db->queryExecute('COMMIT'); // $db->queryExecute('ROLLBACK'); // commit or rollback transaction
+ * $count = $db->queryCountRecords('SELECT COUNT(1) FROM sf_laminas_dbal_test');
+ * $results = $db->queryReadMultiRecords( // get many rows 0..n [field1, field2, ..., fieldn]
  * 		'SELECT * FROM sf_laminas_dbal_test WHERE id > ?', // id > 0
  * 		[ 0 ]
  * );
- * $results = $db->read_asdata( // get just one row [field1, field2, ..., fieldn]
+ * $results = $db->queryReadSingleRecord( // get just one row [field1, field2, ..., fieldn]
  * 		'SELECT * FROM sf_laminas_dbal_test WHERE id > ? LIMIT 1 OFFSET 0', // id > 1
  * 		[ 1 ]
  * );
@@ -90,7 +101,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP PDO ; classes: \Laminas\Db
- * @version 	v.20220224
+ * @version 	v.20221214.1044
  * @package 	modules:Database:PDO:Laminas-Dbal
  *
  */
@@ -98,9 +109,9 @@ final class DbalPdo {
 
 	// ->
 
-	const LAMINAS_DB_VERSION = 'Laminas/Db 2.13.4 ; Laminas/Stdlib 3.6.4';
+	private const LAMINAS_DB_VERSION = 'Laminas/Db 2.13.4 ; Laminas/Stdlib 3.6.4';
 
-	private $cfg = array();
+	private $cfg = [];
 	private $connkey = '';
 	private $connection = null;
 	private $profiler = null;
@@ -108,6 +119,7 @@ final class DbalPdo {
 
 	private $timeout_conn = 0;
 	private $slow_query_time = 0;
+	private $fatal_err = true;
 
 
 	/**
@@ -121,7 +133,7 @@ final class DbalPdo {
 	 * @param INTEGER+ 	$timeout 						:: the connection timeout (applies only to MySQL and PostgreSQL)
 	 *
 	 */
-	public function __construct($cfg, $timeout=30) {
+	public function __construct($cfg, $timeout=30, $fatal_err=null) {
 		//--
 		if(!\is_array($cfg)) {
 			$this->cfg = array();
@@ -232,14 +244,13 @@ final class DbalPdo {
 		//--
 		$this->connkey = (string) (isset($this->cfg['driver']) ? $this->cfg['driver'] : '').'*'.(isset($this->cfg['host']) ? $this->cfg['host'] : '').':'.(isset($this->cfg['port']) ? $this->cfg['port'] : '').'@'.(isset($this->cfg['database']) ? $this->cfg['database'] : '').'#'.(isset($this->cfg['username']) ? $this->cfg['username'] : '');
 		//--
+		if(($fatal_err === true) OR ($fatal_err === false)) {
+			$this->fatal_err = (bool) $fatal_err;
+		} else {
+			$this->fatal_err = (bool) ! (\defined('\\SMART_SOFTWARE_SQLDB_FATAL_ERR') AND (\SMART_SOFTWARE_SQLDB_FATAL_ERR === false));
+		} //end if else
+		//--
 		$this->connection = new \Laminas\Db\Adapter\Adapter((array)$this->cfg); // lazy connection, does not throw here (will connect on first query)
-		//--
-		$this->platform = $this->connection->getPlatform();
-		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
-			$this->profiler = new \Laminas\Db\Adapter\Profiler\Profiler();
-			$this->connection->setProfiler($this->profiler);
-		} //end if
 		//--
 		if((int)$this->cfg['timeout'] > 0) {
 			$timeout = (int) $this->cfg['timeout'];
@@ -255,6 +266,41 @@ final class DbalPdo {
 		//--
 		$this->timeout_conn = (int) $timeout;
 		//--
+		$this->platform = $this->connection->getPlatform();
+		//--
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			//--
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|slow-time', \number_format((float)$this->slow_query_time, 7, '.', ''), '=');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+				'type' => 'metainfo',
+				'data' => 'Database Server: SQL ('.$this->cfg['driver'].') / App Connector Version: '.self::LAMINAS_DB_VERSION.' / Connection Charset: '.\SMART_FRAMEWORK_SQL_CHARSET
+			]);
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+				'type' => 'metainfo',
+				'data' => 'Connection Timeout: default / Fast Query Reference Time < '.$this->slow_query_time.' seconds'
+			]);
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+				'type' => 'open-close',
+				'data' => 'DB Connection: '.$this->connkey,
+				'connection' => (string) \sha1((string)\print_r($this->cfg,1))
+			]);
+			//--
+		} //end if
+		//--
+	} //END FUNCTION
+
+
+	/**
+	 * Laminas/DB: Set Fatal Error TRUE/FALSE
+	 *
+	 * @return VOID
+	 */
+	public function setFatalErr(bool $is_fatal) : void {
+		//--
+		$this->fatal_err = (bool) $is_fatal;
+		//--
+		return;
+		//--
 	} //END FUNCTION
 
 
@@ -263,21 +309,9 @@ final class DbalPdo {
 	 *
 	 * @return STRING
 	 */
-	public function getDriver() {
+	public function getDriver() : string {
 		//--
 		return (string) $this->cfg['driver'];
-		//--
-	} //END FUNCTION
-
-
-	/**
-	 * Laminas/DB: Get the Connection
-	 *
-	 * @return OBJECT
-	 */
-	public function getConnection() {
-		//--
-		return $this->connection;
 		//--
 	} //END FUNCTION
 
@@ -287,7 +321,7 @@ final class DbalPdo {
 	 *
 	 * @return OBJECT
 	 */
-	public function getPlatform() {
+	public function getPlatform() : object {
 		//--
 		return $this->platform;
 		//--
@@ -295,35 +329,91 @@ final class DbalPdo {
 
 
 	/**
-	 * PDO Query :: Count
+	 * Laminas/DB: Get the Connection
+	 *
+	 * @return OBJECT
+	 */
+	public function getConnection() : \Laminas\Db\Adapter\Adapter {
+		//--
+		return $this->connection;
+		//--
+	} //END FUNCTION
+
+
+	/**
+	 * Laminas/DB: Get the SQL Builder
+	 *
+	 * @return OBJECT
+	 */
+	public function getSqlBuilder() : \Laminas\Db\Sql\Sql {
+		//--
+		return new \Laminas\Db\Sql\Sql($this->connection);
+		//--
+	} //END FUNCTION
+
+
+	/**
+	 * PDO Query :: Get Count of Records by Query
 	 * This function is intended to be used for count type queries: SELECT COUNT().
 	 *
-	 * @param STRING $queryval						:: the query
-	 * @param STRING $values 						:: *optional* array of parameters
+	 * @param STRING $query							:: the query
+	 * @param ARRAY  $values 						:: *optional* array of parameters
 	 * @return INTEGER								:: the result of COUNT()
 	 */
-	public function count_data($query, $values='') {
+	public function queryCountRecords(string $query, ?array $values=null) : int {
 		//--
-		if(!\is_array($values)) {
-			$values = array();
+		$query = (string) \trim((string)$query);
+		if((string)$query == '') {
+			\Smart::log_warning(__METHOD__.' # Empty Query Detected');
+			return 0;
 		} //end if
 		//--
-		$arr = array();
+		if(!\is_array($values)) {
+			$values = [];
+		} //end if
+		//--
+		$time_start = 0;
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			$time_start = \microtime(true);
+		} //end if
+		//--
+		$arr = [];
 		try {
 			$arr = (array) $this->connection->query(
 				$query,
 				$values
 			)->toArray();
 		} catch(\Exception $e) {
-			$this->error('COUNT-DATA', (string)$e->getMessage(), (string)$query, (\Smart::array_size($values) > 0) ? (array)$values : '');
+			$this->error('COUNT.Records', (string)$e->getMessage(), (string)$query, (\Smart::array_size($values) > 0) ? (array)$values : '');
+			return 0;
 		} //end try catch
 		//--
+		$time_end = 0;
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			$time_end = (float) (\microtime(true) - (float)$time_start);
+		} //end if
+		//--
 		$count = 0;
+		$arr[0] = $arr[0] ?? null;
 		if(\is_array($arr[0])) {
 			foreach($arr[0] as $key => $val) {
 				$count = (int) $val; // find first row and first column value
 				break;
 			} //end if
+		} //end if
+		//--
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+				'type' => 'count',
+				'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::COUNT.Records]',
+				'query' => (string) $query,
+				'params' => (\Smart::array_size($values) > 0) ? (array) $values : '',
+				'rows' => (int) $count,
+				'time' => \Smart::format_number_dec($time_end, 9, '.', ''),
+				'connection' => (string) $this->connkey
+			]);
 		} //end if
 		//--
 		return (int) $count;
@@ -333,35 +423,68 @@ final class DbalPdo {
 
 	/**
 	 * PDO Query :: Read (Non-Associative) one or multiple rows.
+	 * PDO Query :: Get a List of Records as a List (a Non-Associative array). Supports one or more records.
 	 * This function is intended to be used for read type queries: SELECT.
 	 *
-	 * @param STRING $queryval						:: the query
-	 * @param STRING $values 						:: *optional* array of parameters
-	 * @return ARRAY (non-asociative) of results	:: array('column-0-0', 'column-0-1', ..., 'column-0-n', 'column-1-0', 'column-1-1', ... 'column-1-n', ..., 'column-m-0', 'column-m-1', ..., 'column-m-n')
+	 * @param STRING $query							:: the query
+	 * @param ARRAY  $values 						:: *optional* array of parameters
+	 * @return ARRAY (non-asociative) of results	:: [ 'column-0-0', 'column-0-1', ..., 'column-0-n', 'column-1-0', 'column-1-1', ... 'column-1-n', ..., 'column-m-0', 'column-m-1', ..., 'column-m-n' ]
 	 */
-	public function read_data($query, $values='') {
+	public function queryReadAsListMultiRecords(string $query, ?array $values=null) : array {
 		//--
-		if(!\is_array($values)) {
-			$values = array();
+		$query = (string) \trim((string)$query);
+		if((string)$query == '') {
+			\Smart::log_warning(__METHOD__.' # Empty Query Detected');
+			return [];
 		} //end if
 		//--
-		$arr = array();
+		if(!\is_array($values)) {
+			$values = [];
+		} //end if
+		//--
+		$time_start = 0;
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			$time_start = \microtime(true);
+		} //end if
+		//--
+		$arr = [];
 		try {
 			$arr = (array) $this->connection->query(
 				$query,
 				$values
 			)->toArray();
 		} catch(\Exception $e) {
-			$this->error('READ-DATA', (string)$e->getMessage(), (string)$query, (\Smart::array_size($values) > 0) ? (array)$values : '');
+			$this->error('READ.AsList.MultiRecords', (string)$e->getMessage(), (string)$query, (\Smart::array_size($values) > 0) ? (array)$values : '');
+			return [];
 		} //end try catch
 		//--
-		$data = array();
+		$time_end = 0;
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			$time_end = (float) (\microtime(true) - (float)$time_start);
+		} //end if
+		//--
+		$data = [];
 		for($i=0; $i<\Smart::array_size($arr); $i++) {
 			$arr[$i] = (array) $arr[$i];
 			foreach($arr[$i] as $key => $val) {
 				$data[] = (string) $val;
 			} //end foreach
 		} //end for
+		$arr = null;
+		//--
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+				'type' => 'read',
+				'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::READ.AsList.MultiRecords]',
+				'query' => (string) $query,
+				'params' => (\Smart::array_size($values) > 0) ? (array) $values : '',
+				'rows' => (int) \Smart::array_size($data),
+				'time' => \Smart::format_number_dec($time_end, 9, '.', ''),
+				'connection' => (string) $this->connkey
+			]);
+		} //end if
 		//--
 		return (array) $data;
 		//--
@@ -369,28 +492,45 @@ final class DbalPdo {
 
 
 	/**
-	 * PDO Query :: Read (Associative) one or multiple rows.
+	 * PDO Query :: Get a List of Records (with row number iterator) each row being a separate Record as an Associative array. Supports one or more records.
 	 * This function is intended to be used for read type queries: SELECT.
 	 *
-	 * @param STRING $queryval						:: the query
-	 * @param STRING $values 						:: *optional* array of parameters
-	 * @return ARRAY (asociative) of results		:: array(0 => array('column1', 'column2', ... 'column-n'), 1 => array('column1', 'column2', ... 'column-n'), ..., m => array('column1', 'column2', ... 'column-n'))
+	 * @param STRING $query							:: the query
+	 * @param ARRAY  $values 						:: *optional* array of parameters
+	 * @return ARRAY (asociative) of results		:: [ 0 => ['column1', 'column2', ... 'column-n'], 1 => ['column1', 'column2', ... 'column-n'], ..., m => ['column1', 'column2', ... 'column-n'] ]
 	 */
-	public function read_adata($query, $values='') {
+	public function queryReadMultiRecords(string $query, ?array $values=null) : array {
 		//--
-		if(!\is_array($values)) {
-			$values = array();
+		$query = (string) \trim((string)$query);
+		if((string)$query == '') {
+			\Smart::log_warning(__METHOD__.' # Empty Query Detected');
+			return [];
 		} //end if
 		//--
-		$arr = array();
+		if(!\is_array($values)) {
+			$values = [];
+		} //end if
+		//--
+		$time_start = 0;
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			$time_start = \microtime(true);
+		} //end if
+		//--
+		$arr = [];
 		try {
 			$arr = (array) $this->connection->query(
 				$query,
 				$values
 			)->toArray();
 		} catch(\Exception $e) {
-			$this->error('READ-aDATA', (string)$e->getMessage(), (string)$query, (\Smart::array_size($values) > 0) ? (array)$values : '');
+			$this->error('READ.MultiRecords', (string)$e->getMessage(), (string)$query, (\Smart::array_size($values) > 0) ? (array)$values : '');
+			return [];
 		} //end try catch
+		//--
+		$time_end = 0;
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			$time_end = (float) (\microtime(true) - (float)$time_start);
+		} //end if
 		//--
 		for($i=0; $i<\Smart::array_size($arr); $i++) {
 			$arr[$i] = (array) $arr[$i];
@@ -399,48 +539,94 @@ final class DbalPdo {
 			} //end foreach
 		} //end for
 		//--
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+				'type' => 'read',
+				'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::READ.MultiRecords]',
+				'query' => (string) $query,
+				'params' => (\Smart::array_size($values) > 0) ? (array) $values : '',
+				'rows' => (int) \Smart::array_size($arr),
+				'time' => \Smart::format_number_dec($time_end, 9, '.', ''),
+				'connection' => (string) $this->connkey
+			]);
+		} //end if
+		//--
 		return (array) $arr;
 		//--
 	} //END FUNCTION
 
 
 	/**
-	 * PDO Query :: Read (Associative) - Single Row (just for 1 row, to easy the use of data from queries).
-	 * !!! This will raise an error if more than one row(s) are returned !!!
+	 * PDO Query :: Get a Single Record as an Associative array. Supports ONLY one records.
+	 * !!! This will raise an error if more than one records are returned !!!
 	 * This function does not support multiple rows because the associative data is structured without row iterator.
-	 * For queries that return more than one row use: read_adata() or read_data().
+	 * For queries that return more than one row use: queryReadMultiRecords() or queryReadAsListMultiRecords().
 	 * This function is intended to be used for read type queries: SELECT.
 	 *
 	 * @hints	ALWAYS use a LIMIT 1 OFFSET 0 with all queries using this function to avoid situations that will return more than 1 rows and will raise ERROR with this function.
 	 *
-	 * @param STRING $queryval						:: the query
-	 * @param STRING $values 						:: *optional* array of parameters
-	 * @return ARRAY (asociative) of results		:: Returns just a SINGLE ROW as: array('column1', 'column2', ... 'column-n')
+	 * @param STRING $query							:: the query
+	 * @param ARRAY  $values 						:: *optional* array of parameters
+	 * @return ARRAY (asociative) of results		:: Returns just a SINGLE ROW as: [ 'column1', 'column2', ... 'column-n' ]
 	 */
-	public function read_asdata($query, $values='') {
+	public function queryReadSingleRecord(string $query, ?array $values=null) : array {
 		//--
-		if(!\is_array($values)) {
-			$values = array();
+		$query = (string) \trim((string)$query);
+		if((string)$query == '') {
+			\Smart::log_warning(__METHOD__.' # Empty Query Detected');
+			return [];
 		} //end if
 		//--
-		$arr = array();
+		if(!\is_array($values)) {
+			$values = [];
+		} //end if
+		//--
+		$time_start = 0;
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			$time_start = \microtime(true);
+		} //end if
+		//--
+		$arr = [];
 		try {
 			$arr = (array) $this->connection->query(
 				$query,
 				$values
 			)->toArray();
 		} catch(\Exception $e) {
-			$this->error('READ-asDATA', (string)$e->getMessage(), (string)$query, (\Smart::array_size($values) > 0) ? (array)$values : '');
+			$this->error('READ.SingleRecord', (string)$e->getMessage(), (string)$query, (\Smart::array_size($values) > 0) ? (array)$values : '');
+			return [];
 		} //end try catch
 		//--
-		if(\Smart::array_size($arr) > 1) {
-			throw new \Exception('The Result contains more than one row ...');
+		$time_end = 0;
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			$time_end = (float) (\microtime(true) - (float)$time_start);
 		} //end if
 		//--
+		if(\SmartFrameworkRegistry::ifDebug()) { // use before testing row nums to register debug before exit if more than one rows
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+				'type' => 'read',
+				'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::READ.SingleRecord]',
+				'query' => (string) $query,
+				'params' => (\Smart::array_size($values) > 0) ? (array) $values : '',
+				'rows' => (int) \Smart::array_size($arr),
+				'time' => \Smart::format_number_dec($time_end, 9, '.', ''),
+				'connection' => (string) $this->connkey
+			]);
+		} //end if
+		//--
+		if((int)\Smart::array_size($arr) > 1) {
+			$this->error('READ.SingleRecord', 'The Result contains more than one row ...', (string)$query, (\Smart::array_size($values) > 0) ? (array)$values : '');
+			return [];
+		} //end if
+		//--
+		$arr[0] = $arr[0] ?? null;
 		if(!\is_array($arr[0])) {
-			$arr[0] = array();
+			$arr[0] = [];
 		} //end if
-		//--
 		foreach($arr[0] as $key => $val) {
 			$arr[0][(string)$key] = (string) $val;
 		} //end foreach
@@ -452,31 +638,132 @@ final class DbalPdo {
 
 	/**
 	 * PDO Query :: Write.
-	 * This function is intended to be used for write type queries: BEGIN (TRANSACTION) ; COMMIT ; ROLLBACK ; INSERT ; INSERT IGNORE ; REPLACE ; UPDATE ; CREATE SCHEMAS ; CALLING STORED PROCEDURES ...
+	 * This function is intended to be used for write type queries: INSERT ; INSERT IGNORE ; REPLACE ; UPDATE
 	 *
-	 * @param STRING $queryval						:: the query
-	 * @param STRING $values_or_mode 				:: *optional* ARRAY of parameters OR the PDO query execution mode as STRING (QUERY_MODE_EXECUTE, implementing \Laminas\Db\Adapter\Adapter::QUERY_MODE_EXECUTE)
-	 * @return ARRAY 								:: [0 => 'control-message', 1 => #affected-rows]
+	 * @param STRING $query							:: the query
+	 * @param ARRAY  $values 						:: *optional* array of parameters
+	 * @return INT 									:: number of affected-rows
 	 */
-	public function write_data($query, $values_or_mode='') {
+	public function queryWrite(string $query, ?array $values=null) : int {
 		//--
-		if((!\is_array($values_or_mode)) AND ((string)\strtoupper((string)$values_or_mode) == 'QUERY_MODE_EXECUTE')) {
-			$values_or_mode = \Laminas\Db\Adapter\Adapter::QUERY_MODE_EXECUTE;
-		} elseif(!\is_array($values_or_mode)) {
-			$values_or_mode = array();
+		$query = (string) \trim((string)$query);
+		if((string)$query == '') {
+			\Smart::log_warning(__METHOD__.' # Empty Query Detected');
+			return 0;
+		} //end if
+		//--
+		if(!\is_array($values)) {
+			$values = [];
+		} //end if
+		//--
+		$time_start = 0;
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			$time_start = \microtime(true);
 		} //end if
 		//--
 		$affected = 0;
 		try {
 			$affected = $this->connection->query(
 				$query,
-				$values_or_mode
+				$values
 			)->getAffectedRows();
 		} catch(\Exception $e) {
-			$this->error('WRITE-DATA', (string)$e->getMessage(), (string)$query, (\Smart::array_size($values_or_mode) > 0) ? (array)$values_or_mode : (array)['@flag' => $values_or_mode]);
+			$this->error('WRITE', (string)$e->getMessage(), (string)$query, (\Smart::array_size($values) > 0) ? (array)$values : '');
+			return 0;
 		} //end try catch
 		//--
+		$time_end = 0;
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			$time_end = (float) (\microtime(true) - (float)$time_start);
+		} //end if
+		//--
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+				'type' => 'write',
+				'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::WRITE]',
+				'query' => (string) $query,
+				'params' => (\Smart::array_size($values) > 0) ? (array) $values : '',
+				'rows' => (int) $affected,
+				'time' => \Smart::format_number_dec($time_end, 9, '.', ''),
+				'connection' => (string) $this->connkey
+			]);
+		} //end if
+		//--
 		return (int) $affected;
+		//--
+	} //END FUNCTION
+
+
+	/**
+	 * PDO Query :: Execute.
+	 * This function is intended to be used for write type queries: CREATE SCHEMAS / DDLs ; BEGIN (TRANSACTION) ; COMMIT ; ROLLBACK ; CALLING STORED PROCEDURES ...
+	 *
+	 * @param STRING 	$query						:: the query
+	 * @return BOOLEAN 								:: TRUE if Success ; FALSE otherwise
+	 */
+	public function queryExecute(string $query) : bool {
+		//--
+		$query = (string) \trim((string)$query);
+		if((string)$query == '') {
+			\Smart::log_warning(__METHOD__.' # Empty Query Detected');
+			return false;
+		} //end if
+		//--
+		$time_start = 0;
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			$time_start = \microtime(true);
+		} //end if
+		//--
+		$affected = 0;
+		try {
+			$affected = $this->connection->query(
+				$query,
+				\Laminas\Db\Adapter\Adapter::QUERY_MODE_EXECUTE
+			)->getAffectedRows();
+		} catch(\Exception $e) {
+			$this->error('EXECUTE', (string)$e->getMessage(), (string)$query, '');
+			return false;
+		} //end try catch
+		//--
+		$time_end = 0;
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			$time_end = (float) (\microtime(true) - (float)$time_start);
+		} //end if
+		//--
+		if(\SmartFrameworkRegistry::ifDebug()) {
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
+			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
+			if(
+				(stripos((string)trim((string)$query), 'BEGIN') === 0) OR
+				(stripos((string)trim((string)$query), 'START TRANSACTION') === 0) OR
+				(stripos((string)trim((string)$query), 'COMMIT') === 0) OR
+				(stripos((string)trim((string)$query), 'ROLLBACK') === 0) OR
+				(stripos((string)trim((string)$query), 'ABORT') === 0)
+			) {
+				\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+					'type' => 'transaction',
+					'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::EXECUTE.Transaction]',
+					'query' => (string) $query,
+					'params' => '',
+					'time' => \Smart::format_number_dec($time_end, 9, '.', ''),
+					'connection' => (string) $this->connkey
+				]);
+			} else {
+				\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+					'type' => 'sql',
+					'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::EXECUTE]',
+					'query' => (string) $query,
+					'params' => '',
+					'rows' => (int) $affected,
+					'time' => \Smart::format_number_dec($time_end, 9, '.', ''),
+					'connection' => (string) $this->connkey
+				]);
+			} //end if else
+		} //end if
+		//--
+		return true;
 		//--
 	} //END FUNCTION
 
@@ -487,62 +774,46 @@ final class DbalPdo {
 	 * @internal
 	 *
 	 */
-	public function __destruct() {
+	 public function enableProfiling() : bool {
 		//--
-		if(!\SmartFrameworkRegistry::ifDebug()) {
-			return;
-		} //end if
-		if(!$this->profiler) {
-			return;
+		if(\SmartFrameworkRegistry::ifProdEnv()) {
+			\Smart::log_warning(__METHOD__.' # The Profiling should be disabled in a Production Environment: Slow Performance');
+			return false;
 		} //end if
 		//--
-		$arr = (array) $this->profiler->getProfiles();
-		if(\Smart::array_size($arr) <= 0) {
-			return;
+		if($this->profiler === null) {
+			$this->profiler = new \Laminas\Db\Adapter\Profiler\Profiler();
+			$this->connection->setProfiler($this->profiler);
 		} //end if
 		//--
-		$driver = (string) $this->cfg['driver'];
+		return true;
 		//--
-		\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$driver.'|log', [
-			'type' => 'metainfo',
-			'data' => 'Database Server: SQL ('.$driver.') / App Connector Version: '.self::LAMINAS_DB_VERSION.' / Connection Charset: '.\SMART_FRAMEWORK_SQL_CHARSET
-		]);
-		\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$driver.'|log', [
-			'type' => 'metainfo',
-			'data' => 'Connection Timeout: default / Fast Query Reference Time < '.$this->slow_query_time.' seconds'
-		]);
-		\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$driver.'|log', [
-			'type' => 'open-close',
-			'data' => 'DB Connection: '.$this->connkey,
-			'connection' => (string) \sha1((string)\print_r($this->cfg,1))
-		]);
+	} //END FUNCTION
+
+
+	/**
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public function getProfilingData() : array {
 		//--
-		for($i=0; $i<\Smart::array_size($arr); $i++) {
-			//--
-			$arr[$i] = (array) $arr[$i];
-			foreach($arr[$i] as $key => $val) {
-				if((string)$key == 'parameters') {
-					if((\is_object($val)) AND ($val instanceof \Laminas\Db\Adapter\ParameterContainer)) {
-						$arr[$i][(string)$key] = (array) $val->getNamedArray();
-					} else {
-						$arr[$i][(string)$key] = array();
-					} //end if else
-				} //end if
-			} //end foreach
-			//--
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$driver.'|slow-time', \number_format((float)$this->slow_query_time, 7, '.', ''), '=');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$driver.'|total-queries', 1, '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$driver.'|total-time', (float)$arr[$i]['elapse'], '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$driver.'|log', [
-				'type' => 'sql',
-				'data' => 'Laminas-Dbal/'.$driver.' [Query]',
-				'query' => (string) $arr[$i]['sql'],
-				'params' => (\Smart::array_size($arr[$i]['parameters']) > 0) ? (array) $arr[$i]['parameters'] : '',
-				'time' => \Smart::format_number_dec((float)$arr[$i]['elapse'], 9, '.', ''),
-				'connection' => (string) $this->connkey
-			]);
-			//--
-		} //end for
+		if(\SmartFrameworkRegistry::ifProdEnv()) {
+			\Smart::log_warning(__METHOD__.' # The Profiling should be disabled in a Production Environment: Slow Performance');
+			return [];
+		} //end if
+		//--
+		if($this->profiler === null) {
+			return [];
+		} //end if
+		//--
+		$arr = \Smart::json_decode((string)\Smart::json_encode((array)$this->profiler->getProfiles())); // convert all sub-objects to array
+		if(!\is_array($arr)) {
+			$arr = [];
+		} //end if
+		//--
+		return (array) $arr;
 		//--
 	} //END FUNCTION
 
@@ -554,11 +825,11 @@ final class DbalPdo {
 	 * @return :: HALT EXECUTION WITH ERROR MESSAGE
 	 *
 	 */
-	private function error($y_area, $y_error_message, $y_query, $y_params_or_title, $y_warning='') {
+	private function error(?string $y_area, ?string $y_error_message, ?string $y_query, $y_params_or_title, ?string $y_warning='') : void {
 		//--
 		$driver = (string) $this->cfg['driver'];
 		//--
-		if(\defined('\\SMART_SOFTWARE_SQLDB_FATAL_ERR') AND (\SMART_SOFTWARE_SQLDB_FATAL_ERR === false)) {
+		if($this->fatal_err === false) {
 			throw new \Exception('#Laminas-Db@'.$this->connkey.'# :: Q# // '.$driver.' :: EXCEPTION :: '.$y_area."\n".$y_error_message);
 			return;
 		} //end if
@@ -612,6 +883,7 @@ final class DbalPdo {
 			true // is html
 		);
 		die(''); // just in case
+		return;
 		//--
 	} //END FUNCTION
 

@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\TplTwig\SmartTwigEnvironment
 // [Smart.Framework.Modules - Twig / Environment for Smart.Framework]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 
 namespace SmartModExtLib\TplTwig;
 
@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	extensions: PHP Ctype (optional) ; classes: \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20220706
+ * @version 	v.20221208
  * @package 	modules:TemplatingEngine
  *
  */

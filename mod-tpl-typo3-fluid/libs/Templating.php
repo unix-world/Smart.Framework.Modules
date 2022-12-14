@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\TplTypo3Fluid\Templating
 // [Smart.Framework.Modules - Typo3Fluid / Templating]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.20220414
+ * @version 	v.20221208
  * @package 	modules:TemplatingEngine
  *
  */
@@ -184,7 +184,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			return;
 		} //end if
 		//--
-		$arr_vars['Tpl_Dir__'] = (string) $dir_of_tpl;
+		$arr_vars[(string)$this->getTplPathVar().'__'] = (string) $dir_of_tpl;
 		//--
 		$this->t3fpaths->setTemplateRootPaths([
 			(string) $dir_of_tpl

@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\TplTwist\Templating
 // [Smart.Framework.Modules - TwistTPL / Templating]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TwistTPL
- * @version 	v.20220414
+ * @version 	v.20221208
  * @package 	modules:TemplatingEngine
  *
  */
@@ -187,7 +187,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			return;
 		} //end if
 		//--
-		$arr_vars['Tpl_Dir__'] = (string) $dir_of_tpl; // this is the only tpl variable that will be case sensitive
+		$arr_vars[(string)$this->getTplPathVar().'__'] = (string) $dir_of_tpl; // this is the only tpl variable that will be case sensitive
 		//--
 		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
 			throw new \Exception('Twist Templating / Render File / The file name / path contains invalid characters: '.$file);
