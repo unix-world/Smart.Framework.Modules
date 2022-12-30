@@ -49,7 +49,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: SmartMarkersTemplating, \SmartModExtLib\TplTwist\SmartTwistTemplating, \SmartModExtLib\TplTwig\SmartTwigTemplating, \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating
- * @version 	v.20220330
+ * @version 	v.20221220
  * @package 	extralibs:TemplatingEngine
  *
  */

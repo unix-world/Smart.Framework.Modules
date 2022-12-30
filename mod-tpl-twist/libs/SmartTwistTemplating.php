@@ -42,7 +42,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype ; classes: TwistTPL, \SmartModExtLib\TplTwist\Templating
- * @version 	v.20220414
+ * @version 	v.20221220
  * @package 	modules:TemplatingEngine
  *
  */
@@ -79,7 +79,7 @@ final class SmartTwistTemplating implements \SmartModExtLib\Tpl\InterfaceSmartTe
 			$out = '{### ERROR: Twist TPL Render Failed ###}';
 			$errmsg = 'Twist Template Render Error ['.$file.'] '.$e->getMessage();
 			$displayErrMsg = (string) $errmsg;
-			if(\SmartFrameworkRegistry::ifProdEnv()) {
+			if(\SmartEnvironment::ifDevMode() !== true) {
 				$displayErrMsg = 'Twist-TPL Render Error (see errors log for details)';
 			} //end if else
 			\Smart::raise_error(
@@ -119,7 +119,7 @@ final class SmartTwistTemplating implements \SmartModExtLib\Tpl\InterfaceSmartTe
 	private static function startEngine() {
 		//--
 		if(self::$engine === null) {
-	//	if((self::$engine === null) OR (\SmartFrameworkRegistry::ifDebug())) {
+	//	if((self::$engine === null) OR (\SmartEnvironment::ifDebug())) {
 			self::$engine = new \SmartModExtLib\TplTwist\Templating();
 		} //end if
 		//--

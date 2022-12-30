@@ -21,7 +21,7 @@ abstract class SqAppTable {
 
 	// ->
 
-private $ver = 'r.20200121';
+private $ver = 'r.20221219';
 private $db = null;
 private $sqdb = '#db/';
 private $tblname = 'data_objects';
@@ -30,16 +30,16 @@ private $clsname = '';
 
 final public function __construct() {
 	//--
-	$classname = (array) explode('\\', (string)get_class($this));
-	$this->clsname = (string) strtolower((string)end($classname));
+	$classname = (array) \explode('\\', (string)get_class($this));
+	$this->clsname = (string) \strtolower((string)end($classname));
 	$classname = null;
-	if(((string)trim((string)$this->clsname) == '') OR (!preg_match('/^[a-z0-9]+$/', (string)$this->clsname))) {
+	if(((string)\trim((string)$this->clsname) == '') OR (!\preg_match('/^[a-z0-9]+$/', (string)$this->clsname))) {
 		throw new \Exception(__METHOD__.': DB SQLITE Invalid characters in Class Name: '.$this->clsname);
 		return;
 	} //end if
 	//--
-	$this->sqdb .= 'agile-'.strtolower((string)$this->clsname).'.sqlite';
-	if(\SmartFileSysUtils::check_if_safe_path((string)$this->sqdb, 'yes', 'yes') != 1) { // deny absolute path access ; allow protected path access (starting with #)
+	$this->sqdb .= 'agile-'.\strtolower((string)$this->clsname).'.sqlite';
+	if(\SmartFileSysUtils::checkIfSafePath((string)$this->sqdb, true, true) != 1) { // deny absolute path access ; allow protected path access (starting with #)
 		throw new \Exception(__METHOD__.': DB SQLITE Invalid Path: '.$this->sqdb);
 		return;
 	} //end if
@@ -80,7 +80,7 @@ final public function getOneByUuid($uuid) {
 		return array();
 	} //end if
 	//--
-	$uuid = (string) trim((string)$uuid);
+	$uuid = (string) \trim((string)$uuid);
 	if((string)$uuid == '') {
 		return array();
 	} //end if
@@ -120,22 +120,22 @@ final public function saveData($data, $user) {
 	//--
 	$newdata = array();
 	//--
-	$newdata['uuid'] = (string) trim((string)$data['uuid']);
+	$newdata['uuid'] = (string) \trim((string)$data['uuid']);
 	if((string)$newdata['uuid'] == '') {
 		return -1; // empty uuid
 	} //end if
 	//--
-	$newdata['dtime'] = (string) date('Y-m-d H:i:s');
-	$newdata['user'] = (string) trim((string)$user);
+	$newdata['dtime'] = (string) \date('Y-m-d H:i:s');
+	$newdata['user'] = (string) \trim((string)$user);
 	//--
-	$newdata['project'] = (string) trim((string)$data['project']);
+	$newdata['project'] = (string) \trim((string)($data['project'] ?? null));
 	//--
-	$newdata['title'] = (string) trim((string)$data['title']);
+	$newdata['title'] = (string) \trim((string)($data['title'] ?? null));
 	if((string)$newdata['title'] == '') {
 		return -2; // invalid title
 	} //end if
 	//--
-	$newdata['saved_data'] = (string) trim((string)$data['saved_data']);
+	$newdata['saved_data'] = (string) \trim((string)($data['saved_data'] ?? null));
 	if((string)$newdata['saved_data'] == '') {
 		return -3; // invalid data
 	} //end if
@@ -163,23 +163,27 @@ final public function saveData($data, $user) {
 		return -10; // json doc title key is missing
 	} //end if
 	//--
-	$newdata['type'] = (string) strtolower((string)trim((string)$test_data['docType']));
+	$newdata['type'] = (string) \strtolower((string)trim((string)$test_data['docType']));
 	if((string)$newdata['type'] == '') {
 		return -11; // invalid (doc) type
 	} //end if
 	//--
 	$compare = (array) $this->getOneByUuid((string)$newdata['uuid']);
+	$compare['saved_data'] = (string) ($compare['saved_data'] ?? null);
+	$comp_data = '';
 	if((string)$compare['saved_data'] != '') {
 		$comp_data = \Smart::json_decode((string)\SmartUtils::data_unarchive((string)$compare['saved_data']));
 	} //end if
 	if(!is_array($comp_data)) {
 		$comp_data = array();
 	} //end if
+	$compare['type'] = (string) ($compare['type'] ?? null);
 	if((string)$compare['type'] != '') {
 		if((string)$compare['type'] !== (string)$newdata['type']) {
 			return -12; // type mismatch
 		} //end if
 	} //end if
+	$compare['uuid'] = (string) ($compare['uuid'] ?? null);
 	if(((string)$compare['uuid'] === (string)$newdata['uuid']) AND ((string)$compare['title'] === (string)$newdata['title']) AND ((string)\Smart::seryalize($comp_data['data']) === (string)\Smart::seryalize($test_data['data']))) {
 		return 1; // not changed, simulate updated ...
 	} //end if
@@ -199,9 +203,9 @@ final public function saveData($data, $user) {
 		$this->db->write_data(
 			'UPDATE `'.$this->tblname.'` SET `project` = ?, `title` = ? WHERE (`uuid` = ?)',
 			[
-				(string) $newdata['project'],
-				(string) $newdata['title'] ,
-				(string) $newdata['uuid']
+				(string) ($newdata['project'] ?? null),
+				(string) ($newdata['title'] ?? null),
+				(string) ($newdata['uuid'] ?? null),
 			]
 		);
 	} //end if

@@ -41,6 +41,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$type = (string) $this->RequestVarGet('type', '', (array)$allowed_types);
 		$import = (string) $this->RequestVarGet('import', '', 'string');
 
+		$dbmodel_data = null;
+
 		if((string)$import == 'yes') {
 
 			$this->PageViewSetVars([
@@ -114,7 +116,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$sq_rd = (array) $model->getOneByUuid($uuid);
 			$new_data = (array) $initial_data;
 		} //end if else
-		$old_data = (string) SmartUtils::data_unarchive((string)$sq_rd['saved_data']);
+		$old_data = (string) SmartUtils::data_unarchive((string)($sq_rd['saved_data'] ?? null));
 		if($old_data) {
 			$old_data = Smart::json_decode((string)$old_data); // mixed
 		} //end if
@@ -133,7 +135,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 
 		$isnew = false;
-		$sq_rd['uuid'] = (string) trim((string)$sq_rd['uuid']);
+		$sq_rd['uuid'] = (string) trim((string)($sq_rd['uuid'] ?? null));
 		if((string)$sq_rd['uuid'] == '') {
 			$sq_rd['uuid'] = (string) $uuid;
 			if((string)$sq_rd['uuid'] == '') {
@@ -162,11 +164,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'OP-MODE' 		=> (string) $opmode,
 					'DB-TYPE' 		=> (string) $the_type,
 					'JSON-DATA'		=> (string) $old_data,
-					'UUID' 			=> (string) $sq_rd['uuid'],
-					'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled DB-Model',
-					'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
-					'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
-					'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-',
+					'UUID' 			=> (string) ($sq_rd['uuid'] ?? null),
+					'TITLE'			=> (string) ($sq_rd['title'] ?? 'Untitled DB-Model'),
+					'DATE' 			=> (string) ($sq_rd['dtime'] ?? '-'),
+					'DTIME' 		=> (string) isset($sq_rd['dtime']) ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
+					'AUTHOR' 		=> (string) ($sq_rd['user'] ?? '-'),
 				]
 			)
 		]);

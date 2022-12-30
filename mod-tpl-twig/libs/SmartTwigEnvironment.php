@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	extensions: PHP Ctype (optional) ; classes: \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20221208
+ * @version 	v.20221220
  * @package 	modules:TemplatingEngine
  *
  */
@@ -40,8 +40,8 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 		//--
 		$the_twig_cache_dir = 'tmp/cache/tpl-twig/v'.(int)self::MAJOR_VERSION.'.'.(int)self::MINOR_VERSION.'/';
 		//--
-		if(\SmartFrameworkRegistry::isAdminArea() === true) {
-			if(\SmartFrameworkRegistry::isTaskArea() === true) {
+		if(\SmartEnvironment::isAdminArea() === true) {
+			if(\SmartEnvironment::isTaskArea() === true) {
 				$the_twig_cache_dir .= 'tsk';
 			} else {
 				$the_twig_cache_dir .= 'adm';
@@ -63,7 +63,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 
 	public function smartDebugGetLoadedTemplates($mode) {
 		//--
-		if(!\SmartFrameworkRegistry::ifDebug()) {
+		if(!\SmartEnvironment::ifDebug()) {
 			return array();
 		} //end if
 		//--
@@ -77,7 +77,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 		//--
 		$the_twig_cache_dir = (string) $this->smartSetupCacheDir();
 		if((string)$the_twig_cache_dir != '') {
-			$the_twig_cache_dir = \SmartFileSysUtils::add_dir_last_slash($the_twig_cache_dir);
+			$the_twig_cache_dir = \SmartFileSysUtils::addPathTrailingSlash((string)$the_twig_cache_dir);
 		} //end if
 		//--
 		if(!\method_exists($this, 'smart__getLoadedTemplates')) {
@@ -95,7 +95,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 				if(\is_object($val)) {
 					//--
 					$hash_key = (string) \hash(\PHP_VERSION_ID < 80100 ? 'sha256' : 'xxh128', (string)$key, false); // :: sync with \Twig\Environment->getTemplateClass()
-					$real_cache_file = (string) $the_twig_cache_dir.\SmartFileSysUtils::add_dir_last_slash(\substr($hash_key, 0, 2)).$hash_key.'.php';
+					$real_cache_file = (string) $the_twig_cache_dir.\SmartFileSysUtils::addPathTrailingSlash((string)\substr((string)$hash_key, 0, 2)).$hash_key.'.php';
 					//--
 					$tpl_path = (string) $val->getTemplateName();
 					$tpl_vars = (array) $this->smartGetRequiredKeys((string)$tpl_path);
@@ -122,7 +122,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 							'msg' 		=> (string) $msg_optimal,
 							'action' 	=> (string) \SmartUtils::get_server_current_script().'?page=tpl-twig.debug&tpl='
 						];
-						\SmartFrameworkRegistry::setDebugMsg('extra', 'TWIG-TEMPLATING', [
+						\SmartEnvironment::setDebugMsg('extra', 'TWIG-TEMPLATING', [
 							'title' => '[TPL-ReadFileTemplate-From-FS] :: Twig-TPL / File-Read: '.$tpl_path.' ;',
 							'data' => 'Content SubStr[0-'.(int)$this->smartGetdebugTplLength().']: '."\n".\Smart::text_cut_by_limit(\SmartFileSystem::read((string)$tpl_path), (int)$this->smartGetdebugTplLength(), true, '[...]')
 						]);
@@ -145,7 +145,7 @@ final class SmartTwigEnvironment extends \Twig\Environment {
 		\ksort($dbg_arr['tpl-vars']);
 		//--
 		if((string)$mode != 'get') {
-			\SmartFrameworkRegistry::setDebugMsg('optimizations', '*TWIG-TPL-CLASSES:OPTIMIZATION-HINTS*', [
+			\SmartEnvironment::setDebugMsg('optimizations', '*TWIG-TPL-CLASSES:OPTIMIZATION-HINTS*', [
 				'title' => 'SmartTwigEnvironment // Optimization Hints @ Number of FS Reads for rendering current Template incl. Sub-Templates ; Test if Cache File exists',
 				'data' => (array) $optim_msg
 			]);

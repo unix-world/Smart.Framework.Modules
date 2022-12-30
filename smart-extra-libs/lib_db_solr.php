@@ -78,7 +78,7 @@ $configs['solr']['slowtime']	= 0.4500;									// 0.0500 .. 0.7500 slow query ti
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartComponents
- * @version 	v.20221105
+ * @version 	v.20221220
  * @package 	extralibs:Database:Solr
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -168,7 +168,7 @@ final class SmartSolrDb {
 			} else {
 				//--
 				$this->noconnect = true;
-				if(SmartFrameworkRegistry::ifDebug()) {
+				if(SmartEnvironment::ifDebug()) {
 					Smart::log_notice('Solr Configuration Init: Empty Config');
 				} //end if
 				return;
@@ -216,9 +216,9 @@ final class SmartSolrDb {
 		//--
 		$this->description = (string) $y_description;
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
+			SmartEnvironment::setDebugMsg('db', 'solr|log', [
 				'type' => 'metainfo',
 				'data' => 'Solr Extension Version: '.$this->extver
 			]);
@@ -232,7 +232,7 @@ final class SmartSolrDb {
 				$this->slow_time = 0.9999999;
 			} //end if
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|slow-time', number_format($this->slow_time, 7, '.', ''), '=');
+			SmartEnvironment::setDebugMsg('db', 'solr|slow-time', number_format($this->slow_time, 7, '.', ''), '=');
 			//--
 			if($this->fatal_err === true) {
 				$txt_conn = 'FATAL ERRORS';
@@ -240,17 +240,17 @@ final class SmartSolrDb {
 				$txt_conn = 'IGNORED BUT LOGGED AS WARNINGS';
 			} //end if else
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
+			SmartEnvironment::setDebugMsg('db', 'solr|log', [
 				'type' => 'metainfo',
 				'data' => 'Solr App Connector Version: '.SMART_APP_MODULES_EXTRALIBS_VER.' // Connection Errors are: '.$txt_conn
 			]);
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
+			SmartEnvironment::setDebugMsg('db', 'solr|log', [
 				'type' => 'metainfo',
 				'data' => 'Connection Timeout: '.$this->timeout.' seconds'
 			]);
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
+			SmartEnvironment::setDebugMsg('db', 'solr|log', [
 				'type' => 'metainfo',
 				'data' => 'Fast Query Reference Time < '.$this->slow_time.' seconds'
 			]);
@@ -271,9 +271,9 @@ final class SmartSolrDb {
 	 */
 	public function __destruct() {
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
+			SmartEnvironment::setDebugMsg('db', 'solr|log', [
 				'type' => 'open-close',
 				'data' => 'Solr DB :: Close Connection to DB: '.$this->db.' :: '.$this->description.' @ HOST: '.$this->protocol.$this->host.':'.$this->port.' # User: '.$this->user
 			]);
@@ -345,9 +345,9 @@ final class SmartSolrDb {
 			return array();
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'solr|total-queries', 1, '+');
 			//--
 			$time_start = microtime(true);
 			//--
@@ -486,13 +486,13 @@ final class SmartSolrDb {
 		$data = $response->getResponse();
 		//print_r($data);
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
 			$time_end = (float) (microtime(true) - (float)$time_start);
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'solr|total-time', $time_end, '+');
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
+			SmartEnvironment::setDebugMsg('db', 'solr|log', [
 				'type' => 'nosql',
 				'data' => 'FIND-QUERY: `'.$y_query.'`',
 				'command' => $y_options,
@@ -574,9 +574,9 @@ final class SmartSolrDb {
 			return -10;
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'solr|total-queries', 1, '+');
 			//--
 			$time_start = microtime(true);
 			//--
@@ -625,13 +625,13 @@ final class SmartSolrDb {
 		$response = $updateResponse->getResponse(); // get answer message
 		//print_r($response);
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
 			$time_end = (float) (microtime(true) - (float)$time_start);
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'solr|total-time', $time_end, '+');
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
+			SmartEnvironment::setDebugMsg('db', 'solr|log', [
 				'type' => 'nosql',
 				'data' => 'ADD-UPDATE-QUERY',
 				'command' => $arrdoc,
@@ -682,9 +682,9 @@ final class SmartSolrDb {
 			return -10;
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'solr|total-queries', 1, '+');
 			//--
 			$time_start = microtime(true);
 			//--
@@ -710,13 +710,13 @@ final class SmartSolrDb {
 		$response = $updateResponse->getResponse(); // get answer message
 		//print_r($response);
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
 			$time_end = (float) (microtime(true) - (float)$time_start);
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'solr|total-time', $time_end, '+');
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
+			SmartEnvironment::setDebugMsg('db', 'solr|log', [
 				'type' => 'nosql',
 				'data' => 'DELETE-QUERY',
 				'command' => [ 'ID' => (string)$id ],
@@ -794,9 +794,9 @@ final class SmartSolrDb {
 		//--
 		$this->connid = (string) $this->protocol.$this->host.':'.$this->port.'@'.$this->db.'('.$this->mode.')'.' # '.$this->user;
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'solr|log', [
+			SmartEnvironment::setDebugMsg('db', 'solr|log', [
 				'type' => 'open-close',
 				'data' => 'Solr DB :: Open Connection ['.$this->mode.'] to DB: '.$this->db.' :: '.$this->description.' @ HOST: '.$this->protocol.$this->host.':'.$this->port.' # User: '.$this->user
 			]);
@@ -852,7 +852,7 @@ final class SmartSolrDb {
 		//--
 		$def_warn = 'Execution Halted !';
 		$y_warning = (string) trim((string)$y_warning);
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$width = 750;
 			$the_area = (string) $y_area;
 			if((string)$y_warning == '') {

@@ -38,6 +38,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$edit = (string) $this->RequestVarGet('edit', '', 'string');
 		$import = (string) $this->RequestVarGet('import', '', 'string');
 
+		$bpmn_data = null;
+
 		if((string)$import == 'yes') {
 
 			$this->PageViewSetVars([
@@ -96,7 +98,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$new_data['data']['bpmnXML'] = (string) SmartFileSystem::read('modules/mod-wflow-components/views/bpmn-flow/bpmn-init.xml');
 			$new_data = (string) Smart::json_encode($new_data);
 		} //end if else
-		$old_data = (string) SmartUtils::data_unarchive((string)$sq_rd['saved_data']);
+		$old_data = (string) SmartUtils::data_unarchive((string)($sq_rd['saved_data'] ?? null));
 		if($old_data) {
 			$old_data = Smart::json_decode((string)$old_data); // mixed
 		} //end if
@@ -107,7 +109,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 
 		$isnew = false;
-		$sq_rd['uuid'] = (string) trim((string)$sq_rd['uuid']);
+		$sq_rd['uuid'] = (string) trim((string)($sq_rd['uuid'] ?? null));
 		if((string)$sq_rd['uuid'] == '') {
 			$sq_rd['uuid'] = (string) $uuid;
 			if((string)$sq_rd['uuid'] == '') {
@@ -136,11 +138,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'VIEWS-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
 					'OP-MODE' 		=> (string) $opmode,
 					'JSON-DATA'		=> (string) $old_data,
-					'UUID' 			=> (string) $sq_rd['uuid'],
-					'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled BPMN-Diagram',
-					'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
-					'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
-					'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-'
+					'UUID' 			=> (string) ($sq_rd['uuid'] ?? null),
+					'TITLE'			=> (string) ($sq_rd['title'] ?? 'Untitled BPMN-Diagram'),
+					'DATE' 			=> (string) ($sq_rd['dtime'] ?? '-'),
+					'DTIME' 		=> (string) isset($sq_rd['dtime']) ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
+					'AUTHOR' 		=> (string) ($sq_rd['user'] ?? '-'),
 				]
 			)
 		]);

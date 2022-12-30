@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true);
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210612
+	// v.20221219
 
 	public function Initialize() {
 		//--
@@ -37,6 +37,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$uuid = (string) $this->RequestVarGet('uuid', '', 'string');
 		$edit = (string) $this->RequestVarGet('edit', '', 'string');
 		$import = (string) $this->RequestVarGet('import', '', 'string');
+
+		$flowchart_data = null;
 
 		if((string)$import == 'yes') {
 
@@ -81,7 +83,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$sq_rd = (array) $model->getOneByUuid($uuid);
 			$new_data = (string) Smart::json_encode([ 'data' => [ 'numberOfElements' => 0, 'nodes' => [], 'connections' => [] ]]);
 		} //end if else
-		$old_data = (string) SmartUtils::data_unarchive((string)$sq_rd['saved_data']);
+		$old_data = (string) SmartUtils::data_unarchive((string)($sq_rd['saved_data'] ?? null));
 		if($old_data) {
 			$old_data = Smart::json_decode((string)$old_data); // mixed
 		} //end if
@@ -92,7 +94,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 
 		$isnew = false;
-		$sq_rd['uuid'] = (string) trim((string)$sq_rd['uuid']);
+		$sq_rd['uuid'] = (string) trim((string)($sq_rd['uuid'] ?? null));
 		if((string)$sq_rd['uuid'] == '') {
 			$sq_rd['uuid'] = (string) $uuid;
 			if((string)$sq_rd['uuid'] == '') {
@@ -135,11 +137,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'VIEWS-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
 					'OP-MODE' 		=> (string) $opmode,
 					'JSON-DATA'		=> (string) $old_data,
-					'UUID' 			=> (string) $sq_rd['uuid'],
-					'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled Flowchart',
-					'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
-					'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
-					'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-',
+					'UUID' 			=> (string) ($sq_rd['uuid'] ?? null),
+					'TITLE'			=> (string) ($sq_rd['title'] ?? 'Untitled Flowchart'),
+					'DATE' 			=> (string) ($sq_rd['dtime'] ?? '-'),
+					'DTIME' 		=> (string) isset($sq_rd['dtime']) ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
+					'AUTHOR' 		=> (string) ($sq_rd['user'] ?? '-'),
 					'THE-ICONS' 	=> (string) Smart::json_encode($arr_icns),
 					'FA-ICONS' 		=> (string) Smart::json_encode($arr_fa_icns),
 					'LOAD-FA' 		=> (string) $load_fontawesome
@@ -152,7 +154,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 	private function getListIcons($y_icons_list_file) {
 		//--
-		if((!SmartFileSysUtils::check_if_safe_path((string)$y_icons_list_file)) OR (!SmartFileSystem::is_type_file((string)$y_icons_list_file))) {
+		if((!SmartFileSysUtils::checkIfSafePath((string)$y_icons_list_file)) OR (!SmartFileSystem::is_type_file((string)$y_icons_list_file))) {
 			return array();
 		} //end if
 		//--

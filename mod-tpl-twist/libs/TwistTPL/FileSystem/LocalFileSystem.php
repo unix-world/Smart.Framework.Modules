@@ -116,7 +116,7 @@ class LocalFileSystem implements \TwistTPL\AbstractInterfaceFileSystem {
 			return '';
 		} //end if
 		//--
-		$tpl = (string) \file_get_contents((string)$templatePath.$templateFile);
+		$tpl = (string) \file_get_contents((string)$templatePath.$templateFile, false);
 		if((string)$tpl == '') {
 			throw new \Exception(__METHOD__.' # Failed to read the TPL path: `'.$templatePath.$templateFile.'`');
 			return '';

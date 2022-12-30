@@ -100,8 +100,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @access 		PUBLIC
- * @depends 	extensions: PHP PDO ; classes: \Laminas\Db
- * @version 	v.20221214.1044
+ * @depends 	extensions: PHP PDO ; vendor-classes: \Laminas\Stdlib, \Laminas\Db ; classes: SmartEnvironment, Smart, SmartFileSysUtils, SmartComponents (optional)
+ * @version 	v.20221227
  * @package 	modules:Database:PDO:Laminas-Dbal
  *
  */
@@ -110,6 +110,7 @@ final class DbalPdo {
 	// ->
 
 	private const LAMINAS_DB_VERSION = 'Laminas/Db 2.13.4 ; Laminas/Stdlib 3.6.4';
+	private const LAMINAS_DB_VENDOR  = 'Laminas/Db ; Laminas/Stdlib';
 
 	private $cfg = [];
 	private $connkey = '';
@@ -129,7 +130,7 @@ final class DbalPdo {
 	 *
 	 * @hint: 	For the DB direct access Drivers (Adapters) such as: PgSQL, SQlite3 and MySQLi the Smart.Framework provides built-in / includded and more optimized libraries
 	 *
-	 * @param MIXED 	$cfg							:: the driver options as array[] or 'mysqli:config' | 'pgsql:config' | 'sqlite:tmp/sample-dbfile.sqlite'
+	 * @param MIXED 	$cfg							:: the driver options as array[] or 'mysql:config' | 'pgsql:config' | 'sqlite:tmp/sample-dbfile.sqlite'
 	 * @param INTEGER+ 	$timeout 						:: the connection timeout (applies only to MySQL and PostgreSQL)
 	 *
 	 */
@@ -138,70 +139,83 @@ final class DbalPdo {
 		if(!\is_array($cfg)) {
 			$this->cfg = array();
 			switch((string)$cfg) {
-				case 'mysqli:config':
+				case 'mysql:config':
 					$arr_cfg = \Smart::get_from_config('mysqli');
 					if(\Smart::array_size($arr_cfg) <= 0) {
 						\Smart::raise_error(__METHOD__.' The CFG not found in Smart.Framework config (mysqli): '.$cfg);
-						return false;
+						return;
 					} //end if
 					$this->cfg = array();
 					$this->cfg['driver'] 	= 'PDO_MYSQL';
-					$this->cfg['database'] 	= (string) $arr_cfg['dbname'];
-					$this->cfg['host'] 		= (string) $arr_cfg['server-host'];
-					$this->cfg['port'] 		= (int)    $arr_cfg['server-port'];
-					$this->cfg['username'] 	= (string) $arr_cfg['username'];
-					$this->cfg['password'] 	= (string) base64_decode((string)$arr_cfg['password']);
-					$this->cfg['timeout'] 	= (int)    $arr_cfg['timeout'];
-					$this->cfg['slowtime'] 	= (float)  $arr_cfg['slowtime'];
+					$this->cfg['database'] 	= (string) ($arr_cfg['dbname'] ?? null);
+					$this->cfg['host'] 		= (string) ($arr_cfg['server-host'] ?? null);
+					$this->cfg['port'] 		= (int)    ($arr_cfg['server-port'] ?? null);
+					$this->cfg['username'] 	= (string) ($arr_cfg['username']  ?? null);
+					$this->cfg['password'] 	= (string) base64_decode((string)($arr_cfg['password'] ?? null));
+					$this->cfg['timeout'] 	= (int)    ($arr_cfg['timeout'] ?? null);
+					$this->cfg['slowtime'] 	= (float)  ($arr_cfg['slowtime'] ?? null);
 					break;
 				case 'pgsql:config':
 					$arr_cfg = \Smart::get_from_config('pgsql');
 					if(\Smart::array_size($arr_cfg) <= 0) {
 						\Smart::raise_error(__METHOD__.' The CFG not found in Smart.Framework config (pgsql): '.$cfg);
-						return false;
+						return;
 					} //end if
 					$this->cfg = array();
 					$this->cfg['driver'] 	= 'PDO_PGSQL';
-					$this->cfg['database'] 	= (string) $arr_cfg['dbname'];
-					$this->cfg['host'] 		= (string) $arr_cfg['server-host'];
-					$this->cfg['port'] 		= (int)    $arr_cfg['server-port'];
-					$this->cfg['username'] 	= (string) $arr_cfg['username'];
-					$this->cfg['password'] 	= (string) base64_decode((string)$arr_cfg['password']);
-					$this->cfg['timeout'] 	= (int)    $arr_cfg['timeout'];
-					$this->cfg['slowtime'] 	= (float)  $arr_cfg['slowtime'];
+					$this->cfg['database'] 	= (string) ($arr_cfg['dbname'] ?? null);
+					$this->cfg['host'] 		= (string) ($arr_cfg['server-host'] ?? null);
+					$this->cfg['port'] 		= (int)    ($arr_cfg['server-port'] ?? null);
+					$this->cfg['username'] 	= (string) ($arr_cfg['username'] ?? null);
+					$this->cfg['password'] 	= (string) base64_decode((string)($arr_cfg['password'] ?? null));
+					$this->cfg['timeout'] 	= (int)    ($arr_cfg['timeout'] ?? null);
+					$this->cfg['slowtime'] 	= (float)  ($arr_cfg['slowtime'] ?? null);
 					break;
 				default: // sqlite:tmp/sample-dbfile.sqlite
 					if((string)\trim((string)$cfg) == '') {
 						\Smart::raise_error(__METHOD__.' Empty CFG not allowed !');
-						return false;
+						return;
 					} //end if
 					if(\strpos((string)$cfg, 'sqlite:') !== 0) {
 						\Smart::raise_error(__METHOD__.' Invalid CFG: '.$cfg);
-						return false;
+						return;
 					} //end if
 					$the_db = (string) \trim((string)\substr((string)$cfg, 7));
 					if((string)$the_db == '') {
 						\Smart::raise_error(__METHOD__.' Empty Database Path (sqlite): '.$cfg);
-						return false;
+						return;
 					} //end if
-					if(!\SmartFileSysUtils::check_if_safe_path((string)$the_db, 'yes', 'yes')) { // deny absolute path access ; allow protected path access (starting with #)
+					if(!\SmartFileSysUtils::checkIfSafePath((string)$the_db, true, true)) { // deny absolute path access ; allow protected path access (starting with #)
 						\Smart::raise_error(__METHOD__.' Unsafe Database Path (sqlite): '.$cfg);
-						return false;
+						return;
 					} //end if
 					$arr_cfg = \Smart::get_from_config('sqlite');
 					if(\Smart::array_size($arr_cfg) <= 0) {
 						\Smart::raise_error(__METHOD__.' The CFG not found in Smart.Framework config (sqlite): '.$cfg);
-						return false;
+						return;
 					} //end if
-					$this->cfg = array();
+					if((!defined('\\SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH')) OR (!is_string(\SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH))) {
+						\Smart::raise_error(__METHOD__.' The SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH was not defined or is not valid string in Smart.Framework (sqlite)');
+						return;
+					} //end if
+					$this->cfg = [];
 					$this->cfg['driver'] 	= 'PDO_SQLITE';
-					$this->cfg['database'] 	= (string) $the_db;
-					$this->cfg['timeout'] 	= (int)    $arr_cfg['timeout'];
-					$this->cfg['slowtime'] 	= (float)  $arr_cfg['slowtime'];
+					$this->cfg['database'] 	= (string) \SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH.$the_db;
+					$this->cfg['timeout'] 	= (int)    ($arr_cfg['timeout'] ?? null);
+					$this->cfg['slowtime'] 	= (float)  ($arr_cfg['slowtime'] ?? null);
 			} //end switch
 		} else {
 			$this->cfg = (array) $cfg;
 		} //end if else
+		//--
+		$this->cfg = (array) \Smart::array_init_keys($this->cfg,
+			[
+				'driver',
+				'database',
+				'timeout',
+				'slowtime',
+			]
+		);
 		//--
 		$this->cfg['driver'] = (string) \strtolower((string)\trim((string)$this->cfg['driver']));
 		$this->cfg['host'] = (string) \trim((string)(isset($this->cfg['host']) ? $this->cfg['host'] : ''));
@@ -234,7 +248,8 @@ final class DbalPdo {
 				$this->slow_query_time = (float) (((float)$this->cfg['slowtime'] > 0) ? (float)$this->cfg['slowtime'] : 0.0025);
 				break;
 			default:
-				$this->error('INIT', 'Unsupported PDO Laminas/Db Driver: '.$this->cfg['driver'], '@Driver', '');
+			//	$this->error('INIT', 'Unsupported PDO Laminas/Db Driver: '.$this->cfg['driver'], '@Driver', '');
+				\Smart::raise_error(__METHOD__.' Unsupported PDO Laminas/Db Driver: '.$this->cfg['driver']);
 				return;
 		} //end switch
 		//--
@@ -268,18 +283,23 @@ final class DbalPdo {
 		//--
 		$this->platform = $this->connection->getPlatform();
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			//--
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|slow-time', \number_format((float)$this->slow_query_time, 7, '.', ''), '=');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+			$laminas_version = (string) self::LAMINAS_DB_VERSION;
+			if(defined('\\SMART_MODULES_USE_VENDOR_CLASSES')) { // {{{SYNC-SMART.FRAMEWORK-MODULES-USE-VENDOR-CLASSES}}}
+				$laminas_version = (string) self::LAMINAS_DB_VENDOR;
+			} //end if
+			//--
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|slow-time', \number_format((float)$this->slow_query_time, 7, '.', ''), '=');
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
 				'type' => 'metainfo',
-				'data' => 'Database Server: SQL ('.$this->cfg['driver'].') / App Connector Version: '.self::LAMINAS_DB_VERSION.' / Connection Charset: '.\SMART_FRAMEWORK_SQL_CHARSET
+				'data' => 'Database Server: SQL ('.$this->cfg['driver'].') / App Connector Version: `'.$laminas_version.'` / Connection Charset: '.\SMART_FRAMEWORK_SQL_CHARSET
 			]);
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
 				'type' => 'metainfo',
 				'data' => 'Connection Timeout: default / Fast Query Reference Time < '.$this->slow_query_time.' seconds'
 			]);
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
 				'type' => 'open-close',
 				'data' => 'DB Connection: '.$this->connkey,
 				'connection' => (string) \sha1((string)\print_r($this->cfg,1))
@@ -291,15 +311,27 @@ final class DbalPdo {
 
 
 	/**
-	 * Laminas/DB: Set Fatal Error TRUE/FALSE
+	 * Laminas/DB: Set Fatal Error to TRUE/FALSE
 	 *
 	 * @return VOID
 	 */
-	public function setFatalErr(bool $is_fatal) : void {
+	public function setFatalErrMode(bool $is_fatal) : void {
 		//--
 		$this->fatal_err = (bool) $is_fatal;
 		//--
 		return;
+		//--
+	} //END FUNCTION
+
+
+	/**
+	 * Laminas/DB: Get Fatal Error TRUE/FALSE
+	 *
+	 * @return TRUE/FALSE
+	 */
+	public function getFatalErrMode() : bool {
+		//--
+		return (bool) $this->fatal_err;
 		//--
 	} //END FUNCTION
 
@@ -373,7 +405,7 @@ final class DbalPdo {
 		} //end if
 		//--
 		$time_start = 0;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$time_start = \microtime(true);
 		} //end if
 		//--
@@ -389,7 +421,7 @@ final class DbalPdo {
 		} //end try catch
 		//--
 		$time_end = 0;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$time_end = (float) (\microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -402,10 +434,10 @@ final class DbalPdo {
 			} //end if
 		} //end if
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+		if(\SmartEnvironment::ifDebug()) {
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
 				'type' => 'count',
 				'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::COUNT.Records]',
 				'query' => (string) $query,
@@ -443,7 +475,7 @@ final class DbalPdo {
 		} //end if
 		//--
 		$time_start = 0;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$time_start = \microtime(true);
 		} //end if
 		//--
@@ -459,7 +491,7 @@ final class DbalPdo {
 		} //end try catch
 		//--
 		$time_end = 0;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$time_end = (float) (\microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -472,10 +504,10 @@ final class DbalPdo {
 		} //end for
 		$arr = null;
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+		if(\SmartEnvironment::ifDebug()) {
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
 				'type' => 'read',
 				'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::READ.AsList.MultiRecords]',
 				'query' => (string) $query,
@@ -512,7 +544,7 @@ final class DbalPdo {
 		} //end if
 		//--
 		$time_start = 0;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$time_start = \microtime(true);
 		} //end if
 		//--
@@ -528,7 +560,7 @@ final class DbalPdo {
 		} //end try catch
 		//--
 		$time_end = 0;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$time_end = (float) (\microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -539,10 +571,10 @@ final class DbalPdo {
 			} //end foreach
 		} //end for
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+		if(\SmartEnvironment::ifDebug()) {
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
 				'type' => 'read',
 				'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::READ.MultiRecords]',
 				'query' => (string) $query,
@@ -584,7 +616,7 @@ final class DbalPdo {
 		} //end if
 		//--
 		$time_start = 0;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$time_start = \microtime(true);
 		} //end if
 		//--
@@ -600,14 +632,14 @@ final class DbalPdo {
 		} //end try catch
 		//--
 		$time_end = 0;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$time_end = (float) (\microtime(true) - (float)$time_start);
 		} //end if
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) { // use before testing row nums to register debug before exit if more than one rows
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+		if(\SmartEnvironment::ifDebug()) { // use before testing row nums to register debug before exit if more than one rows
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
 				'type' => 'read',
 				'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::READ.SingleRecord]',
 				'query' => (string) $query,
@@ -657,7 +689,7 @@ final class DbalPdo {
 		} //end if
 		//--
 		$time_start = 0;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$time_start = \microtime(true);
 		} //end if
 		//--
@@ -673,14 +705,14 @@ final class DbalPdo {
 		} //end try catch
 		//--
 		$time_end = 0;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$time_end = (float) (\microtime(true) - (float)$time_start);
 		} //end if
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+		if(\SmartEnvironment::ifDebug()) {
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
 				'type' => 'write',
 				'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::WRITE]',
 				'query' => (string) $query,
@@ -712,7 +744,7 @@ final class DbalPdo {
 		} //end if
 		//--
 		$time_start = 0;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$time_start = \microtime(true);
 		} //end if
 		//--
@@ -728,21 +760,21 @@ final class DbalPdo {
 		} //end try catch
 		//--
 		$time_end = 0;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$time_end = (float) (\microtime(true) - (float)$time_start);
 		} //end if
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
-			\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
+		if(\SmartEnvironment::ifDebug()) {
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-queries', 1, '+');
+			\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|total-time', $time_end, '+');
 			if(
-				(stripos((string)trim((string)$query), 'BEGIN') === 0) OR
-				(stripos((string)trim((string)$query), 'START TRANSACTION') === 0) OR
-				(stripos((string)trim((string)$query), 'COMMIT') === 0) OR
-				(stripos((string)trim((string)$query), 'ROLLBACK') === 0) OR
-				(stripos((string)trim((string)$query), 'ABORT') === 0)
+				(\stripos((string)\trim((string)$query), 'BEGIN') === 0) OR
+				(\stripos((string)\trim((string)$query), 'START TRANSACTION') === 0) OR
+				(\stripos((string)\trim((string)$query), 'COMMIT') === 0) OR
+				(\stripos((string)\trim((string)$query), 'ROLLBACK') === 0) OR
+				(\stripos((string)\trim((string)$query), 'ABORT') === 0)
 			) {
-				\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+				\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
 					'type' => 'transaction',
 					'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::EXECUTE.Transaction]',
 					'query' => (string) $query,
@@ -751,7 +783,7 @@ final class DbalPdo {
 					'connection' => (string) $this->connkey
 				]);
 			} else {
-				\SmartFrameworkRegistry::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
+				\SmartEnvironment::setDebugMsg('db', 'laminas-dbal/'.$this->cfg['driver'].'|log', [
 					'type' => 'sql',
 					'data' => 'Laminas-Dbal/'.$this->cfg['driver'].' [Query::EXECUTE]',
 					'query' => (string) $query,
@@ -776,7 +808,7 @@ final class DbalPdo {
 	 */
 	 public function enableProfiling() : bool {
 		//--
-		if(\SmartFrameworkRegistry::ifProdEnv()) {
+		if(\SmartEnvironment::ifDevMode() !== true) {
 			\Smart::log_warning(__METHOD__.' # The Profiling should be disabled in a Production Environment: Slow Performance');
 			return false;
 		} //end if
@@ -799,7 +831,7 @@ final class DbalPdo {
 	 */
 	public function getProfilingData() : array {
 		//--
-		if(\SmartFrameworkRegistry::ifProdEnv()) {
+		if(\SmartEnvironment::ifDevMode() !== true) {
 			\Smart::log_warning(__METHOD__.' # The Profiling should be disabled in a Production Environment: Slow Performance');
 			return [];
 		} //end if
@@ -838,7 +870,7 @@ final class DbalPdo {
 		//--
 		$def_warn = 'Execution Halted !';
 		$y_warning = (string) \trim((string)$y_warning);
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$width = 750;
 			$the_area = (string) $y_area;
 			if((string)$y_warning == '') {
@@ -864,18 +896,21 @@ final class DbalPdo {
 			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
 		} //end if else
 		//--
-		$out = (string) \SmartComponents::app_error_message(
-			'Laminas-Db Client',
-			(string) $driver,
-			'SQL/DB',
-			'Server',
-			'modules/mod-dbal-laminas/libs/img/database.svg',
-			(int)    $width, // width
-			(string) $the_area, // area
-			(string) $the_error_message, // err msg
-			(string) $the_params, // title or params
-			(string) $the_query_info // sql statement
-		);
+		$out = '';
+		if(\class_exists('\\SmartComponents')) {
+			$out = (string) \SmartComponents::app_error_message(
+				'Laminas-Db Client',
+				(string) $driver,
+				'SQL/DB',
+				'Server',
+				'modules/mod-dbal-laminas/libs/img/database.svg',
+				(int)    $width, // width
+				(string) $the_area, // area
+				(string) $the_error_message, // err msg
+				(string) $the_params, // title or params
+				(string) $the_query_info // sql statement
+			);
+		} //end if
 		//--
 		\Smart::raise_error(
 			'#Laminas-Db@'.$this->connkey.' :: Q# // '.$driver.' :: ERROR :: '.$err_log, // err to register
@@ -897,65 +932,69 @@ final class DbalPdo {
 
 
 //--
-/**
- *
- * @access 		private
- * @internal
- *
- */
-function autoload__LaminasDbal_SFM($classname) {
+if(!defined('\\SMART_MODULES_USE_VENDOR_CLASSES')) { // {{{SYNC-SMART.FRAMEWORK-MODULES-USE-VENDOR-CLASSES}}}
 	//--
-	$classname = (string) $classname;
-	//--
-	if((\strpos($classname, '\\') === false) OR (!\preg_match('/^[a-zA-Z0-9_\\\]+$/', $classname))) { // if have no namespace or not valid character set
-		return;
-	} //end if
-	//--
-	if(\strpos($classname, 'Laminas\\') === false) { // must start with this namespaces only
-		return;
-	} //end if
-	//--
-	$parts = (array) \explode('\\', $classname);
-	//--
-	$max = (int) \count($parts) - 1; // the last is the class
-	if($max < 2) {
-		return;
-	} //end if
-	//--
-	$dir = 'modules/mod-dbal-laminas/libs/Laminas/';
-	//--
-	if(((string)$parts[1] == 'Db') OR ((string)$parts[1] == 'Stdlib')) {
+	/**
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	function autoload__LaminasDbal_SFM($classname) {
 		//--
-		for($i=1; $i<$max; $i++) {
-			if((string)$parts[$i] != '') {
-				$dir .= (string) $parts[$i].'/';
-			} //end if
-		} //end for
+		$classname = (string) $classname;
 		//--
-	} else {
+		if((\strpos($classname, '\\') === false) OR (!\preg_match('/^[a-zA-Z0-9_\\\]+$/', $classname))) { // if have no namespace or not valid character set
+			return;
+		} //end if
 		//--
-		return; // module not handled by this loader
+		if(\strpos($classname, 'Laminas\\') === false) { // must start with this namespaces only
+			return;
+		} //end if
 		//--
-	} //end if
+		$parts = (array) \explode('\\', $classname);
+		//--
+		$max = (int) \count($parts) - 1; // the last is the class
+		if($max < 2) {
+			return;
+		} //end if
+		//--
+		$dir = 'modules/mod-dbal-laminas/libs/Laminas/';
+		//--
+		if(((string)$parts[1] == 'Db') OR ((string)$parts[1] == 'Stdlib')) {
+			//--
+			for($i=1; $i<$max; $i++) {
+				if((string)$parts[$i] != '') {
+					$dir .= (string) $parts[$i].'/';
+				} //end if
+			} //end for
+			//--
+		} else {
+			//--
+			return; // module not handled by this loader
+			//--
+		} //end if
+		//--
+		$dir  = (string) $dir;
+		$file = (string) $parts[(int)$max];
+		$path = (string) $dir.$file;
+		$path = (string) \str_replace(array('\\', "\0"), array('', ''), $path); // filter out null byte and backslash
+		//--
+		if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
+			return; // invalid path characters in file
+		} //end if
+		//--
+		if(!\is_file($path.'.php')) {
+			return; // file does not exists
+		} //end if
+		//--
+		require_once($path.'.php');
+		//--
+	} //END FUNCTION
 	//--
-	$dir  = (string) $dir;
-	$file = (string) $parts[(int)$max];
-	$path = (string) $dir.$file;
-	$path = (string) \str_replace(array('\\', "\0"), array('', ''), $path); // filter out null byte and backslash
+	\spl_autoload_register('\\SmartModExtLib\\DbalLaminas\\autoload__LaminasDbal_SFM', true, false); // throw / append
 	//--
-	if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
-		return; // invalid path characters in file
-	} //end if
-	//--
-	if(!\is_file($path.'.php')) {
-		return; // file does not exists
-	} //end if
-	//--
-	require_once($path.'.php');
-	//--
-} //END FUNCTION
-//--
-\spl_autoload_register('\\SmartModExtLib\\DbalLaminas\\autoload__LaminasDbal_SFM', true, false); // throw / append
+} //end if
 //--
 
 

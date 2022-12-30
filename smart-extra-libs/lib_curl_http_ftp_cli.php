@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP CURL, PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
- * @version 	v.20220910
+ * @version 	v.20221219
  * @package 	extralibs:Network
  *
  */
@@ -128,7 +128,7 @@ final class SmartCurlHttpFtpClient {
 	public function set_ssl_tls_ca_file($cafile) {
 		//--
 		$this->cafile = '';
-		if(SmartFileSysUtils::check_if_safe_path((string)$cafile) == '1') {
+		if(SmartFileSysUtils::checkIfSafePath((string)$cafile) == '1') {
 			if(SmartFileSystem::is_type_file((string)$cafile)) {
 				$this->cafile = (string) $cafile;
 			} //end if

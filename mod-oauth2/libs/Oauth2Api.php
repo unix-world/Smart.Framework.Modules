@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Class: \SmartModExtLib\Oauth2\Oauth2Api
  * Lookup in GeoIP DB
  *
- * @version 	v.20210402
+ * @version 	v.20221222
  * @package 	modules:Oauth2
  *
  */
@@ -80,7 +80,7 @@ final class Oauth2Api {
 			'client_id' 	=> (string) $data['client_id'],
 			'client_secret' => (string) $data['client_secret'],
 		];
-		$response = (array) $bw->browse_url((string)$data['url_token'], 'POST', 'tls');
+		$response = (array) $bw->browse_url((string)$data['url_token'], 'POST');
 		if(((int)$response['result'] != 1) OR (((string)$response['code'] != '200'))) {
 			return 'Invalid HTTP(S) Answer: '.(int)$response['result'].'] / Status Code: '.(string)$response['code'];
 		} //end if
@@ -206,7 +206,7 @@ final class Oauth2Api {
 			'client_id' 	=> (string) $arr['client_id'],
 			'client_secret' => (string) $arr['client_secret'],
 		];
-		$response = (array) $bw->browse_url((string)$arr['url_token'], 'POST', 'tls');
+		$response = (array) $bw->browse_url((string)$arr['url_token'], 'POST');
 		if(((int)$response['result'] != 1) OR (((string)$response['code'] != '200'))) {
 			$logs = 'Invalid HTTP(S) Answer for Refresh Access Token: '.(int)$response['result'].'] / Status Code: '.(string)$response['code'];
 			self::getDataModel()->updateRecordLogs((string)$id, (string)'# '.\date('Y-m-d H:i:s O')."\n".'# '.$logs, true);

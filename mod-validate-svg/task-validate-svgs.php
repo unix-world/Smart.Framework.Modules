@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Task Area Controller
- * @version 20220918
+ * @version 20221219
  * @ignore
  *
  * @requires define('SMART_TESTUNIT_XML_DTD_SVG_URL', 'modules/mod-validate-svg/dtd/svg11/svg11.dtd');
@@ -50,7 +50,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		if(((string)trim((string)SMART_TESTUNIT_XML_DTD_SVG_URL) == '') OR (!SmartFileSysUtils::check_if_safe_path((string)SMART_TESTUNIT_XML_DTD_SVG_URL))) {
+		if(((string)trim((string)SMART_TESTUNIT_XML_DTD_SVG_URL) == '') OR (!SmartFileSysUtils::checkIfSafePath((string)SMART_TESTUNIT_XML_DTD_SVG_URL))) {
 			$this->PageViewSetErrorStatus(500, 'ERROR: SVG DTD Validator Path is unsafe ...');
 			return;
 		} //end if

@@ -21,7 +21,7 @@ define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
  * @ignore
  *
  */
-class SmartAppIndexController extends SmartAbstractAppController { // r.20211127
+class SmartAppIndexController extends SmartAbstractAppController { // r.20221227
 
 	public function Run() {
 
@@ -53,7 +53,7 @@ class SmartAppIndexController extends SmartAbstractAppController { // r.20211127
 				break;
 			case 'mysql':
 				if(Smart::array_size(Smart::get_from_config('mysqli')) > 0) {
-					$setup = R::setup('mysqli:config');
+					$setup = R::setup('mysql:config');
 				} //end if
 				break;
 			default:

@@ -47,7 +47,6 @@ $configs['transl-repo-projects'] = [
 		'url-export' => 'https://127.0.0.1/sites/frameworks/smart-framework/admin.php?page=transl-repo.import-api',
 		'auth-user' => 'admin',
 		'auth-pass' => 'pass',
-		'ssl-mode' 	=> 'tls',
 	],
 	'Test2' => [
 		'url-import' => 'http://127.0.0.1/sites/frameworks/smart-framework/admin.php?page=transl-repo.export-api',

@@ -66,7 +66,7 @@ function autoload__RedbeanOrm_SFM($classname) {
  * use \SmartModExtLib\DbOrmRedbean\ORM as R;
  *
  * R::setup('sqlite:tmp/redbean-dbfile.sqlite'); // use a custom sqlite database with relative path to the project folder (will be stored in {project-folder}/tmp/redbean-dbfile.sqlite)
- * //R::setup('mysqli:config'); // use the values from Smart.Framework config (mysqli)
+ * //R::setup('mysql:config'); // use the values from Smart.Framework config (mysqli)
  * //R::setup('pgsql:config'); // use the values from Smart.Framework config (pgsql)
  *
  * R::freeze(false); // allow schema creation if not exists
@@ -81,8 +81,8 @@ function autoload__RedbeanOrm_SFM($classname) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @access 		PUBLIC
- * @depends 	extensions: PHP Ctype, PHP PDO ; classes: \RedbeanOrm\Db
- * @version 	v.20211127
+ * @depends 	extensions: PHP Ctype, PHP PDO ; vendor-classes: \RedbeanOrm\Db ; classes: Smart, SmartFileSysUtils, SmartEnvironment
+ * @version 	v.20221227
  * @package 	modules:Database:PDO:Redbean-ORM
  *
  */
@@ -96,7 +96,7 @@ final class ORM extends \RedBeanPHP\Facade {
 		//--
 		if(!\function_exists('\\ctype_alnum')) {
 			\Smart::raise_error(__METHOD__.'() # PHP Ctype extension is required but not found ...');
-			return;
+			return false;
 		} //end if
 		//--
 		if(self::$conexion) {
@@ -105,7 +105,7 @@ final class ORM extends \RedBeanPHP\Facade {
 		} //end if
 		//--
 		switch((string)$dsn) {
-			case 'mysqli:config':
+			case 'mysql:config':
 				$arr_cfg = \Smart::get_from_config('mysqli');
 				if(\Smart::array_size($arr_cfg) <= 0) {
 					\Smart::raise_error(__METHOD__.' The DSN not found in Smart.Framework config (mysqli): '.$dsn);
@@ -146,20 +146,43 @@ final class ORM extends \RedBeanPHP\Facade {
 					\Smart::raise_error(__METHOD__.' Empty DSN not allowed !');
 					return false;
 				} //end if
+				if(\strpos((string)$dsn, 'sqlite:') !== 0) {
+					\Smart::raise_error(__METHOD__.' Invalid DSN: `'.$dsn.'`');
+					return false;
+				} //end if
+				$the_db = (string) \trim((string)\substr((string)$dsn, 7));
+				if((string)$the_db == '') {
+					\Smart::raise_error(__METHOD__.' Empty Database Path (sqlite): '.$dsn);
+					return false;
+				} //end if
+				if(!\SmartFileSysUtils::checkIfSafePath((string)$the_db, true, true)) { // deny absolute path access ; allow protected path access (starting with #)
+					\Smart::raise_error(__METHOD__.' Unsafe Database Path (sqlite): '.$dsn);
+					return false;
+				} //end if
+				if(\Smart::array_size(\Smart::get_from_config('sqlite')) <= 0) {
+					\Smart::raise_error(__METHOD__.' The CFG not found in Smart.Framework config (sqlite): '.$dsn);
+					return false;
+				} //end if
+				if((!defined('\\SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH')) OR (!is_string(\SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH))) {
+					\Smart::raise_error(__METHOD__.' The SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH was not defined or is not valid string in Smart.Framework (sqlite)');
+					return false;
+				} //end if
 				self::$conexion = parent::setup(
-					(string) $dsn, 							// DSN
-					$username ? (string)$username : null, 	// username
-					$password ? (string)$password : null, 	// password
-					(bool) $frozen, 						// frozen
-					(bool) $partialBeans, 					// partial beans
-					(array)  $pdo_options 					// additional (PDO) options
+					(string) 'sqlite:'.\SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH.$the_db, 	// DSN
+					null, 																// username
+					null, 																// password
+					(bool) $frozen, 													// frozen
+					(bool) $partialBeans, 												// partial beans
+					(array) $pdo_options 												// additional (PDO) options
 				);
 		} //end switch
 		//--
 		if(self::$conexion) {
-			if(\SmartFrameworkRegistry::ifDebug()) {
+			if(\SmartEnvironment::ifDebug()) {
 				parent::debug(true, 1); //select mode 1 to suppress screen output
-				\SmartDebugProfiler::register_extra_debug_log((string)__CLASS__, 'registerToDebugLog');
+				if(\class_exists('\\SmartDebugProfiler')) {
+					\SmartDebugProfiler::register_extra_debug_log((string)__CLASS__, 'registerToDebugLog');
+				} //end if
 			} //end if
 		} //end if
 		//--
@@ -178,7 +201,7 @@ final class ORM extends \RedBeanPHP\Facade {
 		//--
 		// this must be called at the end
 		//--
-		if(!\SmartFrameworkRegistry::ifDebug()) {
+		if(!\SmartEnvironment::ifDebug()) {
 			return;
 		} //end if
 		//--
@@ -221,7 +244,7 @@ final class ORM extends \RedBeanPHP\Facade {
 			$i++;
 			//--
 			if((string)$query != '') {
-				\SmartFrameworkRegistry::setDebugMsg('db', 'redbean-orm|log', [
+				\SmartEnvironment::setDebugMsg('db', 'redbean-orm|log', [
 					'type' => 'sql',
 					'data' => 'Redbean-ORM [Query]',
 					'query' => (string) $query,
@@ -238,6 +261,7 @@ final class ORM extends \RedBeanPHP\Facade {
 
 
 } //END CLASS
+
 
 //=====================================================================================
 //===================================================================================== CLASS END

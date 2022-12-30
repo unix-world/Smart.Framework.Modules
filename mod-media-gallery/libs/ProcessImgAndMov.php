@@ -75,7 +75,7 @@ if(!defined('SMART_FRAMEWORK_MEDIAGALLERY_PDF_EXTRACTOR')) {
  * @internal
  *
  * @depends 	extensions: plugins: \SmartModExtLib\MediaGallery\ImgProcImagick:: OR \SmartModExtLib\MediaGallery\ImgProcGd:: ;
- * @version 	v.20210523
+ * @version 	v.20221220
  * @package 	Media:Gallery
  *
  */
@@ -149,12 +149,12 @@ final class ProcessImgAndMov { // [OK]
 		//--
 
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($y_file)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$y_file)) {
 			\Smart::log_warning(__METHOD__.' :: img_process // Unsafe Path: SRC='.$y_file);
 			return '';
 		} //end if
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($y_newfile)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$y_newfile)) {
 			\Smart::log_warning(__METHOD__.' :: img_process // Unsafe Path: DEST='.$y_newfile);
 			return '';
 		} //end if
@@ -165,7 +165,7 @@ final class ProcessImgAndMov { // [OK]
 		} //end if
 		//--
 		if((string)$y_watermark != '') {
-			if(!\SmartFileSysUtils::check_if_safe_path($y_watermark)) {
+			if(!\SmartFileSysUtils::checkIfSafePath((string)$y_watermark)) {
 				$y_watermark = '';
 				\Smart::log_warning(__METHOD__.' :: img_process // Unsafe Path: WATERMARK='.$y_watermark);
 			} //end if
@@ -260,8 +260,8 @@ final class ProcessImgAndMov { // [OK]
 		//--
 
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
-			\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
+		if(\SmartEnvironment::ifDebug()) {
+			\SmartEnvironment::setDebugMsg('extra', 'MEDIA-GALLERY', [
 				'title' => '[INFO] :: MediaUTIL/Img/Process',
 				'data' => "'".SMART_FRAMEWORK_MEDIAGALLERY_IMG_CONVERTER."'".' :: '."'".SMART_FRAMEWORK_MEDIAGALLERY_IMG_COMPOSITE."'"
 			]);
@@ -311,8 +311,8 @@ final class ProcessImgAndMov { // [OK]
 						@exec($exec, $arr_result, $exitcode);
 						//--
 						$out .= '<tr><td>[DONE]</td></tr>';
-						if(\SmartFrameworkRegistry::ifDebug()) {
-							\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
+						if(\SmartEnvironment::ifDebug()) {
+							\SmartEnvironment::setDebugMsg('extra', 'MEDIA-GALLERY', [
 								'title' => '[INFO] :: MediaUTIL/Img/Process/ImageMagick',
 								'data' => 'Runtime Result: '."'".$y_file."'".' -> '."'".$y_newfile."'".' = ['.$exitcode.'] @ '.@print_r($arr_result,1)
 							]);
@@ -327,8 +327,8 @@ final class ProcessImgAndMov { // [OK]
 						} //end if else
 						//--
 						$out .= '<tr><td>[*DONE*]</td></tr>';
-						if(\SmartFrameworkRegistry::ifDebug()) {
-							\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
+						if(\SmartEnvironment::ifDebug()) {
+							\SmartEnvironment::setDebugMsg('extra', 'MEDIA-GALLERY', [
 								'title' => '[INFO] :: MediaUTIL/Img/Process/GD',
 								'data' => 'Runtime Result: '."'".$y_file."'".' -> '."'".$y_newfile."'".' = ['.$exitcode.']'
 							]);
@@ -353,8 +353,8 @@ final class ProcessImgAndMov { // [OK]
 								@exec($exec, $arr_result, $exitcode);
 								//--
 								$out .= '<tr><td><i>[WATERMARK]</i></td></tr>';
-								if(\SmartFrameworkRegistry::ifDebug()) {
-									\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
+								if(\SmartEnvironment::ifDebug()) {
+									\SmartEnvironment::setDebugMsg('extra', 'MEDIA-GALLERY', [
 										'title' => '[INFO] :: MediaUTIL/Img/Process/Watermark/ImageMagick',
 										'data' => 'Runtime Result: '."'".$y_watermark."'".' -> '."'".$y_newfile."'".' = ['.$exitcode.'] @ '.@print_r($arr_result,1)
 									]);
@@ -365,8 +365,8 @@ final class ProcessImgAndMov { // [OK]
 								$exitcode = \SmartModExtLib\MediaGallery\ImgProcGd::apply_watermark($y_newfile, $y_watermark, $y_quality, $y_waterlocate);
 								//--
 								$out .= '<tr><td><i>[*WATERMARK*]</i></td></tr>';
-								if(\SmartFrameworkRegistry::ifDebug()) {
-									\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
+								if(\SmartEnvironment::ifDebug()) {
+									\SmartEnvironment::setDebugMsg('extra', 'MEDIA-GALLERY', [
 										'title' => '[INFO] :: MediaUTIL/Img/Process/Watermark/GD',
 										'data' => 'Runtime Result: '."'".$y_watermark."'".' -> '."'".$y_newfile."'".' = ['.$exitcode.']'
 									]);
@@ -425,7 +425,7 @@ final class ProcessImgAndMov { // [OK]
 		if((string)$y_mov_blank_img_preview == '') {
 			$y_mov_blank_img_preview = (string) $blank_mov_pw;
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($y_mov_blank_img_preview)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$y_mov_blank_img_preview)) {
 			$y_mov_blank_img_preview = (string) $blank_mov_pw;
 		} //end if
 		if(!is_file($y_mov_blank_img_preview)) {
@@ -439,12 +439,12 @@ final class ProcessImgAndMov { // [OK]
 		//--
 
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($y_mov_file)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$y_mov_file)) {
 			\Smart::log_warning(__METHOD__.' :: mov_pw_process // Unsafe Path: SRC='.$y_mov_file);
 			return '';
 		} //end if
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($y_mov_img_preview)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$y_mov_img_preview)) {
 			\Smart::log_warning(__METHOD__.' :: mov_pw_process // Unsafe Path: DEST='.$y_mov_img_preview);
 			return '';
 		} //end if
@@ -455,7 +455,7 @@ final class ProcessImgAndMov { // [OK]
 		} //end if
 		//--
 		if((string)$y_watermark != '') {
-			if(!\SmartFileSysUtils::check_if_safe_path($y_watermark)) {
+			if(!\SmartFileSysUtils::checkIfSafePath((string)$y_watermark)) {
 				$y_watermark = '';
 				\Smart::log_warning(__METHOD__.' :: mov_pw_process // Unsafe Path: WATERMARK='.$y_watermark);
 			} //end if
@@ -512,8 +512,8 @@ final class ProcessImgAndMov { // [OK]
 		//--
 
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
-			\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
+		if(\SmartEnvironment::ifDebug()) {
+			\SmartEnvironment::setDebugMsg('extra', 'MEDIA-GALLERY', [
 				'title' => '[INFO] :: MediaUTIL/Mov/Process-Preview',
 				'data' => "'".SMART_FRAMEWORK_MEDIAGALLERY_MOV_THUMBNAILER."'".' :: '."'".SMART_FRAMEWORK_MEDIAGALLERY_IMG_COMPOSITE."'"
 			]);
@@ -567,8 +567,8 @@ final class ProcessImgAndMov { // [OK]
 				} //end if
 				//--
 				$out .= '<tr><td>[DONE]</td></tr>';
-				if(\SmartFrameworkRegistry::ifDebug()) {
-					\SmartFrameworkRegistry::setDebugMsg('extra', 'MEDIA-GALLERY', [
+				if(\SmartEnvironment::ifDebug()) {
+					\SmartEnvironment::setDebugMsg('extra', 'MEDIA-GALLERY', [
 						'title' => '[INFO] :: MediaUTIL/Mov/Process-Preview/FFMpeg',
 						'data' => 'Runtime Result: '."'".$y_mov_file."'".' -> '."'".$y_mov_img_preview."'".' = ['.$exitcode.'] @ '.@print_r($arr_result,1)
 					]);

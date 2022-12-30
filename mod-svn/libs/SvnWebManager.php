@@ -23,7 +23,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SvnWebManager {
 
 	// ::
-	// v.20220730
+	// v.20221220
 
 	const MAX_FILESIZE_DISPLAY = 8388608; // 8MB
 
@@ -559,8 +559,8 @@ final class SvnWebManager {
 		} //end if
 		$expname = (string) \Smart::safe_filename((string)$repo.'.r'.$rev.$finpath);
 		$expdir = (string) 'svn-exp/'.\Smart::uuid_10_seq().'-'.\Smart::uuid_10_str().'-'.\Smart::uuid_10_num();
-		$archdir = (string) \SmartFileSysUtils::add_dir_last_slash((string)$expdir).$expname;
-		if(!\SmartFileSysUtils::check_if_safe_path($archdir)) {
+		$archdir = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$expdir).$expname;
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$archdir)) {
 			\Smart::log_warning((string)__METHOD__.' #ERR# SVN Export: Invalid Export Dir:['.$archdir.']');
 			return array();
 		} //end if
@@ -582,7 +582,7 @@ final class SvnWebManager {
 		return array(
 			'f-content' => (string) $fcontent,
 			'f-mime' 	=> (string) ($archname ? (string)$mime_type : ''), // 'application/zip'
-			'f-name' 	=> (string) ($archname ? (string)\SmartFileSysUtils::get_file_name_from_path((string)$archname) : '')
+			'f-name' 	=> (string) ($archname ? (string)\SmartFileSysUtils::extractPathFileName((string)$archname) : '')
 		);
 		//--
 	} //END FUNCTION
@@ -734,7 +734,7 @@ final class SvnWebManager {
 		$exearr = (array) \SmartUtils::run_proc_cmd((string)$cmd, null, (string)self::$svn_cache_dir); // avoid proc open in web root !!
 		if(($exearr['exitcode'] !== 0) OR ((string)$exearr['stderr'] != '')) {
 			//-- Fix: not raise error here ! in some cases when path renames going backward to select diff, props or view if path renames will have an error ; make this a nice error and do not raise fatal
-			if(\SmartFrameworkRegistry::ifDebug()) {
+			if(\SmartEnvironment::ifDebug()) {
 				\Smart::log_notice(__METHOD__.' #ERR# SVN Command:['.$cmd.'] Returned Some Errors ; ExitCode=['.$exearr['exitcode'].'] ; ErrorMsg: '.$exearr['stderr']);
 			} //end if
 			if(!\headers_sent()) {
@@ -939,14 +939,14 @@ final class SvnWebManager {
 				return '';
 		} //end switch
 		//--
-		$dir = (string) \Smart::safe_pathname((string)\SmartFileSysUtils::add_dir_last_slash((string)$dir));
-		\SmartFileSysUtils::raise_error_if_unsafe_path($dir);
-		$arch_dir = (string) \SmartFileSysUtils::add_dir_last_slash(\Smart::safe_filename((string)$archname)); // archive name dir
-		\SmartFileSysUtils::raise_error_if_unsafe_path($arch_dir);
+		$dir = (string) \Smart::safe_pathname((string)\SmartFileSysUtils::addPathTrailingSlash((string)$dir));
+		\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir);
+		$arch_dir = (string) \SmartFileSysUtils::addPathTrailingSlash((string)\Smart::safe_filename((string)$archname)); // archive name dir
+		\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$arch_dir);
 		$arch_file = (string) \Smart::safe_filename((string)$archname.'.'.$format); // archive name
-		\SmartFileSysUtils::raise_error_if_unsafe_path($arch_file);
+		\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$arch_file);
 		$fpatharch = (string) \Smart::safe_pathname((string)self::$svn_cache_dir.$dir.$arch_file);
-		\SmartFileSysUtils::raise_error_if_unsafe_path($fpatharch);
+		\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$fpatharch);
 		//--
 		$cmdarch = '';
 		switch((string)$format) { // {{{SYNC-SVN-EXP-ARCHS}}}
@@ -1102,7 +1102,7 @@ final class SvnWebManager {
 		//--
 		$dir_name = (string) \rtrim((string)$dir_name, '/'); // remove any trailing slashes
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($dir_name)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dir_name)) {
 			\Smart::log_warning(__METHOD__.'() // FAILED to delete a directory with unsafe path (1): '.$dir_name);
 			return false;
 		} //end if
@@ -1115,7 +1115,7 @@ final class SvnWebManager {
 		//--
 		$dir_name = (string) $dir_name.'/'; // add trailing slash (previous trailing slashes were removed above)
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($dir_name)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dir_name)) {
 			\Smart::log_warning(__METHOD__.'() // FAILED to delete a directory with unsafe path (2): '.$dir_name);
 			return false;
 		} //end if

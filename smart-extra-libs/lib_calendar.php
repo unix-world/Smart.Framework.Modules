@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200121
+ * @version 	v.20221220
  * @package 	extralibs:ViewComponents
  *
  */
@@ -118,10 +118,10 @@ final class SmartCalendarComponent {
 		//--
 		if(Smart::array_size($y_events_arr) > 0) {
 			for($i=0; $i<count($y_events_arr); $i++) {
-				if($y_events_arr[$i]['date-end'] === false) {
+				if(($y_events_arr[$i]['date-end'] ?? null) === false) {
 					$calendar->addDayEvent((string)$y_events_arr[$i]['event-html'], date('Y-m-d', @strtotime((string)$y_events_arr[$i]['date-start'])), false);
 				} else {
-					$calendar->addDayEvent((string)$y_events_arr[$i]['event-html'], date('Y-m-d', @strtotime((string)$y_events_arr[$i]['date-start'])), date('Y-m-d', @strtotime((string)$y_events_arr[$i]['date-end'])));
+					$calendar->addDayEvent((string)$y_events_arr[$i]['event-html'], date('Y-m-d', @strtotime((string)$y_events_arr[$i]['date-start'])), date('Y-m-d', @strtotime((string)($y_events_arr[$i]['date-end'] ?? null))));
 				} //end if else
 			} //end for
 		} //end if
@@ -154,7 +154,7 @@ final class SmartCalendarComponent {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200121
+ * @version 	v.20221220
  * @package 	Plugins:ViewComponents
  *
  */
@@ -441,7 +441,7 @@ final class SmartHTMLCalendar {
 			if((string)$dayname != '') {
 				$out .= '&nbsp;'.Smart::escape_html($dayname);
 			} //end if
-			if((string)$this->extra_day_txt_arr[$i] != '') {
+			if((string)($this->extra_day_txt_arr[$i] ?? null) != '') {
 				$out .= '&nbsp;'.$this->extra_day_txt_arr[$i];
 			} //end if
 			$out .= '</div>';
@@ -453,7 +453,7 @@ final class SmartHTMLCalendar {
 			//--
 			if(is_array($dHtml_arr)) {
 				foreach($dHtml_arr as $eid => $dHtml) {
-					$out .= '<div class="SCalendarEvent" id="SCalendarEvent" title="'.$this->extra_info_txt_arr[$eid].'" >'.$dHtml.'</div>';
+					$out .= '<div class="SCalendarEvent" id="SCalendarEvent" title="'.($this->extra_info_txt_arr[$eid] ?? null).'" >'.$dHtml.'</div>';
 				} //end foreach
 			} //end if
 			//--

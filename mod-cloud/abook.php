@@ -54,14 +54,14 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmCardDa
 		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--
 		$safe_user_dir = (string) Smart::safe_username(SmartAuth::get_login_id());
-		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$safe_user_dir) != '1')) {
+		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::checkIfSafeFileOrDirName((string)$safe_user_dir) != '1')) {
 			http_response_code(500);
 			echo SmartComponents::http_message_500_internalerror('ERROR: CardDAV Unsafe User Dir ...');
 			return;
 		} //end if
 		//--
 		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/carddav';
-		if(SmartFileSysUtils::check_if_safe_path((string)$safe_user_path) != '1') {
+		if(SmartFileSysUtils::checkIfSafePath((string)$safe_user_path) != '1') {
 			http_response_code(500);
 			echo SmartComponents::http_message_500_internalerror('ERROR: CardDAV Unsafe User Path ...');
 			return;

@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Task Area Controller
- * @version 20220906
+ * @version 20221220
  * @package Application
  */
 final class SmartAppTaskController extends SmartAbstractAppController {
@@ -1417,7 +1417,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 		//--
 		$hl = (new \SmartModExtLib\HighlightSyntax\Highlighter())->highlight('php', (string)'<'.'?php'."\n\n".' '.trim((string)$code)."\n\n".'// #end php code'."\n");
 		//--
-		return (string) SmartUtils::comment_php_code((string)trim((string)$hl->value));
+		return (string) Smart::commentOutPhpCode((string)trim((string)$hl->value));
 		//--
 	} //END FUNCTION
 
@@ -1439,7 +1439,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 			@ini_set((string)$key, $val); // set custom to INI for custom render
 		} //end for
 		//-- render
-		$code = (string) highlight_string((string)'<'.'?php'."\n\n".SmartUtils::comment_php_code(trim((string)$code), [])."\n\n".'// #end php code'."\n", true);
+		$code = (string) highlight_string((string)'<'.'?php'."\n\n".Smart::commentOutPhpCode((string)trim((string)$code), [])."\n\n".'// #end php code'."\n", true);
 		$code = (new SmartHtmlParser((string)$code, true, 'any:required:dom', false))->get_clean_html(false); // fix XHTML Tags and deliver clean HTML ; use tidy if available
 		//-- restore render settings to INI
 		foreach($arr_highlight_default as $key => $val) {
@@ -1456,7 +1456,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 
 /**
  * Admin Area Controller
- * @version 20220906
+ * @version 20221220
  * @package Application
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
@@ -1478,7 +1478,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 /**
  * Index Area Controller
- * @version 20220906
+ * @version 20221220
  * @package Application
  */
 final class SmartAppIndexController extends SmartAbstractAppController {

@@ -38,6 +38,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$edit = (string) $this->RequestVarGet('edit', '', 'string');
 		$import = (string) $this->RequestVarGet('import', '', 'string');
 
+		$textdoc_data = null;
+
 		if((string)$import == 'yes') {
 
 			$this->PageViewSetVars([
@@ -81,7 +83,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$sq_rd = (array) $model->getOneByUuid($uuid);
 			$new_data = (string) Smart::json_encode([ 'data' => [ 'paperSize' => 'A4', 'textDoc' => '' ]]);
 		} //end if else
-		$old_data = (string) SmartUtils::data_unarchive((string)$sq_rd['saved_data']);
+		$old_data = (string) SmartUtils::data_unarchive((string)($sq_rd['saved_data'] ?? null));
 		if($old_data) {
 			$old_data = Smart::json_decode((string)$old_data); // mixed
 		} //end if
@@ -92,7 +94,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 
 		$isnew = false;
-		$sq_rd['uuid'] = (string) trim((string)$sq_rd['uuid']);
+		$sq_rd['uuid'] = (string) trim((string)($sq_rd['uuid'] ?? null));
 		if((string)$sq_rd['uuid'] == '') {
 			$sq_rd['uuid'] = (string) $uuid;
 			if((string)$sq_rd['uuid'] == '') {
@@ -139,11 +141,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				'VIEWS-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
 				'OP-MODE' 		=> (string) $opmode,
 				'JSON-DATA'		=> (string) $old_data,
-				'UUID' 			=> (string) $sq_rd['uuid'],
-				'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled TextDocument',
-				'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
-				'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
-				'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-'
+				'UUID' 			=> (string) ($sq_rd['uuid'] ?? null),
+				'TITLE'			=> (string) ($sq_rd['title'] ?? 'Untitled TextDocument'),
+				'DATE' 			=> (string) ($sq_rd['dtime'] ?? '-'),
+				'DTIME' 		=> (string) isset($sq_rd['dtime']) ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
+				'AUTHOR' 		=> (string) ($sq_rd['user'] ?? '-'),
 			];
 		} else { // read
 			$arr_markers = [
@@ -153,20 +155,20 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					(string) $this->ControllerGetParam('module-view-path').'partials/reader-ifrm.htm', // the view
 					[
 						'CHARSET' 					=> (string) $this->ControllerGetParam('charset'),
-						'TITLE' 					=> (string) 'Textdoc :: '.$sq_rd['dtime'].' @ '.$sq_rd['user'].' / '.$sq_rd['uuid'],
+						'TITLE' 					=> (string) 'Textdoc :: '.($sq_rd['dtime'] ?? null).' @ '.($sq_rd['user'] ?? null).' / '.($sq_rd['uuid'] ?? null),
 						'HTML-STYLES-BASE' 			=> (string) '<style>'."\n".SmartComponents::app_default_css()."\n".'</style>',
 						'HTML-STYLES-DOC-ELEMENTS' 	=> (string) $rd_extstyles.SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-print-styles.css')."\n\n".SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-table-styles.css')."\n\n".SmartFileSystem::read('modules/mod-wflow-components/views/texteditor/plugins/summernote-pagebreak.css'),
 						'HTML-STYLE-CLASS' 			=> (string) 'note-printable',
-						'HTML-DOC-DATA' 			=> (string) $old_doc_data['textDoc']
+						'HTML-DOC-DATA' 			=> (string) ($old_doc_data['textDoc'] ?? null),
 					]
 				),
 				'DOC-W' 		=> (string) $rd_width,
 				'JSON-DATA'		=> (string) $old_data,
-				'UUID' 			=> (string) $sq_rd['uuid'],
-				'TITLE'			=> (string) $sq_rd['title'] ? $sq_rd['title'] : 'Untitled TextDocument',
-				'DATE' 			=> (string) $sq_rd['dtime'] ? $sq_rd['dtime'] : '-',
-				'DTIME' 		=> (string) $sq_rd['dtime'] ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
-				'AUTHOR' 		=> (string) $sq_rd['user'] ? $sq_rd['user'] : '-'
+				'UUID' 			=> (string) ($sq_rd['uuid'] ?? null),
+				'TITLE'			=> (string) ($sq_rd['title'] ?? 'Untitled TextDocument'),
+				'DATE' 			=> (string) ($sq_rd['dtime'] ?? '-'),
+				'DTIME' 		=> (string) isset($sq_rd['dtime']) ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
+				'AUTHOR' 		=> (string) ($sq_rd['user'] ?? '-'),
 			];
 		} //end if else
 

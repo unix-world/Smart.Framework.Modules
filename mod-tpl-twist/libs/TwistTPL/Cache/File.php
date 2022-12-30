@@ -95,7 +95,7 @@ final class File extends \TwistTPL\AbstractCache {
 			return null;
 		} //end if
 		//--
-		$value = (string) \file_get_contents((string)$cacheFile);
+		$value = (string) \file_get_contents((string)$cacheFile, false);
 		if((string)$value == '') {
 			\trigger_error('#'.__METHOD__.'.WARNING# Failed to Read the Cache File: `'.$cacheFile.'`', \E_USER_WARNING);
 			return null;

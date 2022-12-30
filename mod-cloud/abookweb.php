@@ -45,13 +45,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--
 		$safe_user_dir = (string) Smart::safe_username(SmartAuth::get_login_id());
-		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$safe_user_dir) != '1')) {
+		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::checkIfSafeFileOrDirName((string)$safe_user_dir) != '1')) {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebAddressbook Unsafe User Dir ...');
 			return;
 		} //end if
 		//--
 		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/carddav';
-		if(SmartFileSysUtils::check_if_safe_path((string)$safe_user_path) != '1') {
+		if(SmartFileSysUtils::checkIfSafePath((string)$safe_user_path) != '1') {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebAddressbook Unsafe User Path ...');
 			return;
 		} //end if
@@ -77,7 +77,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('rawpage', true);
 				//--
-				$arr_mime = SmartFileSysUtils::mime_eval('addressbook-'.$safe_user_dir.'-'.$abook_addressbook.'-'.time().'.vcf', 'inline');
+				$arr_mime = (array) SmartFileSysUtils::getArrMimeType('addressbook-'.$safe_user_dir.'-'.$abook_addressbook.'-'.time().'.vcf', 'inline');
 				//--
 				$this->PageViewSetCfg('rawmime', (string)$arr_mime[0]);
 				$this->PageViewSetCfg('rawdisp', (string)$arr_mime[1]);
@@ -142,8 +142,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			default:
 				//--
-				$abook_dir = (string) \SmartFileSysUtils::add_dir_last_slash((string)$safe_user_path).'addressbooks/'.$safe_user_dir;
-				if(SmartFileSysUtils::check_if_safe_path((string)$abook_dir) != '1') {
+				$abook_dir = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$safe_user_path).'addressbooks/'.$safe_user_dir;
+				if(SmartFileSysUtils::checkIfSafePath((string)$abook_dir) != '1') {
 					$this->PageViewSetErrorStatus(500, 'ERROR: Invalid Addressbooks Path Access for: '.$safe_user_dir);
 					return;
 				} //end if
@@ -233,9 +233,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return false;
 		} //end if
 		//--
-		$abook_dir = (string) \SmartFileSysUtils::add_dir_last_slash((string)$safe_user_path).'addressbooks/'.$safe_user_dir.'/'.$abook_addressbook;
+		$abook_dir = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$safe_user_path).'addressbooks/'.$safe_user_dir.'/'.$abook_addressbook;
 		//--
-		if(SmartFileSysUtils::check_if_safe_path((string)$abook_dir) != '1') {
+		if(SmartFileSysUtils::checkIfSafePath((string)$abook_dir) != '1') {
 			return false;
 		} //end if
 		//--
@@ -248,14 +248,14 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(Smart::array_size($files_n_dirs) > 0) {
 			for($i=0; $i<Smart::array_size($files_n_dirs); $i++) {
 				if(((string)trim((string)$files_n_dirs[$i]) != '') AND ((string)substr((string)$files_n_dirs[$i], -4, 4) == '.vcf')) {
-					$abook_cfile = (string) \SmartFileSysUtils::add_dir_last_slash($abook_dir).$files_n_dirs[$i];
-					if(SmartFileSysUtils::check_if_safe_path((string)$abook_cfile) == '1') {
+					$abook_cfile = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$abook_dir).$files_n_dirs[$i];
+					if(SmartFileSysUtils::checkIfSafePath((string)$abook_cfile) == '1') {
 						if(SmartFileSystem::is_type_file((string)$abook_cfile)) {
 							$abook_cfdata = (string) SmartFileSystem::read((string)$abook_cfile);
 							$abook_cfdata = (string) trim((string)$abook_cfdata);
 							if((string)$abook_cfdata != '') {
 							//	if(strpos((string)$abook_cfdata, "\n".'UUID:') === false) {
-							//		$abook_cfdata = str_replace("\n".'END:VCARD', "\n".'UUID:'.trim((string)SmartFileSysUtils::get_file_name_from_path((string)$abook_cfile))."\n".'END:VCARD';
+							//		$abook_cfdata = str_replace("\n".'END:VCARD', "\n".'UUID:'.trim((string)SmartFileSysUtils::extractPathFileName((string)$abook_cfile))."\n".'END:VCARD';
 							//	} //end if
 								$vcf_out .= (string) $abook_cfdata."\n";
 							} //end if

@@ -102,7 +102,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$browser->postvars = [
 			'json' => (string) Smart::json_encode((new SmartModDataModel\TranslRepo\PgTranslRepoTranslations)->getAll($lang, $proj))
 		];
-		$data = (array) $browser->browse_url((string)$cfgs_projs[(string)$proj]['url-export'], 'POST', (string)$cfgs_projs[(string)$proj]['ssl-mode'], (string)$cfgs_projs[(string)$proj]['auth-user'], (string)$cfgs_projs[(string)$proj]['auth-pass']);
+		$data = (array) $browser->browse_url((string)$cfgs_projs[(string)$proj]['url-export'], 'POST', '', (string)$cfgs_projs[(string)$proj]['auth-user'], (string)$cfgs_projs[(string)$proj]['auth-pass']);
 		//--
 		if(((string)$data['result'] != 1) OR ((string)$data['code'] != 200)) {
 			$this->jsonAnswer('URL Failed: Invalid Status Code: '.$data['code']);

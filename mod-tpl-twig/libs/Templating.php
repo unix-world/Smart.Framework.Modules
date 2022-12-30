@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype (optional) ; classes: \SmartModExtLib\Tpl\AbstractTemplating, \SmartModExtLib\TplTwig\SmartTwigEnvironment, \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20221208
+ * @version 	v.20221220
  * @package 	modules:TemplatingEngine
  *
  */
@@ -86,7 +86,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		//--
 		$the_twig_cache_dir = (string) $this->twig->smartSetupCacheDir();
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			//--
 			$this->twprof = new \Twig\Profiler\Profile('main', \Twig\Profiler\Profile::ROOT, 'Twig-TPL.View');
 			$this->twig->addExtension(new \Twig\Extension\ProfilerExtension($this->twprof));
@@ -121,7 +121,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 	 */
 	public function getDebugInfo(?string $tpl) : string {
 		//--
-		if(!\SmartFrameworkRegistry::ifDebug()) {
+		if(!\SmartEnvironment::ifDebug()) {
 			return '';
 		} //end if
 		//--
@@ -259,7 +259,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		if($onlydebug !== true) {
 			$onlydebug = false;
 		} //end else
-		if(!\SmartFrameworkRegistry::ifDebug()) {
+		if(!\SmartEnvironment::ifDebug()) {
 			$onlydebug = false;
 		} //end if
 		//--
@@ -273,43 +273,43 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			throw new \Exception('Twig Templating / Render File / The file name is Empty');
 			return;
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$file)) {
 			throw new \Exception('Twig Templating / Render File / Invalid file Path');
 			return;
 		} //end if
 		//--
 		$invalid_dir = 'modules/mod-tpl-twig/views/INVALID-PATH'; // this path cannot be empty as templates cannot be located in the app's root !!!
 		//--
-		$dir_of_tpl = (string) \Smart::dir_name($file);
+		$dir_of_tpl = (string) \Smart::dir_name((string)$file);
 		if((string)$dir_of_tpl != '') {
-			if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
+			if(!\SmartFileSysUtils::checkIfSafePath((string)$dir_of_tpl)) {
 				$dir_of_tpl = (string) $invalid_dir; // fix if unsafe
 			} //end if
-			$dir_of_tpl = (string) \SmartFileSysUtils::add_dir_last_slash((string)$dir_of_tpl);
-			if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
+			$dir_of_tpl = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$dir_of_tpl);
+			if(!\SmartFileSysUtils::checkIfSafePath((string)$dir_of_tpl)) {
 				$dir_of_tpl = (string) $invalid_dir.'/'; // fix if unsafe
 			} //end if
 		} else {
 			$dir_of_tpl = (string) $invalid_dir.'/'; // fix if empty
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dir_of_tpl)) {
 			throw new \Exception('Twig Templating / Render File / Invalid tpl Path');
 			return;
 		} //end if
 		//--
 		$arr_vars[(string)$this->getTplPathVar().'__'] = (string) $dir_of_tpl;
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$file)) {
 			throw new \Exception('Twig Templating / Render File / The file name / path contains invalid characters: '.$file);
 			return;
 		} //end if
 		//--
-		if(!\is_file($file)) {
+		if(!\is_file((string)$file)) {
 			throw new \Exception('Twig Templating / The Template file to render does not exists: '.$file);
 			return;
 		} //end if
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$bench = \microtime(true);
 			$tpl = (object) $this->twig->load((string)$file);
 			$out = (string) $tpl->render((array)$arr_vars);
@@ -318,7 +318,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 				return (array) $this->twig->smartDebugGetLoadedTemplates('get');
 			} else {
 				$dbgarr = (array) $this->twig->smartDebugGetLoadedTemplates('set');
-				\SmartFrameworkRegistry::setDebugMsg('extra', 'TWIG-TEMPLATING', [
+				\SmartEnvironment::setDebugMsg('extra', 'TWIG-TEMPLATING', [
 					'title' => '[TPL-Parsing:Render.DONE] :: Twig-TPL / Processing ; Time = '.$bench.' sec.',
 					'data' => 'TPL Rendered Files: '.\Smart::array_size($dbgarr['sub-tpls']).' ; TPL Variables: '.\Smart::array_size($dbgarr['tpl-vars'])
 				]);

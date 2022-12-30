@@ -1,5 +1,11 @@
 Changelog
 
+5.7.3 + upd.2022-11-12
+Fix deprecation warnings PHP 8.2.
+Relax type restrictions in R::count().
+
+
+
 Every six months a new version of RedBeanPHP is released. Here you find the changes in each revision starting from version 4.0. You can download the latest RedBeanPHP from the Download Page
 RedBeanPHP 5.4 (1 October 2019, St. Nicholas Edition)
 

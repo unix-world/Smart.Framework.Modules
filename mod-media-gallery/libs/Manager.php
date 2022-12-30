@@ -38,7 +38,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP GD Extension (w. TrueColor support) ; optional executables: imageMagick Utility (can replace PHP GD), FFMpeg (for movies), Pdf2HtmlEx (for PDF) ; classes: Smart, SmartUtils, SmartFileSystem
- * @version 	v.20210428
+ * @version 	v.20221220
  * @package 	modules:ViewComponents
  *
  */
@@ -162,12 +162,12 @@ public function draw($y_title, $y_dir, $y_process_previews_and_images='no', $y_r
 	//--
 
 	//--
-	if(!\SmartFileSysUtils::check_if_safe_path($y_dir)) {
+	if(!\SmartFileSysUtils::checkIfSafePath((string)$y_dir)) {
 		return '<h1>ERROR: Invalid Folder for Media Gallery ...</h1>';
 	} //end if
 	//--
-	$y_dir = \SmartFileSysUtils::add_dir_last_slash($y_dir);
-	\SmartFileSysUtils::raise_error_if_unsafe_path($y_dir);
+	$y_dir = \SmartFileSysUtils::addPathTrailingSlash((string)$y_dir);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_dir);
 	//--
 	if(!is_dir($y_dir)) {
 		return '<h1>WARNING: The Folder for Media Gallery does not exists ...</h1>';
@@ -204,23 +204,23 @@ public function draw($y_title, $y_dir, $y_process_previews_and_images='no', $y_r
 	for($i=0; $i<\Smart::array_size($all_mg_files); $i++) {
 		//--
 		$file = (string) $all_mg_files[$i];
-		$ext = strtolower(\SmartFileSysUtils::get_file_extension_from_path($file));
+		$ext = strtolower(\SmartFileSysUtils::extractPathFileExtension((string)$file));
 		//--
 		if((substr($file, 0, 1) != '.') AND (strpos($file, '.#') === false) AND (strpos($file, '#.') === false)) {
 			//--
 			if((is_file($y_dir.$file)) AND (((string)$ext == 'jpeg') OR ((string)$ext == 'jpg') OR ((string)$ext == 'gif') OR ((string)$ext == 'png'))) {
 				//--
-				if(\SmartFileSysUtils::version_check($file, 'mg-preview')) {
+				if(\SmartFileSysUtils::fnameVersionCheck((string)$file, 'mg-preview')) {
 					//-- it is an image preview file
-					if(!is_file($y_dir.\SmartFileSysUtils::version_add($file, 'mg-image'))) {
+					if(!is_file($y_dir.\SmartFileSysUtils::fnameVersionAdd((string)$file, 'mg-image'))) {
 						\SmartFileSystem::delete($y_dir.$file); // remove preview if orphan
 					} //end if
 					//--
-				} elseif(\SmartFileSysUtils::version_check($file, 'mg-image')) {
+				} elseif(\SmartFileSysUtils::fnameVersionCheck((string)$file, 'mg-image')) {
 					//-- it is an image file
 					if((string)$y_process_previews_and_images == 'yes') {
 						//--
-						$tmp_file = $y_dir.\SmartFileSysUtils::version_add($file, 'mg-preview');
+						$tmp_file = $y_dir.\SmartFileSysUtils::fnameVersionAdd((string)$file, 'mg-preview');
 						//--
 						if(!is_file($tmp_file)) {
 							//--
@@ -234,11 +234,11 @@ public function draw($y_title, $y_dir, $y_process_previews_and_images='no', $y_r
 					$arr_files[] = $file;
 					$this->gallery_items += 1;
 					//--
-				} elseif(\SmartFileSysUtils::version_check($file, 'mg-vpreview')) {
+				} elseif(\SmartFileSysUtils::fnameVersionCheck((string)$file, 'mg-vpreview')) {
 					//-- it is a movie preview file
 					if(stripos($file, '.#tmp-preview#.jpg') === false) {
 						//--
-						$tmp_linkback_file = \SmartFileSysUtils::get_noext_file_name_from_path(\SmartFileSysUtils::version_remove($file));
+						$tmp_linkback_file = \SmartFileSysUtils::extractPathFileNoExtName((string)\SmartFileSysUtils::fnameVersionClear((string)$file));
 						//--
 						if(!is_file($y_dir.$tmp_linkback_file)) {
 							\SmartFileSystem::delete($y_dir.$file); // remove if orphan
@@ -250,7 +250,7 @@ public function draw($y_title, $y_dir, $y_process_previews_and_images='no', $y_r
 					//--
 					if((string)$y_process_previews_and_images == 'yes') {
 						//--
-						$tmp_file = (string) $y_dir.\SmartFileSysUtils::version_add($file, 'mg-image');
+						$tmp_file = (string) $y_dir.\SmartFileSysUtils::fnameVersionAdd((string)$file, 'mg-image');
 						//--
 						if(!is_file($tmp_file)) {
 							//--
@@ -281,7 +281,7 @@ public function draw($y_title, $y_dir, $y_process_previews_and_images='no', $y_r
 				//-- process preview FLV / MOV ...
 				if((string)$y_process_previews_and_images == 'yes') {
 					//--
-					$tmp_file = (string) $y_dir.\SmartFileSysUtils::version_add($file, 'mg-vpreview').'.jpg';
+					$tmp_file = (string) $y_dir.\SmartFileSysUtils::fnameVersionAdd((string)$file, 'mg-vpreview').'.jpg';
 					//--
 					if(!is_file($tmp_file)) {
 						//--
@@ -330,7 +330,7 @@ public function draw($y_title, $y_dir, $y_process_previews_and_images='no', $y_r
 		//--
 		for($i=0; $i<$max_loops; $i++) {
 			//--
-			$tmp_the_ext = strtolower(\SmartFileSysUtils::get_file_extension_from_path($arr_files[$i])); // [OK]
+			$tmp_the_ext = strtolower(\SmartFileSysUtils::extractPathFileExtension((string)$arr_files[$i])); // [OK]
 			//--
 			if(((string)$tmp_the_ext == 'webm') OR ((string)$tmp_the_ext == 'ogv') OR ((string)$tmp_the_ext == 'mp4') OR ((string)$tmp_the_ext == 'mov') OR ((string)$tmp_the_ext == 'flv')) {
 				$out_arr[] = $this->mov_draw_box($y_dir, $arr_files[$i], $tmp_the_ext);
@@ -369,7 +369,7 @@ public function draw($y_title, $y_dir, $y_process_previews_and_images='no', $y_r
 	//--
 
 	//--
-	if(!\SmartFrameworkRegistry::ifDebug()) {
+	if(!\SmartEnvironment::ifDebug()) {
 		if($processed > 0) {
 			$out = '<img src="'.$this->pict_reloading.'" alt="[Reloading Page ...]" title="[Reloading Page ...]"><script type="text/javascript">setTimeout(function(){ self.location = self.location; }, 2000);</script>'.'<br><hr><br>'.$out;
 			if(!defined('SMART_FRAMEWORK__MEDIA_GALLERY_IS_PROCESSING')) {
@@ -393,8 +393,8 @@ public function draw($y_title, $y_dir, $y_process_previews_and_images='no', $y_r
 //===================================================================== [OK]
 private function standardize_title($y_file_name) {
 	//--
-	$y_file_name = \SmartFileSysUtils::version_remove($y_file_name);
-	$y_file_name = strtolower(\SmartFileSysUtils::get_noext_file_name_from_path($y_file_name));
+	$y_file_name = \SmartFileSysUtils::fnameVersionClear((string)$y_file_name);
+	$y_file_name = strtolower(\SmartFileSysUtils::extractPathFileNoExtName((string)$y_file_name));
 	//--
 	return str_replace(array('_', '-', '  '), array(' ', ' ', ' '), (string)ucfirst((string)$y_file_name));
 	//--
@@ -446,7 +446,7 @@ private function img_draw_box($y_dir, $y_big_img_file) {
 	//--
 	$description = (string) \Smart::escape_html($this->standardize_title($y_big_img_file));
 	//--
-	$base_preview = (string) \SmartFileSysUtils::version_add($y_big_img_file, 'mg-preview'); // req. for deletion
+	$base_preview = (string) \SmartFileSysUtils::fnameVersionAdd((string)$y_big_img_file, 'mg-preview'); // req. for deletion
 	//--
 	$image_preview = $y_dir.$base_preview;
 	$image_big = $y_dir.$y_big_img_file;
@@ -530,7 +530,7 @@ private function mov_draw_box($y_dir, $y_video_file, $y_type) {
 	//--
 
 	//--
-	$base_preview = (string) \SmartFileSysUtils::version_add($y_video_file, 'mg-vpreview').'.jpg';
+	$base_preview = (string) \SmartFileSysUtils::fnameVersionAdd((string)$y_video_file, 'mg-vpreview').'.jpg';
 	$preview_file = $y_dir.$base_preview;
 	$video_file = $y_dir.$y_video_file;
 	//--

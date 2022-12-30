@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20220331
+ * @version 	v.20221225
  * @package 	Documentor
  *
  */
@@ -49,7 +49,7 @@ final class SmartClasses {
 	// ::
 
 
-	const DOCGENERATOR_VERSION = '20220331';
+	const DOCGENERATOR_VERSION = '20221222';
 
 
 	public static function getJavascriptSfFile() {
@@ -87,79 +87,100 @@ final class SmartClasses {
 
 	public static function listPhpSfClasses() {
 		//--
-		return [
-			//--
-			'\\SmartFrameworkSecurity',
-			'\\SmartFrameworkRegistry',
+		return [ // {{{SYNC-SMART-FRAMEWORK-LIBS-ORDER}}}
+			//-- framework
 			'\\SmartUnicode',
+			'\\SmartEnvironment',
+			'\\SmartFrameworkSecurity',
 			'\\Smart',
-			'\\SmartHashCrypto',
-			'\\SmartCipherCrypto',
 			'\\SmartFileSysUtils',
-			'\\SmartFileSystem',
-			'\\SmartGetFileSystem',
-			'\\SmartHttpUtils',
-			'\\SmartHttpClient',
-			'\\SmartAuth',
-			'\\SmartParser',
-			'\\SmartValidator',
-			'\\SmartUtils',
 			'\\SmartCache',
 			'\\SmartAbstractPersistentCache', // dev
 			'\\SmartPersistentCache',
+			'\\SmartHashCrypto',
+			'\\SmartCipherCrypto',
+		//	'\\SmartCryptoCipherBlowfishCBC',
+		//	'\\SmartCryptoOpenSSLCipher',
+		//	'\\SmartCryptoCipherHash',
+			'\\SmartDhKx',
 			'\\SmartMarkersTemplating',
-			//--
-			'\\SmartInterfaceAdapterTextTranslations', // dev
-		//	'\\SmartAdapterTextTranslations', // custom
-			'\\SmartTextTranslator',
-			'\\SmartTextTranslations',
-			'\\SmartComponents',
-		//	'\\SmartFrameworkRuntime', // internal only
-		//	'\\SmartDebugProfiler', // internal only
-			//--
-			'\\SmartAbstractAppController', // dev
-			'\\SmartAppIndexController',
-			'\\SmartAppAdminController',
-			'\\SmartAppTaskController',
-			//--
-		//	'\\SmartAppBootstrap', // internal only
-			'\\SmartAppInfo',
-			//--
-			'\\SmartPunycode',
-			'\\SmartRobot',
-			'\\SmartMailerUtils',
-			'\\SmartMailerMimeDecode',
-			'\\SmartMailerMimeParser',
-			'\\SmartMailerSend',
-			'\\SmartMailerSmtpClient',
-			'\\SmartMailerImap4Client',
-			'\\SmartMailerPop3Client',
+			'\\SmartValidator',
+			'\\SmartParser',
+			'\\SmartHttpUtils',
+			'\\SmartHttpClient',
+			'\\SmartAuth',
+			//-- framework plugins
 			'\\SmartYamlConverter',
+		//	'\\SmartDomUtils',
 			'\\SmartXmlParser',
 			'\\SmartXmlComposer',
 			'\\SmartHtmlParser',
 			'\\SmartMarkdownToHTML',
+			'\\SmartPunycode',
 			'\\SmartDetectImages',
-			'\\SmartImageGdProcess',
-			'\\SmartCaptcha',
-			'\\SmartAsciiCaptcha',
-			'\\SmartSVGCaptcha',
-			'\\SmartQR2DBarcode',
-			'\\SmartViewHtmlHelpers',
+			'\\SmartMailerSmtpClient',
+			'\\SmartMailerSend',
+			'\\SmartMailerImap4Client',
+			'\\SmartMailerPop3Client',
+		//	'\\SmartMailerNotes',
+		//	'\\SmartMailerMimeExtract',
+			'\\SmartMailerMimeDecode',
 			'\\SmartRedisDb',
-			'\\SmartSQliteDb',
-			'\\SmartDbaUtilDb',
-			'\\SmartDbaDb',
-			'\\SmartMysqliDb',
-			'\\SmartMysqliExtDb',
+			'\\SmartMongoDb',
 			'\\SmartPgsqlDb',
 			'\\SmartPgsqlExtDb',
-			'\\SmartMongoDb',
+			'\\SmartMysqliDb',
+			'\\SmartMysqliExtDb',
+		//	'\\SmartRedisPersistentCache',
+		//	'\\SmartMongoDbPersistentCache',
+			'\\SmartSpreadSheetExport',
+			'\\SmartSpreadSheetImport',
+			'\\SmartQR2DBarcode',
+			'\\SmartAsciiCaptcha',
+			'\\SmartImageGdProcess',
+			//-- registry
+			'\\SmartFrameworkRegistry',
+			//-- core file sys
+			'\\SmartFileSystem',
+			'\\SmartGetFileSystem',
+			//-- core utils
+			'\\SmartUtils',
+			//-- translations
+			'\\SmartInterfaceAdapterTextTranslations', // dev
+		//	'\\SmartAdapterTextTranslations', // custom
+			'\\SmartTextTranslator',
+			'\\SmartTextTranslations',
+			//-- components
+			'\\SmartComponents',
+			//-- runtime
+		//	'\\SmartFrameworkRuntime', // internal only
+			//-- profiler
+		//	'\\SmartDebugProfiler', // internal only
+			//-- controller
+			'\\SmartAbstractAppController', // dev
+			'\\SmartAppIndexController',
+			'\\SmartAppAdminController',
+			'\\SmartAppTaskController',
+			//-- app management
+		//	'\\SmartAppBootstrap', // internal only
+			'\\SmartAppInfo',
+			//-- app plugins
+			'\\SmartRobot',
+			'\\SmartMailerMimeParser',
+			'\\SmartMailerUtils',
+			'\\SmartDbaUtilDb',
+			'\\SmartDbaDb',
+		//	'\\SmartSQliteFunctions',
+		//	'\\SmartSQliteUtilDb',
+			'\\SmartSQliteDb',
+		//	'\\SmartDbaPersistentCache',
+		//	'\\SmartSQlitePersistentCache',
 			'\\SmartAbstractCustomSession', // dev
 			'\\SmartSession',
 		//	'\\SmartCustomSession', // custom: require_once('lib/app/custom-session-redis.php');
-			'\\SmartSpreadSheetExport',
-			'\\SmartSpreadSheetImport'
+			'\\SmartSVGCaptcha',
+			'\\SmartCaptcha',
+			'\\SmartViewHtmlHelpers',
 			//--
 		];
 		//--

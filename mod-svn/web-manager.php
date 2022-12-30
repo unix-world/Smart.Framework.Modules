@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210612
+	// v.20221219
 
 
 	public function Initialize() {
@@ -174,7 +174,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						'REPO-NAME' 		=> (string) $repo,
 						'REPO-PATH' 		=> (string) $path,
 						'TYPE' 				=> (string) $type,
-						'MIMETYPE' 			=> (string) 'text/plain', // diff is text plain as in SmartFileSysUtils::mime_eval()
+						'MIMETYPE' 			=> (string) 'text/plain', // diff is text plain as in SmartFileSysUtils Mime Eval
 						'FILE-SIZE-BYTES' 	=> (int)    $bsize,
 						'FILE-SIZE' 		=> (string) $fsize,
 						'ICON-SUFFIX' 		=> (string) \SmartModExtLib\Webdav\DavUtils::getFileTypeSuffixIcon((string)$path),
@@ -216,7 +216,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if
 
 				$fname = (string) Smart::base_name((string)$path);
-				$fmime = (array) SmartFileSysUtils::mime_eval($fname);
+				$fmime = (array) SmartFileSysUtils::getArrMimeType((string)$fname);
 
 				$this->PageViewSetCfg('template-file', 'template-modal.htm'); // the default modal template
 				$title = 'SVN - Web Manager :: Repo: '.$repo.' @ File: '.$path;
@@ -305,7 +305,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if
 
 				$fname = (string) Smart::base_name((string)$path);
-				$fmime = (array) SmartFileSysUtils::mime_eval($fname);
+				$fmime = (array) SmartFileSysUtils::getArrMimeType((string)$fname);
 
 				$this->PageViewSetCfg('rawpage', true);
 				$this->PageViewSetCfg('rawmime', (string)$fmime[0]); // set mime type: Image / PNG
@@ -402,7 +402,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				if((string)$type == 'file') {
 					$isfile = true;
 					$crr_path = (string) $path;
-					$mimearr = (array) SmartFileSysUtils::mime_eval($crr_path);
+					$mimearr = (array) SmartFileSysUtils::getArrMimeType((string)$crr_path);
 					$mimetype = (string) $mimearr[0];
 					$mimedisp = (string) $mimearr[2];
 					if(\SmartModExtLib\Svn\SvnWebManager::isTextFileByMimeType((string)$mimetype) === true) {

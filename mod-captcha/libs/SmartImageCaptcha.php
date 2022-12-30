@@ -48,7 +48,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP GD Extension w. *optional TTF support ; classes: Smart, SmartFileSysUtils
- * @version 	v.20210307
+ * @version 	v.20221220
  * @package 	modules:development:Captcha
  */
 final class SmartImageCaptcha {
@@ -650,8 +650,8 @@ final class SmartImageCaptcha {
 		$use_ttf_font = false;
 		if((string)$this->charfont == '') {
 			$font = 5;
-		} elseif(((string)$this->charfont != '') AND (\SmartFileSysUtils::check_if_safe_path($this->charfont)) AND (\SmartFileSystem::is_type_file($this->charfont))) {
-			if(\function_exists('\\imagettftext') AND (\substr($this->charfont, -4, 4) == '.ttf')) {
+		} elseif(((string)$this->charfont != '') AND (\SmartFileSysUtils::checkIfSafePath((string)$this->charfont)) AND (\SmartFileSystem::is_type_file((string)$this->charfont))) {
+			if(\function_exists('\\imagettftext') AND ((string)\substr((string)$this->charfont, -4, 4) == '.ttf')) {
 				$font = (string) $this->charfont;
 				$use_ttf_font = true;
 			} elseif((string)\substr($this->charfont, -4, 4) == '.gdf') {
@@ -802,7 +802,7 @@ final class SmartImageCaptcha {
 			$x1 = ($rad1 * \cos($theta)) + $x_axis;
 			$y1 = ($rad1 * \sin($theta )) + $y_axis;
 			//--
-			@\imageline($im, $x, $y, $x1, $y1, $this->generate_noise_color());
+			@\imageline($im, ceil($x), ceil($y), ceil($x1), ceil($y1), $this->generate_noise_color());
 			//--
 			$theta = $theta - $thetac;
 			//--

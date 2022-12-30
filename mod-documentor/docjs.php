@@ -315,7 +315,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 			);
 		} //end if
 		//--
-		if(((string)$file == '') OR ((string)substr((string)$file, -3, 3) != '.js') OR (!SmartFileSysUtils::check_if_safe_path((string)$file))) {
+		if(((string)$file == '') OR ((string)substr((string)$file, -3, 3) != '.js') OR (!SmartFileSysUtils::checkIfSafePath((string)$file))) {
 			$this->errMsg = 'The selected Javascript Class could not be found (1):'."\n".'`'.$cls.'`';
 			return (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'message.mtpl.inc.htm',

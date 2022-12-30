@@ -40,7 +40,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$this->username = (string) SmartAuth::get_login_id();
 		//--
 		$safe_user_dir = (string) Smart::safe_username((string)$this->username);
-		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$safe_user_dir) != '1')) {
+		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::checkIfSafeFileOrDirName((string)$safe_user_dir) != '1')) {
 			if(!headers_sent()) {
 				http_response_code(500);
 			} //end if
@@ -49,7 +49,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 		//--
 		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/mail';
-		if(SmartFileSysUtils::check_if_safe_path((string)$safe_user_path) != '1') {
+		if(SmartFileSysUtils::checkIfSafePath((string)$safe_user_path) != '1') {
 			if(!headers_sent()) {
 				http_response_code(500);
 			} //end if
@@ -65,7 +65,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$this->userpath = (string) SmartFileSysUtils::add_dir_last_slash((string)$safe_user_path);
+		$this->userpath = (string) SmartFileSysUtils::addPathTrailingSlash((string)$safe_user_path);
 		//--
 
 		//-- {{{SYNC-CLOUD-MAIL-CHK-MBOX}}}
@@ -181,14 +181,14 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$this->print_fatal_err('#Empty MailBox Name !');
 			return '';
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name($mbox)) {
+		if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$mbox)) {
 			$this->print_fatal_err('#Invalid MailBox Name !');
 			return '';
 		} //end if
 		//--
-		$the_mbox_path = (string) SmartFileSysUtils::add_dir_last_slash($this->userpath.$mbox);
+		$the_mbox_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)$this->userpath.$mbox);
 		//--
-		if(!SmartFileSysUtils::check_if_safe_path($the_mbox_path)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$the_mbox_path)) {
 			$this->print_fatal_err('#Unsafe MailBox Path !');
 			return '';
 		} //end if

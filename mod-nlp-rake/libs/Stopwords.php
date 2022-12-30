@@ -21,7 +21,7 @@ final class Stopwords {
 	 * Load stop words from an input file
 	 */
 	public static function load(string $path) {
-		if(!\SmartFileSysUtils::check_if_safe_path($path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$path)) {
 			\Smart::raise_error(
 				'Rake Stopwords File path is invalid !',
 				__METHOD__.'() The Stopwords File path is invalid: '.$path

@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TwistTPL
- * @version 	v.20221208
+ * @version 	v.20221220
  * @package 	modules:TemplatingEngine
  *
  */
@@ -71,8 +71,8 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		$this->dir = 'modules/';
 		//--
 		$tpl_cache_path = 'tmp/cache/tpl-twist/v'.(int)\TwistTPL\Twist::MAJOR_VERSION.'.'.(int)\TwistTPL\Twist::MINOR_VERSION.'/';
-		if(\SmartFrameworkRegistry::isAdminArea() === true) {
-			if(\SmartFrameworkRegistry::isTaskArea() === true) {
+		if(\SmartEnvironment::isAdminArea() === true) {
+			if(\SmartEnvironment::isTaskArea() === true) {
 				$tpl_cache_path .= 'tsk';
 			} else {
 				$tpl_cache_path .= 'adm';
@@ -84,8 +84,8 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		$cache = null;
 		//--
 		if((string)$tpl_cache_path != '') {
-			$tpl_cache_path = (string) \SmartFileSysUtils::add_dir_last_slash((string)$tpl_cache_path);
-			if(\SmartFileSysUtils::check_if_safe_path((string)$tpl_cache_path)) {
+			$tpl_cache_path = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$tpl_cache_path);
+			if(\SmartFileSysUtils::checkIfSafePath((string)$tpl_cache_path)) {
 				if(!\SmartFileSystem::path_exists((string)$tpl_cache_path)) {
 					\SmartFileSystem::dir_create((string)$tpl_cache_path, true);
 				} //end if
@@ -117,7 +117,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 	 */
 	public function getDebugInfo(?string $tpl) : string {
 		//--
-		if(!\SmartFrameworkRegistry::ifDebug()) {
+		if(!\SmartEnvironment::ifDebug()) {
 			return '';
 		} //end if
 		//--
@@ -141,7 +141,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		if($onlydebug !== true) {
 			$onlydebug = false;
 		} //end else
-		if(!\SmartFrameworkRegistry::ifDebug()) {
+		if(!\SmartEnvironment::ifDebug()) {
 			$onlydebug = false;
 		} //end if
 		//--
@@ -155,7 +155,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			throw new \Exception('Twist Templating / Render File / The file name is Empty');
 			return;
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$file)) {
 			throw new \Exception('Twist Templating / Render File / Invalid file Path');
 			return;
 		} //end if
@@ -168,38 +168,38 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		$the_tpl_file = (string) $arr_tpl_parts['basename'];
 		//--
 		if((string)$dir_of_tpl != '') {
-			if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
+			if(!\SmartFileSysUtils::checkIfSafePath((string)$dir_of_tpl)) {
 				$dir_of_tpl = (string) $invalid_dir; // fix if unsafe
 			} //end if
-			$dir_of_tpl = (string) \SmartFileSysUtils::add_dir_last_slash((string)$dir_of_tpl);
-			if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
+			$dir_of_tpl = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$dir_of_tpl);
+			if(!\SmartFileSysUtils::checkIfSafePath((string)$dir_of_tpl)) {
 				$dir_of_tpl = (string) $invalid_dir.'/'; // fix if unsafe
 			} //end if
 		} else {
 			$dir_of_tpl = (string) $invalid_dir.'/'; // fix if empty
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dir_of_tpl)) {
 			throw new \Exception('Twist Templating / Render File / Invalid TPL Dir Path');
 			return;
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_file_or_dir_name($the_tpl_file)) {
+		if(!\SmartFileSysUtils::checkIfSafeFileOrDirName((string)$the_tpl_file)) {
 			throw new \Exception('Twist Templating / Render File / Invalid TPL File Name');
 			return;
 		} //end if
 		//--
 		$arr_vars[(string)$this->getTplPathVar().'__'] = (string) $dir_of_tpl; // this is the only tpl variable that will be case sensitive
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$file)) {
 			throw new \Exception('Twist Templating / Render File / The file name / path contains invalid characters: '.$file);
 			return;
 		} //end if
 		//--
-		if(!\is_file($file)) {
+		if(!\is_file((string)$file)) {
 			throw new \Exception('Twist Templating / The Template file to render does not exists: '.$file);
 			return;
 		} //end if
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$bench = \microtime(true);
 			$pmu = 0;
 			if(\function_exists('\\memory_get_peak_usage')) {
@@ -214,7 +214,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		} //end if
 		$rendered = (string) $this->tpl->render((array)$arr_vars);
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			//--
 			// TODO: add cache gc()
 			//--

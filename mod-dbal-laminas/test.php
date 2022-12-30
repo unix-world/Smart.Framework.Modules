@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
  * @ignore
  *
  */
-class SmartAppIndexController extends SmartAbstractAppController { // v.20221214.1044
+class SmartAppIndexController extends SmartAbstractAppController { // v.20221227
 
 	public function Run() {
 
@@ -61,7 +61,7 @@ class SmartAppIndexController extends SmartAbstractAppController { // v.20221214
 					$this->PageViewSetErrorStatus(503, 'ERROR: Laminas/DBAL MySQL Config is Not Available ...');
 					return;
 				} //end if
-				$zconf = 'mysqli:config';
+				$zconf = 'mysql:config';
 				break;
 			default:
 				$this->PageViewSetErrorStatus(400, 'ERROR: Laminas/DBAL Test: Invalid Driver Selected: `'.$driver.'`');
@@ -76,14 +76,15 @@ class SmartAppIndexController extends SmartAbstractAppController { // v.20221214
 
 		//--
 		$db = new \SmartModExtLib\DbalLaminas\DbalPdo((string)$zconf);
-		$db->setFatalErr(false);
+		$isFatalErrMode = $db->getFatalErrMode();
+		$db->setFatalErrMode(false);
 		$drv = $db->getDriver();
 		$platform = $db->getPlatform();
 		$adapter = $db->getConnection();
 		//--
 
 		//--
-		if(!SmartFrameworkRegistry::ifProdEnv()) {
+		if(SmartEnvironment::ifDevMode() === true) {
 			$db->enableProfiling();
 		} //end if
 		//--
@@ -198,7 +199,7 @@ class SmartAppIndexController extends SmartAbstractAppController { // v.20221214
 		//--
 
 		//--
-		if(!SmartFrameworkRegistry::ifProdEnv()) {
+		if(SmartEnvironment::ifDevMode() === true) {
 			$profile_queries = (array) $db->getProfilingData(); // this can be used to show all driver queries if will use the $adapter->query() instead of $db->count/read*/write methods
 		//	print_r($profile_queries); die();
 		} //end if

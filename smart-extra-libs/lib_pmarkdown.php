@@ -46,7 +46,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartParser
- * @version 	v.20220708
+ * @version 	v.20221220
  * @package 	extralibs:Network
  *
  * <code>
@@ -268,7 +268,7 @@ final class SmartPMarkdownToHTML {
 		//-- fix charset
 		$markup = (string) SmartUnicode::fix_charset($markup); // fix by unixman (in case that broken UTF-8 characters are detected just try to fix them to avoid break JSON)
 		//-- Comment Out PHP tags
-		$markup = (string) SmartUtils::comment_php_code((string)$markup, ['tag-start' => '&lt;&quest;', 'tag-end' => '&quest;&gt;']); // fix PHP tags if any remaining ...
+		$markup = (string) Smart::commentOutPhpCode((string)$markup, ['tag-start' => '&lt;&quest;', 'tag-end' => '&quest;&gt;']); // fix PHP tags if any remaining ...
 		//-- Dissalow Marker TPL Syntax ; This parser still have many bugs with some unescaped html ... is not safe to allow it use the Marker TPL ! In order to use Marker TPL Syntax embedded in Markdown use the SmartMarkdownToHTML not this class ;-)
 		$markup = (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)$markup);
 		//--

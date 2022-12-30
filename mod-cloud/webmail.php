@@ -53,13 +53,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$this->username = (string) SmartAuth::get_login_id();
 		//--
 		$safe_user_dir = (string) Smart::safe_username((string)$this->username);
-		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$safe_user_dir) != '1')) {
+		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::checkIfSafeFileOrDirName((string)$safe_user_dir) != '1')) {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebMail Unsafe User Dir ...');
 			return;
 		} //end if
 		//--
 		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/mail';
-		if(SmartFileSysUtils::check_if_safe_path((string)$safe_user_path) != '1') {
+		if(SmartFileSysUtils::checkIfSafePath((string)$safe_user_path) != '1') {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebMail Unsafe User Path ...');
 			return;
 		} //end if
@@ -69,7 +69,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$this->userpath = (string) SmartFileSysUtils::add_dir_last_slash((string)$safe_user_path);
+		$this->userpath = (string) SmartFileSysUtils::addPathTrailingSlash((string)$safe_user_path);
 		if(!SmartFileSystem::is_type_file($this->userpath.'.htaccess')) {
 			SmartFileSystem::write($this->userpath.'.htaccess', '### Smart.Framework // Cloud.WebMail @ HtAccess Data Protection ###'."\n\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n");
 			if(!SmartFileSystem::is_type_file($this->userpath.'.htaccess')) {
@@ -414,12 +414,12 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 	private function mboxPath($mbox) {
 		//--
-		if((!$mbox) OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name($mbox))) {
+		if((!$mbox) OR (!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$mbox))) {
 			Smart::raise_error(__METHOD__.'() :: MailBox parameter is Empty or Invalid: '.$mbox);
 			return 'tmp/#invalid@mail.box#';
 		} //end if
 		//--
-		return (string) SmartFileSysUtils::add_dir_last_slash((string)$this->userpath.$mbox);
+		return (string) SmartFileSysUtils::addPathTrailingSlash((string)$this->userpath.$mbox);
 		//--
 	} //END FUNCTION
 
@@ -590,7 +590,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				if((string)$test_rawmime == 'image') { // {{{SYNC-BETTER-CID-IMGS-DETECTION-OF-MIMETYPE}}} FIX: SVGs don't function with mime type 'image', they need 'image/svg+xml'
 					$test_img_type = (string) SmartDetectImages::guess_image_extension_by_img_content((string)$main, false); // don't use GD, too expensive
 					if((string)$test_img_type != '') {
-						$test_rawmime = (array) SmartFileSysUtils::mime_eval('mime-image-'.sha1($main).$test_img_type, 'inline');
+						$test_rawmime = (array) SmartFileSysUtils::getArrMimeType('mime-image-'.sha1((string)$main).$test_img_type, 'inline');
 						$enforce_better_detect_mime_and_disp = (string) $test_rawmime[1];
 						$test_rawmime = (string) $test_rawmime[0];
 					} //end if

@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210428
+ * @version 	v.20221222
  *
  */
 class OpenMapsProxyCache {
@@ -209,7 +209,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 	//--
 	$dir = (string) $y_maps_cache_dir.$mapdir.$z.'/'.$x.'/';
 	$file = (string) $dir.$y.$ext;
-	if(\SmartFileSysUtils::check_if_safe_path($file) !== 1) {
+	if(\SmartFileSysUtils::checkIfSafePath((string)$file) !== 1) {
 		$arr_response['status'] = 'ERROR';
 		$arr_response['message'] = 'Invalid Map Tile: '.$y.$ext;
 		$arr_response['code'] = 400;
@@ -249,9 +249,9 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 	//--
 	if(!\SmartFileSystem::is_type_file($file)) { // avoid to clear cache here, only check if file exists
 		//--
-		$httpclient = new \SmartHttpClient('1.0');
+		$httpclient = new \SmartHttpClient();
 		$httpclient->connect_timeout = (int) $y_timeout;
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			$httpclient->debug = 1;
 		} //end if
 		//--
@@ -264,7 +264,7 @@ public static function getTilesFromCache($max_cache_zoom, $r, $x, $y, $z, $y_map
 		$tmp_uniq_file = $tmp_uniq_prefix.'.download'.$ext;
 		$tmp_uniq_log = $tmp_uniq_prefix.'.debug-log.txt';
 		//--
-		if(\SmartFrameworkRegistry::ifDebug()) {
+		if(\SmartEnvironment::ifDebug()) {
 			\SmartFileSystem::write($tmp_uniq_log, '===== IsPngOrJpegByHeader: '.$tmp_validate_by_header."\n".'===== STATUS-CODE: '.$bwdata['code']."\n".'===== Header: '."\n".$bwdata['headers']."\n".'===== Debug-Log:'."\n".$bwdata['debuglog']."\n".'===== END #');
 		} //end if
 		//--

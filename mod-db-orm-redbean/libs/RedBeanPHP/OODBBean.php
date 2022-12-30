@@ -5,6 +5,7 @@ namespace RedBeanPHP;
 use RedBeanPHP\QueryWriter\AQueryWriter as AQueryWriter;
 use RedBeanPHP\BeanHelper as BeanHelper;
 use RedBeanPHP\RedException as RedException;
+use RedBeanPHP\Util\Either as Either;
 
 /**
  * PHP 5.3 compatibility
@@ -98,12 +99,12 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 * rich functionality, otherwise you would have to do everything with R or
 	 * external objects.
 	 *
-	 * @var BeanHelper
+	 * @var BeanHelper|NULL
 	 */
 	protected $beanHelper = NULL;
 
 	/**
-	 * @var null
+	 * @var string|NULL
 	 */
 	protected $fetchType = NULL;
 
@@ -118,12 +119,12 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	protected $withParams = array();
 
 	/**
-	 * @var string
+	 * @var string|NULL
 	 */
 	protected $aliasName = NULL;
 
 	/**
-	 * @var string
+	 * @var string|NULL
 	 */
 	protected $via = NULL;
 
@@ -138,10 +139,15 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	protected $all = FALSE;
 
 	/**
+	 * @var string|NULL
+	 */
+	protected $castProperty = NULL;
+
+	/**
 	 * If fluid count is set to TRUE then $bean->ownCount() will
 	 * return 0 if the table does not exists.
 	 * Only for backward compatibility.
-	 * Returns previouds value.
+	 * Returns previous value.
 	 *
 	 * @param boolean $toggle toggle
 	 *
@@ -246,7 +252,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 * fetchAs and setAutoResolve but explicitly. For instance if you register
 	 * the alias 'cover' for 'page' a property containing a reference to a
 	 * page bean called 'cover' will correctly return the page bean and not
-	 * a (non-existant) cover bean.
+	 * a (non-existent) cover bean.
 	 *
 	 * <code>
 	 * R::aliases( array( 'cover' => 'page' ) );
@@ -427,8 +433,8 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 * Unless you know what you are doing, do NOT use this method.
 	 * This is for advanced users only!
 	 *
-	 * @param string     $type       type of the new bean
-	 * @param BeanHelper $beanhelper bean helper to obtain a toolbox and a model
+	 * @param string          $type       type of the new bean
+	 * @param BeanHelper|NULL $beanhelper bean helper to obtain a toolbox and a model
 	 *
 	 * @return void
 	 */
@@ -475,7 +481,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 *
 	 * Note that not all PHP functions work with the array interface.
 	 *
-	 * @return ArrayIterator
+	 * @return \ArrayIterator
 	 */
 	 #[\ReturnTypeWillChange]
 	public function getIterator()
@@ -486,7 +492,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	/**
 	 * Imports all values from an associative array $array. Chainable.
 	 * This method imports the values in the first argument as bean
-	 * propery and value pairs. Use the second parameter to provide a
+	 * property and value pairs. Use the second parameter to provide a
 	 * selection. If a selection array is passed, only the entries
 	 * having keys mentioned in the selection array will be imported.
 	 * Set the third parameter to TRUE to preserve spaces in selection keys.
@@ -540,6 +546,21 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 			}
 		}
 		return $this;
+	}
+
+	/**
+	 * Same as import() but trims all values by default.
+	 * Set the second parameter to apply a different function.
+	 *
+	 * @param array        $array     what you want to import
+	 * @param callable     $function  function to apply (default is trim)
+	 * @param string|array $selection selection of values
+	 * @param boolean      $notrim    if TRUE selection keys will NOT be trimmed
+	 *
+	 * @return OODBBean
+	 */
+	public function trimport( $array, $function='trim', $selection = FALSE, $notrim = FALSE ) {
+		return $this->import( array_map( $function, $array ), $selection, $notrim );
 	}
 
 	/**
@@ -719,11 +740,11 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 * Returns the ID of the bean.
 	 * If for some reason the ID has not been set, this method will
 	 * return NULL. This is actually the same as accessing the
-	 * id property using $bean->id. The ID of a bean is it's primary
+	 * id property using $bean->id. The ID of a bean is its primary
 	 * key and should always correspond with a table column named
 	 * 'id'.
 	 *
-	 * @return string|null
+	 * @return string|NULL
 	 */
 	public function getID()
 	{
@@ -753,6 +774,19 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 		//also clear modifiers
 		$this->clearModifiers();
 		return;
+	}
+
+	/**
+	 * Returns the bean wrapped in an Either-instance.
+	 * This allows the user to extract data from the bean using a chain
+	 * of methods without any NULL checks, similar to the ?? operator but also
+	 * in a way that is compatible with older versions of PHP.
+	 * For more details consult the documentation of the Either class.
+	 *
+	 * @return Either
+	 */
+	public function either() {
+		return new Either( $this );
 	}
 
 	/**
@@ -985,13 +1019,14 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 		$this->noLoad     = FALSE;
 		$this->all        = FALSE;
 		$this->via        = NULL;
+		$this->castProperty = NULL;
 		return $this;
 	}
 
 	/**
 	 * Determines whether a list is opened in exclusive mode or not.
 	 * If a list has been opened in exclusive mode this method will return TRUE,
-	 * othwerwise it will return FALSE.
+	 * otherwise it will return FALSE.
 	 *
 	 * @param string $listName name of the list to check
 	 *
@@ -1086,7 +1121,12 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 
 		//If exists and no list or exits and list not changed, bail out.
 		if ( $exists && ((!$isOwn && !$isShared ) || (!$hasSQL && !$differentAlias && !$hasAll)) ) {
+			$castProperty = $this->castProperty;
 			$this->clearModifiers();
+			if (!is_null($castProperty)) {
+				$object = new $castProperty( $this->properties[$property] );
+				return $object;
+			}
 			return $this->properties[$property];
 		}
 
@@ -1127,7 +1167,6 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 		$this->properties[$property]          = $beans;
 		$this->__info["sys.shadow.$property"] = $beans;
 		$this->__info['tainted']              = TRUE;
-
 		$this->clearModifiers();
 		return $this->properties[$property];
 
@@ -1219,7 +1258,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 			$value = '0';
 		} elseif ( $value === TRUE ) {
 			$value = '1';
-			/* for some reason there is some kind of bug in xdebug so that it doesnt count this line otherwise... */
+			/* for some reason there is some kind of bug in xdebug so that it doesn't count this line otherwise... */
 		} elseif ( $value instanceof \DateTime ) { $value = $value->format( 'Y-m-d H:i:s' ); }
 		$this->properties[$property] = $value;
 	}
@@ -1358,6 +1397,29 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	}
 
 	/**
+	 * Captures a dynamic casting.
+	 * Enables you to obtain a bean value as an object by type-hinting
+	 * the desired return object using asX where X is the class you wish
+	 * to use as a wrapper for the property.
+	 *
+	 * Usage:
+	 *
+	 * $dateTime = $bean->asDateTime()->date;
+	 *
+	 * @param string $method method (asXXX)...
+	 *
+	 * @return self|NULL
+	 */
+	public function captureDynamicCasting( $method )
+	{
+		if ( strpos( $method, 'as' ) === 0 && ctype_upper( substr( $method, 2, 1) ) === TRUE ) {
+			$this->castProperty = substr( $method, 2 );
+			return $this;
+		}
+		return NULL;
+	}
+
+	/**
 	 * Sends the call to the registered model.
 	 * This method can also be used to override bean behaviour.
 	 * In that case you don't want an error or exception to be triggered
@@ -1382,7 +1444,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	public function __call( $method, $args )
 	{
 		if ( empty( $this->__info['model'] ) ) {
-			return NULL;
+			return $this->captureDynamicCasting($method);
 		}
 
 		$overrideDontFail = FALSE;
@@ -1392,6 +1454,9 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 		}
 
 		if ( !is_callable( array( $this->__info['model'], $method ) ) ) {
+
+			$self = $this->captureDynamicCasting($method);
+			if ($self) return $self;
 
 			if ( self::$errorHandlingFUSE === FALSE || $overrideDontFail ) {
 				return NULL;
@@ -1501,7 +1566,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 * Unsets a value from the array/bean.
 	 *
 	 * Array functions do not reveal x-own-lists and list-alias because
-	 * you dont want duplicate entries in foreach-loops.
+	 * you don't want duplicate entries in foreach-loops.
 	 * Also offers a slight performance improvement for array access.
 	 *
 	 * @param  mixed $offset property
@@ -1520,7 +1585,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 * Returns value of a property.
 	 *
 	 * Array functions do not reveal x-own-lists and list-alias because
-	 * you dont want duplicate entries in foreach-loops.
+	 * you don't want duplicate entries in foreach-loops.
 	 * Also offers a slight performance improvement for array access.
 	 *
 	 * @param  mixed $offset property
@@ -1605,7 +1670,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 *
 	 * @param string $property property
 	 * @param callable $function function
-	 * @param integer $maxDepth maximum depth for traversal
+	 * @param integer|NULL $maxDepth maximum depth for traversal
 	 *
 	 * @return OODBBean
 	 * @throws RedException
@@ -1736,7 +1801,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	}
 
 	/**
-	 * Convience method.
+	 * Convenience method.
 	 * Unsets all properties in the internal properties array.
 	 *
 	 * Usage:
@@ -1819,7 +1884,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 *
 	 * Note that this method will return TRUE if applied to a loaded list.
 	 * Also note that this method keeps track of the bean's history regardless whether
-	 * it has been stored or not. Storing a bean does not undo it's history,
+	 * it has been stored or not. Storing a bean does not undo its history,
 	 * to clean the history of a bean use: clearHistory().
 	 *
 	 * @param string  $property name of the property you want the change-status of
@@ -2184,9 +2249,9 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 * quest beans residing in the $questTarget->target properties
 	 * of each element in the xownQuestTargetList.
 	 *
-	 * @param string $list     the list you wish to process
-	 * @param string $property the property to load
-	 * @param string $type     the type of bean residing in this property (optional)
+	 * @param string      $list     the list you wish to process
+	 * @param string      $property the property to load
+	 * @param string|NULL $type     the type of bean residing in this property (optional)
 	 *
 	 * @return array
 	 */
@@ -2242,7 +2307,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 * </code>
 	 *
 	 * The example above compares the flavour label 'mocca' with
-	 * the flavour label attachec to the $coffee bean. This illustrates
+	 * the flavour label attached to the $coffee bean. This illustrates
 	 * how to use equals() with RedBeanPHP-style enums.
 	 *
 	 * @param OODBBean|null $bean other bean

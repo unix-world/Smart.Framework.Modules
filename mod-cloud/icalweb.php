@@ -45,13 +45,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--
 		$safe_user_dir = (string) Smart::safe_username(SmartAuth::get_login_id());
-		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$safe_user_dir) != '1')) {
+		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::checkIfSafeFileOrDirName((string)$safe_user_dir) != '1')) {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebCalendar Unsafe User Dir ...');
 			return;
 		} //end if
 		//--
 		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/caldav';
-		if(SmartFileSysUtils::check_if_safe_path((string)$safe_user_path) != '1') {
+		if(SmartFileSysUtils::checkIfSafePath((string)$safe_user_path) != '1') {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebCalendar Unsafe User Path ...');
 			return;
 		} //end if
@@ -77,7 +77,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('rawpage', true);
 				//--
-				$arr_mime = SmartFileSysUtils::mime_eval('calendar-'.$safe_user_dir.'-'.$ical_calendar.'-'.time().'.ics', 'inline');
+				$arr_mime = (array) SmartFileSysUtils::getArrMimeType('calendar-'.$safe_user_dir.'-'.$ical_calendar.'-'.time().'.ics', 'inline');
 				//--
 				$this->PageViewSetCfg('rawmime', (string)$arr_mime[0]);
 				$this->PageViewSetCfg('rawdisp', (string)$arr_mime[1]);
@@ -136,8 +136,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			default:
 				//--
-				$ical_dir = (string) \SmartFileSysUtils::add_dir_last_slash((string)$safe_user_path).'calendars/'.$safe_user_dir;
-				if(SmartFileSysUtils::check_if_safe_path((string)$ical_dir) != '1') {
+				$ical_dir = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$safe_user_path).'calendars/'.$safe_user_dir;
+				if(SmartFileSysUtils::checkIfSafePath((string)$ical_dir) != '1') {
 					$this->PageViewSetErrorStatus(500, 'ERROR: Invalid Calendars Path Access for: '.$safe_user_dir);
 					return;
 				} //end if
@@ -183,9 +183,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return false;
 		} //end if
 		//--
-		$ical_dir = (string) \SmartFileSysUtils::add_dir_last_slash((string)$safe_user_path).'calendars/'.$safe_user_dir.'/'.$ical_calendar;
+		$ical_dir = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$safe_user_path).'calendars/'.$safe_user_dir.'/'.$ical_calendar;
 		//--
-		if(SmartFileSysUtils::check_if_safe_path((string)$ical_dir) != '1') {
+		if(SmartFileSysUtils::checkIfSafePath((string)$ical_dir) != '1') {
 			return false;
 		} //end if
 		//--
@@ -198,8 +198,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(Smart::array_size($files_n_dirs) > 0) {
 			for($i=0; $i<Smart::array_size($files_n_dirs); $i++) {
 				if(((string)trim((string)$files_n_dirs[$i]) != '') AND ((string)substr((string)$files_n_dirs[$i], -4, 4) == '.ics')) {
-					$ical_cfile = (string) \SmartFileSysUtils::add_dir_last_slash($ical_dir).$files_n_dirs[$i];
-					if(SmartFileSysUtils::check_if_safe_path((string)$ical_cfile) == '1') {
+					$ical_cfile = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$ical_dir).$files_n_dirs[$i];
+					if(SmartFileSysUtils::checkIfSafePath((string)$ical_cfile) == '1') {
 						if(SmartFileSystem::is_type_file((string)$ical_cfile)) {
 							$ical_cfdata = (string) SmartFileSystem::read((string)$ical_cfile);
 							$ical_cfdata = (string) trim((string)$ical_cfdata);

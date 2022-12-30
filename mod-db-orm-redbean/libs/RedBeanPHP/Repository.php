@@ -14,7 +14,7 @@ use RedBeanPHP\Cursor\NullCursor as NullCursor;
  * Abstract Repository.
  *
  * OODB manages two repositories, a fluid one that
- * adjust the database schema on-the-fly to accomodate for
+ * adjust the database schema on-the-fly to accommodate for
  * new bean types (tables) and new properties (columns) and
  * a frozen one for use in a production environment. OODB
  * allows you to swap the repository instances using the freeze()
@@ -36,20 +36,25 @@ abstract class Repository
 	 */
 	protected $stash = NULL;
 
-	/*
+	/**
 	 * @var integer
 	 */
 	protected $nesting = 0;
 
 	/**
-	 * @var DBAdapter
+	 * @var QueryWriter
 	 */
 	protected $writer;
 
 	/**
-	 * @var boolean
+	 * @var boolean|array
 	 */
 	protected $partialBeans = FALSE;
+
+	/**
+	 * @var OODB
+	 */
+	public $oodb = NULL;
 
 	/**
 	 * Toggles 'partial bean mode'. If this mode has been
@@ -63,7 +68,7 @@ abstract class Repository
 	 *
 	 * @param boolean|array $yesNoBeans List of type names or 'all'
 	 *
-	 * @return mixed
+	 * @return boolean|array
 	 */
 	public function usePartialBeans( $yesNoBeans )
 	{
@@ -156,7 +161,7 @@ abstract class Repository
 	 * A bean may contain lists. This
 	 * method handles shared addition lists; i.e.
 	 * the $bean->sharedObject properties.
-	 * Shared beans will be associated with eachother using the
+	 * Shared beans will be associated with each other using the
 	 * Association Manager.
 	 *
 	 * @param OODBBean $bean            the bean
@@ -392,7 +397,7 @@ abstract class Repository
 	 * @param int     $number            number of beans you would like to get
 	 * @param boolean $alwaysReturnArray if TRUE always returns the result as an array
 	 *
-	 * @return OODBBean
+	 * @return OODBBean|OODBBean[]
 	 */
 	public function dispense( $type, $number = 1, $alwaysReturnArray = FALSE )
 	{
@@ -572,7 +577,7 @@ abstract class Repository
 	 * New in 4.3.2: meta mask. The meta mask is a special mask to send
 	 * data from raw result rows to the meta store of the bean. This is
 	 * useful for bundling additional information with custom queries.
-	 * Values of every column whos name starts with $mask will be
+	 * Values of every column who's name starts with $mask will be
 	 * transferred to the meta section of the bean under key 'data.bundle'.
 	 *
 	 * @param string $type type of beans you would like to have
@@ -651,10 +656,6 @@ abstract class Repository
 	public function count( $type, $addSQL = '', $bindings = array() )
 	{
 		$type = AQueryWriter::camelsSnake( $type );
-		if ( count( explode( '_', $type ) ) > 2 ) {
-			throw new RedException( 'Invalid type for count.' );
-		}
-
 		try {
 			$count = (int) $this->writer->queryRecordCount( $type, array(), $addSQL, $bindings );
 		} catch ( SQLException $exception ) {
@@ -671,7 +672,7 @@ abstract class Repository
 	 *
 	 * @param OODBBean|SimpleModel $bean bean you want to remove from database
 	 *
-	 * @return void
+	 * @return int
 	 */
 	public function trash( $bean )
 	{
@@ -689,7 +690,7 @@ abstract class Repository
 			}
 		}
 		try {
-			$deleted = $this->writer->deleteRecord( $bean->getMeta( 'type' ), array( 'id' => array( $bean->id ) ), NULL );
+			$deleted = $this->writer->deleteRecord( $bean->getMeta( 'type' ), array( 'id' => array( $bean->id ) ) );
 		} catch ( SQLException $exception ) {
 			$this->handleException( $exception );
 		}
@@ -701,8 +702,6 @@ abstract class Repository
 	/**
 	 * Checks whether the specified table already exists in the database.
 	 * Not part of the Object Database interface!
-	 *
-	 * @deprecated Use AQueryWriter::typeExists() instead.
 	 *
 	 * @param string $table table name
 	 *

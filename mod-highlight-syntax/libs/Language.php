@@ -69,7 +69,7 @@ class Language {
 			\Smart::raise_error(__METHOD__.' :: Cannot Read Data File for language: '.$lang.' :: '.$filePath);
 			return null;
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($filePath)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$filePath)) {
 			\Smart::raise_error(__METHOD__.' :: Invalid or Unsafe File Path for language: '.$lang.' :: '.$filePath);
 			return;
 		} //end if

@@ -18,7 +18,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 final class webmailUtils {
 
-	// r.20210830
+	// r.20221220
 	// ::
 
 
@@ -90,7 +90,7 @@ final class webmailUtils {
 			return 'MailBox Path is Empty';
 		} //end if
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path((string)$the_mbox_path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$the_mbox_path)) {
 			return 'MailBox Path is Not Safe';
 		} //end if
 		//--
@@ -106,12 +106,12 @@ final class webmailUtils {
 	// return STRING as ERROR / ARRAY with Config if OK
 	public static function parseMboxConfig($the_mbox_path, $mbox) {
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($the_mbox_path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$the_mbox_path)) {
 			return 'The MailBox Path is Unsafe';
 		} //end if
 		//--
-		$the_mbox_path = (string) \SmartFileSysUtils::add_dir_last_slash($the_mbox_path);
-		if(!\SmartFileSystem::is_type_dir($the_mbox_path)) {
+		$the_mbox_path = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$the_mbox_path);
+		if(!\SmartFileSystem::is_type_dir((string)$the_mbox_path)) {
 			return 'The MailBox Path does not exists';
 		} //end if
 		//--
@@ -173,9 +173,9 @@ final class webmailUtils {
 			return 'MailBox is Undefined (Empty)';
 		} //end if
 		//--
-		$the_mbox_path = (string) \SmartFileSysUtils::add_dir_last_slash($safe_user_path.$mbox);
+		$the_mbox_path = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$safe_user_path.$mbox);
 		//--
-		$chk = (string) self::checkMboxPathNotOk($the_mbox_path);
+		$chk = (string) self::checkMboxPathNotOk((string)$the_mbox_path);
 		if($chk) {
 			return (string) 'handleSelectedMessages (2): '.$chk;
 		} //end if
@@ -215,9 +215,9 @@ final class webmailUtils {
 				return 'handleSelectedMessages (5): Invalid Box Selected: '.$box;
 		} //end switch
 		//--
-		$the_box_path = (string) \SmartFileSysUtils::add_dir_last_slash($the_mbox_path.$box);
+		$the_box_path = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$the_mbox_path.$box);
 		//--
-		$chk = (string) self::checkMboxPathNotOk($the_box_path);
+		$chk = (string) self::checkMboxPathNotOk((string)$the_box_path);
 		if($chk) {
 			return (string) 'handleSelectedMessages (6): '.$chk;
 		} //end if
@@ -321,15 +321,15 @@ final class webmailUtils {
 			//--
 			if((string)\trim((string)$val) != '') {
 				//--
-				if(\SmartFileSysUtils::check_if_safe_file_or_dir_name($val)) {
+				if(\SmartFileSysUtils::checkIfSafeFileOrDirName((string)$val)) {
 					//--
 					$the_msg_arr = (array) $db->getOneMessageById((string)$val);
 					//--
-					if((\Smart::array_size($the_msg_arr) > 0) AND (\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$the_msg_arr['id'])) AND ((int)$the_msg_arr['stat_cloud'] <= 0) AND ((string)$the_msg_arr['folder'] === (string)$box)) { // if not found in DB or folder is different, just skip with no error, this is req. when running restore with multiple destinations
+					if((\Smart::array_size($the_msg_arr) > 0) AND (\SmartFileSysUtils::checkIfSafeFileOrDirName((string)$the_msg_arr['id'])) AND ((int)$the_msg_arr['stat_cloud'] <= 0) AND ((string)$the_msg_arr['folder'] === (string)$box)) { // if not found in DB or folder is different, just skip with no error, this is req. when running restore with multiple destinations
 						//-- DELETE
 						if(((string)$action == 'delete') AND ((string)$box == 'trash')) { // {{{SYNC-WEBMAIL-ACTION}}}
 							//-- PERMANENT DELETE: Trash
-							$tmp_file = (string) \SmartFileSysUtils::add_dir_last_slash($the_mbox_path).'trash/'.$the_msg_arr['id'];
+							$tmp_file = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$the_mbox_path).'trash/'.$the_msg_arr['id'];
 							if(\SmartFileSystem::is_type_file($tmp_file)) { // if not file (exists), don't register any error ... it's just ok :-)
 								if(\SmartFileSystem::delete($tmp_file)) {
 									//--
@@ -354,7 +354,7 @@ final class webmailUtils {
 							//--
 						} elseif(((string)$action == 'delete') AND ((string)$box == 'notes')) { // {{{SYNC-WEBMAIL-ACTION}}}
 							//-- PERMANENT DELETE: Notes
-							$tmp_file = (string) \SmartFileSysUtils::add_dir_last_slash($the_mbox_path).'notes/'.$the_msg_arr['id'];
+							$tmp_file = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$the_mbox_path).'notes/'.$the_msg_arr['id'];
 							if(\SmartFileSystem::is_type_file($tmp_file)) { // if not file (exists), don't register any error ... it's just ok :-)
 								if(\SmartFileSystem::delete($tmp_file)) {
 									//--
@@ -471,7 +471,7 @@ final class webmailUtils {
 		//--
 
 		//--
-		if(((string)\trim((string)$mbox) == '') OR (strpos((string)\SmartFileSysUtils::add_dir_last_slash($the_mbox_path), (string)'/'.$mbox.'/') === false)) {
+		if(((string)\trim((string)$mbox) == '') OR (strpos((string)\SmartFileSysUtils::addPathTrailingSlash((string)$the_mbox_path), (string)'/'.$mbox.'/') === false)) {
 			$out_arr['error'] = __METHOD__.' :: Invalid or Empty MailBox: '.$mbox;
 			return (array) $out_arr;
 		} //end if
@@ -596,7 +596,7 @@ final class webmailUtils {
 		$fldr_d = (string) \date('Y-m-d', @\strtotime((string)$tmp_msg_head['date']));
 		//--
 		$tmp_message_fname = (string) \Smart::safe_filename(\substr((string)$use_the_dir, 0, 1).'__'.\date('Y-m-d_H-i-s', @\strtotime((string)$tmp_msg_head['date'])).'__'.\substr((string)\SmartHashCrypto::crc32b((string)$tmp_msg_cksum), 0, 3).'-'.\strtolower((string)\Smart::uuid_10_seq().'-'.\Smart::uuid_10_num().'-'.\Smart::uuid_10_str()).'.eml'); // make sure there are no message duplicates by ID !
-		$tmp_message_folder = (string) \SmartFileSysUtils::add_dir_last_slash($the_mbox_path.$use_the_dir);
+		$tmp_message_folder = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$the_mbox_path.$use_the_dir);
 		//$tmp_message_folder .= $fldr_y.'/'.$fldr_m.'/'.$fldr_d.'/';
 		\SmartFileSystem::dir_create($tmp_message_folder, true);
 		//-- STORE MESSAGE TO FILE (IF REQ. SO)
@@ -773,7 +773,7 @@ final class webmailUtils {
 		if((string)$display_name == '') {
 			return array();
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$display_name)) {
+		if(!\SmartFileSysUtils::checkIfSafeFileOrDirName((string)$display_name)) {
 			return array();
 		} //end if
 		//--
@@ -781,7 +781,7 @@ final class webmailUtils {
 		if((string)$relative_file_path == '') {
 			return array();
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path((string)$relative_file_path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$relative_file_path)) {
 			return array();
 		} //end if
 		if(!\SmartFileSystem::is_type_file((string)$relative_file_path)) {
@@ -821,7 +821,7 @@ final class webmailUtils {
 			return 'MailBox is Undefined (Empty)';
 		} //end if
 		//--
-		$the_mbox_path = (string) \SmartFileSysUtils::add_dir_last_slash($safe_user_path.$mbox);
+		$the_mbox_path = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$safe_user_path.$mbox);
 		//--
 		$chk = (string) self::checkMboxPathNotOk($the_mbox_path);
 		if($chk) {
@@ -970,8 +970,8 @@ final class webmailUtils {
 					$tmp_att[2] = (string) \trim((string)$tmp_att[2]); // *name (optional)
 					if(((string)$tmp_att[0] != '') AND ((string)$tmp_att[1] != '') AND ((string)$tmp_att[2] != '')) {
 						if((string)self::checksumAttachmentComposerData((string)$tmp_att[1]) === (string)$tmp_att[0]) {
-							if(\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$tmp_att[2])) {
-								if(\SmartFileSysUtils::check_if_safe_path((string)$tmp_att[1])) {
+							if(\SmartFileSysUtils::checkIfSafeFileOrDirName((string)$tmp_att[2])) {
+								if(\SmartFileSysUtils::checkIfSafePath((string)$tmp_att[1])) {
 									if(\SmartFileSystem::is_type_file((string)$tmp_att[1])) {
 										if(\SmartFileSystem::have_access_read((string)$tmp_att[1])) {
 											$tmp_ok_att = false;
@@ -1111,7 +1111,7 @@ final class webmailUtils {
 				//--
 				$mailget = new \SmartMailerImap4Client();
 				//--
-				if(\SmartFrameworkRegistry::ifDebug()) {
+				if(\SmartEnvironment::ifDebug()) {
 					$mailget->debug = true;
 				} //end if
 				//--
@@ -1213,24 +1213,24 @@ final class webmailUtils {
 			return 'Cannot Operate Move in DB for the Message as The Old Folder ['.$old_folder.'] is the same as the New Folder ['.$new_folder.'] for Message ID: '.$id;
 		} //end if
 		//--
-		$path_old = (string) \SmartFileSysUtils::add_dir_last_slash((string)$the_mbox_path).$old_folder;
+		$path_old = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$the_mbox_path).$old_folder;
 		if(self::checkMboxPathNotOk($path_old)) {
 			return (string) __METHOD__.' Cannot Operate Move as as The Path for Old Folder ['.$old_folder.'] is Unsafe or does not exists for the Message ID: '.$id;
 		} //end if
 		//--
-		$path_new = (string) \SmartFileSysUtils::add_dir_last_slash((string)$the_mbox_path).$new_folder;
+		$path_new = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$the_mbox_path).$new_folder;
 		if(self::checkMboxPathNotOk($path_new)) {
 			return (string) __METHOD__.' Cannot Operate Move as as The Path for New Folder ['.$path_new.'] is Unsafe or does not exists for the Message ID: '.$id;
 		} //end if
 		//--
-		$the_file = (string) \SmartFileSysUtils::add_dir_last_slash($path_old).$id;
+		$the_file = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$path_old).$id;
 		//--
 		if(\SmartFileSystem::is_type_file($the_file)) { // if not file exists, do nothing on File System ..., and should NOT return error
 			//--
 			if($stat_cloud <= 0) { // if not duplicate or not deleted, move, otherwise the file should not exists and will be removed below anyway ...
 				if(!\SmartFileSystem::copy(
 					(string) $the_file,
-					(string) \SmartFileSysUtils::add_dir_last_slash($path_new).$id,
+					(string) \SmartFileSysUtils::addPathTrailingSlash((string)$path_new).$id,
 					true, // overwrite destination
 					true  // check copy contents
 				)) {

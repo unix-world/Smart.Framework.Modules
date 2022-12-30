@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220331
+ * @version 	v.20221219
  * @package 	Documentor
  *
  */
@@ -48,7 +48,7 @@ final class Utils {
 		if((string)\substr((string)\SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO, -4, 4) != '.svg') {
 			return 'Documentor SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO must be a SVG image `.svg`.';
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path((string)\SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)\SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO)) {
 			return 'Documentor SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO path is unsafe.';
 		} //end if
 		if(!\SmartFileSystem::is_type_file((string)\SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO)) {
@@ -61,7 +61,7 @@ final class Utils {
 		if((string)\trim((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS) == '') {
 			return 'Documentor SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS is defined but is empty.';
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS)) {
 			return 'Documentor SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS path is unsafe.';
 		} //end if
 		if((string)\substr((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS, -1, 1) != '/') {
@@ -77,7 +77,7 @@ final class Utils {
 		if((string)\trim((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_PKGS) == '') {
 			return 'Documentor SMART_FRAMEWORK_DOCUMENTOR_DIR_PKGS is defined but is empty.';
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_PKGS)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_PKGS)) {
 			return 'Documentor SMART_FRAMEWORK_DOCUMENTOR_DIR_PKGS path is unsafe.';
 		} //end if
 		if((string)\substr((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_PKGS, -1, 1) != '/') {
@@ -212,7 +212,7 @@ final class Utils {
 				} else {
 					$url_fonts 	= '../fonts/';
 					$url_index = '../index.html';
-					$extdir 	= (string) \SmartFileSysUtils::add_dir_last_slash(\Smart::safe_filename((string)$extra));
+					$extdir 	= (string) \SmartFileSysUtils::addPathTrailingSlash((string)\Smart::safe_filename((string)$extra));
 					$url_img 	= '../img/sf-logo.svg';
 					if((string)$language == 'php') {
 						$url_limg 	= '../img/php-logo.svg';
@@ -295,7 +295,7 @@ final class Utils {
 			if(!\SmartFileSystem::is_type_file((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'img/index.html')) {
 				return 'Cannot find img directory Index file for Documentation';
 			} //end if
-			if(!\SmartFileSystem::copy((string)\SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO, (string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'img/'.\SmartFileSysUtils::get_file_name_from_path((string)\SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO), false, true)) {
+			if(!\SmartFileSystem::copy((string)\SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO, (string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'img/'.\SmartFileSysUtils::extractPathFileName((string)\SMART_FRAMEWORK_DOCUMENTOR_IMG_LOGO), false, true)) {
 				return 'Failed to copy font img Logo to Documentation img directory';
 			} //end if
 
@@ -361,7 +361,7 @@ final class Utils {
 						$url_limg 	= 'img/javascript-logo.svg';
 					} //end if else
 				} else {
-					$extdir 	= (string) \SmartFileSysUtils::add_dir_last_slash((string)\Smart::safe_filename((string)$extra));
+					$extdir 	= (string) \SmartFileSysUtils::addPathTrailingSlash((string)\Smart::safe_filename((string)$extra));
 					$url_fonts 	= '../fonts/';
 					$url_img 	= '../img/sf-logo.svg';
 					if((string)$language == 'php') {
@@ -374,7 +374,7 @@ final class Utils {
 		} //end if else
 		//--
 		if((string)$extdir != '') {
-			if(!\SmartFileSysUtils::check_if_safe_path((string)$extdir)) {
+			if(!\SmartFileSysUtils::checkIfSafePath((string)$extdir)) {
 				return 'Unsafe Extra Dir: '.$extdir;
 			} //end if
 		} //end if

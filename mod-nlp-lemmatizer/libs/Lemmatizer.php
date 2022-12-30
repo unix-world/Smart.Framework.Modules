@@ -64,7 +64,7 @@ final class Lemmatizer {
 		if((string)$input == '') {
 			return '';
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$path)) {
 			\Smart::raise_error(
 				'Lemmatizer Data File path is invalid !',
 				__METHOD__.'() The Data File path is invalid: '.$path

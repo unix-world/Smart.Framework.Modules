@@ -51,8 +51,8 @@ public static function create_preview($path_image, $path_resize_image, $resize_w
 	//--
 
 	//--
-	\SmartFileSysUtils::raise_error_if_unsafe_path($path_image);
-	\SmartFileSysUtils::raise_error_if_unsafe_path($path_resize_image);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$path_image);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$path_resize_image);
 	//--
 
 	//--
@@ -62,14 +62,14 @@ public static function create_preview($path_image, $path_resize_image, $resize_w
 	//--
 
 	//--
-	$ext_old = (string) strtolower(\SmartFileSysUtils::get_file_extension_from_path($path_image));
+	$ext_old = (string) strtolower(\SmartFileSysUtils::extractPathFileExtension((string)$path_image));
 	if(!in_array($ext_old, self::$extensions)) {
 		return -2;
 	} //end if
 	//--
 
 	//--
-	$ext_new = (string) strtolower(\SmartFileSysUtils::get_file_extension_from_path($path_resize_image));
+	$ext_new = (string) strtolower(\SmartFileSysUtils::extractPathFileExtension((string)$path_resize_image));
 	if((string)$ext_new == 'jpeg') {
 		$ext_new = 'jpg';
 	} //end if
@@ -144,8 +144,8 @@ public static function create_resized($path_image, $path_resize_image, $resize_w
 	//--
 
 	//--
-	\SmartFileSysUtils::raise_error_if_unsafe_path($path_image);
-	\SmartFileSysUtils::raise_error_if_unsafe_path($path_resize_image);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$path_image);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$path_resize_image);
 	//--
 
 	//--
@@ -155,14 +155,14 @@ public static function create_resized($path_image, $path_resize_image, $resize_w
 	//--
 
 	//--
-	$ext_old = (string) strtolower(\SmartFileSysUtils::get_file_extension_from_path($path_image));
+	$ext_old = (string) strtolower(\SmartFileSysUtils::extractPathFileExtension((string)$path_image));
 	if(!in_array($ext_old, self::$extensions)) {
 		return -2;
 	} //end if
 	//--
 
 	//--
-	$ext_new = (string) strtolower(\SmartFileSysUtils::get_file_extension_from_path($path_resize_image));
+	$ext_new = (string) strtolower(\SmartFileSysUtils::extractPathFileExtension((string)$path_resize_image));
 	if((string)$ext_new == 'jpeg') {
 		$ext_new = 'jpg';
 	} //end if
@@ -240,8 +240,8 @@ public static function apply_watermark($path_image, $path_wtm_image, $quality, $
 	//--
 
 	//--
-	\SmartFileSysUtils::raise_error_if_unsafe_path($path_image);
-	\SmartFileSysUtils::raise_error_if_unsafe_path($path_wtm_image);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$path_image);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$path_wtm_image);
 	//--
 
 	//--
@@ -255,7 +255,7 @@ public static function apply_watermark($path_image, $path_wtm_image, $quality, $
 	//--
 
 	//--
-	$ext_img = (string) strtolower(\SmartFileSysUtils::get_file_extension_from_path($path_image));
+	$ext_img = (string) strtolower(\SmartFileSysUtils::extractPathFileExtension((string)$path_image));
 	if((string)$ext_img == 'jpeg') {
 		$ext_img = 'jpg';
 	} //end if
@@ -263,7 +263,7 @@ public static function apply_watermark($path_image, $path_wtm_image, $quality, $
 		return -3;
 	} //end if
 	//--
-	$ext_wtm = (string) strtolower(\SmartFileSysUtils::get_file_extension_from_path($path_wtm_image));
+	$ext_wtm = (string) strtolower(\SmartFileSysUtils::extractPathFileExtension((string)$path_wtm_image));
 	if(!in_array($ext_wtm, self::$extensions)) {
 		return -4;
 	} //end if

@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: Laminas-DBAL r.20221214.1044 #
+# Smart.Framework.Modules: Laminas-DBAL r.20221227 #
 ## Laminas/Db 2.13.4 ; Laminas/Stdlib 3.6.4 ##
 
 // r.8.7 / smart.framework.v.8.7

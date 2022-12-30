@@ -54,7 +54,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @hints		By default will use the 1-3-930 NGrams. To use extended NGrams (Ex: 1-4-15k) see the local code examples.
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSysUtils
- * @version 	v.20210305
+ * @version 	v.20221219
  * @package 	modules:LanguageDetection
  *
  */
@@ -96,7 +96,7 @@ final class LanguageNgrams {
 			return;
 		} //end if
 
-		$ngrams_path = \SmartFileSysUtils::add_dir_last_slash($ngrams_path);
+		$ngrams_path = \SmartFileSysUtils::addPathTrailingSlash((string)$ngrams_path);
 
 		$lang = (array) $lang;
 		if(\Smart::array_size($lang) <= 0) {
@@ -110,7 +110,7 @@ final class LanguageNgrams {
 
 		if(\Smart::array_size($lang) > 0) {
 			for($i=0; $i<\Smart::array_size($lang); $i++) {
-				$json_file = (string) \SmartFileSysUtils::add_dir_last_slash((string)$ngrams_path.\Smart::safe_filename((string)$lang[$i])).\Smart::safe_filename((string)$lang[$i]).'.json';
+				$json_file = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$ngrams_path.\Smart::safe_filename((string)$lang[$i])).\Smart::safe_filename((string)$lang[$i]).'.json';
 				if(is_file($json_file)) {
 					$json = (string) \SmartFileSystem::read((string)$json_file);
 					if((string)$json != '') {
@@ -442,7 +442,7 @@ print_r($arr); die();
 //--
 $ngrams_path = 'modules/mod-lang-detect/libs/data-1-4-15k';
 //--
-$ngrams_path = \SmartFileSysUtils::add_dir_last_slash($ngrams_path);
+$ngrams_path = \SmartFileSysUtils::addPathTrailingSlash((string)$ngrams_path);
 $jsons = array();
 $lang = array();
 $arr_fs = (array) (new \SmartGetFileSystem(true))->get_storage((string)$ngrams_path, false, false, '');
@@ -454,8 +454,8 @@ $arr_fs = array();
 if(\Smart::array_size($lang) > 0) {
 	for($i=0; $i<\Smart::array_size($lang); $i++) {
 		//--
-		$txt_file  = (string) \SmartFileSysUtils::add_dir_last_slash((string)$ngrams_path.\Smart::safe_filename((string)$lang[$i])).\Smart::safe_filename((string)$lang[$i]).'.txt';
-		$json_file = (string) \SmartFileSysUtils::add_dir_last_slash((string)$ngrams_path.\Smart::safe_filename((string)$lang[$i])).\Smart::safe_filename((string)$lang[$i]).'.json';
+		$txt_file  = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$ngrams_path.\Smart::safe_filename((string)$lang[$i])).\Smart::safe_filename((string)$lang[$i]).'.txt';
+		$json_file = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$ngrams_path.\Smart::safe_filename((string)$lang[$i])).\Smart::safe_filename((string)$lang[$i]).'.json';
 		//--
 		$lndet = new \SmartModExtLib\LangDetect\LanguageNgrams(null);
 		$lndet->setMaxNgrams(15000);

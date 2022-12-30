@@ -19,7 +19,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 class DBModelImport {
 
 	// ::
-	// v.20200121
+	// v.20221219
 
 
 public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
@@ -36,7 +36,7 @@ public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
 		return '';
 	} //end if
 
-	if(!\SmartFileSysUtils::check_if_safe_path((string)$y_filepath, 'yes', 'yes')) {
+	if(!\SmartFileSysUtils::checkIfSafePath((string)$y_filepath, true, true)) {
 		throw new \Exception('ERROR: Database Path is Not Safe ...');
 		return '';
 	} //end if
@@ -72,7 +72,7 @@ public static function SmartDbModelerSQLiteExportToXml($y_filepath) {
 	//$arr[] = $datatypes[0];
 	$arr[] = '<sql db="sqlite">';
 	$arr[] = '<meta-info>';
-	$arr[] = '<db>'.\Smart::escape_html(\SmartFileSysUtils::get_file_name_from_path((string)$y_filepath)).'</db>';
+	$arr[] = '<db>'.\Smart::escape_html(\SmartFileSysUtils::extractPathFileName((string)$y_filepath)).'</db>';
 	$arr[] = '</meta-info>';
 
 	$tables = @$db->query("SELECT * FROM `sqlite_master` WHERE `type` = 'table' ORDER BY `tbl_name` ASC"); // type='index'

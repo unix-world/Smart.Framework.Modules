@@ -20,7 +20,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqWebmail {
 
 	// ->
-	// r.20211216
+	// r.20221219
 
 	private $db;
 	private $version = 'Smart.Cloud.WebMail#r.2020-04-20';
@@ -32,13 +32,13 @@ final class SqWebmail {
 			throw new \Exception(__CLASS__.': DB PATH is NOT Defined !');
 			return;
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($y_path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$y_path)) {
 			throw new \Exception(__CLASS__.': DB PATH is UNSAFE (1) !');
 			return;
 		} //end if
 		//--
-		$y_path = (string) \SmartFileSysUtils::add_dir_last_slash($y_path);
-		if(!\SmartFileSysUtils::check_if_safe_path($y_path)) {
+		$y_path = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$y_path);
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$y_path)) {
 			throw new \Exception(__CLASS__.': DB PATH is UNSAFE (2) !');
 			return;
 		} //end if

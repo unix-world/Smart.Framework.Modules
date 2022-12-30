@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210609
+ * @version 	v.20221219
  * @package 	Plugins:ViewComponents
  *
  */
@@ -101,8 +101,8 @@ class SmartViewHtmlHelpers {
 		//--
 		$path = (string) $path;
 		//--
-		$fname = (string) \SmartFileSysUtils::get_file_name_from_path((string)$path);
-		$fext = (string) \SmartFileSysUtils::get_file_extension_from_path((string)$fname);
+		$fname = (string) \SmartFileSysUtils::extractPathFileName((string)$path);
+		$fext = (string) \SmartFileSysUtils::extractPathFileExtension((string)$fname);
 		$fext = (string) \strtolower((string)\trim((string)$fext));
 		//--
 		$packs = []; // avoid return empty string on pack as this will load all packs

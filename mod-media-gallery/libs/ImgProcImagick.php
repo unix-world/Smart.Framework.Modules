@@ -37,10 +37,10 @@ final class ImgProcImagick { // [OK]
 // create a preview from a big image {{{SYNC-IMGALLERY-PREVIEW}}}
 public static function create_preview($y_exe_convert, $y_file, $y_newfile, $y_width, $y_height, $y_quality) {
 	//--
-	\SmartFileSysUtils::raise_error_if_unsafe_path($y_exe_convert, 'no'); // on windows must use like on unix: / as path separator and without drive letter as: /path/to/exe
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_exe_convert, false); // on windows must use like on unix: / as path separator and without drive letter as: /path/to/exe
 	//--
-	\SmartFileSysUtils::raise_error_if_unsafe_path($y_file);
-	\SmartFileSysUtils::raise_error_if_unsafe_path($y_newfile);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_file);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_newfile);
 	//--
 	return (string) $y_exe_convert.' -strip -sampling-factor 4:2:0 -quality '.$y_quality.' -resize '.$y_width.'x'.$y_height.'^ "'.$y_file.'" -background white -gravity northwest -extent '.$y_width.'x'.$y_height.' "'.$y_newfile.'"'; // this will use the max available w / h
 	//--
@@ -52,10 +52,10 @@ public static function create_preview($y_exe_convert, $y_file, $y_newfile, $y_wi
 // resize a big image
 public static function create_resized($y_exe_convert, $y_file, $y_newfile, $y_width, $y_height, $y_quality, $iflowerpreserve='yes') {
 	//--
-	\SmartFileSysUtils::raise_error_if_unsafe_path($y_exe_convert, 'no'); // on windows must use like on unix: / as path separator and without drive letter as: /path/to/exe
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_exe_convert, false); // on windows must use like on unix: / as path separator and without drive letter as: /path/to/exe
 	//--
-	\SmartFileSysUtils::raise_error_if_unsafe_path($y_file);
-	\SmartFileSysUtils::raise_error_if_unsafe_path($y_newfile);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_file);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_newfile);
 	//--
 	if((string)$iflowerpreserve == 'yes') {
 		$resize_flag = '\\>';
@@ -79,10 +79,10 @@ public static function create_resized($y_exe_convert, $y_file, $y_newfile, $y_wi
 // apply a watermark to an image or to a preview
 public static function apply_watermark($y_exe_composite, $y_file, $y_watermark_file, $y_quality, $y_watermark_gravity) {
 	//--
-	\SmartFileSysUtils::raise_error_if_unsafe_path($y_exe_composite, 'no'); // on windows must use like on unix: / as path separator and without drive letter as: /path/to/exe
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_exe_composite, false); // on windows must use like on unix: / as path separator and without drive letter as: /path/to/exe
 	//--
-	\SmartFileSysUtils::raise_error_if_unsafe_path($y_file);
-	\SmartFileSysUtils::raise_error_if_unsafe_path($y_watermark_file);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_file);
+	\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_watermark_file);
 	//--
 	return (string) $y_exe_composite.' -dissolve 100 -gravity '.$y_watermark_gravity.' "'.$y_watermark_file.'" "'.$y_file.'" "'.$y_file.'"';
 	//--

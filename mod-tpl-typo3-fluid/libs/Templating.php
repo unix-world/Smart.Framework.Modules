@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.20221208
+ * @version 	v.20221220
  * @package 	modules:TemplatingEngine
  *
  */
@@ -100,7 +100,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 	 */
 	public function getDebugInfo(?string $tpl) : string {
 		//--
-		if(!\SmartFrameworkRegistry::ifDebug()) {
+		if(!\SmartEnvironment::ifDebug()) {
 			return '';
 		} //end if
 		//--
@@ -120,8 +120,8 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		//--
 		$the_t3fluid_cache_dir = 'tmp/cache/tpl-t3fluid/v'.(int)self::VERSION_MAJOR.'.'.(int)self::VERSION_MINOR.'/';
 		//--
-		if(\SmartFrameworkRegistry::isAdminArea() === true) {
-			if(\SmartFrameworkRegistry::isTaskArea() === true) {
+		if(\SmartEnvironment::isAdminArea() === true) {
+			if(\SmartEnvironment::isTaskArea() === true) {
 				$the_t3fluid_cache_dir .= 'tsk';
 			} else {
 				$the_t3fluid_cache_dir .= 'adm';
@@ -146,7 +146,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		if($onlydebug !== true) {
 			$onlydebug = false;
 		} //end else
-		if(!\SmartFrameworkRegistry::ifDebug()) {
+		if(!\SmartEnvironment::ifDebug()) {
 			$onlydebug = false;
 		} //end if
 		//--
@@ -160,7 +160,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			throw new \Exception('Typo3Fluid Templating / Render File / The file name is Empty');
 			return;
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$file)) {
 			throw new \Exception('Typo3Fluid Templating / Render File / Invalid file Path');
 			return;
 		} //end if
@@ -169,17 +169,17 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		//--
 		$dir_of_tpl = (string) \Smart::dir_name($file);
 		if((string)$dir_of_tpl != '') {
-			if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
+			if(!\SmartFileSysUtils::checkIfSafePath((string)$dir_of_tpl)) {
 				$dir_of_tpl = (string) $invalid_dir; // fix if unsafe
 			} //end if
-			$dir_of_tpl = (string) \SmartFileSysUtils::add_dir_last_slash((string)$dir_of_tpl);
-			if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
+			$dir_of_tpl = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$dir_of_tpl);
+			if(!\SmartFileSysUtils::checkIfSafePath((string)$dir_of_tpl)) {
 				$dir_of_tpl = (string) $invalid_dir.'/'; // fix if unsafe
 			} //end if
 		} else {
 			$dir_of_tpl = (string) $invalid_dir.'/'; // fix if empty
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($dir_of_tpl)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dir_of_tpl)) {
 			throw new \Exception('Typo3Fluid Templating / Render File / Invalid tpl Path');
 			return;
 		} //end if
@@ -196,12 +196,12 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			(string) $dir_of_tpl
 		]);
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($file)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$file)) {
 			throw new \Exception('Typo3Fluid Templating / Render File / The file name / path contains invalid characters: '.$file);
 			return;
 		} //end if
 		//--
-		if(!\is_file($file)) {
+		if(!\is_file((string)$file)) {
 			throw new \Exception('Typo3Fluid Templating / The Template file to render does not exists: '.$file);
 			return;
 		} //end if

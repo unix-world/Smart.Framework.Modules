@@ -36,7 +36,8 @@ if((!is_array($configs)) OR (!isset($configs['pgsql'])) OR (!is_array($configs['
  *
  * @depends 	classes: Smart, SmartFileSysUtils, SmartTextTranslations ; constants: SMART_APP_TRANSLATIONS_MODIFY_DATE, SMART_FRAMEWORK__INFO__TEXT_TRANSLATIONS_ADAPTER
  *
- * @version		20210513
+ * @version		20221220
+ * @package 	Application:Translations:Adapters:Pgsql
  *
  */
 final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTranslations {
@@ -70,19 +71,19 @@ final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTra
 		} //end if
 		//--
 		$the_lang = (string) Smart::safe_varname((string)$the_lang);
-		if(((string)$the_lang == '') OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$the_lang))) {
+		if(((string)$the_lang == '') OR (!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$the_lang))) {
 			Smart::log_warning(__METHOD__.'() :: Invalid/Empty parameter for Translation Language: '.$the_lang);
 			return array();
 		} //end if
 		//--
 		$y_area = (string) Smart::safe_filename((string)$y_area);
-		if(((string)$y_area == '') OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$y_area))) {
+		if(((string)$y_area == '') OR (!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$y_area))) {
 			Smart::log_warning(__METHOD__.'() :: Invalid/Empty parameter for Translation Area: '.$y_area);
 			return array();
 		} //end if
 		//--
 		$y_subarea = (string) Smart::safe_filename((string)$y_subarea);
-		if(((string)$y_subarea == '') OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$y_subarea))) {
+		if(((string)$y_subarea == '') OR (!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$y_subarea))) {
 			Smart::log_warning(__METHOD__.'() :: Invalid/Empty parameter for Translation SubArea: '.$y_subarea);
 			return array();
 		} //end if
@@ -118,7 +119,7 @@ final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTra
 	// This register the usage of every translation as pair of language, area and sub-area, key
 	public static function setTranslationsKeyUsageCount(?string $the_lang, ?string $y_area, ?string $y_subarea, ?string $y_textkey) {
 		//--
-		if(SmartFrameworkRegistry::ifProdEnv() === true) {
+		if(SmartEnvironment::ifDevMode() !== true) {
 			return; // this can be used only in DEV mode
 		} //end if
 		//--
