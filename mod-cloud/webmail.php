@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 
 /**
- * Admin Controller r.20210830
+ * Admin Controller r.20230101
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
@@ -724,21 +724,25 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$composer_subject = 'Fwd: '.$composer_subject;
 			} //end if
 			if(!$msg_url) {
-				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Empty ...', '100%');
+				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Empty ...');
 			} //end if
 			$msg_fpath = (array) SmartMailerMimeParser::decode_mime_fileurl(
 				(string) $msg_url,
 				(string) $this->secretKey()
 			);
 			if(Smart::array_size($msg_fpath) <= 0) {
-				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Invalid (1) ...', '100%');
+				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Invalid (1) ...');
+			} //end if
+			if((string)$msg_fpath['error'] != '') {
+				Smart::log_warning(__METHOD__.' # Mime Decode Errors: `'.$msg_fpath['error'].'`');
+				return (string) SmartComponents::operation_error($composer_title.' // ERROR: Mime Decode Errors ...');
 			} //end if
 			$msg_fpath = (string) $msg_fpath['message-file'];
 			if(!$msg_fpath) {
-				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Invalid (2) ...', '100%');
+				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Invalid (2) ...');
 			} //end if
 			if((string)substr((string)$msg_fpath, -4, 4) != '.eml') { // {{{SYNC-WEBMAIL-FWD-ALLOWED-FILE-EXTENSION}}}
-				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Invalid (3) ...', '100%');
+				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Invalid (3) ...');
 			} //end if
 			$fake_att_name = 'forwarded-message.eml';
 			$arr_att_fwd = (array) \SmartModExtLib\Cloud\webmailUtils::createAttachmentComposerData(
@@ -746,7 +750,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				(string) $msg_fpath
 			);
 			if(Smart::array_size($arr_att_fwd) <= 0) { // checks if file path is safe, exists, is a file, is readable
-				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Invalid (4) ...', '100%');
+				return (string) SmartComponents::operation_error($composer_title.' // ERROR: File Path is Invalid (4) ...');
 			} //end if
 			$composer_arr_atts = [
 				(array) $arr_att_fwd

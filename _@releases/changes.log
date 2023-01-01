@@ -2,6 +2,12 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+January 01, 2023
+	* Unicode Optimizations and Fixes for PHP 8.1 / 8.2 - mod cloud, webmail
+
+December 31, 2022
+	* Fixes for issue '+' (in string) with wrong UTF-7 detected encoding (Unicode) for PHP 8.1 / 8.2
+
 December 28, 2022
 	* Fixes: Mod DB Laminas, Mod ORM RedBean
 
