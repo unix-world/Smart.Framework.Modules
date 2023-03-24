@@ -392,6 +392,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'AREA-HTML-CONTENT' => (string) SmartMarkersTemplating::render_file_template(
 								$this->ControllerGetParam('module-view-path').'partials/webmail-part-list-mbox.mtpl.inc.htm',
 								[
+									'RELEASE-HASH' 		=> (string) SmartUtils::get_app_release_hash(),
 									'MODULE-PATH' 		=> (string) $this->ControllerGetParam('module-path'),
 									'URL-PAGE' 			=> (string) $this->pagelink,
 									'ENABLE-SEND' 		=> (string) (($mailbox_enable_send === true) ? 'yes' : 'no'),
@@ -777,11 +778,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$html_editor = (bool) !SmartAppInfo::TestIfModuleExists('mod-wflow-components');
 		//--
 		if($html_editor) {
-			$composer_init = (string) SmartViewHtmlHelpers::html_jsload_htmlarea(
+			$composer_init = (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_jsload_htmlarea(
 				'',
-				'lib/js/jsedithtml/cleditor/jquery.cleditor.smartframeworkcomponents-simple.css'
+				'modules/mod-auth-admins/views/js/html-editor/cleditor/jquery.cleditor.smartframeworkcomponents-simple.css'
 			);
-			$composer_draw = (string) SmartViewHtmlHelpers::html_js_htmlarea(
+			$composer_draw = (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_js_htmlarea(
 				'webmail-html-composer',
 				'webmail[htmlbody]',
 				(string) $composer_msg,

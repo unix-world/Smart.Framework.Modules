@@ -105,13 +105,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					//--
 					if(Smart::array_size($vcf_cards[$i]) > 0) {
 						$cards[] = [
-							'id' 			=> (string) $this->getVcfFieldData($vcf_cards[$i]['uid']),
-							'name' 			=> (string) $this->getVcfFieldData($vcf_cards[$i]['fn']),
-							'names' 		=> (string) $this->getVcfFieldData($vcf_cards[$i]['n']),
-							'organization' 	=> (string) $this->getVcfFieldData($vcf_cards[$i]['org']),
-							'phone' 		=> (string) $this->getVcfFieldData($vcf_cards[$i]['tel']),
-							'email' 		=> (string) $this->getVcfFieldData($vcf_cards[$i]['email']),
-							'address' 		=> (string) $this->getVcfFieldData($vcf_cards[$i]['adr'])
+							'id' 			=> (string) $this->getVcfFieldData($vcf_cards[$i]['uid'] ?? null),
+							'name' 			=> (string) $this->getVcfFieldData($vcf_cards[$i]['fn'] ?? null),
+							'names' 		=> (string) $this->getVcfFieldData($vcf_cards[$i]['n'] ?? null),
+							'organization' 	=> (string) $this->getVcfFieldData($vcf_cards[$i]['org'] ?? null),
+							'phone' 		=> (string) $this->getVcfFieldData($vcf_cards[$i]['tel'] ?? null),
+							'email' 		=> (string) $this->getVcfFieldData($vcf_cards[$i]['email'] ?? null),
+							'address' 		=> (string) $this->getVcfFieldData($vcf_cards[$i]['adr'] ?? null)
 						];
 					} //end if
 					//--
@@ -131,6 +131,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'main' => (string) SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'abookweb-webcards.mtpl.inc.htm',
 						[
+							'RELEASE-HASH' 	=> (string) SmartUtils::get_app_release_hash(),
 							'USER-ACC' 		=> (string) $safe_user_dir,
 							'USER-ABK' 		=> (string) $abook_addressbook,
 							'COUNT-CARDS' 	=> (string) Smart::array_size($cards),

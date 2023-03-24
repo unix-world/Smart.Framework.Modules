@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: Agile (Manager) r.20221219 #
+# Smart.Framework.Modules: Agile (Manager) r.20230123 #
 
 // r.8.7 / smart.framework.v.8.7
 

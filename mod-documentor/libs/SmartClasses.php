@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20221225
+ * @version 	v.20230123
  * @package 	Documentor
  *
  */
@@ -78,7 +78,7 @@ final class SmartClasses {
 	public static function listJavascriptSfmClasses() {
 		//--
 		return [
-			'smartJ$UI' 				=> 'lib/js/jquery/jquery.smartframework.ui.js',
+			'smartJ$UI' 				=> 'modules/mod-auth-admins/views/js/jquery.smartframework.ui.js',
 			'ArchLzs'					=> 'modules/mod-js-components/views/js/arch-lzs/arch-lzs.js'
 		];
 		//--

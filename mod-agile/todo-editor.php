@@ -76,7 +76,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(is_array($todo_data)) {
 			$sq_rd = array();
 			$new_data = (string) Smart::json_encode((array)$todo_data);
-			if($todo_data['docTitle']) {
+			if(isset($todo_data['docTitle'])) {
 				$sq_rd['title'] = (string) $todo_data['docTitle'];
 			} //end if
 			$todo_data = null;
@@ -133,7 +133,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'JSON-DATA'		=> (string) $old_data,
 					'UUID' 			=> (string) ($sq_rd['uuid'] ?? null),
 					'TITLE'			=> (string) ($sq_rd['title'] ?? 'Untitled ToDo-List'),
-					'DATE-FLD-HTML' => (string) SmartViewHtmlHelpers::html_js_date_field('gantchangedate', '', '', '', '', '', ['format'=>'yy-mm-dd'], 'SmartGanttManager.changeDate(gChart, date);'),
+					'DATE-FLD-HTML' => (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_js_date_field('gantchangedate', '', '', '', '', '', ['format'=>'yy-mm-dd'], 'SmartGanttManager.changeDate(gChart, date);'),
 					'DATE' 			=> (string) ($sq_rd['dtime'] ?? '-'),
 					'DTIME' 		=> (string) isset($sq_rd['dtime']) ? date('Ymd_His', @strtotime((string)$sq_rd['dtime'])) : '-',
 					'AUTHOR' 		=> (string) ($sq_rd['user'] ?? '-'),

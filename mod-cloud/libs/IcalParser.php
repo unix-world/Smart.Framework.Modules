@@ -23,14 +23,14 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Copyright (c) 2004-2015 Roman Ožana (http://www.omdesign.cz)
  * @author Roman Ožana <ozana@omdesign.cz>
  *
- * Modified and adapted by unixman (c) 2018-2020
+ * Modified and adapted by unixman (c) 2018-2023
  * @author unix-world.org
  *
  */
 
 class IcalParser {
 
-	// r.20200121
+	// r.20230123
 
 	/** @var \DateTimeZone */
 	public $timezone;
@@ -501,7 +501,7 @@ class IcalParser {
 		if($events = $this->getEvents()) {
 			\usort(
 				$events, function ($a, $b) {
-				return $a['DTSTART'] > $b['DTSTART'];
+				return (int) ($a['DTSTART'] > $b['DTSTART']);
 			}
 			);
 			return $events;
@@ -517,7 +517,7 @@ class IcalParser {
 		if($events = $this->getEvents()) {
 			\usort(
 				$events, function ($a, $b) {
-				return $a['DTSTART'] < $b['DTSTART'];
+				return (int) ($a['DTSTART'] < $b['DTSTART']);
 			}
 			);
 			return $events;

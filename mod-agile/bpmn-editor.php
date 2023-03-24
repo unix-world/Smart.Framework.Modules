@@ -88,7 +88,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(is_array($bpmn_data)) {
 			$sq_rd = array();
 			$new_data = (string) Smart::json_encode((array)$bpmn_data);
-			if($bpmn_data['docTitle']) {
+			if(isset($bpmn_data['docTitle'])) {
 				$sq_rd['title'] = (string) $bpmn_data['docTitle'];
 			} //end if
 			$bpmn_data = null;

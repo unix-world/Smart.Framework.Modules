@@ -1,11 +1,11 @@
 
 // [LIB - SmartFramework / JS / Browser UI Utils - jQueryUI]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 // DEPENDS: jQuery, smartJ$Utils, smartJ$Date, smartJ$Browser, jQueryUI, jQuery.UI.ListSelect, jQuery.UI.TimePicker, jQuery.DataTable
 
-// ! To use jQueryUI bindings for Smart.Framework load this instead of lib/js/jquery/jquery.smartframework.ui.js ; they are a drop-in replacements for LighJS-UI !
+// ! To use jQueryUI bindings for Smart.Framework load this instead of default jquery.smartframework.ui.js ; they are a drop-in replacements for LighJS-UI !
 
 //==================================================================
 //==================================================================
@@ -26,7 +26,7 @@ $.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
 	} //end function
 }));
 
-var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210526
+var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20230123
 
 	this.overlayCssClass = 'ui-widget-overlay'; // optional: overlay integration
 
@@ -227,12 +227,12 @@ var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210526
 
 	// Dependencies:
 	//	jQueryUI
-	//	modules/mod-ui-jqueryui/toolkit/listselect/jquery.multiselect.css
-	//	modules/mod-ui-jqueryui/toolkit/listselect/jquery.multiselect.filter.css
-	//	modules/mod-ui-jqueryui/toolkit/listselect/jquery.multiselect.js
-	//	modules/mod-ui-jqueryui/toolkit/listselect/i18n/jquery.multiselect.{lang}.js
-	//	modules/mod-ui-jqueryui/toolkit/listselect/jquery.multiselect.filter.js
-	//	modules/mod-ui-jqueryui/toolkit/listselect/i18n/jquery.multiselect.filter.{lang}.js
+	//	toolkit/listselect/jquery.multiselect.css
+	//	toolkit/listselect/jquery.multiselect.filter.css
+	//	toolkit/listselect/jquery.multiselect.js
+	//	toolkit/listselect/i18n/jquery.multiselect.{lang}.js
+	//	toolkit/listselect/jquery.multiselect.filter.js
+	//	toolkit/listselect/i18n/jquery.multiselect.filter.{lang}.js
 	this.SelectList = function(elemID, dimW, dimH, isMulti, useFilter) {
 		//--
 		// evcode is taken from onBlur, mostly used by multi-select lists ; single select lists can handle onChange
@@ -294,7 +294,7 @@ var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210526
 
 	// Dependencies:
 	//	jQueryUI
-	//	modules/mod-ui-jqueryui/toolkit/i18n/jquery.ui.datepicker-{lang}.js
+	//	toolkit/i18n/jquery.ui.datepicker-{lang}.js
 	this.DatePickerInit = function(elemID, dateFmt, selDate, calStart, calMinDate, calMaxDate, noOfMonths, evcode) {
 		//--
 		// evcode params: date, altdate, inst, elemID
@@ -357,7 +357,7 @@ var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210526
 
 	// Dependencies:
 	//	jQueryUI
-	//	modules/mod-ui-jqueryui/toolkit/i18n/jquery.ui.datepicker-{lang}.js
+	//	toolkit/i18n/jquery.ui.datepicker-{lang}.js
 	this.DatePickerDisplay = function(datepicker_id) {
 		//--
 		var HtmlElement = $('#' + datepicker_id);
@@ -372,9 +372,9 @@ var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210526
 
 	// Dependencies:
 	//	jQueryUI
-	//	modules/mod-ui-jqueryui/toolkit/timepicker/jquery.ui.timepicker.css
-	//	modules/mod-ui-jqueryui/toolkit/timepicker/jquery.ui.timepicker.js
-	//	modules/mod-ui-jqueryui/toolkit/timepicker/i18n/jquery.ui.timepicker-{lang}.js
+	//	toolkit/timepicker/jquery.ui.timepicker.css
+	//	toolkit/timepicker/jquery.ui.timepicker.js
+	//	toolkit/timepicker/i18n/jquery.ui.timepicker-{lang}.js
 	this.TimePickerInit = function(elemID, hStart, hEnd, mStart, mEnd, mInterval, tmRows, evcode) {
 		//--
 		// evcode params: time, inst, elemID
@@ -427,9 +427,9 @@ var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210526
 
 	// Dependencies:
 	//	jQueryUI
-	//	modules/mod-ui-jqueryui/toolkit/timepicker/jquery.ui.timepicker.css
-	//	modules/mod-ui-jqueryui/toolkit/timepicker/jquery.ui.timepicker.js
-	//	modules/mod-ui-jqueryui/toolkit/timepicker/i18n/jquery.ui.timepicker-{lang}.js
+	//	toolkit/timepicker/jquery.ui.timepicker.css
+	//	toolkit/timepicker/jquery.ui.timepicker.js
+	//	toolkit/timepicker/i18n/jquery.ui.timepicker-{lang}.js
 	this.TimePickerDisplay = function(timepicker_id) {
 		//--
 		var HtmlElement = $('#' + timepicker_id);
@@ -607,9 +607,9 @@ var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210526
 
 	// Dependencies:
 	//	jQuery
-	//	lib/js/jquery/datatables/datatables-responsive.css
-	//	lib/js/jquery/datatables/datatables-responsive.js
-	//	lib/js/jquery/datatables/smart-datatables.js
+	//	datatables/datatables-responsive.css
+	//	datatables/datatables-responsive.js
+	//	datatables/smart-datatables.js
 	this.DataTableInit = function(elem_id, options) {
 		//--
 		if(typeof(SmartDataTables) == undefined) {
@@ -638,9 +638,9 @@ var smartJ$UI = new function() { // START CLASS :: ES5 :: v.20210526
 
 	// Dependencies:
 	//	jQuery, smartJ$Utils
-	//	lib/js/jquery/datatables/datatables-responsive.css
-	//	lib/js/jquery/datatables/datatables-responsive.js
-	//	lib/js/jquery/datatables/smart-datatables.js
+	//	datatables/datatables-responsive.css
+	//	datatables/datatables-responsive.js
+	//	datatables/smart-datatables.js
 	this.DataTableColumnsFilter = function(elem_id, filterColNumber, regexStr) {
 		//--
 		if(typeof(SmartDataTables) == undefined) {

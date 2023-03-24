@@ -108,7 +108,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(is_array($dbmodel_data)) {
 			$sq_rd = array();
 			$new_data = (array) $dbmodel_data;
-			if($dbmodel_data['docTitle']) {
+			if(isset($dbmodel_data['docTitle'])) {
 				$sq_rd['title'] = (string) $dbmodel_data['docTitle'];
 			} //end if
 			$dbmodel_data = null;

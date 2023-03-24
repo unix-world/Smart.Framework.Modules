@@ -9,7 +9,7 @@
  *  original version: 1.9.5 @ 2016-05-13
  *  (c) 2011 - 2016 Stefan Gabos
  *
- *  Modified Script: http://demo.unix-world.org/smart-framework/lib/js/jquery/datepicker/
+ *  Modified Script
  *  (c) 2016 - 2019 unix-world.org
  *  current version: 1.9.5.5.smart20191123
  *  Includes fixes by unixman:

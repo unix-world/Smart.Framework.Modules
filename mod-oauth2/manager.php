@@ -293,8 +293,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'main' => (string) SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'list-records.mtpl.htm',
 						[
+							'RELEASE-HASH' => (string) $this->ControllerGetParam('release-hash'),
 							'ACTIONS-URL' => 'admin.php?page='.$this->ControllerGetParam('controller').'&action=',
-							'RELEASE-HASH' => (string) $this->ControllerGetParam('release-hash')
 						]
 					)
 				]);

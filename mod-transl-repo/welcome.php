@@ -58,6 +58,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			$this->PageViewSetErrorStatus(503, 'ERROR: The Smart Extra Libs module is missing ...');
 			return;
 		} //end if
+		if(!class_exists('SmartAbstractPgsqlExtDb')) {
+			$this->PageViewSetErrorStatus(503, 'ERROR: The Smart Extra Libs module is not loaded ...');
+			return;
+		} //end if
 		//--
 		if(!SmartAppInfo::TestIfModuleExists('mod-page-builder')) {
 			$this->PageViewSetErrorStatus(503, 'ERROR: The PageBuilder Module is missing ...');
@@ -281,7 +285,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				'main' => SmartMarkersTemplating::render_file_template(
 					$this->ControllerGetParam('module-view-path').'list'.'.mtpl.htm',
 					[
-						'HTML-LIST-LANGS' 	=> (string) SmartViewHtmlHelpers::html_select_list_single(
+						'RELEASE-HASH' 		=> (string) SmartUtils::get_app_release_hash(),
+						'HTML-LIST-LANGS' 	=> (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single(
 												'filter-languages-list',
 												(string) $lng,
 												'form',
@@ -289,7 +294,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 												'lng',
 												'100/0'
 											),
-						'HTML-LIST-PROJS' 	=> (string) SmartViewHtmlHelpers::html_select_list_single(
+						'HTML-LIST-PROJS' 	=> (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single(
 												'filter-projects-list',
 												(string) $proj,
 												'form',
@@ -297,7 +302,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 												'proj',
 												'150/0'
 											),
-						'HTML-DATE-START' 	=> (string) SmartViewHtmlHelpers::html_js_date_field(
+						'HTML-DATE-START' 	=> (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_js_date_field(
 												'filter-date-start',
 												'dts',
 												(string) $dts,
@@ -308,7 +313,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 													'format' => 'YYYY-MM-DD'
 												]
 											),
-						'HTML-DATE-END' 	=> (string) SmartViewHtmlHelpers::html_js_date_field(
+						'HTML-DATE-END' 	=> (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_js_date_field(
 												'filter-date-end',
 												'dte',
 												(string) $dte,
@@ -335,7 +340,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				[
 					'WEBSITE-APP-NAME' 	=> (string) $this->ConfigParamGet('app.name'),
 					'PAGE-URL-PREFIX' 	=> (string) $this->ControllerGetParam('controller'),
-					'HTML-LIST-LANGS' 	=> (string) SmartViewHtmlHelpers::html_select_list_single(
+					'HTML-LIST-LANGS' 	=> (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single(
 												'languages-list',
 												'',
 												'form',

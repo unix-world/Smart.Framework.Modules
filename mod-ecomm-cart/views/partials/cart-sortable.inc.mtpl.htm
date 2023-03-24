@@ -1,15 +1,19 @@
-<!-- cart sortable r.20210318 -->
-<link href="lib/js/jquery/jquery.sortable.css" rel="stylesheet">
-<script src="lib/js/jquery/jquery.sortable.js"></script>
+<!-- cart sortable r.20230123 -->
+<link href="modules/mod-wflow-components/views/jquery/jquery.sortable.css" rel="stylesheet">
+<script src="modules/mod-wflow-components/views/jquery/jquery.sortable.js"></script>
 <script>
 jQuery(document).ready(function(){
 
+try {
 	jQuery('table#cart-table').sortable({
 		containerSelector: 'table',
 		itemPath: '> tbody',
 		itemSelector: 'tr.cart-row',
 		pullPlaceholder: false,
 	});
+} catch(err) {
+	console.log('ERROR: Cart Sortable:', err);
+}
 
 });
 </script>

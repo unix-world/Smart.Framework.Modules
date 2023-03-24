@@ -75,7 +75,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(is_array($flowchart_data)) {
 			$sq_rd = array();
 			$new_data = (string) Smart::json_encode((array)$flowchart_data);
-			if($flowchart_data['docTitle']) {
+			if(isset($flowchart_data['docTitle'])) {
 				$sq_rd['title'] = (string) $flowchart_data['docTitle'];
 			} //end if
 			$flowchart_data = null;

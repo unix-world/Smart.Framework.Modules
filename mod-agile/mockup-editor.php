@@ -75,7 +75,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(is_array($mockup_data)) {
 			$sq_rd = array();
 			$new_data = (string) (string) Smart::json_encode((array)$mockup_data);
-			if($mockup_data['docTitle']) {
+			if(isset($mockup_data['docTitle'])) {
 				$sq_rd['title'] = (string) $mockup_data['docTitle'];
 			} //end if
 			$mockup_data = null;
