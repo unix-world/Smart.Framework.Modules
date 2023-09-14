@@ -1,5 +1,5 @@
 [@@@SUB-TEMPLATE:partials/base.inc.mtpl.htm@@@]
-<!-- cart r.20210413 -->
+<!-- cart r.20230914 -->
 <script>
 var ecommCartLastError = null;
 jQuery('#btn-goto-cart').hide();
@@ -103,7 +103,7 @@ table#cart-table .cart-icon {
 					<b>[###CART-ITEMS.-_INDEX_-|html###]. [###CART-ITEMS.NAME|html###]</b>
 				</div>
 				<div><small>
-				<span class="cart-item-sku">SKU:&nbsp;<b>[###CART-ITEMS.ID|html###]</b></span><br>
+				<span class="cart-item-sku" title="ATT-HASH: [###CART-ITEMS.HASH|html###]">SKU:&nbsp;<b>[###CART-ITEMS.ID|html###]</b></span><br>
 				[%%%IF:CART-ITEMS.ATTRIBUTES:@>0;%%%]
 				<!-- visible attributes -->
 				<table [%%%IF:CART-MODE:?sales|inventory;%%%]width="100%" [%%%/IF:CART-MODE%%%]cellpadding="0" cellspacing="0">

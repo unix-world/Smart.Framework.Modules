@@ -1,6 +1,6 @@
 <?php
 // eComm Cart Manager
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 
 namespace SmartModExtLib\EcommCart;
 
@@ -20,7 +20,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 final class cartManager {
 
-	// r.20210908
+	// r.20230914
 
 	/**
 	 * An unique ID for the cart.
@@ -513,13 +513,15 @@ final class cartManager {
 
 
 	/**
-	 * Calculate item cart hash.
+	 * Calculate item cart hash as SHA256/Hex (not B64/s because is designed to be used also in HTML properties).
 	 *
 	 * @return string
 	 */
-	public function calculateHash($id, $attributes) {
+	public function calculateHash(string $id, array $attributes) : string {
 		//--
-		return (string) 'ecomm_uuid_'.\sha1($id.':'.\Smart::json_encode($attributes, false, true, false));
+		$attributes = (array) \Smart::array_sort($attributes, 'ksort'); // sort by key
+		//--
+		return (string) \SmartHashCrypto::sha256((string)$id.':'.\Smart::json_encode((array)$attributes, false, true, false));
 		//--
 	} //END FUNCTION
 
@@ -544,7 +546,7 @@ final class cartManager {
 		} //end if
 		//--
 		if(\is_array($attributes)) { // must test is array not array size > 0
-			$hash = (string) $this->calculateHash($id, $attributes);
+			$hash = (string) $this->calculateHash((string)$id, (array)$attributes);
 		} else {
 			$hash = (string) $attributes;
 			$attributes = [];
@@ -767,7 +769,7 @@ final class cartManager {
 		//--
 		$fix_exchrate = (string) \Smart::format_number_dec($this->getCurrencyExchangeRate($fix_currency), 4, '.', '');
 		//--
-		$hash = $this->calculateHash($id, $attributes);
+		$hash = $this->calculateHash((string)$id, (array)$attributes);
 		//--
 		if((string)$replace != '') {
 			if(isset($this->items[$id]) AND \is_array($this->items[$id])) {
@@ -792,7 +794,7 @@ final class cartManager {
 			} //end if
 		} //end if
 		//--
-		$item_key = (string) \sha1((string)$hash); // TODO: make this ATT: att1|att2|...|attn
+		$item_key = (string) \sha1('ID='.$id.';ATT-HASH='.$hash.'#');
 		$this->items[$id][(string)$item_key] = [
 			// {{{SYNC-ECART-ITEM-PROPS}}}
 			'dtime'      => (string) \date('Y-m-d H:i:s O'),
@@ -801,6 +803,9 @@ final class cartManager {
 			'attributes' => (array)  $attributes,
 			'quantity'   => (string) \Smart::format_number_dec((($this->itemMaxQuantity < $quantity && $this->itemMaxQuantity != 0) ? $this->itemMaxQuantity : $quantity), 4, '.', ''),
 			'qtyerg'     => (string) $fix_qtyerg,
+			'umtype'     => (string) ($data['pak']['umtype'] ?? null),
+			'um'         => (string) ($data['pak']['um'] ?? null),
+			'type'       => (string) ($data['type'] ?? null),
 			'currency'   => (string) $this->cartCurrency,
 			'price'      => (string) \Smart::format_number_dec(($fix_price * $fix_exchrate), 2, '.', ''), // {{{SYNC-CALC-PRICE-BY-EXCHRATE}}} this may have modified by sales operator in non-customer cart modes
 			'tax'        => (string) $fix_tax, // tax % (ex: 19)
@@ -923,7 +928,7 @@ final class cartManager {
 		//--
 		if(\Smart::array_size($this->items[(string)$id]) > 0) {
 			if(\is_array($attributes)) { // must test is array not array size > 0
-				$hash = (string) $this->calculateHash($id, $attributes);
+				$hash = (string) $this->calculateHash((string)$id, (array)$attributes);
 			} else {
 				$hash = (string) $attributes;
 				$attributes = [];
@@ -1075,7 +1080,7 @@ final class cartManager {
 				$this->write();
 				return true;
 			} //end if
-			$hash = $this->calculateHash($id, $attributes);
+			$hash = $this->calculateHash((string)$id, (array)$attributes);
 		} else {
 			$hash = (string) $attributes;
 			$attributes = [];

@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: EcommCart/Test
 // Route: ?/page/ecomm-cart.test (?page=ecomm-cart.test)
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -209,6 +209,21 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			);
 			return;
 			//--
+		} elseif((string)$op == 'checkout') { // checkout
+			//--
+			$this->PageViewSetCfg('rawpage', true);
+			//--
+			$citems = (array)  $cart->getItems();
+			$cmode  = (string) $cart->getCartMode();
+		//	$exportData = (array) \SmartModExtLib\EcommCart\cartUtils::getDisplayItems((array)$citems, (string)$cmode, true); // must show also empty atts
+			$this->PageViewSetVar(
+				'main',
+				print_r($citems, 1),
+				//print_r($exportData, 1),
+			);
+			//--
+			return;
+			//--
 		} elseif((string)$op == 'cart') { // display cart
 			//--
 			$tpl = 'cart.mtpl.htm';
@@ -232,7 +247,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				'CART-GRAND-TOTAL' 		=> (string) $totals['grand-total'],
 				'CART-ITEMS' 			=> (array)  \SmartModExtLib\EcommCart\cartUtils::getDisplayItems((array)$citems, (string)$cmode, (bool)$csea),
 				'CART-ERROR' 			=> (string) $cart->getError(), // this must be at the end
-				'CART-FINALIZE-URL' 	=> (string) '?page=ecomm-cart.checkout',
+				'CART-FINALIZE-URL' 	=> (string) '?page=ecomm-cart.test&op=checkout',
 				'CART-FINALIZE-TEXT' 	=> (string) 'Checkout',
 				'CART-FINALIZE-ICON' 	=> (string) 'credit-card' // from sfi icons, will add the prefix: sfi sfi-{icon}
 			];
@@ -246,7 +261,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 					//print_r($val); die();
 					$attributes = (array) $cart->getItemAttributes((isset($val['attributes']) ? $val['attributes'] : null), true);
 					$display_atts = array();
-					foreach($attributes as $kk => $vv) { // create a copy of attributes because extra keys must not be includded in calculateHash
+					foreach($attributes as $kk => $vv) { // create a copy of attributes because extra keys must not be includded in calculate hash
 						if(Smart::array_size($vv) > 0) {
 							$vv['display'] = 'yes';
 							if(isset($vv['optional']) AND ($vv['optional'] == 'inventory')) {
