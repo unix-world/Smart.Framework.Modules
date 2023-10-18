@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
 
 
 /**
- * Admin Controller r.20220910
+ * Admin Controller r.20231018
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
@@ -28,16 +28,26 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		if(SmartAuth::check_login() !== true) {
-			if(!headers_sent()) {
-				http_response_code(403);
-			} //end if
-			die(SmartComponents::http_message_403_forbidden('ERROR: WebMail Invalid Auth ...'));
+			http_response_code(403);
+			echo SmartComponents::http_message_403_forbidden('ERROR: WebMail Invalid Auth ...');
 			return;
 		} //end if
 		//--
+		if(
+			(SmartAuth::test_login_privilege('cloud') !== true)
+			AND
+			(SmartAuth::test_login_privilege('cloud-webmail') !== true)
+		) {
+			http_response_code(403);
+			echo SmartComponents::http_message_403_forbidden('This Area is Restricted by your Account Privileges !');
+			return;
+		} //end if
+		//--
+
+		//--
 		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--
-		$this->username = (string) SmartAuth::get_login_id();
+		$this->username = (string) SmartAuth::get_auth_username();
 		//--
 		$safe_user_dir = (string) Smart::safe_username((string)$this->username);
 		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::checkIfSafeFileOrDirName((string)$safe_user_dir) != '1')) {
@@ -291,8 +301,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$store_sync_mode = false; // IMPORTANT: never sync Notes as they cannot be moved in other folder than Notes on Server ; if deleted, iOS will delete the note not move to Trash !!
 				$msg_type = 'apple-note';
 				if(((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') AND ($mailbox_enable_notes === true)) {
-					if(((string)trim((string)SmartAuth::get_login_privkey()) == '') OR ((string)trim((string)SmartAuth::get_login_password()) == '')) {
-						$this->print_fatal_err('Empty or Invalid User Account Privacy-Key. The Privacy-Key is REQUIRED for Folder: '.$box);
+					if((string)trim((string)SmartAuth::get_user_privkey()) == '') {
+						$this->print_fatal_err('Empty or Invalid User Account PrivateKey. The PrivateKey is REQUIRED for this Folder: '.$box);
 						return '';
 					} //end if
 					$cleanup_all_mark_deleted = true; // supported just on IMAP4, after iterating all notes on server and delete all mark as delete, the remaining are no more existing on server thus cleanup also locally
@@ -339,7 +349,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$arr_storage = $storage->get_storage($this->userpath);
 		//--
 		$quota_used = Smart::format_number_int($arr_storage['size'], '+');
-		$quota_max = Smart::format_number_int(SmartAuth::get_login_quota(), '+');
+		$quota_max = Smart::format_number_int(SmartAuth::get_user_quota(), '+'); // MB (zero for unlimited)
 		//--
 		echo '<hr><span style="color:#778899;">Current UserSpace Size is: #Quota='.$quota_max.' / @Used='.$quota_used.'</span><br>';
 		echo '<br>';

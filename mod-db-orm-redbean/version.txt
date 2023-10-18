@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: RedBean-ORM r.20221227 #
+# Smart.Framework.Modules: RedBean-ORM r.20231018 #
 ## gabordemooij/redbean 5.7.3 + head@20221112 (includes fixes by unixman for logging facility to integrate with Smart.Framework logging facility + a space between impements and the class name) ##
 
 // r.8.7 / smart.framework.v.8.7

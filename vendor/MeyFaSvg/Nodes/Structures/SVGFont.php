@@ -74,7 +74,7 @@ class SVGFont extends SVGStyle
         //--
         $data = false;
         if((string)trim((string)$path) != '') {
-            $arr = \SmartRobot::load_url_content($path); // force load file using HTTP browser and even if this is a file browse it via local URL
+            $arr = (array) \SmartRobot::load_url_content((string)$path); // force load file using HTTP browser and even if this is a file browse it via local URL
             if((int)$arr['result'] == 1) {
                 if((int)$arr['code'] == 200) {
                     $data = ($arr['content'] ? (string)$arr['content'] : false); // be consistent with file_get_contents()

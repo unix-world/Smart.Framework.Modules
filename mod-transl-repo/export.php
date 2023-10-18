@@ -139,7 +139,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 		$mmodel = new \SmartModDataModel\TranslRepo\PgTranslRepoMetainfo();
 		$arr = [
-			'login-id' => (string) SmartAuth::get_login_id(),
+			'login-id' => (string) SmartAuth::get_auth_username(),
 			'date-time' => (string) date('Y-m-d H:i:s'),
 			'operation' => 'SYNC-OUT',
 			'project' 	=> (string) $proj,

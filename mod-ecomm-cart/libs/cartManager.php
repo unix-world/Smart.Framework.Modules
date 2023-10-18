@@ -20,7 +20,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 final class cartManager {
 
-	// r.20230914
+	// r.20231018
 
 	/**
 	 * An unique ID for the cart.
@@ -1128,7 +1128,7 @@ final class cartManager {
 	private function write() {
 		//--
 		if($this->useCookie) {
-			$data = (string) (string)\SmartUtils::data_archive((string)\Smart::json_encode((array)$this->items));
+			$data = (string) \SmartUtils::data_archive((string)\Smart::json_encode((array)$this->items));
 			$size = (int) \strlen((string)$data);
 			if((int)$size > (int)\SmartUtils::cookie_size_max()) {
 				if(!$this->errmsg) {

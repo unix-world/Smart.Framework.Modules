@@ -37,6 +37,18 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmCardDa
 			return;
 		} //end if
 		//--
+		if(
+			(SmartAuth::test_login_privilege('cloud') !== true)
+			AND
+			(SmartAuth::test_login_privilege('cloud-abook') !== true)
+		) {
+			http_response_code(403);
+			echo SmartComponents::http_message_403_forbidden('This Area is Restricted by your Account Privileges !');
+			return;
+		} //end if
+		//--
+
+		//--
 		if(SmartFrameworkRuntime::PathInfo_Enabled() !== true) {
 			http_response_code(500);
 			echo SmartComponents::http_message_500_internalerror('ERROR: CardDAV requires PathInfo to be enabled into init.php for Admin Area ...');
@@ -53,7 +65,7 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmCardDa
 		//--
 		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--
-		$safe_user_dir = (string) Smart::safe_username(SmartAuth::get_login_id());
+		$safe_user_dir = (string) Smart::safe_username(SmartAuth::get_auth_username());
 		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::checkIfSafeFileOrDirName((string)$safe_user_dir) != '1')) {
 			http_response_code(500);
 			echo SmartComponents::http_message_500_internalerror('ERROR: CardDAV Unsafe User Dir ...');

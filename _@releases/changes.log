@@ -2,8 +2,18 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+October 18, 2023
+	* Mod Cloud Welcome Fixes for Welcome Page
+	* Js autoheight webmail iframe
+	* Implement Mod Privileges: SVN, Cloud
+	* BugFix: WebMail Get / WebMail Utils, undef Array in context
+	* upgrade Twig to 3.7.1 + Fix Debug TPL
+	* Fix cookie name on cloud webmail list
+	* WebMailUtils: checksumAtt, security fix: use safe checksum to avoid possible length attacks, SHA384
+	* Move Tree Editor as Tree Async to Mod Admins ; Update jsTree to v.3.3.15
+
 January 29, 2023
-	* new Js: WorkFlow OrgChart
+	* new Js: WorkFlow OrgChart, jsPDF,  jQuery MockJax
 
 January 23, 2023
 	* Js Major Refactoring (admin UI js/css moved to modules/mod-auth-admins/views/js and modules/mod-wflow-components/views/jquery)

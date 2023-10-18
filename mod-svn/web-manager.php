@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20221219
+	// v.20231018
 
 
 	public function Initialize() {
@@ -44,6 +44,15 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(!SmartAppInfo::TestIfModuleExists('mod-highlight-syntax')) { // req. for extra highlightjs syntax
 			$this->PageViewSetErrorStatus(500, 'ERROR: SVN Manager requires Mod HighlightSyntax ...');
 			return;
+		} //end if
+		//--
+
+		//--
+		if(
+			(SmartAuth::test_login_privilege('svn') !== true)
+		) {
+			$this->PageViewSetCfg('error', 'This Area is Restricted by your Account Privileges !');
+			return 403;
 		} //end if
 		//--
 
@@ -453,7 +462,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					[
 						'VIEWS-PATH' 				=> (string) $this->ControllerGetParam('module-view-path'),
 						'HOME-URL' 					=> (string) 'admin.php?page='.$this->ControllerGetParam('controller'),
-						'MAX-FSIZE-PRETTY' 			=> (string) \SmartUtils::pretty_print_bytes((int)(int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY, 1, ' '),
+						'MAX-FSIZE-PRETTY' 			=> (string) \SmartUtils::pretty_print_bytes((int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY, 1, ' '),
 						'REPO-NAME' 				=> (string) $repo,
 						'REPO-PATH' 				=> (string) $crr_path,
 						'BACK-URL' 					=> $path ? 'admin.php?page='.$this->ControllerGetParam('controller').'&op=list&repo='.Smart::escape_url($repo).'&path='.Smart::escape_url(Smart::dir_name($path)).'&rev='.Smart::escape_url($rev) : 'admin.php?page='.$this->ControllerGetParam('controller'),

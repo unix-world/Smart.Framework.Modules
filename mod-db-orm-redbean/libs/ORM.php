@@ -1,7 +1,7 @@
 <?php
 // Redbean ORM for Smart.Framework
 // Module Library
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -82,7 +82,7 @@ function autoload__RedbeanOrm_SFM($classname) {
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype, PHP PDO ; vendor-classes: \RedbeanOrm\Db ; classes: Smart, SmartFileSysUtils, SmartEnvironment
- * @version 	v.20221227
+ * @version 	v.20231018
  * @package 	modules:Database:PDO:Redbean-ORM
  *
  */
@@ -112,7 +112,7 @@ final class ORM extends \RedBeanPHP\Facade {
 					return false;
 				} //end if
 				$conex_str = (string) 'mysql:host='.$arr_cfg['server-host'].';port='.$arr_cfg['server-port'].';dbname='.$arr_cfg['dbname'];
-				$conex_usr = (string) (string)$arr_cfg['username'];
+				$conex_usr = (string) $arr_cfg['username'];
 				$conex_pwd = (string) ($arr_cfg['password'] ? \base64_decode((string)$arr_cfg['password']) : '');
 				self::$conexion = parent::setup(
 					(string) $conex_str, 	// DSN

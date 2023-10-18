@@ -48,9 +48,20 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
+		if(
+			(SmartAuth::test_login_privilege('cloud') !== true)
+			AND
+			(SmartAuth::test_login_privilege('cloud-webmail') !== true)
+		) {
+			$this->PageViewSetCfg('error', 'This Area is Restricted by your Account Privileges !');
+			return 403;
+		} //end if
+		//--
+
+		//--
 		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--
-		$this->username = (string) SmartAuth::get_login_id();
+		$this->username = (string) SmartAuth::get_auth_username();
 		//--
 		$safe_user_dir = (string) Smart::safe_username((string)$this->username);
 		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::checkIfSafeFileOrDirName((string)$safe_user_dir) != '1')) {

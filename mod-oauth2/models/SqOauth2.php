@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqOauth2 {
 
 	// ->
-	// v.20210402
+	// v.20231001
 
 	private $db;
 
@@ -237,7 +237,7 @@ final class SqOauth2 {
 		//--
 		$data['errs'] = 0;
 		$data['active'] = 1;
-		$data['admin'] = (string) \SmartAuth::get_login_id();
+		$data['admin'] = (string) \SmartAuth::get_auth_username();
 		//--
 		$data['id'] = (string) \trim((string)$arr_data['id']);
 		if((\strlen((string)$data['id']) < 5) OR (\strlen((string)$data['id']) > 127)) {

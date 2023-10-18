@@ -32,7 +32,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'title' 		=> (string) $title,
 					'saved_data' 	=> (string) SmartUtils::data_archive((string)Smart::json_encode(Smart::json_decode($data, true), true, true, false))
 				],
-				(string) SmartAuth:: get_login_id()
+				(string) SmartAuth:: get_auth_username()
 			);
 		} else {
 			$wr = -99; // empty data

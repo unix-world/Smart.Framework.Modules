@@ -1,7 +1,7 @@
 <?php
 // Controller: Agile, DbModelSave
 // Route: admin.php?page=agile.dbmodel-save
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -30,9 +30,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				[
 					'uuid' 			=> (string) $uuid,
 					'title' 		=> (string) $title,
-					'saved_data' 	=> (string) (string) SmartUtils::data_archive((string)Smart::json_encode(Smart::json_decode($data, true), true, true, false))
+					'saved_data' 	=> (string) SmartUtils::data_archive((string)Smart::json_encode(Smart::json_decode($data, true), true, true, false))
 				],
-				(string) SmartAuth:: get_login_id()
+				(string) SmartAuth:: get_auth_username()
 			);
 		} else {
 			$wr = -99; // empty data

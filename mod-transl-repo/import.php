@@ -86,7 +86,14 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$data = (array) SmartRobot::load_url_content((string)$cfgs_projs[(string)$proj]['url-import'], 30, 'GET', '', (string)$cfgs_projs[(string)$proj]['auth-user'], (string)$cfgs_projs[(string)$proj]['auth-pass']);
+		$data = (array) SmartRobot::load_url_content(
+			(string) $cfgs_projs[(string)$proj]['url-import'],
+			(int)    30,
+			(string) 'GET',
+			(string) '',
+			(string) $cfgs_projs[(string)$proj]['auth-user'], // to work with 2FA, this should be token user
+			(string) $cfgs_projs[(string)$proj]['auth-pass'] // to work with 2FA, this should be token pass
+		);
 		if(((string)$data['result'] != 1) OR ((string)$data['code'] != 200)) {
 			$this->jsonAnswer('URL Failed: Invalid Status Code: '.$data['code']);
 			return;

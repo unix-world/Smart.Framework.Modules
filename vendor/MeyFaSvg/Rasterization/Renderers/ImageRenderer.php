@@ -113,7 +113,7 @@ class ImageRenderer extends Renderer
         if((string)trim((string)$href) == '') {
             return false; // be consistent with file_get_contents()
         }
-        $arr = \SmartRobot::load_url_img_content($href); // works with dataURL and also URL or local files via URL ; force load image using HTTP browser and even if this is a file browse it via local URL
+        $arr = (array) \SmartRobot::load_url_img_content((string)$href); // works with dataURL and also URL or local files via URL ; force load image using HTTP browser and even if this is a file browse it via local URL
         if((int)$arr['result'] != 1) {
             return false; // be consistent with file_get_contents()
         }

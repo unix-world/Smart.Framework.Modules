@@ -18,7 +18,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 final class webmailUtils {
 
-	// r.20221220
+	// r.20231017
 	// ::
 
 
@@ -538,44 +538,48 @@ final class webmailUtils {
 			//-- find duplicates by checksum (from any folder) ; will return none, one or many
 			$tmp_chk_arr = (array) $db->getMessagesByCksum($tmp_msg_cksum, $crr_uid); // {{{SYNC-MANAGE-DUPLICATES-BY-CHECKSUM}}}
 			//-- if found many, then try to resolve it ...
-			if((((int)\Smart::array_size($tmp_chk_arr) > 0)) AND ((string)$tmp_chk_1st_arr['folder'] != 'notes') AND ((string)$tmp_chk_1st_arr['ifolder'] != 'notes')) { // if found at least one, get the first and process it
+			if((int)\Smart::array_size($tmp_chk_arr) > 0) {
 				//--
-				$tmp_chk_1st_arr = (array) $tmp_chk_arr[0]; // get the first, which is the oldest but with stat_cloud = 0 (if no one found with stat_cloud = 0, then stat_cloud = 1 (if no one found with stat_cloud = 1, then stat_cloud = 2))
-				//--
-				switch((int)$tmp_chk_1st_arr['stat_cloud']) {
-					case 0: // default
-						//--
-						if((string)$tmp_chk_1st_arr['folder'] == (string)$use_the_dir) { // just the UID is not synced with IMAP4 or POP3
+				if(((string)$tmp_chk_1st_arr['folder'] != 'notes') AND ((string)$tmp_chk_1st_arr['ifolder'] != 'notes')) { // if found at least one, get the first and process it
+					//--
+					$tmp_chk_1st_arr = (array) $tmp_chk_arr[0]; // get the first, which is the oldest but with stat_cloud = 0 (if no one found with stat_cloud = 0, then stat_cloud = 1 (if no one found with stat_cloud = 1, then stat_cloud = 2))
+					//--
+					switch((int)$tmp_chk_1st_arr['stat_cloud']) {
+						case 0: // default
 							//--
-							$db->updateOneMessageUidById((string)$tmp_chk_1st_arr['id'], (string)$crr_uid);
-							$out_arr['action_on_server'] = 'sync:local:update:uid';
+							if((string)$tmp_chk_1st_arr['folder'] == (string)$use_the_dir) { // just the UID is not synced with IMAP4 or POP3
+								//--
+								$db->updateOneMessageUidById((string)$tmp_chk_1st_arr['id'], (string)$crr_uid);
+								$out_arr['action_on_server'] = 'sync:local:update:uid';
+								return (array) $out_arr;
+								//--
+							} else { // folders are not identical (handle it different on IMAP4 vs POP3)
+								//--
+								if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') { // on IMAP4 move the message, UID will be updated on next sync since there is no direct method to find it after move
+									$out_arr['action_on_server'] = 'sync:server:move:'.$tmp_chk_1st_arr['folder'];
+									return (array) $out_arr;
+								} else { // on POP3 register as duplicate as on POP3 moving between folders is not supported, and we have it stored as default
+									$is_duplicate = true; // register as duplicate
+								} //end if else
+								//--
+							} //end if
+							//--
+							break;
+						case 1: // marked as deleted on WebMail, delete also on Server ... here stat_cloud = 1, is very clear and this is the 1st message in DB as ordered by stat_cloud ASC
+							//--
+							$out_arr['action_on_server'] = 'sync:server:delete:do'; // {{{SYNC-WEBMAIL-DELETE-MARK-DELETED}}}
+							$db->deleteOneMessageById((string)$tmp_chk_1st_arr['id']); // {{{SYNC-WEBMAIL-DELETE-DO-DELETE}}}
 							return (array) $out_arr;
 							//--
-						} else { // folders are not identical (handle it different on IMAP4 vs POP3)
+							break;
+						case 2: // marked as duplicate
+						default:
 							//--
-							if((string)$tmp_cfg_get_arr['settings_type'] == 'imap4') { // on IMAP4 move the message, UID will be updated on next sync since there is no direct method to find it after move
-								$out_arr['action_on_server'] = 'sync:server:move:'.$tmp_chk_1st_arr['folder'];
-								return (array) $out_arr;
-							} else { // on POP3 register as duplicate as on POP3 moving between folders is not supported, and we have it stored as default
-								$is_duplicate = true; // register as duplicate
-							} //end if else
+							$is_duplicate = false; // this message is only as duplicate on WebMail, so store it as default
 							//--
-						} //end if
-						//--
-						break;
-					case 1: // marked as deleted on WebMail, delete also on Server ... here stat_cloud = 1, is very clear and this is the 1st message in DB as ordered by stat_cloud ASC
-						//--
-						$out_arr['action_on_server'] = 'sync:server:delete:do'; // {{{SYNC-WEBMAIL-DELETE-MARK-DELETED}}}
-						$db->deleteOneMessageById((string)$tmp_chk_1st_arr['id']); // {{{SYNC-WEBMAIL-DELETE-DO-DELETE}}}
-						return (array) $out_arr;
-						//--
-						break;
-					case 2: // marked as duplicate
-					default:
-						//--
-						$is_duplicate = false; // this message is only as duplicate on WebMail, so store it as default
-						//--
-				} //end switch
+					} //end switch
+					//--
+				} //end if
 				//--
 			} //end if else
 			//--
@@ -761,8 +765,8 @@ final class webmailUtils {
 
 
 	public static function checksumAttachmentComposerData($relative_file_path) {
-		//--
-		return (string) \SmartHashCrypto::sha512('SmartFrameworkCloudWebMail//'.\SmartUtils::get_visitor_tracking_uid().'@'.\SmartUtils::unique_auth_client_private_key().'#'.$relative_file_path.'#'.\SmartHashCrypto::sha512($relative_file_path,true).'#'.\SmartHashCrypto::sha256($relative_file_path,true).'#'.\SmartHashCrypto::sha1($relative_file_path,true).'#'.\SmartHashCrypto::md5($relative_file_path,true).'#'.\SmartHashCrypto::crc32b($relative_file_path));
+		//-- visitor tracking UID is using: SMART_APP_VISITOR_COOKIE, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_SECURITY_KEY and SmartUtils::client_ident_private_key()
+		return (string) \SmartHashCrypto::checksum((string)'SmartFrameworkCloudWebMail//'.\SmartUtils::get_visitor_tracking_uid().'@'.\SmartUtils::unique_auth_client_private_key().'#'.$relative_file_path);
 		//--
 	} //END FUNCTION
 

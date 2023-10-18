@@ -48,7 +48,7 @@ define('SMART_HTMLTOPDF_DOCUMENT_MODE', 		'color'); 							// PDF mode: `color` 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	executables: HTMLDoc ; classes: Smart, SmartUtils, SmartFileSysUtils, SmartHtmlParser
- * @version 	v.20221220
+ * @version 	v.20231005
  * @package 	modules:PDF-Generate
  *
  */
@@ -172,7 +172,7 @@ final class HtmlToPdfExport {
 					$tmp_fake_fname = '';
 					$tmp_img_ext = ''; // extension
 					//--
-					$tmp_getimg_arr = (array) \SmartRobot::load_url_img_content($tmp_img_src, $y_allow_set_credentials);
+					$tmp_getimg_arr = (array) \SmartRobot::load_url_img_content((string)$tmp_img_src, (string)$y_allow_set_credentials);
 					if($tmp_getimg_arr['result'] == 1) {
 						$tmp_fcontent = (string) $tmp_getimg_arr['content'];
 						$tmp_fake_fname = (string) $tmp_getimg_arr['filename'];

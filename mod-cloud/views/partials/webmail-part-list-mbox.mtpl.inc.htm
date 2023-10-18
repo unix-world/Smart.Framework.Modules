@@ -36,7 +36,7 @@
 [%%%/IF:CURRENT-BOX(1)%%%]
 	//--
 	var IdOfGrid = 'webmailGrid_[###CURRENT-BOX|jsvar|js###]';
-	var TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', '[###URL-PAGE|js###]&op=list-json-mbox&mbox=[###CURRENT-MBOX|url|js###]&box=[###CURRENT-BOX|url|js###]', 'webmailSlickGrdList__[###CURRENT-BOX|slug|js###]__[###CURRENT-MBOX|slug|js###]', 'date_time', 'DESC', '', 'filtering');
+	var TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', '[###URL-PAGE|js###]&op=list-json-mbox&mbox=[###CURRENT-MBOX|url|js###]&box=[###CURRENT-BOX|url|js###]', 'SfCWebMailSGLst_[###CURRENT-BOX|ucfirst|jsvar|js###]_[###CURRENT-MBOX|jsvar|js###]', 'date_time', 'DESC', '', 'filtering');
 	//--
 	function getGridSelectedRows() {
 		var rowsSelected = TheGrid.grid.getSelectedRows();

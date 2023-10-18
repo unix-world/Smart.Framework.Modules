@@ -90,7 +90,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			'main' => '<h1>PDF Generate / Export Demo</h1>'.
 				'<br><a class="ux-button" href="'.SmartUtils::get_server_current_script().'?page='.$this->ControllerGetParam('controller').'&action=html'.'" data-smart="open.modal">The Sample HTML (used to generate the PDF)</a>'.
 				'<br><a class="ux-button ux-button-primary" href="'.SmartUtils::get_server_current_script().'?page='.$this->ControllerGetParam('controller').'&action=pdf'.'" data-smart="open.modal">Click here to generate a PDF from HTML String (requires HTMLDoc and RSvg)</a>'.
-				'<br><a class="ux-button ux-button-primary" href="'.SmartUtils::get_server_current_script().'?page='.$this->ControllerGetParam('controller').'&action=pdf-url'.'" data-smart="open.modal">Click here to generate a PDF from HTML Page Loaded via URL (requires WkHtmlToPdf)</a>',
+				'<br><a class="ux-button ux-button-primary" href="'.SmartUtils::get_server_current_script().'?page='.$this->ControllerGetParam('controller').'&action=pdf-url'.'" data-smart="open.modal">Click here to generate a PDF from HTML Page Loaded via URL (requires WkHtmlToPdf, this example does not work on areas with Authentication as admin/task)</a>',
 		]);
 		//--
 

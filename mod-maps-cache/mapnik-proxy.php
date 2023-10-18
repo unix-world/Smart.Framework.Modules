@@ -18,7 +18,7 @@ define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
  * @ignore
  *
  */
-class SmartAppIndexController extends SmartAbstractAppController {
+class SmartAppIndexController extends SmartAbstractAppController { // v.20231003
 
 	private $is_debug = false;
 
@@ -73,13 +73,21 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				$this->PageViewSetVar('main', SmartComponents::http_message_403_forbidden('Invalid Proxy Referer (103)'));
 				return;
 			} //end if
-			if(\SmartUtils::check_ip_in_range('127.0.0.1', '127.0.0.255', (string)$parsed_domain) != 1) {
+			if(
+				(Smart::ip_addr_in_range('127.0.0.1', '127.0.0.255', (string)$parsed_domain) === true) // ipv4
+				OR
+				(Smart::ip_addr_in_range('2002:7f00:1::', '2002:7f00:ff::', (string)$parsed_domain) === true) // ipv6, mapped from ::ffff:127.0.0.1 .. ::ffff:127.0.0.255
+				OR
+				(Smart::ip_addr_compare((string)$parsed_domain, '::1') === true)
+			) {
+				// OK, local
+			} else {
 				Smart::log_notice('Invalid Proxy Access // Client IP Not Allowed (104): '.$parsed_domain);
 				$this->PageViewSetVar('main', SmartComponents::http_message_403_forbidden('Invalid Proxy Referer (104)'));
 				return;
 			} //end if
 			if(((string)$cfg_custom_iprange_start != '') AND ((string)$cfg_custom_iprange_end != '')) {
-				if(\SmartUtils::check_ip_in_range((string)$cfg_custom_iprange_start, (string)$cfg_custom_iprange_end, (string)$parsed_domain) != 1) {
+				if(Smart::ip_addr_in_range((string)$cfg_custom_iprange_start, (string)$cfg_custom_iprange_end, (string)$parsed_domain) != 1) {
 					Smart::log_notice('Invalid Proxy Access // Client IP Not Allowed (105): '.$parsed_domain);
 					$this->PageViewSetVar('main', SmartComponents::http_message_403_forbidden('Invalid Proxy Referer (105)'));
 					return;

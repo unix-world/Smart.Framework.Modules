@@ -1,7 +1,7 @@
 <?php
 // Controller: Agile, MockupEditor
 // Route: admin.php?page=agile.mockup-editor
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -74,7 +74,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		if(is_array($mockup_data)) {
 			$sq_rd = array();
-			$new_data = (string) (string) Smart::json_encode((array)$mockup_data);
+			$new_data = (string) Smart::json_encode((array)$mockup_data);
 			if(isset($mockup_data['docTitle'])) {
 				$sq_rd['title'] = (string) $mockup_data['docTitle'];
 			} //end if

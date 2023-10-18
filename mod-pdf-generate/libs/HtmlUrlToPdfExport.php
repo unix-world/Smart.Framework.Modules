@@ -29,6 +29,8 @@ define('SMART_HTMLTOPDF_WKHTMLTOPDF_BIN_PATH', 	'/usr/local/bin/wkhtmltopdf'); 	
 define('SMART_HTMLTOPDF_DOCUMENT_MODE', 		'color'); 							// PDF mode: `color` | `gray`
 */
 
+// TODO: for using with 2FA can send Bearer Token or an Auth Token
+
 //=====================================================================================
 //===================================================================================== CLASS START
 //=====================================================================================

@@ -21,7 +21,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
-		$version = 'r.20210612';
+		$version = 'r.20231018';
 		//--
 
 		//--
@@ -48,12 +48,27 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
+		$urlCardDav = 'admin.php#!carddav';
+		$urlCalDav  = 'admin.php#!caldav';
+		$urlWebDav  = 'admin.php#!webdav';
+		//--
+		if(SmartEnvironment::isAdminArea()) {
+			$urlCardDav = 'admin.php/page/cloud.abook/~';
+			$urlCalDav  = 'admin.php/page/cloud.ical/~';
+			$urlWebDav  = 'admin.php/page/cloud.files/~';
+		} //end if
+		//--
+
+		//--
 		$this->PageViewSetVars([
 			'VERSION' 		=> (string) $version,
-			'LOGO-TXT' 		=> (string) 'Smart.Cloud :: '.$version.' @ Powered by Smart.Framework / Server',
+			'LOGO-TXT' 		=> (string) 'Smart.Cloud :: '.$version.' @ Powered by Smart.Framework Web Service',
 			'LOGO-IMG' 		=> (string) 'lib/core/img/app/globe.svg',
 			'IMGS-PATH' 	=> (string) 'modules/mod-webdav/libs/img/',
-			'DATE-YEAR' 	=> (string) date('Y')
+			'DATE-YEAR' 	=> (string) date('Y'),
+			'URL-CARDDAV' 	=> (string) $urlCardDav,
+			'URL-CALDAV' 	=> (string) $urlCalDav,
+			'URL-WEBDAV' 	=> (string) $urlWebDav,
 		]);
 		//--
 
