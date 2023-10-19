@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartModExtLib\PdfGenerate\HtmlToPdfExport        final class \SmartModExtLib\PdfGenerate\ HtmlToPdfExport    {   } ::    Class: HtmlToPdfExport -">
-<meta name="keywords" content="smartmodextlib pdfgenerate htmltopdfexport, final, class, smartmodextlib pdfgenerate, htmltopdfexport, exports, html, code, to, pdf, document, using, htmldoc, and, rsvg, this, is, a, very, safe, but, limited, export, of, it, does, support, most, the, html5, css3, not, javascript, images, png, gif, jpg, as, link, or, base64, embedded, svg, vector, requires, convert, them, format, language, php, located, at, modules mod-pdf-generate libs htmltopdfexport.php, package, modules:pdf-generate, namespace, name, version, v.20210428, depends, executables, classes, smart, smartutils, smartfilesysutils, smarthtmlparser, usage, static, object, class::method, provides, only, methods, public, function, is active, return, path to htmldoc.exe, check, if, exists, set, correctly, generate, string, y html content, enum, y orientation, normal, y allow set credentials, no, param, page, orientation, wide, default, value">
+<meta name="description" content="\SmartModExtLib\PdfGenerate\HtmlToPdfExport final class \SmartModExtLib\PdfGenerate\ HtmlToPdfExport { } :: Class: HtmlToPdfExport - Exports HTML Code to">
+<meta name="keywords" content="smartmodextlib pdfgenerate htmltopdfexport, final, class, smartmodextlib pdfgenerate, htmltopdfexport, exports, html, code, to, pdf, document, using, htmldoc, and, rsvg, this, is, a, very, safe, but, limited, export, of, it, does, support, most, the, html5, css3, not, javascript, images, png, gif, jpg, as, link, or, base64, embedded, svg, vector, requires, convert, them, format, language, php, located, at, modules mod pdf generate libs htmltopdfexport php, package, modules pdf generate, namespace, name, version, v, depends, executables, classes, smart, smartutils, smartfilesysutils, smarthtmlparser, usage, static, object, class method, provides, only, methods, public, function, is active, return, path to htmldoc exe, check, if, exists, set, correctly, generate, string, y html content, enum, y orientation, normal, y allow set credentials, no, param, page, orientation, wide, default, value">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartModExtLib\PdfGenerate\HtmlToPdfExport</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -708,7 +708,7 @@ It does support SVG vector images as link or base64 embedded (requires RSvg to c
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\PdfGenerate\</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> HtmlToPdfExport</span></li>
 		
-		<li><b>Version:</b> v.20210428</li>
+		<li><b>Version:</b> v.20231005</li>
 		<li><b>Depends:</b> executables:  HTMLDoc ; classes: Smart, SmartUtils, SmartFileSysUtils, SmartHtmlParser</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -735,11 +735,13 @@ It does support SVG vector images as link or base64 embedded (requires RSvg to c
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `is_rsvg_active()` --><div class="doc-container" id="Method--generate">
+</div>
+<!-- Skip Internal-Priv Method: `is_rsvg_active()` -->
+<div class="doc-container" id="Method--generate">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>generate</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html_content` Parameter is REQUIRED">$y_html_content</span></b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orientation` Parameter is OPTIONAL, with the Default Value: &quot;normal&quot;">$y_orientation</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;normal&quot;</b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_set_credentials` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$y_allow_set_credentials</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html_content` Parameter is REQUIRED">$y_html_content</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orientation` Parameter is OPTIONAL, with the Default Value: &quot;normal&quot;">$y_orientation</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;normal&quot;</b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_set_credentials` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$y_allow_set_credentials</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -754,7 +756,8 @@ Notice: this is using a secured cache folder, unique per visitor ID</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--tag_remove_start">
+</div>
+<div class="doc-container" id="Method--tag_remove_start">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>tag_remove_start</b></span>&nbsp;(
 		
 	
@@ -767,7 +770,8 @@ Notice: this is using a secured cache folder, unique per visitor ID</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--tag_remove_end">
+</div>
+<div class="doc-container" id="Method--tag_remove_end">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>tag_remove_end</b></span>&nbsp;(
 		
 	
@@ -780,7 +784,8 @@ Notice: this is using a secured cache folder, unique per visitor ID</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--tag_page_break">
+</div>
+<div class="doc-container" id="Method--tag_page_break">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>tag_page_break</b></span>&nbsp;(
 		
 	
@@ -793,7 +798,8 @@ Notice: this is using a secured cache folder, unique per visitor ID</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--tag_page_size">
+</div>
+<div class="doc-container" id="Method--tag_page_size">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>tag_page_size</b></span>&nbsp;(
 		
 	
@@ -806,7 +812,8 @@ Notice: this is using a secured cache folder, unique per visitor ID</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--tag_page_normal">
+</div>
+<div class="doc-container" id="Method--tag_page_normal">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>tag_page_normal</b></span>&nbsp;(
 		
 	
@@ -819,7 +826,8 @@ Notice: this is using a secured cache folder, unique per visitor ID</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--tag_page_wide">
+</div>
+<div class="doc-container" id="Method--tag_page_wide">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>tag_page_wide</b></span>&nbsp;(
 		
 	
@@ -833,6 +841,7 @@ Notice: this is using a secured cache folder, unique per visitor ID</div>
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -879,30 +888,30 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--is_active"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is_active()</option>
+						<option value="Method--is_active"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is_active()</option>
 			
 			
-						
-			
-									<option value="Method--generate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;generate()</option>
 			
 			
-									<option value="Method--tag_remove_start"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag_remove_start()</option>
+						<option value="Method--generate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;generate()</option>
 			
 			
-									<option value="Method--tag_remove_end"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag_remove_end()</option>
+						<option value="Method--tag_remove_start"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag_remove_start()</option>
 			
 			
-									<option value="Method--tag_page_break"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag_page_break()</option>
+						<option value="Method--tag_remove_end"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag_remove_end()</option>
 			
 			
-									<option value="Method--tag_page_size"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag_page_size()</option>
+						<option value="Method--tag_page_break"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag_page_break()</option>
 			
 			
-									<option value="Method--tag_page_normal"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag_page_normal()</option>
+						<option value="Method--tag_page_size"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag_page_size()</option>
 			
 			
-									<option value="Method--tag_page_wide"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag_page_wide()</option>
+						<option value="Method--tag_page_normal"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag_page_normal()</option>
+			
+			
+						<option value="Method--tag_page_wide"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tag_page_wide()</option>
 			
 			
 			
@@ -922,13 +931,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:36 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:56:01 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

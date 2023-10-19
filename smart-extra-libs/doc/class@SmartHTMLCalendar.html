@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartHTMLCalendar        final class \ SmartHTMLCalendar    {   } -&gt;    Class: SmartHTMLCalendar - Generates a complex HTML Calendar that can handle">
-<meta name="keywords" content="smarthtmlcalendar, final, class, generates, a, complex, html, calendar, that, can, handle, events, language, php, located, at, modules smart-extra-libs lib calendar.php, package, plugins:viewcomponents, namespace, name, version, v.20200121, depends, classes, smart, usage, dynamic, object, new, class method, this, provides, only, methods, public, function, construct, date string, highlight selected, false, width, css class, constructor, calls, the, setdate, ismobile, is mobile, setmonthnames, y month names arr, setdaynames, y day names arr, adddayevent, string, start date string, bool string, end date string, void, return, param, raw, to, place, on, for, event, date, when, starts, ends, defaults, start, add, daily, cleardayevents, clear, all, setstartofweek, int string, offset, day, ex, monday, or, where, is, sunday, sets, first, of, week, draw, bool, echo, whether, resulting">
+<meta name="description" content="\SmartHTMLCalendar final class \ SmartHTMLCalendar { } -&gt; Class: SmartHTMLCalendar - Generates a complex HTML Calendar that can handle events. Language:">
+<meta name="keywords" content="smarthtmlcalendar, final, class, generates, a, complex, html, calendar, that, can, handle, events, language, php, located, at, modules smart extra libs lib calendar php, package, plugins viewcomponents, namespace, name, version, v, depends, classes, smart, usage, dynamic, object, new, class   - method, this, provides, only, methods, public, function, construct, date string, highlight selected, false, width, css class, constructor, calls, the, setdate, ismobile, is mobile, setmonthnames, y month names arr, setdaynames, y day names arr, adddayevent, string, start date string, bool string, end date string, void, return, param, raw, to, place, on, for, event, date, when, starts, ends, defaults, start, add, daily, cleardayevents, clear, all, setstartofweek, int string, offset, day, ex, monday, or, where, is, sunday, sets, first, of, week, draw, bool, echo, whether, resulting">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation: \SmartHTMLCalendar">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartHTMLCalendar</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -703,7 +703,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartHTMLCalendar</span></li>
 		
-		<li><b>Version:</b> v.20200121</li>
+		<li><b>Version:</b> v.20221220</li>
 		<li><b>Depends:</b> classes:  Smart</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -719,10 +719,10 @@ select#select-summary {
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$date_string` Parameter is REQUIRED">$date_string</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$highlight_selected` Parameter is OPTIONAL, with the Default Value: false">$highlight_selected</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$css_class` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$css_class</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<span class="doc-param-name"><b><span title="`$date_string` Parameter is REQUIRED">$date_string</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$highlight_selected` Parameter is OPTIONAL, with the Default Value: false">$highlight_selected</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$css_class` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$css_class</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -733,9 +733,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--isMobile">
+</div>
+<div class="doc-container" id="Method--isMobile">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isMobile</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$is_mobile` Parameter is REQUIRED">$is_mobile</span></b></span>
+		<span class="doc-param-name"><b><span title="`$is_mobile` Parameter is REQUIRED">$is_mobile</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -745,9 +746,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--setMonthNames">
+</div>
+<div class="doc-container" id="Method--setMonthNames">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setMonthNames</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$y_month_names_arr` Parameter is REQUIRED">$y_month_names_arr</span></b></span>
+		<span class="doc-param-name"><b><span title="`$y_month_names_arr` Parameter is REQUIRED">$y_month_names_arr</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -757,9 +759,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--setDayNames">
+</div>
+<div class="doc-container" id="Method--setDayNames">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setDayNames</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$y_day_names_arr` Parameter is REQUIRED">$y_day_names_arr</span></b></span>
+		<span class="doc-param-name"><b><span title="`$y_day_names_arr` Parameter is REQUIRED">$y_day_names_arr</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -769,14 +772,15 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--addDayEvent">
+</div>
+<div class="doc-container" id="Method--addDayEvent">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>addDayEvent</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$html` Parameter is REQUIRED">$html</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$start_date_string` Parameter is REQUIRED">$start_date_string</span></b></span>, 
-			<i>bool|string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$end_date_string` Parameter is OPTIONAL, with the Default Value: false">$end_date_string</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$html` Parameter is REQUIRED">$html</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$start_date_string` Parameter is REQUIRED">$start_date_string</span></b></span>, 
+	<i>bool|string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$end_date_string` Parameter is OPTIONAL, with the Default Value: false">$end_date_string</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;void
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;VOID
 	
 	
 			<div class="doc-method-ret-params">@return: {void}<br>
@@ -788,11 +792,12 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--clearDayEvents">
+</div>
+<div class="doc-container" id="Method--clearDayEvents">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>clearDayEvents</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;void
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;VOID
 	
 	
 			<div class="doc-method-ret-params">@return: {void}</div>
@@ -801,9 +806,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--setStartOfWeek">
+</div>
+<div class="doc-container" id="Method--setStartOfWeek">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setStartOfWeek</b></span>&nbsp;(
-				<i>int|string</i>&nbsp;<span class="doc-param-name"><b><span title="`$offset` Parameter is REQUIRED">$offset</span></b></span>
+		<i>int|string</i>&nbsp;<span class="doc-param-name"><b><span title="`$offset` Parameter is REQUIRED">$offset</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -815,11 +821,12 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--draw">
+</div>
+<div class="doc-container" id="Method--draw">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>draw</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;string
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
 	
 	
 			<div class="doc-method-ret-params">@return: {string}<br>
@@ -830,6 +837,7 @@ select#select-summary {
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -876,28 +884,28 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--isMobile"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isMobile()</option>
+						<option value="Method--isMobile"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isMobile()</option>
 			
 			
-									<option value="Method--setMonthNames"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setMonthNames()</option>
+						<option value="Method--setMonthNames"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setMonthNames()</option>
 			
 			
-									<option value="Method--setDayNames"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setDayNames()</option>
+						<option value="Method--setDayNames"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setDayNames()</option>
 			
 			
-									<option value="Method--addDayEvent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addDayEvent()</option>
+						<option value="Method--addDayEvent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addDayEvent()</option>
 			
 			
-									<option value="Method--clearDayEvents"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;clearDayEvents()</option>
+						<option value="Method--clearDayEvents"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;clearDayEvents()</option>
 			
 			
-									<option value="Method--setStartOfWeek"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setStartOfWeek()</option>
+						<option value="Method--setStartOfWeek"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setStartOfWeek()</option>
 			
 			
-									<option value="Method--draw"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;draw()</option>
+						<option value="Method--draw"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;draw()</option>
 			
 			
 			
@@ -917,13 +925,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:36 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:56:00 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

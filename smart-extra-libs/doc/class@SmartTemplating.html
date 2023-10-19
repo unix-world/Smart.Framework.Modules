@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartTemplating        final class \ SmartTemplating    {   } ::    Provides an easy to use connector for All available Templating Engines inside the">
-<meta name="keywords" content="smarttemplating, final, class, provides, an, easy, to, use, connector, for, all, available, templating, engines, inside, the, smart.framework, at, once, depending, upon, file, name, extension, will, choose, render, as, some-file.mtpl.htm, smartmarkerstemplating, marker-tpl, syntax, mtpl, some-file.dust.htm, smartmodextlib tpldust smartdusttemplating, dust-tpl, dust, some-file.twig.htm, smartmodextlib tpltwig smarttwigtemplating, twig-tpl, twig, some-file.t3fluid.htm, smartmodextlib tpltypo3fluid smarttypo3fluidtemplating, typo3fluid-tpl, t3fluid, language, php, located, modules smart-extra-libs lib templating ext.php, package, extralibs:templatingengine, namespace, version, v.20210303, depends, classes, usage, static, object, class::method, this, only, methods, public, function, render file template, arr vars, options, properties, constants, sample, code, in, a, controller, of, after, you, install, smart.framework.modules, pageviewsetvar, main, modules my-module-name views my-view. mtpl dust twig t3fluid .htm, somevar, hello, world, othervar, date, y-m-d, h:i:s, end, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartTemplating final class \ SmartTemplating { } :: Provides an easy to use connector for All available Templating Engines inside the Smart.Framework at">
+<meta name="keywords" content="smarttemplating, final, class, provides, an, easy, to, use, connector, for, all, available, templating, engines, inside, the, smart framework, at, once, depending, upon, file, name, extension, will, choose, render, as, some file mtpl htm, smartmarkerstemplating, marker tpl, syntax, mtpl, some file twist htm, smartmodextlib tpltwist smarttwisttemplating, twist tpl, twist, some file twig htm, smartmodextlib tpltwig smarttwigtemplating, twig tpl, twig, some file t3fluid htm, smartmodextlib tpltypo3fluid smarttypo3fluidtemplating, typo3fluid tpl, t3fluid, language, php, located, modules smart extra libs lib templating ext php, package, extralibs templatingengine, namespace, version, v, depends, classes, usage, static, object, class method, this, only, methods, public, function, render file template, arr vars, options, properties, constants, sample, code, in, a, controller, of, after, you, install, smart framework modules, pageviewsetvar, main, modules my module name views my view. mtpl twist twig t3fluid .htm, somevar, hello, world, othervar, date, y m d, h i s, end, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation: \SmartTemplating">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartTemplating</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -696,7 +696,7 @@ select#select-summary {
 <div class="doc-comments">Provides an easy to use connector for All available Templating Engines inside the Smart.Framework at once.<br>
 Depending upon the file name extension will choose to render as:<br>
 some-file.mtpl.htm 		: SmartMarkersTemplating 									(Marker-TPL syntax: .mtpl.)<br>
-some-file.dust.htm 		: \SmartModExtLib\TplDust\SmartDustTemplating 				(Dust-TPL syntax: .dust.)<br>
+some-file.twist.htm 		: \SmartModExtLib\TplTwist\SmartTwistTemplating 			(Twist-TPL syntax: .twist.)<br>
 some-file.twig.htm 		: \SmartModExtLib\TplTwig\SmartTwigTemplating 				(Twig-TPL syntax: .twig.)<br>
 some-file.t3fluid.htm 	: \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating 	(Typo3Fluid-TPL syntax: .t3fluid.)</div><br>
 <!-- Metainfo -->
@@ -708,8 +708,8 @@ some-file.t3fluid.htm 	: \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartTemplating</span></li>
 		
-		<li><b>Version:</b> v.20210303</li>
-		<li><b>Depends:</b> classes:  SmartMarkersTemplating, \SmartModExtLib\TplDust\SmartDustTemplating, \SmartModExtLib\TplTwig\SmartTwigTemplating, \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating</li>
+		<li><b>Version:</b> v.20221220</li>
+		<li><b>Depends:</b> classes:  SmartMarkersTemplating, \SmartModExtLib\TplTwist\SmartTwistTemplating, \SmartModExtLib\TplTwig\SmartTwigTemplating, \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -724,9 +724,9 @@ some-file.t3fluid.htm 	: \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--render_file_template">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>render_file_template</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$file` Parameter is REQUIRED">$file</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arr_vars` Parameter is OPTIONAL, with the Default Value: []">$arr_vars</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$options` Parameter is OPTIONAL, with the Default Value: []">$options</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+		<span class="doc-param-name"><b><span title="`$file` Parameter is REQUIRED">$file</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arr_vars` Parameter is OPTIONAL, with the Default Value: []">$arr_vars</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$options` Parameter is OPTIONAL, with the Default Value: []">$options</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
@@ -737,6 +737,7 @@ some-file.t3fluid.htm 	: \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -758,7 +759,7 @@ some-file.t3fluid.htm 	: \SmartModExtLib\TplTypo3Fluid\SmartTypo3FluidTemplating
 </div>
 <div class="doc-code">
 	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Sample:&nbsp;use&nbsp;this&nbsp;code&nbsp;in&nbsp;a&nbsp;controller&nbsp;of&nbsp;Smart.Framework&nbsp;(after&nbsp;you&nbsp;install&nbsp;the&nbsp;Smart.Framework.Modules)<br>&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetVar</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'main'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">SmartTemplating</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">render_file_template</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'modules/my-module-name/views/my-view.(mtpl|dust|twig|t3fluid).htm'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'someVar'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'Hello&nbsp;World'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'otherVar'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">date</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Y-m-d&nbsp;H:i:s'</span><span style="color: #FFCC00; font-weight: bold">)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>&nbsp;);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Sample:&nbsp;use&nbsp;this&nbsp;code&nbsp;in&nbsp;a&nbsp;controller&nbsp;of&nbsp;Smart.Framework&nbsp;(after&nbsp;you&nbsp;install&nbsp;the&nbsp;Smart.Framework.Modules)<br>&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetVar</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'main'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">SmartTemplating</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">render_file_template</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'modules/my-module-name/views/my-view.(mtpl|twist|twig|t3fluid).htm'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'someVar'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'Hello&nbsp;World'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'otherVar'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">date</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Y-m-d&nbsp;H:i:s'</span><span style="color: #FFCC00; font-weight: bold">)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>&nbsp;);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
 </span>
 </code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
@@ -792,7 +793,7 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--render_file_template"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;render_file_template()</option>
+						<option value="Method--render_file_template"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;render_file_template()</option>
 			
 			
 			
@@ -815,13 +816,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:35 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:55:57 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

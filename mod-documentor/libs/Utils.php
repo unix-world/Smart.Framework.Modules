@@ -275,9 +275,11 @@ final class Utils {
 			} //end if
 			//--
 			if((string)$js_path != '') {
-				if(\SmartFileSystem::dir_copy((string)self::$modulePath.'views/js/', (string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'js/', true) != 1) {
+				if(\SmartFileSystem::dir_copy('lib/js/jsselect/', (string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'js/', true) != 1) {
 					return 'Failed to copy files to Documentation js directory';
 				} //end if
+				\SmartFileSystem::dir_delete((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'js/demo/');
+				\SmartFileSystem::dir_delete((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'js/docs/');
 				if(!\SmartFileSystem::is_type_file((string)\SMART_FRAMEWORK_DOCUMENTOR_DIR_DOCS.'js/index.html')) {
 					return 'Cannot find js directory Index file for Documentation';
 				} //end if

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartModExtLib\Soap\SoapServerRequestHandler        final class \SmartModExtLib\Soap\ SoapServerRequestHandler    {   } ::    Provides a SOAP Server">
-<meta name="keywords" content="smartmodextlib soap soapserverrequesthandler, final, class, smartmodextlib soap, soapserverrequesthandler, provides, a, soap, server, request, handler, full, unicode, compliant, utf-8, this, does, not, depend, on, the, php, extension, language, located, at, modules mod-soap libs soapserverrequesthandler.php, package, modules:network, namespace, name, version, v.20210430, depends, classes, smart, smartxmlparser, domxml, domdocument, smartmarkerstemplating, hints, use, to, easy, manage, calls, usage, static, object, class::method, only, methods, public, function, issoaprequest, boolean, return, true, if, is, or, false, check, getsoaprequesturl, string, comes, from, raw, will, non-empty, url, aka, httpsoapaction, else, an, empty, get, clients, have, send, http soapaction, comply, with, getsoaprequestaction, processed, soapaction, action, valid, format, recognize, must, be, something, like, urn:  some-request.url somesoapaction somesoapaction, for, using">
+<meta name="description" content="\SmartModExtLib\Soap\SoapServerRequestHandler final class \SmartModExtLib\Soap\ SoapServerRequestHandler { } :: Provides a SOAP Server Request Handler,">
+<meta name="keywords" content="smartmodextlib soap soapserverrequesthandler, final, class, smartmodextlib soap, soapserverrequesthandler, provides, a, soap, server, request, handler, full, unicode, compliant, utf, this, does, not, depend, on, the, php, extension, language, located, at, modules mod soap libs soapserverrequesthandler php, package, modules network, namespace, name, version, v, depends, classes, smart, smartxmlparser, domxml, domdocument, smartmarkerstemplating, hints, use, to, easy, manage, calls, usage, static, object, class method, only, methods, public, function, issoaprequest, boolean, return, true, if, is, or, false, check, getsoaprequesturl, string, comes, from, raw, will, non empty, url, aka, httpsoapaction, else, an, empty, get, clients, have, send, http soapaction, comply, with, getsoaprequestaction, processed, soapaction, action, valid, format, recognize, must, be, something, like, urn:  some request url somesoapaction somesoapaction, for, using">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartModExtLib\Soap\SoapServerRequestHandler</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -731,7 +731,8 @@ This class does NOT depend on the PHP SOAP extension</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--getSoapRequestUrl">
+</div>
+<div class="doc-container" id="Method--getSoapRequestUrl">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapRequestUrl</b></span>&nbsp;(
 		
 	
@@ -746,7 +747,8 @@ The SOAP clients will have to send the HTTP_SOAPACTION to comply with this Serve
 	
 	
 	
-</div><div class="doc-container" id="Method--getSoapRequestAction">
+</div>
+<div class="doc-container" id="Method--getSoapRequestAction">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapRequestAction</b></span>&nbsp;(
 		
 	
@@ -763,7 +765,8 @@ If the SOAP Client is not able to handle the fragment (after the hashmark #), it
 	
 	
 	
-</div><div class="doc-container" id="Method--getSoapRequestXmlStr">
+</div>
+<div class="doc-container" id="Method--getSoapRequestXmlStr">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapRequestXmlStr</b></span>&nbsp;(
 		
 	
@@ -777,7 +780,8 @@ If the SOAP Client is not able to handle the fragment (after the hashmark #), it
 	
 	
 	
-</div><div class="doc-container" id="Method--getSoapRequestXmlArr">
+</div>
+<div class="doc-container" id="Method--getSoapRequestXmlArr">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapRequestXmlArr</b></span>&nbsp;(
 		
 	
@@ -791,7 +795,8 @@ If the SOAP Client is not able to handle the fragment (after the hashmark #), it
 	
 	
 	
-</div><div class="doc-container" id="Method--getSoapRequestXmlBodyArr">
+</div>
+<div class="doc-container" id="Method--getSoapRequestXmlBodyArr">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapRequestXmlBodyArr</b></span>&nbsp;(
 		
 	
@@ -805,11 +810,12 @@ If the SOAP Client is not able to handle the fragment (after the hashmark #), it
 	
 	
 	
-</div><div class="doc-container" id="Method--getSoapResponseXmlEnvelope">
+</div>
+<div class="doc-container" id="Method--getSoapResponseXmlEnvelope">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapResponseXmlEnvelope</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$url` Parameter is REQUIRED">$url</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$xml` Parameter is REQUIRED">$xml</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$action` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$action</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$url` Parameter is REQUIRED">$url</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$xml` Parameter is REQUIRED">$xml</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$action` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$action</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -825,10 +831,11 @@ If the SOAP Client is not able to handle the fragment (after the hashmark #), it
 	
 	
 	
-</div><div class="doc-container" id="Method--getSoapResponseXmlError">
+</div>
+<div class="doc-container" id="Method--getSoapResponseXmlError">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSoapResponseXmlError</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$msg` Parameter is REQUIRED">$msg</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$code` Parameter is OPTIONAL, with the Default Value: &quot;Server&quot;">$code</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;Server&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$msg` Parameter is REQUIRED">$msg</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$code` Parameter is OPTIONAL, with the Default Value: &quot;Server&quot;">$code</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;Server&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -844,6 +851,7 @@ If the SOAP Client is not able to handle the fragment (after the hashmark #), it
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -890,28 +898,28 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--isSoapRequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isSoapRequest()</option>
+						<option value="Method--isSoapRequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isSoapRequest()</option>
 			
 			
-									<option value="Method--getSoapRequestUrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestUrl()</option>
+						<option value="Method--getSoapRequestUrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestUrl()</option>
 			
 			
-									<option value="Method--getSoapRequestAction"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestAction()</option>
+						<option value="Method--getSoapRequestAction"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestAction()</option>
 			
 			
-									<option value="Method--getSoapRequestXmlStr"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestXmlStr()</option>
+						<option value="Method--getSoapRequestXmlStr"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestXmlStr()</option>
 			
 			
-									<option value="Method--getSoapRequestXmlArr"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestXmlArr()</option>
+						<option value="Method--getSoapRequestXmlArr"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestXmlArr()</option>
 			
 			
-									<option value="Method--getSoapRequestXmlBodyArr"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestXmlBodyArr()</option>
+						<option value="Method--getSoapRequestXmlBodyArr"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapRequestXmlBodyArr()</option>
 			
 			
-									<option value="Method--getSoapResponseXmlEnvelope"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapResponseXmlEnvelope()</option>
+						<option value="Method--getSoapResponseXmlEnvelope"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapResponseXmlEnvelope()</option>
 			
 			
-									<option value="Method--getSoapResponseXmlError"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapResponseXmlError()</option>
+						<option value="Method--getSoapResponseXmlError"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSoapResponseXmlError()</option>
 			
 			
 			
@@ -931,13 +939,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:36 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:56:00 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

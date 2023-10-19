@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20230123
+ * @version 	v.20231020
  * @package 	Documentor
  *
  */
@@ -192,7 +192,8 @@ final class SmartClasses {
 		return [
 			//--
 			'\\SmartModExtLib\\AuthAdmins\\SimpleAuthAdminsHandler',
-			'\\SmartModExtLib\\AuthAdmins\\AuthAdminsHandler',
+			'\\SmartModExtLib\\AuthAdmins\\SmartAuthAdminsHandler',
+			'\\SmartModExtLib\\AuthAdmins\\SmartAdmViewHtmlHelpers',
 			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendPageBuilder',
 			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendController',
 			'\\SmartModExtLib\\PageBuilder\\AbstractFrontendPlugin',

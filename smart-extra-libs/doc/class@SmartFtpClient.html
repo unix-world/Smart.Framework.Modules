@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartFtpClient        final class \ SmartFtpClient    {   } -&gt;    Class: SmartFtpClient - provides a FTP Client with support for common FTP protocol. In">
-<meta name="keywords" content="smartftpclient, final, class, provides, a, ftp, client, with, support, for, common, protocol, in, addition, it, supports, the, extended, hylafax, language, php, located, at, modules smart-extra-libs lib ftp cli.php, package, extralibs:network, namespace, name, version, v.20210305, depends, classes, smart, usage, dynamic, object, new, class method, this, only, methods, public, function, construct, debug, false, timeout, constructor, ftp connect, server, port, boolean, return, if, success, true, failure, connect, to, ftp login, user, pass, login, authenticate, on, using, username, and, password, ftp pwd, mixed, reponse, string, pwd, get, current, path, ftp size, pathname, integer, size, of, file, ftp mdtm, last, modif, time, mdtm, modification, ftp systype, syst, asks, information, about, server s, operating, system">
+<meta name="description" content="\SmartFtpClient final class \ SmartFtpClient { } -&gt; Class: SmartFtpClient - provides a FTP Client with support for common FTP protocol. In addition it">
+<meta name="keywords" content="smartftpclient, final, class, provides, a, ftp, client, with, support, for, common, protocol, in, addition, it, supports, the, extended, hylafax, language, php, located, at, modules smart extra libs lib ftp cli php, package, extralibs network, namespace, name, version, v, depends, classes, smart, usage, dynamic, object, new, class   - method, this, only, methods, public, function, construct, debug, false, timeout, constructor, ftp connect, server, port, boolean, return, if, success, true, failure, connect, to, ftp login, user, pass, login, authenticate, on, using, username, and, password, ftp pwd, mixed, reponse, string, pwd, get, current, path, ftp size, pathname, integer, size, of, file, ftp mdtm, last, modif, time, mdtm, modification, ftp systype, syst, asks, information, about, server s, operating, system">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation: \SmartFtpClient">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartFtpClient</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -719,8 +719,8 @@ select#select-summary {
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$debug` Parameter is OPTIONAL, with the Default Value: false">$debug</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$timeout` Parameter is OPTIONAL, with the Default Value: 30">$timeout</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>30</b></span>
+		<span class="doc-param-name"><b><span class="doc-param-optional" title="`$debug` Parameter is OPTIONAL, with the Default Value: false">$debug</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$timeout` Parameter is OPTIONAL, with the Default Value: 30">$timeout</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>30</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -731,10 +731,11 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_connect">
+</div>
+<div class="doc-container" id="Method--ftp_connect">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_connect</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$server` Parameter is REQUIRED">$server</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$port` Parameter is OPTIONAL, with the Default Value: 21">$port</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>21</b></span>
+		<span class="doc-param-name"><b><span title="`$server` Parameter is REQUIRED">$server</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$port` Parameter is OPTIONAL, with the Default Value: 21">$port</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>21</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -746,10 +747,11 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_login">
+</div>
+<div class="doc-container" id="Method--ftp_login">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_login</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$user` Parameter is REQUIRED">$user</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$pass` Parameter is REQUIRED">$pass</span></b></span>
+		<span class="doc-param-name"><b><span title="`$user` Parameter is REQUIRED">$user</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$pass` Parameter is REQUIRED">$pass</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -761,7 +763,8 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_pwd">
+</div>
+<div class="doc-container" id="Method--ftp_pwd">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_pwd</b></span>&nbsp;(
 		
 	
@@ -774,9 +777,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_size">
+</div>
+<div class="doc-container" id="Method--ftp_size">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_size</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
+		<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INTEGER
@@ -788,9 +792,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_mdtm">
+</div>
+<div class="doc-container" id="Method--ftp_mdtm">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_mdtm</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
+		<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INTEGER
@@ -802,7 +807,8 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_systype">
+</div>
+<div class="doc-container" id="Method--ftp_systype">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_systype</b></span>&nbsp;(
 		
 	
@@ -815,7 +821,8 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_cdup">
+</div>
+<div class="doc-container" id="Method--ftp_cdup">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_cdup</b></span>&nbsp;(
 		
 	
@@ -828,9 +835,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_chdir">
+</div>
+<div class="doc-container" id="Method--ftp_chdir">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_chdir</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
+		<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -842,9 +850,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_delete">
+</div>
+<div class="doc-container" id="Method--ftp_delete">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_delete</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
+		<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -856,9 +865,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_rmdir">
+</div>
+<div class="doc-container" id="Method--ftp_rmdir">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_rmdir</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
+		<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -870,9 +880,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_mkdir">
+</div>
+<div class="doc-container" id="Method--ftp_mkdir">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_mkdir</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
+		<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -884,9 +895,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_file_exists">
+</div>
+<div class="doc-container" id="Method--ftp_file_exists">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_file_exists</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
+		<span class="doc-param-name"><b><span title="`$pathname` Parameter is REQUIRED">$pathname</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ENUM
@@ -898,10 +910,11 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_rename">
+</div>
+<div class="doc-container" id="Method--ftp_rename">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_rename</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$from` Parameter is REQUIRED">$from</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$to` Parameter is REQUIRED">$to</span></b></span>
+		<span class="doc-param-name"><b><span title="`$from` Parameter is REQUIRED">$from</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$to` Parameter is REQUIRED">$to</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -913,10 +926,11 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_nlist">
+</div>
+<div class="doc-container" id="Method--ftp_nlist">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_nlist</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arg` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$arg</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$pathname` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$pathname</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arg` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$arg</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$pathname` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$pathname</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
@@ -929,9 +943,10 @@ Unlike the FTP LIST command, the server will send only the list of files and no 
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_rawlist">
+</div>
+<div class="doc-container" id="Method--ftp_rawlist">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_rawlist</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$pathname` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$pathname</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<span class="doc-param-name"><b><span class="doc-param-optional" title="`$pathname` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$pathname</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
@@ -944,11 +959,12 @@ Unlike the FTP NLST command, the server will send all information on those files
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_get">
+</div>
+<div class="doc-container" id="Method--ftp_get">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_get</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$localfile` Parameter is REQUIRED">$localfile</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$remotefile` Parameter is REQUIRED">$remotefile</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$mode` Parameter is OPTIONAL, with the Default Value: 1">$mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>1</b></span>
+		<span class="doc-param-name"><b><span title="`$localfile` Parameter is REQUIRED">$localfile</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$remotefile` Parameter is REQUIRED">$remotefile</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$mode` Parameter is OPTIONAL, with the Default Value: 1">$mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>1</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -960,11 +976,12 @@ Unlike the FTP NLST command, the server will send all information on those files
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_put">
+</div>
+<div class="doc-container" id="Method--ftp_put">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_put</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$remotefile` Parameter is REQUIRED">$remotefile</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$localfile` Parameter is REQUIRED">$localfile</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$mode` Parameter is OPTIONAL, with the Default Value: 1">$mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>1</b></span>
+		<span class="doc-param-name"><b><span title="`$remotefile` Parameter is REQUIRED">$remotefile</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$localfile` Parameter is REQUIRED">$localfile</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$mode` Parameter is OPTIONAL, with the Default Value: 1">$mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>1</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -976,9 +993,10 @@ Unlike the FTP NLST command, the server will send all information on those files
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_site">
+</div>
+<div class="doc-container" id="Method--ftp_site">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_site</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$command` Parameter is REQUIRED">$command</span></b></span>
+		<span class="doc-param-name"><b><span title="`$command` Parameter is REQUIRED">$command</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -990,9 +1008,10 @@ Unlike the FTP NLST command, the server will send all information on those files
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_extcmd">
+</div>
+<div class="doc-container" id="Method--ftp_extcmd">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_extcmd</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$command` Parameter is REQUIRED">$command</span></b></span>
+		<span class="doc-param-name"><b><span title="`$command` Parameter is REQUIRED">$command</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -1004,9 +1023,10 @@ Unlike the FTP NLST command, the server will send all information on those files
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_extcmdx">
+</div>
+<div class="doc-container" id="Method--ftp_extcmdx">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_extcmdx</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$command` Parameter is REQUIRED">$command</span></b></span>
+		<span class="doc-param-name"><b><span title="`$command` Parameter is REQUIRED">$command</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
@@ -1018,7 +1038,8 @@ Unlike the FTP NLST command, the server will send all information on those files
 	
 	
 	
-</div><div class="doc-container" id="Method--ftp_quit">
+</div>
+<div class="doc-container" id="Method--ftp_quit">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ftp_quit</b></span>&nbsp;(
 		
 	
@@ -1033,6 +1054,7 @@ Closes the communication socket after sending QUIT command</div>
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -1045,25 +1067,30 @@ Closes the communication socket after sending QUIT command</div>
 If any error occurs will be set here<br>
 default ''</div>
 	
-</div><div class="doc-container" id="Property--debug">
+</div>
+<div class="doc-container" id="Property--debug">
 	<span class="doc-modifiers">public</span> <b>$debug</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>FALSE</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>BOOLEAN</i>
 			<div class="doc-method-comments">to debug or not</div>
 	
-</div><div class="doc-container" id="Property--debug_level">
+</div>
+<div class="doc-container" id="Property--debug_level">
 	<span class="doc-modifiers">public</span> <b>$debug_level</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>''</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>ENUM</i>
 			<div class="doc-method-comments">debug level '' as standard, log only responses | 'full' as full, log both requests and responses</div>
 	
-</div><div class="doc-container" id="Property--debug_msg">
+</div>
+<div class="doc-container" id="Property--debug_msg">
 	<span class="doc-modifiers">public</span> <b>$debug_msg</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>STRING</i>
 			<div class="doc-method-comments">Debug Log Collector<br>
 If Debug, this will return the partial or full Log as string, depend on how $debug_level is set<br>
 default ''</div>
 	
-</div><div class="doc-container" id="Property--timeout">
+</div>
+<div class="doc-container" id="Property--timeout">
 	<span class="doc-modifiers">public</span> <b>$timeout</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>30</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>INTEGER+</i>
 			<div class="doc-method-comments">Connect timeout in seconds</div>
 	
 </div>
+
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
@@ -1103,85 +1130,85 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--ftp_connect"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_connect()</option>
+						<option value="Method--ftp_connect"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_connect()</option>
 			
 			
-									<option value="Method--ftp_login"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_login()</option>
+						<option value="Method--ftp_login"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_login()</option>
 			
 			
-									<option value="Method--ftp_pwd"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_pwd()</option>
+						<option value="Method--ftp_pwd"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_pwd()</option>
 			
 			
-									<option value="Method--ftp_size"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_size()</option>
+						<option value="Method--ftp_size"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_size()</option>
 			
 			
-									<option value="Method--ftp_mdtm"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_mdtm()</option>
+						<option value="Method--ftp_mdtm"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_mdtm()</option>
 			
 			
-									<option value="Method--ftp_systype"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_systype()</option>
+						<option value="Method--ftp_systype"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_systype()</option>
 			
 			
-									<option value="Method--ftp_cdup"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_cdup()</option>
+						<option value="Method--ftp_cdup"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_cdup()</option>
 			
 			
-									<option value="Method--ftp_chdir"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_chdir()</option>
+						<option value="Method--ftp_chdir"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_chdir()</option>
 			
 			
-									<option value="Method--ftp_delete"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_delete()</option>
+						<option value="Method--ftp_delete"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_delete()</option>
 			
 			
-									<option value="Method--ftp_rmdir"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_rmdir()</option>
+						<option value="Method--ftp_rmdir"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_rmdir()</option>
 			
 			
-									<option value="Method--ftp_mkdir"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_mkdir()</option>
+						<option value="Method--ftp_mkdir"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_mkdir()</option>
 			
 			
-									<option value="Method--ftp_file_exists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_file_exists()</option>
+						<option value="Method--ftp_file_exists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_file_exists()</option>
 			
 			
-									<option value="Method--ftp_rename"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_rename()</option>
+						<option value="Method--ftp_rename"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_rename()</option>
 			
 			
-									<option value="Method--ftp_nlist"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_nlist()</option>
+						<option value="Method--ftp_nlist"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_nlist()</option>
 			
 			
-									<option value="Method--ftp_rawlist"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_rawlist()</option>
+						<option value="Method--ftp_rawlist"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_rawlist()</option>
 			
 			
-									<option value="Method--ftp_get"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_get()</option>
+						<option value="Method--ftp_get"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_get()</option>
 			
 			
-									<option value="Method--ftp_put"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_put()</option>
+						<option value="Method--ftp_put"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_put()</option>
 			
 			
-									<option value="Method--ftp_site"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_site()</option>
+						<option value="Method--ftp_site"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_site()</option>
 			
 			
-									<option value="Method--ftp_extcmd"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_extcmd()</option>
+						<option value="Method--ftp_extcmd"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_extcmd()</option>
 			
 			
-									<option value="Method--ftp_extcmdx"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_extcmdx()</option>
+						<option value="Method--ftp_extcmdx"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_extcmdx()</option>
 			
 			
-									<option value="Method--ftp_quit"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_quit()</option>
+						<option value="Method--ftp_quit"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ftp_quit()</option>
 			
 			
 			
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">Properties list</option>
-									<option value="Property--error_msg"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$error_msg</option>
+						<option value="Property--error_msg"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$error_msg</option>
 			
-									<option value="Property--debug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$debug</option>
+						<option value="Property--debug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$debug</option>
 			
-									<option value="Property--debug_level"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$debug_level</option>
+						<option value="Property--debug_level"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$debug_level</option>
 			
-									<option value="Property--debug_msg"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$debug_msg</option>
+						<option value="Property--debug_msg"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$debug_msg</option>
 			
-									<option value="Property--timeout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$timeout</option>
+						<option value="Property--timeout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$timeout</option>
 			
 			
 		</optgroup>
@@ -1196,13 +1223,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:36 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:55:59 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

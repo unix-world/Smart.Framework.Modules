@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartSolrDb        final class \ SmartSolrDb    {   } -&gt;    Class Smart Solr (DB) Client     Language: PHP  Located at:">
-<meta name="keywords" content="smartsolrdb, final, class, smart, solr, db, client, language, php, located, at, modules smart-extra-libs lib db solr.php, package, extralibs:database:solr, namespace, name, version, v.20220115, depends, extensions, v.2.0, or, later, classes, smartcomponents, usage, dynamic, object, new, class method, this, provides, only, methods, public, function, get ext version, string, return, extension, get, the, throwfatalerrors, raisefatalerrors, findquery, y query, y options, mode, phrase, settings, sort, filters, facets, fields, boost, mlt, adddocument, arrdoc, use autocommit, deletedocument, id, properties, constants, sample, code, example, mysolr, data, word1, word2, is, a, real, query, and, must, be, escaped, in, proper, way, using, solrutils::escapequerychars, start, offset, rows, limit, score, id1, not, category, some, categ, subcategory, sub-categ, all, end">
+<meta name="description" content="\SmartSolrDb final class \ SmartSolrDb { } -&gt; Class Smart Solr (DB) Client Language: PHP Located at: modules/smart-extra-libs/lib_db_solr.php Package:">
+<meta name="keywords" content="smartsolrdb, final, class, smart, solr, db, client, language, php, located, at, modules smart extra libs lib db solr php, package, extralibs database solr, namespace, name, throws, exception, depending, how, this, it, is, constructed, may, throw, or, raise, fatal, error, version, v, depends, extensions, later, classes, smartcomponents, usage, dynamic, object, new, class   - method, provides, only, methods, public, function, get ext version, string, return, extension, get, the, findquery, y query, array, y options, mode, phrase, settings, sort, filters, facets, fields, boost, mlt, adddocument, arrdoc, int, use autocommit, deletedocument, id, properties, constants, sample, code, example, mysolr, data, word1, word2, a, real, query, and, must, be, escaped, in, proper, way, using, solrutils escapequerychars, start, offset, rows, limit">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation: \SmartSolrDb">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartSolrDb</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -702,8 +702,8 @@ select#select-summary {
 		<li><span class="doc-package"><b>Package:</b> extralibs:Database:Solr</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartSolrDb</span></li>
-		
-		<li><b>Version:</b> v.20220115</li>
+		<li><span class="doc-throws"><b>Throws:</b> Exception  : Depending how this class it is constructed it may throw Exception or Raise Fatal Error</span></li>
+		<li><b>Version:</b> v.20221220</li>
 		<li><b>Depends:</b> extensions:  PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartComponents</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -717,7 +717,9 @@ select#select-summary {
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
-<!-- Skip Internal-Priv Method: `__construct()` --><!-- Skip Internal-Priv Method: `__destruct()` --><div class="doc-container" id="Method--get_ext_version">
+<!-- Skip Internal-Priv Method: `__construct()` -->
+<!-- Skip Internal-Priv Method: `__destruct()` -->
+<div class="doc-container" id="Method--get_ext_version">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_ext_version</b></span>&nbsp;(
 		
 	
@@ -730,60 +732,14 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--throwFatalErrors">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>throwFatalErrors</b></span>&nbsp;(
-		
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--raiseFatalErrors">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>raiseFatalErrors</b></span>&nbsp;(
-		
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--findQuery">
+</div>
+<div class="doc-container" id="Method--findQuery">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>findQuery</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$y_query` Parameter is REQUIRED">$y_query</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_options` Parameter is OPTIONAL, with the Default Value: [&quot;mode&quot; =&gt; &quot;phrase&quot;, &quot;settings&quot; =&gt; [], &quot;sort&quot; =&gt; [], &quot;filters&quot; =&gt; [], &quot;facets&quot; =&gt; [], &quot;fields&quot; =&gt; [], &quot;boost&quot; =&gt; [], &quot;mlt&quot; =&gt; []]">$y_options</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[&quot;mode&quot; =&gt; &quot;phrase&quot;, &quot;settings&quot; =&gt; [], &quot;sort&quot; =&gt; [], &quot;filters&quot; =&gt; [], &quot;facets&quot; =&gt; [], &quot;fields&quot; =&gt; [], &quot;boost&quot; =&gt; [], &quot;mlt&quot; =&gt; []]</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_query` Parameter is REQUIRED">$y_query</span></b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_options` Parameter is OPTIONAL, with the Default Value: [&quot;mode&quot; =&gt; &quot;phrase&quot;, &quot;settings&quot; =&gt; [], &quot;sort&quot; =&gt; [], &quot;filters&quot; =&gt; [], &quot;facets&quot; =&gt; [], &quot;fields&quot; =&gt; [], &quot;boost&quot; =&gt; [], &quot;mlt&quot; =&gt; []]">$y_options</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[&quot;mode&quot; =&gt; &quot;phrase&quot;, &quot;settings&quot; =&gt; [], &quot;sort&quot; =&gt; [], &quot;filters&quot; =&gt; [], &quot;facets&quot; =&gt; [], &quot;fields&quot; =&gt; [], &quot;boost&quot; =&gt; [], &quot;mlt&quot; =&gt; []]</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--addDocument">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>addDocument</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$arrdoc` Parameter is REQUIRED">$arrdoc</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$use_autocommit` Parameter is OPTIONAL, with the Default Value: 0">$use_autocommit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--deleteDocument">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>deleteDocument</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$id` Parameter is REQUIRED">$id</span></b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
 	
 	
 	
@@ -791,6 +747,34 @@ select#select-summary {
 	
 	
 </div>
+<div class="doc-container" id="Method--addDocument">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>addDocument</b></span>&nbsp;(
+		<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrdoc` Parameter is REQUIRED">$arrdoc</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$use_autocommit` Parameter is OPTIONAL, with the Default Value: 0">$use_autocommit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--deleteDocument">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>deleteDocument</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$id` Parameter is REQUIRED">$id</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
+	
+	
+	
+	
+	
+	
+</div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -846,26 +830,20 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-						
-			
-						
-			
-									<option value="Method--get_ext_version"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_ext_version()</option>
 			
 			
-									<option value="Method--throwFatalErrors"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;throwFatalErrors()</option>
 			
 			
-									<option value="Method--raiseFatalErrors"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;raiseFatalErrors()</option>
+						<option value="Method--get_ext_version"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_ext_version()</option>
 			
 			
-									<option value="Method--findQuery"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findQuery()</option>
+						<option value="Method--findQuery"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findQuery()</option>
 			
 			
-									<option value="Method--addDocument"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addDocument()</option>
+						<option value="Method--addDocument"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addDocument()</option>
 			
 			
-									<option value="Method--deleteDocument"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;deleteDocument()</option>
+						<option value="Method--deleteDocument"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;deleteDocument()</option>
 			
 			
 			
@@ -888,13 +866,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:35 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:55:58 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

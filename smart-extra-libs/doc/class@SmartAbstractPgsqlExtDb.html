@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartAbstractPgsqlExtDb        abstract class \ SmartAbstractPgsqlExtDb    {   } @-&gt;    Abstract Class: SmartAbstractPgsqlExtDb - provides a basic">
-<meta name="keywords" content="smartabstractpgsqlextdb, abstract, class, provides, a, basic, extended, postgresql, db, server, client, that, can, be, used, with, custom, made, connections, this, is, based, and, from, smartpgsqlextdb, it, should, further, language, php, located, at, modules smart-extra-libs lib db ext pgsql.php, package, development:extralibs:database, namespace, name, version, v.20200121, depends, extensions, classes, smart, smartunicode, smartutils, hints, needs, to, constructor, defined, init, as, this- initconnection  pgsql-custom, usage, dynamic, object, new, class method, only, methods, final, public, function, destruct, getconfig, getconnection, starttransaction, committransaction, rollbacktransaction, getonebykeytableschema, schema, table, field, value, fields, where, getmanybyconditiontableschema, limit, offset, orderby, getcountbyconditiontableschema, construct, protected, initconnection, cfg pgsql area, parsearrwhere, parsearrfieldstosqlselectstatement, properties, constants, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartAbstractPgsqlExtDb abstract class \ SmartAbstractPgsqlExtDb { } @-&gt; Abstract Class: SmartAbstractPgsqlExtDb - provides a basic Extended PostgreSQL">
+<meta name="keywords" content="smartabstractpgsqlextdb, abstract, class, provides, a, basic, extended, postgresql, db, server, client, that, can, be, used, with, custom, made, connections, this, is, based, and, from, smartpgsqlextdb, it, should, further, language, php, located, at, modules smart extra libs lib db ext pgsql php, package, development extralibs database, namespace, name, version, v, depends, extensions, classes, smart, smartunicode, smartutils, hints, needs, to, constructor, defined, init, as, this- initconnection  pgsql custom, usage, dynamic, object, new, class   - method, only, methods, final, public, function, destruct, getconfig, getconnection, starttransaction, committransaction, rollbacktransaction, getonebykeytableschema, schema, table, field, value, fields, where, getmanybyconditiontableschema, limit, offset, orderby, getcountbyconditiontableschema, construct, protected, initconnection, cfg pgsql area, parsearrwhere, parsearrfieldstosqlselectstatement, properties, constants, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartAbstractPgsqlExtDb</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -730,7 +730,8 @@ It should be extended further ...</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--getConfig">
+</div>
+<div class="doc-container" id="Method--getConfig">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getConfig</b></span>&nbsp;(
 		
 	
@@ -741,7 +742,8 @@ It should be extended further ...</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--getConnection">
+</div>
+<div class="doc-container" id="Method--getConnection">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getConnection</b></span>&nbsp;(
 		
 	
@@ -752,7 +754,8 @@ It should be extended further ...</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--startTransaction">
+</div>
+<div class="doc-container" id="Method--startTransaction">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>startTransaction</b></span>&nbsp;(
 		
 	
@@ -763,7 +766,8 @@ It should be extended further ...</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--commitTransaction">
+</div>
+<div class="doc-container" id="Method--commitTransaction">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>commitTransaction</b></span>&nbsp;(
 		
 	
@@ -774,7 +778,8 @@ It should be extended further ...</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--rollbackTransaction">
+</div>
+<div class="doc-container" id="Method--rollbackTransaction">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>rollbackTransaction</b></span>&nbsp;(
 		
 	
@@ -785,93 +790,15 @@ It should be extended further ...</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--getOneByKeyTableSchema">
+</div>
+<div class="doc-container" id="Method--getOneByKeyTableSchema">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getOneByKeyTableSchema</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$schema` Parameter is REQUIRED">$schema</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$table` Parameter is REQUIRED">$table</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$field` Parameter is REQUIRED">$field</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$fields` Parameter is OPTIONAL, with the Default Value: []">$fields</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$where` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$where</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--getManyByConditionTableSchema">
-	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getManyByConditionTableSchema</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$schema` Parameter is REQUIRED">$schema</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$table` Parameter is REQUIRED">$table</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$where` Parameter is REQUIRED">$where</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$limit` Parameter is REQUIRED">$limit</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$offset` Parameter is REQUIRED">$offset</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$fields` Parameter is OPTIONAL, with the Default Value: []">$fields</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$orderby` Parameter is OPTIONAL, with the Default Value: []">$orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--getCountByConditionTableSchema">
-	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getCountByConditionTableSchema</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$schema` Parameter is REQUIRED">$schema</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$table` Parameter is REQUIRED">$table</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$where` Parameter is REQUIRED">$where</span></b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--__construct">
-	<span class="doc-modifiers">abstract public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-abstract-name"><b>__construct</b></span>&nbsp;(
-		
-	
-	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--initConnection">
-	<span class="doc-modifiers">final protected</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>initConnection</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$cfg_pgsql_area` Parameter is REQUIRED">$cfg_pgsql_area</span></b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--parseArrWhere">
-	<span class="doc-modifiers">final protected</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>parseArrWhere</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$where` Parameter is REQUIRED">$where</span></b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--parseArrFieldsToSqlSelectStatement">
-	<span class="doc-modifiers">final protected</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>parseArrFieldsToSqlSelectStatement</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$fields` Parameter is REQUIRED">$fields</span></b></span>
+		<span class="doc-param-name"><b><span title="`$schema` Parameter is REQUIRED">$schema</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$table` Parameter is REQUIRED">$table</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$field` Parameter is REQUIRED">$field</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$fields` Parameter is OPTIONAL, with the Default Value: []">$fields</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$where` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$where</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -882,6 +809,92 @@ It should be extended further ...</div><br>
 	
 	
 </div>
+<div class="doc-container" id="Method--getManyByConditionTableSchema">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getManyByConditionTableSchema</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$schema` Parameter is REQUIRED">$schema</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$table` Parameter is REQUIRED">$table</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$where` Parameter is REQUIRED">$where</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$limit` Parameter is REQUIRED">$limit</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$offset` Parameter is REQUIRED">$offset</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$fields` Parameter is OPTIONAL, with the Default Value: []">$fields</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$orderby` Parameter is OPTIONAL, with the Default Value: []">$orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getCountByConditionTableSchema">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getCountByConditionTableSchema</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$schema` Parameter is REQUIRED">$schema</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$table` Parameter is REQUIRED">$table</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$where` Parameter is REQUIRED">$where</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--__construct">
+	<span class="doc-modifiers">abstract public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-abstract-name"><b>__construct</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--initConnection">
+	<span class="doc-modifiers">final protected</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>initConnection</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$cfg_pgsql_area` Parameter is REQUIRED">$cfg_pgsql_area</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--parseArrWhere">
+	<span class="doc-modifiers">final protected</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>parseArrWhere</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$where` Parameter is REQUIRED">$where</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--parseArrFieldsToSqlSelectStatement">
+	<span class="doc-modifiers">final protected</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>parseArrFieldsToSqlSelectStatement</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$fields` Parameter is REQUIRED">$fields</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -928,43 +941,43 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__destruct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__destruct()</option>
+						<option value="Method--__destruct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__destruct()</option>
 			
 			
-									<option value="Method--getConfig"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getConfig()</option>
+						<option value="Method--getConfig"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getConfig()</option>
 			
 			
-									<option value="Method--getConnection"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getConnection()</option>
+						<option value="Method--getConnection"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getConnection()</option>
 			
 			
-									<option value="Method--startTransaction"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;startTransaction()</option>
+						<option value="Method--startTransaction"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;startTransaction()</option>
 			
 			
-									<option value="Method--commitTransaction"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;commitTransaction()</option>
+						<option value="Method--commitTransaction"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;commitTransaction()</option>
 			
 			
-									<option value="Method--rollbackTransaction"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;rollbackTransaction()</option>
+						<option value="Method--rollbackTransaction"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;rollbackTransaction()</option>
 			
 			
-									<option value="Method--getOneByKeyTableSchema"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getOneByKeyTableSchema()</option>
+						<option value="Method--getOneByKeyTableSchema"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getOneByKeyTableSchema()</option>
 			
 			
-									<option value="Method--getManyByConditionTableSchema"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getManyByConditionTableSchema()</option>
+						<option value="Method--getManyByConditionTableSchema"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getManyByConditionTableSchema()</option>
 			
 			
-									<option value="Method--getCountByConditionTableSchema"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getCountByConditionTableSchema()</option>
+						<option value="Method--getCountByConditionTableSchema"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getCountByConditionTableSchema()</option>
 			
 			
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--initConnection"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;initConnection()</option>
+						<option value="Method--initConnection"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;initConnection()</option>
 			
 			
-									<option value="Method--parseArrWhere"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parseArrWhere()</option>
+						<option value="Method--parseArrWhere"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parseArrWhere()</option>
 			
 			
-									<option value="Method--parseArrFieldsToSqlSelectStatement"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parseArrFieldsToSqlSelectStatement()</option>
+						<option value="Method--parseArrFieldsToSqlSelectStatement"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parseArrFieldsToSqlSelectStatement()</option>
 			
 			
 			
@@ -984,13 +997,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:35 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:55:58 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

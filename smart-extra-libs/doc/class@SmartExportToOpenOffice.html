@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartExportToOpenOffice        final class \ SmartExportToOpenOffice    {   } -&gt;    Class: SmartExportToOpenOffice - Exports (structured) Data to">
-<meta name="keywords" content="smartexporttoopenoffice, final, class, exports, structured, data, to, openoffice, ods, spreadsheet, language, php, located, at, modules smart-extra-libs lib export import ooffice.php, package, extralibs:exportandimport, namespace, name, version, v.20200121, depends, classes, smart, smartziparchive, usage, dynamic, object, new, class method, this, provides, only, methods, public, function, construct, y font size, 9pt, y styles, false, ods mime header, string, return, application vnd.oasis.opendocument.spreadsheet, get, the, document, mime, type, header, ods disposition header, y filename, file.ods, enum, y disp, attachment, filename  somedoc.ods, or, inline, param, file, default, is, content, disposition, can, be, also, filename, ods spreadsheet, y table name, y arr fields, y arr data, y arr process, y arr totals, y arr finals, y arr widths, y arr highlights, table, array, of, fields, generate, on, fly, from, an, properties, constants, documentation, index, definition, list, generated">
+<meta name="description" content="\SmartExportToOpenOffice final class \ SmartExportToOpenOffice { } -&gt; Class: SmartExportToOpenOffice - Exports (structured) Data to OpenOffice ODS">
+<meta name="keywords" content="smartexporttoopenoffice, final, class, exports, structured, data, to, openoffice, ods, spreadsheet, language, php, located, at, modules smart extra libs lib export import ooffice php, package, extralibs exportandimport, namespace, name, version, v, depends, classes, smart, smartziparchive, usage, dynamic, object, new, class   - method, this, provides, only, methods, public, function, construct, y font size, 9pt, y styles, false, ods mime header, string, return, application vnd oasis opendocument spreadsheet, get, the, document, mime, type, header, ods disposition header, y filename, file ods, enum, y disp, attachment, filename  somedoc ods, or, inline, param, file, default, is, content, disposition, can, be, also, filename, ods spreadsheet, y table name, y arr fields, y arr data, y arr process, y arr totals, y arr finals, y arr widths, y arr highlights, table, array, of, fields, generate, on, fly, from, an, properties, constants, documentation, index, definition, list, generated">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartExportToOpenOffice</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -719,8 +719,8 @@ select#select-summary {
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_font_size` Parameter is OPTIONAL, with the Default Value: &quot;9pt&quot;">$y_font_size</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;9pt&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_styles` Parameter is OPTIONAL, with the Default Value: false">$y_styles</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_font_size` Parameter is OPTIONAL, with the Default Value: &quot;9pt&quot;">$y_font_size</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;9pt&quot;</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_styles` Parameter is OPTIONAL, with the Default Value: false">$y_styles</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -730,7 +730,8 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ODS_Mime_Header">
+</div>
+<div class="doc-container" id="Method--ODS_Mime_Header">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ODS_Mime_Header</b></span>&nbsp;(
 		
 	
@@ -743,10 +744,11 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ODS_Disposition_Header">
+</div>
+<div class="doc-container" id="Method--ODS_Disposition_Header">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ODS_Disposition_Header</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_filename` Parameter is OPTIONAL, with the Default Value: &quot;file.ods&quot;">$y_filename</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;file.ods&quot;</b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_disp` Parameter is OPTIONAL, with the Default Value: &quot;attachment&quot;">$y_disp</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;attachment&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_filename` Parameter is OPTIONAL, with the Default Value: &quot;file.ods&quot;">$y_filename</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;file.ods&quot;</b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_disp` Parameter is OPTIONAL, with the Default Value: &quot;attachment&quot;">$y_disp</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;attachment&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -760,16 +762,17 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--ODS_SpreadSheet">
+</div>
+<div class="doc-container" id="Method--ODS_SpreadSheet">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ODS_SpreadSheet</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_table_name` Parameter is REQUIRED">$y_table_name</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_fields` Parameter is REQUIRED">$y_arr_fields</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_data` Parameter is REQUIRED">$y_arr_data</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_process` Parameter is OPTIONAL, with the Default Value: []">$y_arr_process</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_totals` Parameter is OPTIONAL, with the Default Value: []">$y_arr_totals</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_finals` Parameter is OPTIONAL, with the Default Value: []">$y_arr_finals</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_widths` Parameter is OPTIONAL, with the Default Value: []">$y_arr_widths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_highlights` Parameter is OPTIONAL, with the Default Value: []">$y_arr_highlights</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_table_name` Parameter is REQUIRED">$y_table_name</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_fields` Parameter is REQUIRED">$y_arr_fields</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_data` Parameter is REQUIRED">$y_arr_data</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_process` Parameter is OPTIONAL, with the Default Value: []">$y_arr_process</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_totals` Parameter is OPTIONAL, with the Default Value: []">$y_arr_totals</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_finals` Parameter is OPTIONAL, with the Default Value: []">$y_arr_finals</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_widths` Parameter is OPTIONAL, with the Default Value: []">$y_arr_widths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_highlights` Parameter is OPTIONAL, with the Default Value: []">$y_arr_highlights</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -784,6 +787,7 @@ select#select-summary {
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -830,16 +834,16 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--ODS_Mime_Header"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ODS_Mime_Header()</option>
+						<option value="Method--ODS_Mime_Header"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ODS_Mime_Header()</option>
 			
 			
-									<option value="Method--ODS_Disposition_Header"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ODS_Disposition_Header()</option>
+						<option value="Method--ODS_Disposition_Header"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ODS_Disposition_Header()</option>
 			
 			
-									<option value="Method--ODS_SpreadSheet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ODS_SpreadSheet()</option>
+						<option value="Method--ODS_SpreadSheet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ODS_SpreadSheet()</option>
 			
 			
 			
@@ -859,13 +863,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:36 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:56:00 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

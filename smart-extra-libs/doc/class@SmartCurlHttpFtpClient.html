@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartCurlHttpFtpClient        final class \ SmartCurlHttpFtpClient    {   } -&gt;    Class: SmartCurlHttpFtpClient - provides a CURL based HTTP / HTTPS /">
-<meta name="keywords" content="smartcurlhttpftpclient, final, class, provides, a, curl, based, http, https, ftp, client, browser, with, proxy, support, it, can, handle, head, get, post, put, json xml raw, delete, language, php, located, at, modules smart-extra-libs lib curl http ftp cli.php, package, extralibs:network, namespace, name, version, v.20220125, depends, extensions, openssl, optional, just, for, classes, smart, usage, dynamic, object, new, class method, this, only, methods, public, function, construct, y protocol, y no content if unauth, true, set ssl tls ca file, cafile, browse url, url, method, ssl version, user, pwd, properties, useragent, connect timeout, exec timeout, debug, rawheaders, cookies, postvars, postfiles, poststring, jsonrequest, xmlrequest, constants, documentation, index, definition, list, var, generated, on">
+<meta name="description" content="\SmartCurlHttpFtpClient final class \ SmartCurlHttpFtpClient { } -&gt; Class: SmartCurlHttpFtpClient - provides a CURL based HTTP / HTTPS / FTP Client">
+<meta name="keywords" content="smartcurlhttpftpclient, final, class, provides, a, curl, based, http, https, ftp, client, browser, with, proxy, support, it, can, handle, head, get, post, put, json xml raw, delete, language, php, located, at, modules smart extra libs lib curl http ftp cli php, package, extralibs network, namespace, name, version, v, depends, extensions, openssl, optional, just, for, classes, smart, usage, dynamic, object, new, class   - method, this, only, methods, public, function, construct, y protocol, y no content if unauth, true, set ssl tls ca file, cafile, browse url, url, method, ssl version, user, pwd, properties, useragent, connect timeout, exec timeout, debug, rawheaders, cookies, postvars, postfiles, poststring, posttype, jsonrequest, xmlrequest, constants, documentation, index, definition, list, var, generated, on">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartCurlHttpFtpClient</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -704,7 +704,7 @@ It can handle: HEAD / GET / POST / PUT (json/xml/raw) / DELETE</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartCurlHttpFtpClient</span></li>
 		
-		<li><b>Version:</b> v.20220125</li>
+		<li><b>Version:</b> v.20221219</li>
 		<li><b>Depends:</b> extensions:  PHP CURL, PHP OpenSSL (optional, just for HTTPS) ; classes: Smart</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -720,8 +720,8 @@ It can handle: HEAD / GET / POST / PUT (json/xml/raw) / DELETE</div><br>
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_protocol` Parameter is OPTIONAL, with the Default Value: &quot;1.0&quot;">$y_protocol</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;1.0&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_no_content_if_unauth` Parameter is OPTIONAL, with the Default Value: true">$y_no_content_if_unauth</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+		<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_protocol` Parameter is OPTIONAL, with the Default Value: &quot;1.0&quot;">$y_protocol</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;1.0&quot;</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_no_content_if_unauth` Parameter is OPTIONAL, with the Default Value: true">$y_no_content_if_unauth</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -731,26 +731,10 @@ It can handle: HEAD / GET / POST / PUT (json/xml/raw) / DELETE</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--set_ssl_tls_ca_file">
+</div>
+<div class="doc-container" id="Method--set_ssl_tls_ca_file">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>set_ssl_tls_ca_file</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$cafile` Parameter is REQUIRED">$cafile</span></b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--browse_url">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>browse_url</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$url` Parameter is REQUIRED">$url</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$method` Parameter is OPTIONAL, with the Default Value: &quot;GET&quot;">$method</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;GET&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ssl_version` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$ssl_version</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$user` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$user</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$pwd` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$pwd</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$proxy` Parameter is OPTIONAL, with the Default Value: []">$proxy</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+		<span class="doc-param-name"><b><span title="`$cafile` Parameter is REQUIRED">$cafile</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -761,6 +745,25 @@ It can handle: HEAD / GET / POST / PUT (json/xml/raw) / DELETE</div><br>
 	
 	
 </div>
+<div class="doc-container" id="Method--browse_url">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>browse_url</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$url` Parameter is REQUIRED">$url</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$method` Parameter is OPTIONAL, with the Default Value: &quot;GET&quot;">$method</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;GET&quot;</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ssl_version` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$ssl_version</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$user` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$user</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$pwd` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$pwd</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$proxy` Parameter is OPTIONAL, with the Default Value: []">$proxy</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -770,37 +773,52 @@ It can handle: HEAD / GET / POST / PUT (json/xml/raw) / DELETE</div><br>
 <div class="doc-container" id="Property--useragent">
 	<span class="doc-modifiers">public</span> <b>$useragent</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
-</div><div class="doc-container" id="Property--connect_timeout">
+</div>
+<div class="doc-container" id="Property--connect_timeout">
 	<span class="doc-modifiers">public</span> <b>$connect_timeout</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
-</div><div class="doc-container" id="Property--exec_timeout">
+</div>
+<div class="doc-container" id="Property--exec_timeout">
 	<span class="doc-modifiers">public</span> <b>$exec_timeout</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
-</div><div class="doc-container" id="Property--debug">
+</div>
+<div class="doc-container" id="Property--debug">
 	<span class="doc-modifiers">public</span> <b>$debug</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
-</div><div class="doc-container" id="Property--rawheaders">
+</div>
+<div class="doc-container" id="Property--rawheaders">
 	<span class="doc-modifiers">public</span> <b>$rawheaders</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
-</div><div class="doc-container" id="Property--cookies">
+</div>
+<div class="doc-container" id="Property--cookies">
 	<span class="doc-modifiers">public</span> <b>$cookies</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
-</div><div class="doc-container" id="Property--postvars">
+</div>
+<div class="doc-container" id="Property--postvars">
 	<span class="doc-modifiers">public</span> <b>$postvars</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
-</div><div class="doc-container" id="Property--postfiles">
+</div>
+<div class="doc-container" id="Property--postfiles">
 	<span class="doc-modifiers">public</span> <b>$postfiles</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
-</div><div class="doc-container" id="Property--poststring">
+</div>
+<div class="doc-container" id="Property--poststring">
 	<span class="doc-modifiers">public</span> <b>$poststring</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
-</div><div class="doc-container" id="Property--jsonrequest">
+</div>
+<div class="doc-container" id="Property--posttype">
+	<span class="doc-modifiers">public</span> <b>$posttype</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
+	
+</div>
+<div class="doc-container" id="Property--jsonrequest">
 	<span class="doc-modifiers">public</span> <b>$jsonrequest</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
-</div><div class="doc-container" id="Property--xmlrequest">
+</div>
+<div class="doc-container" id="Property--xmlrequest">
 	<span class="doc-modifiers">public</span> <b>$xmlrequest</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
 </div>
+
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
@@ -840,40 +858,42 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--set_ssl_tls_ca_file"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set_ssl_tls_ca_file()</option>
+						<option value="Method--set_ssl_tls_ca_file"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set_ssl_tls_ca_file()</option>
 			
 			
-									<option value="Method--browse_url"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;browse_url()</option>
+						<option value="Method--browse_url"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;browse_url()</option>
 			
 			
 			
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">Properties list</option>
-									<option value="Property--useragent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$useragent</option>
+						<option value="Property--useragent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$useragent</option>
 			
-									<option value="Property--connect_timeout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$connect_timeout</option>
+						<option value="Property--connect_timeout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$connect_timeout</option>
 			
-									<option value="Property--exec_timeout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$exec_timeout</option>
+						<option value="Property--exec_timeout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$exec_timeout</option>
 			
-									<option value="Property--debug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$debug</option>
+						<option value="Property--debug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$debug</option>
 			
-									<option value="Property--rawheaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$rawheaders</option>
+						<option value="Property--rawheaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$rawheaders</option>
 			
-									<option value="Property--cookies"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$cookies</option>
+						<option value="Property--cookies"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$cookies</option>
 			
-									<option value="Property--postvars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$postvars</option>
+						<option value="Property--postvars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$postvars</option>
 			
-									<option value="Property--postfiles"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$postfiles</option>
+						<option value="Property--postfiles"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$postfiles</option>
 			
-									<option value="Property--poststring"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$poststring</option>
+						<option value="Property--poststring"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$poststring</option>
 			
-									<option value="Property--jsonrequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$jsonrequest</option>
+						<option value="Property--posttype"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$posttype</option>
 			
-									<option value="Property--xmlrequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$xmlrequest</option>
+						<option value="Property--jsonrequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$jsonrequest</option>
+			
+						<option value="Property--xmlrequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$xmlrequest</option>
 			
 			
 		</optgroup>
@@ -888,13 +908,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:36 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:55:59 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

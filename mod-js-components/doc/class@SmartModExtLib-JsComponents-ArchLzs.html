@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartModExtLib\JsComponents\ArchLzs        final class \SmartModExtLib\JsComponents\ ArchLzs    {   } ::    Class: ArchLzs - Compress or Decompress a LZS">
-<meta name="keywords" content="smartmodextlib jscomponents archlzs, final, class, smartmodextlib jscomponents, archlzs, compress, or, decompress, a, lzs, archive, this, is, very, slow, with, large, strings, extremely, why, the, max, hardcoded, length, of, string, it, can, compress decompress, bytes, purpose, to, cookies, that, be, shared, also, javascript, version, available, in, modules mod-js-components views js arch-lzs arch-lzs.js, language, php, located, at, modules mod-js-components libs archlzs.php, package, modules:archivers, namespace, name, v.20200121, depends, extensions, mbstring, classes, smart, smarthashcrypto, usage, static, object, class::method, provides, only, methods, public, function, compresstobase64, input, return, base64, compressed, param, uncompressed, decompressfrombase64, properties, constants, sample, code, example, mystring, some, as, archstring, unarchstring, unarchive, back, if  string, test, check, if, same, http response code, die, failed, end, documentation">
+<meta name="description" content="\SmartModExtLib\JsComponents\ArchLzs final class \SmartModExtLib\JsComponents\ ArchLzs { } :: Class: ArchLzs - Compress or Decompress a LZS archive. This">
+<meta name="keywords" content="smartmodextlib jscomponents archlzs, final, class, smartmodextlib jscomponents, archlzs, compress, or, decompress, a, lzs, archive, this, is, very, slow, with, large, strings, extremely, why, the, max, hardcoded, length, of, string, it, can, compress decompress, bytes, purpose, to, cookies, that, be, shared, also, javascript, version, available, in, modules mod js components views js arch lzs arch lzs js, language, php, located, at, modules mod js components libs archlzs php, package, modules archivers, namespace, name, v, depends, extensions, mbstring, classes, smart, smarthashcrypto, usage, static, object, class method, provides, only, methods, public, function, compresstobase64, input, return, base64, compressed, param, uncompressed, decompressfrombase64, properties, constants, sample, code, example, mystring, some, as, archstring, unarchstring, unarchive, back, if  string, test, check, if, same, http response code, die, failed, end, documentation">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartModExtLib\JsComponents\ArchLzs</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -723,7 +723,7 @@ The Javascript version of this class is available in modules/mod-js-components/v
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--compressToBase64">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>compressToBase64</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$input` Parameter is REQUIRED">$input</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$input` Parameter is REQUIRED">$input</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -736,9 +736,10 @@ The Javascript version of this class is available in modules/mod-js-components/v
 	
 	
 	
-</div><div class="doc-container" id="Method--decompressFromBase64">
+</div>
+<div class="doc-container" id="Method--decompressFromBase64">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>decompressFromBase64</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$input` Parameter is REQUIRED">$input</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$input` Parameter is REQUIRED">$input</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -751,7 +752,10 @@ The Javascript version of this class is available in modules/mod-js-components/v
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `compressRawLZS()` --><!-- Skip Internal-Priv Method: `decompressRawLZS()` -->
+</div>
+<!-- Skip Internal-Priv Method: `compressRawLZS()` -->
+<!-- Skip Internal-Priv Method: `decompressRawLZS()` -->
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -807,15 +811,15 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--compressToBase64"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;compressToBase64()</option>
+						<option value="Method--compressToBase64"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;compressToBase64()</option>
 			
 			
-									<option value="Method--decompressFromBase64"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decompressFromBase64()</option>
+						<option value="Method--decompressFromBase64"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decompressFromBase64()</option>
 			
 			
-						
 			
-						
+			
+			
 			
 			
 		</optgroup>
@@ -837,13 +841,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:36 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:56:00 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

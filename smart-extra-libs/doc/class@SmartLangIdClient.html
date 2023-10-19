@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartLangIdClient        final class \ SmartLangIdClient    {   } -&gt;    Class: SmartLangIdClient - provides a LangId.Py Service Client that can be used">
-<meta name="keywords" content="smartlangidclient, final, class, provides, a, langid.py, service, client, that, can, be, used, to, validate, language, getlanguage, confidence, for, text, this, just, with, the, default, settings, which, must, set, in, etc config.php, configs  langid, or, custom, php, located, at, modules smart-extra-libs lib langid cli.php, package, extralibs:languagedetection, namespace, name, version, v.20210428, depends, classes, smart, smarthttpclient, hints, if, are, not, available, will, simply, fallback, using, any, usage, dynamic, object, new, class method, only, methods, public, function, construct, array, cfg, param, optional, of, configuration, parameters, provided, use, config, from, config.php, constructor, initiate, also, connection, getlanguageconfidence, string, the text, return, detection, result, service-available, lang-id, confidence-score, error-message, checked, checks, and, get">
+<meta name="description" content="\SmartLangIdClient final class \ SmartLangIdClient { } -&gt; Class: SmartLangIdClient - provides a LangId.Py Service Client that can be used to validate">
+<meta name="keywords" content="smartlangidclient, final, class, provides, a, langid py, service, client, that, can, be, used, to, validate, language, getlanguage, confidence, for, text, this, just, with, the, default, settings, which, must, set, in, etc config php, configs  langid, or, custom, php, located, at, modules smart extra libs lib langid cli php, package, extralibs languagedetection, namespace, name, version, v, depends, classes, smart, smarthttpclient, hints, if, are, not, available, will, simply, fallback, using, any, usage, dynamic, object, new, class   - method, only, methods, public, function, construct, array, cfg, param, optional, of, configuration, parameters, provided, use, config, from, config php, constructor, initiate, also, connection, getlanguageconfidence, string, the text, return, detection, result, service available, lang id, confidence score, error message, checked, checks, and, get">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation: \SmartLangIdClient">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartLangIdClient</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -704,7 +704,7 @@ This class can be used just with the DEFAULT settings which must be set in etc/c
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartLangIdClient</span></li>
 		
-		<li><b>Version:</b> v.20210428</li>
+		<li><b>Version:</b> v.20221220</li>
 		<li><b>Depends:</b> classes:  Smart, SmartHttpClient</li>
 		<li><b>Hints:</b> If  the DEFAULT settings are not available will simply fallback for not using any service.</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -720,7 +720,7 @@ This class can be used just with the DEFAULT settings which must be set in etc/c
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cfg` Parameter is OPTIONAL, with the Default Value: []">$cfg</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+		<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cfg` Parameter is OPTIONAL, with the Default Value: []">$cfg</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -732,9 +732,10 @@ This class can be used just with the DEFAULT settings which must be set in etc/c
 	
 	
 	
-</div><div class="doc-container" id="Method--getLanguageConfidence">
+</div>
+<div class="doc-container" id="Method--getLanguageConfidence">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getLanguageConfidence</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$the_text` Parameter is REQUIRED">$the_text</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$the_text` Parameter is REQUIRED">$the_text</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
@@ -749,6 +750,7 @@ If LangId.Py is not set in configuration as it may not be available will return 
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -804,10 +806,10 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--getLanguageConfidence"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getLanguageConfidence()</option>
+						<option value="Method--getLanguageConfidence"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getLanguageConfidence()</option>
 			
 			
 			
@@ -830,13 +832,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:36 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:56:00 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

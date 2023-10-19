@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="ArchLzs        static class ArchLzs  {  } .    CLASS :: LZS Archive Compress or Decompress a LZS archive This is very slow with large strings ...">
-<meta name="keywords" content="archlzs, static, class, lzs, archive, compress, or, decompress, a, this, is, very, slow, with, large, strings, extremely, why, the, max, hardcoded, length, of, string, it, can, compress decompress, bytes, purpose, to, cookies, that, be, shared, also, php, version, available, in, modules mod-js-components libs archlzs.php, archiver, for, javascript, on-the-fly, using, only, algorithm, language, located, at, lib js framework smart-framework.pak.js, arch utils.js, package, modules.javascript:archivers, name, frozen, no, usage, archlzs.method, depends, smartj utils, smartj cryptohash, methods, public, function, compresstobase64, input, return, compressed, base64, param, original, decompressfrombase64, uncompressed, from, properties, constants, sample, code, var, plainstr, some, archivedstr, archlzs.compresstobase64 plainstr, unarchivedstr, archlzs.decompressfrombase64 archivedstr, if, alert, failed, plain, different, after, archive unarchive, operations, console, log plainstr, documentation">
+<meta name="description" content="ArchLzs static class ArchLzs { } . CLASS :: LZS Archive Compress or Decompress a LZS archive This is very slow with large strings ... extremely slow !!!">
+<meta name="keywords" content="archlzs, static, class, lzs, archive, compress, or, decompress, a, this, is, very, slow, with, large, strings, extremely, why, the, max, hardcoded, length, of, string, it, can, compress decompress, bytes, purpose, to, cookies, that, be, shared, also, php, version, available, in, modules mod js components libs archlzs php, archiver, for, javascript, on the fly, using, only, algorithm, language, located, at, lib js framework smart framework pak js, arch utils js, package, modules javascript archivers, name, frozen, no, usage, archlzs method, depends, smartj utils, smartj cryptohash, methods, public, function, compresstobase64, input, return, compressed, base64, param, original, decompressfrombase64, uncompressed, from, properties, constants, sample, code, var, plainstr, some, archivedstr, archlzs compresstobase64 plainstr, unarchivedstr, archlzs decompressfrombase64 archivedstr, if, alert, failed, plain, different, after, archive unarchive, operations, console, log plainstr, documentation">
 <meta name="summary" content="Smart.Framework.Modules : Javascript Documentation: ArchLzs">
 <link rel="icon" href="data:,">
 <title>JS Documentation for: ArchLzs</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210417 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -722,7 +722,7 @@ LZS Archiver for JavaScript :: compress on-the-fly a string using only Javascrip
 <!-- methods r.20210414 -->
 <div class="doc-container" id="Method--compressToBase64">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>compressToBase64</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`input` Parameter">input</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`input` Parameter">input</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -732,16 +732,17 @@ LZS Archiver for JavaScript :: compress on-the-fly a string using only Javascrip
 	
 	
 	
-			@param: {String} input The original string to be compressed<br>
+	@param: {String} input The original string to be compressed<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Compress a string to LZS + Base64</div>
 	
 	
-</div><div class="doc-container" id="Method--decompressFromBase64">
+</div>
+<div class="doc-container" id="Method--decompressFromBase64">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>decompressFromBase64</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`input` Parameter">input</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`input` Parameter">input</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -751,7 +752,7 @@ LZS Archiver for JavaScript :: compress on-the-fly a string using only Javascrip
 	
 	
 	
-			@param: {String} input The LZS + Base64 compressed string<br>
+	@param: {String} input The LZS + Base64 compressed string<br>
 	
 	
 	</div>
@@ -759,6 +760,7 @@ LZS Archiver for JavaScript :: compress on-the-fly a string using only Javascrip
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -779,7 +781,7 @@ LZS Archiver for JavaScript :: compress on-the-fly a string using only Javascrip
 	<h2 class="doc-header">Sample code: JavaScript</h2>
 </div>
 <div class="doc-code">
-	<pre><br><code class="hljs javascript"> <span class="hljs-keyword">var</span> plainStr = <span class="hljs-string">'Some String'</span>;
+	<pre><br><code class="hljs syntax javascript"> <span class="hljs-keyword">var</span> plainStr = <span class="hljs-string">'Some String'</span>;
  <span class="hljs-keyword">var</span> archivedStr = ArchLzs.compressToBase64(plainStr);
  <span class="hljs-keyword">var</span> unArchivedStr = ArchLzs.decompressFromBase64(archivedStr);
  <span class="hljs-keyword">if</span>(plainStr !== unArchivedStr) {
@@ -817,9 +819,9 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--compressToBase64"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;compressToBase64()</option>
+						<option value="Method--compressToBase64"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;compressToBase64()</option>
 			
-									<option value="Method--decompressFromBase64"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decompressFromBase64()</option>
+						<option value="Method--decompressFromBase64"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decompressFromBase64()</option>
 			
 			
 		</optgroup>
@@ -841,13 +843,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:42 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 23:00:51 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>
