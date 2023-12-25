@@ -45,7 +45,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(
 			(SmartAuth::test_login_privilege('cloud') !== true)
 			AND
-			(SmartAuth::test_login_privilege('cloud-ical') !== true)
+			(SmartAuth::test_login_privilege('cloud:ical') !== true)
 		) {
 			$this->PageViewSetCfg('error', 'This Area is Restricted by your Account Privileges !');
 			return 403;
@@ -55,13 +55,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--
-		$safe_user_dir = (string) Smart::safe_username(SmartAuth::get_auth_username());
+		$safe_user_dir = (string) Smart::safe_username((string)SmartAuth::get_auth_username());
 		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::checkIfSafeFileOrDirName((string)$safe_user_dir) != '1')) {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebCalendar Unsafe User Dir ...');
 			return;
 		} //end if
 		//--
-		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/caldav';
+		$safe_user_path = (string) 'wpub/cloud/'.\SmartModExtLib\Cloud\cloudUtils::getUserDirPrefixedFirstLetter((string)$safe_user_dir).'/caldav';
 		if(SmartFileSysUtils::checkIfSafePath((string)$safe_user_path) != '1') {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebCalendar Unsafe User Path ...');
 			return;

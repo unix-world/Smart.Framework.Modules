@@ -40,7 +40,7 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmCalDav
 		if(
 			(SmartAuth::test_login_privilege('cloud') !== true)
 			AND
-			(SmartAuth::test_login_privilege('cloud-ical') !== true)
+			(SmartAuth::test_login_privilege('cloud:ical') !== true)
 		) {
 			http_response_code(403);
 			echo SmartComponents::http_message_403_forbidden('This Area is Restricted by your Account Privileges !');
@@ -65,14 +65,14 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmCalDav
 		//--
 		\SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--
-		$safe_user_dir = (string) Smart::safe_username(SmartAuth::get_auth_username());
+		$safe_user_dir = (string) Smart::safe_username((string)SmartAuth::get_auth_username());
 		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::checkIfSafeFileOrDirName((string)$safe_user_dir) != '1')) {
 			http_response_code(500);
 			echo SmartComponents::http_message_500_internalerror('ERROR: CalDAV Unsafe User Dir ...');
 			return;
 		} //end if
 		//--
-		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/caldav';
+		$safe_user_path = (string) 'wpub/cloud/'.\SmartModExtLib\Cloud\cloudUtils::getUserDirPrefixedFirstLetter((string)$safe_user_dir).'/caldav';
 		if(SmartFileSysUtils::checkIfSafePath((string)$safe_user_path) != '1') {
 			http_response_code(500);
 			echo SmartComponents::http_message_500_internalerror('ERROR: CalDAV Unsafe User Path ...');

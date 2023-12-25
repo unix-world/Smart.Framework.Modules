@@ -20,7 +20,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 final class cartManager {
 
-	// r.20231018
+	// r.20231209
 
 	/**
 	 * An unique ID for the cart.
@@ -513,7 +513,7 @@ final class cartManager {
 
 
 	/**
-	 * Calculate item cart hash as SHA256/Hex (not B64/s because is designed to be used also in HTML properties).
+	 * Calculate item cart hash as SHA3-256/B62 (is designed to be used also in HTML properties).
 	 *
 	 * @return string
 	 */
@@ -521,7 +521,17 @@ final class cartManager {
 		//--
 		$attributes = (array) \Smart::array_sort($attributes, 'ksort'); // sort by key
 		//--
-		return (string) \SmartHashCrypto::sha256((string)$id.':'.\Smart::json_encode((array)$attributes, false, true, false));
+		$uuid = [];
+		$uuid[] = '{';
+		$uuid[] = (string) \trim((string)\Smart::normalize_spaces((string)$id));
+		foreach($attributes as $key => $val) {
+			$uuid[] = (string) '['.\trim((string)\Smart::normalize_spaces((string)$key))."\t".\trim((string)\Smart::normalize_spaces((string)$val)).']';
+		} //end if
+		$uuid[] = '}';
+		$uuid = (string) \trim((string)\implode((string)"\n", (array)$uuid));
+		$uuid = (string) \Smart::base_from_hex_convert((string)\SmartHashCrypto::sh3a256((string)$uuid), 62);
+		//--
+		return (string) $uuid;
 		//--
 	} //END FUNCTION
 
@@ -711,8 +721,8 @@ final class cartManager {
 		$data['pak'] 		= array(
 			'um' 		=> (string) $product['pak']['um'],
 			'umtype' 	=> (string) $product['pak']['umtype'],
-			'umerg' 	=> (string) ((\strpos((string)$product['pak']['umerg'], 'formula:') !== 0) ? \Smart::format_number_dec($product['pak']['umerg'], 4, '.', '') : $product['pak']['umerg']), // can be formula string or number
-			'ummin' 	=> (string) \Smart::format_number_dec($product['pak']['ummin'], 4, '.', '')
+			'umerg' 	=> (string) ((\strpos((string)$product['pak']['umerg'], 'formula:') !== 0) ? \Smart::format_number_dec($product['pak']['umerg'], 2, '.', '') : $product['pak']['umerg']), // can be formula string or number
+			'ummin' 	=> (string) \Smart::format_number_dec($product['pak']['ummin'], 2, '.', '')
 		);
 		$data['currency'] 	= (string) $product['currency'];  // the original currency
 		if($this->cartNoPriceMode === true) {
@@ -767,7 +777,7 @@ final class cartManager {
 			return false;
 		} //end if
 		//--
-		$fix_exchrate = (string) \Smart::format_number_dec($this->getCurrencyExchangeRate($fix_currency), 4, '.', '');
+		$fix_exchrate = (string) \Smart::format_number_dec($this->getCurrencyExchangeRate($fix_currency), 2, '.', '');
 		//--
 		$hash = $this->calculateHash((string)$id, (array)$attributes);
 		//--
@@ -794,14 +804,14 @@ final class cartManager {
 			} //end if
 		} //end if
 		//--
-		$item_key = (string) \sha1('ID='.$id.';ATT-HASH='.$hash.'#');
+		$item_key = (string) \Smart::base_from_hex_convert((string)\SmartHashCrypto::sha1((string)$hash), 36);
 		$this->items[$id][(string)$item_key] = [
 			// {{{SYNC-ECART-ITEM-PROPS}}}
 			'dtime'      => (string) \date('Y-m-d H:i:s O'),
 			'hash'       => (string) $hash,
 			'id'         => (string) $id,
 			'attributes' => (array)  $attributes,
-			'quantity'   => (string) \Smart::format_number_dec((($this->itemMaxQuantity < $quantity && $this->itemMaxQuantity != 0) ? $this->itemMaxQuantity : $quantity), 4, '.', ''),
+			'quantity'   => (string) \Smart::format_number_dec((($this->itemMaxQuantity < $quantity && $this->itemMaxQuantity != 0) ? $this->itemMaxQuantity : $quantity), 2, '.', ''),
 			'qtyerg'     => (string) $fix_qtyerg,
 			'umtype'     => (string) ($data['pak']['umtype'] ?? null),
 			'um'         => (string) ($data['pak']['um'] ?? null),
@@ -812,7 +822,7 @@ final class cartManager {
 			'price_'     => (string) '', // keep original calculated price using exchange rate if using a custom price (if this is non empty string it means the price is custom !)
 			'_price'     => (string) $fix_price, // keep original price as calculated by attributes in the original item _currency
 			'discount_'  => (string) (isset($data['discounts'][(string)$this->cartDiscountLevel]) ? $data['discounts'][(string)$this->cartDiscountLevel] : null), // keep original discount as percent
-			'_discount'  => (string) \Smart::format_number_dec(($this->fixPercentDiscountAsNumeric((isset($data['discounts'][(string)$this->cartDiscountLevel]) ? $data['discounts'][(string)$this->cartDiscountLevel] : null)) / 100), 4, '.', ''), // {{{SYNC-CART-DISCOUNT-NUMERIC-DECIMAL4}}} ; must use 4 decimals to can use by ex: 10.55%
+			'_discount'  => (string) \Smart::format_number_dec(($this->fixPercentDiscountAsNumeric((isset($data['discounts'][(string)$this->cartDiscountLevel]) ? $data['discounts'][(string)$this->cartDiscountLevel] : null)) / 100), 2, '.', ''), // {{{SYNC-CART-DISCOUNT-NUMERIC-DECIMAL4}}} ; must use 4 decimals to can use by ex: 10.55%
 			'_currency'  => (string) $fix_currency, // keep original item currency
 			'_exchrate'  => (string) $fix_exchrate, // the exchage rate as: item-currency / cart-currency
 			'data'       => (array)  $data,
@@ -965,7 +975,7 @@ final class cartManager {
 						$this->items[$id][$index]['quantity'] = ($this->itemMaxQuantity < $this->items[$id][$index]['quantity'] && $this->itemMaxQuantity != 0) ? $this->itemMaxQuantity : $this->items[$id][$index]['quantity'];
 						//--
 						$this->items[$id][$index]['discount_'] = (string) (isset($data['discounts'][(string)$this->cartDiscountLevel]) ? $data['discounts'][(string)$this->cartDiscountLevel] : null);
-						$this->items[$id][$index]['_discount'] = (string) \Smart::format_number_dec(($this->fixPercentDiscountAsNumeric((isset($data['discounts'][(string)$this->cartDiscountLevel]) ? $data['discounts'][(string)$this->cartDiscountLevel] : null)) / 100), 4, '.', ''); // {{{SYNC-CART-DISCOUNT-NUMERIC-DECIMAL4}}} ; must use 4 decimals to can use by ex: 10.55%
+						$this->items[$id][$index]['_discount'] = (string) \Smart::format_number_dec(($this->fixPercentDiscountAsNumeric((isset($data['discounts'][(string)$this->cartDiscountLevel]) ? $data['discounts'][(string)$this->cartDiscountLevel] : null)) / 100), 2, '.', ''); // {{{SYNC-CART-DISCOUNT-NUMERIC-DECIMAL4}}} ; must use 4 decimals to can use by ex: 10.55%
 						//--
 						if((string)$price != '') {
 							if($price >= 0) {
@@ -1481,7 +1491,7 @@ final class cartManager {
 			return 0;
 		} //end try catch
 		//--
-		return (string) \Smart::format_number_dec((float)$result, 4, '.', '');
+		return (string) \Smart::format_number_dec((float)$result, 2, '.', '');
 		//--
 	} //END FUNCTION
 
@@ -1528,7 +1538,7 @@ final class cartManager {
 		} //end if
 		//-- format by type
 		if((string)$y_qty_type == 'dec') {
-			$y_qty_cart = (string) \Smart::format_number_dec((float)$y_qty_cart, 4, '.', '');
+			$y_qty_cart = (string) \Smart::format_number_dec((float)$y_qty_cart, 2, '.', '');
 		} else { // int
 			$y_qty_cart = (string) \Smart::format_number_int((int)\ceil((float)$y_qty_cart));
 		} //end if

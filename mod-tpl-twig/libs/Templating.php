@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype (optional) ; classes: \SmartModExtLib\Tpl\AbstractTemplating, \SmartModExtLib\TplTwig\SmartTwigEnvironment, \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20221220
+ * @version 	v.20231029
  * @package 	modules:TemplatingEngine
  *
  */
@@ -133,7 +133,15 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		//--
 		$dbg_tpl = (array) \SmartDebugProfiler::read_tpl_file_for_debug((string)$tpl);
 		//--
-		if((\SmartFileSystem::is_type_file($dbg_tpl['dbg-file-name'])) AND ((string)$dbg_tpl['dbg-file-contents'] != '')) {
+		if(
+			((string)\trim((string)($dbg_tpl['dbg-file-name'] ?? null)) != '')
+			AND
+			(\SmartFileSysUtils::checkIfSafePath((string)($dbg_tpl['dbg-file-name'] ?? null)))
+			AND
+			(\SmartFileSystem::is_type_file((string)($dbg_tpl['dbg-file-name'] ?? null)))
+			AND
+			((string)($dbg_tpl['dbg-file-contents'] ?? null) != '')
+		) {
 			//-- the hash
 			$hash = (string) \sha1((string)$dbg_tpl['dbg-file-name']);
 			//-- get arr dbg data

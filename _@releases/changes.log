@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+November 17, 2023
+	* Sync with framework Refactoring: Twofish + SHA3 new security impl.
+
 October 21, 2023
 	* CSS Styles fixes for Mod Cloud WebMail :: full responsive
 

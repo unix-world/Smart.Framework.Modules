@@ -47,7 +47,7 @@ const getFromUrlByAjax = (message, url) => {
 		[%%%/LOOP:ARR-PROJECTS%%%]
 	</select>
 	/ Language: [###HTML-LIST-LANGS###]
-	<button onclick="(function() { var lang = $('#languages-list').val(); var proj = $('#sync-proj-out').val(); if(lang && proj) { smartJ$Browser.ConfirmDialog('Run Sync-OUT ?', function(){ getFromUrlByAjax('Import: ' + String(proj), 'admin.php?page=transl-repo.export&proj=' + smartJ$Utils.escape_url(proj) + '&lang=' + smartJ$Utils.escape_url(lang)); }, 'Sync-OUT Confirmation', 550, 150); } else { $.alertable.alert('Project and Language must be selected for Sync OUT ...').always(function(){}); } })(); return false;" class="ux-button ux-button-highlight"><i class="sfi sfi-upload"></i> &nbsp; Run Sync OUT</button>
+	<button onclick="(function() { var lang = $('#languages-list').val(); var proj = $('#sync-proj-out').val(); if(lang && proj) { smartJ$Browser.ConfirmDialog('<h3>Run Sync-OUT ?</h3>', function(){ getFromUrlByAjax('Import: ' + String(proj), 'admin.php?page=transl-repo.export&proj=' + smartJ$Utils.escape_url(proj) + '&lang=' + smartJ$Utils.escape_url(lang)); }, 'Sync-OUT Confirmation', 550, 150); } else { $.alertable.alert('Project and Language must be selected for Sync OUT ...').always(function(){}); } })(); return false;" class="ux-button ux-button-highlight"><i class="sfi sfi-upload"></i> &nbsp; Run Sync OUT</button>
 	<br>
 	<small>Update Translations into the selected project and language from the Repository.</small>
 </div>

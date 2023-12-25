@@ -12,6 +12,74 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //-----------------------------------------------------
 
 
+//####
+// WARNING:
+// Float Point Problem: as $a=1.3333; $b=1.6666; $c=2.9999; $d=($a+$b); if($d != $c) { echo 'Float Inequality'; }
+// To fix it, always use Smart::format_number_dec($number, $decimals, '.', '');
+//####
+
+//------
+// DocTypes: + Cancel
+//------
+//  [+] 	in = Inventory Init
+//  [+] 	sp = Supplier Purchase
+//  [-] 	sr = Supplier Return
+//  [-]		cs = Customer Sale
+//  [+] 	cr = Customer Return
+// [+/-]	zx = Inventory Adjustments / Transfers / Manufacture
+//------
+// {{{SYNC-QUER-STOCKLOG-ARCH-SUMS}}}
+//	in			-> tvalue
+//	buy			-> tvalue
+//	rbuy		-> tvalue
+//	zin			-> tvalue
+//	zout 		-> tovalue
+//	sell		-> tovalue
+//	outsell		-> tdvalue
+//	rsell 		-> tovalue
+//	outrsell 	-> tdvalue
+//	fin 		-> fin_qty * cmp
+//------
+// INVENTORY OPERATION MODE: CMP calculated at the end of period ; estimation will be made by CMP calculated after each entry, but will be updated overall at the end of month
+// Hints: Cronologic CMP is not good for stock reservations and other sensitive cancel of documents
+//------
+// PROFIT IS ESTABLISHED AS [for One Month]:
+// OUTSTOCK (Values) = PREV + (INTin - INTout) + (BUYin - BUYout) - FINAL
+// PROFIT (Values) = (SALESout - SALESin) - OUTSTOCK
+// WARNING: Returns are NEGATIVE, so the signs between paranthesis are +PLUS instead of -MINUS
+//------
+
+/*
+
+nir:
+create: sp: erp_buys 									[+] 	*** SMPrice
+create 	sr: erp_buys_returns 							[-]		x
+
+nir:
+cancel: sp: erp_buys.recept_note_cancel 				[-] 	*** SMPrice
+cancel: sr: erp_buys_returns.return_recept_note_cancel  [+] 	x
+
+stockfix create:
+	add											+ 		*** SMPrice
+	substract 									-		x
+	move										-/+ 	x
+
+stockfix cancel:
+	add 										+ 		x
+	substract 									- 		*** SMPrice
+	move 										+/- 	x
+
+
+Sales Return
+//====
+//-- price to register for history in stocklog as the CMP :: here we must use a strategy to get the original stockprice since when the original invoice was created
+//== (strategies to get the old CMP)
+//- [strategy 1] :: use the CMP registered in OLD Invoice Inventory XML :: {{{SYNC-COMPARE-HASH}}}
+//- [strategy 2] :: read the archive table (ONLY IF MONTH IS CLOSED) ELSE CALCULATE THE CURRENT CMP and get real CMP if possible
+
+*/
+
+
 /**
  * ERP Inventory Management
  *
@@ -24,6 +92,262 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class erpInventory {
 
 	// r.20230915
+
+
+
+	//==================================================================
+	public static function blended_avg_price($y_o_qty, $y_o_price, $y_n_qty, $y_n_price) {
+
+		//--
+		$new_qty = $y_o_qty + $y_n_qty;
+		//--
+
+		//--
+		if($new_qty > 0) {
+			$blended = (($y_o_qty * $y_o_price) + ($y_n_qty * $y_n_price)) / $new_qty;
+		} else {
+			$blended = 0;
+		} //end if else
+		//--
+
+		//--
+		return Smart::format_number_dec(0+$blended, 4, '.', '');
+		//--
+
+	} //END FUNCTION
+	//==================================================================
+
+
+	//==================================================================
+	public static function blended_reverse_avg_price($y_o_qty, $y_o_price, $y_n_qty, $y_n_price) {
+
+		//--
+		$prev_stock_value = ($y_o_qty * $y_o_price);
+		$new_stock_value = ($y_n_qty * $y_n_price);
+		//-
+		$prev_qty = $y_o_qty - $y_n_qty ;
+		$crr_val = $prev_stock_value - $new_stock_value;
+		//--
+
+		//--
+		if($crr_val < 0) {
+			$crr_val = 0;
+		} //end if
+		//--
+
+		//--
+		if($prev_qty > 0) { // avoid divide by zero
+			$rev_blended = $crr_val / $prev_qty;
+		} else {
+			$rev_blended = 0;
+		} //end if else
+		//--
+
+		//--
+		return Smart::format_number_dec(0+$rev_blended, 4, '.', '');
+		//--
+
+	} //END FUNCTION
+	//==================================================================
+
+
+
+	//======================================================================
+	/**
+	 * [PRIVATE] Reads the Medium Stock Price (4 Decimals) for ITEM / ATTRIB Combination
+	 *
+	 * @param STRING $y_item_code			:: Item CODE
+	 * @param STRING $y_item_attrib 		:: Item ATTRIBUTE
+	 * @return 4-Decimals Formated Number
+	 */
+	private function _SMPRICE_Item__read($y_item_code, $y_item_attrib) {
+		//--
+		$arr_rd = SmartPgsqlDb::read_data('SELECT "smprice", "ref_qty" FROM "ecomm_erp_stockprice" WHERE (("id" = \''.SmartPgsqlDb::escape_str($y_item_code).'\') AND ("attrib" = \''.SmartPgsqlDb::escape_str($y_item_attrib).'\')) LIMIT 1 OFFSET 0');
+		//--
+		return array('mprice'=>Smart::format_number_dec($arr_rd[0], 4, '.', ''), 'mqty'=>Smart::format_number_dec($arr_rd[1], 4, '.', ''));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	/**
+	 * [PRIVATE] Updates the Stock Medium Price for One for ITEM / ATTRIB Combination
+	 * THIS MUST BE USED JUST FOR STOCK IN / OUT ONLY WHEN UPDATING SMPRICE (BUYS)
+	 * !! MUST BE ENCLOSED IN A TRANSACTION !!
+	 *
+	 * @param ENUM $y_item_type			:: p (for s and d ... we do not need)
+	 * @param STRING $y_item_code			:: Item CODE
+	 * @param STRING $y_item_attrib		:: Item ATTRIBUTE
+	 * @param ENUM $y_sign				:: Operation Sign + | -
+	 * @param DECIMAL+ $y_newprice_to_upd	:: New Price
+	 * @param DECIMAL+ $y_newqty_to_upd		:: New Qty
+	 * @return ARRAY
+	 */
+	private function _SMPRICE_Item__update($y_item_type, $y_item_code, $y_item_attrib, $y_sign, $y_newprice_to_upd, $y_newqty_to_upd) {
+
+		//--
+		$err = ''; // ERR CODES :: 1050 - 1099
+		//--
+
+		//--
+		$tmp_msg_obj = Smart::escape_html('\''.$y_item_code.'\' @ \''.$y_item_attrib.'\'');
+		//--
+
+		//--
+		$new_in_qty = 0;
+		$new_smed_price = 0;
+		//--
+
+		//--
+		$where = '(("id" = \''.SmartPgsqlDb::escape_str($y_item_code).'\') AND ("attrib" = \''.SmartPgsqlDb::escape_str($y_item_attrib).'\'))';
+		$old_data = SmartPgsqlDb::read_data('SELECT "smprice", "ref_qty", "id" FROM "ecomm_erp_stockprice" WHERE '.$where.' LIMIT 1 OFFSET 0');
+		$chk_data = array();
+		//--
+
+		//--
+		if($y_newqty_to_upd <= 0) {
+			if((string)$err == '') {
+				$err = 'ERROR (1052): Medium Stock Price Update - Invalid Ref-Quantity on: '.$tmp_msg_obj;
+			} //end if
+		} //end if
+		//--
+
+		//-- calculate
+		if((string)$err == '') {
+			//--
+			if((string)$y_sign == '-') { // - [MINUS]
+				//--
+				$new_in_qty = $old_data[1] - $y_newqty_to_upd;
+				//--
+				// to CHECK: avoid abnormal results in the following conditions:
+				// 1. month is closed, 99% of stock is sold
+				// 2. the return price is significantly different than smprice
+				//-
+				// decision: we will keep the smprice as reference
+				//-
+				//$new_smed_price = $old_data[0]; // keep smprice
+				$new_smed_price = NorthICE_SmartEcomm::blended_reverse_avg_price($old_data[1], $old_data[0], $y_newqty_to_upd, $y_newprice_to_upd);
+				//--
+			} elseif((string)$y_sign == '+') { // + [PLUS]
+				//--
+				$new_in_qty = $old_data[1] + $y_newqty_to_upd;
+				//--
+				$new_smed_price = NorthICE_SmartEcomm::blended_avg_price($old_data[1], $old_data[0], $y_newqty_to_upd, $y_newprice_to_upd);
+				//--
+			} else { // INVALID SIGN
+				//--
+				if((string)$err == '') {
+					$err = 'ERROR (1053): Medium Stock Price Update - Invalid Operation Sign on: '.$tmp_msg_obj;
+				} //end if
+				//--
+			} //end if else
+			//--
+			if($new_in_qty < 0) {
+				$new_in_qty = 0;
+			} //end if
+			//--
+			if((string)$y_item_type != 'p') {
+				$new_in_qty = 0;
+			} //end if
+			//--
+		} //end if
+		//--
+
+		//--
+		if((string)$err == '') {
+			if($new_smed_price < 0) {
+				$err = 'ERROR (1054): Medium Stock Price Update - Negative New-Medium Price on: '.$tmp_msg_obj;
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			if(Smart::check_dec_number_overflow_max($new_smed_price)) {
+				$err = 'ERROR (1055): Medium Stock Price Update - New-Medium Price is higher than MaxLimit on: '.$tmp_msg_obj;
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			if($new_in_qty < 0) {
+				$err = 'ERROR (1056): Medium Stock Price Update - Negative New-Medium Ref-Quantity on: '.$tmp_msg_obj;
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			if(Smart::check_dec_number_overflow_max($new_in_qty)) {
+				$err = 'ERROR (1057): Medium Stock Price Update - New-Medium Ref-Quantity is higher than MaxLimit on: '.$tmp_msg_obj;
+			} //end if
+		} //end if
+		//--
+
+		//--
+		if((string)$err == '') {
+			//-- insert or update
+			if(strlen($old_data[2]) <= 0) { // insert new
+				//--
+				$tmp_wr = SmartPgsqlDb::write_data('INSERT INTO "ecomm_erp_stockprice" ("id", "attrib", "smprice", "ref_qty") VALUES (\''.SmartPgsqlDb::escape_str($y_item_code).'\', \''.SmartPgsqlDb::escape_str($y_item_attrib).'\', \'0\', \'0\')');
+				//--
+				if($tmp_wr[1] != 1) {
+					$err = 'ERROR (1058): Medium Stock Price - Insert ... ['.$tmp_wr[1].'] on: '.$tmp_msg_obj;
+				} //end if
+				//--
+			} //end if
+			//-- then update it (skip check result, to avoid errors)
+			$tmp_wr = SmartPgsqlDb::write_data('UPDATE "ecomm_erp_stockprice" SET "date_time" = \''.date('Y-m-d H:i:s').'\', "smprice" = \''.Smart::format_number_dec($new_smed_price, 4, '.', '').'\', "ref_qty" = \''.Smart::format_number_dec($new_in_qty, 4, '.', '').'\' WHERE '.$where);
+			//--
+			// we do not need to check this because is not very important ... the real SMPrice will be calculated at the end of month and the smprice can be the same so will result in zero affected rows
+			// but we want to avoid updating too many rown than one
+			if($tmp_wr[1] > 1) {
+				$err = 'ERROR (1059): Medium Stock Price - Update too Many ... ['.$tmp_wr[1].'] on: '.$tmp_msg_obj;
+			} //end if
+			//--
+		} //end if
+		//--
+
+		//-- read again to check for negative qty
+		if((string)$err == '') {
+			//--
+			$chk_data = SmartPgsqlDb::read_data('SELECT "smprice", "ref_qty", "id" FROM "ecomm_erp_stockprice" WHERE '.$where.' LIMIT 1 OFFSET 0');
+			//--
+			if(strlen($chk_data[2]) <= 0) {
+				if((string)$err == '') {
+					$err = 'ERROR (1060): Medium Stock Price Update - CHK: Record Not Found for: '.$tmp_msg_obj;
+				} //end if
+			} //end if
+			//--
+			if($chk_data[0] < 0) {
+				if((string)$err == '') {
+					$err = 'ERROR (1061): Medium Stock Price Update - CHK: Negative Result SMPrice for: '.$tmp_msg_obj;
+				} //end if
+			} //end if
+			//--
+			if(Smart::check_dec_number_overflow_max($chk_data[0])) {
+				if((string)$err == '') {
+					$err = 'ERROR (1062): Medium Stock Price Update - CHK: SMPrice is higher than MaxLimit for: '.$tmp_msg_obj;
+				} //end if
+			} //end if
+			//--
+			if($chk_data[1] < 0) {
+				if((string)$err == '') {
+					$err = 'ERROR (1063): Medium Stock Price Update - CHK: Negative Result Ref-Quantity for: '.$tmp_msg_obj;
+				} //end if
+			} //end if
+			//--
+			if(Smart::check_dec_number_overflow_max($chk_data[1])) {
+				if((string)$err == '') {
+					$err = 'ERROR (1064): Medium Stock Price Update - CHK: Ref-Quantity is higher than MaxLimit for: '.$tmp_msg_obj;
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+
+		//--
+		return array('error'=>$err, 'new_mprice'=>Smart::format_number_dec($chk_data[0], 4, '.', ''), 'old_mqty'=>Smart::format_number_dec($old_data[1], 4, '.', ''), 'new_mqty'=>Smart::format_number_dec($chk_data[1], 4, '.', ''));
+		//--
+
+	} //END FUNCTION
+	//======================================================================
 
 
 	//======================================================================

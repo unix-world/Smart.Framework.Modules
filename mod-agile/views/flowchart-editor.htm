@@ -96,7 +96,7 @@
 		}
 	}
 	var flowchartDeleteDialogHelper = function(objType, objElemSel, fxRemoveElem) {
-		smartJ$Browser.ConfirmDialog('<h3>Delete this ' + smartJ$Utils.escape_html(objType) + ' ?</h3>', function(){ fxRemoveElem(objElemSel); }, 'Confirm remove Flowchart ' + smartJ$Utils.escape_html(objType), 550, 170);
+		smartJ$Browser.ConfirmDialog('<h3>Delete this ' + smartJ$Utils.escape_html(objType) + ' ?</h3>', function(){ fxRemoveElem(objElemSel); }, 'Confirm remove Flowchart: ' + objType, 550, 170);
 	}
 	var flowchartSaveDataHelper = function(data) {
 	//	data.docTitle = String($('#flowchart_title').val());

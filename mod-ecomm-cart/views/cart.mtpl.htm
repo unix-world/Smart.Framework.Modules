@@ -1,5 +1,5 @@
 [@@@SUB-TEMPLATE:partials/base.inc.mtpl.htm@@@]
-<!-- cart r.20230914 -->
+<!-- cart r.20231209 -->
 <script>
 var ecommCartLastError = null;
 jQuery('#btn-goto-cart').hide();
@@ -39,12 +39,12 @@ table#cart-table .cart-item-attributes {
 	color: #555555;
 }
 table#cart-table .cart-discount {
-	color:#FF3300 !important;
+	color: #C2203F !important;
 	font-weight: bold;
 	font-size: 0.75rem;
 }
 table#cart-table .cart-tax {
-	color:#555555 !important;
+	font-style: italic;
 }
 table#cart-table .cart-subtotal {
 	background:#ECECEC;
@@ -62,6 +62,9 @@ table#cart-table .cart-grandtotal {
 table#cart-table .help-area {
 	cursor: help !important;
 }
+table#cart-table .active-area {
+	cursor: cell !important;
+}
 table#cart-table .form-control {
 	min-width: 75px;
 	width: 50%;
@@ -74,6 +77,11 @@ table#cart-table .form-price {
 	text-align:right;
 }
 table#cart-table .cart-icon {
+	color: #448FCE !important;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+table#cart-table .cart-xicon {
 	color: #666699 !important;
 	margin-left: 5px;
 	margin-right: 5px;
@@ -130,7 +138,7 @@ table#cart-table .cart-icon {
 							<td width="40%">
 							[%%%IF:CART-MODE:?sales|inventory;%%%]
 							<!-- Editable -->
-							<input type="text" id="edit-att-[###CART-ITEMS.HASH|html###]" name="frm[[###CART-ITEMS.HASH|html###]][att][[###CART-ITEMS.ATTRIBUTES._-KEY-_|html###]]" value="[###CART-ITEMS.ATTRIBUTES._-VAL-_.VALUE|html###]" class="form-control" style="width:100%;" onKeyDown="smartJ$Browser.catchKeyENTER(event);" readonly>
+							<input type="text" id="edit-att-[###CART-ITEMS.HASH|html###]" name="frm[[###CART-ITEMS.HASH|html###]][att][[###CART-ITEMS.ATTRIBUTES._-KEY-_|html###]]" value="[###CART-ITEMS.ATTRIBUTES._-VAL-_.VALUE|html###]" title="[###CART-ITEMS.ATTRIBUTES._-KEY-_|html###]" class="form-control" style="width:100%;" onKeyDown="smartJ$Browser.catchKeyENTER(event);" readonly>
 							[%%%ELSE:CART-MODE%%%]
 							<!-- Display Only -->
 							<b>[###CART-ITEMS.ATTRIBUTES._-VAL-_.VALUE|html###]</b>
@@ -154,7 +162,7 @@ table#cart-table .cart-icon {
 				<!-- modify atts -->
 				[%%%IF:CART-MODE:?sales|inventory;%%%]
 					<div id="item-inventory-buttons" style="position:absolute; top:0px; right:0px;">
-						<button type="button" class="ux-button ux-button-xsmall btn-replace" data-click="" data-hash="[###CART-ITEMS.HASH|html###]" title="Update Item Attributes"><i class="sfi sfi-pencil"></i></button>
+						<button type="button" class="ux-button ux-button-xsmall btn-replace" data-click="" data-hash="[###CART-ITEMS.HASH|html###]" title="Update Item Attributes"><i class="sfi sfi-pencil2"></i></button>
 					</div>
 				[%%%/IF:CART-MODE%%%]
 				[%%%/IF:CART-ITEMS.ATTRIBUTES%%%]
@@ -184,7 +192,11 @@ table#cart-table .cart-icon {
 				[%%%IF:CART-MODE:?sales|inventory;%%%]
 					<!-- Editable -->
 					[%%%IF:CART-ITEMS.PRICE_:!=;%%%]
-						<span title="Original-Price=[###CART-ITEMS.PRICE_|html###]&nbsp;[###CART-ITEMS.CURRENCY|html###][%%%IF:CART-ITEMS.DISCOUNT_:!=;%%%]&nbsp;;&nbsp;Original-Discount=[###CART-ITEMS.DISCOUNT_|html###][%%%/IF:CART-ITEMS.DISCOUNT_%%%]" class="help-area"><i class="sfi sfi-price-tags cart-icon"></i></span>
+						<span title="Original-Price=[###CART-ITEMS.PRICE_|html###]&nbsp;[###CART-ITEMS.CURRENCY|html###][%%%IF:CART-ITEMS.DISCOUNT_:!=;%%%]&nbsp;;&nbsp;Original-Discount=[###CART-ITEMS.DISCOUNT_|html###][%%%/IF:CART-ITEMS.DISCOUNT_%%%]" class="active-area"><i class="sfi sfi-price-tags cart-icon" onclick="jQuery('#item-price-[###CART-ITEMS.HASH|htmid|js|html###]').val('[###CART-ITEMS.PRICE_|js|html###]'); jQuery(this).removeClass('cart-icon').addClass('cart-xicon');"></i></span>
+					[%%%ELSE:CART-ITEMS.PRICE_%%%]
+						[%%%IF:CART-ITEMS.DISCOUNT_:!=;%%%]
+						<span title="Discounted-Price: [###CART-ITEMS._PRICE_|html###]" class="active-area"><i class="sfi sfi-price-tag cart-xicon" onclick="jQuery('#item-price-[###CART-ITEMS.HASH|htmid|js|html###]').val('[###CART-ITEMS._PRICE_|js|html###]'); jQuery(this).removeClass('cart-xicon').addClass('cart-icon');"></i></span>
+						[%%%/IF:CART-ITEMS.DISCOUNT_%%%]
 					[%%%/IF:CART-ITEMS.PRICE_%%%]
 					<input title="[%%%IF:CART-ITEMS._EXCHRATE:!=1;%%%]Item-Price=[###CART-ITEMS._PRICE|html###]&nbsp;[###CART-ITEMS._CURRENCY|html###] ; Exchange-Rate=[###CART-ITEMS._EXCHRATE|html###][%%%/IF:CART-ITEMS._EXCHRATE%%%]" id="item-price-[###CART-ITEMS.HASH|html###]" type="text" class="form-control form-price" name="frm[[###CART-ITEMS.HASH|html###]][price]" value="[###CART-ITEMS.PRICE|html###]" class="form-control price"><b>&nbsp;[###CART-ITEMS.CURRENCY|html###]</b>
 				[%%%ELSE:CART-MODE%%%]
@@ -202,32 +214,45 @@ table#cart-table .cart-icon {
 			</td>
 			<!-- amount -->
 			<td align="right">
-				<b>[###CART-ITEMS.TOT-PRICE-NOTAX|html###]&nbsp;[###CART-ITEMS.CURRENCY|html###]</b>
+				<b>[###CART-ITEMS.TOT-PRICE-NOTAX|dex2|html###]&nbsp;[###CART-ITEMS.CURRENCY|html###]</b>
 			</td>
 			<!-- tax -->
 			<td align="right" class="cart-tax">
-				<b>[###CART-ITEMS.TOT-PRICE-TAX|html###]&nbsp;[###CART-ITEMS.CURRENCY|html###]</b>
+				<b>[###CART-ITEMS.TOT-PRICE-TAX|dex2|html###]&nbsp;[###CART-ITEMS.CURRENCY|html###]</b>
 				<br>
-				<small><i>[###CART-ITEMS.TAX|html###]&nbsp;%</i></small>
+				<small><i>[###CART-ITEMS.TAX|dex2|html###]&nbsp;%</i></small>
 			</td>
 			[%%%/IF:CART-NOPRICE%%%]
 		</tr>
 		[%%%/LOOP:CART-ITEMS%%%]
 	</tbody>
 	<tfoot>
-		[%%%IF:CART-NOPRICE:!=yes;%%%]
+	[%%%IF:CART-NOPRICE:!=yes;%%%]
+		[%%%IF:CART-DISCOUNT-NOTAX:>0;%%%]
+		<tr>
+			<td colspan="4" align="right" class="cart-subtotal cart-discount">
+				Discount
+			</td>
+			<td align="right" class="cart-subtotal cart-discount">
+				-[###CART-DISCOUNT-NOTAX|dex2|html###]&nbsp;[###CART-CURRENCY|html###]
+			</td>
+			<td align="right" class="cart-subtotal cart-discount cart-tax">
+				-[###CART-DISCOUNT-TAX|dex2|html###]&nbsp;[###CART-CURRENCY|html###]
+			</td>
+		</tr>
+		[%%%/IF:CART-DISCOUNT-NOTAX%%%]
 		<tr>
 			<td colspan="4" align="right" class="cart-subtotal">
 				SubTotal
 			</td>
 			<td align="right" class="cart-subtotal">
-				[###CART-TOTAL-NOTAX|html###]&nbsp;[###CART-CURRENCY|html###]
+				[###CART-TOTAL-NOTAX|dex2|html###]&nbsp;[###CART-CURRENCY|html###]
 			</td>
 			<td align="right" class="cart-subtotal cart-tax">
-				[###CART-TOTAL-TAX|html###]&nbsp;[###CART-CURRENCY|html###]
+				[###CART-TOTAL-TAX|dex2|html###]&nbsp;[###CART-CURRENCY|html###]
 			</td>
 		</tr>
-		[%%%/IF:CART-NOPRICE%%%]
+	[%%%/IF:CART-NOPRICE%%%]
 		<tr>
 			<td colspan="1" align="left" class="cart-grandtotal">
 				[%%%IF:CART-MODE:?sales|inventory;(1)%%%]<i class="sfi [%%%IF:CART-MODE:==inventory;(2)%%%]sfi-library[%%%ELSE:CART-MODE(2)%%%]sfi-power[%%%/IF:CART-MODE(2)%%%] help-area" title="Cart Mode: [###CART-MODE|html###]"></i>[%%%ELSE:CART-MODE(1)%%%]&nbsp;[%%%/IF:CART-MODE(1)%%%]
@@ -237,7 +262,7 @@ table#cart-table .cart-icon {
 				Total
 			</td>
 			<td colspan="2" align="center" class="cart-grandtotal">
-				[###CART-GRAND-TOTAL|html###]&nbsp;[###CART-CURRENCY|html###]
+				[###CART-GRAND-TOTAL|dex2|html###]&nbsp;[###CART-CURRENCY|html###]
 			</td>
 			[%%%ELSE:CART-NOPRICE%%%]
 			<td colspan="2" align="right" class="cart-grandtotal">
@@ -254,13 +279,13 @@ table#cart-table .cart-icon {
 <div>
 	<div style="float:left;">
 		<button type="button" class="ux-button ux-button-special btn-cart-empty">Empty&nbsp;Cart &nbsp; <i class="sfi sfi-bin"></i></button>
-		<button class="ux-button ux-button-secondary btn-empty-cart" id="btn-cart-update">Update&nbsp;Cart &nbsp; <i class="sfi sfi-loop2"></i></button>
+		<button class="ux-button ux-button-details btn-empty-cart" id="btn-cart-update">Update&nbsp;Cart &nbsp; <i class="sfi sfi-calculator"></i></button>
 	</div>
 	<div style="float:right;">
 		[%%%IF:CART-ERROR:!=;%%%]
 		<div id="operation_notice">[###CART-ERROR|html###]</div>
 		[%%%ELSE:CART-ERROR%%%]
-		<button id="btn-finalize" type="button" onClick="if(!ecommCartLastError) { self.location='[###CART-FINALIZE-URL|js|html###]'; } else { jQuery.alertable.alert('Errors ... ' + String(ecommCartLastError) + ' ... press cart update button !'); }" class="ux-button ux-button-regular btn-danger">[###CART-FINALIZE-TEXT|html###] &nbsp; <i class="sfi sfi-credit-card"></i></button>
+		<button id="btn-finalize" type="button" onClick="if(!ecommCartLastError) { self.location='[###CART-FINALIZE-URL|js|html###]'; } else { jQuery.alertable.alert('Errors ... ' + String(ecommCartLastError) + ' ... press cart update button !'); }" class="ux-button ux-button-highlight btn-danger">[###CART-FINALIZE-TEXT|html###] &nbsp; <i class="sfi sfi-credit-card"></i></button>
 		[%%%/IF:CART-ERROR%%%]
 	</div>
 	<div style="clear:both;">
@@ -302,8 +327,8 @@ var cartErrFx = function(the_form_id, url, msg) {
 		var click = $btn.attr('data-click');
 		if(click !== 'edit-mode') {
 			jQuery('input#edit-att-' + String(hash)).prop('readonly', false);
-			$btn.attr('data-click', 'edit-mode').addClass('ux-button-highlight');
-			$iconOfBtn.removeClass('sfi-pencil').addClass('sfi-floppy-disk');
+			$btn.attr('data-click', 'edit-mode').addClass('ux-button-alt');
+			$iconOfBtn.removeClass('sfi-pencil2').addClass('sfi-floppy-disk');
 			return false;
 		} //end if
 		var id = jQuery('#item-id-' + String(hash)).val();
@@ -311,8 +336,8 @@ var cartErrFx = function(the_form_id, url, msg) {
 		var url = '?page=[###PAGE-URL|url|js###]&op=cart-json&cart_action=replace&frx[id]=' + smartJ$Utils.escape_url(id) + '&frx[hash]=' + smartJ$Utils.escape_url(hash) + '&frx[qty]=' + smartJ$Utils.escape_url(qty);
 		smartJ$Browser.ConfirmDialog('Are you sure you want to update item attributes for this item in the cart ?', function(){ if(url) { smartJ$Browser.SubmitFormByAjax('Form_Cart', String(url), 'yes', function(){ cartOkFx(); }, function(the_form_id, url, msg){ cartErrFx(the_form_id, url, msg); }); } }, 'Replace item attributes in Cart', 500, 155);
 		if(click === 'edit-mode') {
-			$btn.attr('data-click', '').removeClass('ux-button-highlight');
-			$iconOfBtn.removeClass('sfi-floppy-disk').addClass('sfi-pencil');
+			$btn.attr('data-click', '').removeClass('ux-button-alt');
+			$iconOfBtn.removeClass('sfi-floppy-disk').addClass('sfi-pencil2');
 			jQuery('input#edit-att-' + String(hash)).prop('readonly', true);
 		} //end if
 		return false;

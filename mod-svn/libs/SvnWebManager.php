@@ -23,7 +23,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SvnWebManager {
 
 	// ::
-	// v.20221220
+	// v.20231107
 
 	const MAX_FILESIZE_DISPLAY = 8388608; // 8MB
 
@@ -77,7 +77,7 @@ final class SvnWebManager {
 							} //end if
 						} //end if
 						if($tmp_repo['encrypted-pass'] === true) {
-							$tmp_repo['pass'] = (string) \SmartUtils::crypto_blowfish_decrypt((string)$tmp_repo['pass']);
+							$tmp_repo['pass'] = (string) \SmartCipherCrypto::bf_decrypt((string)$tmp_repo['pass']);
 						} //end if
 						if($tmp_repo['readonly'] !== true) {
 							$tmp_repo['readonly'] = false;

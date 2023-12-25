@@ -21,6 +21,7 @@ define('SMART_APP_MODULE_AREA', 'INDEX'); // INDEX, ADMIN, SHARED
  */
 class SmartAppIndexController extends SmartAbstractAppController {
 
+	// r.20231209
 
 	public function Initialize() {
 		//--
@@ -38,8 +39,6 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 
 	public function Run() {
-
-		// r.20210318
 
 		//-- dissalow run this sample if not test mode enabled
 		if(!defined('SMART_FRAMEWORK_TEST_MODE') OR (SMART_FRAMEWORK_TEST_MODE !== true)) {
@@ -242,6 +241,8 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				'CART-NOPRICE' 			=> (string) ($cart->getCartNoPriceMode() ? 'yes' : 'no'),
 				'CART-DISCOUNT-LVL' 	=> (string) $cart->getCartDiscountLevel(),
 				'CART-CURRENCY' 		=> (string) $cart->getCartCurrency(),
+				'CART-DISCOUNT-NOTAX' 	=> (string) $totals['discount-notax'],
+				'CART-DISCOUNT-TAX' 	=> (string) $totals['discount-tax'],
 				'CART-TOTAL-NOTAX' 		=> (string) $totals['total-notax'],
 				'CART-TOTAL-TAX' 		=> (string) $totals['total-tax'],
 				'CART-GRAND-TOTAL' 		=> (string) $totals['grand-total'],

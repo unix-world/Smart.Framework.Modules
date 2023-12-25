@@ -63,7 +63,7 @@ $('body').keydown(function(e){
 });
 function tblShowAlertDialog(id, tx_en, tx_transl, projs, modif) {
 	var html = '<button class="ux-button ux-button-xsmall" style="position:absolute; right:10px; top:7px;" onClick="$(\'#simpledialog-bttn-yes\').click();">X</button><div><h3 style="display:inline;">EN Text</h3></div>' + '<pre style="width:99%; overflow:auto;">' + smartJ$Utils.escape_html(tx_en) + '</pre><hr>' + '<div><h3 style="display:inline;">Text Translations</h3></div>' + '<pre id="jsonAreaPreAlertDialog" class="json-render-area"></pre>' + '<script' + '>' + 'var json; try { json = JSON.parse(\'' + smartJ$Utils.escape_js(tx_transl) + '\'); } catch(err) { json = {}; }' + '$(\'#jsonAreaPreAlertDialog\').jsonViewer(json, { collapsed: false, withQuotes:false });' + '<' + '/script>';
-	smartJ$Browser.AlertDialog(html, null, 'Record ID: ' + smartJ$Utils.escape_html(id), parseInt($(window).width() * 0.75), parseInt($(window).height() * 0.9));
+	smartJ$Browser.AlertDialog(html, null, 'Record ID: `' + id + '`', parseInt($(window).width() * 0.75), parseInt($(window).height() * 0.9));
 } //END FUNCTION
 </script>
 <script>
@@ -86,7 +86,7 @@ $(function() {
 		var tx_transl = String(dataContext['transl']);
 		var projs = String(dataContext['projects']);
 		var modif = String(dataContext['modif']);
-		$(cellNode).empty().html('<button class="ux-button ux-button-special ux-button-xsmall" onclick="smartJ$Browser.ConfirmDialog(\'' + smartJ$Utils.escape_js('<img src="lib/framework/img/sign-crit-warn.svg" align="right">') + '<b>Delete this Record ?</b>\' + \'<br><br>' + smartJ$Utils.escape_js(smartJ$Utils.escape_html(tx_en)) + '\', function(){ getFromUrlByAjax(\'Deleting ...\', \'admin.php?page=transl-repo.welcome&action=delete-data&id=' + smartJ$Utils.escape_js(smartJ$Utils.escape_url(id)) + '\'); }, \'Delete Confirmation / ID: <small><i>' + smartJ$Utils.escape_js(smartJ$Utils.escape_html(id)) + '</i></small>\', 550, 350);  return false;"><i class="sfi sfi-bin2"></i></button> &nbsp; <a class="ux-button ux-button-xsmall" href="javascript:void(0)" onClick="tblShowAlertDialog(\'' + smartJ$Utils.escape_js(id) + '\', \'' + smartJ$Utils.escape_js(tx_en) + '\', \'' + smartJ$Utils.escape_js(tx_transl) + '\', \'' + smartJ$Utils.escape_js(projs) + '\', \'' + smartJ$Utils.escape_js(modif) + '\'); return false;">' + '<i class="sfi sfi-file-text2"></i>' + '</a>');
+		$(cellNode).empty().html('<button class="ux-button ux-button-special ux-button-xsmall" onclick="smartJ$Browser.ConfirmDialog(\'' + smartJ$Utils.escape_js('<img src="lib/framework/img/sign-crit-warn.svg" align="right">') + '<b>Delete this Record ?</b>\' + \'<br><br>' + smartJ$Utils.escape_js(smartJ$Utils.escape_html(tx_en)) + '\', function(){ getFromUrlByAjax(\'Deleting ...\', \'admin.php?page=transl-repo.welcome&action=delete-data&id=' + smartJ$Utils.escape_js(smartJ$Utils.escape_url(id)) + '\'); }, \'Delete Confirmation / ID: `' + smartJ$Utils.escape_js(id) + '`\', 550, 350);  return false;"><i class="sfi sfi-bin2"></i></button> &nbsp; <a class="ux-button ux-button-xsmall" href="javascript:void(0)" onClick="tblShowAlertDialog(\'' + smartJ$Utils.escape_js(id) + '\', \'' + smartJ$Utils.escape_js(tx_en) + '\', \'' + smartJ$Utils.escape_js(tx_transl) + '\', \'' + smartJ$Utils.escape_js(projs) + '\', \'' + smartJ$Utils.escape_js(modif) + '\'); return false;">' + '<i class="sfi sfi-file-text2"></i>' + '</a>');
 	} //END FUNCTION
 
 	//-- Grid Data Defs

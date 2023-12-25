@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 
 /**
- * Admin Controller r.20230101
+ * Admin Controller r.20231103
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
@@ -51,7 +51,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(
 			(SmartAuth::test_login_privilege('cloud') !== true)
 			AND
-			(SmartAuth::test_login_privilege('cloud-webmail') !== true)
+			(SmartAuth::test_login_privilege('cloud:webmail') !== true)
 		) {
 			$this->PageViewSetCfg('error', 'This Area is Restricted by your Account Privileges !');
 			return 403;
@@ -69,7 +69,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/mail';
+		$safe_user_path = (string) 'wpub/cloud/'.\SmartModExtLib\Cloud\cloudUtils::getUserDirPrefixedFirstLetter((string)$safe_user_dir).'/mail';
 		if(SmartFileSysUtils::checkIfSafePath((string)$safe_user_path) != '1') {
 			$this->PageViewSetErrorStatus(500, 'ERROR: WebMail Unsafe User Path ...');
 			return;
@@ -81,13 +81,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 		//--
 		$this->userpath = (string) SmartFileSysUtils::addPathTrailingSlash((string)$safe_user_path);
-		if(!SmartFileSystem::is_type_file($this->userpath.'.htaccess')) {
-			SmartFileSystem::write($this->userpath.'.htaccess', '### Smart.Framework // Cloud.WebMail @ HtAccess Data Protection ###'."\n\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n");
-			if(!SmartFileSystem::is_type_file($this->userpath.'.htaccess')) {
-				$this->PageViewSetErrorStatus(500, 'ERROR: WebMail HTAccess does not exists and could not be created ...');
-				return;
-			} //end if
-		} //end if
 		//--
 
 		//--
@@ -319,10 +312,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					((string)$box == 'notes') ? 'apple-note' : 'message',
 					(string) $msg,
 					(string) $this->secretKey(),
-					'data-reply', // 'data-full' | 'data-reply'
-					$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($box).'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
-					'_self',
-					'print' // need to be print to avoid re-linking with real-links
+					(string) 'data-reply', // 'data-full' | 'data-reply'
+					(string) $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($box).'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
+					(string) '_self',
+					(string) 'print' // need to be print to avoid re-linking with real-links
 				);
 				//--
 				$this->PageViewSetVar(
@@ -340,10 +333,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						((string)$box == 'notes') ? 'apple-note' : 'message',
 						(string) $msg,
 						(string) $this->secretKey(),
-						'data-full', // 'data-full' | 'data-reply'
-						$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($box).'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
-						'_self',
-						'print' // need to be print to avoid re-linking with real-links
+						(string) 'data-full', // 'data-full' | 'data-reply'
+						(string) $this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($box).'&op=view-message&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
+						(string) '_self',
+						(string) 'print' // need to be print to avoid re-linking with real-links
 					);
 					//--
 					$this->PageViewSetVar(
@@ -475,7 +468,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					((string)$box == 'notes') ? 'apple-note' : 'message',
 					(string) $msg,
 					(string) $this->secretKey(),
-					'data-full'
+					(string) 'data-full'
 				);
 				//print_r($arr_msg); die();
 				if((int)$arr_msg['atts_num'] > 0) {
@@ -486,7 +479,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					((string)$box == 'notes') ? 'apple-note' : 'message',
 					(string) $msg,
 					(string) $this->secretKey(),
-					'data-reply'
+					(string) 'data-reply'
 				);
 				//print_r($arr_msg); die();
 				$model->updOneMessageKeywordsById($id, (string)SmartUtils::extract_keywords((string)$arr_msg['message'], 255));
@@ -581,9 +574,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			((string)$box == 'notes') ? 'apple-note' : 'message',
 			(string) $msg,
 			(string) $this->secretKey(),
-			$this->pagelink.'&mbox='.Smart::escape_url($mbox).'&box='.Smart::escape_url($box).'&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
-			'_self',
-			'<div align="left"><h1 style="display:inline; color:#333333;">'.Smart::escape_html($mime_ttl).'</h1></div>'.$bttns_area,
+			(string) $this->pagelink.'&mbox='.Smart::escape_url((string)$mbox).'&box='.Smart::escape_url((string)$box).'&msg={{{MESSAGE}}}&rawmode={{{RAWMODE}}}&mime={{{MIME}}}&disp={{{DISP}}}&mode={{{MODE}}}',
+			(string) '_self',
+			(string) '<div align="left"><h1 style="display:inline; color:#333333;">'.Smart::escape_html((string)$mime_ttl).'</h1></div>'.$bttns_area,
 			(string) $mime_mode // 'default' | 'print'
 		);
 		//-- sandbox if required (print mode) :: if non-print mode will use automatically ; for print mode must be custom implemented !

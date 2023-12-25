@@ -89,11 +89,11 @@
 		ajax.done(function(msg) {
 			if((msg.hasOwnProperty('completed')) && (msg.completed === 'DONE') && (msg.hasOwnProperty('status')) && (msg.hasOwnProperty('title')) && (msg.hasOwnProperty('message')) && (msg.hasOwnProperty('js_evcode')) && (msg.hasOwnProperty('redirect'))) {
 				if(msg.status === 'OK') {
-					smartJ$Browser.GrowlNotificationAdd(smartJ$Utils.escape_html(msg.title), smartJ$Utils.escape_html(msg.message), '', 5000, false, 'green');
+					smartJ$Browser.GrowlNotificationAdd(msg.title, smartJ$Utils.escape_html(msg.message), '', 5000, false, 'green');
 					setTimeout(function(){ smartJ$Browser.OverlayHide(); }, 500);
 					TheGrid.loadGridData(0);
 				} else {
-					smartJ$Browser.GrowlNotificationAdd(smartJ$Utils.escape_html(msg.title), smartJ$Utils.escape_html(msg.message), '', 7500, false, 'red');
+					smartJ$Browser.GrowlNotificationAdd(msg.title, smartJ$Utils.escape_html(msg.message), '', 7500, false, 'red');
 					setTimeout(function(){ smartJ$Browser.OverlayHide(); }, 500);
 					TheGrid.loadGridData(0);
 				}
@@ -103,7 +103,7 @@
 				TheGrid.loadGridData(0);
 			}
 		}).fail(function (msg) {
-			smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(msg.responseText), 'smartJ$Browser.OverlayHide();', 'ERROR: Invalid Server Response ', 720, 400);
+			smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(msg.responseText), 'smartJ$Browser.OverlayHide();', 'ERROR: Invalid Server Response', 720, 400);
 			TheGrid.loadGridData(0);
 		});
 	};
@@ -312,7 +312,7 @@ jQuery(() => {
 		enableColumnReorder: false,
 		enableAsyncPostRender: false,
 		asyncPostRenderDelay: 15,
-		rowHeight: 26,
+		rowHeight: 27,
 		editable: true,
 		autoEdit: false,
 	//	enableTextSelectionOnCells: false,

@@ -18,7 +18,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 final class webmailUtils {
 
-	// r.20231017
+	// r.20231107
 	// ::
 
 
@@ -452,7 +452,7 @@ final class webmailUtils {
 
 	public static function getMessageChecksum($tmp_message_content) {
 		//--
-		return (string) \SmartHashCrypto::sha256((string)$tmp_message_content);
+		return (string) \SmartHashCrypto::sha256((string)$tmp_message_content); // do not change this .. it is how is stored already in DB
 		//--
 	} //END FUNCTION
 
@@ -540,9 +540,9 @@ final class webmailUtils {
 			//-- if found many, then try to resolve it ...
 			if((int)\Smart::array_size($tmp_chk_arr) > 0) {
 				//--
-				if(((string)$tmp_chk_1st_arr['folder'] != 'notes') AND ((string)$tmp_chk_1st_arr['ifolder'] != 'notes')) { // if found at least one, get the first and process it
-					//--
-					$tmp_chk_1st_arr = (array) $tmp_chk_arr[0]; // get the first, which is the oldest but with stat_cloud = 0 (if no one found with stat_cloud = 0, then stat_cloud = 1 (if no one found with stat_cloud = 1, then stat_cloud = 2))
+				$tmp_chk_1st_arr = (array) ($tmp_chk_arr[0] ?? null); // get the first, which is the oldest but with stat_cloud = 0 (if no one found with stat_cloud = 0, then stat_cloud = 1 (if no one found with stat_cloud = 1, then stat_cloud = 2))
+				//--
+				if(((int)\Smart::array_size($tmp_chk_1st_arr) > 0) AND ((string)$tmp_chk_1st_arr['folder'] != 'notes') AND ((string)$tmp_chk_1st_arr['ifolder'] != 'notes')) { // if found at least one, get the first and process it
 					//--
 					switch((int)$tmp_chk_1st_arr['stat_cloud']) {
 						case 0: // default
@@ -797,7 +797,7 @@ final class webmailUtils {
 		//--
 		return array(
 			'name' 	=> (string) $display_name,
-			'file' 	=> (string) \SmartUtils::crypto_blowfish_encrypt((string)$relative_file_path),
+			'file' 	=> (string) \SmartCipherCrypto::bf_encrypt((string)$relative_file_path),
 			'chk' 	=> (string) self::checksumAttachmentComposerData($relative_file_path)
 		);
 		//--
@@ -970,7 +970,7 @@ final class webmailUtils {
 				if(((string)$tmp_att != '') AND (\strlen((string)$tmp_att) <= 65535)) {
 					$tmp_att = (array) \explode('|', (string)$tmp_att);
 					$tmp_att[0] = (string) \trim((string)$tmp_att[0]); // checksum
-					$tmp_att[1] = (string) \trim((string)\SmartUtils::crypto_blowfish_decrypt((string)$tmp_att[1])); // file (encrypted)
+					$tmp_att[1] = (string) \trim((string)\SmartCipherCrypto::bf_decrypt((string)$tmp_att[1])); // file (encrypted)
 					$tmp_att[2] = (string) \trim((string)$tmp_att[2]); // *name (optional)
 					if(((string)$tmp_att[0] != '') AND ((string)$tmp_att[1] != '') AND ((string)$tmp_att[2] != '')) {
 						if((string)self::checksumAttachmentComposerData((string)$tmp_att[1]) === (string)$tmp_att[0]) {
@@ -1054,7 +1054,7 @@ final class webmailUtils {
 				'server_sslmode' 		=> (string) $tmp_cfg_send_arr['settings_tls'],
 				'server_cafile' 		=> '',
 				'server_auth_user' 		=> (string) $tmp_cfg_send_arr['settings_auth_username'],
-				'server_auth_pass' 		=> (string) \SmartUtils::crypto_blowfish_decrypt((string)$tmp_cfg_send_arr['settings_auth_password']),
+				'server_auth_pass' 		=> (string) \SmartCipherCrypto::bf_decrypt((string)$tmp_cfg_send_arr['settings_auth_password']),
 				'server_auth_mode' 		=> (string) $tmp_cfg_send_arr['settings_auth_mode'],
 				'send_from_addr' 		=> (string) $tmp_cfg_send_from_addr,
 				'send_from_name' 		=> (string) $tmp_cfg_send_from_name,
@@ -1123,11 +1123,11 @@ final class webmailUtils {
 					$tmp_cfg_get_arr['settings_tls'] = '';
 				} //end if
 				//--
-				$connect = $mailget->connect($tmp_cfg_get_arr['settings_host'], $tmp_cfg_get_arr['settings_port'], $tmp_cfg_get_arr['settings_tls']);
+				$connect = $mailget->connect((string)$tmp_cfg_get_arr['settings_host'], (int)$tmp_cfg_get_arr['settings_port'], (string)$tmp_cfg_get_arr['settings_tls']);
 				//--
 				if($connect) {
 					//--
-					$login = $mailget->login($tmp_cfg_get_arr['settings_auth_username'], \SmartUtils::crypto_blowfish_decrypt((string)$tmp_cfg_get_arr['settings_auth_password']), $tmp_cfg_get_arr['settings_auth_mode']);
+					$login = $mailget->login((string)$tmp_cfg_get_arr['settings_auth_username'], (string)\SmartCipherCrypto::bf_decrypt((string)$tmp_cfg_get_arr['settings_auth_password']), $tmp_cfg_get_arr['settings_auth_mode']);
 					//--
 					if($login AND $mailget->is_connected_and_logged_in()) {
 						//--

@@ -21,7 +21,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
-		$version = 'r.20231018';
+		$version = 'r.20231027';
 		//--
 
 		//--

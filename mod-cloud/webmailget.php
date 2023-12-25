@@ -16,7 +16,7 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
 
 
 /**
- * Admin Controller r.20231018
+ * Admin Controller r.20231107
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
@@ -36,7 +36,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(
 			(SmartAuth::test_login_privilege('cloud') !== true)
 			AND
-			(SmartAuth::test_login_privilege('cloud-webmail') !== true)
+			(SmartAuth::test_login_privilege('cloud:webmail') !== true)
 		) {
 			http_response_code(403);
 			echo SmartComponents::http_message_403_forbidden('This Area is Restricted by your Account Privileges !');
@@ -58,7 +58,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$safe_user_path = (string) 'wpub/cloud/'.$safe_user_dir.'/mail';
+		$safe_user_path = (string) 'wpub/cloud/'.\SmartModExtLib\Cloud\cloudUtils::getUserDirPrefixedFirstLetter((string)$safe_user_dir).'/mail';
 		if(SmartFileSysUtils::checkIfSafePath((string)$safe_user_path) != '1') {
 			if(!headers_sent()) {
 				http_response_code(500);
@@ -381,7 +381,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$tmp_cfg_get_arr['settings_tls'] = (string) $tmp_cfg_get_arr['settings_tls'];
 		//--
 		$tmp_cfg_get_arr['settings_auth_username'] = (string) $tmp_cfg_get_arr['settings_auth_username'];
-		$tmp_cfg_get_arr['settings_auth_password'] = (string) SmartUtils::crypto_blowfish_decrypt((string)$tmp_cfg_get_arr['settings_auth_password']);
+		$tmp_cfg_get_arr['settings_auth_password'] = (string) SmartCipherCrypto::bf_decrypt((string)$tmp_cfg_get_arr['settings_auth_password']);
 		if((string)trim((string)$tmp_cfg_get_arr['settings_auth_password']) == '') {
 			$this->print_fatal_err('Invalid Settings: Empty Password');
 			return '';

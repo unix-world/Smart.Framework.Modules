@@ -40,7 +40,7 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs 
 		if(
 			(SmartAuth::test_login_privilege('cloud') !== true)
 			AND
-			(SmartAuth::test_login_privilege('cloud-files') !== true)
+			(SmartAuth::test_login_privilege('cloud:files') !== true)
 		) {
 			http_response_code(403);
 			echo SmartComponents::http_message_403_forbidden('This Area is Restricted by your Account Privileges !');
@@ -65,14 +65,14 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs 
 		//--
 		// THIS IS A PUBLIC SERVICE, NO NEED FOR HTACCESS :: \SmartModExtLib\Cloud\cloudUtils::ensureCloudHtAccess();
 		//--
-		$safe_user_dir = (string) Smart::safe_username(SmartAuth::get_auth_username());
+		$safe_user_dir = (string) Smart::safe_username((string)SmartAuth::get_auth_username());
 		if(((string)$safe_user_dir == '') OR (SmartFileSysUtils::checkIfSafeFileOrDirName((string)$safe_user_dir) != '1')) {
 			http_response_code(500);
 			echo SmartComponents::http_message_500_internalerror('ERROR: WebDAV Unsafe User Dir ...');
 			return;
 		} //end if
 		//--
-		$safe_user_path = (string) 'wpub/public/'.$safe_user_dir;
+		$safe_user_path = (string) 'wpub/public/'.\SmartModExtLib\Cloud\cloudUtils::getUserDirPrefixedFirstLetter((string)$safe_user_dir);
 		if(SmartFileSysUtils::checkIfSafePath((string)$safe_user_path) != '1') {
 			http_response_code(500);
 			echo SmartComponents::http_message_500_internalerror('ERROR: WebDAV Unsafe User Public Path ...');

@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20231020
+ * @version 	v.20231114
  * @package 	Documentor
  *
  */
@@ -64,9 +64,8 @@ final class SmartClasses {
 		return [
 			'smartJ$Utils' 				=> 'lib/js/framework/src/core_utils.js',
 			'smartJ$Date' 				=> 'lib/js/framework/src/date_utils.js',
-			'smartJ$Base64' 			=> 'lib/js/framework/src/crypt_utils.js?#smartJ$Base64',
 			'smartJ$CryptoHash' 		=> 'lib/js/framework/src/crypt_utils.js?#smartJ$CryptoHash',
-			'smartJ$CryptoBlowfish' 	=> 'lib/js/framework/src/crypt_utils.js?#smartJ$CryptoBlowfish',
+			'smartJ$CipherCrypto' 		=> 'lib/js/framework/src/crypt_utils.js?#smartJ$CipherCrypto',
 			'smartJ$ModalBox' 			=> 'lib/js/framework/src/ifmodalbox.js',
 			'smartJ$Browser' 			=> 'lib/js/framework/src/browser_utils.js',
 			'smartJ$TestBrowser' 		=> 'lib/js/framework/src/browser_check.js'
@@ -98,10 +97,12 @@ final class SmartClasses {
 			'\\SmartAbstractPersistentCache', // dev
 			'\\SmartPersistentCache',
 			'\\SmartHashCrypto',
+			'\\SmartCsrf',
 			'\\SmartCipherCrypto',
-		//	'\\SmartCryptoCipherBlowfishCBC',
-		//	'\\SmartCryptoOpenSSLCipher',
-		//	'\\SmartCryptoCipherHash',
+		//	'\\SmartCipherUtils',
+		//	'\\SmartCryptoCiphersHashCryptOFB',
+		//	'\\SmartCryptoCiphersBlowfishCBC',
+		//	'\\SmartCryptoCiphersOpenSSL',
 			'\\SmartDhKx',
 			'\\SmartMarkersTemplating',
 			'\\SmartValidator',
