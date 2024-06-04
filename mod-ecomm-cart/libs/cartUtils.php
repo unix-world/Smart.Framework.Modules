@@ -1,6 +1,6 @@
 <?php
 // eComm Cart Utils
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 
 namespace SmartModExtLib\EcommCart;
 
@@ -19,7 +19,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 final class cartUtils {
 
-	// r.20231209
+	// r.20240123
 
 	/**
 	 * Get all items in cart formated for display cart.
@@ -59,16 +59,16 @@ final class cartUtils {
 							$tmp_arr['discount'] 		= (string) \Smart::format_number_dec((isset($item['discount']) ? $item['discount'] : null), 2, '.', ''); // custom discount
 							$tmp_arr['discount_'] 		= (string) (isset($item['discount_']) ? $item['discount_'] : null);
 							$tmp_arr['_discount'] 		= (float)  (isset($item['_discount']) ? $item['_discount'] : null);
-							$tmp_arr['_discount_'] 		= (float)  \Smart::format_number_dec($tmp_arr['_discount'] * $tmp_arr['_price'], 2, '.', '');
-							$tmp_arr['_price_'] 		= (float)  \Smart::format_number_dec(($tmp_arr['_price'] - $tmp_arr['_discount_']), 2, '.', '');
+							$tmp_arr['_discount_'] 		= (float)  \Smart::format_number_dec($tmp_arr['_discount'] * $tmp_arr['_price'], 2, '.', ''); // just informative, do not use in calculations ; in calculations must use discounted value (price * quantity) not discounted individual price !
+							$tmp_arr['_price_'] 		= (float)  \Smart::format_number_dec(($tmp_arr['_price'] - $tmp_arr['_discount_']), 2, '.', ''); // just informative, do not use in calculations ; in calculations must use discounted value (price * quantity) not discounted individual price !
 							$tmp_arr['_currency'] 		= (string) (isset($item['_currency']) ? $item['_currency'] : null);
 							$tmp_arr['_exchrate'] 		= (string) \Smart::format_number_dec((isset($item['_exchrate']) ? $item['_exchrate'] : null), 2, '.', '');
 							//-- {{{SYNC-CART-CALC-TOTALS}}}
 							$tmp_arr['tax-ratio'] 		= (float)  (0 + \Smart::format_number_dec(($tmp_arr['tax'] / 100), 2, '.', '')); // {{{SYNC-CART-TAX-RATIO}}} tax / 100 must have 4 decimals as tax % can have 2 decimals !!!
 							$tmp_arr['tot-price-notax'] = (float)  (0 + \Smart::format_number_dec(($tmp_arr['quantity'] * $tmp_arr['price']), 2, '.', ''));
 							$tmp_arr['tot-price-tax'] 	= (float)  (0 + \Smart::format_number_dec(($tmp_arr['quantity'] * $tmp_arr['price'] * $tmp_arr['tax-ratio']), 2, '.', ''));
-							$tmp_arr['tot-disc-notax'] 	= (float)  (0 + \Smart::format_number_dec($tmp_arr['_discount_'] * $tmp_arr['quantity'], 2, '.', ''));
-							$tmp_arr['tot-disc-tax'] 	= (float)  (0 + \Smart::format_number_dec($tmp_arr['_discount_'] * $tmp_arr['quantity'] * $tmp_arr['tax-ratio'], 2, '.', ''));
+							$tmp_arr['tot-disc-notax'] 	= (float)  (0 + \Smart::format_number_dec($tmp_arr['_discount'] * ($tmp_arr['_price'] * $tmp_arr['quantity']), 2, '.', ''));
+							$tmp_arr['tot-disc-tax'] 	= (float)  (0 + \Smart::format_number_dec(($tmp_arr['_discount'] * ($tmp_arr['_price'] * $tmp_arr['quantity'])) * $tmp_arr['tax-ratio'], 2, '.', ''));
 							$tmp_arr['tot-amount'] 		= (float)  (0 + \Smart::format_number_dec($tmp_arr['tot-price-notax'] - $tmp_arr['tot-disc-notax'], 2, '.', ''));
 							$tmp_arr['tot-tax'] 		= (float)  (0 + \Smart::format_number_dec($tmp_arr['tot-price-tax'] - $tmp_arr['tot-disc-tax'], 2, '.', ''));
 							//--
@@ -182,7 +182,6 @@ final class cartUtils {
 			if(\is_array($items)) {
 				foreach($items as $kk => $item) {
 					if(\is_array($item)) {
-						$tmp_item_disc = 0;
 						$tmp_item_qty   = \Smart::format_number_dec(($item['quantity'] ?? null), 2, '.', '');
 						$tmp_item_price = \Smart::format_number_dec(($item['price'] ?? null), 2, '.', '');
 						$tmp_item_tax   = \Smart::format_number_dec(((float)($item['tax'] ?? null) / 100), 2, '.', ''); // {{{SYNC-CART-TAX-RATIO}}} tax / 100 must have 4 decimals as tax % can have 2 decimals !!!
@@ -194,9 +193,8 @@ final class cartUtils {
 						$total_tax += $tmp_item_tot_price_tax;
 						$grand_total += $tmp_item_tot_price_all;
 						if(isset($item['_discount']) AND ($item['_discount'] > 0) AND (!$item['price_'])) {
-							$tmp_item_disc = \Smart::format_number_dec($item['_discount'] * $item['_price'], 2, '.', '');
-							$total_disc_notax += \Smart::format_number_dec($tmp_item_disc * $tmp_item_qty, 2, '.', '');
-							$total_disc_tax += \Smart::format_number_dec($total_disc_notax * $tmp_item_tax, 2, '.', '');
+							$total_disc_notax += \Smart::format_number_dec($item['_discount'] * ($item['_price'] * $tmp_item_qty), 2, '.', '');
+							$total_disc_tax += \Smart::format_number_dec(($item['_discount'] * ($item['_price'] * $tmp_item_qty)) * $tmp_item_tax, 2, '.', '');
 						} //end if
 					} //end if
 				} //end foreach

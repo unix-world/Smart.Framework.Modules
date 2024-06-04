@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: EcommCart r.20231209 #
+# Smart.Framework.Modules: EcommCart r.20240123 #
 
 // r.8.7 / smart.framework.v.8.7
 

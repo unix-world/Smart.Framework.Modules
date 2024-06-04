@@ -9,7 +9,7 @@ item:
     tax: 0 # Sales Tax %, 0..99.99
     pak:
         um: unit # unit of measure
-        umtype: int # U.M. Type: dec = decimal ; int = integer
+        umtype: dec # U.M. Type: dec = decimal ; int = integer
         umerg: 0 # U.M. Fractio: Ergonomic Order Qty.
         ummin: 0 # Minimum Order Qty.
     attributes:

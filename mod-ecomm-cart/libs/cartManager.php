@@ -1,6 +1,6 @@
 <?php
 // eComm Cart Manager
-// (c) 2006-2023 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 
 namespace SmartModExtLib\EcommCart;
 
@@ -20,7 +20,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 final class cartManager {
 
-	// r.20231209
+	// r.20240123
 
 	/**
 	 * An unique ID for the cart.
@@ -805,13 +805,13 @@ final class cartManager {
 		} //end if
 		//--
 		$item_key = (string) \Smart::base_from_hex_convert((string)\SmartHashCrypto::sha1((string)$hash), 36);
-		$this->items[$id][(string)$item_key] = [
+		$this->items[(string)$id][(string)$item_key] = [
 			// {{{SYNC-ECART-ITEM-PROPS}}}
 			'dtime'      => (string) \date('Y-m-d H:i:s O'),
 			'hash'       => (string) $hash,
 			'id'         => (string) $id,
 			'attributes' => (array)  $attributes,
-			'quantity'   => (string) \Smart::format_number_dec((($this->itemMaxQuantity < $quantity && $this->itemMaxQuantity != 0) ? $this->itemMaxQuantity : $quantity), 2, '.', ''),
+			'quantity'   => (string) \Smart::format_number_dec((($this->itemMaxQuantity < $quantity && $this->itemMaxQuantity != 0) ? $this->itemMaxQuantity : $quantity), 3, '.', ''),
 			'qtyerg'     => (string) $fix_qtyerg,
 			'umtype'     => (string) ($data['pak']['umtype'] ?? null),
 			'um'         => (string) ($data['pak']['um'] ?? null),
@@ -1173,7 +1173,7 @@ final class cartManager {
 		if((string)\trim((string)$data['name']) == '') {
 			return '(013) Invalid Item Props / Name: '.$id;
 		} //end if
-		if(\strlen((string)$data['name']) > 150) {
+		if(\strlen((string)$data['name']) > 100) {
 			return '(014) Invalid Item Props / Name is too long: '.$id;
 		} //end if
 		//--
@@ -1183,7 +1183,7 @@ final class cartManager {
 		if((string)\trim((string)$data['pak']['um']) == '') {
 			return '(022) Empty Item Props / Package / UM: '.$id;
 		} //end if
-		if(\strlen((string)$data['pak']['um']) > 15) {
+		if(\strlen((string)$data['pak']['um']) > 10) {
 			return '(023) Invalid Item Props / Package / UM is too long: '.$id;
 		} //end if
 		if(((string)$data['pak']['umtype'] != 'int') AND ((string)$data['pak']['umtype'] != 'dec')) {
@@ -1491,7 +1491,7 @@ final class cartManager {
 			return 0;
 		} //end try catch
 		//--
-		return (string) \Smart::format_number_dec((float)$result, 2, '.', '');
+		return (string) \Smart::format_number_dec((float)$result, 3, '.', '');
 		//--
 	} //END FUNCTION
 
@@ -1538,7 +1538,7 @@ final class cartManager {
 		} //end if
 		//-- format by type
 		if((string)$y_qty_type == 'dec') {
-			$y_qty_cart = (string) \Smart::format_number_dec((float)$y_qty_cart, 2, '.', '');
+			$y_qty_cart = (string) \Smart::format_number_dec((float)$y_qty_cart, 3, '.', '');
 		} else { // int
 			$y_qty_cart = (string) \Smart::format_number_int((int)\ceil((float)$y_qty_cart));
 		} //end if

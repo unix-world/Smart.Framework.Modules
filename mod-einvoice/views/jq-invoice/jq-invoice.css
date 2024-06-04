@@ -1,0 +1,246 @@
+
+/* jQuery Invoice v.1.0 :: r.20240123 */
+/* (c) 2023-2024 unix-world.org */
+
+body {
+	background: #1E1F21;
+}
+
+div#area-main {
+	margin: 0 !important;
+	padding: 0px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+div.invoice-box {
+	background: #FFFFFF;
+	width: 763px !important;
+	margin: auto;
+	padding: 28px;
+	padding-left: 14px;
+	padding-right: 14px;
+	border: 1px solid #EEEEEE;
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.16);
+	font-size: 1rem;
+	line-height: 1.5rem;
+	color: #555;
+}
+
+div.invoice-box i#icon {
+	color: #778888;
+	opacity: 0.4;
+}
+div.invoice-box i#matrix {
+	color: #EFEFEF;
+	opacity: 0.8;
+}
+
+div.invoice-box table {
+	width: 100%;
+	line-height: inherit;
+	text-align: left;
+}
+
+div.invoice-box table tr td.align-center {
+	text-align: center;
+}
+
+div.invoice-box table tr td.align-right {
+	text-align: right;
+}
+
+div.invoice-box table#metainfo {
+	border: 1px solid #ECECEC;
+	padding: 20px;
+}
+
+div.invoice-box table#metainfo tr td.one,
+div.invoice-box table#metainfo tr td.two {
+	width: 300px;
+}
+div.invoice-box table#metainfo tr td.separator {
+	width: 163px;
+}
+
+div.invoice-box table#metainfo tr td div.doc-type {
+	font-weight: bold;
+	font-size: 1.5rem;
+}
+div.invoice-box table#metainfo tr td div.name {
+	font-weight: bold;
+	font-size: 1.25rem;
+}
+div.invoice-box table#metainfo tr td div.taxid {
+	font-size: 1rem;
+}
+div.invoice-box table#metainfo tr td div.country,
+div.invoice-box table#metainfo tr td div.region,
+div.invoice-box table#metainfo tr td div.regno {
+	font-size: 0.875rem;
+}
+div.invoice-box table#metainfo tr td div.type {
+	background: #ECECEC;
+	margin-bottom: 5px;
+	padding: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
+	font-weight: bold;
+	font-style: italic;
+}
+div.invoice-box table#metainfo tr td div.doc-num {
+	font-size: 1rem;
+	font-weight: bold;
+}
+div.invoice-box table#metainfo tr td div.doc-date {
+	font-size: 1rem;
+}
+div.invoice-box table#metainfo tr td div.doc-due {
+	font-size: 0.875rem;
+	font-style: italic;
+}
+div.invoice-box table#metainfo tr td div.address {
+	font-size: 0.8125rem;
+}
+div.invoice-box table#metainfo tr td input.customer,
+div.invoice-box table#metainfo tr td textarea.customer {
+	width: 200px;
+}
+div.invoice-box table#metainfo tr td input.customer,
+div.invoice-box table#metainfo tr td textarea.customer,
+div.invoice-box table#metainfo tr td select.customer {
+	font-size: 0.8125rem;
+	color: #555555;
+}
+div.invoice-box table#metainfo tr td select.customer {
+	width: 100px;
+	margin-bottom: 0;
+}
+div.invoice-box table#metainfo tr td textarea.customer {
+	height: 50px;
+}
+div.invoice-box table#metainfo tr td input#cname {
+	font-size: 1rem;
+	font-weight: bold;
+}
+div.invoice-box table#metainfo tr td input#ctaxid {
+	font-size: 0.875rem;
+}
+
+div.invoice-box table#invoice,
+div.invoice-box table#invoice * {
+	font-size: 0.875rem;
+	line-height: 0.9375rem;
+}
+
+div.invoice-box table#invoice {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border-right: 1px solid #ECECEC;
+	border-bottom: 1px solid #ECECEC;
+}
+
+div.invoice-box table#invoice tr td {
+	border-left: 1px solid #ECECEC;
+	border-top: 1px solid #ECECEC;
+	padding: 5px;
+	vertical-align: top;
+}
+
+div.invoice-box table#invoice tr.heading td {
+	text-align: center;
+	font-weight: bold;
+}
+
+div.invoice-box table#invoice tr.top td div#nfo {
+	margin-top: 7px;
+}
+
+div.invoice-box table#invoice input,
+div.invoice-box table#invoice textarea,
+div.invoice-box table#invoice select {
+	font-size: 0.8125rem;
+}
+div.invoice-box table#invoice tr td input {
+	text-align: right;
+	width: 50px;
+}
+div.invoice-box table#invoice input.discount {
+	color: #FF3300;
+	width: 70px;
+	text-align: center;
+}
+div.invoice-box table#invoice tr td input#crr {
+	text-align: center;
+	width: 40px;
+}
+div.invoice-box table#invoice tr td select#xtax {
+	width: 80px;
+}
+div.invoice-box table#invoice tr td input.tax {
+	text-align: right;
+	width: 45px;
+}
+div.invoice-box table#invoice tr td.item-num div.num {
+	font-weight: bold;
+	margin-bottom: 8px;
+}
+div.invoice-box table#invoice tr td div.calc {
+	margin-bottom: 10px;
+}
+div.invoice-box table#invoice tr.item input.sku {
+	text-align: left;
+	width: 60px;
+}
+div.invoice-box table#invoice tr.item input.name {
+	text-align: left;
+	width: calc(96% - 60px - 10px);
+}
+div.invoice-box table#invoice tr.item textarea {
+	width: 96%;
+	height: 1.5rem;
+}
+div.invoice-box table#invoice tr.item input.um {
+	text-align: center;
+}
+div.invoice-box table#invoice tr.item select.type {
+	width: 40px;
+}
+
+div.invoice-box table#invoice tr.item td:first-child input {
+	margin-left: -5px;
+	width: 100%;
+}
+
+div.invoice-box table#invoice tr.sub-totals td,
+div.invoice-box table#invoice tr.total td {
+	font-weight: bold;
+	white-space: pre;
+}
+div.invoice-box table#invoice tr.total td {
+	font-size: 1rem;
+	white-space: pre;
+}
+
+@media print {
+	div.invoice-box table {
+		page-break-inside:auto;
+	}
+	div.invoice-box table tr {
+		page-break-inside: avoid;
+		page-break-after: auto;
+	}
+
+	div.invoice-box table#invoice,
+	div.invoice-box button {
+		display: none !important;
+		opacity: 0 !important;
+	}
+}
+
+@page {
+	size: a4;
+	margin: 0;
+}
+
+/* END */

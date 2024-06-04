@@ -1,5 +1,5 @@
 [@@@SUB-TEMPLATE:partials/base.inc.mtpl.htm@@@]
-<!-- cart r.20231209 -->
+<!-- cart r.20240123 -->
 <script>
 var ecommCartLastError = null;
 jQuery('#btn-goto-cart').hide();
@@ -243,7 +243,7 @@ table#cart-table .cart-xicon {
 		[%%%/IF:CART-DISCOUNT-NOTAX%%%]
 		<tr>
 			<td colspan="4" align="right" class="cart-subtotal">
-				SubTotal
+				Sub-Total
 			</td>
 			<td align="right" class="cart-subtotal">
 				[###CART-TOTAL-NOTAX|dex2|html###]&nbsp;[###CART-CURRENCY|html###]
@@ -311,7 +311,7 @@ var cartErrFx = function(the_form_id, url, msg) {
 //	jQuery('#btn-finalize').attr('disabled', 'disabled');
 	ecommCartLastError = String(msg.message || 'Unknown Error');
 	var errStatus = String(msg.status || 'ERR!');
-	jQuery('#operation_notice').show().empty().html('<h3>' + smartJ$Utils.escape_html(errStatus + ': ' + ecommCartLastError) + '</h3>');
+	jQuery('#operation_notice').show().empty().text(errStatus + ': ' + ecommCartLastError);
 }
 
 [%%%IF:CART-MODE:?sales|inventory;%%%]

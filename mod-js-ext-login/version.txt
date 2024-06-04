@@ -1,0 +1,6 @@
+
+# Smart.Framework.Modules: JsExtLogin r.20231118 #
+
+// r.8.7 / smart.framework.v.8.7
+
+###
