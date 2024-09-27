@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype (optional) ; classes: \SmartModExtLib\Tpl\AbstractTemplating, \SmartModExtLib\TplTwig\SmartTwigEnvironment, \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20231029
+ * @version 	v.20240924
  * @package 	modules:TemplatingEngine
  *
  */
@@ -410,6 +410,10 @@ function autoload__TwigTemplating_SFM($classname) {
 if(!\function_exists('\\ctype_alnum')) {
 	require_once('modules/mod-tpl-twig/libs/polyfill/Ctype-bootstrap.php');
 } //end if
+//--
+//if(!\function_exists('\\trigger_deprecation')) {
+	require_once('modules/mod-tpl-twig/libs/deprecation-contracts/function.php');
+//} //end if
 //--
 
 // end of php code
