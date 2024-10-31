@@ -21,7 +21,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 	public function Run() {
 
 		//--
-		$version = 'r.20231027';
+		$version = 'r.20241031';
 		//--
 
 		//--
@@ -63,7 +63,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		$this->PageViewSetVars([
 			'VERSION' 		=> (string) $version,
 			'LOGO-TXT' 		=> (string) 'Smart.Cloud :: '.$version.' @ Powered by Smart.Framework Web Service',
-			'LOGO-IMG' 		=> (string) 'lib/core/img/app/globe.svg',
+			'LOGO-IMG' 		=> (string) 'lib/core/img/app/server.svg',
 			'IMGS-PATH' 	=> (string) 'modules/mod-webdav/libs/img/',
 			'DATE-YEAR' 	=> (string) date('Y'),
 			'URL-CARDDAV' 	=> (string) $urlCardDav,

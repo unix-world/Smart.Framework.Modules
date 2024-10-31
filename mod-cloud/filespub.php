@@ -106,7 +106,7 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs 
 			'#',
 			(string) $url_lnk,
 			(string) $txt_lnk,
-			'lib/core/img/app/globe.svg'
+			'lib/core/img/app/server.svg'
 		);
 		//--
 

@@ -1,7 +1,8 @@
 
-// jQuery Invoice v.1.0 :: r.20240123
+// jQ-Invoice v.1.0 :: r.20241010
 // (c) 2023-2024 unix-world.org
 
+const smartJQVersioneInvoice = 'v.1.0 :: r.20241010.1058';
 
 const smartJQeInvoice = new class{constructor(){ // STATIC CLASS
 	const _N$ = 'smartJQeInvoice';
@@ -29,6 +30,12 @@ const smartJQeInvoice = new class{constructor(){ // STATIC CLASS
 //	const _Date$ = smartJ$Date;
 	const _BwUtils$ = smartJ$Browser;
 
+	const translation = {
+		itemCode: 		'SKU',
+		itemDescCode: 	'Item Code',
+		itemName: 		'Product or Service',
+		itemDescName: 	'Item Name',
+	};
 
 	const regexValidCurrency = RegExp(/^[A-Z]{3}$/);
 
@@ -69,7 +76,7 @@ const smartJQeInvoice = new class{constructor(){ // STATIC CLASS
 		const $inputName = $row.find('input.name');
 		let itemName = _Utils$.stringPureVal($inputName.val(), true);
 		if(itemName == '') {
-			itemName = 'Item Name';
+			itemName = translation.itemName;
 		} //end if
 		if(itemName.length > 100) {
 			itemName = itemName.substring(0, 100);
@@ -116,21 +123,17 @@ const smartJQeInvoice = new class{constructor(){ // STATIC CLASS
 		} //end if
 		//--
 		const $xtax = $('select#xtax');
-		const taxExempt = $xtax.val();
-		//--
+		const taxExempt = _Utils$.stringPureVal($xtax.val());
 		const $tax = $row.find('input.tax');
-		//--
 		let ptax = formatAsDecimal($tax.val() || 0);
 		if(ptax <= 0) {
 			ptax = formatAsDecimal($tax.attr('data-tax') || 0);
 		} //end if
-		//--
 		if(ptax < 0) {
 			ptax = 0;
 		} else if(ptax > 100) {
 			ptax = 100;
 		} //end if
-		//--
 		if(taxExempt != '') { // tax exempt
 			$tax.attr('data-tax', ptax).val('0').prop('readonly', true);
 			ptax = 0;
@@ -138,12 +141,52 @@ const smartJQeInvoice = new class{constructor(){ // STATIC CLASS
 			$tax.val(ptax).attr('data-tax', 0).prop('readonly', false);
 		} //end if
 		//--
-		const subtotal = formatAsDecimal(qty * uprice);
+		const $discnt = $row.find('input.discnt');
+		let ndiscnt = _Utils$.stringPureVal($discnt.val() || '', true);
+		let pdiscnt = false; // if true, is percent
+		let ldiscnt = ndiscnt.length;
+		if((ldiscnt > 1) && _Utils$.stringEndsWith(ndiscnt, '%')) {
+			pdiscnt = true;
+			ndiscnt = formatAsDecimal(ndiscnt.substring(0, ldiscnt-1));
+		} else {
+			ndiscnt = formatAsDecimal(ndiscnt);
+		} //end if else
+		//--
+		let subtotal = formatAsDecimal(qty * uprice);
+		const sndtotal = subtotal; // preserve total sum, no discount for display
+		//--
+		if(ndiscnt < 0) {
+			ndiscnt = 0;
+		} else if((pdiscnt === true) && (ndiscnt > 100)) {
+			ndiscnt = 100;
+		} else if((pdiscnt !== true) && (ndiscnt > subtotal)) {
+			ndiscnt = subtotal; // discount cannot be higher than subtotal
+		} //end if
+		//--
+		let rdiscnt = '';
+		if(ndiscnt > 0) {
+			if(pdiscnt === true) {
+				subtotal = subtotal - (subtotal * ndiscnt / 100);
+				rdiscnt = '' + ndiscnt + '%';
+			} else {
+				subtotal = subtotal - ndiscnt;
+				rdiscnt = ndiscnt;
+			} //end if else
+			subtotal = formatAsDecimal(subtotal);
+		} //end if
+		$discnt.val(rdiscnt).attr('data-ndiscnt', ndiscnt).prop('readonly', false);
+		//--
 		const tax = formatAsDecimal(subtotal * ptax / 100);
 		//--
 		$inputQty.val(formatAsDecimal(qty));
 		$inputUPrice.val(formatAsDecimal(uprice));
 		$row.find('td:eq(5)').find('div.calc').empty().text(formatAsFixedDecimal(subtotal));
+		const $dsninf = $row.find('td:eq(5)').find('div.dsninf');
+		if(sndtotal != subtotal) {
+			$dsninf.empty().html('<b>=</b>' + '&nbsp;' + _Utils$.escape_html(formatAsFixedDecimal(sndtotal)) + '&nbsp;' + '<br>' + '<b>-</b>' + '&nbsp;' + _Utils$.escape_html(formatAsFixedDecimal(sndtotal - subtotal)));
+		} else {
+			$dsninf.empty();
+		} //end if
 		$row.find('td:eq(6)').find('div.calc').empty().text(formatAsFixedDecimal(tax));
 		//--
 		return { sumnet: formatAsDecimal(subtotal), sumtax: formatAsDecimal(tax) };
@@ -189,7 +232,6 @@ const smartJQeInvoice = new class{constructor(){ // STATIC CLASS
 		const subtotals = $itemRows.map((idx, val) => calculateSubtotal(val)).get();
 		const totalnet = subtotals.reduce((a, v) => a + formatAsDecimal(v.sumnet), 0);
 		const totaltax = subtotals.reduce((a, v) => a + formatAsDecimal(v.sumtax), 0);
-	//	const total = subtotals.reduce((a, v) => a + formatAsDecimal(v.sumnet) + formatAsDecimal(v.sumtax), 0);
 		const total = formatAsDecimal(totalnet + totaltax);
 		//--
 		if(total > 999999999999) {
@@ -327,7 +369,7 @@ const smartJQeInvoice = new class{constructor(){ // STATIC CLASS
 			//--
 			registerHandleRowBtnRemove($newRow);
 			//--
-			$newRow.find('input.name').val('Item Name');
+			$newRow.find('input.name').val(translation.itemName);
 			$newRow.find('textarea.details').val('');
 			$newRow.find('input.um').val('unit');
 			$newRow.find('input.qty').val('1');
@@ -392,24 +434,50 @@ const smartJQeInvoice = new class{constructor(){ // STATIC CLASS
 	_C$.InvoicePreventPageUnload = InvoicePreventPageUnload; // export
 
 
-	const InvoiceHandler = (saveHandler) => {
+	const InvoiceHandler = (tplPath, saveHandler) => {
 		//--
-		_BwUtils$.PageAwayControl('Leave the page without Save ?');
+		tplPath = _Utils$.stringPureVal(tplPath, true);
 		//--
-		if(typeof(saveHandler) === 'function') {
-			fxSaveHandler = saveHandler;
-		} //end if
+		const theTpl = tplPath + 'jq-invoice.mtpl.htm';
 		//--
-		const $tBody = $('table#invoice tbody');
-		$itemRow = $tBody.find('tr.item:last'); // declared above
-		$tBody.empty().show();
-		//--
-		handleBtnUpdate();
-		handleBtnAdd();
-		handleBtnSave();
-		//--
-		calculateTotal();
-		handleChanges();
+		_BwUtils$.AjaxRequestFromURL(theTpl, 'GET', 'text').done((mtpl) => {
+			//--
+			const html = _Utils$.renderMarkersTpl(mtpl, {
+				'VERSION': 			_Utils$.stringPureVal(smartJQVersioneInvoice, true),
+				'ITEM-CODE': 		translation.itemCode,
+				'ITEM-CODE-DESC': 	translation.itemDescCode,
+				'ITEM-NAME':		translation.itemName,
+				'ITEM-NAME-DESC': 	translation.itemDescName,
+			});
+			//--
+			$('div#area-invoice').empty().html(html);
+			//--
+			_BwUtils$.PageAwayControl('Leave the page without Save ?');
+			//--
+			if(typeof(saveHandler) === 'function') {
+				fxSaveHandler = saveHandler;
+			} //end if
+			//--
+			const $tBody = $('table#invoice tbody');
+			$itemRow = $tBody.find('tr.item:last'); // declared above
+			$tBody.empty().show();
+			//--
+			handleBtnUpdate();
+			handleBtnAdd();
+			handleBtnSave();
+			//--
+			calculateTotal();
+			handleChanges();
+			//--
+		}).fail(() => {
+			//--
+			const txtErr = 'Failed to load the Invoice Template';
+			//--
+			_BwUtils$.GrowlNotificationAdd('Initialization Error', '<i class="sfi sfi-warning"></i> &nbsp; ' + txtErr, null, 0, true, 'error');
+			//--
+			_p$.error(txtErr + ': `' + theTpl + '`');
+			//--
+		});
 		//--
 	};
 	_C$.InvoiceHandler = InvoiceHandler; // export

@@ -1,13 +1,13 @@
 
-/* jQuery Invoice v.1.0 :: r.20240123 */
+/* jQ-Invoice v.1.0 :: r.20241010 */
 /* (c) 2023-2024 unix-world.org */
 
 body {
 	background: #1E1F21;
 }
 
-div#area-main {
-	margin: 0 !important;
+div#area-invoice {
+	margin: 36px !important;
 	padding: 0px;
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -15,7 +15,8 @@ div#area-main {
 
 div.invoice-box {
 	background: #FFFFFF;
-	width: 763px !important;
+/*	width: 763px !important; */ /* a4 portrait */
+	width: 842pt !important; /* a4 landscape */
 	margin: auto;
 	padding: 28px;
 	padding-left: 14px;
@@ -152,6 +153,10 @@ div.invoice-box table#invoice tr.heading td {
 	font-weight: bold;
 }
 
+div.invoice-box table#invoice tr.top td {
+	vertical-align: middle !important;
+}
+
 div.invoice-box table#invoice tr.top td div#nfo {
 	margin-top: 7px;
 }
@@ -163,19 +168,26 @@ div.invoice-box table#invoice select {
 }
 div.invoice-box table#invoice tr td input {
 	text-align: right;
-	width: 50px;
+/*	width: 50px; */
+	width: 70px;
 }
-div.invoice-box table#invoice input.discount {
+div.invoice-box table#invoice input.discount,
+div.invoice-box table#invoice tr td input.discnt {
 	color: #FF3300;
 	width: 70px;
 	text-align: center;
+}
+div.invoice-box table#invoice tr td div.dsninf {
+	font-size: 0.625rem;
+	font-style: italic;
+	text-align: left;
 }
 div.invoice-box table#invoice tr td input#crr {
 	text-align: center;
 	width: 40px;
 }
 div.invoice-box table#invoice tr td select#xtax {
-	width: 80px;
+	width: 100px;
 }
 div.invoice-box table#invoice tr td input.tax {
 	text-align: right;
@@ -239,7 +251,7 @@ div.invoice-box table#invoice tr.total td {
 }
 
 @page {
-	size: a4;
+	size: a4 landscape;
 	margin: 0;
 }
 
