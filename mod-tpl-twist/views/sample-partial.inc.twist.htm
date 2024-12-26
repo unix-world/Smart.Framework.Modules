@@ -1,0 +1,48 @@
+<!-- start twist partial / sub-template v.20221208 -->
+{% comment %} Partial / Sub-Template: sample-partial.inc.twist.htm {% endcomment %}<!-- this kind of comments are removed but preserved internally -->
+	<h5 id="qunit-test-result">Twist TPL w. Sub-Template Render (Table with #{{ tCount }} columns):</h5>
+	<table style="border: 1px solid #ECECEC; width: 550px;" id="qunit-test-el">
+	<tr>
+		<th>Column 1<th>
+		<th>Column 2<th>
+		<th>Column 3<th>
+	</tr>
+	{% for row in tbl%}
+	<tr>
+		<td>cell {{ row.a1 }}<td>
+		<td>cell {{ row.a2 }}<td>
+		<td>cell {{ row.a3 }}<td>
+	</tr>
+	{%endfor%}
+	</table>
+	<ul>
+	{% if navigation|length > 0 %}
+		{% for item in navigation %}
+		<li><a href="{{ item.href }}">{{ loop.index }}.  {{ item.caption }} ({{ loop.index0 }})</a></li>
+		{% endfor %}
+	{% else %}
+		<li><span style="color:#FF3300;"><b>NOT OK</b></span></li>
+	{% endif %}
+	</ul>
+	Test Condition#1:
+	{% if a == 'Test-1' %}
+		<b>OK</b>
+	{% else %}
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	{% endif %}
+	<br>
+	Test Condition#2:
+	{% if b == a %}
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	{% else %}
+		{%if b == 'Test-1' %}
+			<span style="color:#FF3300;"><b>NOT OK</b></span>
+		{% else %}
+			{% if a != 'Test-1' %}
+				<span style="color:#FF3300;"><b>NOT OK</b></span>
+			{% else %}
+				<b>OK</b>
+			{% endif %}
+		{% endif %}
+	{% endif %}
+<!-- end twist partial / sub-template -->

@@ -1,0 +1,6 @@
+Videos
+
+film reel Besides the Quick Tour and the Tutorial there are also a lot of video tutorials about RedBeanPHP on the web. Here is a selection. Did you create a useful screencast on RedBeanPHP? Just drop me a link and I might add it here.
+
+Note: these videos are hosted on external sites. Upon clicking on one of these videos you will be taken to an external site.
+

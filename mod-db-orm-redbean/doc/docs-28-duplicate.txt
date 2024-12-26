@@ -1,0 +1,36 @@
+Duplicate
+
+R::duplicate() makes a deep copy of a bean properly and without storing the bean. All beans in own-lists will be duplicated recursively. All references to shared beans will be copied but not the shared beans themselves. All references to parent objects (_id fields) will be copied but not the parents themselves. The bean will not be stored so you have the chance to modify it before saving. Usage:
+    //entire bean hierarchy
+    $book->sharedReader[] = $reader;
+    $book->ownPage[] = $page;
+    $duplicated = R::duplicate( $book ); //R::dup in RB4.0 and earlier
+    //..change something...
+    $book->name = 'copy!';
+    //..then store...
+    R::store( $duplicated );
+
+As of RedBeanPHP 4, the R::duplicate() method also duplicates trees, in earlier versions the duplication manager skipped tree lists ($page->ownPage). Note that duplication/export won't work for aliased beans.
+ID mappings
+
+Curious about the old IDs of the beans that have been duplicated. You can still find them in the meta properties of the copied bean:
+    $myOldID = $book->getMeta( 'sys.old-id' );
+Performance
+
+Both dup() and exportAll() need to query the database schema which is slow. To speed up the process you can pass a database schema:
+    R::getDuplicationManager()->setTables( $schema );
+
+To obtain the schema use:
+    $schema = R::getDuplicationManager()->getSchema();
+
+You can now use this schema to feed it to setTables(). R::duplicate() and R::exportAll() both use this schema.
+Filtering
+
+Don't want to duplicate every aspect of a bean? You can pass a white list of bean types to duplicate like this:
+    //only duplicates the patatoes and the tomatoes...
+    R::duplicate( 'bean', ['patato', 'tomatos'] );
+
+The code above only works in RedBeanPHP 4.1. In 4.0 and earlier you have to use R::dup() (see API for method signature).
+
+As of RedBeanPHP 4.1 the R::dup() method is deprecated, use R::duplicate instead, it has a less confusing method signature.
+

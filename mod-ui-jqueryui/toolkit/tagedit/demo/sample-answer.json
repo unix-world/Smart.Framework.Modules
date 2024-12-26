@@ -1,0 +1,30 @@
+[
+	{
+		"id":"1",
+		"value":"C1",
+		"label":"Company 1",
+		"data": {}
+	},
+	{
+		"id":"2",
+		"value":"C2",
+		"label":[
+			"Company 2",
+			"The Company 2"
+		],
+		"data": {}
+	},
+	{
+		"id":"3",
+		"value":"C3",
+		"label":[
+			"Company 3",
+			{
+				"text":"The Company 3",
+				"color":"#FF5500"
+			},
+		"Descr. of Company 3"
+		],
+		"data": {}
+	}
+]

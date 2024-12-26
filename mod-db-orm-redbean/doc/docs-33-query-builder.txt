@@ -1,0 +1,17 @@
+Query Builder
+
+You might notice this page is very short...
+RedBeanPHP does not offer a Query Builder. The reason for this is that I like to keep things simple. RedBeanPHP uses good old 'plain SQL'. Nothing fancy. There is no new syntax to learn, no Query Objects, not an SQL dialect, nothing.
+Query Builders can be quite complex and you have to judge for yourself whether this additional complexity is justified or not.
+Also, the choice for a certain Query Builder is highly subjective, it depends on personal preferences.
+
+So, no Query Builder in RedBeanPHP. However, on this page I offer some suggestions for those of you searching for a Query Builder. Feel free to mail me if you have some suggestions of your own.
+Dark Roast
+
+Dark Roast is a Query Builder created by Twiggler. It's a very complete Query Builder attempting to abstract SQL away. It has many interesting features for those who like the concept of a Query Builder. It can even work on arrays instead of a database making it easy to mock the database.
+Feel free to take a look at Dark Roast.
+Tiniest Query Builder in the World
+
+I am not sure whether this is Query Builder at all. Maybe it's no more than just a 'string builder'.
+I have written this one myself, I use it for complex dynamic queries (search forms): Tiniest Query Builder.
+

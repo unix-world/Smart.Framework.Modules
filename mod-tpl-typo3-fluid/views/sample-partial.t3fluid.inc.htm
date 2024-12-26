@@ -1,0 +1,48 @@
+<!-- start Typo3Fluid partial / sub-template v.20221208 -->
+	<f:comment> Partial / Sub-Template: @sample-partial.t3fluid.inc.htm </f:comment><!-- comments are removed -->
+	<h5 id="qunit-test-result">Typo3-Fluid TPL w. Sub-Template Render (Table with #{tcount} columns):</h5>
+	<table style="border: 1px solid #ECECEC; width: 550px;" id="qunit-test-el">
+	<tr>
+		<th>Column 1<th>
+		<th>Column 2<th>
+		<th>Column 3<th>
+	</tr>
+	<f:for each="{tbl}" as="row" key="key">
+	<tr>
+		<td>cell {row.a1}<td>
+		<td>cell {row.a2}<td>
+		<td>cell {row.a3}<td>
+	</tr>
+	</f:for>
+	</table>
+	<ul>
+		<f:if condition="{navigation -> f:count()}>0"><f:then>
+			<f:for each="{navigation}" as="item" key="key" iteration="iterator">
+			<li><a href="{item.href}">{iterator.index + 1}. {item.caption} ({iterator.index})</a></li>
+			</f:for>
+		</f:then><f:else>
+			<li><span style="color:#FF3300;"><b>NOT OK</b></span></li>
+		</f:else></f:if>
+	</ul>
+	Test Condition#1:
+	<f:if condition="{a} == 'Test-1'"><f:then>
+		<b>OK</b>
+	</f:then><f:else>
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	</f:else></f:if>
+	<br>
+	Test Condition#2:
+	<f:if condition="{b} == {a}"><f:then>
+		<span style="color:#FF3300;"><b>NOT OK</b></span>
+	</f:then><f:else>
+		<f:if condition="{b} == 'Test-1'"><f:then>
+			<span style="color:#FF3300;"><b>NOT OK</b></span>
+		</f:then><f:else>
+			<f:if condition="{a} != 'Test-1'"><f:then>
+				<span style="color:#FF3300;"><b>NOT OK</b></span>
+			</f:then><f:else>
+				<b>OK</b>
+			</f:else></f:if>
+		</f:else></f:if>
+	</f:else></f:if>
+<!-- end Typo3Fluid partial / sub-template -->

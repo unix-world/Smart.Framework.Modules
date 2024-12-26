@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="[###URL|html###]">
+	<SOAP-ENV:Body>
+		<ns1:[###ACTION|htmid|html###]>
+			[###XML###]
+		</ns1:[###ACTION|htmid|html###]>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+<!-- SOAP Server: Smart.Framework.Modules.Soap v.20200121 -->

@@ -1,0 +1,22 @@
+<!-- start twig template v.20221208 -->
+{# Template: sample.twig.htm #}<!-- comments are removed -->
+<center><div>
+	<div>
+		<a href="//twig.symfony.com/doc/3.x/" target="_blank"><img src="{{Tpl_Path__}}img/twig.svg" width="160" height="160"></a>
+		<br>
+		{% if version != '' %}<span style="color:#778899;"><b><i>Twig</i></b> <i>Templating</i> Engine v.{{ version }}</span>{% endif %}
+	</div>
+	{{ hello__world|raw }}
+	<div>
+		<a href="?/page/tpl-twig.test" class="ux-button ux-button-small ux-button-info"><i class="sfi sfi-loop2"></i> &nbsp; Reload TPL Render Test</a>
+		&nbsp;&nbsp;
+		<a href="?/page/tpl-twig.test/op/viewsource" target="tpl_twig_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-primary"><i class="sfi sfi-embed"></i> &nbsp; View TPL Source</a>
+		&nbsp;&nbsp;
+		<a href="?/page/tpl-twig.test/op/viewpartialsource" target="tpl_twig_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="sfi sfi-embed2"></i> &nbsp; View Sub-TPL Source</a>
+	</div>
+	<br>
+	<div style="color:#777777;">{{date_time}}</div>
+	{% include Tpl_Path__ ~ 'sample-partial.twig.inc.htm' %}
+</div></center>
+<!-- end twig template -->
+{# <pre>{{ dump() }}</pre> #}

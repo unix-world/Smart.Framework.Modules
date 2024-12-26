@@ -1,0 +1,56 @@
+<script>
+const getFromUrlByAjax = (message, url) => {
+	if(!url) {
+		alert('URL is Empty !');
+		return;
+	}
+	smartJ$Browser.OverlayShow('... processing ...', String(message));
+	smartJ$Browser.SubmitFormByAjax(null, String(url), 'yes');
+}
+</script>
+<br>
+
+<div id="import-ops">
+	<h1 style="display:inline;">Translations Repository</h1>
+	&nbsp;&nbsp;
+	<a href="admin.php?page=transl-repo.welcome&action=list" class="ux-button ux-button-large ux-button-details"><i class="sfi sfi-stack"></i> &nbsp; List Data</a>
+<!-- <a href="admin.php?page=transl-repo.welcome&action=cleardata" class="ux-button ux-button-special"><i class="sfi sfi-bin2"></i> &nbsp; Clear All Data</a> -->
+</div>
+<br>
+<hr>
+<div id="sync-in">
+	<h3>Sync IN Translation Texts</h3>
+	Project: <select class="ux-field" id="sync-proj-in" style="min-width:150px;">
+		<option value=""></option>
+		[%%%LOOP:ARR-PROJECTS%%%]
+		<option value="[###ARR-PROJECTS._-VAL-_|html###]">[###ARR-PROJECTS._-VAL-_|html###]</option>
+		[%%%/LOOP:ARR-PROJECTS%%%]
+	</select>
+	<button onclick="(function() { var proj = $('#sync-proj-in').val(); if(proj) { getFromUrlByAjax('Import: ' + String(proj), 'admin.php?page=transl-repo.import&proj=' + smartJ$Utils.escape_url(proj)); } else { $.alertable.alert('No Project selected for Sync IN ...').always(function(){}); } })(); return false;" class="ux-button ux-button-primary"><i class="sfi sfi-download"></i> &nbsp; Run Sync IN</button>
+	<br>
+	<small>Add EN-Text and Translations from the selected project into the Repository. Existing translations will not be updated.</small>
+</div>
+<hr>
+<div id="import-ops">
+	<h3>Import New or Update Translation Texts</h3>
+	<a href="admin.php?page=transl-repo.welcome&action=import-form" class="ux-button ux-button-special" data-smart="open.modal"><i class="sfi sfi-table"></i> &nbsp; Import from XLS</a>
+	<br>
+	<small>Update Repository Translations using an Excel 2003 file (xls).</small>
+</div>
+<hr>
+<div id="sync-out">
+	<h3>Sync OUT Translation Texts</h3>
+	Project: <select class="ux-field" id="sync-proj-out" style="min-width:150px;">
+		<option value=""></option>
+		[%%%LOOP:ARR-PROJECTS%%%]
+		<option value="[###ARR-PROJECTS._-VAL-_|html###]">[###ARR-PROJECTS._-VAL-_|html###]</option>
+		[%%%/LOOP:ARR-PROJECTS%%%]
+	</select>
+	/ Language: [###HTML-LIST-LANGS###]
+	<button onclick="(function() { var lang = $('#languages-list').val(); var proj = $('#sync-proj-out').val(); if(lang && proj) { smartJ$Browser.ConfirmDialog('<h3>Run Sync-OUT ?</h3>', function(){ getFromUrlByAjax('Import: ' + String(proj), 'admin.php?page=transl-repo.export&proj=' + smartJ$Utils.escape_url(proj) + '&lang=' + smartJ$Utils.escape_url(lang)); }, 'Sync-OUT Confirmation', 550, 150); } else { $.alertable.alert('Project and Language must be selected for Sync OUT ...').always(function(){}); } })(); return false;" class="ux-button ux-button-highlight"><i class="sfi sfi-upload"></i> &nbsp; Run Sync OUT</button>
+	<br>
+	<small>Update Translations into the selected project and language from the Repository.</small>
+</div>
+[@@@SUB-TEMPLATE:status.mtpl.inc.htm@@@]
+<br>
+<hr>

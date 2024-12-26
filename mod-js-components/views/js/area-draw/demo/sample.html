@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Canvas Area Draw</title>
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script language="javascript" src="../jquery.canvasAreaDraw.js"></script>
+</head>
+<body>
+	<div id="main" class="container">
+	<h1>Canvas Area Draw</h1>
+	<form>
+	<div class="row">
+	  <div class="span6">
+		<h2> Canvas 1 </h2>
+		<canvas id="c" width="500" height="400" style="border:1px solid #aaa; background:#DDEEFF;"></canvas>
+		<textarea style="position:fixed; top:5px; right:50px; width:300px; height:100px; background:#ECECEC!important;" name="coords1" id="canvas-data" readonly title="Shape Coordinates">[{"x":208,"y":221},{"x":208,"y":202},{"x":198,"y":199},{"x":201,"y":191},{"x":218,"y":176},{"x":229,"y":155},{"x":221,"y":132},{"x":196,"y":117},{"x":169,"y":131},{"x":157,"y":158},{"x":163,"y":172},{"x":177,"y":164},{"x":173,"y":180},{"x":190,"y":185},{"x":192,"y":199},{"x":187,"y":201},{"x":185,"y":222}]</textarea>
+	  </div>
+	  <button id="btn1">Reset</button>
+	  <button id="btn2">Get Data</button>
+	</div>
+	</form>
+	</div>
+	<script>
+	$(document).ready(function () {
+		var myPlugin = $('#c').canvasAreaDraw({
+			polyData: $('#canvas-data').val()
+		});
+		$('#btn1').on('click', function(){
+			myPlugin.resetData();
+			$('#canvas-data').val('{}');
+			return false;
+		});
+		$('#btn2').on('click', function(){
+			var data = myPlugin.getAreaData();
+			$('#canvas-data').val(data)
+			console.log(data);
+			return false;
+		});
+	});
+	</script>
+</body>
+</html>

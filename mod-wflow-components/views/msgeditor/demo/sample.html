@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Trumbowyg Demo</title>
+<link rel="stylesheet" type="text/css" href="../../../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+<style type="text/css">
+* {
+	font-family: 'IBM Plex Sans',sans-serif;
+}
+</style>
+<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+<link href="../trumbowyg.css" rel="stylesheet">
+<script src="../trumbowyg.js"></script>
+</head>
+<body>
+<h1>Trumbowyg - Rich Text Message Editor</h1>
+<textarea id="message-editor" spellcheck="false">
+	&lt;h2&gt;This editor is the default build of Trumbowyg.&lt;/h2&gt;
+	&lt;p&gt;
+		Lorem ipsum dolor sit amet, &lt;a href=&quot;https://github.com/Alex-D/Trumbowyg/&quot;&gt;consectetur adipisicing&lt;/a&gt; elit. Possimus, aliquam, minima fugiat placeat provident optio nam reiciendis eius beatae quibusdam!
+	&lt;/p&gt;
+	&lt;p&gt;
+		The text is derived from Cicero's De Finibus Bonorum et Malorum (On the Ends of Goods and Evils, or alternatively [About] The Purposes of Good and Evil ). The original passage began: Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit (Translation: &amp;quot;Neither is there anyone who loves grief itself since it is grief and thus wants to obtain it&amp;quot;).
+	&lt;/p&gt;
+</textarea>
+<script>
+$('#message-editor').trumbowyg({
+	tagsToKeep: ['hr', 'img'],
+	tagsToRemove: ['script', 'iframe', 'frame', 'frameset', 'noframes', 'embed', 'object', 'param', 'html', 'head', 'meta', 'body', 'base', 'basefont'],
+	minimalLinks: true,
+	btns: [
+		['fullscreen', 'viewHTML'],
+		['historyUndo', 'historyRedo'], // plugins
+		['formatting'],
+		['strong', 'em', 's'],
+		['superscript', 'subscript'],
+		['fontfamily', 'foreColor', 'backColor'], // plugins
+		['link'],
+		['insertImage'],
+		['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+		['unorderedList', 'orderedList'],
+		['horizontalRule'],
+		['removeformat']
+	]
+});
+</script>
+<button onClick="(function(){ var textareaValue = $('#message-editor').val(); console.log('Code:' + '\n' + textareaValue); })();" style="position:fixed; bottom:5px; right:5px;">Save (to console)</button>
+</body>
+</html>

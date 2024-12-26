@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!--
+// JX Calculator
+// (c) 2019-2021 unix-world.org
+// License: GPLv3
+// v.20210411
+-->
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Expires" content="-1">
+	<meta http-equiv="Cache-Control" content="no-cache">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta name="viewport" content="initial-scale=0.75">
+	<title>Calculator</title>
+	<link rel="stylesheet" type="text/css" href="jx-widgets.css">
+	<script type="text/javascript" src="../../../../lib/js/framework/src/core_utils.js"></script>
+	<script type="text/javascript" src="../../../../lib/js/framework/src/browser_utils.js"></script>
+	<script type="text/javascript" src="js/calculator.js"></script>
+</head>
+<body>
+<!-- JX Calculator END -->
+<table align="center" border="0" cellpadding="2" cellspacing="0" bgcolor="#666666" title="JX Calculator (c) 2006-2017 - unix-world.org">
+ <tr><td>
+  <table width="360" border="0" cellpadding="4" cellspacing="1">
+   <form name="calculator">
+	<tr align="center">
+	<th colspan="6"><font color="#FFFFFF">Calculator</font></th>
+	</tr>
+	<tr>
+	  <td colspan="3" bgcolor="#ECECEC"><input name="LED" type="text" value="0" size="30" maxlength="16" readonly="readonly" style="text-align:right"></td>
+	  <td align="center" width="60" bgcolor="#FF3300"><input type="button" name="AC" value="AC" onClick="JXCalculator.calculator_click_key('C')"></td>
+	  <td colspan="2" align="center" width="60" bgcolor="#86BD00"><input name="=" type="button" id="=2" value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('=')">
+	  </td>
+	</tr>
+	<tr align="center">
+	  <td colspan="2" bgcolor="#003399"><input name="angle" type="radio" checked><font color="#FFFFFF">&nbsp;DEG&nbsp;</font></td>
+	  <td colspan="2" bgcolor="#666699"><input name="angle" type="radio"><font color="#FFFFFF">&nbsp;RAD&nbsp;</font></td>
+	  <td colspan="2" bgcolor="#778899"><input name="angle" type="radio"><font color="#FFFFFF">&nbsp;GRA&nbsp;</font></td>
+	</tr>
+	<tr align="center">
+	  <td width="60" bgcolor="#ECF3E1"><input name="sin" type="button" id="sin" value="sin" onClick="JXCalculator.calculator_click_key('sin')"></td>
+	  <td width="60" bgcolor="#ECF3E1"><input name="cos" type="button" id="cos" value="cos" onClick="JXCalculator.calculator_click_key('cos')"></td>
+	  <td width="60" bgcolor="#ECF3E1"><input name="tab" type="button" id="tab" value="tan" onClick="JXCalculator.calculator_click_key('tan')"></td>
+	  <td width="60" bgcolor="#ECF3E1"><input name="sinh" type="button" id="sinh" value="sinh" onClick="JXCalculator.calculator_click_key('sinh')"></td>
+	  <td width="60" bgcolor="#ECF3E1"><input name="cosh" type="button" id="cosh" value="cosh" onClick="JXCalculator.calculator_click_key('cosh')"></td>
+	  <td width="60" bgcolor="#ECF3E1"><input name="tanh" type="button" id="tanh" value="tanh" onClick="JXCalculator.calculator_click_key('tanh')"></td>
+	</tr>
+	<tr align="center">
+	  <td width="60" bgcolor="#ECF3E1"><input name="exp" type="button" id="exp" value="exp" onClick="JXCalculator.calculator_click_key('exp')"></td>
+	  <td width="60" bgcolor="#FFCC00"><input name="7" type="button" id="7" value="&nbsp;&nbsp;7&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('7')"></td>
+	  <td width="60" bgcolor="#FFCC00"><input name="8" type="button" id="8" value="&nbsp;&nbsp;8&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('8')"></td>
+	  <td width="60" bgcolor="#FFCC00"><input name="9" type="button" id="9" value="&nbsp;&nbsp;9&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('9')"></td>
+	  <td width="60" bgcolor="#DDEEFF"><input name="+" type="button" id="+" value="&nbsp;&nbsp;+&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('+')"></td>
+	  <td width="60" bgcolor="#CCCCFF"><input name="sqrt" type="button" id="sqrt" value="&nbsp;sqrt&nbsp;" onClick="JXCalculator.calculator_click_key('sqrt')"></td>
+	</tr>
+	<tr align="center">
+	  <td width="60" bgcolor="#ECF3E1"><input name="log" type="button" id="log" value="log" onClick="JXCalculator.calculator_click_key('log')"></td>
+	  <td width="60" bgcolor="#FFCC00"><input name="4" type="button" id="4" value="&nbsp;&nbsp;4&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('4')"></td>
+	  <td width="60" bgcolor="#FFCC00"><input name="5" type="button" id="5" value="&nbsp;&nbsp;5&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('5')"></td>
+	  <td width="60" bgcolor="#FFCC00"><input name="6" type="button" id="6" value="&nbsp;&nbsp;6&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('6')"></td>
+	  <td width="60" bgcolor="#DDEEFF"><input name="-" type="button" id="-" value="&nbsp;&nbsp;-&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('-')"></td>
+	  <td width="60" bgcolor="#CCCCFF"><input name="^" type="button" id="^" value="&nbsp;&nbsp;^&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('^')"></td>
+	</tr>
+	<tr align="center">
+	  <td width="60" bgcolor="#ECF3E1"><input name="ln" type="button" id="abs22" value="ln" onClick="JXCalculator.calculator_click_key('ln')"></td>
+	  <td width="60" bgcolor="#FFCC00"><input name="1" type="button" id="1" value="&nbsp;&nbsp;1&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('1')"></td>
+	  <td width="60" bgcolor="#FFCC00"><input name="2" type="button" id="2" value="&nbsp;&nbsp;2&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('2')"></td>
+	  <td width="60" bgcolor="#FFCC00"><input name="3" type="button" id="3" value="&nbsp;&nbsp;3&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('3')"></td>
+	  <td width="60" bgcolor="#DDEEFF"><input name="*" type="button" id="*" value="&nbsp;&nbsp;x&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('*')"></td>
+	  <td width="60" bgcolor="#CCCCFF"><input name="1/x" type="button" id="1/x2" value="&nbsp;1/x&nbsp;" onClick="JXCalculator.calculator_click_key('1/x')"></td>
+	</tr>
+	<tr align="center">
+	  <td width="60" bgcolor="#FF9900"><input name="e" type="button" id="pi4" value="&nbsp;e&nbsp;" onClick="JXCalculator.calculator_click_key('e')"></td>
+	  <td width="60" bgcolor="#FFCC00"><input name="0" type="button" id="0" value="&nbsp;&nbsp;0&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('0')"></td>
+	  <td width="60" bgcolor="#CCCCCC"><input name="." type="button" id="." value="&nbsp;&nbsp;.&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('.')"></td>
+	  <td width="60" bgcolor="#CCCCCC"><input name="+/-" type="button" id="+/-2" value="&nbsp;+/-&nbsp;" onClick="JXCalculator.calculator_click_key('+/-')"></td>
+	  <td width="60" bgcolor="#DDEEFF"><input name="/" type="button" id="/" value="&nbsp;&nbsp;/&nbsp;&nbsp;" onClick="JXCalculator.calculator_click_key('/')"></td>
+	  <td width="60" bgcolor="#FF9900"><input name="pi" type="button" id="pi3" value="&nbsp;pi&nbsp;" onClick="JXCalculator.calculator_click_key('pi')"></td>
+	</tr>
+   </form>
+  </table>
+ </td></tr>
+</table>
+<script type="text/javascript">
+	JXCalculator.calculator_initval(0 + smartJ$Browser.getCookie('WIDGET_NETVISION_CALCULATOR_RESULT')); // restore prev value
+</script>
+<!-- JX Calculator END -->
+</body>
+</html>

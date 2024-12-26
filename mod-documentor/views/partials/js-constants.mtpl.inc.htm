@@ -1,0 +1,15 @@
+<!-- constants r.20210417 -->
+[%%%LOOP:ARR-CONSTANTS%%%]
+[%%%IF:ARR-CONSTANTS.IS-INTERNAL-PRIV:!=1;%%%]
+<div class="doc-container" id="Constant--[###ARR-CONSTANTS.NAME|htmid|html###]">
+	<span class="doc-modifiers">[###ARR-CONSTANTS.MODIFIERS|html###]</span> <span class="doc-keyword"><i>const</i></span> <b>[###ARR-CONSTANTS.NAME|html###]</b>[%%%IF:ARR-CONSTANTS.VALUE:!=;%%%]&nbsp;=&nbsp;<span class="doc-param-value"><b>[###ARR-CONSTANTS.VALUE|html###]</b></span>&nbsp;;&nbsp;[%%%/IF:ARR-CONSTANTS.VALUE%%%]&nbsp;[%%%IF:ARR-CONSTANTS.IS-STATIC:==1;%%%]<span title="Static Constant"><b>.</b></span>[%%%ELSE:ARR-CONSTANTS.IS-STATIC%%%]<span title="Object Constant"><b>(new)&nbsp;.</b></span>[%%%/IF:ARR-CONSTANTS.IS-STATIC%%%][%%%IF:ARR-CONSTANTS.DOC-VAR-TYPE:!=;%%%]&nbsp;<i>[###ARR-CONSTANTS.DOC-VAR-TYPE|html###]</i>[%%%/IF:ARR-CONSTANTS.DOC-VAR-TYPE%%%]
+	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[%%%IF:ARR-CONSTANTS.SET:!=;%%%][###ARR-CONSTANTS.SET|html###][%%%ELSE:ARR-CONSTANTS.SET%%%]N/A[%%%/IF:ARR-CONSTANTS.SET%%%]</span></div>
+	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">[%%%IF:ARR-CONSTANTS.GET:!=;%%%][###ARR-CONSTANTS.GET|html###][%%%ELSE:ARR-CONSTANTS.GET%%%][###NAME|html###].[###ARR-CONSTANTS.NAME|html###][%%%/IF:ARR-CONSTANTS.GET%%%]</span></div>
+	[%%%IF:ARR-CONSTANTS.COMMENT-HTML:!=;%%%]
+		<div class="doc-method-comments">[###ARR-CONSTANTS.COMMENT-HTML###]</div>
+	[%%%/IF:ARR-CONSTANTS.COMMENT-HTML%%%]
+</div>
+[%%%ELSE:ARR-CONSTANTS.IS-INTERNAL-PRIV%%%]
+<!-- Skip Internal-Priv Constant: `[###ARR-CONSTANTS.NAME|html###]` -->
+[%%%/IF:ARR-CONSTANTS.IS-INTERNAL-PRIV%%%]
+[%%%/LOOP:ARR-CONSTANTS%%%]

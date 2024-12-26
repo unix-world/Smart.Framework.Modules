@@ -1,0 +1,32 @@
+Counting
+
+Counting records is very easy with RedBeanPHP. For instance, to count all beans of type book use:
+    $numOfBooks = R::count( 'book' );
+
+You can use additional SQL here as well:
+    $numOfBooks = R::count( 'book', ' pages > ? ', [ 250 ] );
+Count related beans
+
+Counting related beans is just as simple. To count all the pages of a 'book' bean:
+    $numPages = $book->countOwn( 'page' );
+
+You can use the same technique for shared lists:
+    $numProjects = $member->countShared( 'project' );
+
+You can also use withCondition() and alias():
+    $numProj = $member
+            ->withCondition(' member_project.role ', ['lead'] ) )
+            ->countShared( 'project' );
+
+    $numPages = $book
+            ->withCondition( ' book_page.number > ? ', [100] )
+            ->countOwn( 'page' );
+
+    $andy->alias( 'coAuthor' )->countOwn( 'book' );
+
+    $shop->via( 'relation' )->countShared( 'customer' );
+
+The first example counts all projects associated with the member in which the member has the 'lead' role. The second example counts all the pages of a book having a page number > 100. Finally the last example demonstrates the use of an aliased list. Here we count the number of books written by Andy where he has been the co-author. All count operations return a number.
+
+Counting something (R::count) that does not exist will not trigger an error but just return the number 0.
+

@@ -1,0 +1,150 @@
+Finding
+
+If you do not know the ID of a bean, you can search for beans using the find method:
+    $book  = R::find( 'book', ' rating > 4 ');
+
+The find() method uses good old SQL. No fancy, custom query language — just plain old SQL.
+
+The find operation in this example returns all beans of type book having a rating of four stars or more.
+Find and SQL
+
+The following example demonstrates how to use find() with bindings.
+    $books = R::find( 'book', ' title LIKE ? ', [ 'Learn to%' ] );
+
+This find operation will return all beans of type 'book' having a title that begins with the phrase: 'Learn to'.
+
+If find() has no results it will return an empty array.
+
+There is no need to use mysql_real_escape. Always use the bindings.
+
+PDO bindings do not work for tables (see discussion here), however if you wish to escape a table name you can use: R::getWriter()->esc( $tableName ).
+
+Never put user input directly in your query!
+Hunting Beans (5.1+)
+
+To find and delete beans in one go:
+    R::hunt( 'book',
+    ' id IN ( '. R::genSlots( $ids ) .' ) ',
+    $ids );
+
+As of RedBeanPHP 5.2:
+returns the number of beans deleted.
+the SQL parameter is optional.
+IN-queries
+
+To use a 'SELECT-IN' style query use the R::genSlots function to generate the correct number of '?' slots:
+    $promotions = R::find( 'person',
+    ' contract_id IN ('.R::genSlots( $contractIDs ).')',
+    $contractIDs );
+Find One
+
+If you want a single bean instead of an array, use:
+    $book  = R::findOne( 'book', ' title = ? ', [ 'SQL Dreams' ] );
+
+If no beans match the criteria, this function will return NULL.
+
+As of 5.3 you can use explicit parameter binding if you like:
+    $bean = R::findOne( 'bean', ' property = ? AND property2 = ? AND property3 = ? ', [
+    $value,
+    [ $value2, PDO::PARAM_INT ],
+    [ $value3, PDO::PARAM_STR ]
+    ]);
+Find All
+
+Use findAll if you don't want to add any conditions (but you want to order or limit... )
+    $books = R::findAll( 'book' );
+    $books = R::findAll( 'book' , ' ORDER BY title DESC LIMIT 10 ' );
+
+If no beans match your criteria, this function returns an empty array.
+Named slots
+
+All find methods: find, findOne and findAll also accept named slots:
+    $books  = R::find( 'book', ' rating < :rating ', [ ':rating' => 2 ] );
+
+Besides querying beans, you can also use regular SQL queries.
+Cursors (4.2+)
+
+You can also use find with cursors:
+    $collection = R::findCollection( 'page', ' ORDER BY content ASC LIMIT 5 ' );
+    while( $item = $collection->next() ) {
+        ...
+    }
+
+Or directly
+    $cursor = R::getCursor('SELECT * FROM `book` WHERE < :rating LIMIT 5', [ ':rating' => 2 ]);
+    while($row = $cursor->getNextItem()){
+        ...
+    }
+    //Reset will execute the query again
+    $cursor->reset();
+    $first = $cursor->getNextItem();
+
+    $cursor->close();
+
+The advantage of using a cursor is that the entire collection will not be loaded into memory all at once. This is handy for dealing with large bean collections.
+Find like (4.2+)
+
+To find a bean matching certain criteria, you can use R::findLike(). The following code returns all flowers that are either yellow OR blue:
+    R::findLike( 'flower', [
+        'color' => ['yellow', 'blue']
+    ], ' ORDER BY color ASC ' );
+
+Note that you can append some SQL here along with bindings.
+
+As of RedBeanPHP 5.2 you can also use beans as conditions:
+    R::findLike( 'page',
+    [ 'book' => [ $book, $book2 ] ]
+    );
+Find or create (4.2+)
+
+This works like R::findLike() but also creates (and stores) the bean if it does not exist yet...
+    $book = R::findOrCreate( 'book', [
+        'title' => 'my book',
+        'price' => 50] );
+Find Multiple (4.2+)
+
+findMulti() takes a query and turns the result into several bean collections having different types:
+    $beans = R::findMulti( 'book,page', '
+        SELECT book.*, page.* FROM book
+        INNER JOIN page.book_id = book.id
+        WHERE book.category = ?
+    ', [ $cat] );
+
+The first parameter of this function lists the types to load, the second parameter is the query, then come the optional query parameter bindings. The result of this operation will be something like:
+    array(
+        'book' => book beans...
+        'page' => page beans...
+    )
+
+Besides loading various bean types at once from a query, this method can also restructure them, for instance to 'put the pages in the book' use (example of 4th parameter):
+    array(array(
+        'a'       => 'book'
+        'b'       => 'page'
+        'matcher' =>  function( $a, $b ) {
+           return ( $b->book_id == $a->id );
+        }
+        'do'      => function( $a, $b ) {
+           $a->noLoad()->ownPageList[] = $b;
+        }
+    ));
+
+The fourth parameter of findMulti takes an array containing arrays like the one above. The array in the example tells findMulti how to restructure the pages and the books. First it defines two variables 'a' and 'b' it then defines a matcher function, telling RedBeanPHP to execute the 'do' clause if the book_id of a page matches the id of a page. The 'do' clause then puts the page in the pageList of the selected book. While you can specify mappings like this, a better idea might be to write your own set of mapping functions returning structures like this.
+Finder::map helper (5.3+)
+
+You can shorten the syntax above using the mapper helper:
+    $collection = R::findMulti( 'shop,product,price',
+    'SELECT shop.*, product.*, price.* FROM shop
+    LEFT JOIN product ON product.shop_id = shop.id
+    LEFT JOIN price ON price.product_id = product.id', [], [
+        Finder::map( 'shop', 'product' ),
+        Finder::map( 'product', 'price' ),
+    ]);
+Short Query Notation (SQN)
+
+If you wish to use a shorter syntax than SQL you can try my short query notation library. Example:
+    R::findMulti('book,book_tag,tag',
+    sqn('book<<tag'), [], [Finder::nmMap( 'book', 'tag' )]);
+
+As of RedBeanPHP 5.2 bean type names will be trimmed automatically.
+
+As of RedBeanPHP 5.2 the SQL parameter is optional.

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<!--
+// Periodic Table of Elements
+// (c) 2019 unix-world.org
+// License: GPLv3
+// v.20190207
+-->
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>Periodic Table of the Elements</title>
+	<meta http-equiv="Expires" content="-1">
+	<meta http-equiv="Cache-Control" content="no-cache">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta name="viewport" content="initial-scale=0.75">
+	<link rel="stylesheet" type="text/css" href="jx-widgets.css">
+</head>
+<body alink="#003366" bgcolor="#ffffff" link="#003366" text="#000000" vlink="#003366">
+<script type="text/javascript">
+	function fillitin(elem,num,wgt,elec,orb,melt,boil,who,grav,iso)  {
+		Box = document.pertab
+		Box.element.value = num + " " + elem;
+		Box.disc.value = who;
+		Box.weight.value = wgt;
+		Box.shell.value = elec ;
+		Box.orbit.value = orb;
+		Box.degree.value = melt + " | " + boil;
+		Box.spgrav.value = grav;
+		Box.isotope.value = iso;
+	}
+	function eleMent()  {
+		//newwin = window.open("chemistry-details.html", "details", "width=300,height=300,toolbar=0,scrollbars=1,status=0,resizable=1,location=0,menubar=0,directories=0");
+	}
+</script>
+<basefont size="4">
+<div align="CENTER">
+<form name="pertab">
+<br>
+<table border="0" cellspacing="1">
+<tbody><tr>
+<td colspan="2" align="CENTER" bgcolor="#cccc99" valign="MIDDLE">
+<i>solid</i></td>
+<td colspan="2" align="CENTER" bgcolor="#99ffff"><i>liquid</i></td>
+<td colspan="10" align="CENTER" bgcolor="#cccccc" height="24" width="320">
+<font face="verdana,tahoma,arial,sans-serif"><b><a id="top">
+T H E&nbsp;&nbsp;&nbsp;P E R I O D I C&nbsp;&nbsp;&nbsp;T A B L E</a>
+</b></font></td>
+<td colspan="2" align="CENTER" bgcolor="#ffff66"><i>gas</i></td>
+<td colspan="2" align="CENTER" bgcolor="#c0c0c0"><i>synth</i></td>
+</tr>
+<tr bgcolor="#cccccc">
+<td colspan="19" align="LEFT" height="24" valign="MIDDLE"><tt>
+&nbsp;<input value="3 Lithium" name="element" size="18" type="text">&nbsp;&nbsp;
+<input value="Arfvedson 1817" size="51" name="disc" type="text">Discoverer</tt></td>
+</tr>
+<tr>
+<td align="CENTER" bgcolor="#ffff66" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Hydrogen','1','1.0079','1','1s1','-259.14','-252.87','Cavendish 1766','0.070','3');"><font size="1">1</font><br>H</a></td>
+<td colspan="16" align="LEFT" bgcolor="#cccccc"><tt>
+&nbsp;<input value="6.94" size="10" name="weight" type="text">AtomicWeight&nbsp;&nbsp;
+<input value="180.54 | 1347" size="25" name="degree" type="text">Melt|Boil(C)
+</tt></td>
+<td align="CENTER" bgcolor="#ffff66" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Helium','2','4.0026','2','1s2','-272C@26ATM','-268.6','Janssen 1868','0.1785','5');"><font size="1">2</font><br>
+He</a></td>
+</tr>
+<tr>
+<td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Lithium','3','6.94','2,1','2s1','180.54','1347','Arfvedson 1817','0.534','5');"><font size="1">3</font><br>
+Li</a></td>
+<td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Beryllium','4','9.01218','2,2','2s2','1278','2970','Vauquelin 1798','1.848','6');"><font size="1">4</font><br>
+Be</a></td>
+<td colspan="10" align="LEFT" bgcolor="#cccccc"><tt>
+&nbsp;<input value="2,1" size="25" name="shell" type="text">Shell&nbsp;&nbsp;
+<input value="5" size="3" name="isotope" type="text">Isotopes
+</tt></td>
+<td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Boron','5','10.81','2,3','2p1','2300','2550','Gay-Lussac &amp; Thenard; Davy 1808','2.87','6');"><font size="1">5</font><br>
+B</a></td>
+<td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Carbon','6','12.011','2,4','2p2','3500','4827','(Prehistoric)','1.8-3.5','7');"><font size="1">6</font><br>
+C</a></td>
+<td align="CENTER" bgcolor="#ffff66" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Nitrogen','7','14.0067','2,5','2p3','-209.9','-195.8','Rutherford 1772','0.808','8');"><font size="1">7</font><br>
+N</a></td>
+<td align="CENTER" bgcolor="#ffff66" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Oxygen','8','15.9994','2,6','2p4','-218.4','-183.0','Preistley 1774','1.14','8');"><font size="1">8</font><br>
+O</a></td>
+<td align="CENTER" bgcolor="#ffff66" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Flourine','9','18.998403','2,7','2p5','-219.62','-188.14',
+'Moissan 1886','1.108','6');"><font size="1">9</font><br>
+F</a></td>
+    <td align="CENTER" bgcolor="#ffff66" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Neon','10','20.17','2,8','2p6','-248.6','-246.1',
+'Ramsay &amp; Travers 1898','0.89990','8');"><font size="1">10</font><br>
+Ne</a></td>
+</tr>
+
+<tr>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Sodium','11','22.98977','2,8,1','3s1','97.8','882.9',
+'Davy 1807','0.971','7');"><font size="1">11</font><br>
+Na</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Magnesium','12','24.305','2,8,2','3s2','638.8','1090',
+'Black 1775','1.738','8');"><font size="1">12</font><br>
+Mg</a></td>
+
+<td colspan="10" align="LEFT" bgcolor="#cccccc"><tt>
+&nbsp;<input value="2s1" size="6" name="orbit" type="text">Orbital&nbsp;
+<input value="0.534" size="10" name="spgrav" type="text">SpecificGravity
+</tt></td>
+
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Aluminum','13','26.98154','2,8,3','3p1','660.37','2467',
+'Wohler 1827','2.6989','8');"><font size="1">13</font><br>
+Al</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Silicon','14','28.0855','2,8,4','3p2','1410','2355',
+'Berzelius 1824','2.33','8');"><font size="1">14</font><br>
+Si</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Phosphorous','15','30.97376','2,8,5','3p3','44.1','280',
+'Brand 1669','1.82','7');"><font size="1">15</font><br>
+P</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Sulfur','16','32.06','2,8,6','3p4','112.8','444.6',
+'(Prehistoric)','2.07','10');"><font size="1">16</font><br>
+S</a></td>
+    <td align="CENTER" bgcolor="#ffff66" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Chlorine','17','35.453','2,8,7','3p5','-100.98','-34.6',
+'Scheele 1774','1.56','11');"><font size="1">17</font><br>
+Cl</a></td>
+    <td align="CENTER" bgcolor="#ffff66" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Argon','18','39.948','2,8,8','3p6','-189.3','-186',
+'Rayleigh &amp; Ramsay 1894','1.7837','8');"><font size="1">18</font><br>
+Ar</a></td>
+</tr>
+
+<tr>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Potassium','19','39.0983','2,8,8,1','4s1','63.65','774',
+'Davy 1807','0.862','10');"><font size="1">19</font><br>
+K</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Calcium','20','40.08','2,8,8,2','4s2','839','1484.4',
+'Davy 1808','1.55','14');"><font size="1">20</font><br>
+Ca</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Scandium','21','44.9559','2,8,9,2','3d1','1539','2832',
+'Nilson 1879','2.989','15');"><font size="1">21</font><br>
+Sc</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Titanium','22','47.90','2,8,10,2','3d2','1660','3287',
+'Gregor 1791','4.55','9');"><font size="1">22</font><br>
+Ti</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Vanadium','23','50.9415','2,8,11,2','3d3','1890 ±10','3380',
+'del Rio 1901','6.11','9');"><font size="1">23</font><br>
+V</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Chromium','24','51.996','2,8,13,1','3d5','1857','2672',
+'Vauquelin 1797','7.18-7.20','9');"><font size="1">24</font><br>
+Cr</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Manganese','25','54.9380','2,8,13,2','3d5','1245','1962',
+'Gahn, Scheele &amp; Bergman 1774','7.21-7.44','11');"><font size="1">25</font><br>
+Mn</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Iron','26','55.847','2,8,14,2','3d6','1535','2750',
+'(Prehistoric)','7.894','10');"><font size="1">26</font><br>
+Fe</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Cobalt','27','58.9332','2,8,15,2','3d7','1495','2870',
+'Brandt c.1735','8.9','14');"><font size="1">27</font><br>
+Co</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Nickel','28','58.71','2,8,16,2','3d8','1453','2732',
+'Cronstedt 1751','8.902','11');"><font size="1">28</font><br>
+Ni</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Copper','29','63.546','2,8,18,1','3d10','1083','2567',
+'(Prehistoric)','8.96','11');"><font size="1">29</font><br>
+Cu</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Zinc','30','65.38','2,8,18,2','3d10','419.58','907',
+'(Prehistoric)','7.113','15');"><font size="1">30</font><br>
+Zn</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Gallium','31','69.735','2,8,18,3','4p1','29.78','2403',
+'Boisbaudran 1875','5.904','14');"><font size="1">31</font><br>
+Ga</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Germanium','32','72.59','2,8,18,4','4p2','937.4','2830',
+'Winkler 1886','5.323','17');"><font size="1">32</font><br>
+Ge</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Arsenic','33','74.9216','2,8,18,5','4p3','81@28ATM','Sublimes@613',
+'Albertus Magnus 1250?','5.73','14');"><font size="1">33</font><br>
+As</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Selenium','34','78.96','2,8,18,6','4p4','217','684.9',
+'Berzelius 1817','4.79 gray','20');"><font size="1">34</font><br>
+Se</a></td>
+    <td align="CENTER" bgcolor="#99ffff" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Bromine','35','79.904','2,8,18,7','4p5','-7.2','58.78',
+'Balard 1826','3.12','19');"><font size="1">35</font><br>
+Br</a></td>
+    <td align="CENTER" bgcolor="#ffff66" height="24" width="31">
+<br>
+<a href="javascript:eleMent()" onmouseover="fillitin('Krypton','36','83.80','2,8,18,8','4p6','-157.2','-153.4',
+'Ramsay &amp; Travers 1898','3.733','23');"><font size="1">36</font><br>
+Kr</a></td>
+</tr>
+
+<tr>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Rubidium','37','85.467','2,8,18,8,1','5s1','38.89','688',
+'Bunsen &amp; Kirchoff 1861','1.532','20');"><font size="1">37</font><br>
+Rb</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Strontium','38','87.62','2,8,18,8,2','5s2','769','1384',
+'Davy 1808','2.54','18');"><font size="1">38</font><br>
+Sr</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Yttrium','39','88.9059','2,8,18,9,2','4d1','1523','3337',
+'Gadolin 1794','4.457','21');"><font size="1">39</font><br>
+Y</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Zirconium','40','91.22','2,8,18,10,2','4d2','1852 ±2','4377',
+'Klaproth 1789','6.506','20');"><font size="1">40</font><br>
+Zr</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Niobium','41','92.9064','2,8,18,13,1','4d4','2468 ±10','4927',
+'Hatchett 1801','8.57','24');"><font size="1">41</font><br>
+Nb</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Molybdenum','42','95.94','2,8,18,13,1','4d5','2617','4612',
+'Scheele 1778','10.22','20');"><font size="1">42</font><br>
+Mo</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Technetium','43','98.9062','2,8,18,14,1','4d6','2200 ±50','4877',
+'Perrier &amp; Segre 1937','11.50','23');"><font size="1">43</font><br>
+Tc</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Ruthenium','44','101.07','2,8,18,15,1','4d7','2250','3900',
+'Klaus 1844','12.44','16');"><font size="1">44</font><br>
+Ru</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Rhodium','45','102.9055','2,8,18,16,1','4d8','1966 ±3','3727',
+'Wollaston 1803','12.41','20');"><font size="1">45</font><br>
+Rh</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Palladium','46','106.4','2,8,18,18','4d10','1552','2927',
+'Wollaston 1803','12.02','21');"><font size="1">46</font><br>
+Pd</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Silver','47','107.868','2,8,18,18,1','4d10','961.93','2212',
+'(Prehistoric)','10.5','27');"><font size="1">47</font><br>
+Ag</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Cadmium','48','112.41','2,8,18,18,2','4d10','320.9','765',
+'Stromeyer 1817','8.65','22');"><font size="1">48</font><br>
+Cd</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Indium','49','114.82','2,8,18,18,3','5p1','156.61','2000 ±10',
+'Riech &amp; Richter 1863','7.31','34');"><font size="1">49</font><br>
+In</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Tin','50','118.69','2,8,18,18,4','5p2','231.9','2270',
+'(Prehistoric)','7.31 white','28');"><font size="1">50</font><br>
+Sn</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Antimony','51','121.75','2,8,18,18,5','5p3','630','1750',
+'(Early historic)','6.61','29');"><font size="1">51</font><br>
+Sb</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Tellurium','52','127.60','2,8,18,18,6','5p4','449.5','989.8',
+'von Reichenstein 1782','6.24','29');"><font size="1">52</font><br>
+Te</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Iodine','53','126.9045','2,8,18,18,7','5p5','113.5','184@35atm',
+'Cortois 1811','4.93','24');"><font size="1">53</font><br>
+I</a></td>
+    <td align="CENTER" bgcolor="#ffff66" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Xenon','54','131.30','2,8,18,18,8','5p6','-111.9','-108.1',
+'Ramsay &amp; Travers 1898','3.52','31');"><font size="1">54</font><br>
+Xe</a></td>
+</tr>
+
+<tr>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Cesium','55','132.9054','2,8,18,18,8,1','6s1','28.5','678.4',
+'Bunsen &amp; Kirchoff 1863','1.873','22');"><font size="1">55</font><br>
+Cs</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Barium','56','137.33','2,8,18,18,8,2','6s2','725','1140',
+'Davy 1808','3.5','25');"><font size="1">56</font><br>
+Ba</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Lanthanum','57','138.9055','2,8,18,18,9,2','5d1','920','3469',
+'Mosander 1839','6.166','19');"><font size="1">57</font><br>
+La</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Hafnium','72','178.49','2,8,18,32,10,2','5d2','2150','5400',
+'Coster &amp; von Hevesy 1923','13.31','17');"><font size="1">72</font><br>
+Hf</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Tantalum','73','180.947','2,8,18,32,11,2','5d3','2996','5425 ±100',
+'Ekeberg 1801','16.654','19');"><font size="1">73</font><br>
+Ta</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Tungsten','74','183.85','2,8,18,32,12,2','5d4','3410 ±20','5660',
+'J. &amp; F. d\'Elhuyar 1783','19.3','22' );"><font size="1">74</font><br>
+W</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Rhenium','75','186.207','2,8,18,32,13,2','5d5','3180','5627',
+'Noddack, Berg &amp; Tacke 1925','21.02','21');"><font size="1">75</font><br>
+Re</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Osmium','76','190.2','2,8,18,32,14,2','5d6','3045','5027',
+'Tennant 1803','22.57','19');"><font size="1">76</font><br>
+Os</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Iridium','77','192.22','2,8,18,32,15,2','5d7','2410','4527 ±100',
+'Tennant 1803','22.42','25');"><font size="1">77</font><br>
+Ir</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Platinum','78','195.09','2,8,18,32,17,1','5d9','1772','3827',
+'Ulloa 1735','21.45','32');"><font size="1">78</font><br>
+Pt</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Gold','79','196.9665','2,8,18,32,18,1','5d10','1064.43','2807',
+'(Prehistoric)','19.32','21');"><font size="1">79</font><br>
+Au</a></td>
+    <td align="CENTER" bgcolor="#99ffff" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Mercury','80','200.59','2,8,18,32,18,2','5d10','-38.87','356.58',
+'(Prehistoric)','13.546','26');"><font size="1">80</font><br>
+Hg</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Thallium','81','204.37','2,8,18,32,18,3','6p1','303.5','1457 ±10C',
+'Crookes 1861','11.85','28');"><font size="1">81</font><br>
+Tl</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Lead','82','207.2','2,8,18,32,18,4','6p2','327.5','1740',
+'(Prehistoric)','11.35','29');"><font size="1">82</font><br>
+Pb</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Bismuth','83','208.9804','2,8,18,32,18,5','6p3','271.3','1560 ±5C',
+'Geoffroy 1753','9.747','19');"><font size="1">83</font><br>
+Bi</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Polonium','84','(209)','2,8,18,32,18,6','6p4','254','962',
+'Curie 1898','9.32','34');"><font size="1">84</font><br>
+Po</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Astatine','85','(210)','2,8,18,32,18,7','6p5','302','337',
+'Corson et al. 1940','---','21');"><font size="1">85</font><br>
+At</a></td>
+    <td align="CENTER" bgcolor="#ffff66" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Radon','86','(222)','2,8,18,32,18,8','6p6','-71','-61.8',
+'Dorn 1900','4.4','20');"><font size="1">86</font><br>
+Rn</a></td>
+</tr>
+
+<tr>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Francium','87','(223)','2,8,18,32,18,8,1','7s1','27','677',
+'Perey 1938','---','21');"><font size="1">87</font><br>
+Fr</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Radium','88','226.0254','2,8,18,32,18,8,2','7s2','700','1737',
+'P. &amp; M. Curie 1898','5.0?','15');"><font size="1">88</font><br>
+Ra</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Actinium','89','(227)','2,8,18,32,18,9,2','6d1','1050','3200 ±300',
+'Debierne 1899','10.07','11');"><font size="1">89</font><br>
+Ac</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Rutherfordium','104','(261)','2,8,18,32,32,10,2','6d2','N/A','N/A',
+'Lawrence Berkeley Lab-USA / Dubna Lab-Russia 1964','---','---');">
+<font size="1">104</font><br>
+Rh</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Dubnium','105','(262)','2,8,18,32,32,11,2','6d3','N/A','N/A',
+'Lawrence Berkeley Lab-USA / Dubna Lab-Russia 1967','---','---');">
+<font size="1">105</font><br>
+Db</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Seaborgium','106','(263)','2,8,18,32,32,12,2','6d4','N/A','N/A',
+'Lawrence Berkeley Lab-USA / Dubna Lab-Russia 1974','---','---');">
+<font size="1">106</font><br>
+Sg</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Bohrium','107','(262)','2,8,18,32,32,13,2','6d5','N/A','N/A',
+'Armbruster, Munzenber et al. 1981','---','---');">
+<font size="1">107</font><br>
+Bh</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Hassium','108','(265)','---','---','N/A','N/A',
+'Armbruster, Munzenber et al. 1984','---','---');">
+<font size="1">108</font><br>
+Hs</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Meitnerium','109','(266)','---','---','N/A','N/A',
+'Armbruster, Munzenber et al. 1982','---','---');">
+<font size="1">109</font><br>
+Mt</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Ununnilium','110','(269)','---','---','N/A','N/A',
+'Hofmann, Ninov et al. GSI-Germany 1994','---','---');">
+<font size="1">110</font><br>
+Uun</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Unununium','111','(272)','---','---','N/A','N/A',
+'Hofmann, Ninov et al. GSI-Germany 1994','---','---');">
+<font size="1">111</font><br>
+Uuu</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Ununbium','112','(277)','---','---','N/A','N/A',
+'Hofmann, Ninov et al. GSI-Germany 1996','---','---');">
+<font size="1">112</font><br>
+Uub</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Ununtrium','113','---','---','---','N/A','N/A',
+'(not discovered yet)','---','---');"><font size="1">113</font><br>
+Uut</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Ununquadium','114','---','---','---','N/A','N/A',
+'(not discovered yet)','---','---');"><font size="1">114</font><br>
+Uuq</a></td>
+    <td colspan="4"></td>
+</tr>
+
+<tr><td></td></tr>
+
+<tr>
+<td colspan="3" align="RIGHT" valign="TOP"><font size="1">
+lanthanons</font></td>
+
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Cerium','58','140.12','2,8,18,20,8,2','4f2','795','3257',
+'Berzelius &amp; Hisinger; Klaproth 1803','6.771','19');">
+<font size="1">58</font><br>
+Ce</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Praseodymium','59','140.9077','2,8,18,21,8,2','4f3','935','3127',
+'von Weisbach 1885','6.772','18');"><font size="1">59</font><br>
+Pr</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Neodymium','60','144.24','2,8,18,22,8,2','4f4','1010','3127',
+'von Weisbach 1885','6.80&amp;7.004','16');"><font size="1">60</font><br>
+Nd</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Promethium','61','(145)','2,8,18,23,8,2','4f5','N/A','N/A',
+'Marinsky et al. 1945','---','14');"><font size="1">61</font><br>
+Pm</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Samarium','62','150.4','2,8,18,24,8,2','4f6','1072','1900',
+'Boisbaudran 1879','7.536','17');"><font size="1">62</font><br>
+Sm</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Europium','63','151.96','2,8,18,25,8,2','4f7','822','1597',
+'Demarcay 1896','5.282','21');"><font size="1">53</font><br>
+Eu</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Gadolinium','64','157.25','2,8,18,25,9,2','4f7','1311','3233',
+'Marignac 1880','7.898','17');"><font size="1">64</font><br>
+Gd</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Terbium','65','158.9254','2,8,18,27,8,2','4f9','1360','3041',
+'Mosander 1843','8.234','24');"><font size="1">65</font><br>
+Tb</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Dysprosium','66','162.50','2,8,18,28,8,2','4f10','1412','2562',
+'Boisbaudran 1886','8.540','21');"><font size="1">66</font><br>
+Dy</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Holmium','67','164.9304','2,8,18,29,8,2','4f11','1470','2720',
+'Delafontaine 1878','8.781','29');"><font size="1">67</font><br>
+Ho</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Erbium','68','167.26','2,8,18,30,8,2','4f12','1522','2510',
+'Mosander 1843','9.045','16');"><font size="1">68</font><br>
+Er</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Thulium','69','168.9342','2,8,18,31,8,2','4f13','1545','1727',
+'Cleve 1879','9.314','18');"><font size="1">69</font><br>
+Tm</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Ytterbium','70','173.04','2,8,18,32,8,2','4f14','824','1466',
+'Marignac 1878','6.972','16');"><font size="1">70</font><br>
+Yb</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Lutetium','71','174.96','2,8,18,32,9,2','4f14','1656','3315',
+'Urbain 1907','9.835','22');"><font size="1">71</font><br>
+Lu</a></td>
+	<td align="CENTER" height="24" width="31">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="3" align="RIGHT" valign="TOP"><font size="1">
+actinons</font></td><td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Thorium','90','232.0381','2,8,18,32,18,10,2','6d2','1750','4790',
+'Berzelius 1828','11.72','12');"><font size="1">90</font><br>
+Th</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Proactinium','91','231.0359','2,8,18,32,20,9,2','5f2','1600','N/A',
+'Hahn &amp; Meitner 1917','15.37','14');"><font size="1">91</font><br>
+Pa</a></td>
+    <td align="CENTER" bgcolor="#cccc99" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Uranium','92','238.029','2,8,18,32,21,9,2','5f3','1132','3818',
+'Peligot 1841','-18.95','15');"><font size="1">92</font><br>
+U</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Neptunium','93','237.0482','2,8,18,32,23,8,2','5f4','640','3902',
+'McMillan &amp; Abelson 1940','20.25','15');"><font size="1">93</font><br>
+Np</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Plutonium','94','(244)','2,8,18,32,24,8,2','5f6','639.5 ±2','3235 ±19',
+'Seaborg et al. 1940','19.84','16');"><font size="1">94</font><br>
+Pu</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Americium','95','(243)','2,8,18,32,25,8,2','5f7','994','2607',
+'Seaborg et al. 1944','13.67','13');"><font size="1">95</font><br>
+Am</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Curium','96','(247)','2,8,18,32,25,9,2','5f7','1340','N/A',
+'Seaborg et al. 1944','13.51','13');"><font size="1">96</font><br>
+Cm</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Berkelium','97','(247)','2,8,18,32,26,9,2','5f8','N/A','N/A',
+'Seaborg et al. 1949','14.00','8');"><font size="1">97</font><br>
+Bk</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Californium','98','(251)','2,8,18,32,28,8,2','5f9','N/A','N/A',
+'Seaborg et al. 1950','---','12');"><font size="1">98</font><br>
+Cf</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Einsteinium','99','(254)','2,8,18,32,29,8,2','5f11','N/A','N/A',
+'Ghiorso et al. 1952','---','12');"><font size="1">99</font><br>
+Es</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Fermium','100','(257)','2,8,18,32,30,8,2','5f12','N/A','N/A',
+'Ghiorso et al. 1953','---','10');"><font size="1">100</font><br>
+Fm</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Mendelevium','101','(258)','2,8,18,32,31,8,2','5f13','N/A','N/A',
+'Ghiorso et al. 1955','---','3');"><font size="1">101</font><br>
+Md</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Nobelium','102','(259)','2,8,18,32,32,8,2','5f14','N/A','N/A',
+'Ghiorso et al. 1957','---','7');"><font size="1">102</font><br>
+No</a></td>
+    <td align="CENTER" bgcolor="#c0c0c0" height="24" width="31"><a href="javascript:eleMent()" onmouseover="fillitin('Lawrencium','103','(260)','2,8,18,32,32,9,2','5f14','N/A','N/A',
+'Ghiorso et al. 1961','---','20');"><font size="1">103</font><br>
+Lr</a></td>
+	<td align="CENTER" height="24" width="31">&nbsp;</td>
+</tr>
+<tr>
+<td colspan="18" align="RIGHT" valign="TOP">
+</td>
+</tr>
+</tbody>
+</table>
+</form>
+</div>
+</body>
+</html>

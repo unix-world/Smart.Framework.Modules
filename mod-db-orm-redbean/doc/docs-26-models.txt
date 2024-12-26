@@ -1,0 +1,148 @@
+Models
+
+A model is a place to put validation and business logic. Imagine a Jazz band that can only have up to 4 members. We could implement this rule like this:
+    if ( count( $members ) > 4 )
+    throw new Exception( 'Too many!' );
+
+    $band->ownMember = $members;
+    R::store( $band );
+
+However, now we need to add this check everytime we call R::store(). It would be much more convenient if R::store() was smart enough to perform this check by itself. We can accomplish this by putting the validation rule in our model. RedBeanPHP automatically discovers the models that belong to beans, so we can implement this validation like this:
+
+    class Model_Band extends RedBean_SimpleModel {
+            public function update() {
+                if ( count( $this->bean->ownMember ) >4 )
+                throw new Exception( 'Too many members!' );
+            }
+    }
+
+    list( $band, $members ) = R::dispenseAll( 'band,member*5' );
+    $band->ownMember = $members;
+    R::store( $band ); //will trigger exception
+
+RedBeanPHP automatically connects beans with models using a naming convention (i.e. Model_{TYPE OF BEAN}).
+Now, every time we call store and something is wrong with the number of members, an exception will be triggered automatically. The mechanism that connects beans to models is called FUSE, because beans are fused with their models. Within a model, $this->bean refers to the bean.
+To create a model for your bean, simply add a class like this:
+    //with classic namespace style
+    class Model_Band extends RedBean_SimpleModel { ... }
+
+If you like your models to reside in the namespace \Model, you can set the following constant:
+    //with namespace Model
+    define( 'REDBEAN_MODEL_PREFIX', '\\Model\\' )
+
+You can now create a model class like this:
+    class \Model\Band extends \RedBeanPHP\SimpleModel { ... }
+
+If you prefer no namespacing at all:
+    //use plain classes (without any namespacing)
+    define( 'REDBEAN_MODEL_PREFIX', '' )
+
+    class Band extends \RedBeanPHP\SimpleModel { ... }
+
+Beans of types like 'book_page' will search for a model 'BookPage' first and if no such model is found they will try to connect to 'Book_Page'.
+Scoping rules
+
+Within the model, the $this->bean variable refers to the bean. Simply $this also refers to the bean but without returning references, in practice this can be very confusing so I recommend to use $this->bean.
+Fused methods
+
+Besides update() RedBeanPHP FUSE calls other methods on the model as well: R::store() invokes update() and after_update(),
+R::load() invokes open(),
+R::trash() invokes delete() and after_delete(),
+R::dispense() invokes dispense().
+
+Note that since loading a bean also causes a new bean to be dispensed to receive the record from the database, load also invokes dispense().
+Example: all fused methods
+
+To demonstrate the order and use of all of these methods let's consider an example:
+    $lifeCycle = '';
+    class Model_Bandmember extends RedBean_SimpleModel {
+        public function open() {
+           global $lifeCycle;
+           $lifeCycle .= "called open: ".$this->id;
+        }
+        public function dispense() {
+            global $lifeCycle;
+            $lifeCycle .= "called dispense() ".$this->bean;
+        }
+        public function update() {
+            global $lifeCycle;
+            $lifeCycle .= "called update() ".$this->bean;
+        }
+        public function after_update() {
+            global $lifeCycle;
+            $lifeCycle .= "called after_update() ".$this->bean;
+        }
+        public function delete() {
+            global $lifeCycle;
+            $lifeCycle .= "called delete() ".$this->bean;
+        }
+        public function after_delete() {
+            global $lifeCycle;
+            $lifeCycle .= "called after_delete() ".$this->bean;
+        }
+    }
+
+    $bandmember = R::dispense( 'bandmember' );
+    $bandmember->name = 'Fatz Waller';
+    $id = R::store( $bandmember );
+    $bandmember = R::load( 'bandmember', $id );
+
+    R::trash( $bandmember );
+    echo $lifeCycle;
+
+output:
+    called dispense() {"id":0}
+    called update() {"id":0,"name":"Fatz Waller"}
+    called after_update() {"id":5,"name":"Fatz Waller"}
+    called dispense() {"id":0}
+    called open: 5
+    called delete() {"id":"5","band_id":null,"name":"Fatz Waller"}
+    called after_delete() {"id":0,"band_id":null,"name":"Fatz Waller"}
+Custom FUSED methods
+
+Besides the standard methods mentioned above, any method on the model can be invoked by calling it on the bean (assuming it does not collide with a native bean method):
+    $dog = R::dispense( 'dog' );
+
+    //call bark() on Model_Dog:
+    $dog->bark();
+
+If you call a method on a bean that does not exist in the bean and also not in the model the call will be ignored. You change this behaviour by selecting a different FUSE error handling mechanism using the setErrorHandlingFUSE() method, see API.
+Boxing and Unboxing
+
+If you have a bean and you want to obtain the corresponding model use:
+    $dogBean = R::dispense( 'dog' );
+
+    //get reference to Model_Dog
+    $dogModel = $dogBean->box();
+
+Similarly, if you have a model and you want its inner bean, call:
+    $dogBean = $dogModel->unbox();
+
+We call this technique boxing (and unboxing). This can be handy if you want to make use of typehinting:
+    public function addDog( Model_Dog $dog ) {
+        ...
+    }
+
+Otherwise, we would have to use type RedBean_OODBBean which is less descriptive.
+Model Factory and Dependency Injection
+
+If for some reason you need to control how the bean turns into a model you can pass a factory function like this:
+    use RedBeanPHP\BeanHelper\SimpleFacadeBeanHelper as SimpleFacadeBeanHelper;
+    SimpleFacadeBeanHelper::setFactoryFunction( function( $name ) {
+        $model = new $name();
+        $model->setMailer( new MailLib() );
+        return $model;
+    } );
+
+In this example we inject a mail library in a model using the factory function. For more complex scenarios you can even use the factory to pass the model to your own dependency injection framework.
+
+If you need even more flexibility you can subclass the SimpleFacadeBeanHelper and override the getModelForBean() method.
+
+Use:
+R::getRedBean()->setBeanHelper( new MyBeanHelper );
+to set the bean helper.
+
+Don't forget to call $this->loadBean( $bean ); in the overridden method to attach the bean to the model. If you use the facade you have to set the bean helper for every database connection.
+
+As of RedBeanPHP 5.2 models can also return jsonSerialized objects by implementing the __jsonSerialize method (will override the default OODB implementation.
+

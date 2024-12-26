@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>3D JsCAD Demo</title>
+
+	<script src="../../../../../lib/js/jquery/jquery.js" type="text/javascript"></script>
+	<script src="../../jquery/jquery.hammer.js"></script>
+	<!-- <script src="../jquery.hammer-emulate.js"></script> -->
+	<script src="../../../../../lib/js/framework/smart-framework.pak.js" type="text/javascript"></script>
+
+	<script src="../lightgl3d.js"></script>
+	<script src="../geometry.js"></script>
+	<script src="../formats.js"></script>
+	<script src="../objects.js"></script>
+	<link rel="stylesheet" href="../3dopenjscad.css" type="text/css">
+	<script src="../3dopenjscad.js"></script>
+	<script src="../3dopenjscad-render-sync.js"></script>
+	<script src="../3dopenjscad-render-async.js"></script>
+
+	<style>
+	body {
+		margin-top: 1px;
+		font-size: 13px;
+		font-family: tahoma,verdana,arial,sans-serif;
+	}
+	</style>
+	<script>
+	var theCurrentBaseUrl = String(window.location.href);
+	theCurrentBaseUrl = theCurrentBaseUrl.substring(0,theCurrentBaseUrl.lastIndexOf('/'));
+	theCurrentBaseUrl = theCurrentBaseUrl.substring(0,theCurrentBaseUrl.lastIndexOf('/')+1);
+	//console.log(theCurrentBaseUrl);
+	</script>
+</head>
+<body>
+<script>
+function selectSample() {
+	var theSample = window.location.hash || '';
+	theSample = String(theSample);
+	if(theSample) {
+		theSample = String(theSample.substr(2));
+	}
+	var theSampleToShow = '';
+	switch(theSample) {
+		case 's5':
+			theSampleToShow = 'balloons.jscad'; // csg
+			break;
+		case 's4':
+			theSampleToShow = 'cnc-cutout.jscad'; // cag
+			break;
+		case 's3':
+			theSampleToShow = 'logo.obj';
+			break;
+		case 's2':
+			theSampleToShow = 'logo.stl';
+			break;
+		case 's1':
+			theSampleToShow = 'logo.json';
+			break;
+		case 's0':
+			theSampleToShow = 'logo.jscad'; // csg
+			break;
+		default:
+			// leave empty
+	}
+	return theSampleToShow;
+}
+</script>
+<div style="position:fixed; top:25px; right:25px;">
+	<select id="modelSelection" onChange="var theHash=''; if(this.value){theHash='!'+this.value;} self.location.hash=theHash; self.location.reload();">
+		<option value="">Gear (JSCAD)</option>
+		<option value="s0">Logo (JSCAD)</option>
+		<option value="s1">Logo (JSON)</option>
+		<option value="s2">Logo (STL)</option>
+		<option value="s3">Logo (OBJ)</option>
+		<option value="s4">CutOut (JSCAD / 2D)</option>
+		<option value="s5">Balloons + SalutationText (JSCAD)</option>
+	</select>
+	<br>
+	<select id="renderMode" onChange="self.location.reload();">
+		<option value="async">Async Render (non-blocking)</option>
+		<option value="sync">Sync Render</option>
+	</select>
+</div>
+<div align="center">
+	<h1 style="display:inline;">3D JsCAD Demo: <span id="theDemoFn"></span></h1>
+	<!-- setup display of the errors as required by OpenJSCAD.js -->
+	<div id="openscadContainer">
+		<div oncontextmenu="return false;" id="openscadAreaViewer3D"></div><!-- setup display of the viewer, as required by OpenJSCAD -->
+		<div id="openscadAreaHeader">
+			<div id="openscadAreaStatus"></div><!-- setup display of the status, as required by OpenJSCAD -->
+			<div id="openscadAreaError"></div><!-- setup display of the error, as required -->
+		</div>
+		<div id="openscadAreaParams"></div><!-- setup display of the design parameters, as required by OpenJSCAD -->
+		<div id="openscadAreaFooter">
+			<div id="openscadAreaFormats"></div>
+		</div>
+	</div>
+</div>
+<!-- define the design and the parameters -->
+<script type="text/javascript">
+(function() {
+	//--
+	var theSampleSelected = selectSample();
+	if(!theSampleSelected) {
+		theSampleSelected = 'gear.jscad';
+	}
+	//--
+	var gProcessor = null; // required
+	//--
+	function loadProcessor() {
+		//--
+		var isAsync = true;
+		if($('#renderMode').val() == 'sync') {
+			isAsync = false;
+		}
+		//--
+		gProcessor = new OpenJsCad.Processor(document.getElementById('openscadAreaViewer3D'), {
+			useAsync: isAsync ? true : false, // worker (else function)
+			openJsCadPath: theCurrentBaseUrl,
+			openJsCadTextUpdate: 'Update View',
+			openJsCadTextInstantUpdate: 'Instant Update View',
+			openJsCadTextExport: 'Export To:',
+			openJsCadFxExport: function(data, ext, mime) {
+				smartJ$Browser.VirtualFileDownload(String(data), '3dcad.' + String(ext), String(mime), 'UTF-8');
+			}
+		});
+		//--
+		loadJSCAD(0);
+		//--
+	} //END FUNCTION
+	//--
+	function loadJSCAD(choice) {
+		var filepath = 'examples/' + String(theSampleSelected);
+		var xhr = new XMLHttpRequest();
+		xhr.overrideMimeType('text/plain');
+		xhr.open('GET', filepath, true);
+		gProcessor.setStatus('Loading: ' + filepath + gProcessor.getLoadingImg());
+		xhr.onload = function() {
+			document.getElementById('theDemoFn').innerText = String(theSampleSelected);
+			var source = this.responseText;
+			//console.log(source);
+			if(filepath.match(/\.jscad$/i)) {
+				gProcessor.setStatus('Processing: ' + filepath + gProcessor.getLoadingImg());
+				gProcessor.setJsCad(source, filepath);
+			} else if(filepath.match(/\.json$/i)) {
+				gProcessor.setStatus('Processing JSON: ' + filepath + gProcessor.getLoadingImg());
+				var convert = OpenSCad.parseFromJson(source,filepath);
+				gProcessor.setJsCad(convert, filepath);
+			} else if(filepath.match(/\.stl$/i)) {
+				gProcessor.setStatus('Processing STL: ' + filepath + gProcessor.getLoadingImg());
+				var convert = OpenSCad.parseSTL(source,filepath);
+				gProcessor.setJsCad(convert, filepath);
+			} else if(filepath.match(/\.obj$/i)) {
+				gProcessor.setStatus('Processing OBJ: ' + filepath + gProcessor.getLoadingImg());
+				var convert = OpenSCad.parseOBJ(source,filepath);
+				gProcessor.setJsCad(convert, filepath);
+			} else {
+				throw 'ERROR: Invalid File ...' + filepath;
+			}
+		}
+		xhr.send();
+	} //END FUNCTION
+	//--
+	loadProcessor();
+	//--
+})();
+</script>
+</body>
+</html>

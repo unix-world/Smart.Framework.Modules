@@ -1,0 +1,25 @@
+<!-- start tpl highlight syntax template -->
+[%%%COMMENT%%%]
+Template: mod-tpl/views/templating-highlight-syntax.mtpl.htm # v.20210608
+[%%%/COMMENT%%%]
+<style>
+.hilite pre {
+	border: 1px solid #F0F0F0;
+	background: #F9F9F9;
+	padding: 3px;
+	white-space: pre;
+	overflow: auto;
+}
+.hilite code {
+	white-space: pre;
+}
+</style>
+[###HTML-HIGHLIGHT###]
+<h1>[###TPL-TYPE|html###] Source:<br><i>[###TPL-PATH|html###]</i></h1>
+<hr>
+<div class="hilite">
+<pre><code data-syntax="[###TPL-SYNTAX|html###]">[@@@SUB-TEMPLATE:%the-tpl%|html@@@]</code></pre>
+</div>
+<hr>
+<br>
+<!-- end tpl highlight syntax template -->

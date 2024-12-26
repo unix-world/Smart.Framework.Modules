@@ -1,0 +1,132 @@
+Quick Tour
+
+In this Quick Tour we will show you how to use RedBeanPHP and highlight some of its features.
+Because your time is precious, the Quick Tour is very brief and should only take about 5 minutes to walk through...
+Quick Tour in 10 seconds
+
+Have an associative array in PHP? You can store an entire array structure (even from a form) in one line:
+    R::store(R::dispense([
+        '_type' => 'book',
+            'title' => 'My Book',
+            'ownPageList' => [
+                    ['_type'=>'page', 'name'=>'first page']
+            ]
+    ]));
+
+This creates a book table with one entry called 'My Book' and a related page (using proper foreign keys). ...8...9...10. :)
+Quick Tour in 5 minutes... minute 1:
+
+To begin with RedBeanPHP, download the package from the website and put in somewhere in your PHP project (check the signature).
+
+Now, before you begin you have to include RedBeanPHP in your project, to do so, add a line like this:
+    require 'rb.php';
+Minute 2: Create a database
+
+Now you have to setup your database connection.
+If you just want to play with RedBeanPHP you may also use:
+    R::setup();
+
+This will create a simple, temporary SQLite database, after rebooting your system this database will be gone.
+
+For Windows users: make sure PHP has write access to C:\Windows\Temp.
+
+If you want to start using RedBeanPHP for real, you can connect to a MySQL database like this:
+    R::setup( 'mysql:host=localhost;dbname=mydatabase', 'myusername', 'mypassword' );
+Minute 3: Beans
+
+Now you're ready to start using RedBeanPHP. RedBeanPHP makes it really easy to store stuff in the database. For instance, to store a blog post in the database you write:
+    $post = R::dispense( 'post' );
+    $post->title = 'My holiday';
+    $id = R::store( $post );
+
+Now, RedBeanPHP will create a table called post for you in the database and add a column called title, big enough to hold your text.
+The store() function will also return the primary key ID of the record, which we capture in the variable $id.
+
+RedBeanPHP automatically creates a column for your property, in this case 'title'. RedBeanPHP determines the column type by scanning the value in the property. For instance in this case the value is a small text, so RedBeanPHP will add a column of type VARCHAR (assuming this is a MySQL/MariaDB database). Imagine you store a large text in this property later, then RedBeanPHP will change the column type to TEXT to make room for the new value. This is called fluid mode. In fluid mode, RedBeanPHP will adapt the database to meet the requirements of your app. It will never throw away columns though nor will it ever shrink the size of a column, so you don't have to worry about data loss. If you want to clean up your database by removing columns you have to do this manually. Some datatypes are immutable, for instance if you store an ISO date string in a property (2005-01-01), RedBeanPHP will create a date column for you. However in this case, the date column will not change (to TEXT for example). This is because we consider it unlikely you ever want to change a date column into something else (like a TEXT column). If you try to put an invalid date string into this column RedBeanPHP assumes it's by accident.
+
+Note that you don't need any configuration to make this work. RedBeanPHP is configurationless, everything just works out of the box. You also don't need to configure paths or autoloaders because everything is just in one file!
+You don't even have to instantiate an object, all methods in RedBeanPHP are static.
+Just type R:: and then the name of the method you want to use!
+
+To load the post you just saved, just pass the ID to the load function:
+    $post = R::load( 'post', $id );
+
+If you want to lock a bean while loading it, so nobody can change the record associated with your bean until your transaction completes use R::loadForUpdate()/R::findForUpdate() instead (version 5+).
+
+You can also use SQL snippets like ' for update ' with operations like R::find() and R::batch(). Before invoking these commands just set the SQL snippet you wish to use:
+
+R::getWriter()->setSQLSelectSnippet( ... );
+
+Yep, there's your post again. To echo the title of your post:
+    echo $post->title;
+
+Nothing fancy there, but did you know beans can also be treated like arrays ?
+    echo $post['title'];
+
+To delete your post, pass it to the trash method:
+    R::trash( $post );
+
+Now, the post is gone, it will no longer be available in your database.
+Minute 4: Finding stuff
+
+Finding stuff in the database is easy:
+    $posts = R::find(
+    'post', ' title LIKE ?', [ 'holiday' ] );
+
+This will search for all posts have the word 'holiday' in the title and will return an array containing all the relevant beans as a result. As you see, we don't use a fancy query builder, just good old SQL.
+We like to keep things simple.
+
+Besides using the find() functions, you can also use raw SQL queries:
+    $books = R::getAll(
+    'SELECT * FROM book WHERE price < ? ',
+    [ 50 ] );
+Minute 5: Relations
+
+RedBeanPHP also makes it easy to manage relations. For instance, if we like to add some photos to our holiday post we do this:
+    $post->ownPhotoList[] = $photo1;
+    $post->ownPhotoList[] = $photo2;
+    R::store( $post );
+
+Here, $photo1 and $photo2 are also beans (but of type 'photo').
+After storing the post, these photos will be associated with the blog post.
+To associate a bean you simply add it to a list. The name of the list must match the name of the related bean type.
+So photo beans go in:
+
+$post->ownPhotoList
+
+comments go in:
+
+$post->ownCommentList
+
+and notes go in:
+
+$post->ownNoteList
+
+See? It's that simple!
+
+To retrieve associated beans, just access the corresponding list:
+    $post = R::load( 'post', $id );
+    $firstPhoto = reset( $post->ownPhotoList );
+
+In the example above, we load the blog post and then access the list. The moment we access the ownPhotoList property, the relation will be loaded automatically, this is often called lazy loading, because RedBeanPHP only loads the beans when you really need them.
+
+To get the first element of the photo list, we simply use PHP's native reset() function...
+    $firstPost = reset( $post->ownPhotoList );
+
+Although no SQL is necessary, RedBeanPHP is very SQL friendly. For instance, suppose some of your posts have quite a big photo collection associated with it and you want to limit the number of photos to a maximum of 3:
+    $threePhotos = $post->with( 'LIMIT 3' )->ownPhotoList;
+
+See? Just pass a little SQL Snippet!
+
+Final note
+
+As you have seen, RedBeanPHP dynamically changes the structure of the database during development. This is a very nice feature, but you don't want that to happen on your production server! So, before deploying your app, be sure to freeze the database by adding the following line just below the setup:
+    R::freeze( TRUE );
+
+Before you deploy, review your database schema. RedBeanPHP tries to make a good database schema for you, but you might want to improve it.
+Maybe you added a column you no longer use, or you want an extra index.
+Always make sure you review the final database schema before you put it on a production server!
+After freezing the database, RedBeanPHP will no longer change the structure, so you have the best of both worlds. NoSQL-like flexibility during development and a reliable schema on your production server!
+
+This was just a quick tour, showcasing some basic usage of RedBeanPHP. For more details please explore the documentation on this website!
+

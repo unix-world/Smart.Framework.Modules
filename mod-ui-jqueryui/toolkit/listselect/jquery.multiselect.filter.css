@@ -1,0 +1,13 @@
+
+.ui-multiselect-filter {
+	display: block;
+	width: 99%;
+	font-size: 0.9em;
+}
+
+.ui-multiselect-filter input {
+	width: 90%;
+	font-size: 0.9em;
+	padding: 2px;
+	border: 1px solid #F2F2F2;
+}

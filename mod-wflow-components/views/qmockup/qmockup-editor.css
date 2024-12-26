@@ -1,0 +1,150 @@
+
+/*
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190219
+// modified by unixman:
+// 	* css3 fixes
+*/
+
+/*
+ * QMockup Editor: CSS
+ * LICENSE: MIT, (c) 2015 Jan Dittrich & Contributors
+ */
+
+#toolbar * {
+	font-size: 11px;
+	font-weight: bold;
+}
+
+#toolbar {
+	z-index: 9999999;
+	padding: 5px;
+	background-color: #E3EDCE;
+	border: 1px dotted #455C30;
+	border-radius: 3px;
+	width: 500px;
+	text-align: center;
+	cursor: move;
+	opacity: 0.95;
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+#toolbar:hover {
+	background-color: #CBDF89;
+	opacity: 0.90;
+}
+
+#toolbar button {
+	padding: 0px !important;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+#toolbar input {
+	background: #FFFFFF;
+	border: 1px solid #CCCCCC;
+	color: #111111;
+	padding: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	width: 35px!important;
+	text-align: right !important;
+}
+
+#toolbar label {
+	display: inline-block;
+}
+
+#canvas { /* holds the mockup elements */
+	background-color: #FFFFFF;
+	width: 500px;
+	height: 300px;
+	position: absolute;
+	margin:0;
+	padding:0;
+	border-left: 1px solid #555555; /*give same color as canvas wrapper background*/
+}
+
+#canvas div {
+/*	padding: 0;
+	margin: 0; */
+}
+
+.newMockElement {
+}
+
+.mockElement input.plaintextinput, .mockElement input.uielementsinput { /*otherwise the input fields can be rather small*/
+	min-width: 10rem;
+	box-sizing: border-box;
+	font-size: 1rem;
+}
+
+#widgetCollection {
+	position:relative;
+	height:100%;
+	width: 100%;
+	padding:0;
+	margin:0;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+#widgetCollection>li {
+	list-style-type: none;
+	padding: 1rem;
+	border-bottom:1px solid silver;
+	overflow: hidden;
+	width: 100%;
+	margin-left: 10px;
+}
+
+#widgetCollection>li:hover {
+	margin-left: 15px;
+
+}
+
+#widgetCollection>li>.newMockElement:hover {
+	outline:2px solid rgba(148, 216, 24,0.5);
+}
+
+.custom-selected {
+}
+
+#canvas .ui-resizable>.ui-resizable-handle {
+	pointer-events: none;
+	background: rgba(0,0,0,0.0);
+}
+
+#canvas .custom-selected.ui-resizable>.ui-resizable-handle {
+	pointer-events: auto;
+	background: rgba(0,0,0,0.5);
+}
+
+
+.dialog{
+	display: none; /*hide dialog markup*/
+}
+
+.mockElement textarea {
+	min-width: 250px !important;
+	min-height: 100px !important;
+}
+
+.drop-hover {
+	outline: 2px solid rgba(0,0,0,0.3);
+}
+
+/*JQUERY UI Modifacations, makes handles inkscape-style*/
+#canvas .ui-selected { background: #F39814; color: white; }
+#canvas .ui-resizable-handle{ width:8px !important; height: 8px !important; } /*all handles*/
+#canvas .ui-resizable-n{ left: calc(50% - 4px); top:-5px; }
+#canvas .ui-resizable-e{ right:-5px; top:calc(50% - 4px); }
+#canvas .ui-resizable-s{ left:calc(50% - 4px); bottom:-5px; }
+#canvas .ui-resizable-w{ left:-5px; top:calc(50% - 4px); }
+#canvas .ui-resizable-ne{ right:-5px;top:-5px; }
+#canvas .ui-resizable-se{ right:-5px;bottom: -5px; }
+#canvas .ui-resizable-sw{ left:-5px; bottom:-5px; }
+#canvas .ui-resizable-nw{ left:-5px; top:-5px; }
+
+/* END */

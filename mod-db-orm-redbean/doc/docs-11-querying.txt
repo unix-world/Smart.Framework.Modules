@@ -1,0 +1,72 @@
+Querying
+
+Querying the database manually is also possible with RedBeanPHP. You can use the SQL query functions provided by RedBeanPHP. To execute a query:
+    R::exec( 'UPDATE page SET title="test" WHERE id = 1' );
+
+To get a multidimensional array:
+    R::getAll( 'SELECT * FROM page' );
+
+The result of such a query will be a multidimensional array:
+    Array
+    (
+        [0] => Array
+            (
+                [id] => 1
+                [title] => frontpage
+                [text] => hello
+            )
+        ...
+    )
+
+Note that you can use parameter bindings as well:
+    R::getAll( 'SELECT * FROM page WHERE title = :title',
+        [':title' => 'home']
+    );
+
+To fetch a single row:
+    R::getRow( 'SELECT * FROM page WHERE title LIKE ? LIMIT 1',
+        [ '%Jazz%' ]
+    );
+
+To fetch a single column:
+    R::getCol( 'SELECT title FROM page' );
+
+And finally, a single cell...
+    R::getCell( 'SELECT title FROM page LIMIT 1' );
+
+To get an associative array with a specified key and value column use:
+    R::getAssoc( 'SELECT id, title FROM page' );
+
+In this case, the keys will be the IDs and the values will be the titles. getAssocRow will return complete rows.
+
+For dynamic queries use R::getWriter()->esc() & R::getPDO()->quote()
+    $pdo = R::getPDO();
+    $writer = R::getWriter();
+    $table = 'page';
+    $value = 'unsafe_string';
+    $result = R::getRow('SELECT * FROM '.$writer->esc($table).' WHERE '.$writer->esc($table).'.title = '. $pdo->quote($value).' LIMIT 1' ,[]);
+
+In my examples, I like to use the short array notation.
+In PHP < 5.4 you'll have to use the classic array notation:
+
+array( 'key' => 'value' ).
+Get the insert ID (4.2+)
+
+To get the ID after an insert in MySQL/MariaDB compatible databases use:
+    R::exec( 'INSERT INTO ... ' );
+    $id = R::getInsertID();
+Converting records to beans
+
+You can convert rows to beans using the convertToBeans() function:
+    $sql = 'SELECT author.* FROM author
+        JOIN club WHERE club.id = 7 ';
+    $rows = R::getAll( $sql );
+    $authors = R::convertToBeans( 'author', $rows );
+
+As of version 4.3.2 you can also use: R::convertToBean, without the s, for single rows.
+
+Remember:
+There is no need to use mysql_real_escape as long as you use parameter binding.
+
+Besides querying you can also use other database functionality (like transactions) in RedBeanPHP. Learn more about database functions.
+

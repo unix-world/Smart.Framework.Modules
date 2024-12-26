@@ -1,0 +1,60 @@
+Install
+
+Installing RedBeanPHP is very easy. First of all, you need to download the tarball from our server. Just head over to the download section and click on the download link to start downloading the package. You can also use a tool like wget of course.
+Simple installation
+url=http://www.redbeanphp.com/downloadredbean.php
+wget $url --output-document="redbeanphp.tar.gz"
+tar xvf redbeanphp.tar.gz
+
+RedBeanPHP is always distributed as a TGZ package, also known as a 'tarball'. To extract the contents of this package use:
+tar xvf redbeanphp.tar.gz
+
+You'll then see...
+license.txt
+rb.php
+
+OPTIONAL Check integrity:
+sha256sum redbean.tgz
+
+Now compare the output of that command with the SHA signature shown on the download pages.
+
+OPTIONAL Check authenticity (public keys available on download page and groups forum):
+cat redbean.tgz | signify -Vz -p red.pub -t arc | tar xvzf -
+
+Inside the package you'll find a license.txt and a rb.php file. The first file contains the license information. The second file is the compiled RedBeanPHP all-in-one script. All RedBeanPHP code has been combined into a single file for your convenience.
+Including in your project
+
+To include RedBeanPHP in your project, simply copy the file to a location somewhere inside your PHP project and then use the PHP 'require' command to load it:
+    require 'rb.php';
+
+You are now ready to use RedBeanPHP!
+Let's try to setup a database connection!
+Patch for PHP 5.3.3 and earlier
+
+This patch is only required for people using old versions of PHP, i.e. PHP 5.3.3 or earlier. If you are running a PHP instance with a higher version number please skip this section. People using PHP version 5.3.3 or older should run the p533patch.php file first and then include the newly generated rb-p533.php file. The patch will modify the source for compatibility with these older PHP editions. Use the patch like this:
+php p533patch.php
+
+You will now see the following output:
+Running Patch P533...
+Applied patch for PHP < 5.3.3
+
+After running the patch, you'll see a new file in your folder:
+rb-p533.php
+
+This is the file to be used with your version of PHP.
+Composer
+
+Composer is not the preferred way to install RedBeanPHP and never will be. Using package management systems for development can be dangerous because people can inject malicious dependencies or remove dependencies. Related news items:
+Malicious code snuck into in Python repository
+The "Left-pad" incident at NPM
+Arch-linux incident
+
+To install RedBeanPHP with Composer... Just open your composer.json file and add the package name (e.g. "gabordemooij/redbean": "dev-master") in your require list.
+{
+ "require": {
+ "gabordemooij/redbean": "dev-master"
+ }
+}
+
+..for more details on Composer based installation see the readme on github.
+

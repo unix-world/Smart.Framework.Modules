@@ -1,0 +1,17 @@
+<style>
+span#last-status {
+	color: #777777 !important;
+}
+</style>
+<div id="last-op" class="operation_notice">
+	<h3><i>Last Sync-OUT Operation Status</i></h3>
+	<div>
+[%%%IF:LAST-OP-MSG:@>0;%%%]
+	[%%%LOOP:LAST-OP-MSG%%%]
+	<span id="last-status"><b>[###LAST-OP-MSG.ID|html###]:</b> [###LAST-OP-MSG.VAL|html###][%%%IF:LAST-OP-MSG.ID:==errors-count;%%%]</span> <a class="ux-button ux-button-xsmall" href="admin.php?page=transl-repo.welcome&action=[###LAST-OP-ACT|url|html###]">[###LAST-OP-BTN|html###]</a>[%%%/IF:LAST-OP-MSG.ID%%%]<br>
+	[%%%/LOOP:LAST-OP-MSG%%%]
+[%%%ELSE:LAST-OP-MSG%%%]
+	<span id="last-status"><b>N/A</b></span>
+[%%%/IF:LAST-OP-MSG%%%]
+	</div>
+</div>

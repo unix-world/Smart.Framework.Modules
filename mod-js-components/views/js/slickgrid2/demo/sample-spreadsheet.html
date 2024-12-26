@@ -1,0 +1,221 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>SlickGrid Example: Spreadsheet (SlickGrid v2)</title>
+
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.smart.compat.js"></script>
+	<script type="text/javascript" src="../../../../../../lib/js/framework/src/core_utils.js"></script>
+
+	<!-- jQueryUI Interractions
+	<link rel="stylesheet" href="../../../../../../modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-interractions.css" type="text/css">
+	<script type="text/javascript" src="../../../../../../modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-interractions.js"></script>
+	<script type="text/javascript" src="../../../../../../modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-touch-punch.js"></script>
+	-->
+	<script type="text/javascript" src="../../../../../../modules/mod-auth-admins/views/js/jquery.event.drag.js"></script>
+	<script type="text/javascript" src="../../../../../../modules/mod-auth-admins/views/js/jquery.event.drop.js"></script>
+
+	<link rel="stylesheet" href="../slick.grid.css" type="text/css">
+	<link rel="stylesheet" href="../slick-default-theme.css" type="text/css">
+	<script src="../slick.core.js"></script>
+	<script src="../plugins/slick.autotooltips.js"></script>
+	<script src="../plugins/slick.cellrangedecorator.js"></script>
+	<script src="../plugins/slick.cellrangeselector.js"></script>
+	<script src="../plugins/slick.cellexternalcopymanager.js"></script>
+	<script src="../plugins/slick.cellselectionmodel.js"></script>
+	<script src="../slick.editors.js"></script>
+	<script src="../slick.formatters.js"></script>
+	<script src="../slick.grid.js"></script>
+<!-- <script src="../slick.dataview.js"></script> -->
+
+	<script type="text/javascript" src="../extra/excel-formula.js"></script>
+	<script type="text/javascript" src="../extra/jquery.csv.js"></script>
+	<script src="../spreadsheet-grid.js"></script>
+
+	<style>
+		.slick-cell.copied {
+			background: blue;
+			background: rgba(0,0,255,0.2);
+			-webkit-transition: 0.5s background;
+		}
+	</style>
+</head>
+<body>
+<script>
+	var grid;
+	var data = [];
+</script>
+<h1>Spreadsheet Data Grid (SlickGrid v2)</h1>
+<div style="position:relative">
+	<div style="width:98vw;height:70vh;">
+		<div id="myGrid" style="width:100%;height:100%;"></div>
+	</div>
+	<button onClick="SlickSpreadSheet.csvDataDownload(data);">Download as CSV</button>
+	<div class="options-panel">
+		<h2>Demonstrates:</h2>
+		<ul>
+			<li>Import data-table.csv into Spreadsheet</li>
+			<li>Edit cells and can use Excel like Formulas</li>
+			<li>Export data-table.csv for download</li>
+		</ul>
+	</div>
+</div>
+<script>
+	// A proof-of-concept cell editor with Excel-like range selection and insertion.
+	function FormulaEditor(args) {
+		//--
+		var _self = this;
+		var _editor = new Slick.Editors.Text(args);
+		var _selector;
+		//--
+		$.extend(this, _editor);
+		//--
+		var preinit = function() {
+			// register a plugin to select a range and append it to the textbox
+			// since events are fired in reverse order (most recently added are executed first),
+			// this will override other plugins like moverows or selection model and will
+			// not require the grid to not be in the edit mode
+			_selector = new Slick.CellRangeSelector();
+			_selector.onCellRangeSelected.subscribe(_self.handleCellRangeSelected);
+			args.grid.registerPlugin(_selector);
+		} //end function
+		//--
+		this.destroy = function () {
+			_selector.onCellRangeSelected.unsubscribe(_self.handleCellRangeSelected);
+			grid.unregisterPlugin(_selector);
+			_editor.destroy();
+		};
+		//--
+		this.handleCellRangeSelected = function (e, args) {
+			_editor.setValue(
+				_editor.getValue() +
+				grid.getColumns()[args.range.fromCell].name +
+				(parseInt(args.range.fromRow) + 1) +
+				':' +
+				grid.getColumns()[args.range.toCell].name +
+				(parseInt(args.range.toRow) + 1)
+			);
+		};
+		//--
+		this.applyValue = function(item,state) {
+			//console.log(args);
+			item[args.column.field] = state;
+			//console.log(data);
+			setTimeout(function(){
+				grid.invalidate();
+				//grid.removeAllRows();
+				grid.setData(data);
+				grid.render();
+			}, 50);
+		};
+		//--
+		preinit();
+		//--
+	} //END FUNCTION
+</script>
+<script>
+	$(function(){
+		//--
+		$.ajax({
+			//--
+			async: true,
+			cache: false, // by default is true ; let this be set globally via ajaxSetup
+			timeout: 0, // by default is zero ; let this be set globally via ajaxSetup
+			type: 'GET',
+			url: 'data-table.csv',
+			//--
+			dataType: 'text'
+			//--
+		}).done(function(msg) {
+			//--
+			var spreadsheetColumns = SlickSpreadSheet.buildSpreadsheetColumns(78);
+			//console.log(spreadsheetColumns.gridColumns);
+			data = SlickSpreadSheet.buildSpreadsheetDataRows(spreadsheetColumns.headColumns, String(msg));
+			//data[0]['C'] = 1;					// C1
+			//data[1]['C'] = 3;					// C2
+			//data[2]['C'] = 3;					// C3
+			//data[3]['C'] = '=C2+(2*C3)+C1';		// C4 = 10
+			//data[3]['D'] = '=C4+1';				// D4 = 11
+			//data[3]['E'] = '=SUM(C1:C3)';		// E4 = 7
+			//console.log(data);
+			//=====
+			var options = {
+				editable: true,
+				enableAddRow: false,
+			//	enableColumnReorder: true,
+				enableCellNavigation: true,
+				asyncEditorLoading: false,
+				autoEdit: false
+			};
+			//dataView = new Slick.Data.DataView();
+			//dataView.setItems(data);
+			//grid = new Slick.Grid("#myGrid", dataView, spreadsheetColumns.gridColumns, options);
+			grid = new Slick.Grid("#myGrid", data, spreadsheetColumns.gridColumns, options);
+			grid.setSelectionModel(new Slick.CellSelectionModel());
+			grid.registerPlugin(new Slick.AutoTooltips());
+			// set keyboard focus on the grid
+			grid.getCanvasNode().focus();
+			// undo/redo buffer
+			var undoRedoBuffer = {
+				commandQueue: [],
+				commandCtr: 0,
+				queueAndExecuteCommand: function(editCommand) {
+					this.commandQueue[this.commandCtr] = editCommand;
+					this.commandCtr++;
+					editCommand.execute();
+				},
+				undo: function() {
+					if(this.commandCtr == 0) {
+						return;
+					} //end if
+					this.commandCtr--;
+					var command = this.commandQueue[this.commandCtr];
+					if(command && Slick.GlobalEditorLock.cancelCurrentEdit()) {
+						command.undo();
+					} //end if
+				},
+				redo: function() {
+					if(this.commandCtr >= this.commandQueue.length) {
+						return;
+					} //end if
+					var command = this.commandQueue[this.commandCtr];
+					this.commandCtr++;
+					if(command && Slick.GlobalEditorLock.cancelCurrentEdit()) {
+						command.execute();
+					} //end if
+				}
+			};
+			grid.registerPlugin(new Slick.CellExternalCopyManager({
+				clipboardCommandHandler: function(editCommand){ undoRedoBuffer.queueAndExecuteCommand.call(undoRedoBuffer,editCommand); },
+				readOnlyMode: false,
+				includeHeaderWhenCopying: false,
+				newRowCreator: function(count) {
+					for(var i=0; i<count; i++) {
+						var item = {
+							id: "newRow_" + newRowIds++
+						};
+						grid.getData().addItem(item);
+					} //end for
+				}
+			}));
+			/* grid.onAddNewRow = function(e, args) {
+				var item = args.item;
+				var column = args.column;
+				grid.invalidateRow(data.length);
+				data.push(item);
+				grid.updateRowCount();
+				grid.render();
+			}; */
+			//--
+		}).fail(function(msg) {
+			//--
+			console.error('ERROR trying to GET the Data Table CSV File: HTTP Status=' + msg.status + '/' + msg.statusText);
+			alert('Failed to GET the Data Table CSV File ... (see console for more details)');
+			//--
+		});
+		//--
+	});
+</script>
+</body>
+</html>

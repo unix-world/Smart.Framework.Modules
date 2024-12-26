@@ -1,0 +1,13 @@
+<!-- constants r.20200121 -->
+[%%%LOOP:ARR-CONSTANTS%%%]
+[%%%IF:ARR-CONSTANTS.IS-INTERNAL-PRIV:!=1;%%%]
+<div class="doc-container" id="Constant--[###ARR-CONSTANTS.NAME|htmid|html###]">
+	<span class="doc-modifiers">[###ARR-CONSTANTS.MODIFIERS|html###]</span> <i>const</i> <b>[###ARR-CONSTANTS.NAME|html###]</b>[%%%IF:ARR-CONSTANTS.VALUE:!=;%%%]&nbsp;=&nbsp;<span class="doc-param-value"><b>[###ARR-CONSTANTS.VALUE|html###]</b></span>&nbsp;;&nbsp;[%%%/IF:ARR-CONSTANTS.VALUE%%%]&nbsp;<b>::</b>[%%%IF:ARR-CONSTANTS.DOC-CONST-TYPE:!=;%%%]&nbsp;<i>[###ARR-CONSTANTS.DOC-CONST-TYPE|html###]</i>[%%%/IF:ARR-CONSTANTS.DOC-CONST-TYPE%%%]
+	[%%%IF:ARR-CONSTANTS.COMMENT-HTML:!=;%%%]
+		<div class="doc-method-comments">[###ARR-CONSTANTS.COMMENT-HTML###]</div>
+	[%%%/IF:ARR-CONSTANTS.COMMENT-HTML%%%]
+</div>
+[%%%ELSE:ARR-CONSTANTS.IS-INTERNAL-PRIV%%%]
+<!-- Skip Internal-Priv Constant: `[###ARR-CONSTANTS.NAME|html###]` -->
+[%%%/IF:ARR-CONSTANTS.IS-INTERNAL-PRIV%%%]
+[%%%/LOOP:ARR-CONSTANTS%%%]

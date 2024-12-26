@@ -1,0 +1,47 @@
+[%%%COMMENT%%%]
+// IMPORTANT: use only JavaScript code here, no HTML !
+[%%%/COMMENT%%%]
+//===== QUnit Tests.Mod.ZZZ-Tests: START :: r.20241216
+
+(function() {
+
+	QUnit.module('Utils.Modules', function(){
+
+		QUnit.test('(Vendor) ZZZ Tests: PHP :: iFrame', function(assert) {
+			SmartQUnit.runiFrameTest(
+				baseScript + '?page=zzz-tests.test-pmarkdowntohtml',
+				500,
+				assert,
+				'Test OK: PHP PMarkdown Render.'
+			);
+			SmartQUnit.runiFrameTest(
+				baseScript + '?page=zzz-tests.test-htmltopmarkdown',
+				500,
+				assert,
+				'HTML2Markdown Test: OK'
+			);
+			SmartQUnit.runiFrameTest(
+				baseScript + '?page=zzz-tests.test-geo',
+				500,
+				assert,
+				'Geo Test: OK'
+			);
+			SmartQUnit.runiFrameTest(
+				baseScript + '?page=zzz-tests.test-math-parser',
+				500,
+				assert,
+				'Math Expression Parser Test: OK'
+			);
+			SmartQUnit.runiFrameTest(
+				baseScript + '?page=zzz-tests.test-svg-draw',
+				500,
+				assert,
+				'SVG Test Result: OK'
+			);
+		});
+
+	});
+
+})();
+
+//===== QUnit Tests.Mod.ZZZ-Tests: #END

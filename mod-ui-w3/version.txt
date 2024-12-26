@@ -1,0 +1,9 @@
+
+# Smart.Framework.Modules: UI W3 (CSS) r.20220918 #
+## UI W3 (CSS) v.4.15 ##
+
+// r.8.7 / smart.framework.v.8.7
+
+# PHP 7.4 .. PHP 8.4 ready
+
+###

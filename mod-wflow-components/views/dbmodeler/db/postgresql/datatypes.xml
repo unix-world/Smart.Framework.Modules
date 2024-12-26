@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<datatypes db="postgresql">
+	<group label="Numeric" color="#FFFFB7">
+		<type label="BIGINT" length="0" sql="BIGINT" re="INT8" fk="BIGINT" quote="" />
+		<type label="INTEGER" length="0" sql="INTEGER" re="INT4" fk="INTEGER" quote="" />
+		<type label="SMALLINT" length="0" sql="SMALLINT" re="INT2" fk="SMALLINT" quote="" />
+		<type label="NUMERIC" length="1" sql="NUMERIC" re="DECIMAL" quote="" />
+		<type label="REAL" length="0" sql="REAL" re="FLOAT4" quote="" />
+		<type label="DOUBLE" length="0" sql="DOUBLE PRECISION" re="FLOAT8" quote="" />
+	</group>
+	<group label="Character" color="#FFFFFF">
+		<type label="VARCHAR" length="1" sql="CHARACTER VARYING" re="VARCHAR" fk="VARCHAR" quote="'"/>
+		<type label="CHAR" length="1" sql="CHARACTER" re="CHAR" fk="CHAR" quote="'"/>
+		<type label="TEXT" length="0" sql="TEXT" quote="'"/>
+		<type label="JSONB" length="0" sql="JSONB" quote="'" />
+		<type label="JSON" length="0" sql="JSON" quote="'" />
+		<type label="XML" length="0" sql="XML" quote="'" />
+	</group>
+	<group label="Date &amp; Time" color="#FFE6B5">
+		<type label="DATE" length="0" sql="DATE" fk="DATE" quote="'" />
+		<type label="TIME" length="0" sql="TIME WITHOUT TIME ZONE" re="TIME" fk="TIME" quote="'" />
+		<type label="TIMESTAMP" length="0" sql="TIMESTAMP WITHOUT TIME ZONE" re="TIMESTAMP" fk="TIMESTAMP" quote="'" />
+		<type label="TIME.TZ" length="0" sql="TIME WITH TIME ZONE" re="TIMETZ" fk="TIMETZ" quote="'" />
+		<type label="TIMESTAMP.TZ" length="0" sql="TIMESTAMP WITH TIME ZONE" re="TIMESTAMPTZ" fk="TIMESTAMPTZ" quote="'" />
+	</group>
+	<group label="Miscellaneous" color="#E0EAF1">
+		<type label="BOOLEAN" length="0" sql="BOOLEAN" re="BOOL" fk="BOOLEAN" quote="'"/>
+		<type label="BIT VARYING" length="1" sql="VARBIT" re="BIT VARYING" quote="'" />
+		<type label="BIT" length="1" sql="BIT" quote="'" />
+		<type label="INET" length="0" sql="INET" quote="'" />
+		<type label="CIDR" length="0" sql="CIDR" quote="'" />
+		<type label="MACADDR" length="0" sql="MACADDR" quote="'" />
+		<type label="GEOM.POINT" length="0" sql="POINT" quote="'" />
+		<type label="GEOM.LINE" length="0" sql="LINE" quote="'" />
+		<type label="GEOM.LSEG" length="0" sql="LSEG" quote="'" />
+		<type label="GEOM.BOX" length="0" sql="BOX" quote="'" />
+		<type label="GEOM.PATH" length="0" sql="PATH" quote="'" />
+		<type label="GEOM.POLYGON" length="0" sql="POLYGON" quote="'" />
+		<type label="GEOM.CIRCLE" length="0" sql="CIRCLE" quote="'" />
+		<type label="BYTEA" length="0" sql="BYTEA" quote="'"/>
+	</group>
+</datatypes>

@@ -1,0 +1,14 @@
+
+/*
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+*/
+
+/** DISABLE TEXT SELECTION (SET ON BODY WHEN DRAGGING IS OCCURRING) **/
+
+._jsPlumb_drag_select * {
+	user-select: none;
+}
+
+/* END */

@@ -1,0 +1,46 @@
+[@@@SUB-TEMPLATE:partials/web-manager-styles.inc.htm@@@]
+<div>
+[@@@SUB-TEMPLATE:partials/web-manager-home.inc.htm@@@]
+</div>
+<div>
+	<h2> &nbsp; SVN Repositories</h2>
+	<div class="ux-grid-row ux-border" style="padding:8px;">
+	[%%%LOOP:REPOS%%%]
+	<div class="svn-line" style="height:28px;">
+		<div class="ux-grid-col s4" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+			<img src="[###VIEWS-PATH|html###]img/repo.svg" alt="repo" title="Repository"> &nbsp; [%%%IF:REPOS.LAST-REV-NUM:>0;%%%]<a class="ux-link" style="color:#556677!important;" href="[###SELECT-URLBASE|html###][###REPOS.REPO-NAME|url|html###]">[%%%/IF:REPOS.LAST-REV-NUM%%%]<span style="font-weight:bold;">[###REPOS.REPO-NAME|html###][%%%IF:REPOS.REPO-PATH:!=;%%%]&nbsp;[[###REPOS.REPO-PATH|html###]][%%%/IF:REPOS.REPO-PATH%%%]</span>[%%%IF:REPOS.LAST-REV-NUM:>0;%%%]</a>[%%%/IF:REPOS.LAST-REV-NUM%%%]
+		</div>
+		<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+		[%%%IF:REPOS.REPO-PROTOCOL:?file:///|https://;%%%]
+			<img src="[###VIEWS-PATH|html###]img/secure.svg" style="cursor:help;" alt="secure" title="SVN Protocol is Secure: [###REPOS.REPO-PROTOCOL|html###]">
+		[%%%ELSE:REPOS.REPO-PROTOCOL%%%]
+			<img src="[###VIEWS-PATH|html###]img/unsecure.svg" style="cursor:help;" alt="unsecure" title="SVN Protocol is Unsecure: [###REPOS.REPO-PROTOCOL|html###]">
+		[%%%/IF:REPOS.REPO-PROTOCOL%%%]
+		[%%%IF:REPOS.REPO-PROTOCOL:==file:///;%%%]
+			<img src="[###VIEWS-PATH|html###]img/local.svg" style="cursor:help;" alt="local" title="Local SVN Path: `[###REPOS.REPO-URL|html###]`">
+		[%%%ELSE:REPOS.REPO-PROTOCOL%%%]
+			<img src="[###VIEWS-PATH|html###]img/remote.svg" style="cursor:help;" alt="remote" title="Remote SVN URL: `[###REPOS.REPO-URL|html###]`">
+			<img src="[###VIEWS-PATH|html###]img/user.svg" style="cursor:help;" alt="user" title="Auth Username: `[###REPOS.REPO-USER|html###]`">
+				[%%%IF:REPOS.REPO-SECURE-PASS:==1;%%%]
+			<img src="[###VIEWS-PATH|html###]img/encryptedpass.svg" style="cursor:help;" alt="encryptedpass" title="INFO: SVN Password is encrypted in configs, OK ...">
+				[%%%ELSE:REPOS.REPO-SECURE-PASS%%%]
+			<img src="[###VIEWS-PATH|html###]img/unencryptedpass.svg" style="cursor:help;" alt="unencryptedpass" title="NOTICE: SVN Password is not encrypted in configs, and is kept as plain text ... if you are using this on a live server this can be a security issue !">
+				[%%%/IF:REPOS.REPO-SECURE-PASS%%%]
+		[%%%/IF:REPOS.REPO-PROTOCOL%%%]
+		[%%%IF:REPOS.REPO-READONLY:==1;%%%]
+			<img src="[###VIEWS-PATH|html###]img/readonly.svg" style="cursor:help;" alt="readonly" title="This SVN Repository is marked as READONLY">
+		[%%%/IF:REPOS.REPO-READONLY%%%]
+		</div>
+		<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; color:#777777;">
+			<span style="font-weight:bold;">Rev.&nbsp;<span style="color:#72c100;">[###REPOS.LAST-REV-NUM|html###]</span></span>
+		</div>
+		<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; color:#778899; font-weight:bold;">
+			<span>[###REPOS.LAST-REV-AUTHOR|html###]</span>
+		</div>
+		<div class="ux-grid-col s2" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; color:#999999;">
+			<span>[###REPOS.LAST-REV-DATE|html###]</span>
+		</div>
+	</div>
+	[%%%/LOOP:REPOS%%%]
+	</div>
+</div>

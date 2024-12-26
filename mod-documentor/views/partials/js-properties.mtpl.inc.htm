@@ -1,0 +1,15 @@
+<!-- properties r.20210417 -->
+[%%%LOOP:ARR-PROPERTIES%%%]
+[%%%IF:ARR-PROPERTIES.IS-INTERNAL-PRIV:!=1;%%%]
+<div class="doc-container" id="Property--[###ARR-PROPERTIES.NAME|htmid|html###]">
+	<span class="doc-modifiers">[###ARR-PROPERTIES.MODIFIERS|html###]</span> <span class="doc-keyword"><i>[###ARR-PROPERTIES.PROP-TYPE|html###]</i></span> <b>[###ARR-PROPERTIES.NAME|html###]</b>[%%%IF:ARR-PROPERTIES.VALUE:!=;%%%]&nbsp;=&nbsp;<span class="doc-param-value"><b>[###ARR-PROPERTIES.VALUE|html###]</b></span>&nbsp;;&nbsp;[%%%/IF:ARR-PROPERTIES.VALUE%%%]&nbsp;[%%%IF:ARR-PROPERTIES.IS-STATIC:==1;%%%]<span title="Static Property"><b>.</b></span>[%%%ELSE:ARR-PROPERTIES.IS-STATIC%%%]<span title="Object Property"><b>(new)&nbsp;.</b></span>[%%%/IF:ARR-PROPERTIES.IS-STATIC%%%][%%%IF:ARR-PROPERTIES.DOC-VAR-TYPE:!=;%%%]&nbsp;<i>[###ARR-PROPERTIES.DOC-VAR-TYPE|html###]</i>[%%%/IF:ARR-PROPERTIES.DOC-VAR-TYPE%%%]
+	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[%%%IF:ARR-PROPERTIES.SET:!=;%%%][###ARR-PROPERTIES.SET|html###][%%%ELSE:ARR-PROPERTIES.SET%%%][%%%IF:IS-FROZEN:==yes;%%%]N/A[%%%ELSE:IS-FROZEN%%%][###NAME|html###].[###ARR-PROPERTIES.NAME|html###][%%%/IF:IS-FROZEN%%%][%%%/IF:ARR-PROPERTIES.SET%%%]</span></div>
+	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">[%%%IF:ARR-PROPERTIES.GET:!=;%%%][###ARR-PROPERTIES.GET|html###][%%%ELSE:ARR-PROPERTIES.GET%%%][###NAME|html###].[###ARR-PROPERTIES.NAME|html###][%%%/IF:ARR-PROPERTIES.GET%%%]</span></div>
+	[%%%IF:ARR-PROPERTIES.COMMENT-HTML:!=;%%%]
+		<div class="doc-method-comments">[###ARR-PROPERTIES.COMMENT-HTML###]</div>
+	[%%%/IF:ARR-PROPERTIES.COMMENT-HTML%%%]
+</div>
+[%%%ELSE:ARR-PROPERTIES.IS-INTERNAL-PRIV%%%]
+<!-- Skip Internal-Priv Property: `[###ARR-PROPERTIES.NAME|html###]` -->
+[%%%/IF:ARR-PROPERTIES.IS-INTERNAL-PRIV%%%]
+[%%%/LOOP:ARR-PROPERTIES%%%]

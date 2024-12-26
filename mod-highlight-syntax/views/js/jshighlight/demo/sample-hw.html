@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>highlight.js - Hardware Languages / ASM Demo</title>
+
+  <link rel="stylesheet" href="../css/github.css">
+  <script type="text/javascript" src="../highlight.js"></script>
+
+  <script type="text/javascript" src="../syntax/hw/llvm.js"></script>
+  <script type="text/javascript" src="../syntax/hw/armasm.js"></script>
+  <script type="text/javascript" src="../syntax/hw/mipsasm.js"></script>
+  <script type="text/javascript" src="../syntax/hw/x86asm.js"></script>
+  <script type="text/javascript" src="../syntax/hw/vhdl.js"></script>
+
+  <script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+  <script>
+  jQuery(document).ready(function() {
+    jQuery('div pre code').each(function(i, block) {
+      hljs.highlightBlock(block);
+    });
+  });
+  </script>
+
+</head>
+<body>
+
+<h1>Highlight.Js Demo: Hardware Languages / ASM</h1>
+<hr>
+
+<!-- LLVM -->
+
+<div>
+<h2>LLVM IR</h2>
+<pre><code class="llvm">; ModuleID = &#39;test.c&#39;
+target datalayout = &quot;e-m:e-i64:64-f80:128-n8:16:32:64-S128&quot;
+target triple = &quot;x86_64-unknown-linux-gnu&quot;
+
+%struct._IO_FILE = type { i32, i8*, i8*, i8*, i8*, i8*, i8*, i8*, i8*, i8*, i8*, i8*, %struct._IO_marker*, %struct._IO_FILE*, i32, i32, i64, i16, i8, [1 x i8], i8*, i64, i8*, i8*, i8*, i8*, i64, i32, [20 x i8] }
+%struct._IO_marker = type { %struct._IO_marker*, %struct._IO_FILE*, i32 }
+%struct.what = type { i8, i16 }
+
+@.str = private unnamed_addr constant [6 x i8] c&quot;foo()\00&quot;, align 1
+@e_long = common global i64 0, align 8
+@g_double = common global double 0.000000e+00, align 8
+@.str.1 = private unnamed_addr constant [7 x i8] c&quot;oooooh\00&quot;, align 1
+@func_ptr = common global i32 (...)* null, align 8
+@.str.2 = private unnamed_addr constant [8 x i8] c&quot;success\00&quot;, align 1
+@.str.3 = private unnamed_addr constant [9 x i8] c&quot;FizzBuzz\00&quot;, align 1
+@.str.4 = private unnamed_addr constant [5 x i8] c&quot;Fizz\00&quot;, align 1
+@.str.5 = private unnamed_addr constant [5 x i8] c&quot;Buzz\00&quot;, align 1
+@.str.6 = private unnamed_addr constant [4 x i8] c&quot;%zd\00&quot;, align 1
+@.str.7 = private unnamed_addr constant [2 x i8] c&quot;\0A\00&quot;, align 1
+@.str.8 = private unnamed_addr constant [12 x i8] c&quot;%d, %c, %d\0A\00&quot;, align 1
+@.str.9 = private unnamed_addr constant [11 x i8] c&quot;need args!\00&quot;, align 1
+@stderr = external global %struct._IO_FILE*, align 8
+
+; Function Attrs: nounwind uwtable
+define i32 @foo() #0 {
+  %1 = call i32 @puts(i8* getelementptr inbounds ([6 x i8], [6 x i8]* @.str, i32 0, i32 0))
+  ret i32 0
+}
+</code></pre>
+</div>
+
+<!-- X86 ASM -->
+
+<div>
+<h2>Intel X86 Assembly (ASM)</h2>
+<pre><code class="x86asm">section .text
+extern  _MessageBoxA@16
+%if     __NASM_VERSION_ID__ &gt;= 0x02030000
+safeseh handler         ; register handler as &quot;safe handler&quot;
+%endif
+
+handler:
+        push    dword 1 ; MB_OKCANCEL
+        push    dword caption
+        push    dword text
+        push    dword 0
+        call    _MessageBoxA@16
+        sub     eax,1   ; incidentally suits as return value
+                        ; for exception handler
+        ret
+
+global  _main
+_main:  push    dword handler
+        push    dword [fs:0]
+        mov     dword [fs:0], esp
+        xor     eax,eax
+        mov     eax, dword[eax]   ; cause exception
+        pop     dword [fs:0]      ; disengage exception handler
+        add     esp, 4
+        ret
+
+avx2:   vzeroupper
+        push      rbx
+        mov       rbx,   rsp
+        sub       rsp,   0h20
+        vmovdqa   ymm0,  [rcx]
+        vpaddb    ymm0,  [rdx]
+        leave
+        ret
+
+text:   db      &#39;OK to rethrow, CANCEL to generate core dump&#39;,0
+caption:db      &#39;SEGV&#39;,0
+
+section .drectve info
+        db      &#39;/defaultlib:user32.lib /defaultlib:msvcrt.lib &#39;
+</code></pre>
+</div>
+
+<!-- ARM ASM -->
+
+<div>
+<h2>ARM Assembly (ASM)</h2>
+<pre><code class="armasm">.text
+
+.global connect
+connect:
+    mov     r3, #2              ; s-&gt;sin_family = AF_INET
+    strh    r3, [sp]
+    ldr     r3, =server_port    ; s-&gt;sin_port = server_port
+    ldr     r3, [r3]
+    strh    r3, [sp, #2]
+    ldr     r3, =server_addr    ; s-&gt;sin_addr = server_addr
+    ldr     r3, [r3]
+    str     r3, [sp, #4]
+    mov     r3, #0              ; bzero(&amp;s-&gt;sin_zero)
+    str     r3, [sp, #8]
+    str     r3, [sp, #12]
+    mov     r1, sp      ; const struct sockaddr *addr = sp
+
+    ldr     r7, =connect_call
+    ldr     r7, [r7]
+    swi     #0
+
+    add     sp, sp, #16
+    pop     {r0}        ; pop sockfd
+
+    pop     {r7}
+    pop     {fp, ip, lr}
+    mov     sp, ip
+    bx      lr
+
+.data
+socket_call:   .long 281
+connect_call:  .long 283
+
+/* all addresses are network byte-order (big-endian) */
+server_addr:            .long 0x0100007f ; localhost
+server_port:            .hword 0x0b1a
+</code></pre>
+</div>
+
+<!-- MIPS ASM -->
+
+<div>
+<h2>MIPS Assembly (ASM)</h2>
+<pre><code class="mipsasm">// none of these allocate any storage
+    #define MAX_SIZE  256
+    #define IF(a)    if (a) {
+    #define ENDIF    }
+    typedef struct {
+        unsigned char red;      // 'unsigned char' is an unsigned, 8-bit int
+        unsigned char green;
+        unsigned char blue;
+        unsigned char alpha;
+    } RGBa;
+
+    // these allocate storage
+    int     i;
+    int     N = 20;
+    char    prompt[] = "Enter an integer:";
+    int     A[MAX_SIZE];
+    int*    pBArray;
+    int     BSize;
+    RGBa    background = {0xff, 0xff, 0xff, 0x0};
+</code></pre>
+</div>
+
+<!-- VHDL -->
+
+<div>
+<h2>VHDL</h2>
+<pre><code class="vhdl">/*
+ * RS-trigger with assynch. reset
+ */
+
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity RS_trigger is
+    generic (T: Time := 0ns);
+    port ( R, S  : in  std_logic;
+           Q, nQ : out std_logic;
+           reset, clock : in  std_logic );
+end RS_trigger;
+
+architecture behaviour of RS_trigger is
+    signal QT: std_logic; -- Q(t)
+begin
+    process(clock, reset) is
+        subtype RS is std_logic_vector (1 downto 0);
+    begin
+        if reset = &#39;0&#39; then
+            QT &lt;= &#39;0&#39;;
+        else
+            if rising_edge(C) then
+                if not (R&#39;stable(T) and S&#39;stable(T)) then
+                    QT &lt;= &#39;X&#39;;
+                else
+                    case RS&#39;(R&amp;S) is
+                        when &quot;01&quot; =&gt; QT &lt;= &#39;1&#39;;
+                        when &quot;10&quot; =&gt; QT &lt;= &#39;0&#39;;
+                        when &quot;11&quot; =&gt; QT &lt;= &#39;X&#39;;
+                        when others =&gt; null;
+                    end case;
+                end if;
+            end if;
+        end if;
+    end process;
+
+    Q  &lt;= QT;
+    nQ &lt;= not QT;
+end architecture behaviour;
+</code></pre>
+</div>
+
+<!-- #END -->
+<br>
+<hr>
+<br>
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<datatypes db="sqlite">
+	<group label="Affinity">
+		<type label="INTEGER" default="0" length="0" sql="INTEGER" quote="" fk="INTEGER" color="#FFFFB7" />
+		<type label="VARCHAR" length="1" sql="CHARACTER VARYING" re="VARCHAR" fk="VARCHAR" quote="'" color="#FFFFFF" />
+		<type label="TEXT" default="" length="1" sql="TEXT" quote="'" color="#FFFFFF" />
+		<type label="NUMERIC" default="0" length="0" sql="NUMERIC" quote="" color="#FFFFB7" />
+		<type label="REAL" default="0" length="0" sql="REAL" quote="" color="#FFFFB7" />
+		<type label="NONE" default="" length="0" sql="NONE" quote="" color="#E0EAF1" />
+	</group>
+</datatypes>

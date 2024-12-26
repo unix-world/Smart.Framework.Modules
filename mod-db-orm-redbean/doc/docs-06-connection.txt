@@ -1,0 +1,48 @@
+Connection
+
+To connect to an SQLite testing database, without having to make one yourself, use:
+    require 'rb.php';
+    R::setup();
+
+On most systems, this just works.
+This code creates a test database in your /tmp folder.
+Of course, this is meant for testing purposes only (and to fool around), to connect to a real database, use one of the following snippets:
+
+For Windows: make sure PHP has write access to C:\Windows\Temp.
+MariaDB
+
+MariaDB (formerly known as MySQL) is the most popular database among web developers. Use MariaDB or MySQL for light web development. To connect to a MySQL database or a MariaDB database:
+    R::setup( 'mysql:host=localhost;dbname=mydatabase',
+        'user', 'password' ); //for both mysql or mariaDB
+
+Did you manage to establish a connection to the database? Proceed to learn the basics of RedBeanPHP!
+
+Did you receive a connection error?
+Note that PDO errors are not passed to the client as under certain circumstances they can reveal secrets (such as passwords). To see exact error messages you must create a direct PDO connection without RedBeanPHP. A sample is shown below:
+    try{
+        $db = new PDO('mysql:host=HOSTNAME;dbname=DB_NAME','USERNAME','PASSWORD');
+    } catch(PDOException $e){
+        echo $e->getmessage();
+    }
+PostgreSQL
+
+Postgres evolved from the classic Ingres database and is by far the most advanced database you can get. Use Postgres for serious application development. Postgres is rock solid and has lots of power features like window functions, support for hierarchical queries and materialized views. To connect to a PostgreSQL database:
+    R::setup( 'pgsql:host=localhost;dbname=mydatabase',
+        'user', 'password' );
+SQLite
+
+SQLite is file based database, ideal for embedded applications, prototyping, small (and smart) applications, small websites (not too much traffic) and data analysis. To connect to an SQLite database:
+    R::setup( 'sqlite:/tmp/dbfile.db' );
+CUBRID
+
+CUBRID is an exciting database platform focusing on web development. It's an ideal replacement for rusty MySQL servers. While CUBRID seems to be almost completely compatible with MySQL it also offers a great deal of advanced features, like hierarchical queries and click counters. However, CUBRID also offers a very complete, easy-to-use GUI based toolchain. To use the CUBRID database with RedBeanPHP4, first install the plugin pack. To connect to a CUBRID database:
+    R::setup('cubrid:host=localhost;port=30000;
+    dbname=mydatabase',
+    'user','password');
+Closing
+
+To disconnect use:
+    R::close();
+
+This will close the database connection.
+

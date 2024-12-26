@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>JQuery Terminal Emulator: Javascript Sandbox</title>
+<link rel="stylesheet" type="text/css" href="../../../../../lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
+<style type="text/css">
+* {
+	font-family: 'IBM Plex Mono', monospace;
+}
+body {
+	margin: 0;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../../lib/css/toolkit/sf-icons.css">
+<!-- jQuery and jQuery MouseWheel -->
+<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../../../../modules/mod-wflow-components/views/jquery/jquery.mousewheel.js"></script>
+<!-- # -->
+<script src="../jquery.terminal.js"></script>
+<link href="../jquery.terminal.css" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div id="terminal" style="width:100vw; height:100vh; margin:0;"></div>
+<script>
+const theVersion = 'r.20210504';
+// (c) 2021 unix-world.org
+// license: BSD
+const sandboxedWorkerJsEval = function(untrustedCode, maxTimeOfExecution) {
+	// requires a browser that supports Workers
+	if(!window.Worker) {
+		throw new Error('sandboxedWorkerJsEval: Your browser does not support the Web Workers API required to create the Javascript Sandbox ...');
+		return;
+	}
+	if(typeof untrustedCode == 'undefined') {
+		throw new Error('sandboxedWorkerJsEval: untrustedCode is undefined ...');
+		return;
+	}
+	if((untrustedCode === null) || (untrustedCode === '')) {
+		untrustedCode = false;
+	}
+	if(typeof maxTimeOfExecution == 'undefined') {
+		throw new Error('sandboxedWorkerJsEval: maxTimeOfExecution is undefined ...');
+		return;
+	}
+	let defMinTime = 1000; 	// 1 sec
+	let defMaxTime = 10000; // 10 sec
+	maxTimeOfExecution = parseInt(maxTimeOfExecution);
+	if(!isFinite(maxTimeOfExecution) || isNaN(maxTimeOfExecution)) {
+		maxTimeOfExecution = defMaxTime;
+	}
+	if(maxTimeOfExecution < defMinTime) {
+		maxTimeOfExecution = defMinTime;
+	} else if(maxTimeOfExecution > defMaxTime) {
+		maxTimeOfExecution = defMaxTime;
+	}
+	return new Promise(function (resolve, reject) {
+		let blobURL = URL.createObjectURL(
+			new Blob(
+				[
+					"(",
+					function(){
+						let _postMessage = postMessage;
+						let _addEventListener = addEventListener;
+						(function (obj) {
+							"use strict";
+							let current = obj;
+							let keepProperties = [
+								// required
+								'Object', 'Function', 'Infinity', 'NaN', 'undefined', 'caches', 'TEMPORARY', 'PERSISTENT',
+								// optional, but trivial to get back
+								'Array', 'Boolean', 'Number', 'String', 'Symbol',
+								// optional
+								'Map', 'Math', 'Set', 'encodeURIComponent', 'decodeURIComponent',
+							];
+							do {
+								Object.getOwnPropertyNames(current).forEach(function(name) {
+									if(keepProperties.indexOf(name) === -1) {
+										delete current[name];
+									}
+								});
+								current = Object.getPrototypeOf(current);
+							}
+							while(current !== Object.prototype);
+						})(this);
+						_addEventListener("message", function(e) {
+							let f = new Function('', 'return (' + '(function(){' + e.data + '})()' + '\n' + ');');
+						//	try {
+								_postMessage(f());
+						//	} catch(err){
+						//		throw new Error(err);
+						//	}
+						});
+					}.toString(),
+					')();'
+				],
+				{
+					type: "application/javascript"
+				}
+			)
+		);
+		let worker = new window.Worker(blobURL);
+		URL.revokeObjectURL(blobURL);
+		worker.onmessage = function(evt) {
+			worker.terminate();
+			resolve(evt.data);
+		};
+		worker.onerror = function(evt) {
+			reject(new Error(evt.message));
+		//	throw new Error(evt.message);
+		};
+		worker.postMessage(untrustedCode);
+		setTimeout(function(){
+			console.clear(); // clear errors
+			worker.terminate();
+			reject(new Error('The Javascript Sandbox timed out ...'));
+		}, (maxTimeOfExecution + 1000));
+	});
+}
+</script>
+<script>
+//--
+const isFiniteNumber = (num) => !! (typeof(num) != 'number') ? false : !! (Number.isFinite(num) && (!Number.isNaN(num)));
+const termMaxExecution = 30000; // this is the default value in firefox
+let term;
+let isTerminalRunning = false;
+//--
+const highlights = [ 'clear', 'help', 'info', 'js-sandbox', 'js-quit' ];
+const keywords = highlights.concat(highlights.map(function(keyword) {
+	return keyword.toLowerCase();
+}));
+const escapeHtml = (text) => { // this it performs better, particularly on large blocks of text # https://stackoverflow.com/questions/1787322/htmlspecialchars-equivalent-in-javascript
+	const map = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;'
+	};
+	return text.replace(/[&\<\>"]/g, (m) => map[m]);
+}
+/*
+$.terminal.defaults.formatters.push(function(str) { // support highlights
+	return str.split(/([a-z0-9\-]+)/).map(function(s) {
+		if(keywords.indexOf(s) != -1) {
+			s = $.terminal.unescape_brackets(s);
+			return '[[b;#FFFFFF;]' + escapeHtml(s) + ']';
+		} else {
+			s = $.terminal.unescape_brackets(s);
+			return escapeHtml(s);
+		}
+	}).join('');
+});
+*/
+/*
+$.terminal.new_formatter([ // support icons
+	/\{\{\s*([^|\s]+)\s*(?:\|\s*([^\s}]+)\s*)?\}\}/g,
+	'[[;$2;;sfi sfi-$1;] ]'
+]);
+*/
+//--
+const termIcon = function(text) {
+	text = String(text);
+	return text.replace(/\{\{\s*([^|\s]+)\s*(?:\|\s*([^\s}]+)\s*)?\}\}/g, '[[;$2;;sfi sfi-$1;] ]');
+}
+const termEscapeText = function(text) {
+	if(typeof text == 'undefined') {
+		text = '';
+	}
+	text = String(text);
+	text = String(escapeHtml(text));
+	text = String($.terminal.escape_brackets(text));
+	text = String(text.split('{').join('&#123;'));
+	text = String(text.split('|').join('&#124;'));
+	text = String(text.split('}').join('&#125;'));
+	return String(text);
+}
+//-- to explicit executa a command use: term.exec('command');
+jQuery(function($) {
+	term = $('#terminal').terminal(function(command, term) {
+		if(command == 'help') {
+			term.echo(termIcon('{{lifebuoy}}') + 'available commands are: [ clear, help, info, js-sandbox, js-quit ]\n');
+			term.echo(termIcon('{{info}}') + 'Javascript Sandbox Help:');
+			term.echo('To enable the Javascript Sandbox type the js-sandbox command and hit ENTER');
+			term.echo('Javascript Sandbox is a secure, global context, sandboxed (isolated) javascript runtime that will run in a separate browser thread (Worker), thus it requires the browser to have support for the Web Workers API. Example using the Javascript Sandbox: enter on js-sandbox the following code, except the backticks `return 1 + 1;` and hit ENTER ...');
+			term.echo('To close the Javascript Sandbox press CTRL+D or type the js-quit command and hit ENTER');
+			term.echo('The Javascript Sandbox max execution time is set to ' + termMaxExecution + ' ms\n');
+		} else if(command == 'info') {
+			term.echo(termIcon('{{terminal|FFFFFF}}') + 'Smart.Terminal.JS version: ' + termEscapeText(theVersion));
+			term.echo(termIcon('{{sphere|#666699}}') + 'Browser Signature: `' + termEscapeText(navigator.userAgent) + '`');
+			if(!window.Worker) {
+				term.echo(termIcon('{{cross|#FF5500}}') + '[[b;#FFFFFF;#FF5500]' + 'The Browser does not support the Web Workers API, required for Javascript Sandbox' + ']');
+			} else {
+				term.echo(termIcon('{{checkmark2|#B9F700}}') + '[[b;#111111;#B9F700]' + 'The Browser supports the Web Workers API, required for Javascript Sandbox' + ']');
+			}
+			term.echo(termIcon('{{earth|#778899}}') + 'Current URL: `' + termEscapeText(window.location.href) + '`');
+		} else if(command == 'js-sandbox') {
+			term.push(function(command, term) {
+				if(isTerminalRunning === true) {
+					term.echo(termIcon('{{hour-glass|#FF6600}}') + 'The Terminal is still running a command in the background, wait for the result first ...');
+					return false;
+				}
+				if((typeof command == 'undefined') || (String(command) === '')) {
+					return;
+				}
+				if(command === 'js-quit') {
+					term.pop();
+					term.signature();
+					return;
+				}
+				try {
+					isTerminalRunning = true;
+					term.pause();
+					sandboxedWorkerJsEval(command, termMaxExecution).then(function(result){
+						//term.echo(typeof result);
+						let theType = typeof result;
+						let theTxtType = '';
+						if(typeof result === 'undefined') { // return null;
+							theType = 'Undefined';
+						} else if(result === null) { // return null;
+							theType = 'Null';
+						} else if(typeof result == 'object') {
+							if(Array.isArray(result)) { // return [1, 2, 3]
+								theType = 'Array';
+							} else { // return {a:1, b:2, c:3}
+								theType = 'Object';
+							}
+						} else if(result === false) { // return false;
+							theType = 'Boolean';
+						} else if(result === true) { // return true;
+							theType = 'Boolean';
+						} else if(result !== ''){
+							if(isFiniteNumber(result)) { // number
+								if(Number.isSafeInteger(result)) { // integer (safe, between minInt and maxInt)
+									theType = 'Integer'; // return 2; / return 2.00;
+								} else { // float
+									theType = 'Float'; // return 2.01;
+								}
+								if(result < 0) {
+									theTxtType = ' (negative)';
+								} else if(result === 0) {
+									theTxtType = ' (zero)';
+								}
+							} else if(!isFinite(result) && !isNaN(result)) { // infinity
+								theType = 'Infinity'; // return 1/0;
+							} else { // string : return "a";
+								theType = 'String';
+								if(!result) { // return;
+									theTxtType = ' (empty)';
+								}
+							}
+						} else { // other ...
+							if(typeof result === 'string') { // return "";
+								theType = 'String';
+								if(!result) {
+									theTxtType = ' (empty)';
+								}
+							} else if(typeof result === 'undefined') { // could not reproduce
+								theType = 'Undefined';
+							} else if(typeof result == 'function') { // could not reproduce, let a = function(){}; return a; // will return ERROR: `DataCloneError: The object could not be cloned.`
+								theType = 'Function';
+							} else {
+								theType = 'Unknown';
+							}
+						}
+						term.echo(termIcon('{{checkmark|#B9F700}}{{arrow-down2|#B9F700}}') + '[[i;#DDDDDD;]' + termEscapeText('Result Type: ' + theType + theTxtType) + ']');
+						if(typeof result === 'undefined') { // return null;
+							term.echo('[[b;#FFFFFF;#F76560]' + 'undefined' + ']');
+						} else if(result === null) {
+							term.echo('[[b;#FFFFFF;#666699]' + 'null' + ']');
+						} else if(typeof result == 'object') {
+							if(Array.isArray(result)) {
+								term.echo('[[b;#FFFFFF;#222222]' + termEscapeText(JSON.stringify(result, null, 2)) + ']');
+							} else {
+								term.echo('[[b;#FFFFFF;#333333]' + termEscapeText(JSON.stringify(result, null, 2)) + ']');
+							}
+						} else if(result === false) {
+							term.echo('[[b;#FFFFFF;#556677]' + 'false' + ']');
+						} else if(result === true) {
+							term.echo('[[b;#FFFFFF;#556677]' + 'true' + ']');
+						} else if(result !== ''){
+							if(isFiniteNumber(result)) { // number
+								term.echo('[[b;#FFFFFF;#003355]' + termEscapeText(result) + ']');
+							} else if(!isFinite(result) && !isNaN(result)) { // infinity
+								term.echo('[[b;#FFFFFF;#815137]' + termEscapeText(result) + ']');
+							} else { // string
+								term.echo('[[b;#FFFFFF;#111111]' + termEscapeText(result) + ']');
+							}
+						} else { // other, includding empty strings, undefined ...
+							if(typeof result === 'string') {
+								term.echo('[[b;#DDDDDD;#000000]' + termEscapeText(result) + ']');
+							} else if(typeof result === 'undefined') {
+								term.echo('[[b;#CCCCCC;#000000]' + 'Undefined' + ']');
+							} else if(typeof result == 'function') {
+								term.echo('[[b;#F5F591;#000000]' + termEscapeText(JSON.stringify(result, null, 2)) + ']');
+							} else {
+								term.echo('[[b;#FFFFFF;#000000]' + termEscapeText(JSON.stringify(result, null, 2)) + ']');
+							}
+						}
+						term.resume();
+						isTerminalRunning = false;
+					}).catch(function(error){
+						if(error) {
+							term.echo(termIcon('{{cancel-circle|#FF3300}}{{arrow-down2|#FF3300}}'));
+							term.echo('[[b;#FFFFFF;#FF3300]' + termEscapeText('[Javascript] ' + error) + ']');
+						} else {
+							term.echo(termIcon('{{warning|#FF0000}}{{arrow-down2|#FF0000}}'));
+							term.echo('[[b;#FFFFFF;#FF0000]' + termEscapeText('[Sandbox] Unknown Error ...') + ']');
+						}
+						term.resume();
+						isTerminalRunning = false;
+					});
+				} catch(err) {
+					term.echo(termIcon('{{bullhorn|#8A090E}}{{arrow-down2|#8A090E}}'));
+					term.echo('[[b;#FFFFFF;#8A090E]' + termEscapeText('[FAILED] ' + err) + ']');
+					term.resume();
+					isTerminalRunning = false;
+				}
+			}, {
+				name: 'js-sandbox',
+				prompt: termIcon('{{flag}}') + 'js-sandbox> '
+			});
+		} else {
+			term.echo(termIcon('{{blocked}}') + 'unavailable command: ' + termEscapeText(command));
+		}
+	}, {
+		greetings: '\n' + termIcon('{{home3}}') + 'Welcome to ' + termIcon('{{terminal|#FFCC00}}') + 'Smart.Terminal.JS - a Javascript Sandbox Terminal Emulator ...' + '\n' + termIcon('{{notification}}') + 'use help to see available commands',
+		convertLinks: false,
+		onBlur: function() {
+			return false; // prevent loosing focus
+		}
+	});
+});
+//--
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swipebox Demo</title>
+<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+<link href="../jquery.swipebox.css" rel="stylesheet" type="text/css">
+<script src="../jquery.swipebox.js"></script>
+<style>
+ul {
+	 list-style-type:none;
+}
+li.hidden {
+	list-style:none;
+	display: none;
+}
+</style>
+</head>
+<body>
+<h1>Swipebox Demo</h1>
+<section id="exemple" class="container">
+	<div class="wrap small-width">
+		<div id="try"></div>
+		<ul id="box-container">
+			<li class="box">
+				<a href="https://www.w3schools.com/w3css/img_mountains.jpg" class="swipebox" title="Mountains">
+					<img src="https://www.w3schools.com/w3css/img_mountains.jpg" alt="image">
+				</a>
+			</li>
+			<li class="box hidden">
+				<a href="https://www.w3schools.com/w3css/img_lights.jpg" class="swipebox" title="Lights">
+					<img src="https://www.w3schools.com/w3css/img_lights.jpg" alt="image">
+				</a>
+			</li>
+			<li class="box hidden">
+				<a href="https://www.w3schools.com/w3css/img_fjords.jpg" class="swipebox" title="Fjords">
+					<img src="https://www.w3schools.com/w3css/img_fjords.jpg" alt="image">
+				</a>
+			</li>
+			<li class="box hidden">
+				<a href="https://www.w3schools.com/w3css/img_forest.jpg" class="swipebox" title="Forest">
+					<img src="https://www.w3schools.com/w3css/img_forest.jpg" alt="image">
+				</a>
+			</li>
+		</ul>
+		<a class="swipebox-video" href="http://vimeo.com/29193046">Sample Video</a>
+	</div>
+</section>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+	/* Basic Gallery */
+	//$('.swipebox').swipebox();
+	$(document).swipebox({
+		selector: '.swipebox',
+		hideBarsDelay: 0
+	});
+	$('.swipebox-video').swipebox();
+/*	$('.swipebox').each(function(index) {
+		if(index === 0) {
+			$(this).trigger('click');
+			return;
+		} //end if
+	}); // auto-start */
+
+	/* Video
+	$('.swipebox-video').swipebox(); */
+
+	/* Dynamic Gallery
+	$('#gallery').click( function( e ) {
+		e.preventDefault();
+		$.swipebox( [
+			{ href : '//www.w3schools.com/w3css/img_mountains.jpg', title : 'Mountains' },
+			{ href : '//www.w3schools.com/w3css/img_lights.jpg', title : 'Lights' }
+		] );
+	}); */
+
+/* Options
+useCSS : true, // false will force the use of jQuery for animations
+initialIndexOnArray: 0, // which image index to init when a array is passed
+removeBarsOnMobile : true, // false will show top navigation bar on mobile devices
+removeBars : false, // false will show bottom bar on mobile devices
+hideBarsDelay : 3000, // delay before hiding bars on desktop
+videoMaxWidth : 1140, // videos max width
+beforeOpen: function(){} , // called before opening
+afterOpen: null, // called after opening
+afterClose: function(){}, // called after closing
+afterMedia: function(){}, // called after media is loaded
+loopAtEnd: false, // true will return to the first image after the last image is reached
+autoplayVideos: false // true will autoplay Youtube and Vimeo videos
+queryStringData: {} // plain object with custom query string arguments to pass/override for video URLs,
+toggleClassOnLoad: '' // CSS class that can be toggled when the slide will be loaded (like 'hidden' of Bootstrap)
+useSVG: true,
+allowClose: false // option by unixman
+*/
+
+});
+</script>
+</body>
+</html>

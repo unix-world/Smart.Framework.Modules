@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- SQL XML created by SmartFramework.Modules.WFlow.DbModeler -->
+<sql db="sqlite">
+<table x="302" y="99" name="table1">
+<row name="id" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+<comment>UUID</comment>
+</row>
+<row name="name" null="1" autoincrement="0">
+<datatype>TEXT</datatype>
+<default>NOT NULL</default></row>
+<key type="PRIMARY" name="id">
+<part>id</part>
+</key>
+</table>
+<table x="503" y="184" name="table2">
+<row name="id" null="0" autoincrement="1">
+<datatype>INTEGER</datatype>
+<relation table="table1" row="id" />
+</row>
+<row name="descr" null="1" autoincrement="0">
+<datatype>TEXT</datatype>
+<default>NOT NULL</default></row>
+<key type="PRIMARY" name="id">
+<part>id</part>
+</key>
+</table>
+</sql>

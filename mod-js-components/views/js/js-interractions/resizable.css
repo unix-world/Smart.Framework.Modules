@@ -1,0 +1,30 @@
+
+/*
+// Resizable v.20190227
+// (c) 2017 Sergey Sedyshev
+// License: MIT
+// https://github.com/io-developer/js-resizable
+
+// (c) 2019 unix-world.org
+// contains fixes by unixman r.20190227
+*/
+
+.js-resizable {
+	-moz-user-select: none;
+	-o-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.js-resizable-corner {
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+	width: 10px;
+	height: 10px;
+	background: #000000;
+}
+
+/* END */

@@ -1,0 +1,170 @@
+/*
+// Js Kanban CSS
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190307
+*/
+
+.jskanban_area {
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+}
+
+.jskanban_holder {
+	min-width: 320px;
+	width: 22%;
+	float: left;
+	clear: right;
+	margin: 1%;
+	border: 3px solid #ECECEC;
+	border-radius: 3px;
+}
+
+.jskanban_holder .box-title {
+	cursor: help;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.jskanban_holder_highlight {
+	border: 3px solid #333333;
+}
+
+.jskanban_holder_todo {
+	background: #DC3C48;
+	color: #FFFFFF;
+}
+
+.jskanban_holder_inprogress {
+	background: #666699;
+	color: #FFFFFF;
+}
+
+.jskanban_holder_check {
+	background: #B27A56;
+	color: #FFFFFF;
+}
+
+.jskanban_holder_done {
+	background: #8D9D56;
+	color: #FFFFFF;
+}
+
+.jskanban_holder_done .jskanban_box div.task-row {
+	text-decoration: line-through;
+	text-decoration-color: #555555;
+	text-decoration-style: solid;
+}
+.jskanban_holder_done .jskanban_box div.task-subrow {
+	font-style: italic;
+}
+
+.jskanban_sorter {
+	list-style-type: none;
+	margin: 0;
+	padding: 2px;
+	min-height: 30px;
+	border-radius: 3px;
+}
+
+.jskanban_sorter li {
+	margin: 3px 3px 3px 3px;
+	padding: 0.25rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	font-size: 1rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.jskanban_sorter li span {
+	position: absolute;
+	margin-left: -1.3rem;
+}
+
+.jskanban_box {
+	background: #FFFFFF;
+	color: #111111;
+	border-radius: 1px;
+}
+
+.jskanban_box.taskTypeFlex {
+	background: #F5F0C0;
+}
+
+.jskanban_box div.task-text {
+	float: left;
+}
+
+.jskanban_box div.sparkline {
+	float: right;
+	cursor: context-menu;
+	margin-top: 5px;
+}
+
+.jskanban_box div.task-row,
+.jskanban_box div.task-subrow {
+	font-size: 0.7rem;
+}
+
+.jskanban_box div.task-subrow div.task-timings {
+	display: inline-block;
+	font-size: 0.7rem;
+	font-weight: bold;
+}
+
+.jskanban_box div.task-row {
+	font-weight: bold;
+}
+
+.jskanban_box div.task-subrow {
+	color: #777777;
+}
+
+.jskanban_passive_elements {
+	text-align: center;
+	background: #FFFFFF;
+	border: 2px dotted #ECECEC;
+	min-height: 1rem;
+}
+
+.jskanban_passive_elements div {
+	display: inline-block;
+	font-weight: bold;
+	max-width: 240px;
+	margin: 3px 3px 3px 3px;
+	padding: 0.25rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	font-size: 0.9rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	border-radius: 1px;
+	cursor: default;
+}
+
+.jskanban_passive_elements div span {
+	font-weight: normal;
+	font-size: 0.75rem;
+}
+
+.jskanban_passive_elements div.type-project {
+	border: 2px solid #556677;
+	background: #334455;
+	color: #FFFFFF;
+	cursor: help;
+}
+
+.jskanban_passive_elements div.type-milestone {
+	border: 2px solid #003399;
+	background: #003366;
+	color: #FFFFFF;
+	font-style: italic;
+	cursor: help;
+}
+
+/* END */

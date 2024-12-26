@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Demo: Text Editor - Server-Side Media Gallery</title>
+</head>
+<body>
+<script>
+	function CkEditFileCallback() {
+		var reParam = new RegExp('(?:[\?&]|&)' + 'CKEditorFuncNum' + '=([^&]+)', 'i'); // will get the param CKEditorFuncNum from URL
+		var match = window.location.search.match(reParam);
+		return (match && match.length > 1) ? match[1] : 0;
+	} //END FUNCTION
+</script>
+<h1>Demo: Text Editor - Server-Side Media Gallery</h1>
+<br>
+<img src="../../../../../../lib/core/img/app/server.svg" onClick="window.opener.CKEDITOR.tools.callFunction(CkEditFileCallback(), this.src); window.close();" style="cursor:pointer;">
+ &nbsp;
+<img src="../../../../../../lib/core/img/app/maintenance.svg" onClick="window.opener.CKEDITOR.tools.callFunction(CkEditFileCallback(), this.src); window.close();" style="cursor:pointer;">
+</body>
+</html>

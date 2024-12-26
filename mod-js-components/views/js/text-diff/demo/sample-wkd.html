@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Text Diff</title>
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../wkd-diff.js"></script>
+	<script>
+	var wikEdDiffConfig = {
+		'blockMinLength': 3,
+		'unlinkMax': 10,
+		'recursionMax': 5,
+		'coloredBlocks': false,
+		'showBlockMoves': true,
+		'fullDiff': false
+	};
+	function RunDiff() {
+		// calculate the diff
+		var oldString = document.getElementById('old').value;
+		var newString = document.getElementById('new').value;
+		var wikEdDiff = new WikEdDiff();
+		var diffHtml = wikEdDiff.diff(oldString, newString);
+		document.getElementById('wkdiff').innerHTML = diffHtml;
+		document.getElementById('wklegend').style.display = 'initial';
+		document.getElementById('wklegend').style.visibility = 'visible';
+		return false;
+	} //END FUNCTION
+	</script>
+	<style>
+		* {
+			font-family: tahoma,arial,sans-serif;
+		}
+		h1, h2, h3, h4, h5 {
+			display: inline;
+		}
+		ins {
+			display: inline-block;
+			padding: 2px;
+			background: #BBDDFF;
+			text-decoration: overline;
+			text-decoration-color: #AACCEE;
+		}
+		ins:hover {
+			text-decoration: none;
+		}
+		del {
+			display: inline-block;
+			padding: 2px;
+			background: #F5CBE1;
+			text-decoration-color: #E4BAD0;
+		}
+		del:hover {
+			text-decoration: none;
+		}
+	</style>
+</head>
+<body>
+<div align="center">
+	<table width="780" border="0">
+		<tr>
+			<td colspan="2" align="center">
+				<h1>Text Diff Sample</h1>
+				<br>
+				<br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h3>Old (Text) version</h3>
+				<br>
+<textarea class="contentItemText version" id="old" placeholder="Old Text" spellcheck="false" style="font-size:14px; width:340px; height:100px; background:#F7F7F7; border: 1px solid #FF6600; padding:3px;">
+block:	moved,
+string: old șȘ țȚ ăĂ îÎ âÂ,
+test: one,
+changed: true,
+deleted: yes
+&lt;a href=&quot;#&quot;&gt;Link&lt;/a&gt;
+</textarea>
+			</td>
+			<td>
+				<h3>New (Text) version</h3>
+				<br>
+<textarea class="contentItemText version" id="new" placeholder="New Text" spellcheck="false" style="font-size:14px; width:340px; height:100px; border: 1px solid #003399; padding:3px;">
+string: new Șș țȚ Ăă îÎ Ââ,
+block: moved,
+test: two,
+extra: line
+&lt;a href=&quot;#&quot;&gt;Link 2&lt;/a&gt;
+</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<button class="button" onclick="RunDiff();">Re-COMPARE OLD Text WITH NEW Text</button>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<br>
+				<div style="border: 1px solid #DDEEFF; padding-top: 10px;">
+					<h2>Text Comparison (Wkd Diff)</h2>
+					<div class="wkdiff" id="wkdiff">
+						<div class="wikEdDiffContainer" id="wikEdDiffContainer">
+							<pre class="wikEdDiffFragment" style="white-space: pre-wrap;"></pre>
+						</div>
+					</div>
+					<div id="wklegend" class="wklegend" style="line-height:32px; visibility:hidden; display:none;">
+						<div align="right">
+						<h3 style="background:#778899; color:#FFFFFF; padding:2px;">Legend for Advanced Diff</h3>
+						<div><span class="wikEdDiffMarkRight" title="Moved block" id="wikEdDiffMark999" onmouseover="wikEdDiffBlockHandler(undefined, this, 'mouseover');"></span> <b><i>Moved Block Mark</i></b><br><sup>roll over to see the original block position</sup></div>
+						<div><span title="+" class="wikEdDiffInsert">Inserted<span class="wikEdDiffSpace"><span class="wikEdDiffSpaceSymbol"></span> </span>text<span class="wikEdDiffNewline"> </span></span></div>
+						<div><span title="−" class="wikEdDiffDelete">Deleted<span class="wikEdDiffSpace"><span class="wikEdDiffSpaceSymbol"></span> </span>text<span class="wikEdDiffNewline"> </span></span></div>
+						<div><span class="wikEdDiffBlock" title="◀" id="wikEdDiffBlock999" onmouseover="wikEdDiffBlockHandler(undefined, this, 'mouseover');">Moved<span class="wikEdDiffSpace"><span class="wikEdDiffSpaceSymbol"></span> </span>block<span class="wikEdDiffNewline"> </span></span></div>
+						<div><span class="newlineSymbol">¶</span> Newline <span class="spaceSymbol">·</span> Space <span class="tabSymbol">→</span> Tab</div>
+						</div>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+<br>
+<script type="text/javascript">
+	RunDiff();
+</script>
+</body>
+</html>

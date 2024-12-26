@@ -1,0 +1,76 @@
+<!-- class r.20220331 -->
+<!-- Styles -->
+[@@@SUB-TEMPLATE:partials/styles.mtpl.inc.htm@@@]
+<!-- Headings -->
+<h1 title="PHP [###TYPE|html###]: `[###NAME|html###]` @ PHP Namespace: `[###NAMESPACE|html###]`" id="Class--Summary-">
+	<span class="doc-modifiers">[###MODIFIERS|html###]</span> <span class="doc-keyword"><i>[###TYPE|html###]</i></span> <span class="doc-ns">[###NAMESPACE|html###]</span><span class="doc-name">[###SHORT-NAME|html###]</span><br>
+	[%%%IF:EXTENDS:!=;%%%]<span title="extends (abstract) Class" class="doc-extends"><i>extends</i> [###EXTENDS|html###]</span><br>[%%%/IF:EXTENDS%%%]
+	[%%%IF:IMPLEMENTS:!=;%%%]<span title="implements Interface(s)" class="doc-implements"><i>implements</i> [###IMPLEMENTS|html###]</span><br>[%%%/IF:IMPLEMENTS%%%]
+	{
+	[%%%IF:USE:!=;%%%]<span title="use Trait(s)" class="doc-use"><i>use</i> [###USE|html###]</span>[%%%/IF:USE%%%]
+	}[%%%IF:CALLMODE:!=;%%%]&nbsp;[###CALLMODE|html###][%%%/IF:CALLMODE%%%]
+</h1>
+<!-- Description -->
+<div class="doc-comments">[%%%IF:DOC-COMMENTS-HTML:!=;%%%][###DOC-COMMENTS-HTML###][%%%ELSE:DOC-COMMENTS-HTML%%%]&nbsp;[%%%/IF:DOC-COMMENTS-HTML%%%]</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
+		<li><span class="doc-located"><b>Located at:</b> [###FILE-NAME|html###]</span></li>
+		[%%%IF:PACKAGE:!=;%%%]<li><span class="doc-package"><b>Package:</b> [###PACKAGE|html###]</span></li>[%%%/IF:PACKAGE%%%]
+		<li><span class="doc-ns"><b>Namespace:</b> [###NAMESPACE|html###]</span></li>
+		<li><span class="doc-name"><b>[###TYPE|ucfirst|html###] Name:</b> [###SHORT-NAME|html###]</span></li>
+		[%%%IF:THROWS:!=;%%%]<li><span class="doc-throws"><b>Throws:</b> [###THROWS|html###]</span></li>[%%%/IF:THROWS%%%]
+		[%%%IF:VERSION:!=;%%%]<li><b>Version:</b> [###VERSION|html###]</li>[%%%/IF:VERSION%%%]
+		[%%%IF:DEPENDS:!=;%%%]<li><b>Depends:</b> [###DEPENDS|html###]</li>[%%%/IF:DEPENDS%%%]
+		[%%%IF:HINTS:!=;%%%]<li><b>Hints:</b> [###HINTS|html###]</li>[%%%/IF:HINTS%%%]
+		[%%%IF:USAGE:!=;%%%]<li><b>Usage:</b> [###USAGE|html###]</li>[%%%/IF:USAGE%%%]
+		[%%%IF:IS-INTERNAL-PRIV:==1;%%%]<li><span class="doc-modifiers"><b>Internal-Private:</b> YES</span></li>[%%%/IF:IS-INTERNAL-PRIV%%%]
+		[%%%IF:PARENTS:@>0;%%%]
+		<li><b>Inheritance Chart:</b>
+			<ul>
+				<span class="doc-name"><i>[###TYPE|html###]</i>&nbsp;[###NAME|html###]</span>&nbsp;&rarr;
+				[%%%LOOP:PARENTS%%%]
+				<li>&nbsp;&#8627;&nbsp;[%%%IF:BASE-URL:!=;%%%]<a href="[###BASE-URL|html###][###PARENTS.NAME|url|html###][%%%IF:REF-URL:!=;%%%][###REF-URL|html###][###NAME|url|html###][%%%/IF:REF-URL%%%]">[%%%/IF:BASE-URL%%%]<span class="doc-type-[###PARENTS.TYPE|lower|html###]"><i>[###PARENTS.TYPE|html###]</i>&nbsp;[###PARENTS.NAME|html###]</span>[%%%IF:BASE-URL:!=;%%%]</a>[%%%/IF:BASE-URL%%%][%%%IF:PARENTS._-ITERATOR-_:<###PARENTS._-MAXCOUNT-_###;%%%]&nbsp;&rarr;[%%%/IF:PARENTS._-ITERATOR-_%%%]</li>
+				[%%%/LOOP:PARENTS%%%]
+			</ul>
+		</li>
+		[%%%/IF:PARENTS%%%]
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">[###TYPE|html###] Methods</h2>
+</div>
+[@@@SUB-TEMPLATE:partials/methods.mtpl.inc.htm@@@]
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">[###TYPE|html###] Properties</h2>
+</div>
+[@@@SUB-TEMPLATE:partials/properties.mtpl.inc.htm@@@]
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">[###TYPE|html###] Constants</h2>
+</div>
+[@@@SUB-TEMPLATE:partials/constants.mtpl.inc.htm@@@]
+<!-- Sample Code -->
+[%%%IF:DOC-CODE-HTML:!=;%%%]
+<br>
+<div class="doc-container" id="SAMPLE--Code-">
+	<h2 class="doc-header">Sample code: PHP</h2>
+</div>
+<div class="doc-code">
+	<!-- pre (already preformatted) --><code>[###DOC-CODE-HTML###]</code><!-- /pre -->
+</div>
+[%%%/IF:DOC-CODE-HTML%%%]
+<!-- Summary List -->
+<br>
+[@@@SUB-TEMPLATE:partials/summary.mtpl.inc.htm@@@]
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: [###GENERATED-ON|html###]</small>
+<hr>
+<br>
+<!-- # -->

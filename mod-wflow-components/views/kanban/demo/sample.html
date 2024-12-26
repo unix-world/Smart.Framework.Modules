@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Kanban Board - Demo</title>
+
+<link rel="stylesheet" type="text/css" href="../../../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+<style type="text/css">
+* {
+	font-family: 'IBM Plex Sans',Arial,sans-serif;
+}
+</style>
+
+<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+<script src="../../../../../lib/js/framework/smart-framework.pak.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="../../../../../modules/mod-auth-admins/views/js/jquery.sparkline.js"></script>
+<!-- jQueryUI Interractions -->
+<link rel="stylesheet" href="../../../../../modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-interractions.css" type="text/css">
+<script type="text/javascript" src="../../../../../modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-interractions.js"></script>
+<script type="text/javascript" src="../../../../../modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-touch-punch.js"></script>
+
+<style>
+body {
+	font-family:Arial;
+}
+table {
+	font-size: 1em;
+}
+h2 {
+	margin: 5px;
+}
+input[type=text] {
+	margin: 10px;
+}
+button {
+	margin:10px;
+}
+/* for editable only */
+.jskanban_box {
+	cursor:grab;
+}
+.jskanban_add_field {
+}
+.jskanban_add_bttn {
+}
+.jskanban_save_bttn {
+	position: fixed;
+	top:10px;
+	right:10px;
+}
+.jskanban_add_area {
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	background: #f9ac3d;
+}
+/*
+.ui-draggable, .ui-droppable {
+	background-position: top;
+}
+*/
+</style>
+<link rel="stylesheet" type="text/css" href="../jskanban.css">
+<script type="text/javascript" src="../jskanban.js"></script>
+<script>
+var myKanBan = new JsKanban;
+jQuery(function() {
+	myKanBan.initBoard('.jskanban_area');
+	jQuery('.jskanban_add_bttn').click(function() {
+		var txtNewItem = jQuery('.jskanban_add_field').val();
+		if((typeof txtNewItem != 'undefined') && (txtNewItem !== null) && (txtNewItem != '')) {
+			myKanBan.addTask({id:null, title: txtNewItem});
+		}
+		jQuery('.jskanban_add_field').val('');
+	});
+	jQuery('.jskanban_save_bttn').click(function() {
+		myKanBan.saveBoard(function(tasks, doc){
+			if(!doc) {
+				alert('Invalid Doc Container');
+				return;
+			}
+			if(doc.docType != 'smartWorkFlow.TodoList') {
+				alert('Invalid Doc Container Type');
+				return;
+			}
+			doc.data.todos.data = tasks;
+			console.log(JSON.stringify(doc, null, 2));
+		});
+	});
+});
+</script>
+</head>
+<body>
+<button class="jskanban_save_bttn">Save (Dump to console)</button>
+<div class="jskanban_add_area">
+	<input type="text" class="jskanban_add_field" value="">
+	<button class="jskanban_add_bttn">Add New Task</button>
+</div>
+<div>
+	<h1 style="text-align:center;">Kanban Board - Demo</h1>
+	<div class="jskanban_passive_elements"></div>
+	<div class="jskanban_area" id="jskanban_area">
+		<div id="kanban-area-todo" class="jskanban_holder jskanban_holder_todo">
+			<h2 class="box-title" title="Not Started">1.To-Do</h2>
+			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-todo" data-kanban-status="todo">
+			</ul>
+		</div>
+		<div id="kanban-area-inprogress" class="jskanban_holder jskanban_holder_inprogress">
+			<h2 class="box-title" title="Started, Not Completed">2.In-Progress</h2>
+			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-inprogress" data-kanban-status="inprogress">
+			</ul>
+		</div>
+		<div id="kanban-area-check" class="jskanban_holder jskanban_holder_check">
+			<h2 class="box-title" title="Completed, Not Closed">3.Verification</h2>
+			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-check" data-kanban-status="check">
+			</ul>
+		</div>
+		<div id="kanban-area-done" class="jskanban_holder jskanban_holder_done">
+			<h2 class="box-title" title="Closed">4.Done</h2>
+			<ul class="jskanban_sorter jskanban_connect_sorter" id="kanban-done" data-kanban-status="done">
+			</ul>
+		</div>
+	</div>
+</div>
+<script>
+/*
+(function(){
+	function renderKanban(demo_tasks) {
+		var kdata = demo_tasks;
+		var obj = null;
+		for(var i=0; i<kdata.length; i++) {
+			obj = kdata[i] || null;
+			if(obj && obj.id) {
+				myKanBan.addTask(obj);
+			}
+		}
+		obj = null;
+	}
+	$.get('testdata.json', renderKanban, 'json');
+})();
+*/
+jQuery(function() {
+	$.get('../../gantt/demo/testdata.json', function(data){ myKanBan.importData(data); }, 'json');
+});
+</script>
+</body>
+</html>

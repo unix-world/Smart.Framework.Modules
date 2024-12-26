@@ -1,0 +1,23 @@
+[%%%COMMENT%%%]
+// IMPORTANT: use only JavaScript code here, no HTML !
+[%%%/COMMENT%%%]
+//===== QUnit Tests.Mod.TPL-Twist: START :: r.20220330
+
+(function() {
+
+	QUnit.module('Templating.Modules', function(){
+
+		QUnit.test('Twist TPL Demo Test: PHP :: iFrame', function(assert) {
+			SmartQUnit.runiFrameTest(
+				baseScript + '?page=tpl-twist.test',
+				500,
+				assert,
+				'Twist TPL w. Sub-Template Render (Table with #3 columns):'
+			);
+		});
+
+	});
+
+})();
+
+//===== QUnit Tests.TPL-Twist: #END

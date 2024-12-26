@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="icon" href="data:,">
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<title>jsPlumb demo - flowchart editor</title>
+
+	<link href="../../../../../../lib/css/toolkit/sf-icons.css" rel="stylesheet">
+
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../../../../../../lib/js/framework/smart-framework.pak.js"></script>
+	<!-- UI Dialog * Optional* <link rel="stylesheet" type="text/css" href="../../../../../../modules/mod-auth-admins/views/js/dialog/simple-dialog.css"><script type="text/javascript" src="../../../../../../modules/mod-auth-admins/views/js/dialog/simple-dialog.js"></script> -->
+
+	<link rel="stylesheet" href="../../doc/css/main.css">
+	<link rel="stylesheet" href="../../jsplumbtoolkit-defaults.css">
+	<link rel="stylesheet" href="../jsplumbtoolkit-demo.css">
+
+	<link rel="stylesheet" href="../../editor/flowchart-editor.css">
+	<link rel="stylesheet" href="../../editor/flowchart-editor-edit.css">
+	<script src="../../editor/flowchart-editor.js"></script>
+
+	<script src="../../jsplumb.js"></script>
+	<style>
+		#canvas {
+			z-index: 1;
+			width: 96%;
+		}
+	</style>
+</head>
+<body data-demo-id="flowchart-editor">
+		<div class="navbar navbar-top navbar-fixed-top" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+			<span class="navbar-brand">Flow Charts Demo - Editor</span>
+			<div class="community"></div>
+		</div>
+		<div class="navbar-collapse collapse nav-wrapper">
+			<ul class="nav navbar-nav">
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="jtk-demo-main">
+	<button class="btn btn-regular" id="flowchartNewSBtn" onclick="" style="margin-left: 15px;" title="Start / Stop">New Terminal</button>
+	<button class="btn btn-regular" id="flowchartNewCBtn" onclick="" style="margin-left: 15px;">New Display</button>
+	<button class="btn btn-regular" id="flowchartNewBtn" onclick="" style="margin-left: 15px;">New Process</button>
+	<button class="btn btn-regular" id="flowchartNewDBtn" onclick="" style="margin-left: 15px;">New Decision</button>
+	<button class="btn btn-regular" id="flowchartNewIOBtn" onclick="" style="margin-left: 15px;">New Data</button>
+	<button class="btn btn-regular" id="flowchartNewNtBtn" onclick="" style="margin-left: 15px;">New Note</button>
+	<!-- optionals -->
+	<button class="btn btn-success" id="flowchartSaveBtn" onclick="" style="margin-left: 15px;">Save (dump to console)</button>
+	<button class="btn btn-success" id="flowchartExportBtn" onclick="" style="margin-left: 15px;">Export (dump to console)</button>
+	<br><br>
+	<div class="jtk-demo-canvas canvas-wide flowchart-area jtk-surface jtk-surface-nopan" id="canvas"></div>
+</div>
+<script src="data.js"></script>
+<script>
+var flowchartSaveDataHelper = function(data) {
+	console.log('----- Save -----');
+	console.log(JSON.stringify(data));
+}
+var flowchartExportDataHelper = function(data) {
+	console.log('----- Export -----');
+	console.log(JSON.stringify(data, null, 2));
+}
+</script>
+<script>
+	flowchartEditorInit(flowchartDataObj, false, null, null, null, flowchartSaveDataHelper, flowchartExportDataHelper);
+</script>
+<script src="../demo-list.js"></script>
+
+</body>
+</html>

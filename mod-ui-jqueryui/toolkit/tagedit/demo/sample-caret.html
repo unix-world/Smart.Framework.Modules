@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../jquery.caret.js"></script>
+<script type="text/javascript">
+$(function() {
+	var element = $('#text');
+	var text = element.val();
+	element.caret(2);
+	var pos = element.caret();
+	element.val(text.substring(0, pos) + 'b' + text.substring(pos));
+
+	element = $('#editable');
+	text = element.html();
+	element.caret(1);
+	pos = element.caret();
+	element.html(text.substring(0, pos) + 'b' + text.substring(pos));
+
+	$('#click_test').click(function(){
+	  var input = $(this).html('<input type="text" value="test text">').find('input');
+	  input.focus().caret(-1);
+	});
+});
+</script>
+</head>
+<body>
+<div id="click_test">Click me</div>
+<textarea id="text">a
+
+c</textarea>
+<input type="text" id="pos">
+<button onclick="$('#pos').val($('#text').caret())">read</button>
+<button onclick="$('#text').caret($('#pos').val())">write</button>
+<br>
+<div style="border: 1px solid #CCCCCC;" id="editable" contenteditable="true">ac</div>
+<button onclick="$('#pos').val($('#editable').caret())">read</button>
+<button onclick="$('#editable').caret($('#pos').val())">write</button>
+</body>
+</html>

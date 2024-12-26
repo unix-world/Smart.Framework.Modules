@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>quickMockup Editor</title>
+	<meta charset="UTF-8">
+
+	<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+
+	<!-- jQueryUI Interractions -->
+	<link rel="stylesheet" href="../../../../../modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-interractions.css" type="text/css">
+	<script type="text/javascript" src="../../../../../modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-interractions.js"></script>
+	<script type="text/javascript" src="../../../../../modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-touch-punch.js"></script>
+
+	<script type="text/javascript" src="../../../../../lib/js/framework/smart-framework.pak.js"></script>
+	<script>
+		$(function(){
+			smartJ$Browser.PageAwayControl('do you want to close the application? Unsaved changes will be lost (use your browsers save function for saving)'); // prevent navigating away by accident
+		});
+	</script>
+
+	<script src="../../md-showdown/showdown.js"></script>
+	<script src="../../md-showdown/showdown-htmlescape.js"></script>
+	<script src="../../md-showdown/showdown-mdui.js"></script>
+	<script src="../jq-ui-edit-md2html.js"></script>
+	<!-- optional
+	<script src="../../../../../modules/mod-js-components/views/js/mousetrap/mousetrap.js"></script>
+	-->
+	<style>
+		html, body {
+			padding:0;
+			margin:0;
+			margin-top: 20px;
+		}
+		#mockupContainer {
+			background: #333333;
+			border: 1px solid #333333;
+			padding: 0px !important;
+			margin: 0px;
+			width: 92vw;
+			height: calc(100vh - 100px) !important;
+			overflow: scroll;
+			display: flex;
+			text-align: left;
+		}
+		#canvasWrap {
+			margin: 0px;
+			padding: 0px;
+			flex: 0 0 100%;
+			position: relative;
+			background-color: #333333;
+		}
+	</style>
+	<link href="../qmockup-editor.css" rel="stylesheet">
+	<script src="../qmockup-editor.js"></script>
+	<link href="../qmockup-elements.css" rel="stylesheet">
+</head>
+<body>
+<div align="center">
+	<div id="mockupContainer">
+		<div id="widgetsArea"></div>
+		<div id="canvasWrap">
+			<div id="canvas">
+				<!-- Js.QuickMockup:Content -->
+				<!--
+				Tentative Description for creating elements:
+					In each list Element goes a div. This Div is the Interface Element which can be dragged to the canvas.
+					Each element has the class "newMockElement". This is changed to "mockElement" when it is added to the cavas.
+					Also each element can have other classes.
+					In the Div there can be other nested elements.
+					One of these elements *can* hold text that can be edited.  This is done by adding the attribute "data-editablearea" to this element.
+					The way the text is edited can be customized, by adding the attribute data-editable-mode= to it. The attribute can have the following values: "markdown", "uielements", "plain". If you set nothing, markdown is assumed.
+					markdown: Is markdown with a table extension and the possibility to create radiobuttons via "(x)" and checkboxes via [x]
+					uielements: for creating lists where the items are seperated by a ";". List items can highlighted (item-highlighted class is added to the <li> element) by adding a "*" in front: "normal; normal; *I am Active; normal item again; …"
+					plain: plain text
+					DO: give your element an additional (aside the newMockupElement) class: "newMockupElement fooBarClass".
+					DO: Use ">" (direct child) instead of the " " (descendant operator); If elements are nested it can have strange side effects since the nested element will have styles that it did not have before.
+					DO NOT: give the element an id. The id is set by the script.
+				-->
+				<!-- Js.QuickMockup:#END -->
+			</div>
+		</div>
+		<button id="saveFile" style="position:fixed; top:5px; right:15px;">Save (log to console)</button><br>
+	</div>
+</div>
+<input id="img-uploader-id" type="file" size="1" style="width: 5px !important; height: 5px !important; opacity: 0 !important;">
+<div id="img-uploader-preview" style="position:fixed; bottom:5px; right:5px; background-color:#FFFFFF; border: 3px solid #FFFFFF;"></div>
+<script>
+$(function(){ // setup the gui
+
+	qMockupEditor.setupEditor('widgetsArea', 550);
+//	qMockupEditor.setupElements(); // this must be called after data loaded or now if new data
+
+	$('#saveFile').click(function(){
+		console.log('----- Export -----');
+		console.log(JSON.stringify(qMockupEditor.getCanvasData(), null, 2)); // as alternative data is returned
+	});
+	$('#loadFileButton').click(function(){
+		$("#loadFile").click();
+	});
+
+});
+</script>
+<script>
+$(function(){ // load sample data
+
+	jQuery.ajax({
+		url: 'sample.json',
+		dataType: 'json'
+	}).done(function(data) {
+		if(data) {
+			//console.log(JSON.stringify(data, null, 2));
+			qMockupEditor.loadDocumentData(data);
+			qMockupEditor.setupElements(); // make editable (comment out to make it readonly !!)
+		} //end if
+	});
+
+});
+</script>
+
+</div>
+</body>
+</html>

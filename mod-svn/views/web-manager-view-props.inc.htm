@@ -1,0 +1,27 @@
+<br>
+<div class="ux-grid-row">
+	<div class="ux-grid-col s12">
+		<h2 style="display:inline;">SVN Repository: <span style="color:#72C100;">[###REPO-NAME|html###]</span></h2>
+		<img width="64" height="64" align="right" src="modules/mod-webdav/libs/img/ftype-icons/[###THE-ICON|html###]" alt="[###THE-XICON|upper|html###]" title="[###THE-XICON|upper|html###]">
+		<br>
+		<h5 style="display:inline;"><span style="color:#72C100;">Rev.[###REVISION|html###]</span> <span style="color:#CCCCCC;">@</span> <span style="color:#778899;">[###REPO-PATH|html###]</span></h5>
+	</div>
+</div>
+<div>
+	<br>
+	<table class="ux-table ux-table-striped" style="width:50%; max-width:800px!important;">
+		<thead>
+			<tr>
+				<th colspan="2" align="center"><h3>SVN&nbsp;Props</h3></th>
+			</tr>
+		</thead>
+		<tbody>
+		[%%%LOOP:PROPS-ARR%%%]
+			<tr valign="top">
+				<td style="font-weight:bold; width:33%;">[###PROPS-ARR._-KEY-_|html###]</td>
+				<td>[###PROPS-ARR._-VAL-_|html|nl2br###]</td>
+			</tr>
+		[%%%/LOOP:PROPS-ARR%%%]
+		</tbody>
+	</table>
+</div>

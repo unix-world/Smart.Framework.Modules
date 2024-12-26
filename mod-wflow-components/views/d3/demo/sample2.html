@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>D3.js Sample 2</title>
+	<script src="../d3.js"></script>
+<style>
+.tooltip {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	max-width: 500px;
+	min-width: 300px;
+	background: #333333;
+	color: #FFFFFF;
+	padding: 5px;
+}
+</style>
+</head>
+<body>
+<h1>D3 - Heatmap Calendar: Demo</h1>
+<script>
+
+//Read the data
+var file = "sample2.csv"
+data = d3.csv(file, function(d) {
+  return {
+	// extract important data features
+	airport_code : d['Airport.Code'],
+	total_flights : d['Statistics.Flights.Total'],
+	delayed_flights : d['Statistics.Flights.Delayed'],
+	time_month: d['Time.Month Name'].substring(0, 3)
+	//airport_name : d.Airport.Name
+  };
+}).then(function(data) {
+	var totalByAirport = [];
+
+	// make a nested mapping to store the data
+	//group by airport code, then set populate the mapping above with the total flights
+	ap_groups = d3.group(data, d => d.airport_code, d => d.time_month)
+
+	ap_groups.forEach( function (vals, key) {
+		summary_vals = vals.forEach( function (val2, key2) {
+
+			total_fl_sum = d3.sum(val2, function(d2) { return d2.total_flights });
+			delayed_fl_sum = d3.sum(val2, function(d2) { return d2.delayed_flights });
+
+			return_object = {
+				ap_code: key,
+				month: key2,
+				val: delayed_fl_sum / total_fl_sum * 100
+			};
+
+			totalByAirport.push(return_object)
+		});
+	});
+
+	// Labels of row and columns -> unique identifier of the column called 'group' and 'variable'
+	var airportCodes = ap_groups.keys()
+	var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+				   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+	// set the dimensions and margins of the graph
+	var margin = {top: 80, right: 0, bottom: 50, left: 80},
+	  width = 850 - margin.left - margin.right,
+	  height = 800 - margin.top - margin.bottom;
+
+	var svg = d3.select("body").append("svg")
+	 .attr("width", width + margin.left + margin.right)
+	 .attr("height", height + margin.top + margin.bottom)
+	.append("g")
+	 .attr("transform",
+		   "translate(" + margin.left + "," + margin.top + ")");
+
+	// Build X scales and axis:
+	var x = d3.scaleBand()
+		.range([ 0, width ])
+		.domain(months)
+		.padding(0.05);
+		svg.append("g")
+		.style("font-size", 15)
+		.attr("transform", "translate(0," + height + ")")
+		.call(d3.axisBottom(x).tickSize(0))
+		.select(".domain").remove()
+
+	// Build Y scales and axis:
+	var y = d3.scaleBand()
+		.range([ height, 0 ])
+		.domain(airportCodes)
+		.padding(0.05);
+		svg.append("g")
+		.style("font-size", 15)
+		.call(d3.axisLeft(y).tickSize(0))
+		.select(".domain").remove()
+
+	// Build color scale
+	min = d3.min(totalByAirport, function (d) { return d.val})
+	max = d3.max(totalByAirport, function (d) { return d.val})
+
+	var myColor = d3.scaleSequential()
+	.interpolator(d3.interpolateInferno)
+	.domain([min,max])
+
+	// create a tooltip
+	var tooltip = d3.select("body")
+		.append("div")
+		.style("opacity", 0)
+		.attr("class", "tooltip")
+
+	// // Three functions that change the tooltip when user hover / move / leave a cell
+
+	var mouseover = function(evt, d) {
+	  tooltip
+	    .style("opacity", 1)
+	  d3.select(this)
+	    .style("stroke", "black")
+	    .style("opacity", 1)
+	    .html("The exact value of<br>this cell is: " + d.val)
+		  .style('left', d.screenX + 'px')
+		  .style('top', d.screenY + 'px')
+	//	console.log(d)
+	}
+
+	var mousemove = function(evt, d) {
+	  tooltip
+	    .html("The exact value of<br>this cell is: " + d.val)
+		  .style('left', d.screenX + 'px')
+		  .style('top', d.screenY + 'px')
+	}
+	var mouseleave = function(evt, d) {
+	  tooltip
+	    .style("opacity", 0)
+	  d3.select(this)
+	    .style("stroke", "none")
+	    .style("opacity", 0.8)
+	}
+
+	// // add the squares
+	svg.selectAll()
+	.data(totalByAirport, function(d) {return d.ap_code+':'+d.month;})
+	.enter()
+	.append("rect")
+	  .attr("x", function(d) { return x(d.month) })
+	  .attr("y", function(d) { return y(d.ap_code) })
+	  .attr("rx", 4)
+	  .attr("ry", 4)
+	  .attr("width", x.bandwidth() )
+	  .attr("height", y.bandwidth() )
+	  .style("fill", function(d) { return myColor(d.val)} )
+	  .style("stroke-width", 4)
+	  .style("stroke", "none")
+	  .style("opacity", 0.8)
+	 .on("mouseover", mouseover)
+	 .on("mousemove", mousemove)
+	 .on("mouseleave", mouseleave)
+
+	titlex = width / 2
+	titley = -25
+	subtitley = titley + 25
+
+	// // Add title to graph
+	svg.append("text")
+	  .attr("x", titlex)
+	  .attr("y", titley)
+	  .attr("text-anchor", "middle")
+	  .style("font-size", "22px")
+	  .text("Percentage of Flights Delayed sorted by Airport and Month");
+
+	// Add subtitle to graph
+//	svg.append("text")
+//	  .attr("x", titlex)
+//	  .attr("y", subtitley)
+//	  .attr("text-anchor", "middle")
+//	  .style("font-size", "14px")
+//	  .style("fill", "grey")
+//	  .style("max-width", 400)
+//	  .text("Explore your favorite or local airport and find something fun!");
+
+	xlabelx = width / 2;
+	xlabely = height + 40;
+
+	svg.append("text")
+	  .attr("x", xlabelx)
+	  .attr("y", xlabely)
+	  .attr("text-anchor", "middle")
+	  .style("font-size", "18px")
+	  .style("max-width", 400)
+	  .text("3-Letter Code for Month of the Year");
+
+	ylabelx = -50;
+	ylabely = height / 2;
+
+	// adapted from https://stackoverflow.com/a/30417969
+	svg.append("g")
+	.attr('transform', 'translate(' + ylabelx + ', ' + ylabely + ')')
+	.append('text')
+	.attr("text-anchor", "middle")
+	.attr("transform", "rotate(-90)")
+	.text("Airport Code");
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cycle2 API</title>
+<script src="../../jquery.js"></script>
+<script src="../jquery.cycle2.js"></script>
+</head>
+<body>
+<div class=page-header>
+	<h1>API</h1>
+</div>
+
+<div id="main">
+<style>
+.links a { padding: 10px }
+</style>
+
+<div class="center links">
+	<p>
+	<a href="#auto-init" class=unit>Auto-Init</a>
+	<a href="#options">Options</a>
+	<a href="#commands">Commands</a>
+	<a href="#events">Events</a>
+	<a href="#misc">Misc</a>
+	<a href="#advanced" class=unit>Advanced API</a>
+</div>
+
+	<h2 id="auto-init">Auto-Initialization</h2>
+	<p>
+	Cycle2 slideshows can be automatically initialized simply by adding the classname
+	<code>cycle-slideshow</code> to your slideshow container element.
+	<pre>&lt;div <span class=special>class="cycle-slideshow"</span> ...</pre>
+	<p>
+	Cycle2 will automatically find and initialize a slideshow for any element that contains this
+	classname.  If you do not want this behavior then do not add the
+	<code>cycle-slideshow</code> class to your slideshow and instead
+	initalize the slideshow programmatically by invoking the <code>cycle</code>
+	method on the slideshow container element:
+	<pre>$( '.mySlideshows' ).cycle();</pre>
+	<p>
+	Auto-initialization is not supported for slideshows that are added to the DOM
+	after jQuery's <em>ready</em> event has fired.  In this case you will need to
+	programatically initialize your slideshow by invoking the <code>cycle</code> method
+	as shown above.  You do not need to qualify your selector to the part of the DOM
+	that has been updated as Cycle2 will not re-initialize a running slideshow if you
+	invoke <code>cycle</code> on it more than once.  So it is perfectly safe to run the
+	code above multiple times without having to worry about slideshows that are already running.
+
+<h2 id="options">Options</h2>
+	<p>
+	Options are set on the slideshow element using <code>data-cycle-<em><strong>option-name</strong></em></code>
+	attributes. The option name is always lowercase and prefixed with <code>data-cycle-</code>.
+	For example, to set the <em>speed</em> and <em>manual-speed</em> options you would do this:
+	<pre>&lt;div class="cycle-slideshow" <span class=special>data-cycle-speed</span>="600" <span class=special>data-cycle-manual-speed</span>="100"> ...</pre>
+	<p>
+	This is the preferred method of setting slideshow options as it greatly
+	reduces (or eliminates) the need for custom initialize script.
+	<p>
+	Options can also be set programatically if you prefer, by passing an options hash
+	to the <code>cycle</code> method.  When setting options programmically the option name
+	does not contain the <code>data-cycle-</code> prefix and the string is camelCased on hyphens:
+	<pre>$('.cycle-slideshow').cycle({
+	<span class=special>speed</span>: 600,
+	<span class=special>manualSpeed</span>: 100
+});</pre>
+
+	<p>
+	All options can be declared with <code>data-cycle-*</code> attributes on the container
+	element and will be inherited by all slides.
+	<p>
+	Options in the table below that have a
+	<span class="badge">&bull;</span> symbol can be overridden on individual
+	slide elements in order to have specific properties for specific slides.
+
+	<table>
+	<thead><tr><th>Name<th><th>Type<th>Default Value<th>Description</thead>
+
+	<tr><th>allow-wrap<td><td>boolean<td>true<td>
+			This option determines whether or not a slideshow can advance from the last slide to the
+			first (or vice versa).  If set to <code>false</code> then once a slideshow reaches its
+			last slide it can no longer be advanced forward, it can only advance backward.  Likewise,
+			when a slideshow is displaying the first slide it can not advance backward.
+			<p>
+			By default a slideshow will advance seamlessly from the last slide to the first.
+
+	<tr id="auto-height"><th>auto-height<td><td>integer or ratio<td>0<td>
+			This option determines whether or not Cycle2 will provide height management
+			for the slideshow which can be very useful in fluid or responsive designs.
+			There are three ways this option can be used:
+			<ul>
+			<li>an integer can be provided to identify the zero-based
+				slide index for a <em>sentinel</em> slide
+			<li>the string "calc" can be provided to instruct Cycle2 to calculate the
+				tallest slide and use it as the sentinel
+			<li>a ratio string can be provided which identifies the width:height aspect
+				ratio for the container
+			</ul>
+			By default, the slideshow's first slide is used as the <em>sentinel</em> slide
+			and its demensions will control the height of the slideshow container if
+			the container does not have a specific height set via CSS.
+			<p>
+			To force the slideshow container to a specific aspect ratio, for example to
+			hold a set of images that are 600x400, use a ratio string like this:
+			<pre>data-cycle-auto-height="600:400"</pre>
+			<p>To disable height management, set this option's value to <code>-1</code>
+				or <code>false</code>.
+			<p> See <a href="#autoheight">Auto Height demo</a> for more info.
+
+	<tr><th>autoSelector<br><span class=softer>(programmatic use only)</span><td><td>jQuery selector<td>'.cycle-slideshow[data-cycle-auto-init!=false]'<td>
+			A jQuery selector which identifies elements that should be
+			initialized automatically by Cycle2.  The default value is <code>.cycle-slideshow</code>.
+			Add the <code>cycle-slideshow</code> class to your slideshow container and Cycle2
+			will automatically find and initialize it when the DOM ready event fires.
+			<div class="info">This value can only be changed programmatically and it can <b>not</b> be
+			changed after the DOM ready event has fired.  To change, include script like this
+			<em><strong>after</strong></em> Cycle2 has loaded and <em><strong>before</strong></em>
+			the <em>ready</em> event fires:
+			<pre>$.fn.cycle.defaults.autoSelector = '.mySlideshows';</pre>
+			</div>
+
+	<tr><th>caption<td><td>jQuery selector<td>'> .cycle-caption'<td>A selector which
+			identifies the element that should be used for the slideshow caption.  By default,
+			Cycle2 looks for an element with the class <code>.cycle-caption</code> that
+			exists <em><strong>within</strong></em> the slideshow container.
+
+	<tr><th>caption-template<td><span class="badge">&bull;</span><td>string<td>'{{slideNum}} / {{slideCount}}'<td>
+			A template string which defines how the slideshow caption should be formatted.
+			The template can reference real-time <a href="#state">state</a> information from the slideshow,
+			such as the current slide index, etc.<br>
+			<p>
+			Cycle2 uses simple Mustache-style templates by default.
+
+	<tr><th>continueAuto<br>(programatic use only)<td><td>boolean<td>undefined<td>
+			Option which can be set dynamically to instruct C2 to stop transitioning
+			on a timeout.  This is useful when you want to start with an automatic slideshow
+			but later switch to a manual slideshow.  This option can also be a function which
+			returns a boolean value.
+
+	<tr><th>delay<td><td>integer<td>0<td>
+			The number of milliseconds to add onto, or substract from, the time before the
+			first slide transition occurs.
+
+	<tr><th>disabled-class<td><td>string<td>disabled<td>
+			The classname to assign to prev/next links when they cannot be activated (due
+			to <code>data-cycle-allow-wrap="false"</code>.
+			<div class=info>
+				The value of this option should
+				<em><strong>not</strong></em> include a preceding "dot".
+			</div>
+
+	<tr><th>easing<td><span class="badge">&bull;</span><td>string<td>null<td>
+			Name of the easing function to use for animations.
+
+	<tr><th>fx<td><span class="badge">&bull;</span><td>string<td>'fade'<td>
+			The name of the slideshow transition to use.  The following
+			transition names are available by default and more can be added
+			with plugins:  <code>fade</code>, <code>fadeout</code>, <code>none</code>,
+			and <code>scrollHorz</code>.
+
+	<tr><th>hide-non-active<td><td>boolean<td>true<td>
+			Determines whether or not Cycle2 hides the inactive slides.
+
+	<tr><th>loader<td><td>true | false | "wait"<td>false<td>
+			The <em>loader</em> option sets the image loader behavior for the slideshow.
+			<a href="#loader">Example</a>.
+			<ul>
+			<li><code>false</code> disabled loader functionality
+			<li><code>true</code> load slides as images arrive
+			<li><code>"wait"</code> wait for all images to arrive before staring slideshow
+			</ul>
+
+	<tr id=log><th>log<td><td>boolean<td>true<td>
+			Set to <code>false</code> to disable console logging.
+
+	<tr><th>loop<td><td>integer<td>0<td>
+			The number of times an auto-advancing slideshow should loop before terminating.  If the
+			value is less than 1 then the slideshow will loop continuously.
+			Set to 1 to loop once, etc.
+			<div class=info>
+				Setting the <code>allow-wrap</code> option to false
+				will override looping.
+			</div>
+
+	<tr><th>manual-fx<td><td>string<td>undefined<td>
+			The transition effect to use for manually triggered transitions (not timer-based
+			transitions).
+
+	<tr><th>manual-speed<td><span class="badge">&bull;</span><td>integer<td>undefined<td>
+			The speed (in milliseconds) for transitions that are manually initiated, such as
+			those caused by clicking a "next" button or a pager link.  By default, manual
+			transitions occur at the same speed as automatic (timer-based) transitions.
+
+	<tr><th>manual-trump<td><td>boolean<td>true<td>
+			Determines whether or not transitions are interrupted to begin new ones
+			if the new ones are the result of a user action (not timer)
+
+	<tr><th>next<td><td>jQuery selector<td>'> .cycle-next'<td>
+			A selector string which identifies the element (or elements) to use as a trigger
+			to advance the slideshow forward.  By default, Cycle2 looks for an element
+			with the class <code>.cycle-next</code> that
+			exists <em><strong>within</strong></em> the slideshow container.
+
+	<tr><th>next-event<td><td>jQuery selector<td>'click.cycle'<td>
+			The event to bind to elements identified with the <code>next</code> option.
+			By default, Cycle2 binds click events.
+
+	<tr><th>overlay<td><td>jQuery selector<td>'> .cycle-overlay'<td>
+			A selector string which identifies the element to use as the overlay element.
+			A slideshow overlay typically provides information about the current slide.
+			By default, Cycle2 looks for an element
+			with the class <code>.cycle-overlay</code> that
+			exists <em><strong>within</strong></em> the slideshow container.
+
+	<tr><th>overlay-template<td><span class="badge">&bull;</span><td>string<td>'&lt;div>{{title}}&lt;/div>&lt;div>{{desc}}&lt;/div>'<td>
+			A template string which defines how the overlay should be formatted.  The template can
+			reference real-time <a href="#state">state</a> information from the slideshow, such as the current slide index, etc.<br>
+			<p>
+			Cycle2 uses simple Mustache-style templates by default.
+
+	<tr><th>pager<td><td>jQuery selector<td>'> .cycle-pager'<td>
+			A selector string which identifies the element to use as the container for pager links.
+			By default, Cycle2 looks for an element
+			with the class <code>.cycle-pager</code> that
+			exists <em><strong>within</strong></em> the slideshow container.
+
+	<tr><th>pager-active-class<td><td>string (css classname)<td>'cycle-pager-active'<td>
+			The classname to assign to pager links when a particular link references
+			the currently visible slide.
+			<div class=info>
+				The value of this option should
+				<em><strong>not</strong></em> include a preceding "dot".
+			</div>
+
+	<tr><th>pager-event<td><td>string (event name)<td>'click.cycle'<td>
+			The type of event that is bound on the pager links.
+			By default, Cycle2 binds click events.
+
+	<tr><th>pager-event-bubble<td><td>boolean<td>false<td>
+			Set to <code>true</code> to allow pager events to bubble up the DOM.  This is useful if
+			you have an anchor inside your pager element and want the anchor to be followed when it
+			is clicked.
+
+	<tr><th>pager-template<td><span class="badge">&bull;</span><td>string<td>'&lt;span>&amp;bull;&lt;/span>'<td>
+			A template string which defines how the pager links should be formatted.  The template can
+			reference real-time <a href="#state">state</a> information from the slideshow as
+			each slide is added.
+			<p>
+			The default pager link is simply a bullet.
+			<p>
+			Cycle2 uses simple Mustache-style templates by default.
+
+	<tr><th>pause-on-hover<td><td>boolean or string<td>false<td>
+			If <code>true</code> an auto-running slideshow will be paused while the mouse is over
+			the slideshow.
+			<div class=info>
+				You may also specify a jQuery selector string for the value in order to specify
+				the element(s) to which the hover events should be bound.
+			</div>
+
+	<tr><th>paused<td><td>boolean<td>false<td>
+			If <code>true</code> the slideshow will begin in a <em>paused</em> state.
+
+	<tr><th>prev<td><td>jQuery selector<td>'> .cycle-prev'<td>
+			A selector string which identifies the element (or elements) to use as a trigger
+			to advance the slideshow backward.  By default, Cycle2 looks for an element
+			with the class <code>.cycle-prev</code> that
+			exists <em><strong>within</strong></em> the slideshow container.
+
+	<tr><th>prev-event<td><td>string (event name)<td>'click.cycle'<td>
+			The type of event that is bound on the prev and next links.
+			By default, Cycle2 binds click events.
+
+	<tr><th>progressive<td><td>selector string<td>undefined<td>
+			Identifies an element in the DOM which holds a JSON array representing the slides to be
+			progressively loaded into the slideshow.
+			<a href="#progressive">Example</a>.
+
+	<tr id="random"><th>random<td><td>boolean<td>false<td>
+			If <code>true</code> the order of the slides will be randomized.  This only effects
+			slides that are initially in the markup, not slides added via the <em>add</em> command
+			or via Cycle2's image loader functionality.
+
+	<tr id="reverse"><th>reverse<td><td>boolean<td>false<td>
+			If <code>true</code> the slideshow will proceed in reverse order and
+			transitions that support this option will run a reverse animation.
+
+	<tr><th>slide-active-class<td><td>string<td>cycle-slide-active<td>
+			The classname to assign to the active slide.
+			<div class=info>
+				The value of this option should
+				<em><strong>not</strong></em> include a preceding "dot".
+			</div>
+
+	<tr><th>slide-css<td><span class="badge">&bull;</span><td>object hash<td>{}<td>
+			An object which defines css properties that should be applied to each slide
+			as it is initialized (once).
+
+	<tr><th>slide-class<td><td>string<td>"cycle-slide"<td>
+			Name of the <em>class</em> to add to each slide.
+
+	<tr><th>slides<td><td>jQuery selector<td>'> img'<td>
+			A selector string which identifies the elements within the slideshow container
+			that should become slides.
+			<p>
+			By default, Cycle2 finds all image elements that are immediate
+			children of the slideshow container.
+
+	<tr><th>speed<td><span class="badge">&bull;</span><td>integer<td>500<td>
+			The speed of the transition effect in milliseconds.
+
+	<tr id="starting-slide"><th>starting-slide<td><td>integer<td>0<td>
+			The zero-based index of the slide that should be initially displayed.
+
+	<tr><th>swipe<td><td>boolean<td>false<td>
+			Set to <code>true</code> to enable swipe gesture support for advancing the
+			slideshow forward or back.
+
+	<tr><th>swipe-fx<td><td>string<td>undefined<td>
+			The transition effect to use for swipe-triggered transitions.  If not provided
+			the transition declared in the data-manual-fx or data-fx attribute will be used.
+
+	<tr id=sync><th>sync<td><td>boolean<td>true<td>
+			If <code>true</code> then animation of the incoming and outgoing slides
+			will be synchronized.  If <code>false</code> then the animation for the incoming
+			slide will not start until the animation for the outgoing slide completes.
+
+	<tr id=timeout><th>timeout<td><span class="badge">&bull;</span><td>integer<td>4000<td>
+			The time between slide transitions in milliseconds.
+
+	<tr><th>tmpl-regex<td><span class="badge">&bull;</span><td>string<td>{{((.)?.*?)}}<td>
+			The default regular expression used for template tokenization.
+
+	<tr id="update-view"><th>update-view<td><td>number<td>0<td>
+			Determines when the <code>updateView</code> method is invoked (and
+			event is triggered).
+
+			<p>If the value is -1 then updateView is only
+			invoked immediately after the slide transition.
+			<p>If the value is 0 then updateView is invoked
+			during the slide transition.
+			<p>If the value is 1 then updateView is
+			invoked immediately upon the beginning of a slide transition and
+			again immediately after the transition.
+	</table>
+
+
+
+<h2 id="commands">Commands</h2>
+	<p>Commands are issued to slideshows by invoking <code>cycle</code> on the
+	container element and passing it a string argument, which is the command name.
+	<div class=info>
+		It is not valid to issue a command to an element that has not
+		previously been initialized as a Cycle2 slideshow.
+	</div>
+
+	<table>
+	<thead><tr><th>Command<th>Description<th>Argument<th>Example Usage</thead>
+	<tr><th>add<td>Adds one or more slides to the slideshow.<td>Slide markup or jQuery object<td>
+		<pre>var newSlide = '&lt;img src="pic.jpg">';
+$('.cycle-slideshow').cycle('add', newSlide);
+</pre>
+	<tr><th>destroy<td>Restores slideshow DOM to it's original state (and unbinds events).<td>none<td>
+		<pre>$('.cycle-slideshow').cycle('destroy');</pre>
+
+	<tr><th>goto<td>Transitions the slideshow to the slide index provided.<td>zero-based slide index<td>
+		<pre>// goto 3rd slide
+$('.cycle-slideshow').cycle('goto', 2);</pre>
+	<tr><th>next<td>Transitions the slideshow to the next slide.<td>none<td>
+		<pre>$('.cycle-slideshow').cycle('next');</pre>
+
+	<tr><th>pause<td>Pauses an auto-running slideshow.<td>none<td>
+		<pre>$('.cycle-slideshow').cycle('pause');</pre>
+
+	<tr><th>prev<td>Transitions the slideshow to the previous slide.<td>none<td>
+		<pre>$('.cycle-slideshow').cycle('prev');</pre>
+
+	<tr><th>reinit<td>Reinitializes a slideshow.  This is equivalent to
+		issuing the 'destroy' command and then invoking <code>cycle()</code> again.
+		<td>none<td>
+		<pre>$('.cycle-slideshow').cycle('reinit');</pre>
+
+	<tr><th>remove<td>Removes a slide from a running slideshow<td>zero-based slide index<td>
+		<pre>// remove 2nd slide
+$('.cycle-slideshow').cycle('remove', 1);
+</pre>
+
+	<tr><th>resume<td>Resumes a paused slideshow.<td>none<td>
+		<pre>$('.cycle-slideshow').cycle('resume');</pre>
+
+	<tr><th>stop<td>Stops an auto-running slideshow.<td>none<td>
+		<pre>$('.cycle-slideshow').cycle('stop');</pre>
+
+	</table>
+
+	<h3 id="decl-commands">Declarative Commands</h3>
+	<p>
+	It is possible to issue commands declaratively by using the <code>data-cycle-cmd</code>
+	attribute.  You can use this attribute on any element and Cycle2 will
+	use event delegation to issue a cycle command when the element is clicked.  For
+	example, to have a random button element pause your slideshow you can do this:
+	<pre>&lt;button <span class=special>data-cycle-cmd="pause"</span>>Pause&lt;/button></pre>
+	<p>
+	When the above button is clicked, Cycle2 will auto-generate and run this code for you:
+	<pre>$('.cycle-slideshow').cycle('pause');</pre>
+	<p>
+	To specify a specific slideshow as the target of the command, use the
+	<code>data-cycle-context</code> attribute and set its value to a selector
+	string that identifies the desired slideshow:
+	<pre>&lt;button data-cycle-cmd="pause" <span class=special>data-cycle-context="#mySlideshow"</span>>Pause&lt;/button></pre>
+	<p>
+	When the above button is clicked, Cycle2 will auto-generate and run this code for you:
+	<pre>$('#mySlideshow').cycle('pause');</pre>
+	<p>
+	And finally, you can pass an argument to the cycle command using the
+	<code>data-cycle-arg</code> attribute.  For example, to remove the first slide
+	in a slideshow:
+	<pre>&lt;button data-cycle-cmd="remove" data-cycle-context="#mySlideshow" <span class=special>data-cycle-arg="0"</span>>Remove Slide&lt;/button></pre>
+
+
+<h2 id="events">Events</h2>
+	<p>
+	Cycle2 emits numerous events as a slideshow runs and you can bind to these events
+	in order to further customize or augment the slideshow's behavior.
+	<p>
+	All cycle events are triggered on the slideshow element and so can be bound
+	using code like:
+	<pre>$( '#mySlideshow' ).on( 'cycle-<em>eventname</em>', function( event, opts ) {
+	// your event handler code here
+	// argument <em>opts</em> is the slideshow's option hash
+});</pre>
+
+	<table>
+	<thead><tr><th>Event Name<th>Description / Callback Signature</thead>
+	<tr><th>cycle-after<td>Triggered after the slideshow has completed transitioning to the next slide.<br>
+			<pre>function(event, optionHash, outgoingSlideEl, incomingSlideEl, forwardFlag)</pre>
+
+	<tr><th>cycle-before<td>Triggered just prior to a transition to a new slide.<br>
+			<pre>function(event, optionHash, outgoingSlideEl, incomingSlideEl, forwardFlag)</pre>
+
+	<tr id=bootstrap><th>cycle-bootstrap<td>This is the first event triggered by a slideshow and it provides an
+		opportunity to override the slideshow options and <a href="#methods">API methods</a>.
+		The <em>API</em> arg is an object hash of this slideshow instance's API methods.<br>
+			<pre>function(event, optionHash, API)</pre><br>
+
+	<tr><th>cycle-destroyed<td>Triggered after the slideshow has been destroyed by the 'destroy' command.<br>
+			<pre>function(event, optionHash)</pre>
+
+	<tr><th>cycle-finished<td>Triggered after the slideshow has terminated due to the 'loop' option.<br>
+			<pre>function(event, optionHash)</pre>
+
+	<tr><th>cycle-initialized<td>Triggered after a slideshow has been fully initalized.<br>
+			<pre>function(event, optionHash)</pre>
+
+	<tr><th>cycle-next<td>Triggered after the slideshow has started advancing due to the 'next' command.<br>
+			<pre>function(event, optionHash)</pre>
+
+	<tr><th>cycle-pager-activated<td>Triggered after the slideshow has started transitioning due to
+			a pager link event.<br>
+			<pre>function(event, optionHash)</pre>
+
+	<tr><th>cycle-paused<td>Triggered after the slideshow has been paused as a result of either
+			the 'pause' command or the 'pause-on-hover' option.<br>
+			<pre>function(event, optionHash)</pre>
+
+	<tr><th>cycle-post-initialize<td>Triggered immediately after running the full initialation logic on the slideshow.<br>
+			<pre>function(event, optionHash)</pre>
+
+	<tr><th>cycle-pre-initialize<td>Triggered prior to running the full initialation logic on the slideshow (but after
+		the initial slide set has been added).<br>
+			<pre>function(event, optionHash)</pre>
+
+	<tr><th>cycle-prev<td>Triggered after the slideshow has started advancing due to the 'prev' command.<br>
+			<pre>function(event, optionHash)</pre>
+
+	<tr><th>cycle-resumed<td>Triggered after the slideshow has been paused as a result of either
+			the 'resume' command or the 'pause-on-hover' option.
+			<pre>function(event, optionHash)</pre>
+
+	<tr><th>cycle-slide-added<td>Triggered after a slide has been added to the slideshow<br>
+			<pre>function(event, jQueryWrappedSlideEl)</pre>
+
+	<tr><th>cycle-slide-removed<td>Triggered after a slide has been removed from the slideshow
+			due to the 'remove' command.<br>
+			<pre>function(event, indexOfSlideRemoved, removedSlideEl)</pre>
+
+	<tr><th>cycle-stopped<td>Triggered after the slideshow has been stopped by the 'stop' command.<br>
+		   <pre>function(event, optionHash)</pre>
+
+	<tr><th>cycle-transition-stopped<td>Triggered after animation of one or more slides has been
+			interrupted due to manual slide advancement or due to either the 'stop' or 'destroy'
+			command being issued.<br>
+		   <pre>function(event, optionHash)</pre>
+
+	<tr><th>cycle-update-view<td>Triggered after initialization, after a slide transition, and after
+			a slide has been added or removed.<br>
+			<pre>function(event, optionHash, slideOptionsHash, currentSlideEl)</pre>
+
+	</table>
+
+
+
+
+<h2 id="misc">Miscellaneous Bits</h2>
+	<h3 id="state">State</h3>
+		<p>
+		The Cycle2 options hash contains all of the
+		slideshow's <a href="#options">options</a> detailed above, along with the following
+		additional pieces of run-time state.
+		<p>
+		State data is read-only.
+		<table>
+		<thead><tr><th>Name<th>Description</thead>
+		<tr><th>busy<td><code>true</code> when a slide transition is active.
+		<tr><th>currSlide<td>Zero-based index of the current slide.
+		<tr><th>nextSlide<td>Zero-based index of the next slide to be displayed.
+		<tr><th>paused<td><code>true</code> if the slideshow is paused.
+		<tr><th>slideNum<td>Useful in template strings for displaying a slide's one-based index.
+		<tr><th>slideCount<td>Total number of slides in the slideshow.
+		</table>
+
+	<h3>Testing the Paused State</h3>
+	<p>Cycle2 assignes the class <code>cycle-paused</code> to the slideshow container when the slideshow
+		is paused.  Scripts can determine if the slideshow is currently paused using code like this:
+		<pre>var paused = $('#mySlideshow').is( <span class=special>'.cycle-paused'</span> );</pre>
+
+	<h3>hash</h3>
+	<p>Each slide in your slideshow can have an attribute named <code>data-cycle-hash</code>.  If you
+	assign a value to this attribute then the location hash of the current page will be updated
+	to reflect that value when the slide is active.  Likewise, when the page is loaded if the
+	location hash is equal to the <code>data-cycle-hash</code> of one of the slides then that slide
+	will be made active.   See the <a href="#bookmark">Bookmarkable</a> demo
+	for more information.
+
+</div> <!-- #main -->
+
+</body>
+</html>
+

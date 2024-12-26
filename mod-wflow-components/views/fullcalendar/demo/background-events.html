@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<title>FullCalendar Demo</title>
+<script src="../../../../../lib/js/jquery/jquery.js"></script>
+
+<script src="../moment.js"></script>
+
+<link href="../fullcalendar.css" rel="stylesheet">
+<link href="../fullcalendar.print.css" rel="stylesheet" media="print">
+<script src="../fullcalendar.js"></script>
+<script>
+theEvents = [
+		{
+		  id: 0,
+		  title: 'Business Lunch',
+		  start: '2019-02-03 13:30:00',
+		  end: '2019-02-03 14:30:00',
+//		  constraint: 'businessHours'
+		},
+		{
+		  id: 1,
+		  title: 'Meeting',
+		  start: '2019-02-13T11:00:00',
+		  constraint: 'available', // defined below
+		  color: '#257e4a'
+		},
+		{
+		  title: 'Conference',
+		  start: '2019-02-15 00:00:00',
+		  end: '2019-02-20 00:00:00',
+		  allDay: true
+		},
+		{
+		  title: 'Concert',
+		  start: '2019-02-21 00:00:00',
+		  end: '2019-02-22 00:00:00',
+	//	  allDay: false
+		},
+		{
+		  title: 'Party',
+		  start: '2019-02-29T20:00:00'
+		},
+
+		// areas where "Meeting" must be dropped
+		{
+		  id: 'available',
+		  start: '2019-02-11T10:00:00',
+		  end: '2019-02-11T16:00:00',
+		  rendering: 'background'
+		},
+		{
+		  id: 'available',
+		  start: '2019-02-13T10:00:00',
+		  end: '2019-02-13T16:00:00',
+		  rendering: 'background'
+		},
+
+		// red areas where no events can be dropped or created
+		{
+		  id: 'disabled',
+		  title: 'Red Area 1',
+		  start: '2019-02-24',
+		  end: '2019-02-28',
+		  overlap: false,
+		  rendering: 'background',
+		  color: '#ff9f89'
+		},
+		{
+		  id: 'disabled',
+		  title: 'Red Area 2',
+		  start: '2019-02-06',
+		  end: '2019-02-08',
+		  overlap: false,
+		  rendering: 'background',
+		  color: '#ff9f89'
+		}
+
+	  ];
+</script>
+<script>
+var exportEvents = null;
+$(document).ready(function() {
+
+	var calendar = $('#calendar');
+
+	var getCalendarEvents = function() {
+		var theEvents = [];
+		var events = calendar.fullCalendar('clientEvents');
+		var obj;
+		for(var i=0; i<events.length; i++) {
+			obj = {};
+			obj.id = (typeof events[i].id == 'undefined' ? '' : String(events[i].id));
+			obj.title = String(events[i].title ? events[i].title : '');
+			obj.start = events[i].start || '';
+			if(events[i].hasOwnProperty('end')) {
+				if(events[i].end) {
+					obj.end = events[i].end;
+					if(events[i].hasOwnProperty('allDay')) {
+						var canHaveAllDay = ((moment(obj.start).format('HH:mm') == '00:00') && (moment(obj.end).format('HH:mm') == '00:00')) || false;
+						if(canHaveAllDay) {
+							obj.allDay = events[i].allDay ? true : false;
+						}
+					}
+				}
+			}
+			if(events[i].hasOwnProperty('color')) {
+				if(events[i].color) {
+					obj.color = String(events[i].color).toUpperCase();
+				}
+			}
+			if(events[i].hasOwnProperty('constraint')) {
+				if(events[i].constraint) {
+					obj.constraint = String(events[i].constraint);
+				}
+			}
+			if(events[i].hasOwnProperty('rendering')) {
+				if(events[i].rendering) {
+					obj.rendering = String(events[i].rendering);
+				}
+			}
+			if(events[i].hasOwnProperty('overlap')) {
+				obj.overlap = events[i].overlap ? true : false;
+			}
+			theEvents.push(obj);
+		}
+		return theEvents;
+	};
+
+	var eventsIsInConstraint = function(newEvent, constraintEvent) {
+		var newEventStart = newEvent.start.valueOf();
+		var newEventEnd = newEvent.end.valueOf();
+		var constraintEventStart = constraintEvent.start.valueOf();
+		var constraintEventEnd = constraintEvent.end.valueOf();
+		//console.log(newEventStart, constraintEventStart, newEventEnd, constraintEventEnd);
+		return (newEventStart >= constraintEventStart && newEventEnd <= constraintEventEnd && newEventStart < newEventEnd && constraintEventStart < constraintEventEnd);
+	};
+
+	var newEventsConstraint = '';
+	//newEventsConstraint = 'available';
+	var addNewEvent = function(start, end, jsEvent, view) {
+		var title = prompt('Enter Title');
+		if(title) {
+			var seed = (new Date()).valueOf();
+			var uuid = seed++;
+			var allDay = ((moment(start).format('HH:mm') == '00:00') && (moment(end).format('HH:mm') == '00:00')) || false;
+			var newEvent = {};
+			newEvent.id = String('NEW-EVENT:' + uuid);
+			newEvent.title = title;
+			newEvent.start = moment(start).format();
+			newEvent.end = moment(end).format();
+			if(allDay) {
+				newEvent.allDay = allDay;
+			}
+			var events = calendar.fullCalendar('clientEvents', String('disabled'));
+			var isInDisabled = false;
+			for(var i=0; i<events.length; i++) {
+				//--
+				if(!events[i]) {
+					calendar.fullCalendar('unselect');
+					return false;
+				}
+				if(events[i].id != 'disabled') {
+					calendar.fullCalendar('unselect');
+					return false;
+				}
+				if(!events[i].start || !events[i].end) {
+					calendar.fullCalendar('unselect');
+					return false;
+				}
+				if(eventsIsInConstraint({start:start, end:end}, events[i])) {
+					isInDisabled = true;
+					break;
+				}
+				//--
+			} //end for
+			if(isInDisabled) {
+				calendar.fullCalendar('unselect');
+				return false;
+			}
+			if((typeof newEventsConstraint == 'string') && (newEventsConstraint != '')) {
+				if(allDay) {
+					calendar.fullCalendar('unselect');
+					return false;
+				}
+				var events = calendar.fullCalendar('clientEvents', String(newEventsConstraint)); // 2nd param is filterID to get only that event
+				var isInConstr = false;
+				for(var i=0; i<events.length; i++) {
+					//--
+					if(!events[i]) {
+						calendar.fullCalendar('unselect');
+						return false;
+					}
+					if(events[i].id != newEventsConstraint) {
+						calendar.fullCalendar('unselect');
+						return false;
+					}
+					if(!events[i].start || !events[i].end) {
+						calendar.fullCalendar('unselect');
+						return false;
+					}
+					if(eventsIsInConstraint({start:start, end:end}, events[i])) {
+						isInConstr = true;
+						break;
+					}
+					//--
+				} //end for
+				if(!isInConstr) {
+					calendar.fullCalendar('unselect');
+					return false;
+				}
+				newEvent.constraint = String(newEventsConstraint);
+			}
+			//--
+		//	calendar.fullCalendar('renderEvent', newEvent); // BugFix #1: this have a bug by loosing new events on change views, so below code is an alternative that fixes this issue
+			theEvents = getCalendarEvents();
+			theEvents.push(newEvent);
+			calendar.fullCalendar('unselect');
+			calendar.fullCalendar('removeEvents');
+			calendar.fullCalendar('addEventSource', theEvents);
+			calendar.fullCalendar('rerenderEvents');
+			//--
+			return true;
+		}
+	};
+
+	exportEvents = function() {
+		var dateobj = new Date();
+		var viewObj = calendar.fullCalendar('getView');
+		var expDoc = {
+			docTitle: '', // to be updated later
+			docDate: String(dateobj.toISOString()),
+			docType: 'smartWorkFlow.EventsCalendar',
+			docVersion: '1.0',
+			dataFormat: 'data/structure',
+			data: {
+				view: String(viewObj.type),
+				date: calendar.fullCalendar('getDate'),
+				events: getCalendarEvents()
+			}
+		};
+		//--
+		return expDoc;
+	};
+
+	calendar.fullCalendar({
+	  header: {
+		left: 'prev,next today',
+		center: 'title',
+		right: 'month,agendaWeek,agendaDay,listDay,listWeek,listMonth,listYear'
+	  },
+//	  height: 'auto',
+	  aspectRatio: 2.25,
+	  defaultDate: '2019-02-12',
+	  timeFormat: 'HH:mm',
+	  navLinks: true, // can click day/week names to navigate views
+	  businessHours: true, // display business hours
+	  selectable: true,
+	  select: addNewEvent,
+	  editable: true,
+	  events: theEvents
+	});
+
+	$('#export-data').click(function(){
+		var data = {};
+		if(typeof exportEvents == 'function') {
+			data = exportEvents();
+		}
+		console.log(JSON.stringify(data, null, 2));
+	});
+
+});
+</script>
+<style>
+body {
+	margin: 40px 10px;
+	padding: 0;
+	font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+	font-size: 14px;
+}
+#calendar {
+	width: 90vw;
+	margin: 0 auto;
+}
+#export-data {
+	position: fixed;
+	top: 10px;
+	right: 15px;
+}
+</style>
+</head>
+<body>
+	<button id="export-data">Export Data</button>
+	<div id='calendar'></div>
+</body>
+</html>

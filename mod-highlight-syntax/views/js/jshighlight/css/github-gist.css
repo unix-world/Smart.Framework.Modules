@@ -1,0 +1,100 @@
+/*
+// css/github-gist.css
+// HighlightJs: v.9.13.1
+*/
+
+/*
+GitHub Gist Theme (c) Louis Barranqueiro https://github.com/LouisBarranqueiro
+modified by unixman r.20210603, (c) 2021 unix-world.org
+ */
+
+.hljs {
+	display: block;
+	background: #FAFAFA;
+	padding: 0.5rem;
+	color: #333333;
+	overflow-x: auto;
+}
+
+.hljs-comment,
+.hljs-meta {
+	color: #969896;
+}
+
+.hljs-variable,
+.hljs-meta {
+	font-weight: bold;
+}
+
+.hljs-string,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-strong,
+.hljs-emphasis,
+.hljs-quote {
+	color: #FF4455;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-type {
+	color: #C2203F;
+	font-weight: bold;
+}
+
+.hljs-literal,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-attribute {
+	color: #0086b3;
+}
+
+.hljs-section {
+	color: #ED2839;
+}
+
+.hljs-name {
+	color: #63a35c;
+}
+
+.hljs-tag {
+	color: #333333;
+}
+
+.hljs-regexp,
+.hljs-link {
+	color: #009926;
+}
+
+.hljs-title,
+.hljs-attr,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-selector-attr,
+.hljs-selector-pseudo {
+	color: #795da3;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id,
+.hljs-type,
+.hljs-class {
+	font-weight: bold;
+}
+
+.hljs-addition {
+	color: #55a532;
+	background-color: #eaffea;
+}
+
+.hljs-deletion {
+	color: #bd2c00;
+	background-color: #ffecec;
+}
+
+.hljs-link {
+	text-decoration: underline;
+}
+
+/* END */

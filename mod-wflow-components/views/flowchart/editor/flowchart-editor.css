@@ -1,0 +1,246 @@
+
+/*
+// jsPlumb Flowchart Editor :: CSS
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190327
+*/
+
+.flowchart-area * {
+	box-sizing: border-box !important;
+	font-smooth: always !important;
+}
+
+.flowchart-area .window {
+	border: 1px solid #ECECEC;
+	box-shadow: 2px 2px 19px #CCCCCC;
+	border-radius: 0.5em;
+	opacity: 0.85;
+	width: 80px;
+	height: 80px;
+	line-height: 1.25em;
+	cursor: pointer;
+	text-align: center;
+	z-index: 20;
+	position: absolute;
+	background-color: #FFFFFF;
+	color: #333333;
+	padding: 0.5em;
+	font-size: 0.75em;
+}
+
+.flowchart-area .window:hover {
+	box-shadow: 2px 2px 19px #999999;
+	opacity: 0.99;
+	z-index: 21212;
+}
+
+.flowchart-area .active {
+	border: 3px dotted #666699;
+}
+
+.flowchart-area .hover {
+	border: 1px dotted red;
+}
+
+.flowchart-area .jtk-connector {
+	z-index: 21;
+}
+
+.flowchart-area .jtk-endpoint, .endpointTargetLabel, .endpointSourceLabel {
+/*	z-index: 21; */
+	z-index: 23232;
+	cursor: pointer;
+}
+
+.flowchart-area .aLabel {
+	max-width: 75px;
+	background-color: #FFFFFF;
+	padding: 0.375em;
+	font-size: 0.75em;
+	font-weight: bold;
+	line-height: 1.25em;
+	color: #666666;
+	z-index: 22;
+	border: 1px dotted #CCCCCC;
+	opacity: 0.9;
+	cursor: cell;
+}
+
+.flowchart-area .aLabel.jtk-hover {
+	z-index: 22222;
+	opacity: 1;
+}
+
+.flowchart-area .window.jtk-connected {
+	border: 3px solid #778899;
+}
+
+.flowchart-area .jtk-drag {
+	outline: 3px solid #FFCC00;
+}
+
+.flowchart-area path,
+.flowchart-area .jtk-endpoint {
+	cursor: pointer;
+}
+
+.flowchart-area .jtk-overlay {
+	color: #111111;
+	background-color: #FFFFFF;
+	opacity: 0.75;
+}
+
+/* extending */
+
+.flowchart-area .jtk-node {
+	width: 100px !important;
+	height: 100px !important;
+	border: 3px solid #778899 !important;
+	cursor: move !important;
+	border-radius: 5px !important;
+}
+
+.flowchart-area .jtk-node span {
+	display: block !important;
+	overflow: hidden;
+	padding: 0 !important;
+	padding-top: 4px !important;
+	font-size: 16px !important;
+	height: 24px !important;
+	width: 24px !important;
+	position: absolute;
+	top: 10px;
+	left: 35px;
+	color: #778899;
+	opacity: 0.9;
+	cursor: context-menu;
+}
+
+.flowchart-area .jtk-node p {
+	display: block !important;
+	overflow: hidden;
+	text-align: center !important;
+	height: 45px;
+	width: 80px;
+	font-weight: bold;
+	position: absolute;
+	top: 32px;
+	left: 7px;
+	cursor: cell;
+	font-size: 1em;
+	line-height: 1.25em;
+}
+
+.flowchart-area .circle {
+	width: 105px !important;
+	height: 105px !important;
+	border: 3px solid #DC3C48 !important;
+	border-radius: 50% !important;
+}
+
+.flowchart-area .circle span {
+	top: 7px;
+	left: 38px;
+	color: #DC3C48;
+}
+
+.flowchart-area .circle p {
+	top: 23px;
+	left: 10px;
+}
+
+.flowchart-area .oval {
+	width: 130px !important;
+	height: 90px !important;
+	border: 3px solid #D8AC61 !important;
+	border-radius: 50% !important;
+}
+
+.flowchart-area .oval span {
+	top: 5px;
+	left: 50px;
+	color: #C79B50;
+}
+
+.flowchart-area .oval p {
+	top: 20px;
+	left: 23px;
+}
+
+.flowchart-area .parallelogram {
+	border: 3px solid #8D9D56 !important;
+	width: 120px !important;
+	height: 90px !important;
+	transform: skewX(-20deg);
+}
+
+.flowchart-area .parallelogram span,
+.flowchart-area .parallelogram p {
+	transform: skewX(20deg);
+}
+
+.flowchart-area .parallelogram span {
+	top: 7px;
+	left: 37px;
+	color: #8D9D56;
+}
+
+.flowchart-area .parallelogram p {
+	top: 25px;
+	left: 21px;
+}
+
+.flowchart-area .diamond {
+	border: 3px solid #9F4D75 !important;
+	transform: rotate(45deg);
+}
+
+.flowchart-area .diamond p,
+.flowchart-area .diamond span {
+	transform: rotate(-45deg);
+}
+
+.flowchart-area .diamond span {
+	top: 11px;
+	left: 11px;
+	color: #9F4D75;
+}
+
+.flowchart-area .diamond p {
+	top: 17px;
+	left: 11px;
+}
+
+.flowchart-area .note {
+	border: 1px solid #FFCC00 !important;
+	background: #F7EE9E !important;
+	width: 250px !important;
+	height: 55px !important;
+}
+
+.flowchart-area .note p {
+	font-style: italic !important;
+	float: left !important;
+	top: -5px !important;
+	left: 43px !important;
+	width: 200px !important;
+	height: 42px !important;
+	text-align: left !important;
+	color: #333333 !important;
+}
+
+.flowchart-area .note span {
+	top: 10px !important;
+	left: 5px !important;
+	color: #333333 !important;
+}
+
+/* Edit mode only
+.flowchart-area .jtk-node p,
+.flowchart-area .jtk-node span {
+	border: 1px dotted #CCCCCC !important;
+}
+*/
+
+/* END */

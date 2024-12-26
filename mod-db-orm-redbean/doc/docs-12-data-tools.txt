@@ -1,0 +1,95 @@
+Data Tools
+
+In RedBeanPHP version 5, some additional functions have been added to increase your productivity even more. These are convience functions building upon the solid foundation of RedBeanPHP, allowing you to quickly perform a lot of work with just a single command.
+Look (5+)
+
+To quickly generate template snippets that rely on database data you can use Look:
+     R::getLook()->look(
+        'SELECT * FROM color
+         WHERE value != ?
+                 ORDER BY value ASC',
+        [ 'green' ],
+        [ 'value', 'name' ],
+        '<option value="%s">%s</option>', 'strtoupper', "\n"
+    );
+
+Given the colors red, green and blue, this code will return an HTML snippet for a select-list with the colors RED and BLUE in uppercase.
+MatchUp (5+)
+
+MatchUp is a powerful productivity boosting method that can replace simple control scripts with a single RedBeanPHP command. Typically, matchUp() is used to replace login scripts, token generation scripts and password reset scripts. The MatchUp method takes a bean type, an SQL query snippet (starting at the WHERE clause), SQL bindings, a pair of task arrays and a bean reference.
+If the first 3 parameters match a bean, the first task list will be considered, otherwise the second one will be considered. On consideration, each task list, an array of keys and values will be executed. Every key in the task list should correspond to a bean property while every value can either be an expression to be evaluated or a closure (PHP 5.3+). After applying the task list to the bean it will be stored. If no bean has been found, a new bean will be dispensed. This method will return TRUE if the bean was found and FALSE if not AND there was a NOT-FOUND task list. If no bean was found AND there was also no second task list, NULL will be returned. Here is an example of how we could use MatchUp for a typical password-reset script:
+    $newpass = '1234';
+    $didResetPass = R::matchUp(
+        'account',
+        ' token = ? AND tokentime > ? ',
+        [ $token, time()-100 ],
+        [
+            'pass' => $newpass,
+            'token' => ''
+        ],
+        NULL,
+        $account );
+CSV Queries (5+)
+
+To quickly generate a CSV file with a single RedBeanPHP command use R::csv() like this:
+    R::csv( '
+        SELECT city,popularity
+        FROM scores
+        WHERE score > ?
+    ', [5], ['CITY','SCORE'] );
+
+Diff (5+)
+
+To quickly get the difference between two beans (or arrays of beans) and their relations use R::diff(). For instance, let's create a book with some pages:
+        list($book,$pages) = R::dispenseAll('book,page*2');
+        $book->title = 'Old Book';
+        $book->price = 999;
+        $book->ownPageList = $pages;
+        $pages[0]->text = 'abc';
+        $pages[1]->text = 'def';
+        R::store($book);
+
+Now we change the book:
+        $book->title = 'new Book';
+        $page = end($book->ownPageList);
+        $page->text = 'new';
+
+We can now compare both books using:
+        $oldBook = $book->fresh();
+        $oldBook->ownPageList;
+        $diff = R::diff($oldBook, $book);
+
+If we print_r() that variable we'll see:
+Array ( [book.1.title] => Array ( [0] => Old Book [1] => new Book ) [book.1.ownPage.2.text] => Array ( [0] => def [1] => new ) )
+
+The 3rd parameter can be used to set a filter, all bean types in the filter will be omitted. To format the keys set a format in the 4th parameter, the default value (giving us this result) is: '%s.%s.%s'. This is printf-like format.
+How to use queries
+
+Sometimes using a plain query is more efficient than using beans. For instance, consider the following example:
+    $books = R::findAll( 'book' );
+    foreach( $books as $book ) {
+        echo $book->title;
+        echo $book->author->name;
+        foreach( $book->sharedCategoryList as $cat ) {
+            echo $cat->name;
+        }
+    }
+
+Using a plain query this task could be accomplished far more efficiently:
+    $books = R::getAll( 'SELECT
+    book.title AS title,
+    author.name AS author,
+    GROUP_CONCAT(category.name) AS categories FROM book
+    JOIN author ON author.id = book.author_id
+    LEFT JOIN book_category ON book_category.book_id = book.id
+    LEFT JOIN category ON book_category.category_id = category.id
+    GROUP BY book.id
+    ' );
+    foreach( $books as $book ) {
+        echo $book['title'];
+        echo $book['author'];
+        echo $book['categories'];
+    }
+
+One of the biggest mistakes people make with ORM tools is to try to accomplish everything with objects (or beans). They forget SQL is a very powerful tool as well. Use SQL if you are merely interested in generating reports or lists.
+

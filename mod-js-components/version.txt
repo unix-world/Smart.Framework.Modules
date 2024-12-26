@@ -1,0 +1,8 @@
+
+# Smart.Framework.Modules: JsComponents r.20241218 #
+
+// r.8.7 / smart.framework.v.8.7
+
+# PHP 7.4 .. PHP 8.4 ready
+
+###

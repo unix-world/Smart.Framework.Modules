@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<title>LeafletJS Maps - Sample</title>
+	<style type="text/css">
+		* {
+			font-family: arial,sans-serif;
+		}
+
+		body {
+			margin: 0;
+			padding: 0;
+		}
+		.map {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+			cursor: crosshair !important;
+		}
+
+		select, input[type=button], button, input[type=submit] {
+			font-size: 15px;
+			border: 1px;
+			border-style: solid;
+			border-color: #CCCCCC;
+			border-radius: 4px;
+		}
+	</style>
+
+	<link rel="stylesheet" href="../leaflet.css"  type="text/css">
+	<script type="text/javascript" src="../leaflet.js"></script>
+
+	<link rel="stylesheet" href="../mouse-position.css"  type="text/css">
+	<script type="text/javascript" src="../mouse-position.js"></script>
+
+	<link rel="stylesheet" href="../mapcenter-coords.css"  type="text/css">
+	<script type="text/javascript" src="../mapcenter-coords.js"></script>
+
+	<script type="text/javascript" src="../svg-icon.js"></script>
+	<script type="text/javascript" src="../svg/svg-icon-plugin-rhombus.js"></script>
+	<script type="text/javascript" src="../svg/svg-icon-plugin-monument.js"></script>
+
+	<script type="text/javascript" src="../glyph-marker-icon.js"></script>
+
+	<script type="text/javascript" src="../leaflet.pattern.js"></script>
+
+	<link rel="stylesheet" href="../../../../../lib/css/toolkit/sf-icons.css" type="text/css">
+
+</head>
+<body>
+	<div align="center">
+		<div id="theMap" class="map"></div>
+	</div>
+<script type="text/javascript">
+
+var mapCenter = new L.LatLng(51.5076139, -0.1276839);
+
+var myMap = L.map('theMap', {
+		center: mapCenter,
+		zoom: 17,
+	}); //.setView(mapCenter, 17);
+myMap.options.maxZoom = 18;
+myMap.options.minZoom = 3;
+
+L.control.scale({imperial: false}).addTo(myMap);
+L.control.mousePosition().addTo(myMap);
+L.control.mapCenterCoord().addTo(myMap);
+
+/*
+L.tileLayer('//{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap BW</a> contributors'
+}).addTo(myMap);
+*/
+L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(myMap);
+
+L.marker([51.507981907663954, -0.12838722460630453]).addTo(myMap)
+	.bindPopup('A sample CSS3 popup.<br> Easily customizable.')
+	.openPopup(); // openPopup is currently dissalowing to map center
+
+//--
+
+var marker1 = new L.Marker.SVGMarker([51.50739542821378, -0.12768985026245333], { iconOptions: { color: "rgb(255,0,0)" }});
+marker1.addTo(myMap).bindPopup('A SVG marker');
+var marker2 = new L.Marker([51.5077381714115, -0.12868985026245333], { icon: new L.DivIcon.SVGIcon() });
+marker2.addTo(myMap).bindPopup('A SVG marker (icon)');
+var marker3 = new L.Marker([51.5077381714115, -0.12793661349181304], { icon: new L.DivIcon.SVGIcon.RhombusIcon() });
+marker3.addTo(myMap).bindPopup('A SVG marker (rhombus)');
+var marker4 = new L.Marker([51.50809542821378, -0.12768985026245333], { icon: new L.DivIcon.SVGIcon.WashingtonMonumentIcon() });
+marker4.addTo(myMap).bindPopup('A SVG marker (monument)');
+
+var marker5 = L.marker([51.50739542821378, -0.12708985026245333], {
+	icon: L.icon.glyph({
+		prefix: 'sfi',
+		glyph: 'compass2',
+		glyphAnchor: [0, -7],
+		glyphSize: '16px'
+	})
+});
+marker5.addTo(myMap).bindPopup('A SVG marker (glyph)');
+
+//--
+
+/*
+var shape = new L.PatternCircle({
+	x: 12,
+	y: 12,
+	radius: 10,
+	fill: true
+});
+*/
+/*
+var shape = new L.PatternPath({
+	d: 'M10 0 L7 20 L25 20 Z',
+	fill: true
+});
+*/
+var shape = new L.PatternRect({
+	width: 40,
+	height: 40,
+	rx: 10,
+	ry: 10,
+	fill: true
+});
+var pattern = new L.Pattern({width:50, height:50});
+	pattern.addShape(shape);
+	pattern.addTo(myMap);
+var circle = new L.Circle([51.50739542821378, -0.12708985026245333], 200.0, {
+	fillPattern: pattern,
+	fillOpacity: 0.25});
+circle.addTo(myMap);
+
+var stripes = new L.StripePattern();
+stripes.addTo(myMap);
+var geojsonFeature = {
+	"type": "Feature",
+	"properties": {
+		"name": "GeoJson Example Area"
+	},
+	"geometry": {
+		"type": "Polygon",
+		"coordinates": [[
+			[-0.127, 51.507],
+			[-0.127, 51.508],
+			[-0.128, 51.508],
+			[-0.128, 51.507],
+			[-0.127, 51.507]
+		]]
+	}
+};
+L.geoJson(geojsonFeature, {
+	style: {
+		fillPattern: stripes
+	}
+}).addTo(myMap);
+
+</script>
+</body>
+</html>

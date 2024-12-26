@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Demo: Text Editor</title>
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../../../../../modules/mod-auth-admins/views/js/jquery.htmlcleaner.js"></script>
+	<script src="../ckeditor.js"></script>
+	<link href="../ckeditor-custom.css" rel="stylesheet" type="text/css">
+	<script src="../ckeditor-setup.js"></script>
+	<script>
+		Smart_CKEDITOR_Cfg_filebrowserBrowseUrl = 'sample-gallery.html';
+	</script>
+</head>
+<body>
+<div align="center">
+	<table width="720">
+		<tr valign="middle">
+			<td><span style="font-size:32px;">Demo: Text Editor</span></td>
+			<td><img src="img/logo.png" alt="Logo" width="96"></td>
+		</tr>
+	</table>
+	<br>
+<textarea id="editor">
+&lt;section id=&quot;test&quot;&gt;
+	&lt;h1&gt;&lt;strong&gt;Hello&lt;/strong&gt; world!&lt;/h1&gt;
+	A&lt;br&gt;B&lt;br&gt;C&lt;br&gt;
+	&lt;p&gt;I'm an instance of &lt;a href=&quot;http://ckeditor.com&quot;&gt;CKEditor&lt;/a&gt;.&lt;/p&gt;
+	&lt;br&gt;
+	&lt;img src=&quot;../../../../../../lib/core/img/app/server.svg&quot; alt=&quot;Sample Image&quot;&gt;
+	&lt;script&gt;console.log('Hello World from Editor ...');&lt;/script&gt;
+&lt;/section&gt;
+&lt;br&gt;
+&lt;table border=&quot;0&quot; cellpadding=&quot;1&quot; cellspacing=&quot;1&quot; style=&quot;border:1px solid #ECECEC; width:100%;&quot;&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;cell 1.1&lt;/td&gt;
+			&lt;td&gt;cell 1.2&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;cell 2.1&lt;/td&gt;
+			&lt;td&gt;cell 2.2&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;cell 3.1&lt;/td&gt;
+			&lt;td&gt;cell 3.2&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+</textarea>
+	<button onClick="alert(document.getElementById('editor').value);">Get Editor Content</button>
+</div>
+<script>
+	Smart_CKEditor_Activate_HTML_AREA('editor', 960, 480, true, false);
+</script>
+</body>
+</html>

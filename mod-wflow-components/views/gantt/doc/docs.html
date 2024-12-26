@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Gantt API</title>
+</head>
+<body>
+
+<!-- Content Area -->
+
+<h1>Gantt API (some methods is possible to be modified or deprecated)</h1>
+
+<div class="h2">Methods</div>
+
+<table><tbody><tr><td><a href="#addlink.html">addLink</a> </td><td> adds a new dependency link</td></tr>
+<tr><td style="background:#778899;"><a href="#addlinklayer.html">addLinkLayer</a> </td><td> displayes an additional layer with custom elements for a link in the timeline area</td></tr>
+<tr><td style="background:#778899;"><a href="#addmarker.html">addMarker</a> </td><td> adds a marker to the timeline area</td></tr>
+<tr><td><a href="#addtask.html">addTask</a> </td><td> adds a new task</td></tr>
+<tr><td style="background:#778899;"><a href="#addtasklayer.html">addTaskLayer</a> </td><td> displayes an additional layer with custom elements for a task in the timeline area</td></tr>
+<tr><td><a href="#attachevent.html">attachEvent</a> </td><td> attaches the handler to an inner event of dhtmlxGantt</td></tr>
+<tr><td><a href="#batchupdate.html">batchUpdate</a> </td><td> updates multiple tasks/links at once</td></tr>
+<tr><td><a href="#calculateduration.html">calculateDuration</a> </td><td> calculates the duration of a task</td></tr>
+<tr><td><a href="#calculateenddate.html">calculateEndDate</a> </td><td> calculates the end date of a task</td></tr>
+<tr><td><a href="#calculatetasklevel.html">calculateTaskLevel</a> </td><td> calculates the level of a task</td></tr>
+<tr><td><a href="#callevent.html">callEvent</a> </td><td> calls an inner event</td></tr>
+<tr><td><a href="#changelightboxtype.html">changeLightboxType</a> </td><td> changes the name of the lighbox's structure defined for  of the task</td></tr>
+<tr><td><a href="#changelinkid.html">changeLinkId</a> </td><td> changes the link's id</td></tr>
+<tr><td><a href="#changetaskid.html">changeTaskId</a> </td><td> changes the task's id</td></tr>
+<tr><td><a href="#checkevent.html">checkEvent</a> </td><td> checks whether an event has some handler(s) specified</td></tr>
+<tr><td><a href="#clearall.html">clearAll</a> </td><td> removes all tasks from the Gantt chart</td></tr>
+<tr><td><a href="#close.html">close</a> </td><td> closes the branch with the specified id</td></tr>
+<tr><td><a href="#correcttaskworktime.html">correctTaskWorkTime</a> </td><td> recalculates the task duration in the work time</td></tr>
+<tr><td><a href="#createtask.html">createTask</a> </td><td> adds a new task and opens the lightbox to confirm</td></tr>
+<tr><td><a href="#datefrompos.html">dateFromPos</a> </td><td> gets the date of the specified horizontal  position in the chart area</td></tr>
+<tr><td><a href="#deletelink.html">deleteLink</a> </td><td> deletes the specified dependency link</td></tr>
+<tr><td style="background:#778899;"><a href="#deletemarker.html">deleteMarker</a> </td><td> deletes the specified marker</td></tr>
+<tr><td><a href="#deletetask.html">deleteTask</a> </td><td> deletes the specified  task</td></tr>
+<tr><td><a href="#detachallevents.html">detachAllEvents</a> </td><td> detaches all handlers from events (which were attached before by the attachEvent() method)</td></tr>
+<tr><td><a href="#detachevent.html">detachEvent</a> </td><td> detaches a handler from an event (which was attached before by the attachEvent() method)</td></tr>
+<tr><td><a href="#eachselectedtask.html">eachSelectedTask</a> </td><td> iterates over all selected tasks in the Gantt chart</td></tr>
+<tr><td><a href="#eachtask.html">eachTask</a> </td><td> iterates over specified tasks in the Gantt chart</td></tr>
+<tr><td><a href="#getchildren.html">getChildren</a> </td><td> returns the 1st-level child tasks of the specified parent branch</td></tr>
+<tr><td><a href="#getclosestworktime.html">getClosestWorkTime</a> </td><td> returns the closest working time</td></tr>
+<tr><td><a href="#getglobaltaskindex.html">getGlobalTaskIndex</a> </td><td> get the index of a task in the tree</td></tr>
+<tr><td style="background:#778899;"><a href="#getgridcolumn.html">getGridColumn</a> </td><td> gets the configuration object of a column</td></tr>
+<tr><td><a href="#getgridcolumns.html">getGridColumns</a> </td><td> gets columns of the Gantt chart</td></tr>
+<tr><td><a href="#getlabel.html">getLabel</a> </td><td> gets the label of a select control in the lightbox</td></tr>
+<tr><td><a href="#getlastselectedtask.html">getLastSelectedTask</a> </td><td> returns the id of the last selected task</td></tr>
+<tr><td><a href="#getlightbox.html">getLightbox</a> </td><td> gets the lightbox's HTML object element</td></tr>
+<tr><td><a href="#getlightboxtype.html">getLightboxType</a> </td><td> returns the name of the active lighbox's structure</td></tr>
+<tr><td><a href="#getlightboxvalues.html">getLightboxValues</a> </td><td> returns values of the lightbox's sections</td></tr>
+<tr><td><a href="#getlink.html">getLink</a> </td><td> returns the dependency link object by the specified id</td></tr>
+<tr><td><a href="#getlinknode.html">getLinkNode</a> </td><td> returns the HTML element of the specified dependency link</td></tr>
+<tr><td><a href="#getlinks.html">getLinks</a> </td><td> returns all links presented in the Gantt chart</td></tr>
+<tr><td style="background:#778899;"><a href="#getmarker.html">getMarker</a> </td><td> gets the marker's object</td></tr>
+<tr><td><a href="#getnext.html">getNext</a> </td><td> returns the id of the next item (no matter what the level of nesting is: the same or different)</td></tr>
+<tr><td><a href="#getnextsibling.html">getNextSibling</a> </td><td> returns the id of the next task of the same level</td></tr>
+<tr><td><a href="#getparent.html">getParent</a> </td><td> returns the id of the parent task</td></tr>
+<tr><td><a href="#getprev.html">getPrev</a> </td><td> returns the id of the previous item (no matter what the level of nesting is: the same or different)</td></tr>
+<tr><td><a href="#getprevsibling.html">getPrevSibling</a> </td><td> returns the id of the previous task of the same level</td></tr>
+<tr><td><a href="#getscrollstate.html">getScrollState</a> </td><td> returns the scroll position</td></tr>
+<tr><td><a href="#getselectedid.html">getSelectedId</a> </td><td> returns the id of the selected task</td></tr>
+<tr><td><a href="#getselectedtasks.html">getSelectedTasks</a> </td><td> returns an array of the currently selected tasks</td></tr>
+<tr><td><a href="#getsiblings.html">getSiblings</a> </td><td> returns siblings of the specified  task (including itself)</td></tr>
+<tr><td style="background:#778899;"><a href="#getslack.html">getSlack</a> </td><td> checks how much time (in the current duration unit) a task has before it starts to affect other tasks</td></tr>
+<tr><td><a href="#getstate.html">getState</a> </td><td> gets the current state of the Gantt chart</td></tr>
+<tr><td><a href="#getsubtaskdates.html">getSubtaskDates</a> </td><td> calculates the combined start/end dates of tasks nested in a project or another task</td></tr>
+<tr><td><a href="#gettask.html">getTask</a> </td><td> returns the task object</td></tr>
+<tr><td><a href="#gettaskbytime.html">getTaskByTime</a> </td><td> returns a collection of tasks which occur during the specified period</td></tr>
+<tr><td><a href="#gettaskindex.html">getTaskIndex</a> </td><td> get the index of a task in the branch</td></tr>
+<tr><td><a href="#gettasknode.html">getTaskNode</a> </td><td> returns the HTML element of the task bar</td></tr>
+<tr><td><a href="#gettaskposition.html">getTaskPosition</a> </td><td> calculates the position and size of the task's DOM element in the timeline area</td></tr>
+<tr><td><a href="#gettaskrownode.html">getTaskRowNode</a> </td><td> returns the HTML element of the task row in the table</td></tr>
+<tr><td><a href="#gettasktop.html">getTaskTop</a> </td><td> gets the top position of the task's DOM element in the timeline area</td></tr>
+<tr><td><a href="#getworkhours.html">getWorkHours</a> </td><td> returns the working hours of the specified date</td></tr>
+<tr><td style="background:#778899;"><a href="#groupby.html">groupBy</a> </td><td> groups tasks by the specified task's attribute</td></tr>
+<tr><td><a href="#haschild.html">hasChild</a> </td><td> checks whether the specified item has child tasks</td></tr>
+<tr><td><a href="#hidecover.html">hideCover</a> </td><td> hides the lightbox modal overlay that blocks interactions with the remaining screen</td></tr>
+<tr><td><a href="#hidelightbox.html">hideLightbox</a> </td><td> closes the lightbox if it's currently active</td></tr>
+<tr><td><a href="#hidequickinfo.html">hideQuickInfo</a> </td><td> hides the pop-up task form (if it's currently active)</td></tr>
+<tr><td><a href="#init.html">init</a> </td><td> constructor. Initializes a dhtmlxGantt object</td></tr>
+<tr><td><a href="#ischildof.html">isChildOf</a> </td><td> checks whether a task is a child of other task</td></tr>
+<tr><td style="background:#778899;"><a href="#iscriticallink.html">isCriticalLink</a> </td><td> checks whether the specified link is critical</td></tr>
+<tr><td style="background:#778899;"><a href="#iscriticaltask.html">isCriticalTask</a> </td><td> checks whether the specified task is critical</td></tr>
+<tr><td><a href="#islinkallowed.html">isLinkAllowed</a> </td><td> checks whether the specified link is correct</td></tr>
+<tr><td><a href="#islinkexists.html">isLinkExists</a> </td><td> checks whether the specified link exists</td></tr>
+<tr><td><a href="#isselectedtask.html">isSelectedTask</a> </td><td> checks whether the specified task is currently selected</td></tr>
+<tr><td><a href="#istaskexists.html">isTaskExists</a> </td><td> checks whether the specified task exists</td></tr>
+<tr><td><a href="#istaskvisible.html">isTaskVisible</a> </td><td> checks whether the specifies task is currently rendered in the Gantt chart</td></tr>
+<tr><td><a href="#isworktime.html">isWorkTime</a> </td><td> checks whether the specified date is working or not</td></tr>
+<tr><td><a href="#load.html">load</a> </td><td> loads data to the gantt from an external data source</td></tr>
+<tr><td><a href="#locate.html">locate</a> </td><td> gets the id of a task from the specified HTML event</td></tr>
+<tr><td><a href="#movetask.html">moveTask</a> </td><td> moves a task to a new position</td></tr>
+<tr><td><a href="#open.html">open</a> </td><td> opens the branch with the specified id</td></tr>
+<tr><td><a href="#parse.html">parse</a> </td><td> loads data from a client-side resource</td></tr>
+<tr><td><a href="#posfromdate.html">posFromDate</a> </td><td> gets the relative horizontal position of the specified date in the chart area</td></tr>
+<tr><td><a href="#refreshdata.html">refreshData</a> </td><td> refreshes data in the Gantt chart</td></tr>
+<tr><td><a href="#refreshlink.html">refreshLink</a> </td><td> refreshes the specifies link</td></tr>
+<tr><td><a href="#refreshtask.html">refreshTask</a> </td><td> refreshes the task and its related links</td></tr>
+<tr><td style="background:#778899;"><a href="#removelinklayer.html">removeLinkLayer</a> </td><td> removes the specified layer related to a link</td></tr>
+<tr><td style="background:#778899;"><a href="#removetasklayer.html">removeTaskLayer</a> </td><td> removes the specified layer related to a task</td></tr>
+<tr><td><a href="#render.html">render</a> </td><td> renders the whole Gantt chart</td></tr>
+<tr><td style="background:#778899;"><a href="#rendermarkers.html">renderMarkers</a> </td><td> updates all markers on the page</td></tr>
+<tr><td><a href="#resetlightbox.html">resetLightbox</a> </td><td> removes the current lightbox's HTML object element</td></tr>
+<tr><td style="background:#778899;"><a href="#resetprojectdates.html">resetProjectDates</a> </td><td> re-calculates the duration of a project task depending on dates its childs</td></tr>
+<tr><td><a href="#resetskin.html">resetSkin</a> </td><td> re-calculates the skin's settings from the related attached skin CSS file</td></tr>
+<tr><td><a href="#resizelightbox.html">resizeLightbox</a> </td><td> forces the lightbox to resize</td></tr>
+<tr><td><a href="#rounddate.html">roundDate</a> </td><td> rounds the specified date to the nearest date in the time scale</td></tr>
+<tr><td><a href="#roundtaskdates.html">roundTaskDates</a> </td><td> rounds the start and end task's dates to the nearest dates in the time scale</td></tr>
+<tr><td><a href="#scrollto.html">scrollTo</a> </td><td> scrolls the Gantt container to the specified position</td></tr>
+<tr><td><a href="#selecttask.html">selectTask</a> </td><td> selects the specified task</td></tr>
+<tr><td><a href="#serialize.html">serialize</a> </td><td> serializes the data into JSON or XML format</td></tr>
+<tr><td><a href="#serverlist.html">serverList</a> </td><td> returns a list of options</td></tr>
+<tr><td><a href="#setsizes.html">setSizes</a> </td><td> resizes the Gantt chart</td></tr>
+<tr><td><a href="#setworktime.html">setWorkTime</a> </td><td> sets the working time for the Gantt chart</td></tr>
+<tr><td><a href="#showcover.html">showCover</a> </td><td> shows the lightbox modal overlay that blocks interactions with the remaining screen</td></tr>
+<tr><td><a href="#showdate.html">showDate</a> </td><td> scrolls the chart area to makes the specified date visible</td></tr>
+<tr><td><a href="#showlightbox.html">showLightbox</a> </td><td> opens the lightbox for the specified task</td></tr>
+<tr><td><a href="#showquickinfo.html">showQuickInfo</a> </td><td> displays the pop-up task form for the specified task</td></tr>
+<tr><td><a href="#showtask.html">showTask</a> </td><td> makes the specified task visible on the screen</td></tr>
+<tr><td><a href="#sort.html">sort</a> </td><td> sorts the tasks in the grid</td></tr>
+<tr><td><a href="#toggletaskselection.html">toggleTaskSelection</a> </td><td> selects the specified task if it was unselected and vice versa</td></tr>
+<tr><td><a href="#unselecttask.html">unselectTask</a> </td><td> removes selection from the selected task</td></tr>
+<tr><td><a href="#updatecollection.html">updateCollection</a> </td><td> updates the specified collection with new options</td></tr>
+<tr><td><a href="#updatelink.html">updateLink</a> </td><td> updates the specified dependency link</td></tr>
+<tr><td style="background:#778899;"><a href="#updatemarker.html">updateMarker</a> </td><td> updates the specified marker</td></tr>
+<tr><td><a href="#updatetask.html">updateTask</a> </td><td> updates the specified task</td></tr></tbody></table>
+
+<div class="h2">Events</div>
+
+<table><tbody><tr><td><a href="#onafterlightbox_event.html">onAfterLightbox</a> </td><td> fires after the user has closed the lightbox (edit form)</td></tr>
+<tr><td><a href="#onafterlinkadd_event.html">onAfterLinkAdd</a> </td><td> fires after a new link is added to the Gantt chart</td></tr>
+<tr><td><a href="#onafterlinkdelete_event.html">onAfterLinkDelete</a> </td><td> fires after the user deletes a link</td></tr>
+<tr><td><a href="#onafterlinkupdate_event.html">onAfterLinkUpdate</a> </td><td> fires after the user updates a link</td></tr>
+<tr><td><a href="#onaftertaskadd_event.html">onAfterTaskAdd</a> </td><td> fires after the user adds a task to the Gantt chart</td></tr>
+<tr><td><a href="#onaftertaskdelete_event.html">onAfterTaskDelete</a> </td><td> fires after the user deletes a task</td></tr>
+<tr><td><a href="#onaftertaskdrag_event.html">onAfterTaskDrag</a> </td><td> fires after the user has finished to drag and released the mouse button</td></tr>
+<tr><td><a href="#onaftertaskmove_event.html">onAfterTaskMove</a> </td><td> fires after a task was moved to a new position</td></tr>
+<tr><td><a href="#onaftertaskupdate_event.html">onAfterTaskUpdate</a> </td><td> fires after the user updates a task</td></tr>
+<tr><td><a href="#onbeforedatarender_event.html">onBeforeDataRender</a> </td><td> fires before data is rendered on the page</td></tr>
+<tr><td><a href="#onbeforeganttready_event.html">onBeforeGanttReady</a> </td><td> fires before the dhtmlxGantt initialization is started</td></tr>
+<tr><td><a href="#onbeforeganttrender_event.html">onBeforeGanttRender</a> </td><td> fires before the Gantt chart is rendered on the page</td></tr>
+<tr><td><a href="#onbeforelightbox_event.html">onBeforeLightbox</a> </td><td> fires immediately before the user opens the lightbox (edit form)</td></tr>
+<tr><td><a href="#onbeforelinkadd_event.html">onBeforeLinkAdd</a> </td><td> fires before a new link is added to the Gantt chart</td></tr>
+<tr><td><a href="#onbeforelinkdelete_event.html">onBeforeLinkDelete</a> </td><td> fires before the user deletes a link</td></tr>
+<tr><td><a href="#onbeforelinkdisplay_event.html">onBeforeLinkDisplay</a> </td><td> fires after the links have been loaded to the Gantt chart but before they are displayed</td></tr>
+<tr><td><a href="#onbeforelinkupdate_event.html">onBeforeLinkUpdate</a> </td><td> fires before a link is updated</td></tr>
+<tr><td><a href="#onbeforeparse_event.html">onBeforeParse</a> </td><td> fires before data started to be parsed</td></tr>
+<tr><td><a href="#onbeforerowdragend_event.html">onBeforeRowDragEnd</a> </td><td> fires before the user drops a row in  the grid</td></tr>
+<tr><td><a href="#onbeforetaskadd_event.html">onBeforeTaskAdd</a> </td><td> fires before a new task is added to the Gantt chart</td></tr>
+<tr><td><a href="#onbeforetaskchanged_event.html">onBeforeTaskChanged</a> </td><td> fires after the user has finished dragging and released the mouse button but before the changes are applied</td></tr>
+<tr><td><a href="#onbeforetaskdelete_event.html">onBeforeTaskDelete</a> </td><td> fires before the user deletes a task</td></tr>
+<tr><td><a href="#onbeforetaskdisplay_event.html">onBeforeTaskDisplay</a> </td><td> fires after the tasks have been loaded to the Gantt chart but before they are displayed</td></tr>
+<tr><td><a href="#onbeforetaskdrag_event.html">onBeforeTaskDrag</a> </td><td> fires after the user has pressed the mouse button and started dragging, but before dhtmlxGantt starts the drag-and-drop operation</td></tr>
+<tr><td><a href="#onbeforetaskmove_event.html">onBeforeTaskMove</a> </td><td> fires before a task is moved to a new position</td></tr>
+<tr><td><a href="#onbeforetaskselected_event.html">onBeforeTaskSelected</a> </td><td> fires before the user selects a task</td></tr>
+<tr><td><a href="#onbeforetaskupdate_event.html">onBeforeTaskUpdate</a> </td><td> fires before the user updates a task</td></tr>
+<tr><td><a href="#onclear_event.html">onClear</a> </td><td> fires after all tasks were removed from the Gantt chart</td></tr>
+<tr><td style="background:#778899;"><a href="#oncolumnresize_event.html">onColumnResize</a> </td><td> fires when the user is dragging the column's border to resize the column</td></tr>
+<tr><td style="background:#778899;"><a href="#oncolumnresizeend_event.html">onColumnResizeEnd</a> </td><td> fires after the user finished dragging the column's border to resize the column</td></tr>
+<tr><td style="background:#778899;"><a href="#oncolumnresizestart_event.html">onColumnResizeStart</a> </td><td> fires before the user starts to drag the column's border to resize the column</td></tr>
+<tr><td><a href="#oncontextmenu_event.html">onContextMenu</a> </td><td> occurs when the user clicks the right mouse button inside the Gantt chart</td></tr>
+<tr><td><a href="#ondatarender_event.html">onDataRender</a> </td><td> fires after data was rendered on the page</td></tr>
+<tr><td><a href="#onemptyclick_event.html">onEmptyClick</a> </td><td> fires when the user clicks on an empty space in the Gantt chart (not on tasks)</td></tr>
+<tr><td><a href="#onganttready_event.html">onGanttReady</a> </td><td> fires after the dhtmlxGantt initialization is complete but the Gantt chart is not rendered on the page yet.</td></tr>
+<tr><td><a href="#onganttrender_event.html">onGanttRender</a> </td><td> fires after the Gantt chart was rendered on the page</td></tr>
+<tr><td><a href="#ongridheaderclick_event.html">onGridHeaderClick</a> </td><td> fires when the user clicks on the grid's header</td></tr>
+<tr><td style="background:#778899;"><a href="#ongridresize_event.html">onGridResize</a> </td><td> fires when the user is dragging the grid's border to resize the grid</td></tr>
+<tr><td style="background:#778899;"><a href="#ongridresizeend_event.html">onGridResizeEnd</a> </td><td> fires after the user finished dragging the grid's border to resize the grid</td></tr>
+<tr><td style="background:#778899;"><a href="#ongridresizestart_event.html">onGridResizeStart</a> </td><td> fires before the user starts to drag the grid's border to resize the grid</td></tr>
+<tr><td><a href="#onlightbox_event.html">onLightbox</a> </td><td> fires after the user has opened the lightbox (edit form)</td></tr>
+<tr><td><a href="#onlightboxbutton_event.html">onLightboxButton</a> </td><td> fires when the user clicks on a custom button in the lightbox</td></tr>
+<tr><td><a href="#onlightboxcancel_event.html">onLightboxCancel</a> </td><td> fires when the user clicks on the 'Cancel' button in the lightbox</td></tr>
+<tr><td><a href="#onlightboxchange_event.html">onLightboxChange</a> </td><td> fires when the structure of the lightbox is changed</td></tr>
+<tr><td><a href="#onlightboxdelete_event.html">onLightboxDelete</a> </td><td> fires when the user clicks on the 'Delete' button in the lightbox</td></tr>
+<tr><td><a href="#onlightboxsave_event.html">onLightboxSave</a> </td><td> fires when the user clicks on the 'Save' button in the lightbox</td></tr>
+<tr><td><a href="#onlinkclick_event.html">onLinkClick</a> </td><td> fires when the user clicks on a link</td></tr>
+<tr><td><a href="#onlinkdblclick_event.html">onLinkDblClick</a> </td><td> fires when the user double clicks on a link</td></tr>
+<tr><td><a href="#onlinkidchange_event.html">onLinkIdChange</a> </td><td> fires when the id of a link is changed</td></tr>
+<tr><td><a href="#onlinkvalidation_event.html">onLinkValidation</a> </td><td> fires when the user adds a new link and dhtmlxGantt checks whether the link is valid</td></tr>
+<tr><td><a href="#onloadend_event.html">onLoadEnd</a> </td><td> fires after loading data from the data source has been complete</td></tr>
+<tr><td><a href="#onloadstart_event.html">onLoadStart</a> </td><td> fires immediately before loading data from the data source has been started</td></tr>
+<tr><td><a href="#onmousemove_event.html">onMouseMove</a> </td><td> fires when the mouse is moved over a task bar</td></tr>
+<tr><td><a href="#onoptionsload_event.html">onOptionsLoad</a> </td><td> fires after a collection of options has been loaded from the server, but isn't parsed yet</td></tr>
+<tr><td><a href="#onparse_event.html">onParse</a> </td><td> fires after data was parsed (became available for API) but before it was rendered in the Gantt chart</td></tr>
+<tr><td><a href="#onrowdragend_event.html">onRowDragEnd</a> </td><td> fires after the user drops a row in the grid</td></tr>
+<tr><td><a href="#onrowdragstart_event.html">onRowDragStart</a> </td><td> fires before the user drags a row of the grid</td></tr>
+<tr><td><a href="#onscaleadjusted_event.html">onScaleAdjusted</a> </td><td> fires when the scale is re-rendered in order to display all tasks completely</td></tr>
+<tr><td><a href="#onscaleclick_event.html">onScaleClick</a> </td><td> fires when the user clicks on the cell in the time scale</td></tr>
+<tr><td><a href="#ontaskclick_event.html">onTaskClick</a> </td><td> fires when the user clicks on a task row in the  grid area (including the 'expand/collapse' and 'add task' buttons) or on a task bar in the timeline area</td></tr>
+<tr><td><a href="#ontaskclosed_event.html">onTaskClosed</a> </td><td> fires when a branch has been closed</td></tr>
+<tr><td><a href="#ontaskcreated_event.html">onTaskCreated</a> </td><td> fires when user creates a new task by pressing '+' button in a grid, and also when the <a href="#createtask.html">createTask</a> method is called</td></tr>
+<tr><td><a href="#ontaskdblclick_event.html">onTaskDblClick</a> </td><td> fires when the user double clicks on a task</td></tr>
+<tr><td><a href="#ontaskdrag_event.html">onTaskDrag</a> </td><td> fires when the user drags a task</td></tr>
+<tr><td><a href="#ontaskidchange_event.html">onTaskIdChange</a> </td><td> fires when the id of a task is changed</td></tr>
+<tr><td><a href="#ontaskloading_event.html">onTaskLoading</a> </td><td> fires when a task is being loaded from the data source</td></tr>
+<tr><td><a href="#ontaskopened_event.html">onTaskOpened</a> </td><td> fires when a branch has been opened</td></tr>
+<tr><td><a href="#ontaskrowclick_event.html">onTaskRowClick</a> </td><td> fires when the user clicks on a row in the table</td></tr>
+<tr><td><a href="#ontaskselected_event.html">onTaskSelected</a> </td><td> fires when the user selects a task</td></tr>
+<tr><td><a href="#ontaskunselected_event.html">onTaskUnselected</a> </td><td> fires when the user unselects a task by selecting some other task</td></tr>
+<tr><td><a href="#ontemplatesready_event.html">onTemplatesReady</a> </td><td> fires when the dhtmlxGantt templates are initialized</td></tr></tbody></table>
+
+<div class="h2">Properties</div>
+
+<table><tbody><tr><td><a href="#api_date_config.html">api_date</a> </td><td> sets the date format for addTask() method to</td></tr>
+<tr><td><a href="#autofit_config.html">autofit</a> </td><td> enables automatic adjusting of the grid's columns to the grid's width</td></tr>
+<tr><td><a href="#autosize_config.html">autosize</a> </td><td> forces the Gantt chart to automatically change its size to show all tasks without scrolling</td></tr>
+<tr><td><a href="#autosize_min_width_config.html">autosize_min_width</a> </td><td> sets the minimum width (in pixels) that the Gantt chart can take in the horizontal 'autosize' mode</td></tr>
+<tr><td style="background:#778899;"><a href="#branch_loading_config.html">branch_loading</a> </td><td> enables the dynamic loading in the Gantt chart</td></tr>
+<tr><td><a href="#buttons_left_config.html">buttons_left</a> </td><td> stores a collection of buttons resided in the left bottom corner of the lightbox</td></tr>
+<tr><td><a href="#buttons_right_config.html">buttons_right</a> </td><td> stores a collection of buttons resided in the right bottom corner of the lightbox</td></tr>
+<tr><td><a href="#columns_config.html">columns</a> </td><td> configures the columns of the table</td></tr>
+<tr><td><a href="#correct_work_time_config.html">correct_work_time</a> </td><td> enables adjusting the task's start and end dates to the work time (while dragging)</td></tr>
+<tr><td><a href="#date_grid_config.html">date_grid</a> </td><td> sets the format of dates in the "Start time" column of the table</td></tr>
+<tr><td><a href="#date_scale_config.html">date_scale</a> </td><td> sets the format of the time scale (X-Axis)</td></tr>
+<tr><td><a href="#details_on_create_config.html">details_on_create</a> </td><td> 'says' to open the lightbox while creating new events by clicking on the '+' button</td></tr>
+<tr><td><a href="#details_on_dblclick_config.html">details_on_dblclick</a> </td><td> 'says' to open the lightbox after double clicking on a task</td></tr>
+<tr><td><a href="#drag_lightbox_config.html">drag_lightbox</a> </td><td> enables the possibility to drag the lightbox by the header</td></tr>
+<tr><td><a href="#drag_links_config.html">drag_links</a> </td><td> enables creating dependency links by drag-and-drop</td></tr>
+<tr><td><a href="#drag_mode_config.html">drag_mode</a> </td><td> stores the types of available drag-and-drop modes</td></tr>
+<tr><td><a href="#drag_move_config.html">drag_move</a> </td><td> enables the possibility to move tasks by drag-and-drop</td></tr>
+<tr><td><a href="#drag_progress_config.html">drag_progress</a> </td><td> enables the possibility to change the task progress by dragging the progress knob</td></tr>
+<tr><td><a href="#drag_resize_config.html">drag_resize</a> </td><td> enables the possibility to resize tasks by drag-and-drop</td></tr>
+<tr><td><a href="#duration_step_config.html">duration_step</a> </td><td> sets the number of 'gantt.config.duration_unit' units that will correspond to one  unit of the 'duration' data property.</td></tr>
+<tr><td><a href="#duration_unit_config.html">duration_unit</a> </td><td> sets the duration unit</td></tr>
+<tr><td><a href="#editable_property_config.html">editable_property</a> </td><td> changes the name of a property that affects the editing ability  of tasks/links in the read-only Gantt chart</td></tr>
+<tr><td><a href="#end_date_config.html">end_date</a> </td><td> sets the  end value of the time scale</td></tr>
+<tr><td><a href="#fit_tasks_config.html">fit_tasks</a> </td><td> 'says' the Gantt chart to re-render the scale each time a task doesn't fit into the existing scale interval</td></tr>
+<tr><td style="background:#778899;"><a href="#grid_resize_config.html">grid_resize</a> </td><td> makes the grid resizable by dragging the right grid's border</td></tr>
+<tr><td><a href="#grid_resizer_attribute_config.html">grid_resizer_attribute</a> </td><td> sets the name of the attribute  of the grid resizer's  DOM element</td></tr>
+<tr><td><a href="#grid_resizer_column_attribute_config.html">grid_resizer_column_attribute</a> </td><td> sets the name of the attribute  of the column resizer's  DOM element. The attribute presents the column's index</td></tr>
+<tr><td><a href="#grid_width_config.html">grid_width</a> </td><td> sets the maximum width of the grid</td></tr>
+<tr><td style="background:#778899;"><a href="#highlight_critical_path_config.html">highlight_critical_path</a> </td><td> shows the critical path in the chart</td></tr>
+<tr><td><a href="#inherit_scale_class_config.html">inherit_scale_class</a> </td><td> specifies whether sub-scales shall use the scale_cell_class template by default</td></tr>
+<tr><td><a href="#initial_scroll_config.html">initial_scroll</a> </td><td> sets whether the timeline area will be initially scrolled to display the earliest task</td></tr>
+<tr><td style="background:#778899;"><a href="#keep_grid_width_config.html">keep_grid_width</a> </td><td> 'says' to preserve the initial grid's width during resizing the columns within</td></tr>
+<tr><td style="background:#778899;"><a href="#layer_attribute_config.html">layer_attribute</a> </td><td> sets the name of the attribute of the task layer's DOM element</td></tr>
+<tr><td><a href="#lightbox_config.html">lightbox</a> </td><td> specifies the lightbox object</td></tr>
+<tr><td><a href="#lightbox_additional_height_config.html">lightbox_additional_height</a> </td><td> increases the height of the lightbox</td></tr>
+<tr><td><a href="#link_arrow_size_config.html">link_arrow_size</a> </td><td> sets the size of the link arrow</td></tr>
+<tr><td><a href="#link_attribute_config.html">link_attribute</a> </td><td> sets the name of the attribute that will specify the id of the link's HTML element</td></tr>
+<tr><td><a href="#link_line_width_config.html">link_line_width</a> </td><td> sets the width of dependency links in the timeline area</td></tr>
+<tr><td><a href="#link_wrapper_width_config.html">link_wrapper_width</a> </td><td> sets the width of the area (over the link) sensitive to clicks</td></tr>
+<tr><td><a href="#links_config.html">links</a> </td><td> stores the types of links dependencies</td></tr>
+<tr><td><a href="#min_column_width_config.html">min_column_width</a> </td><td> sets the minimum width for a column in the timeline area</td></tr>
+<tr><td><a href="#min_duration_config.html">min_duration</a> </td><td> sets the minimum step (in milliseconds) for task's time values</td></tr>
+<tr><td><a href="#min_grid_column_width_config.html">min_grid_column_width</a> </td><td> sets the minumum width for the grid (in pixels) while being resized</td></tr>
+<tr><td><a href="#multiselect_config.html">multiselect</a> </td><td> enables/disables multi-task selection in the Gantt chart</td></tr>
+<tr><td><a href="#multiselect_one_level_config.html">multiselect_one_level</a> </td><td> specifies whether multi-task selection will be available within one or any level</td></tr>
+<tr><td><a href="#open_tree_initially_config.html">open_tree_initially</a> </td><td> openes all branches initially</td></tr>
+<tr><td><a href="#order_branch_config.html">order_branch</a> </td><td> activates the 'branch' mode that allows dragging tasks only within the parent branch</td></tr>
+<tr><td><a href="#preserve_scroll_config.html">preserve_scroll</a> </td><td> preserves the current position of the vertical and horizontal scrolls while re-drawing the gantt chart</td></tr>
+<tr><td><a href="#prevent_default_scroll_config.html">prevent_default_scroll</a> </td><td> specifies whether the gantt container should block the mousewheel event, or should it be propagated up to the window element</td></tr>
+<tr><td><a href="#quick_info_detached_config.html">quick_info_detached</a> </td><td> defines whether the task form will appear from the left/right side of the screen or near the selected task</td></tr>
+<tr><td><a href="#quickinfo_buttons_config.html">quickinfo_buttons</a> </td><td> stores a collection of buttons resided in the pop-up task's details form</td></tr>
+<tr><td><a href="#readonly_config.html">readonly</a> </td><td> activates the read-only mode for the Gantt chart</td></tr>
+<tr><td><a href="#readonly_property_config.html">readonly_property</a> </td><td> changes the name of a property that affects the read-only behaviour of tasks/links</td></tr>
+<tr><td><a href="#root_id_config.html">root_id</a> </td><td> sets the id of the virtual root element</td></tr>
+<tr><td><a href="#round_dnd_dates_config.html">round_dnd_dates</a> </td><td> enables rounding the task's start and end dates to the nearest scale marks</td></tr>
+<tr><td><a href="#row_height_config.html">row_height</a> </td><td> sets the default height for rows of the table</td></tr>
+<tr><td><a href="#scale_height_config.html">scale_height</a> </td><td> sets the height of the time scale and the header of the grid</td></tr>
+<tr><td><a href="#scale_offset_minimal_config.html">scale_offset_minimal</a> </td><td> sets the minimal scale unit (in case multiple scales are used) as the interval of leading/closing empty space</td></tr>
+<tr><td><a href="#scale_unit_config.html">scale_unit</a> </td><td> sets the unit of the time scale (X-Axis)</td></tr>
+<tr><td><a href="#scroll_on_click_config.html">scroll_on_click</a> </td><td> specifies whether the timeline area shall be scrolled while selecting to display the selected task</td></tr>
+<tr><td><a href="#select_task_config.html">select_task</a> </td><td> enables selection of tasks in the Gantt chart</td></tr>
+<tr><td><a href="#server_utc_config.html">server_utc</a> </td><td> enables converting server-side dates from UTC to a local time zone (and backward) while sending data to the server</td></tr>
+<tr><td><a href="#show_chart_config.html">show_chart</a> </td><td> shows the chart (timeline) area of the Gantt chart</td></tr>
+<tr><td><a href="#show_grid_config.html">show_grid</a> </td><td> shows the grid area of the Gantt chart</td></tr>
+<tr><td><a href="#show_links_config.html">show_links</a> </td><td> enables/disables displaying links in the Gantt chart</td></tr>
+<tr><td style="background:#778899;"><a href="#show_markers_config.html">show_markers</a> </td><td> shows/hides markers on the page</td></tr>
+<tr><td><a href="#show_progress_config.html">show_progress</a> </td><td> enables showing a progress/spinner while data is loading</td></tr>
+<tr><td><a href="#show_quick_info_config.html">show_quick_info</a> </td><td> activates/disables the 'quick_info' extension (pop-up task's details form)</td></tr>
+<tr><td><a href="#show_task_cells_config.html">show_task_cells</a> </td><td> enables/disables displaying column borders in the chart area</td></tr>
+<tr><td style="background:#778899;"><a href="#skip_off_time_config.html">skip_off_time</a> </td><td> hides non-working time from the time scale</td></tr>
+<tr><td><a href="#sort_config.html">sort</a> </td><td> enables sorting in the table</td></tr>
+<tr><td><a href="#start_date_config.html">start_date</a> </td><td> sets the start value of the time scale</td></tr>
+<tr><td><a href="#start_on_monday_config.html">start_on_monday</a> </td><td> sets the start day of weeks</td></tr>
+<tr><td style="background:#778899;"><a href="#static_background_config.html">static_background</a> </td><td> generates a background image for the timeline area instead of rendering actual columns' and rows' lines</td></tr>
+<tr><td><a href="#step_config.html">step</a> </td><td> sets the step of the time scale (X-Axis)</td></tr>
+<tr><td><a href="#subscales_config.html">subscales</a> </td><td> specifies the second time scale(s)</td></tr>
+<tr><td><a href="#task_attribute_config.html">task_attribute</a> </td><td> sets the name of the attribute that will specify the id of the task's HTML element</td></tr>
+<tr><td><a href="#task_date_config.html">task_date</a> </td><td> sets the format of the date label in the 'Time period' section of the lightbox</td></tr>
+<tr><td><a href="#task_height_config.html">task_height</a> </td><td> sets the height of task bars in the timeline area</td></tr>
+<tr><td><a href="#task_scroll_offset_config.html">task_scroll_offset</a> </td><td> sets the offset (in pixels) of the nearest task from the left border in the timeline</td></tr>
+<tr><td><a href="#time_picker_config.html">time_picker</a> </td><td> sets the format of the time drop-down selector in the lightbox</td></tr>
+<tr><td><a href="#time_step_config.html">time_step</a> </td><td> sets the minimum step (in minutes) for the task's time values</td></tr>
+<tr><td><a href="#tooltip_hide_timeout_config.html">tooltip_hide_timeout</a> </td><td> sets the length of time, in milliseconds, before the tooltip hides</td></tr>
+<tr><td><a href="#tooltip_offset_x_config.html">tooltip_offset_x</a> </td><td> sets the  the right (if positive) offset of the tooltip's position</td></tr>
+<tr><td><a href="#tooltip_offset_y_config.html">tooltip_offset_y</a> </td><td> sets the  the top (if positive) offset of the tooltip's position</td></tr>
+<tr><td><a href="#tooltip_timeout_config.html">tooltip_timeout</a> </td><td> sets the timeout in milliseconds before the tooltip is displayed for a task</td></tr>
+<tr><td><a href="#touch_config.html">touch</a> </td><td> enables/disables the touch support for the Gantt chart</td></tr>
+<tr><td><a href="#touch_drag_config.html">touch_drag</a> </td><td> defines the time period in milliseconds that is used to differ the long touch gesture from the scroll gesture</td></tr>
+<tr><td><a href="#touch_feedback_config.html">touch_feedback</a> </td><td> enables/disables vibration while moving tasks on touch devices</td></tr>
+<tr><td style="background:#778899;"><a href="#type_renderers_config.html">type_renderers</a> </td><td> redefines functions responsible for displaying different types of tasks</td></tr>
+<tr><td style="background:#778899;"><a href="#types_config.html">types</a> </td><td> stores the names of lighbox's structures (used for different types of tasks)</td></tr>
+<tr><td><a href="#work_time_config.html">work_time</a> </td><td> enables calculating the duration of tasks in working time instead of calendar time</td></tr>
+<tr><td><a href="#xml_date_config.html">xml_date</a> </td><td> sets the date format that is used to parse data from the data set</td></tr></tbody></table>
+
+<div class="h2">Templates</div>
+
+<table><tbody><tr><td><a href="#api_date_template.html">api_date</a> </td><td> specifies the format of dates that are set by means of API methods. Used to parse incoming dates</td></tr>
+<tr><td><a href="#date_grid_template.html">date_grid</a> </td><td> specifies the format of dates in the "Start time" column</td></tr>
+<tr><td><a href="#date_scale_template.html">date_scale</a> </td><td> specifies the date format of the time scale (X-Axis)</td></tr>
+<tr><td><a href="#drag_link_template.html">drag_link</a> </td><td> specifies the text of tooltips that are displayed when the user creates a new dependency link</td></tr>
+<tr><td><a href="#drag_link_class_template.html">drag_link_class</a> </td><td> specifies the CSS class that will be applied to the link receiver (pop-up circle near the task bar)</td></tr>
+<tr><td><a href="#grid_blank_template.html">grid_blank</a> </td><td> specifies the custom content inserted before the labels of child items in the tree column</td></tr>
+<tr><td><a href="#grid_file_template.html">grid_file</a> </td><td> specifies the icon of child items in the tree column</td></tr>
+<tr><td><a href="#grid_folder_template.html">grid_folder</a> </td><td> specifies the icon of parent items in the tree column</td></tr>
+<tr><td><a href="#grid_header_class_template.html">grid_header_class</a> </td><td> specifies the CSS class that will be applied to the headers of the table's columns</td></tr>
+<tr><td><a href="#grid_indent_template.html">grid_indent</a> </td><td> specifies the indent  of the child items in a branch (in the tree column)</td></tr>
+<tr><td><a href="#grid_open_template.html">grid_open</a> </td><td> specifies the icon of the open/close sign in the tree column</td></tr>
+<tr><td><a href="#grid_row_class_template.html">grid_row_class</a> </td><td> specifies the CSS class that will be applied to a grid row</td></tr>
+<tr><td><a href="#link_class_template.html">link_class</a> </td><td> specifies the CSS class that will be applied to a link</td></tr>
+<tr><td><a href="#link_description_template.html">link_description</a> </td><td> specifies the text in the header of the link's "delete" confirm window</td></tr>
+<tr><td><a href="#progress_text_template.html">progress_text</a> </td><td> specifies the text in the completed part of the task bar</td></tr>
+<tr><td><a href="#quick_info_class_template.html">quick_info_class</a> </td><td> specifies the CSS class that will be applied to  the pop-up edit form</td></tr>
+<tr><td><a href="#quick_info_content_template.html">quick_info_content</a> </td><td> specifies the content of the pop-up edit form</td></tr>
+<tr><td><a href="#quick_info_date_template.html">quick_info_date</a> </td><td> specifies the date of the pop-up edit form</td></tr>
+<tr><td><a href="#quick_info_title_template.html">quick_info_title</a> </td><td> specifies the title of the pop-up edit form</td></tr>
+<tr><td><a href="#scale_cell_class_template.html">scale_cell_class</a> </td><td> specifies the CSS class that will be applied to cells of the time scale of the timeline area</td></tr>
+<tr><td><a href="#scale_row_class_template.html">scale_row_class</a> </td><td> specifies the CSS class that will be applied to the time scale</td></tr>
+<tr><td><a href="#task_cell_class_template.html">task_cell_class</a> </td><td> specifies the CSS class that will be applied to the cells of the timeline area</td></tr>
+<tr><td><a href="#task_class_template.html">task_class</a> </td><td> specifies the CSS class that will be applied to task bars</td></tr>
+<tr><td><a href="#task_date_template.html">task_date</a> </td><td> specifies the date format of the label in the 'Time period' section of the lightbox</td></tr>
+<tr><td><a href="#task_row_class_template.html">task_row_class</a> </td><td> specifies the CSS class that will be applied to the row of the timeline area</td></tr>
+<tr><td><a href="#task_text_template.html">task_text</a> </td><td> specifies the text in the task bars and the header of the lightbox</td></tr>
+<tr><td><a href="#task_time_template.html">task_time</a> </td><td> specifies the date period in the header of the lightbox</td></tr>
+<tr><td><a href="#time_picker_template.html">time_picker</a> </td><td> specifies the format of the drop-down time selector in the lightbox</td></tr>
+<tr><td><a href="#tooltip_date_format_template.html">tooltip_date_format</a> </td><td> specifies the format of start and end dates displayed in the tooltip</td></tr>
+<tr><td><a href="#tooltip_text_template.html">tooltip_text</a> </td><td> specifies the text of tooltips</td></tr>
+<tr><td><a href="#xml_date_template.html">xml_date</a> </td><td> a string from an XML file is converted into a date object in conformity with this template</td></tr>
+<tr><td><a href="#xml_format_template.html">xml_format</a> </td><td> a date object is converted into a string in conformity with this template. Used to send data back to the server</td></tr>
+<tr><td><a href="#rightside_text_template.html">rightside_text</a> </td><td> specifies the text assigned to tasks bars on the right side</td></tr>
+<tr><td><a href="#leftside_text_template.html">leftside_text</a> </td><td> specifies the text assigned to tasks bars on the left side</td></tr>
+
+<div class="h2">Other</div>
+
+<table><tbody><tr><td><a href="#$click_other.html">$click</a> </td><td> redefines the default click behavior for buttons of the Gantt chart</td></tr>
+<tr><td><a href="#config_other.html">config</a> </td><td> defines configuration options for dates, scale, controls</td></tr>
+<tr><td><a href="#date_other.html">date</a> </td><td> a set of date formatting methods</td></tr>
+<tr><td><a href="#json_other.html">json</a> </td><td> specifies JSON serialization and parsing</td></tr>
+<tr><td><a href="#keys_other.html">keys</a> </td><td> defines the hot keys for the Gantt chart</td></tr>
+<tr><td><a href="#locale_other.html">locale</a> </td><td> a locale object (region-specific labels) of the Gantt chart</td></tr>
+<tr><td><a href="#oldxml_other.html">oldxml</a> </td><td> specifies serialization and parsing in the XML format of dhtmlxGantt 1.0</td></tr>
+<tr><td><a href="#skin_other.html">skin</a> </td><td> returns the current skin of the Gantt chart</td></tr>
+<tr><td><a href="#skins_other.html">skins</a> </td><td> returns objects of the available skins</td></tr>
+<tr><td><a href="#templates_other.html">templates</a> </td><td> defines formatting templates for dates, titles, tooltips in the Gantt chart</td></tr>
+<tr><td><a href="#version_other.html">version</a> </td><td> returns the version of dhtmlxGantt</td></tr>
+<tr><td><a href="#xml_other.html">xml</a> </td><td> specifies XML serialization and parsing</td></tr></tbody></table>
+
+<!-- Content Area End -->
+
+</body>
+</html>

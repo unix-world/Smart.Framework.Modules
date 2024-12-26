@@ -1,0 +1,17 @@
+<!-- form r.20220331 -->
+<h1>[###FORM-TITLE|html###]</h1>
+<br>
+<form name="documentor-select" method="GET" action="[###FORM-ACTION|html###]">
+	<input type="hidden" name="page" value="[###FORM-PAGE|html###]">
+	<input type="text" title="cls" name="cls" value="[###FORM-CLS|html###]" style="width:275px;" autocomplete="off" placeholder="[###HINT-CLS|html###]">
+[%%%IF:FORM-CLS:!=;%%%]
+	[%%%IF:SHOW-REF:==yes;%%%]
+	<input type="text" title="ref" name="ref" value="[###FORM-REF|html###]" style="width:300px;" autocomplete="off" placeholder="[###HINT-REF|html###]">
+	[%%%/IF:SHOW-REF%%%]
+	[%%%IF:SHOW-FILE:==yes;%%%]
+	<input type="text" title="file" name="file" value="[###FORM-FILE|html###]" style="width:300px;" autocomplete="off" placeholder="[###HINT-FILE|html###]">
+	[%%%/IF:SHOW-FILE%%%]
+[%%%/IF:FORM-CLS%%%]
+	<br>
+	<button type="submit">Display Documentation</button>
+</form>

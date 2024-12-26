@@ -1,0 +1,14 @@
+
+/*
+// jsPlumb Flowchart Editor / Edit Mode :: CSS
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190327
+*/
+
+.flowchart-area .jtk-node p,
+.flowchart-area .jtk-node span {
+	border: 1px dotted #CCCCCC !important;
+}
+
+/* END */

@@ -1,0 +1,294 @@
+
+//---------------------------------------------------------------------
+// Postgresql server backend for DB Modeler
+// version 0.1.170829.uxm
+//---------------------------------------------------------------------
+
+// PHP Code
+//=====
+die('Uncomment this Line to Enable');
+//=====
+
+ini_set('display_errors', '1');	// display runtime errors
+error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); // error reporting
+ini_set("log_errors", 1);
+//ini_set("error_log", "/tmp/php-error.log");
+ini_set('memory_limit', '256M');		// set the memory limit
+ini_set('default_socket_timeout', 60);	// socket timeout (2 min.)
+ini_set('max_execution_time', 300);		// execution timeout this value must be close to httpd.conf's timeout
+
+//==
+// Parameters for the database you want to import in the application
+define("HOST_ADDR", "127.0.0.1");			// if the database cluster is on the same server as this application use 'localhost' otherwise the appropriate address (192.168.0.2 for example).
+define("PORT_NO", "5432");					// default port is 5432. If you have or had more than one db cluster at the same time, consider ports 5433,... etc.
+define("USER_NAME", "pgsql");				// role having rights to read the database
+define("PASSWORD", "pgsql");				// password for role
+define("DATABASE_NAME", "some_database");	// the database you want to import
+define("DATABASE_SCHEMA", '');				// database schema or '' for all schemas
+//==
+
+//================================================
+
+function SmartDbModelerPgsqlExportToXml() {
+
+	$conn = pg_connect("host=".HOST_ADDR." port=".PORT_NO." dbname=".DATABASE_NAME." user=".USER_NAME." password=".PASSWORD);
+	if(!$conn){
+		header("HTTP/1.0 503 Service Unavailable");
+		die();
+	} //end if
+
+	$xml = "";
+	$arr = array();
+
+	//@ $datatypes = file("../../db/postgresql/datatypes.xml");
+	//$arr[] = $datatypes[0];
+	$arr[] = '<sql db="postgresql">';
+/*	for ($i=1;$i<count($datatypes);$i++) {
+		$arr[] = $datatypes[$i];
+	}
+*/
+
+	// in Postgresql comments are not stored in the ANSI information_schema (compliant to the standard);
+	// so we will need to access the pg_catalog and may as well get the table names at the same time.
+/*	$qstr = "
+			SELECT 	relname as table_name,
+					c.oid as table_oid,
+					(SELECT pg_catalog.obj_description(c.oid, 'pg_class')) as comment
+			FROM pg_catalog.pg_class c
+			WHERE c.relname !~ '^(pg_|sql_)' AND relkind = 'r'
+			ORDER BY table_name;
+	;"; */
+$qstr = <<<'SQL'
+SELECT pn.nspname AS schema_name, pc.relname AS table_name, pc.oid AS table_oid,
+COALESCE((SELECT pg_catalog.obj_description(pc.oid, 'pg_class')), '') as comment
+FROM pg_catalog.pg_class pc, pg_catalog.pg_namespace pn
+WHERE
+pc.relnamespace = pn.oid
+AND pc.relkind = 'r'
+AND (pn.nspname NOT LIKE $_PATERN_$pg_%$_PATERN_$) AND (pn.nspname NOT LIKE $_PATERN_$sql_%$_PATERN_$) AND (pn.nspname != 'information_schema')
+AND (pc.relname NOT LIKE $_PATERN_$pg_%$_PATERN_$) AND (pc.relname NOT LIKE $_PATERN_$sql_%$_PATERN_$) AND (pc.relname != 'information_schema')
+ORDER BY pn.nspname ASC, pc.relname ASC, pc.oid ASC
+;
+SQL;
+// list schema: SELECT 'SCHEMA' AS type, oid, NULL AS schemaname, NULL AS relname, nspname AS name FROM pg_catalog.pg_namespace pn WHERE pn.nspname NOT LIKE $_PATERN_$pg_%$_PATERN_$ AND pn.nspname != 'information_schema'
+	$result = pg_query($conn, $qstr);
+	while ($row = pg_fetch_array($result)) {
+		$tblschema = $row["schema_name"];
+		if(DATABASE_SCHEMA && ((string)DATABASE_SCHEMA != (string)$tblschema)) {
+			continue;
+		} //end if
+		$table = $row["table_name"];
+		$table_oid = $row["table_oid"];
+		$xml .= '<table name="'.htmlspecialchars($tblschema.'.'.$table).'">';
+		//$xml .= '<table name="'.htmlspecialchars($table).'">';
+		$comment = (isset($row["comment"]) ? $row["comment"] : "");
+		if($comment) {
+			$xml .= '<comment>'.htmlspecialchars($comment).'</comment>';
+		} //end if
+	/*	$qstr = "
+			SELECT *, col_description(".$table_oid.",ordinal_position) as column_comment
+			FROM information_schema.columns
+			WHERE table_name = '".$table."' AND table_schema = '".$tblschema."'
+			ORDER BY ordinal_position
+		;"; */
+$qstr = <<<SQL
+SELECT *, col_description({$table_oid},ordinal_position) as column_comment
+	FROM information_schema.columns
+	WHERE
+		table_name = '{$table}'
+		AND table_schema = '{$tblschema}'
+	ORDER BY ordinal_position
+;
+SQL;
+//echo $qstr;
+		$result2 = pg_query($conn, $qstr);
+		while($row = pg_fetch_array($result2)) {
+//print_r($row);
+			$name  = $row["column_name"];
+			$type  = $row["data_type"];		// maybe use "udt_name" instead to consider user types
+			if((string)$row['character_maximum_length']) {
+				$type .= '('.$row['character_maximum_length'].')';
+			} elseif(((string)strtoupper((string)$type) == 'NUMERIC') AND (((string)$row['numeric_precision'] != '') OR ((string)$row['numeric_scale'] != ''))) {
+				$type .= '('.(int)$row['numeric_precision'].','.(int)$row['numeric_scale'].')';
+			} //end if
+			$comment = (isset($row["column_comment"]) ? $row["column_comment"] : "");
+			$null = ($row["is_nullable"] == "YES" ? "1" : "0");
+			$def = $row["column_default"];
+			$ai = '0'; // $ai:autoincrement... Not in postgresql, but there are serial classes as nextval
+			if(stripos((string)trim((string)strtolower((string)$def)), 'nextval(') === 0) {
+				$ai = '1'; // just for info ...
+			} //end if
+			if($def == "NULL") {
+				$def = "";
+			} //end if
+			$xml .= '<row name="'.htmlspecialchars($name).'" null="'.htmlspecialchars($null).'" autoincrement="'.htmlspecialchars($ai).'">';
+			$xml .= '<datatype>'.strtoupper($type).'</datatype>';
+			$xml .= '<default>'.htmlspecialchars($def).'</default>';
+			if($comment) {
+				$xml .= '<comment>'.htmlspecialchars($comment).'</comment>';
+			} //end if
+
+			/* fk constraints */
+		/*	$qstr = "
+				SELECT 	kku.column_name,
+						ccu.table_name AS references_table,
+						ccu.column_name AS references_field
+				FROM information_schema.table_constraints tc
+				LEFT JOIN information_schema.constraint_column_usage ccu
+					ON tc.constraint_name = ccu.constraint_name
+				LEFT JOIN information_schema.key_column_usage kku
+					ON kku.constraint_name = ccu.constraint_name
+				WHERE constraint_type = 'FOREIGN KEY'
+					AND kku.table_name = '".$table."' AND kku.table_schema = '".$tblschema."'
+					AND kku.column_name = '".$name."'
+			;"; */
+$qstr = <<<SQL
+SELECT 	kku.column_name, ccu.table_name AS references_table, ccu.column_name AS references_field
+	FROM information_schema.table_constraints tc
+		LEFT JOIN information_schema.constraint_column_usage ccu ON tc.constraint_name = ccu.constraint_name
+		LEFT JOIN information_schema.key_column_usage kku ON kku.constraint_name = ccu.constraint_name
+	WHERE
+		constraint_type = 'FOREIGN KEY'
+		AND kku.table_name = '{$table}' AND kku.table_schema = '{$tblschema}'
+		AND kku.column_name = '{$name}'
+;
+SQL;
+//echo $qstr;
+			$result3 = pg_query($conn, $qstr);
+
+			while ($row = pg_fetch_array($result3)) {
+				$xml .= '<relation table="'.htmlspecialchars($tblschema.'.'.$row["references_table"]).'" row="'.htmlspecialchars($row["references_field"]).'" />';
+			}
+
+			$xml .= '</row>';
+		}
+
+		// keys
+/*		$qstr = "
+			SELECT	tc.constraint_name,
+					tc.constraint_type,
+					kcu.column_name
+			FROM information_schema.table_constraints tc
+			LEFT JOIN information_schema.key_column_usage kcu
+				ON tc.constraint_catalog = kcu.constraint_catalog
+				AND tc.constraint_schema = kcu.constraint_schema
+				AND tc.constraint_name = kcu.constraint_name
+			WHERE tc.table_name = '".$table."' AND constraint_type != 'FOREIGN KEY'
+			ORDER BY tc.constraint_name
+		;"; */
+
+$qstr = <<<SQL
+SELECT tc.constraint_name, tc.constraint_type, kcu.column_name
+	FROM information_schema.table_constraints tc
+		LEFT JOIN information_schema.key_column_usage kcu ON tc.constraint_catalog = kcu.constraint_catalog AND tc.constraint_schema = kcu.constraint_schema AND tc.constraint_name = kcu.constraint_name
+	WHERE
+		tc.table_name = '{$table}' AND tc.table_schema = '{$tblschema}'
+		AND constraint_type != 'FOREIGN KEY'
+	ORDER BY tc.constraint_name
+;
+SQL;
+
+		$result2 = pg_query($conn, $qstr);
+		$keyname1 = "";
+		$reg_keys = [];
+		while ($row2 = pg_fetch_array($result2)){
+			if((string)$row2["constraint_type"] != "CHECK") {
+				$keyname = $row2["constraint_name"];
+				if((string)$keyname != (string)$keyname1) {
+					if((string)$keyname1 != "") {
+						$xml .= '</key>';
+					}
+					if((string)$row2["constraint_type"] == "PRIMARY KEY") {
+						$row2["constraint_type"] = "PRIMARY";
+					}
+					$reg_keys[(string)$keyname]++;
+					$xml .= '<key name="'.$keyname.'" type="'.$row2["constraint_type"].'">';
+					$xml .= isset($row2["column_name"]) ? '<part>'.$row2["column_name"].'</part>' : "";
+				} else {
+					$xml .= isset($row2["column_name"]) ? '<part>'.$row2["column_name"].'</part>' : "";
+				}
+				$keyname1 = $keyname;
+			}
+		}
+		if((string)$keyname1 != "") {
+			$xml .= '</key>';
+		}
+
+		// index
+/*		$qstr = 'SELECT pcx."relname" as "INDEX_NAME", pa."attname" as
+			"COLUMN_NAME", * FROM "pg_index" pi LEFT JOIN "pg_class" pcx ON pi."indexrelid"  =
+			pcx."oid" LEFT JOIN "pg_class" pci ON pi."indrelid" = pci."oid" LEFT JOIN
+			"pg_attribute" pa ON pa."attrelid" = pci."oid" AND pa."attnum" = ANY(pi."indkey")
+			WHERE pci."relname" = \''.$table.'\' order by pa."attnum"'; */
+		$qstr = <<<SQL
+SELECT
+	pcx."relname" as "INDEX_NAME",
+	pa."attname" as "COLUMN_NAME",
+	* FROM "pg_index" pi
+		LEFT JOIN "pg_class" pcx ON pi."indexrelid"  = pcx."oid"
+		LEFT JOIN "pg_class" pci ON pi."indrelid" = pci."oid"
+		LEFT JOIN "pg_namespace" pn ON pci."relnamespace" = pn."oid"
+		LEFT JOIN "pg_attribute" pa ON pa."attrelid" = pci."oid" AND pa."attnum" = ANY(pi."indkey")
+	WHERE pci."relname" = '{$table}' AND pn.nspname = '{$tblschema}'
+	ORDER BY pa."attnum"
+;
+SQL;
+		$result2 = pg_query($conn, $qstr);
+		$idx = array();
+		while ($row2 = pg_fetch_array($result2)) {
+			$name = $row2["INDEX_NAME"];
+			if (array_key_exists($name, $idx)) {
+				$obj = $idx[$name];
+			} else {
+				$t = "INDEX";
+				if ($row2['indisunique'] == 't') {
+					$t = "UNIQUE";
+					//break;
+				}
+				if ($row2['indisprimary'] == 't') {
+					$t = "PRIMARY";
+					//break;
+				}
+
+				$obj = array(
+					"columns" => array(),
+					"type" => $t
+				);
+			}
+
+			$obj["columns"][] = $row2["COLUMN_NAME"];
+			$idx[$name] = $obj;
+		}
+
+		foreach ($idx as $name=>$obj) {
+			if(!$reg_keys[(string)$name]) {
+				$xmlkey = '<key name="'.$name.'" type="'.$obj["type"].'">';
+				for ($i=0;$i<count($obj["columns"]);$i++) {
+					$col = $obj["columns"][$i];
+					$xmlkey .= '<part>'.$col.'</part>';
+				}
+				$xmlkey .= '</key>';
+				$xml .= $xmlkey;
+			}
+		}
+
+		$xml .= "</table>";
+
+	}
+	$arr[] = $xml;
+	$arr[] = '</sql>';
+
+	return implode("\n", $arr);
+
+} //END FUNCTION
+
+//================================================
+
+//case "import":
+header("Content-type: text/xml");
+echo '<'.'?xml version="1.0" encoding="utf-8" ?'.'>'."\n";
+echo SmartDbModelerPgsqlExportToXml();
+
+//================================================
+
+// #END PHP Code

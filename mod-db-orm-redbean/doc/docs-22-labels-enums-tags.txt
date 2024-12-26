@@ -1,0 +1,62 @@
+Labels, Enums, Tags
+
+Labels, Enums and Tags are all based on very simple beans. These beans only have an id, a type and a name. While they might look simple, these beans can offer various powerful services in your applications. Labels form the basis for enums and tags. Enums are in fact labels in a one-to-many relation while Tags are labels in a many-to-many relation.
+Labels
+
+A Label is a bean with just a name property. You can generate a batch of labels of a certain type using:
+    $labels = R::dispenseLabels( 'meals', ['pizza', 'pasta'] );
+
+This will create two meal objects. Each bean will have a name property that corresponds to one of the strings in array.
+
+You can also collect the strings from label beans using:
+    $array = R::gatherLabels( $meals );
+
+The gatherLabels() function returns an alphabetically sorted array of strings each containing one name property of a bean in the bean list provided.
+Enums
+
+An enum type is a special bean that enables for a property to be a set of predefined values. To use an ENUM:
+    $tea->flavour = R::enum( 'flavour:english' );
+
+The ENUM method will do a lot of work here. First it checks whether there exists a 'flavour' bean with the name 'ENGLISH'. If this is the case, enum() will return this bean, otherwise it will create such a bean, store it in the database and return it. This way your ENUMs are created on the fly - properly. To compare an enum value:
+    $tea->flavour->equals( R::enum( 'flavour:english' ) );
+
+To get a list of all flavours, just omit the value part:
+    $flavours = R::enum( 'flavour' );
+
+To get a comma separated list of flavours you might want to combine this method with other Label Maker methods:
+    implode( ',', R::gatherLabels( R::enum( 'flavour' ) ) );
+
+Since RedBeanPHP enums are beans you can add other properties as well. To query using an enum:
+    $flowers = R::find( 'flower', ' color_id = ? ', [ R::enum( 'color:red' )->id ] );
+
+The find query above will retrieve all red flowers. While this query is perfectly readable the syntax is a bit clunky, therefore there is a shorthand notation for the R::enum(...)->id part:
+    $flowers = R::find( 'flower', ' color_id = ? ', [ EID('color:red') ] );
+
+The global function EID() returns the ID of the given ENUM directly.
+Tags
+
+Tags are often used to categorize or group items. To tag a an item:
+    R::tag( $page, array( 'topsecret', 'mi6' ) );
+
+To fetch all tags attached to a certain bean we use the same method but without the tag parameter:
+    $tags = R::tag( $page ); //returns array with tags
+
+To untag an item use:
+    R::untag( $bean, $tagListArray );
+
+To get all beans that have been tagged with $tags, use tagged():
+    R::tagged( $beanType, $tagList );
+
+To find out whether beans have been tagged with specific tags, use hasTag():
+    R::hasTag( $bean, $tags, $all = FALSE )
+
+To add tags without removing the old ones:
+    R::addTags( $page, ['funny', 'hilarious'] );
+
+To get beans that have ALL these tags:
+    //must be tagged with both tags
+    R::taggedAll( $page, ['funny', 'hilarious'] );
+
+As of version 5.3:
+To just count tags use: R::countTagged() and R::countTaggedAll(). Same parameters.
+

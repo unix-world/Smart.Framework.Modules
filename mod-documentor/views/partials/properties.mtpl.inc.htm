@@ -1,0 +1,13 @@
+<!-- properties r.20200121 -->
+[%%%LOOP:ARR-PROPERTIES%%%]
+[%%%IF:ARR-PROPERTIES.IS-INTERNAL-PRIV:!=1;%%%]
+<div class="doc-container" id="Property--[###ARR-PROPERTIES.NAME|htmid|html###]">
+	<span class="doc-modifiers">[###ARR-PROPERTIES.MODIFIERS|html###]</span> <b>$[###ARR-PROPERTIES.NAME|html###]</b>[%%%IF:ARR-PROPERTIES.VALUE:!=;%%%]&nbsp;=&nbsp;<span class="doc-param-value"><b>[###ARR-PROPERTIES.VALUE|html###]</b></span>&nbsp;;&nbsp;[%%%/IF:ARR-PROPERTIES.VALUE%%%]&nbsp;[%%%IF:ARR-PROPERTIES.IS-STATIC:==1;%%%]<span title="Static Property"><b>::</b></span>[%%%ELSE:ARR-PROPERTIES.IS-STATIC%%%]<span title="Object Property"><b>-&gt;</b></span>[%%%/IF:ARR-PROPERTIES.IS-STATIC%%%][%%%IF:ARR-PROPERTIES.DOC-VAR-TYPE:!=;%%%]&nbsp;<i>[###ARR-PROPERTIES.DOC-VAR-TYPE|html###]</i>[%%%/IF:ARR-PROPERTIES.DOC-VAR-TYPE%%%]
+	[%%%IF:ARR-PROPERTIES.COMMENT-HTML:!=;%%%]
+		<div class="doc-method-comments">[###ARR-PROPERTIES.COMMENT-HTML###]</div>
+	[%%%/IF:ARR-PROPERTIES.COMMENT-HTML%%%]
+</div>
+[%%%ELSE:ARR-PROPERTIES.IS-INTERNAL-PRIV%%%]
+<!-- Skip Internal-Priv Property: `$[###ARR-PROPERTIES.NAME|html###]` -->
+[%%%/IF:ARR-PROPERTIES.IS-INTERNAL-PRIV%%%]
+[%%%/LOOP:ARR-PROPERTIES%%%]

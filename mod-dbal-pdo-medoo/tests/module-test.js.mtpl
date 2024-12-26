@@ -1,0 +1,106 @@
+[%%%COMMENT%%%]
+// IMPORTANT: use only JavaScript code here, no HTML !
+[%%%/COMMENT%%%]
+//===== QUnit Tests.Mod.DBAL-PDO-Medoo: START :: r.20241216
+
+(function() {
+
+	var localTest = [###TEST-MOD-DB|bool###];
+
+	if(!localTest) {
+
+		localTest = false; // reset
+
+		var localTests = {};
+		localTests.SQLite 		= [###TEST-DB-SQLITE|bool###];
+		for(var val in localTests) {
+			if(localTests[val] === true) {
+				localTest = true;
+				break;
+			} //end if
+		} //end for
+
+		if(!localTest) {
+
+			// skip Medoo-DBAL-PDO Test
+			smartQUnitDisabledTests++;
+
+		} else {
+
+			QUnit.module('DataBase.Modules', function(){
+
+				QUnit.test('Medoo DBAL/PDO Test: PHP :: iFrame', function(assert) {
+					if(localTests.SQLite) {
+						SmartQUnit.runiFrameTest(
+							baseScript + '?page=dbal-pdo-medoo.test&driver=sqlite',
+							500,
+							assert,
+							'Medoo DB Driver DB[sqlite/memory] Test: OK.'
+						);
+					}
+				});
+
+			});
+
+		} //end if else
+
+	} else {
+
+		localTest = false; // reset
+
+		var localTests = {};
+		localTests.SQLite 		= [###TEST-DB-SQLITE|bool###];
+		localTests.PostgreSQL 	= [###TEST-DB-PGSQL|bool###];
+		localTests.MySQL 		= [###TEST-DB-MYSQL|bool###];
+		for(var val in localTests) {
+			if(localTests[val] === true) {
+				localTest = true;
+				break;
+			} //end if
+		} //end for
+
+		if(!localTest) {
+
+			// skip Medoo-DBAL-PDO Test
+			smartQUnitDisabledTests++;
+
+		} else {
+
+			QUnit.module('DataBase.Modules', function(){
+
+				QUnit.test('Medoo DBAL/PDO Test: PHP :: iFrame', function(assert) {
+					if(localTests.SQLite) {
+						SmartQUnit.runiFrameTest(
+							baseScript + '?page=dbal-pdo-medoo.test&driver=sqlite',
+							500,
+							assert,
+							'Medoo DB Driver DB[sqlite/file] Test: OK.'
+						);
+					}
+					if(localTests.PostgreSQL) {
+						SmartQUnit.runiFrameTest(
+							baseScript + '?page=dbal-pdo-medoo.test&driver=pgsql',
+							500,
+							assert,
+							'Medoo DB Driver DB[pgsql/server] Test: OK.'
+						);
+					}
+					if(localTests.MySQL) {
+						SmartQUnit.runiFrameTest(
+							baseScript + '?page=dbal-pdo-medoo.test&driver=mysql',
+							500,
+							assert,
+							'Medoo DB Driver DB[mysql/server] Test: OK.'
+						);
+					}
+				});
+
+			});
+
+		} //end if else
+
+	} //end if else
+
+})();
+
+//===== QUnit Tests.Mod.DBAL-PDO-Medoo: #END

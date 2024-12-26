@@ -1,0 +1,19 @@
+<br>
+<div class="ux-grid-row">
+	<div class="ux-grid-col s12">
+		<h2 style="display:inline;">SVN Repository: <span style="color:#72C100;">[###REPO-NAME|html###]</span></h2>
+		<img width="64" height="64" align="right" src="modules/mod-webdav/libs/img/ftype-icons/file[###ICON-SUFFIX|html###].svg" alt="FileType[###ICON-SUFFIX|upper|html###]" title="FileType[###ICON-SUFFIX|upper|html###]">
+		<br>
+		<h5 style="display:inline;" title="[###REPO-ACTION|ucfirst|html###]"><span style="color:#72C100;">Rev.[###REVISION|html###]</span>[%%%IF:REPO-ACTION:==diff;%%%] <span style="color:#FF5500;">Changes</span> [%%%ELSE:REPO-ACTION%%%] [%%%/IF:REPO-ACTION%%%]<span style="color:#CCCCCC;">@</span> <span style="color:#778899;">[###REPO-PATH|html###]</span></h5>
+		<div title="Size: [###FILE-SIZE|html###]"><b>File-Size:&nbsp;[###FILE-SIZE-BYTES|int###]&nbsp;bytes</b></div>
+	</div>
+</div>
+[###CODE-HIGHLIGHT###]
+<div>
+[###CODE-EXT-HTML###]
+[%%%IF:CODE-HTML:!=;%%%]
+	<pre style="border:1px solid #DDDDDD; text-align:left!important; padding:4px;"><code class="[###CODE-TYPE|html###] syntax" style="width:99%; height:75vh; overflow:auto;">[###CODE-HTML###]</code></pre>
+[%%%ELSE:CODE-HTML%%%]
+	<br><div style="border:1px solid #DDDDDD; background:#FAFAFA; text-align:center!important; padding:4px;"><h3 style="color:#778899;">No Content to display.</h3></div>
+[%%%/IF:CODE-HTML%%%]
+</div>

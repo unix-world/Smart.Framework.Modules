@@ -1,0 +1,6 @@
+
+License: MIT
+
+Lightweight jQuery Youtube Video Player
+https://www.jqueryscript.net/other/Lightweight-jQuery-Youtube-Video-Player-simplePlayer-js.html
+

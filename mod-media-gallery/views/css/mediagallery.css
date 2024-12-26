@@ -1,0 +1,53 @@
+
+/* -- CSS Start :: SmartFramework / Media Gallery :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* -- Media Gallery Design -- */
+
+#mediagallery_box {
+	padding:2px;
+	border: 1px solid #ECECEC;
+	background-color: #FFFFFF;
+}
+
+#mediagallery_box #mediagallery_box_item {
+	padding: 0px;
+	border: 1px solid #FCFCFC;
+	background-color: #FFFFFF;
+}
+#mediagallery_box #mediagallery_box_item img {
+	border: 1px solid #F0F0F0;
+	box-shadow: 2px 2px 3px #BBBBBB;
+}
+#mediagallery_box #mediagallery_box_item #mediagallery_label {
+	font-size: 12px;
+	color: #555555;
+}
+
+#mediagallery_box #mediagallery_title {
+	background: #778899;
+	color: #FFFFFF;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: 12px;
+	padding-right: 12px;
+	font-size: 36px;
+}
+
+/* -- Media Gallery Layout -- */
+
+#mediagallery_box #mediagallery_row {
+	width: 99%;
+}
+#mediagallery_box #mediagallery_cell {
+	display: inline-block! important;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+/* -- */
+
+/* ----------------------------- */
+
+/* -- CSS End -- */

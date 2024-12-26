@@ -1,0 +1,45 @@
+Migrations
+
+After a release you might add new features to your application in your development environment. New columns and tables may also be added. At that point the database structures of production and development environments are out-of-sync. Normally you would solve this problem with migration scripts. These are little SQL scripts generated on your development box that can sync the database structure. With RedBeanPHP this is often not needed. The easiest way to solve the migration issue with RedBeanPHP is just to temporarily turn on fluid mode for a single script and have RedBeanPHP create the missing tables and columns for you in the production environment.
+Fluid Migrations
+
+To make the above work you need to be a little strategic about the PHP scripts you write. The easiest way is to have a single script for adding new tables. This script can also make the new tables and columns for you on the production server. Don't forget to only temporary enable fluid mode on a production server (and add IP-restriction, recommended!). You can temporarily re-activate fluid mode using:
+    R::freeze(FALSE);
+
+Don't forget to remove this line after the script has been executed and the required columns and tables have been generated.
+Migration Logger
+
+Another option is to create your own logger by extending one of the default Logging classes. You can then make your logger write any query that contains phrases like 'ALTER TABLE' or 'CREATE TABLE' to a file. As such this solution kind of creates an SQL trail: a trail of queries reflecting the changes RedBeanPHP has applied to your database schema. Here is an example implementation of a migration logger:
+
+class MigrationLogger implements Logger {
+
+    private $file;
+
+    public function __construct( $file ) {
+        $this->file = $file;
+    }
+
+    public function log() {
+        $query = func_get_arg(0);
+        if (preg_match( '/^(CREATE|ALTER)/', $query )) {
+            file_put_contents( $this->file, "{$query};\n",  FILE_APPEND );
+        }
+    }
+}
+
+and this is how to wire it:
+
+$ml = new MigrationLogger( sprintf( '/tmp/migration_%s.sql', date('Y-m-d') ) );
+
+R::getDatabaseAdapter()
+    ->getDatabase()
+    ->setLogger($ml)
+    ->setEnableLogging(TRUE);
+
+The example above will create a file like:
+/tmp/migration_2017-09-27.sql
+
+the file may contain something like:
+CREATE TABLE `book` ( id INTEGER PRIMARY KEY AUTOINCREMENT ) ;
+ALTER TABLE `book` ADD `title` TEXT ;
+

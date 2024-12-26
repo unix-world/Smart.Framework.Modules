@@ -1,0 +1,8 @@
+
+# Smart.Framework.Modules: CodeMirror v.5.61.1 r.20210605 #
+
+// r.8.7 / smart.framework.v.8.7
+
+# PHP 7.4 .. PHP 8.4 ready
+
+###

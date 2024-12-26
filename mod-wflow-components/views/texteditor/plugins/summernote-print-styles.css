@@ -1,0 +1,46 @@
+
+/*
+// (c) 2019-2020 unix-world.org
+// License: GPLv3
+// v.20200501
+*/
+
+@media print {
+
+	* { /* force pring background colors */
+		-webkit-print-color-adjust: exact !important; /* Chrome, Safari */
+		color-adjust: exact !important; /*Firefox*/
+	}
+
+}
+
+.note-float-left {
+	margin-right: 20px;
+	margin-bottom: 10px;
+}
+.note-float-right {
+	margin-left: 20px;
+	margin-bottom: 10px;
+}
+
+.note-printable blockquote {
+	background: #F9F9F9 !important;
+	border: 1px solid #CCCCCC !important;
+	border-left: 10px solid #CCCCCC !important;
+	margin: 20px 10px !important;
+	padding: 15px 10px !important;
+	quotes: "\201C""\201D""\2018""\2019";
+}
+.note-printable blockquote:before {
+	color: #CCCCCC !important;
+	content: open-quote;
+	font-size: 4rem !important;
+	line-height: 0.1rem !important;
+	margin-right: 0.25rem !important;
+	vertical-align: -2rem !important;
+}
+.note-printable blockquote p {
+	display: inline !important;
+}
+
+/* END */

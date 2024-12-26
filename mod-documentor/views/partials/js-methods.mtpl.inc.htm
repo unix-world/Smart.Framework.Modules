@@ -1,0 +1,43 @@
+<!-- methods r.20210414 -->
+[%%%LOOP:ARR-METHODS%%%]
+[%%%IF:ARR-METHODS.IS-INTERNAL-PRIV:!=1;%%%]
+<div class="doc-container" id="Method--[###ARR-METHODS.NAME|htmid|html###]">
+	<span class="doc-modifiers">[###ARR-METHODS.MODIFIERS|html###]</span> <span class="doc-keyword"><i>[%%%IF:ARR-METHODS.IS-ARROW:!=1;%%%]function[%%%/IF:ARR-METHODS.IS-ARROW%%%]</i></span> <span class="doc-method-name"><b>[###ARR-METHODS.NAME|html###]</b></span>[%%%IF:ARR-METHODS.IS-ARROW:==1;%%%]&nbsp;=[%%%/IF:ARR-METHODS.IS-ARROW%%%]&nbsp;(
+	[%%%LOOP:ARR-METHODS.PARAMS%%%]
+		[%%%IF:ARR-METHODS.PARAMS.TYPE:!=;%%%]<i>[###ARR-METHODS.PARAMS.TYPE|html###]</i>&nbsp;[%%%/IF:ARR-METHODS.PARAMS.TYPE%%%]<span class="doc-param-name"><b><span title="`[###ARR-METHODS.PARAMS.VAR|html###]` Parameter">[###ARR-METHODS.PARAMS.VAR|html###]</span></b></span>[%%%IF:ARR-METHODS.PARAMS._-ITERATOR-_:<###ARR-METHODS.PARAMS._-MAXCOUNT-_###;%%%],[%%%|SPACE%%%][%%%/IF:ARR-METHODS.PARAMS._-ITERATOR-_%%%]
+	[%%%/LOOP:ARR-METHODS.PARAMS%%%]
+	)&nbsp;[%%%IF:ARR-METHODS.IS-ARROW:==1;%%%]=&gt;&nbsp;[%%%/IF:ARR-METHODS.IS-ARROW%%%]{}&nbsp;[%%%IF:ARR-METHODS.IS-STATIC:==1;%%%]<span title="Static Method"><b>.</b></span>[%%%ELSE:ARR-METHODS.IS-STATIC%%%]<span title="Object Method"><b>(new)&nbsp;.</b></span>[%%%/IF:ARR-METHODS.IS-STATIC%%%]&nbsp;[###ARR-METHODS.RETURNS|html###]
+	<div class="doc-method-ret-params">
+	[%%%IF:ARR-METHODS.HINT:!=;%%%]
+		@hint: [###ARR-METHODS.HINT|html|syntaxhtml###]<br>
+	[%%%/IF:ARR-METHODS.HINT%%%]
+	[%%%IF:ARR-METHODS.THROWS:!=;%%%]
+		@throws: [###ARR-METHODS.THROWS|html|syntaxhtml###]<br>
+	[%%%/IF:ARR-METHODS.THROWS%%%]
+	[%%%IF:ARR-METHODS._RETURN:!=;%%%]
+		@return: [###ARR-METHODS._RETURN|html|syntaxhtml###]<br>
+	[%%%/IF:ARR-METHODS._RETURN%%%]
+	[%%%IF:ARR-METHODS.FIRES:!=;%%%]
+		@fires: [###ARR-METHODS.FIRES|html|syntaxhtml###]<br>
+	[%%%/IF:ARR-METHODS.FIRES%%%]
+	[%%%IF:ARR-METHODS.LISTENS:!=;%%%]
+		@listens: [###ARR-METHODS.LISTENS|html|syntaxhtml###]<br>
+	[%%%/IF:ARR-METHODS.LISTENS%%%]
+	[%%%LOOP:ARR-METHODS.PARAMS%%%]
+		@param: [###ARR-METHODS.PARAMS.LINE|html|syntaxhtml###]<br>
+	[%%%/LOOP:ARR-METHODS.PARAMS%%%]
+	[%%%LOOP:ARR-METHODS.DEPENDS%%%]
+		@requires: [###ARR-METHODS.DEPENDS._-VAL-_|html|syntaxhtml###]<br>
+	[%%%/LOOP:ARR-METHODS.DEPENDS%%%]
+	</div>
+	[%%%IF:ARR-METHODS.COMMENT-HTML:!=;%%%]
+		<div class="doc-method-comments">[###ARR-METHODS.COMMENT-HTML###]</div>
+	[%%%/IF:ARR-METHODS.COMMENT-HTML%%%]
+	[%%%IF:ARR-METHODS.CODE-HTML:!=;%%%]
+		<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript">[###ARR-METHODS.CODE-HTML###]</code></pre>
+	[%%%/IF:ARR-METHODS.CODE-HTML%%%]
+</div>
+[%%%ELSE:ARR-METHODS.IS-INTERNAL-PRIV%%%]
+<!-- Skip Internal-Priv Method: `[###ARR-METHODS.NAME|html###]()` -->
+[%%%/IF:ARR-METHODS.IS-INTERNAL-PRIV%%%]
+[%%%/LOOP:ARR-METHODS%%%]

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<meta name="viewport" id="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>Javascript SpreadSheet</title>
+
+<link rel="stylesheet" type="text/css" href="../../../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+<style type="text/css">
+* {
+	font-family: 'IBM Plex Sans',arial,sans-serif;
+}
+</style>
+
+<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../../../../lib/js/framework/src/core_utils.js"></script>
+
+<script src="../excel-formula-parser.js"></script>
+
+<link rel="stylesheet" href="../jquery.js-spreadsheet.css" type="text/css">
+<script src="../jquery.js-spreadsheet.js"></script>
+
+</head>
+<body>
+<h1>Javascript SpreadSheet</h1>
+<div class="container">
+	<div class="row content">
+		<div class="column" style="margin-right:60px;min-width:280px;max-width:780px;text-align:justify;">
+			<div id="content">
+				<div id="my"></div>
+				<br><br>
+				<div id="my1"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+// version: 1.5.7.1.uxm190205
+
+var data = [
+	['aa',1,10000,'=SUM(B1,C1)'],
+	['bbb',2,6000,'=B2+C2'],
+	['ccc',3,5000,'=B3+C3'],
+	['ddd',4,4000,'=B4+C4'],
+	['Total " <a> B','=SUM(B1:B4)','=(C1+C2+C3+C4)','=SUM(D1:D4)'],
+	['','=COUNT(B1:B5)','=AVERAGE(C1,C2,C3,C4)','=AVERAGE(D1:D4)'],
+	['','=MIN(B1,B5)','=MAX(B1:B5)','=ABS(B1*-1)']
+];
+
+var data1 = [
+	['aa',1,10000,'=B1*C1'],
+	['bbb',2,6000,'=B2*C2'],
+	['ccc',3,5000,'=B3*C3'],
+	['ddd',4,4000,'=B4*C4'],
+	['Total "" <b>, A','=SUM(B1:B4)','=(C1+C2+C3+C4)','=SUM(D1:D4)'],
+	['','=COUNT(B1:B5)','','']
+];
+
+$('#my').jexcel({
+	data:data,
+	columns: [
+		{ type:'text' },
+		{ type:'numeric' },
+		{ type:'numeric' },
+		{ type:'numeric' },
+	],
+//    colHeaders: ['Equipment','Quantity', 'Price', 'Total'],
+	colWidths: [ 400, 100, 200 ],
+	colWidths: [300, 150, 150, 150, 150],
+});
+
+$('#my1').jexcel({
+	data:data1,
+	columns: [
+		{ type:'text' },
+		{ type:'numeric' },
+		{ type:'numeric' },
+		{ type:'numeric' },
+	],
+	colHeaders: ['Equipment','Quantity', 'Price', 'Total'],
+	colWidths: [ 400, 100, 200 ],
+	colWidths: [300, 150, 150, 150, 150],
+});
+</script>
+</body>
+</html>

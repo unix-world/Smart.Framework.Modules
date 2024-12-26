@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Gantt Chart - Demo</title>
+	<script src="../../../../../lib/js/jquery/jquery.js" type="text/javascript"></script>
+	<script src="../../../../../lib/js/framework/smart-framework.pak.js" type="text/javascript"></script>
+
+	<link rel="stylesheet" href="../skins/terrace.css" type="text/css" media="screen">
+	<script type="text/javascript" src="../dhtmlx-init.js"></script>
+	<script type="text/javascript" src="../gantt.js"></script>
+	<script type="text/javascript" src="../ext/gantt-plugin-markers.js"></script><!-- optional extension -->
+	<script type="text/javascript" src="../ext/gantt-plugin-tooltip.js"></script><!-- optional extension -->
+	<script type="text/javascript" src="../ext/gantt-plugin-quickinfo.js"></script><!-- optional extension -->
+	<script type="text/javascript" src="../smart-gantt.js"></script>
+
+	<style type="text/css">
+		body {
+			margin-top: 10px;
+			text-align: center;
+			font-size: 13px;
+			font-family: tahoma,verdana,arial,sans-serif;
+		}
+		.weekend {
+			background: #F4F7F4;
+		}
+		.gantt_selected .weekend {
+			background: #F7EB91;
+		}
+		#mygantt {
+			text-align: left;
+			width: 99%;
+			height: 90%;
+			min-height: 80%;
+			position: absolute;
+			top: 55px;
+			left: 5px;
+		}
+	</style>
+
+</head>
+<body>
+<h1>Gantt Chart - Demo</h1>
+<div align="center">
+<div id="mygantt"></div>
+<script type="text/javascript">
+var gChart;
+(function(){
+
+	function renderGant(demo_tasks) {
+		gChart = SmartGanttManager.drawInstance(demo_tasks, true, true, 'mygantt', null, null, null);
+	}
+
+	$.get('testdata.json', renderGant, 'json');
+
+})();
+</script>
+</div>
+<select id="gantt-display-mode" onchange="SmartGanttManager.changeScale(gChart, this.value, null, null);" style="position:fixed; top:15px; left:55px;" autocomplete="off">
+	<option value="day">Scale Day</option>
+	<option value="week">Scale Week</option>
+	<option value="month">Scale Month</option>
+<!-- <option value="quarter">Scale Quarter</option> -->
+	<option value="year">Scale Year</option>
+</select>
+<button onClick="console.log(JSON.stringify(SmartGanttManager.getExportData(gChart),null,2));" style="position:fixed; top:15px; right:105px;">Export Data (to console)</button>
+</body>

@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>highlight.js - Programming Languages / Scripting Demo</title>
+
+  <link rel="stylesheet" href="../css/zenburn.css">
+  <script type="text/javascript" src="../highlight.js"></script>
+
+  <script type="text/javascript" src="../syntax/lang2/basic.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/cs.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/delphi.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/erlang.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/fortran.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/fsharp.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/haskell.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/java.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/scala.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/groovy.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/kotlin.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/objectivec.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/ocaml.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/openscad.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/d.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/r.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/swift.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/scheme.js"></script>
+  <script type="text/javascript" src="../syntax/lang2/haxe.js"></script>
+
+  <script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+  <script>
+  jQuery(document).ready(function() {
+    jQuery('div pre code').each(function(i, block) {
+      hljs.highlightBlock(block);
+    });
+  });
+  </script>
+
+</head>
+<body>
+
+<h1>Highlight.Js Demo: Programming Languages / Scripting</h1>
+<hr>
+
+<!-- Objective-C -->
+
+<div>
+<h2>Objective-C</h2>
+<pre><code class="objectivec">    // First program example
+
+    #import <Foundation/Foundation.h>
+
+    int main (int argc, const char * argv[])
+    {
+            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+            NSLog (@"Hello, World!");
+            [pool drain];
+            return 0;
+    }
+</code></pre>
+</div>
+
+<!-- C Sharp -->
+
+<div>
+<h2>C#</h2>
+<pre><code class="cs">using System;
+
+#pragma warning disable 414, 3021
+
+/// &lt;summary&gt;Main task&lt;/summary&gt;
+async Task&lt;int, int&gt; AccessTheWebAsync()
+{
+    Console.WriteLine(&quot;Hello, World!&quot;);
+    string urlContents = await getStringTask;
+    return urlContents.Length;
+}
+</code></pre>
+</div>
+
+<!-- Fortran -->
+
+<div>
+<h2>Fortran</h2>
+<pre><code class="fortran">subroutine test_sub(k)
+    implicit none
+
+  !===============================
+  !   This is a test subroutine
+  !===============================
+
+    integer, intent(in)           :: k
+    double precision, allocatable :: a(:)
+    integer, parameter            :: nmax=10
+    integer                       :: i
+
+    allocate (a(nmax))
+
+    do i=1,nmax
+      a(i) = dble(i)*5.d0
+    enddo
+
+    print *, &#39;Hello world&#39;
+    write (*,*) a(:)
+
+end subroutine test_sub
+</code></pre>
+</div>
+
+<!-- Fortran Sharp -->
+
+<div>
+<h2>F#</h2>
+<pre><code class="fsharp">open System
+
+// Single line comment...
+(*
+  This is a
+  multiline comment.
+*)
+let checkList alist =
+    match alist with
+    | [] -&gt; 0
+    | [a] -&gt; 1
+    | [a; b] -&gt; 2
+    | [a; b; c] -&gt; 3
+    | _ -&gt; failwith &quot;List is too big!&quot;
+
+
+let text = &quot;Some text...&quot;
+let text2 = @&quot;A &quot;&quot;verbatim&quot;&quot; string...&quot;
+let catalog = &quot;&quot;&quot;
+Some &quot;long&quot; string...
+&quot;&quot;&quot;
+
+let rec fib x = if x &lt;= 2 then 1 else fib(x-1) + fib(x-2)
+
+let fibs =
+    Async.Parallel [ for i in 0..40 -&gt; async { return fib(i) } ]
+    |&gt; Async.RunSynchronously
+
+type Sprocket(gears) =
+  member this.Gears : int = gears
+
+[&lt;AbstractClass&gt;]
+type Animal =
+  abstract Speak : unit -&gt; unit
+
+type Widget =
+  | RedWidget
+  | GreenWidget
+
+type Point = {X: float; Y: float;}
+
+[&lt;Measure&gt;]
+type s
+let minutte = 60&lt;s&gt;
+
+type DefaultMailbox&lt;&#39;a&gt;() =
+    let mutable inbox = ConcurrentQueue&lt;&#39;a&gt;()
+    let awaitMsg = new AutoResetEvent(false)
+</code></pre>
+</div>
+
+<!-- Erlang -->
+
+<div>
+<h2>Erlang</h2>
+<pre><code class="erlang">-module(ssh_cli).
+
+-behaviour(ssh_channel).
+
+-include(&quot;ssh.hrl&quot;).
+%% backwards compatibility
+-export([listen/1, listen/2, listen/3, listen/4, stop/1]).
+
+if L =/= [] -&gt;      % If L is not empty
+    sum(L) / count(L);
+true -&gt;
+    error
+end.
+
+%% state
+-record(state, {
+    cm,
+    channel
+   }).
+
+-spec foo(integer()) -&gt; integer().
+foo(X) -&gt; 1 + X.
+
+test(Foo)-&gt;Foo.
+
+init([Shell, Exec]) -&gt;
+    {ok, #state{shell = Shell, exec = Exec}};
+init([Shell]) -&gt;
+    false = not true,
+    io:format(&quot;Hello, \&quot;~p!~n&quot;, [atom_to_list(&#39;World&#39;)]),
+    {ok, #state{shell = Shell}}.
+
+concat([Single]) -&gt; Single;
+concat(RList) -&gt;
+    EpsilonFree = lists:filter(
+        fun (Element) -&gt;
+            case Element of
+                epsilon -&gt; false;
+                _ -&gt; true
+            end
+        end,
+        RList),
+    case EpsilonFree of
+        [Single] -&gt; Single;
+        Other -&gt; {concat, Other}
+    end.
+
+union_dot_union({union, _}=U1, {union, _}=U2) -&gt;
+    union(lists:flatten(
+        lists:map(
+            fun (X1) -&gt;
+                lists:map(
+                    fun (X2) -&gt;
+                        concat([X1, X2])
+                    end,
+                    union_to_list(U2)
+                )
+            end,
+            union_to_list(U1)
+        ))).
+</code></pre>
+</div>
+
+<!-- OCAML -->
+
+<div>
+<h2>OCaml</h2>
+<pre><code class="ocaml">(* This is a
+multiline, (* nested *) comment *)
+type point = { x: float; y: float };;
+let some_string = &quot;this is a string&quot;;;
+let rec length lst =
+    match lst with
+      [] -&gt; 0
+    | head :: tail -&gt; 1 + length tail
+  ;;
+exception Test;;
+type expression =
+      Const of float
+    | Var of string
+    | Sum of expression * expression    (* e1 + e2 *)
+    | Diff of expression * expression   (* e1 - e2 *)
+    | Prod of expression * expression   (* e1 * e2 *)
+    | Quot of expression * expression   (* e1 / e2 *)
+class point =
+    object
+      val mutable x = 0
+      method get_x = x
+      method private move d = x &lt;- x + d
+    end;;
+</code></pre>
+</div>
+
+<!-- Haskell -->
+
+<div>
+<h2>Haskell</h2>
+<pre><code class="haskell">{-# LANGUAGE TypeSynonymInstances #-}
+module Network.UDP
+( DataPacket(..)
+, openBoundUDPPort
+, openListeningUDPPort
+, pingUDPPort
+, sendUDPPacketTo
+, recvUDPPacket
+, recvUDPPacketFrom
+) where
+
+import qualified Data.ByteString as Strict (ByteString, concat, singleton)
+import qualified Data.ByteString.Lazy as Lazy (ByteString, toChunks, fromChunks)
+import Data.ByteString.Char8 (pack, unpack)
+import Network.Socket hiding (sendTo, recv, recvFrom)
+import Network.Socket.ByteString (sendTo, recv, recvFrom)
+
+-- Type class for converting StringLike types to and from strict ByteStrings
+class DataPacket a where
+  toStrictBS :: a -&gt; Strict.ByteString
+  fromStrictBS :: Strict.ByteString -&gt; a
+
+instance DataPacket Strict.ByteString where
+  toStrictBS = id
+  {-# INLINE toStrictBS #-}
+  fromStrictBS = id
+  {-# INLINE fromStrictBS #-}
+
+openBoundUDPPort :: String -&gt; Int -&gt; IO Socket
+openBoundUDPPort uri port = do
+  s &lt;- getUDPSocket
+  bindAddr &lt;- inet_addr uri
+  let a = SockAddrInet (toEnum port) bindAddr
+  bindSocket s a
+  return s
+
+pingUDPPort :: Socket -&gt; SockAddr -&gt; IO ()
+pingUDPPort s a = sendTo s (Strict.singleton 0) a &gt;&gt; return ()
+</code></pre>
+</div>
+
+<!-- Swift -->
+
+<div class="system">
+<h2>Swift</h2>
+<pre><code class="swift">import Foundation
+
+@objc class Person: Entity {
+  var name: String!
+  var age:  Int!
+
+  init(name: String, age: Int) {
+    /* /* ... */ */
+  }
+
+  // Return a descriptive string for this person
+  func description(offset: Int = 0) -&gt; String {
+    return &quot;\(name) is \(age + offset) years old&quot;
+  }
+}
+</code></pre>
+</div>
+
+<!-- Scheme -->
+
+<div class="system">
+<h2>Scheme</h2>
+<pre><code class="scheme">(define (hofstadter-male-female n)
+(letrec ((female (lambda (n)
+           (if (= n 0)
+           1
+           (- n (male (female (- n 1)))))))
+     (male (lambda (n)
+         (if (= n 0)
+             0
+             (- n (female (male (- n 1))))))))
+  (let loop ((i 0))
+    (if (> i n)
+    '()
+    (cons (cons (female i)
+            (male i))
+      (loop (+ i 1)))))))
+
+(hofstadter-male-female 8)
+
+(define (find-first func lst)
+(call-with-current-continuation
+ (lambda (return-immediately)
+   (for-each (lambda (x)
+       (if (func x)
+           (return-immediately x)))
+         lst)
+   #f)))
+</code></pre>
+</div>
+
+<!-- Java -->
+
+<div>
+<h2>Java</h2>
+<pre><code class="java">/**
+ * @author John Smith &lt;john.smith@example.com&gt;
+*/
+package l2f.gameserver.model;
+
+public abstract class L2Char extends L2Object {
+  public static final Short ERROR = 0x0001;
+
+  public void moveTo(int x, int y, int z) {
+    _ai = null;
+    log(&quot;Should not be called&quot;);
+    if (1 &gt; 5) { // wtf!?
+      return;
+    }
+  }
+}
+</code></pre>
+</div>
+
+<!-- Scala -->
+
+<div>
+<h2>Scala</h2>
+<pre><code class="scala">/**
+ * A person has a name and an age.
+ */
+case class Person(name: String, age: Int)
+
+abstract class Vertical extends CaseJeu
+case class Haut(a: Int) extends Vertical
+case class Bas(name: String, b: Double) extends Vertical
+
+sealed trait Ior[+A, +B]
+case class Left[A](a: A) extends Ior[A, Nothing]
+case class Right[B](b: B) extends Ior[Nothing, B]
+case class Both[A, B](a: A, b: B) extends Ior[A, B]
+
+trait Functor[F[_]] {
+  def map[A, B](fa: F[A], f: A =&gt; B): F[B]
+}
+
+// beware Int.MinValue
+def absoluteValue(n: Int): Int =
+  if (n &lt; 0) -n else n
+
+def interp(n: Int): String =
+  s&quot;there are $n ${color} balloons.\n&quot;
+
+type ξ[A] = (A, A)
+
+trait Hist { lhs =&gt;
+  def ⊕(rhs: Hist): Hist
+}
+
+def gsum[A: Ring](as: Seq[A]): A =
+  as.foldLeft(Ring[A].zero)(_ + _)
+
+val actions: List[Symbol] =
+  &#39;init :: &#39;read :: &#39;write :: &#39;close :: Nil
+
+trait Cake {
+  type T;
+  type Q
+  val things: Seq[T]
+
+  abstract class Spindler
+
+  def spindle(s: Spindler, ts: Seq[T], reversed: Boolean = false): Seq[Q]
+}
+
+val colors = Map(
+  &quot;red&quot;       -&gt; 0xFF0000,
+  &quot;turquoise&quot; -&gt; 0x00FFFF,
+  &quot;black&quot;     -&gt; 0x000000,
+  &quot;orange&quot;    -&gt; 0xFF8040,
+  &quot;brown&quot;     -&gt; 0x804000)
+
+lazy val ns = for {
+  x &lt;- 0 until 100
+  y &lt;- 0 until 100
+} yield (x + y) * 33.33
+</code></pre>
+</div>
+
+<!-- Groovy -->
+
+<div>
+<h2>Groovy</h2>
+<pre><code class="groovy">
+import groovy.sql.Sql
+sql = Sql.newInstance(
+	'jdbc:h2:~/test',
+	'sa',
+	'',
+	'org.h2.Driver')
+sql.eachRow('select * from USER') {
+	println &quot;${it.id}, ${it.firstName}&quot;
+}
+</code></pre>
+</div>
+
+<!-- Kotlin -->
+
+<div>
+<h2>Kotlin</h2>
+<pre><code class="kotlin">
+import kotlin.lang.test
+
+interface A {
+    fun x()
+}
+
+fun xxx(): Int {
+    return 888
+}
+
+public fun main(args: Array<String>) {
+}
+</code></pre>
+</div>
+
+<!-- Delphi -->
+
+<div>
+<h2>Delphi</h2>
+<pre><code class="delphi">TList = Class(TObject)
+Private
+  Some: String;
+Public
+  Procedure Inside; // Suxx
+End;{TList}
+
+Procedure CopyFile(InFileName, var OutFileName: String);
+Const
+  BufSize = 4096; (* Huh? *)
+Var
+  InFile, OutFile: TStream;
+  Buffer: Array[1..BufSize] Of Byte;
+  ReadBufSize: Integer;
+Begin
+  InFile := Nil;
+  OutFile := Nil;
+  Try
+    InFile := TFileStream.Create(InFileName, fmOpenRead);
+    OutFile := TFileStream.Create(OutFileName, fmCreate);
+    Repeat
+      ReadBufSize := InFile.Read(Buffer, BufSize);
+      OutFile.Write(Buffer, ReadBufSize);
+    Until ReadBufSize&lt;&gt;BufSize;
+    Log(&#39;File &#39;&#39;&#39; + InFileName + &#39;&#39;&#39; copied&#39;#13#10);
+  Finally
+    InFile.Free;
+    OutFile.Free;
+  End;{Try}
+End;{CopyFile}
+</code></pre>
+</div>
+
+<!-- Basic -->
+
+<div>
+<h2>Basic</h2>
+<pre><code class="basic">10 CLS
+20 FOR I = 0 TO 15
+22 FOR J = 0 TO 7
+30 COLOR I,J
+40 PRINT &quot; ** &quot;;
+45 NEXT J
+46 COLOR I,0
+47 GOSUB 100
+48 PRINT
+50 NEXT I
+60 COLOR 15,0
+99 END
+100 FOR T = 65 TO 90
+101 PRINT CHR$(T);
+102 NEXT T
+103 RETURN
+200 REM Data types test
+201 TOTAL# = 3.30#		&#39;Double precision variable
+202 BALANCE! = 3!		&#39;Single precision variable
+203 B2! = 12e5			&#39;120000
+204 ITEMS% = 10			&#39;Integer variable
+205 HEXTEST = &amp;H12DB	&#39;Hex value
+</code></pre>
+</div>
+
+<!-- D -->
+
+<div>
+<h2>D</h2>
+<pre><code class="d">#!/usr/bin/rdmd
+// Computes average line length for standard input.
+import std.stdio;
+
+/+
+  this is a /+ nesting +/ comment
++/
+
+enum COMPILED_ON = __TIMESTAMP__;  // special token
+
+enum character = &#39;©&#39;;
+enum copy_valid = &#39;&amp;copy;&#39;;
+enum backslash_escaped = &#39;\\&#39;;
+
+// string literals
+enum str = `hello &quot;world&quot;!`;
+enum multiline = r&quot;lorem
+ipsum
+dolor&quot;;  // wysiwyg string, no escapes here allowed
+enum multiline2 = &quot;sit
+amet
+\&quot;adipiscing\&quot;
+elit.&quot;;
+enum hex = x&quot;66 6f 6f&quot;;   // same as &quot;foo&quot;
+
+#line 5
+
+// float literals
+enum f = [3.14f, .1, 1., 1e100, 0xc0de.01p+100];
+
+static if (something == true) {
+   import std.algorithm;
+}
+
+void main() pure nothrow @safe {
+    ulong lines = 0;
+    double sumLength = 0;
+    foreach (line; stdin.byLine()) {
+        ++lines;
+        sumLength += line.length;
+    }
+    writeln(&quot;Average line length: &quot;,
+        lines ? sumLength / lines : 0);
+}
+</code></pre>
+</div>
+
+<!-- R -->
+
+<div>
+<h2>R</h2>
+<pre><code class="r">library(ggplot2)
+
+centre &lt;- function(x, type, ...) {
+  switch(type,
+         mean = mean(x),
+         median = median(x),
+         trimmed = mean(x, trim = .1))
+}
+
+myVar1
+myVar.2
+data$x
+foo &quot;bar&quot; baz
+# test &quot;test&quot;
+&quot;test # test&quot;
+
+(123) (1) (10) (0.1) (.2) (1e-7)
+(1.2e+7) (2e) (3e+10) (0x0) (0xa)
+(0xabcdef1234567890) (123L) (1L)
+(0x10L) (10000000L) (1e6L) (1.1L)
+(1e-3L) (4123.381E-10i)
+(3.) (3.E10) # BUG: .E10 should be part of number
+
+# Numbers in some different contexts
+1L
+0x40
+.234
+3.
+1L + 30
+plot(cars, xlim=20)
+plot(cars, xlim=0x20)
+foo&lt;-30
+my.data.3 &lt;- read() # not a number
+c(1,2,3)
+1%%2
+
+&quot;this is a quote that spans
+multiple lines
+\&quot;
+
+is this still a quote? it should be.
+# even still!
+
+&quot; # now we&#39;re done.
+
+&#39;same for
+single quotes #&#39;
+
+# keywords
+NULL, NA, TRUE, FALSE, Inf, NaN, NA_integer_,
+NA_real_, NA_character_, NA_complex_, function,
+while, repeat, for, if, in, else, next, break,
+..., ..1, ..2
+
+# not keywords
+the quick brown fox jumped over the lazy dogs
+null na true false inf nan na_integer_ na_real_
+na_character_ na_complex_ Function While Repeat
+For If In Else Next Break .. .... &quot;NULL&quot; `NULL` &#39;NULL&#39;
+
+# operators
++, -, *, /, %%, ^, &gt;, &gt;=, &lt;, &lt;=, ==, !=, !, &amp;, |, ~,
+-&gt;, &lt;-, &lt;&lt;-, $, :, ::
+
+# infix operator
+foo %union% bar
+%&quot;test&quot;%
+`&quot;test&quot;`
+
+</code></pre>
+</div>
+
+<!-- OpenSCAD -->
+
+<div>
+<h2>OpenScad</h2>
+<pre><code class="openscad">//create a dodecahedron by intersecting 6 boxes
+module dodecahedron(height)
+{
+        scale([height,height,height]) //scale by height parameter
+        {
+                intersection(){
+                        //make a cube
+                        cube([2,2,1], center = true);
+                        intersection_for(i=[0:4]) //loop i from 0 to 4, and intersect results
+                        {
+                                //make a cube, rotate it 116.565 degrees around the X axis,
+                                //then 72*i around the Z axis
+                                rotate([0,0,72*i])
+                                        rotate([116.565,0,0])
+                                        cube([2,2,1], center = true);
+                        }
+                }
+        }
+}
+//create 3 stacked dodecahedra
+//call the module with a height of 1 and move up 2
+translate([0,0,2])dodecahedron(1);
+//call the module with a height of 2
+dodecahedron(2);
+//call the module with a height of 4 and move down 4
+translate([0,0,-4])dodecahedron(4);
+</code></pre>
+</div>
+
+<!-- Haxe -->
+
+<div>
+<h2>Haxe</h2>
+<pre><code class="haxe">package my.package;
+
+#if js
+import js.Browser;
+#elseif sys
+import Sys;
+#else
+import Date;
+#end
+
+import Lambda;
+using Main.IntExtender;
+
+extern class Math {
+    static var PI(default,null) : Float;
+    static function floor(v:Float):Int;
+}
+
+/**
+ * Abstract forwarding
+ */
+abstract MyAbstract(Int) from Int to Int {
+    inline function new(i:Int) {
+        this = i;
+    }
+
+    @:op(A * B)
+    public function multiply(rhs:MyAbstract) {
+        return this * rhs;
+    }
+}
+
+// an enum
+enum Color {
+    Red;
+    Green;
+    Blue;
+    Rgb(r:Int, g:Int, b:Int);
+}
+
+@:generic
+class Gen&lt;T&gt; {
+    var v:T;
+    public function new(v:T) {
+        this.v = v;
+    }
+
+    public var x(get, set):T;
+
+    private inline function get_x():T
+        return v;
+
+    private inline function set_x(x:T):T
+        return v = x;
+}
+
+class Main extends BaseClass implements SomeFunctionality {
+    var callback:Void-&gt;Void = null;
+    var myArray:Array&lt;Float&gt; = new Array&lt;Float&gt;();
+    var arr = [4,8,0,3,9,1,5,2,6,7];
+
+    public function new(x) {
+        super(x);
+    }
+
+    public static function main() {
+        trace(&#39;What\&#39;s up?&#39;);
+        trace(&#39;Hi, ${name}!&#39;);
+
+        // switch statements!
+        var c:Color = Color.Green;
+        var x:Int = switch(c) {
+            case Red: 0;
+            case Green: 1;
+            case Blue: 2;
+            case Rgb(r, g, b): 3;
+            case _: -1;
+        }
+
+        for(i in 0...3) {
+            trace(i);
+            continue;
+            break;
+        }
+
+        do {
+            trace(&quot;Hey-o!&quot;);
+        } while(false);
+
+        var done:Bool = false;
+        while(!done) {
+            done = true;
+        }
+
+        var H:Int = cast new MyAbstract(42);
+        var h:Int = cast(new MyAbstract(31), Int);
+
+        try {
+            throw &quot;error&quot;;
+        }
+        catch(err:String) {
+            trace(err);
+        }
+
+        var map = new haxe.ds.IntMap&lt;String&gt;();
+        var f = map.set.bind(_, &quot;12&quot;);
+    }
+
+    function nothing():Void
+        trace(&quot;nothing!&quot;);
+
+    private inline function func(a:Int, b:Float, ?c:String, d:Bool=false):Dynamic {
+        return {
+            x: 0,
+            y: true,
+            z: false,
+            a: 1.53,
+            b: 5e10,
+            c: -12,
+            h: null
+        };
+    }
+
+
+    override function quicksort( lo : Int, hi : Int ) : Void {
+        var i = lo;
+        var j = hi;
+        var buf = arr;
+        var p = buf[(lo+hi)&gt;&gt;1];
+        while( i &lt;= j ) {
+            while( arr[i] &gt; p ) i++;
+            while( arr[j] &lt; p ) j--;
+            if( i &lt;= j ) {
+                var t = buf[i];
+                buf[i++] = buf[j];
+                buf[j--] = t;
+            }
+        }
+        if( lo &lt; j ) quicksort( lo, j );
+        if( i &lt; hi ) quicksort( i, hi );
+    }
+}
+</code></pre>
+</div>
+
+<!-- #END -->
+<br>
+<hr>
+<br>
+
+</body>
+</html>

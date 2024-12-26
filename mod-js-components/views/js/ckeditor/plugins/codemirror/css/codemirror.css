@@ -1,0 +1,12 @@
+.searchCodeButton span {
+	width: 16px;
+	height: 16px;
+	margin-left: 6px;
+	background: url("../icons/find.png") no-repeat;
+}
+.replaceCodeButton span {
+	width: 16px;
+	height: 16px;
+	margin-left: 6px;
+	background: url("../icons/findreplace.png") no-repeat;
+}

@@ -1,0 +1,18 @@
+<!-- summary r.20200121 -->
+<script>
+[@@@SUB-TEMPLATE:partials/summary-js.mtpl.inc.js@@@]
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* [###LANGUAGE|upper|html###] Documentation Index *</option>
+		<optgroup label="Packages">
+		[%%%LOOP:PACKAGES%%%]
+			<option value="Package--[###PACKAGES._-KEY-_|htmid|html###]-">Package [###PACKAGES._-KEY-_|html###]</option>
+			[%%%LOOP:PACKAGES._-VAL-_%%%]
+			<option value="Ref--[###PACKAGES._-VAL-_.FILE|htmid|html###]-"> &nbsp;&nbsp;&middot;&nbsp;&nbsp;[###PACKAGES._-VAL-_.TYPE|html###] [###PACKAGES._-VAL-_.NAME|html###]</option>
+			[%%%/LOOP:PACKAGES._-VAL-_%%%]
+		[%%%/LOOP:PACKAGES%%%]
+		</optgroup>
+	</select>
+</div>
+[@@@SUB-TEMPLATE:partials/summary-selectjs.mtpl.inc.htm@@@]

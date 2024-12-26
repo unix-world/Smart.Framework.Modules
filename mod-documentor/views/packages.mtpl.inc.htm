@@ -1,0 +1,23 @@
+<!-- packages r.20220331 -->
+<!-- Styles -->
+[@@@SUB-TEMPLATE:partials/styles.mtpl.inc.htm@@@]
+<!-- Packages -->
+[%%%LOOP:PACKAGES%%%]
+<br>
+<div class="doc-container" id="Package--[###PACKAGES._-KEY-_|htmid|html###]-">
+	<h1><span class="doc-package"><i>package</i></span> [###PACKAGES._-KEY-_|html###]</h1>
+	<ul>
+	[%%%LOOP:PACKAGES._-VAL-_%%%]
+		<li title="Package: [###PACKAGES._-VAL-_.PACKAGE|html###]" id="Ref--[###PACKAGES._-VAL-_.FILE|htmid|html###]-"><a href="[###PACKAGES._-VAL-_.FILE|html###]"><h5 style="display:inline-block;"><span class="doc-type-[###PACKAGES._-VAL-_.TYPE|lower|html###]">[###PACKAGES._-VAL-_.TYPE|html###]</span> <span class="doc-name"><b>[###PACKAGES._-VAL-_.NAME|html###]</b></span></h5></a></li>
+	[%%%/LOOP:PACKAGES._-VAL-_%%%]
+	</ul>
+</div>
+[%%%/LOOP:PACKAGES%%%]
+<!-- Summary List -->
+<br>
+[@@@SUB-TEMPLATE:partials/packages-index-summary.mtpl.inc.htm@@@]
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: [###GENERATED-ON|html###]</small>
+<hr>
+<br>
+<!-- # -->

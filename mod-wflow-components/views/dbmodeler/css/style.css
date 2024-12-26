@@ -1,0 +1,347 @@
+
+/*
+// wwwsqldesigner v.1.7: style.css
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190218
+*/
+
+#area * {
+	font-size: 11px;
+}
+
+#area {
+	position: relative;
+	width: 5000px;
+	height: 5000px;
+	border: 1px solid #DDDDDD;
+}
+
+.area-editable {
+	background: white url(../images/back.svg);
+	background-size: 250px 250px;
+	background-repeat: repeat;
+	border: 0px !important;
+}
+
+#controls {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+#bar {
+	text-align: center;
+	background-color: #FFFFFF;
+	position: fixed;
+	top: 5px;
+	right: 5px;
+	width: 175px;
+	padding: 0px 5px 5px;
+	box-shadow: -4px 4px 8px #888;
+	border-radius: 3px;
+	opacity: 0.85;
+}
+#bar:hover {
+	opacity: 0.99;
+}
+
+#bar input, button {
+	display: block;
+	width: 90%;
+	margin: auto;
+	margin-bottom: 3px !important;
+}
+
+#bar input.small {
+	width: 45%;
+	display: inline;
+}
+
+#toggle {
+	padding: 5px 0px;
+	margin-top: 2px;
+	margin-bottom: 3px;
+	cursor: pointer;
+	background-position: 50% 5px;
+	background-repeat: no-repeat;
+	height: 5px;
+	border-radius: 3px;
+}
+
+#toggle:hover {
+	background-color: #ECECEC;
+}
+
+#toggle.on {
+	background-image: url(../images/up.svg);
+	background-repeat: no-repeat;
+	background-size: 12px 16px;
+	background-position: 50% 0px;
+}
+
+#toggle.off {
+	background-image: url(../images/down.svg);
+	background-repeat: no-repeat;
+	background-size: 12px 16px;
+	background-position: 50% 0px;
+}
+
+#minimap {
+	position: fixed;
+	width: 100px;
+	height: 100px;
+	right: 5px;
+	bottom: 5px;
+	background-color: #fff;
+	border: 1px solid #000;
+	opacity: 0.85;
+	overflow: hidden;
+}
+
+.mini {
+	position: absolute;
+	border: 1px solid #CCCCCC;
+	background-color: #ECECEC;
+	font-size: 1px;
+	line-height: 1px;
+}
+
+.mini_selected {
+	background-color: #FFCC00;
+}
+
+.port {
+	position: absolute;
+	border: 2px solid #f00;
+}
+
+.table {
+	position: absolute;
+	border: 1px solid #555555;
+	background-color: #DDDDDD;
+	cursor: pointer;
+	box-shadow: 3px 3px 7px #888888;
+	border-radius: 3px;
+}
+
+.table table {
+	border-collapse: collapse;
+	min-width: 125px;
+}
+
+.table.selected {
+	border: 2px solid #555555;
+}
+
+.table thead .title {
+	text-align: center;
+	padding: 3px 30px;
+}
+
+.table tbody {
+	border-top: 1px dotted #888;
+}
+
+.table tbody td {
+	padding: 3px;
+}
+
+.table tbody .selected {
+	font-weight: bold;
+	color: #f00;
+	display: inline-block;
+}
+
+.table tbody .title {
+	display: inline-block;
+}
+
+/* fix: for add comments indicator @ https://github.com/ondras/wwwsqldesigner/commit/c45c8488f50f7c43fe9f29e4c8e2d6d0dafe796c#diff-21303e1aa46f2983519652441030b6d7 */
+
+.table thead td[title]:after{
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	border-color: #778899;
+	border-style: solid;
+	border-width: 5px;
+	border-bottom-color: transparent;
+	border-left-color: transparent;
+}
+
+.table tbody tr {
+	position: relative;
+}
+
+.table tbody[title]:not(.expanded):not([title=""]) tr:after{
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	border-color: #778899;
+	border-style: solid;
+	border-width: 5px;
+	border-bottom-color: transparent;
+	border-left-color: transparent;
+}
+
+/* end fix */
+
+.primary {
+	font-weight: bold;
+}
+.primary:after, .primary.unique:after, .primary.key:after {
+	display: inline-block;
+	content: "";
+	width: 16px;
+	height: 16px;
+	background: url('../images/key-primary.svg') transparent no-repeat;
+	background-size: 14px 16px;
+	background-position: 1px 2px;
+	margin-left: 3px;
+}
+
+.unique {
+	font-weight: bold;
+	font-style: italic;
+}
+.unique:after {
+	display: inline-block;
+	content: "";
+	width: 16px;
+	height: 16px;
+	background: url('../images/key-unique.svg') transparent no-repeat;
+	background-size: 10px 16px;
+	background-position: 2px 2px;
+	margin-left: 3px;
+}
+
+.foreign:after, .primary.foreign:after {
+	display: inline-block;
+	content: "";
+	width: 16px;
+	height: 16px;
+	background: url('../images/key-foreign.svg') transparent no-repeat;
+	background-size: 14px 16px;
+	background-position: 1px 2px;
+	margin-left: 3px;
+}
+
+.help:after {
+	display: inline-block;
+	content: "";
+	width: 16px;
+	height: 16px;
+	background: url('../images/help.svg') transparent no-repeat;
+	background-size: 14px 16px;
+	background-position: 0px 1px;
+	margin-left: 3px;
+	cursor: help;
+}
+
+.key {
+	font-style: italic;
+}
+
+.primary.unique, .primary.key {
+	font-style: normal;
+}
+
+.typehint {
+	font-size: 80%;
+	color: gray;
+}
+
+.comment {
+	font-size: 80%;
+	font-weight: normal;
+	margin-right: 0.5rem;
+}
+
+.adding {
+	cursor: crosshair;
+}
+
+.relation {
+	overflow: hidden;
+}
+
+#background {
+	position: absolute;
+	background-color: #000;
+	opacity: 0.5;
+	visibility: hidden;
+}
+
+#window {
+	position: absolute;
+	visibility: hidden;
+	background-color: #ffffff;
+	border: 6px double #CCCCCC;
+}
+
+#windowtitle {
+	border-bottom: 2px solid #CCCCCC;
+	padding: 2px;
+	padding-left: 1rem;
+	font-weight: bold;
+	color: #333333;
+	background-color: #FFFFFF;
+}
+
+#windowcontent {
+	padding: 1rem;
+}
+
+#windowok, #windowcancel {
+	margin: 0 1rem 1rem;
+}
+
+/*
+.small {
+	font-size: 85%;
+}
+*/
+
+#textarea {
+	width: 650px;
+	height: 200px;
+}
+
+#opts {
+	width: 700px;
+}
+
+#keys {
+	white-space: nowrap;
+	text-align: center;
+}
+
+legend {
+	font-weight: bold;
+}
+
+label, input, select {
+	vertical-align: middle;
+}
+
+#throbber {
+	position: absolute;
+	top: 2px;
+	right: 3px;
+}
+
+#rubberband {
+	position: absolute;
+	border: 1px solid #000;
+	background: #888;
+	opacity: 0.5;
+	visibility: hidden;
+}
+
+/* END */

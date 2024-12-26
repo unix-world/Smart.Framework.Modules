@@ -1,0 +1,78 @@
+[@@@SUB-TEMPLATE:partials/web-manager-styles.inc.htm@@@]
+<div class="ux-grid-row">
+	<div class="ux-grid-col s12">
+		<h2 style="display:inline;">SVN Repository: <span style="color:#72C100;">[###REPO-NAME|html###]</span></h2>
+		<br>
+		<h5 style="display:inline;">Selected Path: <span style="color:#CCCCCC;">@</span> <span style="color:#778899;">[###REPO-PATH|html###]</span></h5>
+		<br>
+		<h3 style="display:inline;"><span style="color:#FF5500;">Changes</span> in Revision: <span style="color:#72C100;">Rev.[###REVISION|html###]</span></h3>
+		[%%%IF:COMPARR:@>0;%%%]
+		<br>
+		<h4 style="display:inline;">Author: [###AUTHOR|html###] / Date: [###DATE|html###]</h4>
+		<br><b>Message:</b> [###MESSAGE|html|nl2br###]
+		[%%%/IF:COMPARR%%%]
+	</div>
+</div>
+<div class="ux-grid-row ux-border" style="padding:8px; text-align:left; height:75vh; overflow:auto;">
+	[%%%IF:COMPARR:@>0;%%%]
+	[%%%LOOP:COMPARR%%%]
+	<div class="svn-line" style="height:28px;">
+		<div class="ux-grid-col s6" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+			[%%%IF:COMPARR.TYPE:==file;%%%]
+			<img width="16" height="16" style="cursor:help;" src="modules/mod-webdav/libs/img/ftype-icons/file[###COMPARR.ICON-SUFFIX|html###].svg" alt="Type: [###COMPARR.TYPE|html###] ; Text-Mods: [###COMPARR.TXTMOD|html###] ; Prop-Mods: [###COMPARR.PROPSMOD|html###]" title="Type: [###COMPARR.TYPE|html###] ; Text-Mods: [###COMPARR.TXTMOD|html###] ; Prop-Mods: [###COMPARR.PROPSMOD|html###]">
+			[%%%ELSE:COMPARR.TYPE%%%]
+			<img width="16" height="16" style="cursor:help;" src="modules/mod-webdav/libs/img/ftype-icons/folder.svg" alt="Type: [###COMPARR.TYPE|html###] ; Text-Mods: [###COMPARR.TXTMOD|html###] ; Prop-Mods: [###COMPARR.PROPSMOD|html###]" title="Type: [###COMPARR.TYPE|html###] ; Text-Mods: [###COMPARR.TXTMOD|html###] ; Prop-Mods: [###COMPARR.PROPSMOD|html###]">
+			[%%%/IF:COMPARR.TYPE%%%]
+			&nbsp;
+			[%%%IF:COMPARR.ACTION:==M;(1)%%%]
+				[%%%IF:COMPARR.TXTMOD:==true;%%%]
+					[%%%IF:COMPARR.TYPE:==file;%%%]
+			<a class="ux-link" style="text-decoration: none !important;" href="[###URL-FILE-DIFF|html###][###COMPARR.PATH|url|html###]&rev=[###REVISION|url|html###]">
+			<img width="16" height="16" src="[###VIEWS-PATH|html###]img/diff.svg" alt="View Modifications / Diff: [[###COMPARR.ACTION|html###]]" title="View Modifications / Diff: [[###COMPARR.ACTION|html###]]">
+					[%%%/IF:COMPARR.TYPE%%%]
+				[%%%ELSE:COMPARR.TXTMOD%%%]
+			<img width="16" height="16" src="[###VIEWS-PATH|html###]img/modified.svg" alt="Modified: [[###COMPARR.ACTION|html###]]" title="Modified: [[###COMPARR.ACTION|html###]]">
+				[%%%/IF:COMPARR.TXTMOD%%%]
+				[%%%IF:COMPARR.TXTMOD:==true;%%%]
+			</a>
+				[%%%/IF:COMPARR.TXTMOD%%%]
+			[%%%ELSE:COMPARR.ACTION(1)%%%]
+				[%%%IF:COMPARR.ACTION:==A;(2)%%%]
+			<img width="16" height="16" src="[###VIEWS-PATH|html###]img/added.svg" alt="Added: [[###COMPARR.ACTION|html###]]" title="Added: [[###COMPARR.ACTION|html###]]">
+				[%%%ELSE:COMPARR.ACTION(2)%%%]
+					[%%%IF:COMPARR.ACTION:==D;(3)%%%]
+			<img width="16" height="16" src="[###VIEWS-PATH|html###]img/deleted.svg" alt="Deleted: [[###COMPARR.ACTION|html###]]" title="Deleted: [[###COMPARR.ACTION|html###]]">
+					[%%%ELSE:COMPARR.ACTION(3)%%%]
+			<img width="16" height="16" src="[###VIEWS-PATH|html###]img/log.svg" alt="Props Modified: [[###COMPARR.PROPSMOD|html###]] / Action: [[###COMPARR.ACTION|html###]]" title="Props Modified: [[###COMPARR.PROPSMOD|html###]] / Action: [[###COMPARR.ACTION|html###]]">
+					[%%%/IF:COMPARR.ACTION(3)%%%]
+				[%%%/IF:COMPARR.ACTION(2)%%%]
+			[%%%/IF:COMPARR.ACTION(1)%%%]
+			&nbsp;
+			[%%%IF:COMPARR.TYPE:==file;%%%]
+				[%%%IF:COMPARR.TXTMOD:==true;%%%]
+				<a class="ux-link" href="[###URL-FILE-VIEW|html###][###COMPARR.PATH|url|html###]&rev=[###REVISION|url|html###]" title="View File">
+				[%%%/IF:COMPARR.TXTMOD%%%]
+			[%%%/IF:COMPARR.TYPE%%%]
+			<span>[###COMPARR.PATH|html###]</span>
+			[%%%IF:COMPARR.TYPE:==file;%%%]
+				[%%%IF:COMPARR.TXTMOD:==true;%%%]
+				</a>
+				[%%%/IF:COMPARR.TXTMOD%%%]
+			[%%%/IF:COMPARR.TYPE%%%]
+		</div>
+		<div class="ux-grid-col s6" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis;">
+			[%%%IF:COMPARR.COPYFROMP:!=;%%%]
+				&nbsp;
+				<img width="16" height="16" alt="Renamed from (Prev)" title="Renamed from (Prev)" src="[###VIEWS-PATH|html###]img/renamed.svg"><span style="color:#003399;"> &nbsp; [###COMPARR.COPYFROMP|html###] @ [###COMPARR.COPYFROMR|html###]</span>
+			[%%%ELSE:COMPARR.COPYFROMP%%%]
+				&nbsp;
+			[%%%/IF:COMPARR.COPYFROMP%%%]
+		</div>
+	</div>
+	[%%%/LOOP:COMPARR%%%]
+	[%%%ELSE:COMPARR%%%]
+		<div class="ux-grid-col s12" style="white-space:nowrap; height:28px; line-height:28px; overflow:hidden; text-overflow:ellipsis; text-align:center;">
+			<span style="color:#778899; font-style:italic;">There are <b>no changes</b> in <b>this revision</b> for the <b>selected SVN Path</b> ...</span>
+		</div>
+	[%%%/IF:COMPARR%%%]
+</div>

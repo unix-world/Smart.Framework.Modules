@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Cropper</title>
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<link rel="stylesheet" href="../../tether/tether.css">
+	<script src="../../tether/tether.js"></script>
+	<link rel="stylesheet" href="../../../../../../modules/mod-ui-bootstrap/toolkit/bootstrap/css/bootstrap.css">
+	<script src="../../../../../../modules/mod-ui-bootstrap/toolkit/bootstrap/js/bootstrap.js"></script>
+	<link rel="stylesheet" href="../../../../../mod-ui-fonts/fonts/icons/fontawesome/fontawesome.css">
+	<link rel="stylesheet" href="../cropper.css">
+	<script src="../cropper.js"></script>
+	<style>
+	/* Basic */
+
+	body {
+		margin: 0;
+		overflow-x: hidden;
+	}
+
+	.browserupgrade {
+		margin: 0;
+		padding: .5rem 1rem;
+		background-color: #fcfcfc;
+		text-align: center;
+	}
+
+	.btn {
+		padding-left: .75rem;
+		padding-right: .75rem;
+	}
+
+	label.btn {
+		margin-bottom: 0;
+	}
+
+	.d-flex > .btn {
+		flex-grow: 1;
+	}
+
+
+	/* Jumbotron */
+
+	.docs-jumbotron {
+		background-color: #0074d9;
+		border-radius: 0;
+		color: #fff;
+	}
+
+	.docs-jumbotron .version {
+		font-size: .875rem;
+		color: #fff;
+		filter: alpha(opacity=50);
+		opacity: 0.5;
+	}
+
+	@media (min-width: 992px) {
+		.docs-jumbotron h1,
+		.docs-jumbotron p {
+		margin-right: 380px;
+		}
+	}
+
+	.docs-carbonads-container {
+		position: relative;
+	}
+
+	.docs-carbonads {
+		font-size: .875rem;
+		max-width: 360px;
+		padding: 1rem;
+		border: 1px solid #ccc;
+		border-radius: .25rem;
+		overflow: hidden;
+	}
+
+	.carbon-wrap {
+		overflow: hidden;
+	}
+
+	.carbon-img {
+		clear: left;
+		float: left;
+		display: block;
+	}
+
+	.carbon-text,
+	.carbon-poweredby {
+		display: block;
+		margin-left: 140px;
+	}
+
+	.carbon-text,
+	.carbon-text:hover,
+	.carbon-text:focus {
+		color: #fff;
+		text-decoration: none;
+	}
+
+	.carbon-poweredby,
+	.carbon-poweredby:hover,
+	.carbon-poweredby:focus {
+		color: #ddd;
+		text-decoration: none;
+	}
+
+	@media (min-width: 992px) {
+		.docs-carbonads {
+		position: absolute;
+		right: 0;
+		bottom: -1.25rem;
+		}
+	}
+
+
+	/* Content */
+
+	.img-container,
+	.img-preview {
+		background-color: #f7f7f7;
+		width: 100%;
+		text-align: center;
+	}
+
+	.img-container {
+		min-height: 200px;
+		max-height: 469px;
+		margin-bottom: 1rem;
+	}
+
+	@media (min-width: 768px) {
+		.img-container {
+		min-height: 469px;
+		}
+	}
+
+	.img-container > img {
+		max-width: 100%;
+	}
+
+	.docs-preview {
+		margin-right: -1rem;
+	}
+
+	.img-preview {
+		float: left;
+		margin-right: .5rem;
+		margin-bottom: .5rem;
+		overflow: hidden;
+	}
+
+	.img-preview > img {
+		max-width: 100%;
+	}
+
+	.preview-lg {
+		width: 16rem;
+		height: 9rem;
+	}
+
+	.preview-md {
+		width: 8rem;
+		height: 4.5rem;
+	}
+
+	.preview-sm {
+		width: 4rem;
+		height: 2.25rem;
+	}
+
+	.preview-xs {
+		width: 2rem;
+		height: 1.125rem;
+		margin-right: 0;
+	}
+
+	.docs-data > .input-group {
+		margin-bottom: .5rem;
+	}
+
+	.docs-data > .input-group > label {
+		min-width: 5rem;
+	}
+
+	.docs-data > .input-group > span {
+		min-width: 3rem;
+	}
+
+	.docs-buttons > .btn,
+	.docs-buttons > .btn-group,
+	.docs-buttons > .form-control {
+		margin-right: .25rem;
+		margin-bottom: .5rem;
+	}
+
+	.docs-toggles > .btn,
+	.docs-toggles > .btn-group,
+	.docs-toggles > .dropdown {
+		margin-bottom: .5rem;
+	}
+
+	.docs-tooltip {
+		display: block;
+		margin: -.5rem -.75rem;
+		padding: .5rem .75rem;
+	}
+
+	.docs-tooltip > .icon {
+		margin: 0 -.25rem;
+		vertical-align: top;
+	}
+
+	.tooltip-inner {
+		white-space: normal;
+	}
+
+	.btn-upload .tooltip-inner,
+	.btn-toggle .tooltip-inner {
+		white-space: nowrap;
+	}
+
+	.btn-toggle {
+		padding: .5rem;
+	}
+
+	.btn-toggle > .docs-tooltip {
+		margin: -.5rem;
+		padding: .5rem;
+	}
+
+	@media (max-width: 400px) {
+		.btn-group-crop {
+		margin-right: -1rem!important;
+		}
+
+		.btn-group-crop > .btn {
+		padding-left: .5rem;
+		padding-right: .5rem;
+		}
+
+		.btn-group-crop .docs-tooltip {
+		margin-left: -.5rem;
+		margin-right: -.5rem;
+		padding-left: .5rem;
+		padding-right: .5rem;
+		}
+	}
+
+	.docs-options .dropdown-menu {
+		width: 100%;
+	}
+
+	.docs-options .dropdown-menu > li {
+		font-size: .875rem;
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+
+	.docs-options .dropdown-menu > li:hover {
+		background-color: #f7f7f7;
+	}
+
+	.docs-options .dropdown-menu > li > label {
+		display: block;
+	}
+
+	.docs-cropped .modal-body {
+		text-align: center;
+	}
+
+	.docs-cropped .modal-body > img,
+	.docs-cropped .modal-body > canvas {
+		max-width: 100%;
+	}
+
+
+	/* Footer */
+
+	.docs-footer {
+		font-size: .875rem;
+		overflow: hidden;
+	}
+
+	.docs-footer .nav {
+		margin-bottom: 1rem;
+	}
+
+	.heart {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 2rem;
+		margin-top: 1rem;
+		margin-bottom: 0;
+		color: #ddd;
+		font-size: 1.125rem;
+		line-height: 2rem;
+		text-align: center;
+	}
+
+	.heart:hover {
+		color: #ff4136;
+	}
+
+	.heart:before {
+		position: absolute;
+		top: 50%;
+		right: 0;
+		left: 0;
+		display: block;
+		height: 0;
+		border-top: 1px solid #eee;
+		content: " ";
+	}
+
+	.heart:after {
+		position: relative;
+		z-index: 1;
+		padding-left: .5rem;
+		padding-right: .5rem;
+		background-color: #fff;
+		content: "♥";
+	}
+	</style>
+</head>
+<body>
+
+	<div style="text-align:center;"><h1>Cropper JS (jQuery)</h1></div>
+	<br>
+
+	<!-- Content -->
+	<div class="container">
+	<div class="row">
+		<div class="col-md-9">
+		<!-- <h3>Demo:</h3> -->
+		<div class="img-container">
+			<img id="image" src="images/picture.jpg" alt="Picture">
+		</div>
+		</div>
+		<div class="col-md-3">
+		<!-- <h3>Preview:</h3> -->
+		<div class="docs-preview clearfix">
+			<div class="img-preview preview-lg"></div>
+			<div class="img-preview preview-md"></div>
+			<div class="img-preview preview-sm"></div>
+			<div class="img-preview preview-xs"></div>
+		</div>
+
+		<!-- <h3>Data:</h3> -->
+		<div class="docs-data">
+			<div class="input-group input-group-sm">
+			<label class="input-group-addon" for="dataX">X</label>
+			<input type="text" class="form-control" id="dataX" placeholder="x">
+			<span class="input-group-addon">px</span>
+			</div>
+			<div class="input-group input-group-sm">
+			<label class="input-group-addon" for="dataY">Y</label>
+			<input type="text" class="form-control" id="dataY" placeholder="y">
+			<span class="input-group-addon">px</span>
+			</div>
+			<div class="input-group input-group-sm">
+			<label class="input-group-addon" for="dataWidth">Width</label>
+			<input type="text" class="form-control" id="dataWidth" placeholder="width">
+			<span class="input-group-addon">px</span>
+			</div>
+			<div class="input-group input-group-sm">
+			<label class="input-group-addon" for="dataHeight">Height</label>
+			<input type="text" class="form-control" id="dataHeight" placeholder="height">
+			<span class="input-group-addon">px</span>
+			</div>
+			<div class="input-group input-group-sm">
+			<label class="input-group-addon" for="dataRotate">Rotate</label>
+			<input type="text" class="form-control" id="dataRotate" placeholder="rotate">
+			<span class="input-group-addon">deg</span>
+			</div>
+			<div class="input-group input-group-sm">
+			<label class="input-group-addon" for="dataScaleX">ScaleX</label>
+			<input type="text" class="form-control" id="dataScaleX" placeholder="scaleX">
+			</div>
+			<div class="input-group input-group-sm">
+			<label class="input-group-addon" for="dataScaleY">ScaleY</label>
+			<input type="text" class="form-control" id="dataScaleY" placeholder="scaleY">
+			</div>
+		</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-9 docs-buttons">
+		<!-- <h3>Toolbar:</h3> -->
+		<div class="btn-group">
+			<button type="button" class="btn btn-primary" data-method="setDragMode" data-option="move" title="Move">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;setDragMode&quot;, &quot;move&quot;)">
+				<span class="fa fa-arrows"></span>
+			</span>
+			</button>
+			<button type="button" class="btn btn-primary" data-method="setDragMode" data-option="crop" title="Crop">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;setDragMode&quot;, &quot;crop&quot;)">
+				<span class="fa fa-crop"></span>
+			</span>
+			</button>
+		</div>
+
+		<div class="btn-group">
+			<button type="button" class="btn btn-primary" data-method="zoom" data-option="0.1" title="Zoom In">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;zoom&quot;, 0.1)">
+				<span class="fa fa-search-plus"></span>
+			</span>
+			</button>
+			<button type="button" class="btn btn-primary" data-method="zoom" data-option="-0.1" title="Zoom Out">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;zoom&quot;, -0.1)">
+				<span class="fa fa-search-minus"></span>
+			</span>
+			</button>
+		</div>
+
+		<div class="btn-group">
+			<button type="button" class="btn btn-primary" data-method="move" data-option="-10" data-second-option="0" title="Move Left">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;move&quot;, -10, 0)">
+				<span class="fa fa-arrow-left"></span>
+			</span>
+			</button>
+			<button type="button" class="btn btn-primary" data-method="move" data-option="10" data-second-option="0" title="Move Right">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;move&quot;, 10, 0)">
+				<span class="fa fa-arrow-right"></span>
+			</span>
+			</button>
+			<button type="button" class="btn btn-primary" data-method="move" data-option="0" data-second-option="-10" title="Move Up">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;move&quot;, 0, -10)">
+				<span class="fa fa-arrow-up"></span>
+			</span>
+			</button>
+			<button type="button" class="btn btn-primary" data-method="move" data-option="0" data-second-option="10" title="Move Down">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;move&quot;, 0, 10)">
+				<span class="fa fa-arrow-down"></span>
+			</span>
+			</button>
+		</div>
+
+		<div class="btn-group">
+			<button type="button" class="btn btn-primary" data-method="rotate" data-option="-45" title="Rotate Left">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;rotate&quot;, -45)">
+				<span class="fa fa-rotate-left"></span>
+			</span>
+			</button>
+			<button type="button" class="btn btn-primary" data-method="rotate" data-option="45" title="Rotate Right">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;rotate&quot;, 45)">
+				<span class="fa fa-rotate-right"></span>
+			</span>
+			</button>
+		</div>
+
+		<div class="btn-group">
+			<button type="button" class="btn btn-primary" data-method="scaleX" data-option="-1" title="Flip Horizontal">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;scaleX&quot;, -1)">
+				<span class="fa fa-arrows-h"></span>
+			</span>
+			</button>
+			<button type="button" class="btn btn-primary" data-method="scaleY" data-option="-1" title="Flip Vertical">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;scaleY&quot;, -1)">
+				<span class="fa fa-arrows-v"></span>
+			</span>
+			</button>
+		</div>
+
+		<div class="btn-group">
+			<button type="button" class="btn btn-primary" data-method="crop" title="Crop">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;crop&quot;)">
+				<span class="fa fa-check"></span>
+			</span>
+			</button>
+			<button type="button" class="btn btn-primary" data-method="clear" title="Clear">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;clear&quot;)">
+				<span class="fa fa-remove"></span>
+			</span>
+			</button>
+		</div>
+
+		<div class="btn-group">
+			<button type="button" class="btn btn-primary" data-method="disable" title="Disable">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;disable&quot;)">
+				<span class="fa fa-lock"></span>
+			</span>
+			</button>
+			<button type="button" class="btn btn-primary" data-method="enable" title="Enable">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;enable&quot;)">
+				<span class="fa fa-unlock"></span>
+			</span>
+			</button>
+		</div>
+
+		<div class="btn-group">
+			<button type="button" class="btn btn-primary" data-method="reset" title="Reset">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;reset&quot;)">
+				<span class="fa fa-refresh"></span>
+			</span>
+			</button>
+			<label class="btn btn-primary btn-upload" for="inputImage" title="Upload image file">
+			<input type="file" class="sr-only" id="inputImage" name="file" accept=".jpg,.jpeg,.png,.gif,.bmp,.tiff">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="Import image with Blob URLs">
+				<span class="fa fa-upload"></span>
+			</span>
+			</label>
+			<button type="button" class="btn btn-primary" data-method="destroy" title="Destroy">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;destroy&quot;)">
+				<span class="fa fa-power-off"></span>
+			</span>
+			</button>
+		</div>
+
+		<div class="btn-group btn-group-crop">
+			<button type="button" class="btn btn-primary" data-method="getCroppedCanvas">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;getCroppedCanvas&quot;)">
+				Get Cropped Canvas
+			</span>
+			</button>
+			<button type="button" class="btn btn-primary" data-method="getCroppedCanvas" data-option="{ &quot;width&quot;: 160, &quot;height&quot;: 90 }">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;getCroppedCanvas&quot;, { width: 160, height: 90 })">
+				160&times;90
+			</span>
+			</button>
+			<button type="button" class="btn btn-primary" data-method="getCroppedCanvas" data-option="{ &quot;width&quot;: 320, &quot;height&quot;: 180 }">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;getCroppedCanvas&quot;, { width: 320, height: 180 })">
+				320&times;180
+			</span>
+			</button>
+		</div>
+
+		<!-- Show the cropped image in modal -->
+		<div class="modal fade docs-cropped" id="getCroppedCanvasModal" aria-hidden="true" aria-labelledby="getCroppedCanvasTitle" role="dialog" tabindex="-1">
+			<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+				<h5 class="modal-title" id="getCroppedCanvasTitle">Cropped</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<a class="btn btn-primary" id="download" href="javascript:void(0);" download="cropped.jpg">Download</a>
+				</div>
+			</div>
+			</div>
+		</div><!-- /.modal -->
+
+		<button type="button" class="btn btn-primary" data-method="getData" data-option data-target="#putData">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;getData&quot;)">
+			Get Data
+			</span>
+		</button>
+		<button type="button" class="btn btn-primary" data-method="setData" data-target="#putData">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;setData&quot;, data)">
+			Set Data
+			</span>
+		</button>
+		<button type="button" class="btn btn-primary" data-method="getContainerData" data-option data-target="#putData">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;getContainerData&quot;)">
+			Get Container Data
+			</span>
+		</button>
+		<button type="button" class="btn btn-primary" data-method="getImageData" data-option data-target="#putData">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;getImageData&quot;)">
+			Get Image Data
+			</span>
+		</button>
+		<button type="button" class="btn btn-primary" data-method="getCanvasData" data-option data-target="#putData">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;getCanvasData&quot;)">
+			Get Canvas Data
+			</span>
+		</button>
+		<button type="button" class="btn btn-primary" data-method="setCanvasData" data-target="#putData">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;setCanvasData&quot;, data)">
+			Set Canvas Data
+			</span>
+		</button>
+		<button type="button" class="btn btn-primary" data-method="getCropBoxData" data-option data-target="#putData">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;getCropBoxData&quot;)">
+			Get Crop Box Data
+			</span>
+		</button>
+		<button type="button" class="btn btn-primary" data-method="setCropBoxData" data-target="#putData">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;setCropBoxData&quot;, data)">
+			Set Crop Box Data
+			</span>
+		</button>
+		<button type="button" class="btn btn-primary" data-method="moveTo" data-option="0">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="cropper.moveTo(0)">
+			Move to [0,0]
+			</span>
+		</button>
+		<button type="button" class="btn btn-primary" data-method="zoomTo" data-option="1">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="cropper.zoomTo(1)">
+			Zoom to 100%
+			</span>
+		</button>
+		<button type="button" class="btn btn-primary" data-method="rotateTo" data-option="180">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="cropper.rotateTo(180)">
+			Rotate 180°
+			</span>
+		</button>
+		<input type="text" class="form-control" id="putData" placeholder="Get data to here or set data with this value">
+		</div><!-- /.docs-buttons -->
+
+		<div class="col-md-3 docs-toggles">
+		<!-- <h3>Toggles:</h3> -->
+		<div class="btn-group d-flex flex-nowrap" data-toggle="buttons">
+			<label class="btn btn-primary active">
+			<input type="radio" class="sr-only" id="aspectRatio0" name="aspectRatio" value="1.7777777777777777">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="aspectRatio: 16 / 9">
+				16:9
+			</span>
+			</label>
+			<label class="btn btn-primary">
+			<input type="radio" class="sr-only" id="aspectRatio1" name="aspectRatio" value="1.3333333333333333">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="aspectRatio: 4 / 3">
+				4:3
+			</span>
+			</label>
+			<label class="btn btn-primary">
+			<input type="radio" class="sr-only" id="aspectRatio2" name="aspectRatio" value="1">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="aspectRatio: 1 / 1">
+				1:1
+			</span>
+			</label>
+			<label class="btn btn-primary">
+			<input type="radio" class="sr-only" id="aspectRatio3" name="aspectRatio" value="0.6666666666666666">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="aspectRatio: 2 / 3">
+				2:3
+			</span>
+			</label>
+			<label class="btn btn-primary">
+			<input type="radio" class="sr-only" id="aspectRatio4" name="aspectRatio" value="NaN">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="aspectRatio: NaN">
+				Free
+			</span>
+			</label>
+		</div>
+
+		<div class="btn-group d-flex flex-nowrap" data-toggle="buttons">
+			<label class="btn btn-primary active">
+			<input type="radio" class="sr-only" id="viewMode0" name="viewMode" value="0" checked>
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="View Mode 0">
+				VM0
+			</span>
+			</label>
+			<label class="btn btn-primary">
+			<input type="radio" class="sr-only" id="viewMode1" name="viewMode" value="1">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="View Mode 1">
+				VM1
+			</span>
+			</label>
+			<label class="btn btn-primary">
+			<input type="radio" class="sr-only" id="viewMode2" name="viewMode" value="2">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="View Mode 2">
+				VM2
+			</span>
+			</label>
+			<label class="btn btn-primary">
+			<input type="radio" class="sr-only" id="viewMode3" name="viewMode" value="3">
+			<span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="View Mode 3">
+				VM3
+			</span>
+			</label>
+		</div>
+
+		<div class="dropdown dropup docs-options">
+			<button type="button" class="btn btn-primary btn-block dropdown-toggle" id="toggleOptions" data-toggle="dropdown" aria-expanded="true">
+			Toggle Options
+			<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" aria-labelledby="toggleOptions" role="menu">
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="responsive" checked>
+				responsive
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="restore" checked>
+				restore
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="checkCrossOrigin" checked>
+				checkCrossOrigin
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="checkOrientation" checked>
+				checkOrientation
+				</label>
+			</li>
+
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="modal" checked>
+				modal
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="guides" checked>
+				guides
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="center" checked>
+				center
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="highlight" checked>
+				highlight
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="background" checked>
+				background
+				</label>
+			</li>
+
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="autoCrop" checked>
+				autoCrop
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="movable" checked>
+				movable
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="rotatable" checked>
+				rotatable
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="scalable" checked>
+				scalable
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="zoomable" checked>
+				zoomable
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="zoomOnTouch" checked>
+				zoomOnTouch
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="zoomOnWheel" checked>
+				zoomOnWheel
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="cropBoxMovable" checked>
+				cropBoxMovable
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="cropBoxResizable" checked>
+				cropBoxResizable
+				</label>
+			</li>
+			<li class="form-check" role="presentation">
+				<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" name="toggleDragModeOnDblclick" checked>
+				toggleDragModeOnDblclick
+				</label>
+			</li>
+			</ul>
+		</div><!-- /.dropdown -->
+
+		</div><!-- /.docs-toggles -->
+	</div>
+	</div>
+
+	<!-- Footer -->
+	<footer class="docs-footer">
+	<div class="container">
+		<p class="heart"></p>
+		<nav class="nav flex-wrap justify-content-center">
+		<a class="nav-link" href="https://github.com/fengyuanchen/cropper">GitHub</a>
+		</nav>
+	</div>
+	</footer>
+<script>
+jQuery(function () {
+
+	'use strict';
+
+	var console = window.console || { log: function () {} };
+	var URL = window.URL || window.webkitURL;
+	var $image = $('#image');
+	var $download = $('#download');
+	var $dataX = $('#dataX');
+	var $dataY = $('#dataY');
+	var $dataHeight = $('#dataHeight');
+	var $dataWidth = $('#dataWidth');
+	var $dataRotate = $('#dataRotate');
+	var $dataScaleX = $('#dataScaleX');
+	var $dataScaleY = $('#dataScaleY');
+	var options = {
+		aspectRatio: 16 / 9,
+		preview: '.img-preview',
+		crop: function (e) {
+			$dataX.val(Math.round(e.x));
+			$dataY.val(Math.round(e.y));
+			$dataHeight.val(Math.round(e.height));
+			$dataWidth.val(Math.round(e.width));
+			$dataRotate.val(e.rotate);
+			$dataScaleX.val(e.scaleX);
+			$dataScaleY.val(e.scaleY);
+		}
+		};
+	var originalImageURL = $image.attr('src');
+	var uploadedImageURL;
+
+
+	// Tooltip
+	$('[data-toggle="tooltip"]').tooltip();
+
+
+	// Cropper
+
+	$image.on({
+	ready: function (e) {
+//	  console.log(e.type);
+	},
+	cropstart: function (e) {
+//	  console.log(e.type, e.action);
+	},
+	cropmove: function (e) {
+//	  console.log(e.type, e.action);
+	},
+	cropend: function (e) {
+//	  console.log(e.type, e.action);
+	},
+	crop: function (e) {
+//	  console.log(e.type, e.x, e.y, e.width, e.height, e.rotate, e.scaleX, e.scaleY);
+	},
+	zoom: function (e) {
+//	  console.log(e.type, e.ratio);
+	}
+	}).cropper(options);
+
+
+	// Buttons
+	if (!$.isFunction(document.createElement('canvas').getContext)) {
+	$('button[data-method="getCroppedCanvas"]').prop('disabled', true);
+	}
+
+	if (typeof document.createElement('cropper').style.transition === 'undefined') {
+	$('button[data-method="rotate"]').prop('disabled', true);
+	$('button[data-method="scale"]').prop('disabled', true);
+	}
+
+
+	// Download
+	if (typeof $download[0].download === 'undefined') {
+	$download.addClass('disabled');
+	}
+
+
+	// Options
+	$('.docs-toggles').on('change', 'input', function () {
+	var $this = $(this);
+	var name = $this.attr('name');
+	var type = $this.prop('type');
+	var cropBoxData;
+	var canvasData;
+
+	if (!$image.data('cropper')) {
+		return;
+	}
+
+	if (type === 'checkbox') {
+		options[name] = $this.prop('checked');
+		cropBoxData = $image.cropper('getCropBoxData');
+		canvasData = $image.cropper('getCanvasData');
+
+		options.ready = function () {
+		$image.cropper('setCropBoxData', cropBoxData);
+		$image.cropper('setCanvasData', canvasData);
+		};
+	} else if (type === 'radio') {
+		options[name] = $this.val();
+	}
+
+	$image.cropper('destroy').cropper(options);
+	});
+
+
+	// Methods
+	$('.docs-buttons').on('click', '[data-method]', function () {
+	var $this = $(this);
+	var data = $this.data();
+	var $target;
+	var result;
+
+	if ($this.prop('disabled') || $this.hasClass('disabled')) {
+		return;
+	}
+
+	if ($image.data('cropper') && data.method) {
+		data = $.extend({}, data); // Clone a new one
+
+		if (typeof data.target !== 'undefined') {
+		$target = $(data.target);
+
+		if (typeof data.option === 'undefined') {
+			try {
+			data.option = JSON.parse($target.val());
+			} catch (e) {
+			console.log(e.message);
+			}
+		}
+		}
+
+		if (data.method === 'rotate') {
+		$image.cropper('clear');
+		}
+
+		result = $image.cropper(data.method, data.option, data.secondOption);
+
+		if (data.method === 'rotate') {
+		$image.cropper('crop');
+		}
+
+		switch (data.method) {
+		case 'scaleX':
+		case 'scaleY':
+			$(this).data('option', -data.option);
+			break;
+
+		case 'getCroppedCanvas':
+			if (result) {
+
+			// Bootstrap's Modal
+			$('#getCroppedCanvasModal').modal().find('.modal-body').html(result);
+
+			if (!$download.hasClass('disabled')) {
+				$download.attr('href', result.toDataURL('image/jpeg'));
+			}
+			}
+
+			break;
+
+		case 'destroy':
+			if (uploadedImageURL) {
+			URL.revokeObjectURL(uploadedImageURL);
+			uploadedImageURL = '';
+			$image.attr('src', originalImageURL);
+			}
+
+			break;
+		}
+
+		if ($.isPlainObject(result) && $target) {
+		try {
+			$target.val(JSON.stringify(result));
+		} catch (e) {
+			console.log(e.message);
+		}
+		}
+
+	}
+	});
+
+
+	// Keyboard
+	$(document.body).on('keydown', function (e) {
+
+	if (!$image.data('cropper') || this.scrollTop > 300) {
+		return;
+	}
+
+	switch (e.which) {
+		case 37:
+		e.preventDefault();
+		$image.cropper('move', -1, 0);
+		break;
+
+		case 38:
+		e.preventDefault();
+		$image.cropper('move', 0, -1);
+		break;
+
+		case 39:
+		e.preventDefault();
+		$image.cropper('move', 1, 0);
+		break;
+
+		case 40:
+		e.preventDefault();
+		$image.cropper('move', 0, 1);
+		break;
+	}
+
+	});
+
+
+	// Import image
+	var $inputImage = $('#inputImage');
+
+	if (URL) {
+	$inputImage.change(function () {
+		var files = this.files;
+		var file;
+
+		if (!$image.data('cropper')) {
+		return;
+		}
+
+		if (files && files.length) {
+		file = files[0];
+
+		if (/^image\/\w+$/.test(file.type)) {
+			if (uploadedImageURL) {
+			URL.revokeObjectURL(uploadedImageURL);
+			}
+
+			uploadedImageURL = URL.createObjectURL(file);
+			$image.cropper('destroy').attr('src', uploadedImageURL).cropper(options);
+			$inputImage.val('');
+		} else {
+			window.alert('Please choose an image file.');
+		}
+		}
+	});
+	} else {
+	$inputImage.prop('disabled', true).parent().addClass('disabled');
+	}
+
+});
+</script>
+<a href="sample-croppie.html" style="position:fixed; top:5px; right:25px;">See alternate Image Crop</a>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!-- summary-selectjs r.20210420 -->
+[%%%IF:JS-PATH:!=;%%%]
+<link rel="stylesheet" type="text/css" href="[###JS-PATH|html###]slimselect.css">
+<script src="[###JS-PATH|html###]slimselect.js"></script>
+<script>
+try {
+	new SlimSelect({
+		select: '#select-summary'
+	});
+} catch(err){
+	console.error('ERROR: SlimSelect Failed: ' + err);
+}
+</script>
+[%%%/IF:JS-PATH%%%]

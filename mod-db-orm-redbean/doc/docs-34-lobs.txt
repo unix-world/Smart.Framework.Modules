@@ -1,0 +1,18 @@
+LOBs
+
+LOBs are large objects. The term refers to special database column types and functions for dealing with large chunks of unstructured data, like photos.
+No Support
+
+RedBeanPHP does not offer support for LOBS.
+However it's possible to leverage LOB functions of your database through the PDO object which can be accessed like this:
+
+    R::getDatabaseAdapter()->getDatabase()->getPDO();
+Advantages/Disadvantages LOBs
+
+Storing files as LOBs in the database has some advantages. The most important advantage of using LOBs this way is to have data integrity and transactions for files.
+
+Using LOBs comes at a price though. You're databases will become quite large which makes it hard to backup them or move them around. Another possible drawback is that your files cannot be served from a cache layer, due to the fact they are tucked away in the database. Some people might argue you're using the wrong tool for the job: a file system is for files, a database is for records. I am not sure how important this philosophical consideration is in practice though.
+Alternatives
+
+There are alternatives to using LOBs. One solution is to store the path to the file in the database and the actual file on disk. If you're worried about data integrity you can also rename the file to a hash and store the hash in the database.
+

@@ -1,0 +1,37 @@
+Import and Export
+
+RedBeanPHP offers several functions to exchange data with beans.
+Import
+
+You can import an array into a bean using:
+    $book->import( $_POST );
+
+The code above is handy if your $_POST request array only contains book data. It will simply load all data into the book bean. You can also add a selection filter:
+    $book->import( $_POST, 'title,subtitle,summary,price' );
+
+This will restrict the import to the fields specified. Note that this does not apply any form of validation to the bean. Validation rules have to be written in the model or the controller.
+
+To import from another bean:
+    $book->importFrom( $otherBean );
+Import using Dispense
+
+Dispense can even convert a multi dimensional array to a bean hierarchy like this (use _type to indicate the type of the bean):
+    $book = R::dispense( [
+        '_type' => 'book',
+        'title'  => 'Gifted Programmers',
+        'author' => [ '_type' => 'author', 'name' => 'Xavier' ],
+        'ownPageList' => [ ['_type'=>'page', 'text' => '...'] ]
+    ] );
+
+R::dispense() also accepts multi dimensional arrays (4.2+)
+Export
+
+To export the properties and values of a single bean use:
+    $array = $bean->export();
+
+To recursively export one or an array of beans use:
+    $arrays = R::exportAll( $beans );
+
+Bean lists in exports are keyless, 0 indexed. To also export parent beans:
+    $arrays = R::exportAll( $beans, TRUE );
+

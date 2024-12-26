@@ -1,0 +1,54 @@
+<!-- methods r.20200121 -->
+[%%%LOOP:ARR-METHODS%%%]
+[%%%IF:ARR-METHODS.IS-INTERNAL-PRIV:!=1;%%%]
+<div class="doc-container" id="Method--[###ARR-METHODS.NAME|htmid|html###]">
+	<span class="doc-modifiers">[###ARR-METHODS.MODIFIERS|html###]</span> <span class="doc-keyword"><i>function</i></span> <span class="[%%%IF:ARR-METHODS.IS-ABSTRACT:==1;%%%]doc-method-abstract-name[%%%ELSE:ARR-METHODS.IS-ABSTRACT%%%][%%%IF:ARR-METHODS.IS-SPECIAL:==1;%%%]doc-method-special-name[%%%ELSE:ARR-METHODS.IS-SPECIAL%%%]doc-method-name[%%%/IF:ARR-METHODS.IS-SPECIAL%%%][%%%/IF:ARR-METHODS.IS-ABSTRACT%%%]"><b>[###ARR-METHODS.NAME|html###]</b></span>&nbsp;(
+	[%%%IF:ARR-METHODS.IS-MAGIC:!=1;%%%]
+	[%%%LOOP:ARR-METHODS.PARAMS%%%]
+		[%%%IF:ARR-METHODS.PARAMS.TYPE:!=;%%%]<i>[###ARR-METHODS.PARAMS.TYPE|html###]</i>&nbsp;[%%%/IF:ARR-METHODS.PARAMS.TYPE%%%]<span class="doc-param-name"><b>[%%%IF:ARR-METHODS.PARAMS.IS-OPTIONAL:==1;%%%]<span class="doc-param-optional" title="`[###ARR-METHODS.PARAMS.NAME|html###]` Parameter is OPTIONAL, with the Default Value: [###ARR-METHODS.PARAMS.DEFAULT-VALUE|html###]">[%%%ELSE:ARR-METHODS.PARAMS.IS-OPTIONAL%%%]<span title="`[###ARR-METHODS.PARAMS.NAME|html###]` Parameter is REQUIRED">[%%%/IF:ARR-METHODS.PARAMS.IS-OPTIONAL%%%][###ARR-METHODS.PARAMS.NAME|html###]</span></b></span>[%%%IF:ARR-METHODS.PARAMS.IS-OPTIONAL:==1;%%%]&nbsp;=&nbsp;<span class="doc-param-optional"><b>[###ARR-METHODS.PARAMS.DEFAULT-VALUE|html###]</b></span>[%%%/IF:ARR-METHODS.PARAMS.IS-OPTIONAL%%%][%%%IF:ARR-METHODS.PARAMS._-ITERATOR-_:<###ARR-METHODS.PARAMS._-MAXCOUNT-_###;%%%],[%%%|SPACE%%%][%%%/IF:ARR-METHODS.PARAMS._-ITERATOR-_%%%]
+	[%%%/LOOP:ARR-METHODS.PARAMS%%%]
+	[%%%/IF:ARR-METHODS.IS-MAGIC%%%]
+	)&nbsp;{}&nbsp;[%%%IF:ARR-METHODS.IS-SPECIAL:==1;%%%]<span title="* Special[%%%IF:ARR-METHODS.IS-MAGIC:==1;%%%] * Magic [%%%/IF:ARR-METHODS.IS-MAGIC%%%]* Method"><b>@</b></span>[%%%ELSE:ARR-METHODS.IS-SPECIAL%%%][%%%IF:ARR-METHODS.IS-STATIC:==1;%%%]<span title="Static Method"><b>::</b></span>[%%%ELSE:ARR-METHODS.IS-STATIC%%%]<span title="Object Method"><b>-&gt;</b></span>[%%%/IF:ARR-METHODS.IS-STATIC%%%][%%%/IF:ARR-METHODS.IS-SPECIAL%%%]&nbsp;[###ARR-METHODS.RETURNS|html###]
+	[%%%IF:ARR-METHODS.DECL:!=;%%%]<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>[###ARR-METHODS.DECL|html###]</b></span>[%%%ELSE:ARR-METHODS.DECL%%%][%%%IF:ARR-METHODS.RDECL:!=;%%%]<br><span class="doc-reimplemented"><i>reimplemented&nbsp;</i>&nbsp;over&nbsp;<b>[###ARR-METHODS.RDECL|html###]</b></span>[%%%/IF:ARR-METHODS.RDECL%%%][%%%/IF:ARR-METHODS.DECL%%%]
+	[%%%IF:ARR-METHODS.RUSES:!=;%%%]<br><span class="doc-reuses"><i>reusing&nbsp;</i>&nbsp;from&nbsp;<b>[###ARR-METHODS.RUSES|html###]</b></span>[%%%/IF:ARR-METHODS.RUSES%%%]
+	[%%%IF:ARR-METHODS.RET-PARAM-HTML:!=;%%%]
+		<div class="doc-method-ret-params">[###ARR-METHODS.RET-PARAM-HTML###]</div>
+	[%%%/IF:ARR-METHODS.RET-PARAM-HTML%%%]
+	[%%%IF:ARR-METHODS.COMMENT-HTML:!=;%%%]
+		<div class="doc-method-comments">[###ARR-METHODS.COMMENT-HTML###]</div>
+	[%%%/IF:ARR-METHODS.COMMENT-HTML%%%]
+	[%%%IF:ARR-METHODS.CODE-HTML:!=;%%%]
+		<pre><b>Sample code: PHP</b><br><code class="hljs syntax php">[###ARR-METHODS.CODE-HTML###]</code></pre>
+	[%%%/IF:ARR-METHODS.CODE-HTML%%%]
+	[%%%IF:ARR-METHODS.IS-MAGIC:==1;%%%]
+		[%%%IF:ARR-METHODS.SUB-METHODS:@>0;%%%]<br>
+		[%%%LOOP:ARR-METHODS.SUB-METHODS%%%]
+			<div class="doc-container" id="Method-Sub--[###ARR-METHODS.SUB-METHODS.NAME|htmid|html###]">
+			<span class="doc-modifiers">[###ARR-METHODS.MODIFIERS|html###]</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>[###ARR-METHODS.SUB-METHODS.NAME|html###]</b></span>&nbsp;(
+			[%%%LOOP:ARR-METHODS.SUB-METHODS.PARAMS%%%]
+				[%%%IF:ARR-METHODS.SUB-METHODS.PARAMS.TYPE:!=;%%%]<i>[###ARR-METHODS.SUB-METHODS.PARAMS.TYPE|html###]</i>&nbsp;[%%%/IF:ARR-METHODS.SUB-METHODS.PARAMS.TYPE%%%]<span class="doc-param-name"><b>[%%%IF:ARR-METHODS.SUB-METHODS.PARAMS.IS-OPTIONAL:==1;%%%]<span class="doc-param-optional" title="`[###ARR-METHODS.SUB-METHODS.PARAMS.NAME|html###]` Parameter is OPTIONAL">[###ARR-METHODS.SUB-METHODS.PARAMS.NAME|html###]</span>[%%%ELSE:ARR-METHODS.SUB-METHODS.PARAMS.IS-OPTIONAL%%%]<span title="`[###ARR-METHODS.SUB-METHODS.PARAMS.NAME|html###]` Parameter is REQUIRED">[###ARR-METHODS.SUB-METHODS.PARAMS.NAME|html###]</span>[%%%/IF:ARR-METHODS.SUB-METHODS.PARAMS.IS-OPTIONAL%%%]</b></span>[%%%IF:ARR-METHODS.SUB-METHODS.PARAMS._-ITERATOR-_:<###ARR-METHODS.SUB-METHODS.PARAMS._-MAXCOUNT-_###;%%%],[%%%|SPACE%%%][%%%/IF:ARR-METHODS.SUB-METHODS.PARAMS._-ITERATOR-_%%%]
+			[%%%/LOOP:ARR-METHODS.SUB-METHODS.PARAMS%%%]
+			)&nbsp;{}&nbsp;[%%%IF:ARR-METHODS.IS-STATIC:==1;%%%]<span title="Static Method"><b>::</b></span>[%%%ELSE:ARR-METHODS.IS-STATIC%%%]<span title="Object Method"><b>-&gt;</b></span>[%%%/IF:ARR-METHODS.IS-STATIC%%%]&nbsp;[###ARR-METHODS.SUB-METHODS.RETURNS|html###]
+			<div class="doc-method-ret-params">
+			@magic __call()<br>
+			[%%%IF:ARR-METHODS.SUB-METHODS.HAVE-PARAMS-OR-RET:==1;%%%]
+			[%%%IF:ARR-METHODS.SUB-METHODS.RETURNS:!=;%%%]
+				@return {[###ARR-METHODS.SUB-METHODS.RETURNS|html###]}<br>
+			[%%%/IF:ARR-METHODS.SUB-METHODS.RETURNS%%%]
+			[%%%LOOP:ARR-METHODS.SUB-METHODS.PARAMS%%%]
+				@param [%%%IF:ARR-METHODS.SUB-METHODS.PARAMS.TYPE:!=;%%%]{[###ARR-METHODS.SUB-METHODS.PARAMS.TYPE|html###]}[%%%/IF:ARR-METHODS.SUB-METHODS.PARAMS.TYPE%%%] [###ARR-METHODS.SUB-METHODS.PARAMS.NAME|html###]<br>
+			[%%%/LOOP:ARR-METHODS.SUB-METHODS.PARAMS%%%]
+			[%%%/IF:ARR-METHODS.SUB-METHODS.HAVE-PARAMS-OR-RET%%%]
+			</div>
+			[%%%IF:ARR-METHODS.SUB-METHODS.DESC:!=;%%%]
+				<div class="doc-method-comments">[###ARR-METHODS.SUB-METHODS.DESC|html|nl2br|syntaxhtml###]</div>
+			[%%%/IF:ARR-METHODS.SUB-METHODS.DESC%%%]
+			</div>
+		[%%%/LOOP:ARR-METHODS.SUB-METHODS%%%]
+		[%%%/IF:ARR-METHODS.SUB-METHODS%%%]
+	[%%%/IF:ARR-METHODS.IS-MAGIC%%%]
+</div>
+[%%%ELSE:ARR-METHODS.IS-INTERNAL-PRIV%%%]
+<!-- Skip Internal-Priv Method: `[###ARR-METHODS.NAME|html###]()` -->
+[%%%/IF:ARR-METHODS.IS-INTERNAL-PRIV%%%]
+[%%%/LOOP:ARR-METHODS%%%]

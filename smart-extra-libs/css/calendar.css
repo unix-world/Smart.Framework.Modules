@@ -1,0 +1,115 @@
+
+/* -- CSS Start :: Smart.Framework / Calendar :: r.8.7 / smart.framework.v.8.7 -- */
+
+/* ----------------------------- */
+
+/* Calendar :: Default */
+table.SmartCalendar {
+	border-collapse: collapse;
+}
+table.SmartCalendar th {
+/*	border: 1px solid #20639E; */
+	background: #2269A6;
+	color: #FFFFFF;
+	font-size: 13px;
+	padding: 9px;
+	border-top: none;
+	text-align: center;
+}
+table.SmartCalendar td {
+	border: 1px solid #ECECEC;
+	background: #FFFFFF;
+	color: #000000;
+	padding: 2px;
+	width: 90px;
+	vertical-align: top;
+}
+table.SmartCalendar td div.SCalendarDayHead {
+	background: #5BC0DE;
+	color: #FFFFFF;
+	font-size: 13px;
+	display: block;
+	padding: 4px;
+	text-align: left;
+	font-weight: bold;
+}
+table.SmartCalendar td div.SCalendarContent {
+	height: 100px;
+	overflow: auto;
+}
+table.SmartCalendar td.SCalendarSuffix, table.SmartCalendar td.SCalendarPrefix {
+	background: #F9F9F9;
+}
+table.SmartCalendar td div.SCalendarEvent {
+	color: #333333;
+	font-size: 11px;
+	padding: 5px;
+	line-height: 1rem;
+}
+table.SmartCalendar td.SCalendarToday {
+	background: #FFFFCC;
+}
+table.SmartCalendar td.SCalendarSelected {
+	background: #FFCC00;
+}
+table.SmartCalendar td div.SCalendarHeader {
+	font-size: 25px;
+	font-weight: bold;
+	text-align: center;
+}
+/* -- */
+
+/* Calendar :: Small */
+table.SmartSmallCalendar {
+	border-collapse: collapse;
+}
+table.SmartSmallCalendar th {
+	background: #2269A6;
+	color: #FFFFFF;
+	font-size: 11px;
+	padding: 1px;
+	border-top: none;
+	text-align: center;
+}
+table.SmartSmallCalendar td {
+	border: 1px solid #ECECEC;
+	background: #FFFFFF;
+	color: #000000;
+	padding: 1px;
+	vertical-align: top;
+}
+table.SmartSmallCalendar td div.SCalendarDayHead {
+	font-size: 11px;
+	display: block;
+	padding: 1px;
+	text-align: left;
+	font-weight: bold;
+}
+table.SmartSmallCalendar td div.SCalendarContent {
+}
+table.SmartSmallCalendar td.SCalendarSuffix, table.SmartSmallCalendar td.SCalendarPrefix {
+	background: #F9F9F9;
+}
+table.SmartSmallCalendar td div.SCalendarEvent {
+	background: #FFFFFF;
+	color: #333333;
+	font-size: 9px;
+	padding: 1px;
+	line-height: 1rem;
+}
+table.SmartSmallCalendar td.SCalendarToday {
+	background: #FFFFCC;
+}
+table.SmartSmallCalendar td.SCalendarSelected {
+	background: #FFCC00;
+}
+table.SmartSmallCalendar td div.SCalendarHeader {
+	font-size: 15px;
+	font-weight: bold;
+	text-align: center;
+}
+/* -- */
+
+/* ----------------------------- */
+
+/* -- CSS End -- */

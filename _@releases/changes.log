@@ -1,0 +1,413 @@
+
+# CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
+## This apply only for for Milestone Releases
+
+December 25, 2024
+	* Refactoring of some modules, cleanup
+
+December 23, 2024
+	* minor fixes, stable release
+	* fix some comments
+
+December 18, 2024
+	* stable, release to support PHP 7.4 ... PHP 8.4
+
+December 16, 2024
+	* PHP 8.4 compatibility fixes ; it is now PHP 8.4 stable
+	* Docs updated
+
+November 23, 2024
+	* Fixes and optimizations
+	* PHP 8.4 compatibility fixes
+	* removed E_STRICT and E_USER_ERROR since they are no more supported in PHP 8.4 and later versions
+
+February 16, 2024
+	* BugFix ?page[%24eq]=1
+
+January 18, 2024
+	* minor fixes
+
+November 17, 2023
+	* Sync with framework Refactoring: Twofish + SHA3 new security impl.
+
+October 20, 2023
+	* minor fixes and optimizations
+
+October 18, 2023
+	* Js autoheight webmail iframe
+	* Implement Mod Privileges: SVN
+	* BugFix: WebMail Get / WebMail Utils, undef Array in context
+	* upgrade Twig to 3.7.1 + Fix Debug TPL
+	* WebMailUtils: checksumAtt, security fix: use safe checksum to avoid possible length attacks, SHA384
+	* Move Tree Editor as Tree Async to Mod Admins ; Update jsTree to v.3.3.15
+
+January 29, 2023
+	* new Js: WorkFlow OrgChart, jsPDF,  jQuery MockJax
+
+January 23, 2023
+	* Js Major Refactoring (admin UI js/css moved to modules/mod-auth-admins/views/js and modules/mod-wflow-components/views/jquery)
+	* Keep in lib/js just few, essential jQuery scripts
+
+December 31, 2022
+	* Fixes for issue '+' (in string) with wrong UTF-7 detected encoding (Unicode) for PHP 8.1 / 8.2
+
+December 28, 2022
+	* Fixes: Mod DB Laminas, Mod ORM RedBean
+
+December 25, 2022
+	* Plugins Refactoring
+
+December 22, 2022
+	* Internal optimizations and Fixes
+
+December 20, 2022
+	* SmartUtils::comment_php_code 							-> Smart::commentOutPhpCode
+	* SmartFrameworkRegistry::ifDebug 						-> SmartEnvironment::ifDebug
+	* SmartFrameworkRegistry::ifInternalDebug 				-> SmartEnvironment::ifInternalDebug
+	* SmartFrameworkRegistry::setDebugMsg 					-> SmartEnvironment::setDebugMsg
+	* SmartFrameworkRegistry::getDebugMsgs 					-> SmartEnvironment::getDebugMsgs
+	* SmartFrameworkRegistry::ifProdEnv 					-> ! SmartEnvironment::ifDevMode
+	* SmartAbstractAppController->IfProdEnv 				-> ! SmartAbstractAppController->IfDevMode
+	* SmartFrameworkRegistry::isAdminArea 					-> SmartEnvironment::isAdminArea
+	* SmartFrameworkRegistry::isTaskArea 					-> SmartEnvironment::isTaskArea
+
+December 19, 2022
+	* SmartFileSysUtils::check_if_safe_path 				-> checkIfSafePath
+	* SmartFileSysUtils::check_if_safe_file_or_dir_name		-> checkIfSafeFileOrDirName
+	* SmartFileSysUtils::raise_error_if_unsafe_path 		-> raiseErrorIfUnsafePath
+	* SmartFileSysUtils::max_upload_size 					-> maxUploadFileSize
+	* SmartFileSysUtils::add_dir_last_slash 				-> addPathTrailingSlash
+	* SmartFileSysUtils::get_dir_from_path 					-> extractPathDir
+	* SmartFileSysUtils::get_file_name_from_path 			-> extractPathFileName
+	* SmartFileSysUtils::get_noext_file_name_from_path 		-> extractPathFileNoExtName
+	* SmartFileSysUtils::get_file_extension_from_path 		-> extractPathFileExtension
+	* SmartFileSysUtils::prefixed_uuid10_dir 				-> prefixedUuid10B36Path
+	* SmartFileSysUtils::prefixed_sha1_path 				-> prefixedUuid40B16Path
+	* SmartFileSysUtils::mime_eval 							-> getMimeType | getArrMimeType
+	* SmartFileSysUtils::version_stdmtime 					# DEPRECATED, REMOVED
+	* SmartFileSysUtils::version_add 						-> fnameVersionAdd
+	* SmartFileSysUtils::version_remove 					-> fnameVersionClear
+	* SmartFileSysUtils::version_get 						-> fnameVersionGet
+	* SmartFileSysUtils::version_check 						-> fnameVersionCheck
+
+December 17, 2022
+	* Mod DBAL Laminas Fixes
+
+December 08, 2022
+	* Upgrade Twig
+	* TPL refactoring: standardize the TPL variable 'Tpl_Dir__' as 'Tpl_Path__'
+
+December 05, 2022
+	* Change Smart::striptags to Smart::stripTags + change yes/no params to bool
+
+November 05, 2022
+	* lib SOLR avoid check version and log warning if empty config (perhaps disabled by intention)
+
+October 20, 2022
+	* module mod Html2Markdown marked as stable
+
+September 16, 2022
+	* Refactoring CSS file name for jQuery Pager in modules
+
+September 15, 2022
+	* Mod Docs, HTML2Markdown: separe dt/dd from div, test support for extended Markdown with dd
+	* Move Mod DB Admin from Smart.Framework.Modules to Smart.Framework
+	* Mod DB Admin - Refactoring and fixes
+
+September 10, 2022
+	* Add PostType to SmartCurlHttpFtpClient to be able to set other content type than application/x-www-form-urlencoded with POST
+
+September 08, 2022
+	* Mod DBAdmin Fix Styles
+	* Move SlimSelect Js from Mod Documentor to framework
+	* Upgrade Twig to version 3.4.2
+	* Math Latex Formula Parse to Markdown from HTML2Markdown
+
+August 31, 2022
+	* optimizations
+	* mod docs fixes for HTML2Markdown parser
+
+August 16, 2022
+	* mod docs fixes to use JSON Docs Index and overrides
+
+August 10, 2022
+	* doc module: HTML2Markdown fix to support newer markdown parser with extended lists which may include almost all supported elements
+
+July 30, 2022
+	* Mark as PHP 8.0 STABLE (previous was marked as PHP 7.4 STABLE)
+	* Mark as PHP 8.1 STABLE
+	* Mark as PHP 8.2 ready
+	* Prepare to drop support for PHP 7.3 (at the end of this year, 2022)
+
+July 08, 2022
+	* Replace deprecated utf8_encode() and utf8_decode() with their MBString Equivalents
+	* Fix Deprecated MBString HTML-ENTITIES
+
+July 07, 2022
+	* Upgrade Mod Twig TPL
+	* Add Mod Twist TPL
+	* Remove Mod Dust (unmaintained)
+
+May 05, 2022
+	* Upgrade Mod Twig TPL
+
+February 21, 2022 :: Version 8.7 rev.20220221
+	* minor fixes
+
+February 14, 2022 :: Version 8.7 rev.20220214
+	* markdown v2 and v1 rendering improvements and bug fixes
+
+February 10, 2022 :: Version 8.7 rev.20220210
+	* move lib FTP client to smart modules
+
+February 07, 2022 :: Version 8.7 rev.20220207
+	* Completely rewritten of SmartMarkdownToHTML class ; implement Markdown v.2 Extended (from draft specifications) ; The old class only supports Markdown v1 and have been moved to modules and renamed as SmartPMarkdownToHTML
+	* Fixing modules to implement Markdown v2
+
+January 26, 2022 :: Version 8.7 rev.20220126
+	* Fix: explicit avoid to read the HTTP Body on HEAD method
+
+January 07, 2022 :: Version 8.7 rev.20220107
+	* PHP8 Fixes
+
+December 28, 2021 :: Version 8.7 rev.20211228
+	* Upgrade Twig
+
+November 26, 2021 :: Version 8.7 rev.20211127
+	* PHP 8.1 compatibility fixes for: BarCodes, Dust, Vendor (Math and MeyFaSvg)
+	* Upgrade Twig, Typo3Fluid, Redbean ORM to be PHP 8.1+ ready
+	* removed deprecated DBAL Zend (cannot achieve compatibility with PHP 8.1+ as many parts need to be rewritten from the scratch ; the Zend DBAL project was abandoned long time ago ...)
+
+June 17, 2021 :: Version 8.7 rev.20210617
+	* upgrade d3.js from v4 to v6 + extra samples + docs
+	* fix leaflet maps js plugin (elevation) to work with new d3.js v6
+	* fix mongo db admin
+	* upgrade + add a lot of fixes and changes to (vendor libs) League Markdown To Html
+	* update Slim Select in mod documentor
+	* mod docs, stable
+	* SVN Fix icon sizes + br after migrating to auth admin templates (see below @12 june)
+
+June 12, 2021 :: Version 8.7 rev.20210612
+	* update modules after a major refactoring of default, admin and task templates in smart framework
+	* re-generate documentation: PHP and JS
+
+June 10, 2021 :: Version 8.7 rev.20210610
+	* update Twig to version 3.3.2
+	* moved highlight.js from framework to mod highlight + upgraded to the latest v.9.x
+
+May 26, 2021 :: Version 8.7 rev.20210526
+	* v.8 release (version numbering is now different ; 8.7 shows that runs on both PHP 8 and PHP 7 with primary target on PHP 8 and continue to support PHP 7 ...) ; next version will be perhaps 9.8 when PHP 9 will be released and will support PHP 8 or event 9.8.7 if will supports all PHP 9, 8 and 7 :-)
+
+May 25, 2021 :: Version 7.2.1 rev.20210525
+	* mod documentor as task instead of adm
+	* this is the last v.7 release ; next release will be v.8
+
+May 11, 2021 :: :: Version 7.2.1 rev.20210511
+	* sync with the major refactoring of framework
+	* removed deprecated class from Zend DBAL as framework only supports PHP 7.3+
+
+April 20, 2021 :: :: Version 7.2.1 rev.20210420
+	* garbage cleaning inside code: php, js, html, ..., comments
+
+April 19, 2021 :: :: Version 7.2.1 rev.20210419
+	* Optimizations for the new Javascript ES6
+	* MAJOR RELEASE (see below backward incompatible changes for Smart.Framework Javascript which was migrated from ES5 to ES6)
+
+April 18, 2021 :: :: Version 7.2.1 rev.20210418
+	* update compatibility with new class names from smart framework Javascript ES6 in all modules
+	* mod documentor JS have been fixed to support the ES6 features, includding arrow methods, let, const and freeze
+	* documentation updated
+
+April 03, 2021 :: :: Version 7.2.1 rev.20210403
+	* Mod Oauth2 support github and non-expiring tokens
+
+April 02, 2021 :: :: Version 7.2.1 rev.20210402
+	* Mod SVN Fixes
+	* Mod Oauth2 Fixes
+	* Update W3CSS
+
+March 31, 2021 :: :: Version 7.2.1 rev.20210331
+	* cleanup and re-organize wflow components / sci-fi
+
+March 30, 2021 :: :: Version 7.2.1 rev.20210330
+	* moved wflow components / toastr to framework
+	* updated documentation for PHP / JS
+
+March 27, 2021 :: :: Version 7.2.1 rev.20210327
+	* mod Highlight Syntax: HighlightJs ViewHelpers - new features
+
+March 16, 2021 :: :: Version 7.2.1 rev.20210316
+	* stable on PHP 8, pass all tests
+
+March 12, 2021 :: :: Version 7.2.1 rev.20210312
+	* fix deprecated <div> align=center in favor of <center> tag for includded HTML
+
+March 10, 2021 :: :: Version 7.2.1 rev.20210310
+	* req. PHP 7.3 or later (removed support for PHP 7.2 because of setcookie option missing SameSite)
+
+March 07, 2021 :: :: Version 7.2.1 rev.20210307
+	* PHP8 Compatible
+	* Removed support for NetteLatte Templating
+
+December 07, 2020 :: Version 7.2.1 rev.20201207
+	* Fixes and Optimizations
+	* New Modules
+	* Documentation Updates
+
+August 19, 2020 :: Version 7.2.1 rev.20200819
+	* Update Twig
+	* Update Typo3Fluid
+	* Update MatthiasMullie/Minify
+	* Update MatthiasMullie/PathConverter
+
+July 21, 2020 :: Version 7.2.1 rev.20200721
+	* Mod DB-Admin / MongoDB marked as stable
+
+July 17, 2020 :: Version 7.2.1 rev.20200717
+	* Fixes for Oauth2 Module manager
+
+July 15, 2020 :: Version 7.2.1 rev.20200715
+	* new Module: OAuth2
+	* Twig update to latest 3.0.4
+
+July 08, 2020 :: Version 7.2.1 rev.20200708
+	* HTTP / FTP Cli (CURL): add support for explicit TLS versions
+
+June 30, 2020 :: Version 7.2.1 rev.20200630
+	* Update Docs
+
+June 19, 2020 :: Version 7.2.1 rev.20200619
+	* Fix Lib CURL HTTP/FTP Cli (do not set the option CURLOPT_DNS_USE_GLOBAL_CACHE on Windows Platform to avoid warnings)
+	* Minor Fixes + Update Documentation
+
+June 05, 2020 :: Version 7.2.1 rev.20200605
+	* PHP 7.2+ Optimizations
+
+June 04, 2020 :: Version 5.7.2 rev.20200604
+	* require PHP 7.2+
+
+May 19, 2020 :: Version 5.7.2 rev.20200519
+	* All SVGs fixed and validate against SVG 1.1 DTD
+
+May 15, 2020 :: Version 5.7.2 rev.20200515
+	* Upgrade Bootstrap to 4.5.0
+	* Upgrade RedBean ORM to 5.5.0
+	* Update all documentation
+
+May 02, 2020 :: Version 5.7.2 rev.20200502
+	* Fix Bootstrap v4 js bundle to work with jQuery to 3.5.0 and later (collapse element failed)
+
+May 05, 2020 :: Version 5.7.2 rev.20200507
+	* Upgrade jQuery to 3.5.1
+	* Minor Js fixes for some scripts that were not ES5 compatible
+	* Add upstream fixes from github for twig v1 and v3
+
+May 02, 2020 :: Version 5.7.2 rev.20200502
+	* Upgrade jQuery to 3.5.0
+	* Fix all broken javascripts that depend on jQuery and were affected by the major breaking changes in jQuery 3.5.0: xhtml tags converted to html tags ; object hasOwnProperty over {}
+
+February 17, 2020 :: Version 5.7.2 rev.20200217
+	* Add module GeoIP
+
+January 21, 2020 :: Version 5.7.2
+	* optimizations (req. PHP 7.2 or later)
+
+December 18, 2019 :: Version 5.2.7 rev.191218
+	* SmartArchiverLZS (PHP) and SmartJS_Archiver_LZS (Js) moved to modules
+
+December 17, 2019 :: Version 5.2.7 rev.191217
+	* Barcodes moved to mod-barcodes
+	* Captcha completely rewritten to support plugins (default uses SVG captcha) ; captcha image + fonts moved to mod-captcha
+
+December 05, 2019 :: Version 5.2.7 rev.191205
+	* PHP 7.4 ready
+
+November 26, 2019 :: Version 5.2.7 rev.191126
+	* New documentation for PHP and Javascript
+	* Renamed lib/js/framework/smart-framework.js to lib/js/framework/smart-framework.pak.js
+
+November 16, 2019 :: Version 5.2.7 rev.191116
+	* Security Fix: Safe Set CA File in several Client Libs
+
+November 09, 2019 :: Version 5.2.7
+	* Migrate Markers-TPL from v3 to v5 (stable)
+	* Fixes for Smart.Framework v5 (stable)
+
+October 22, 2019 :: Version 3.7.8 # rev.2019.10.22
+	* new modules: mod-tpl, mod-tpl-dust, mod-documentor, mod-soap
+	* fixes, optimizations
+
+February 07, 2019 :: Version 3.7.8 # rev.190207
+	* changed the license to multi-licensing (see LICENSE)
+
+January 03, 2019 :: Version 3.7.8
+	* new modules: NetteLatte, MapsCache, UI Bootstrap v4
+	* new app module: SVN
+	* moved lib MySQL / MariaDB from Smart.Framework.Modules to Smart.Framework
+	* bug fixes and optimizations
+	* fix compatibility with PHP 7.3 for all code
+	* updated: vendor, TplTwig, ZendDBAL, SmTwiter, SmFacebook
+
+October 10, 2018 :: Version 3.7.7
+	* new modules: ZendDBAL, TplTypo3Fluid
+	* new app module: PageBuilder
+	* bug fixes and optimizations
+
+March 09, 2018 :: Version 3.7.5
+	* optimizations and fixes
+
+Sep 27, 2017 :: Version 3.5.7
+	* new modules
+	* bug fixes and optimizations
+
+May 12, 2017 :: Version 3.5.1
+	* a refactored release
+
+Apr, 11, 2017 :: Version 3.1.2
+	* a bug fix release
+
+Apr, 10, 2017 :: Version 3.1
+	* Release / Stable
+	* removed deprecated Mongo Client Library
+
+Feb, 19, 2016 :: Version 2.3
+	* Release / Stable (switch to SVN ; keep GIT just for public ...)
+
+Feb, 05, 2016 :: Version 2.2
+	* INFO: this is a bug-fix release for the version 2.1 branch, you are encouraged to use this version as soon as possbile
+	* security:
+		* the MySQL database driver is now using automate fix for UTF-8 charset using SmartUnicode::utf8_fix_charset() embedded in the Escaping functions to make it 100% safe ...
+
+Jan 19, 2016 :: Version 2.1
+	* The Twig templating constructor have been changed, modules adapted to work with Smart.Framework v.2.1 and later
+
+#####
+
+Dec 15, 2015 :: Version 1.5
+	* backward incompatible changes:
+		* in the MySQLi driver, the functions read_adata() and read_asdata() have been rotated each other,
+			thus the new read_adata() since version 1.5 is now behaving like the old read_asdata() in versions prior to 1.5 ;
+			and the new read_asdata() since version 1.5 is now behaving like the old read_adata() in versions prior to 1.5;
+			- the new read_adata() since version 1.5: Read Associative Multiple Rows :: returns array(0 => array('column1', 'column2', ... 'column-n'), 1 => array('column1', 'column2', ... 'column-n'), ..., m => array('column1', 'column2', ... 'column-n'))
+			- the new read_asdata() since version 1.5: Read Associative Single (one) Rows :: Throws Error if more records are returned by SQL :: returns a single row as array('column1', 'column2', ... 'column-n')
+			(this come as a result from many users of these framework to make this function names more easy to remember)
+			thus, this will remain finally as it is now since version 1.5
+	* optimizations:
+		* more than 100 lines of code changed, to speed-up or optimize some areas
+		* database drivers: MySQLi, Mongo and Solr are now re-using the connections for the same server:port@db#user
+
+Nov 30, 2015 :: Version 1.3
+	* backward incompatible changes:
+		* renamed the class: SmartMysqliObjDb to SmartMysqliExtDb
+	* optimizations:
+		* code optimizations in many classes, execution time is better with ~10%
+	* documentation:
+		* the documentation is available here: http://demo.unix-world.org/smart-framework.docs/
+
+June 5, 2015 :: Version 1.2
+
+March 07, 2015 :: Version 1.1
+
+March 17, 2009 :: Version 0.1
+
+# END #

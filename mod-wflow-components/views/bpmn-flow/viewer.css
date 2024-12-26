@@ -1,0 +1,38 @@
+
+/*
+Extra Viewer (and Modeler) Styles for Notes, by unixman
+*
+(c) 2019-2020 unix-world.org
+License: GPLv3
+Version: 20200403
+*/
+
+/* unixman */
+
+.djs-xtra-elem-note {
+	background-color: rgba(66, 180, 21, 0.85);
+	border: 1px solid #FFCC00;
+	color: #FFFFFF;
+	border-radius: 3px;
+	font-size: 12px !important;
+	line-height: 13px !important;
+	padding: 3px;
+	width: 50px;
+	min-height: 15px;
+	max-height: 38px;
+	text-align: center;
+	word-wrap: break-word;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	cursor: context-menu;
+	margin-left: -5px;
+	margin-top: -1px;
+}
+
+/*
+.djs-xtra-annotation-note:not(.djs-connection) .djs-visual > :nth-child(1) {
+	stroke: rgba(66, 180, 21, 0.95) !important;
+}
+*/
+
+/* END */

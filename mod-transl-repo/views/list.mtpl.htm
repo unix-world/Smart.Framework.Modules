@@ -1,0 +1,137 @@
+[@@@SUB-TEMPLATE:back-btn.mtpl.inc.htm@@@]
+<link href="lib/js/jquery/jsonview/jquery.json-viewer.css" type="text/css" rel="stylesheet">
+<script src="lib/js/jquery/jsonview/jquery.json-viewer.js"></script>
+<h1>Translations Repo / List</h1>
+<style>
+.json-render-area {
+}
+.smartGrid_AlignCenter {
+	text-align: center;
+}
+.smartGrid_AlignRight {
+	text-align: right;
+}
+.smartGrid_Important {
+	font-weight: bold;
+}
+.smartGrid_HeadHighlight {
+	background-color: #DCDCDC !important;
+	color: #555555 !important;
+}
+</style>
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-uix.inc.htm!@@@]
+<script type="text/javascript">
+	//--
+	var IdOfGrid = 'SmartSlickGrid__TranslRepo';
+	var TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', 'admin.php?page=transl-repo.welcome&action=list-data', 'smart_slickgrid_transl_repo_list', 'txt', 'ASC', '', 'filtering');
+	//--
+</script>
+<form id="filtering" name="filtering" class="ux-form" onsubmit="return false;">
+	<table class="ux-reflow-table">
+		<tr>
+			<td>
+				<table width="100%"><tr>
+				<td>Text:<br><input type="text" id="filter-src" name="src" placeholder="Filter by %Text%" value="" class="ux-input-def" style="width:200px;"></td>
+				<td>Language:<br>[###HTML-LIST-LANGS###]</td>
+				<td>Project:<br><input type="text" id="filter-proj" name="proj" placeholder="Project(s)" title="Project1(,Project2,!Project3,[])" value="" class="ux-input-def" style="width:150px;"></td>
+				<td>Modified Start:<br>[###HTML-DATE-START###]</td>
+				<td>Modified End:<br>[###HTML-DATE-END###]</td>
+				</tr></table>
+			</td>
+			<td>
+				<br><button type="button" class="ux-button ux-button-primary" onClick="TheGrid.loadGridData(0);" title="Filter Table Results">Filter &nbsp; <i class="sfi sfi-search"></i></button>
+			</td>
+			<td>
+				<br><button type="button" class="ux-button ux-button-secondary" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);" title="Remove Filter (display all results)">Reset &nbsp; <i class="sfi sfi-history"></i></button>
+			</td>
+			<td>
+				<br><div style="width:32px;">&nbsp;</div>
+			</td>
+			<td>
+				<br><span style="color:#778899; font-size:24px; font-weight:bold;">Listing Records :: <span id="infoTotalRows"># / # @</span></span>
+			</td>
+		</tr>
+	</table>
+</form>
+<div id="SmartNavPager__TranslRepo"></div>
+<form class="ux-form"><div id="SmartSlickGrid__TranslRepo" class="slickgrid-table" style="font-size:10px;width:100%;height:10px;"></div></form>
+<script type="text/javascript">
+$('body').keydown(function(e){
+	if((e.key === 'Escape') || (e.key === 'Esc')) {
+		$('#simpledialog-bttn-yes').click();
+	}
+});
+function tblShowAlertDialog(id, tx_en, tx_transl, projs, modif) {
+	var html = '<button class="ux-button ux-button-xsmall" style="position:absolute; right:10px; top:7px;" onClick="$(\'#simpledialog-bttn-yes\').click();">X</button><div><h3 style="display:inline;">EN Text</h3></div>' + '<pre style="width:99%; overflow:auto;">' + smartJ$Utils.escape_html(tx_en) + '</pre><hr>' + '<div><h3 style="display:inline;">Text Translations</h3></div>' + '<pre id="jsonAreaPreAlertDialog" class="json-render-area"></pre>' + '<script' + '>' + 'var json; try { json = JSON.parse(\'' + smartJ$Utils.escape_js(tx_transl) + '\'); } catch(err) { json = {}; }' + '$(\'#jsonAreaPreAlertDialog\').jsonViewer(json, { collapsed: false, withQuotes:false });' + '<' + '/script>';
+	smartJ$Browser.AlertDialog(html, null, 'Record ID: `' + id + '`', parseInt($(window).width() * 0.75), parseInt($(window).height() * 0.9));
+} //END FUNCTION
+</script>
+<script>
+function getFromUrlByAjax(message, url) {
+	if(!url) {
+		alert('URL is Empty !');
+		return;
+	}
+	smartJ$Browser.OverlayShow('... processing ...', String(message));
+	smartJ$Browser.SubmitFormByAjax(null, String(url), 'yes');
+}
+</script>
+<script type="text/javascript">
+$(function() {
+
+	//-- Grid Renderers
+	function columnPostRenderer_Id(cellNode, row, dataContext, colDef) {
+		var id = String(dataContext['id']);
+		var tx_en = String(dataContext['txt']);
+		var tx_transl = String(dataContext['transl']);
+		var projs = String(dataContext['projects']);
+		var modif = String(dataContext['modif']);
+		$(cellNode).empty().html('<button class="ux-button ux-button-special ux-button-xsmall" onclick="smartJ$Browser.ConfirmDialog(\'' + smartJ$Utils.escape_js('<img src="lib/framework/img/sign-crit-warn.svg" align="right">') + '<b>Delete this Record ?</b>\' + \'<br><br>' + smartJ$Utils.escape_js(smartJ$Utils.escape_html(tx_en)) + '\', function(){ getFromUrlByAjax(\'Deleting ...\', \'admin.php?page=transl-repo.welcome&action=delete-data&id=' + smartJ$Utils.escape_js(smartJ$Utils.escape_url(id)) + '\'); }, \'Delete Confirmation / ID: `' + smartJ$Utils.escape_js(id) + '`\', 550, 350);  return false;"><i class="sfi sfi-bin2"></i></button> &nbsp; <a class="ux-button ux-button-xsmall" href="javascript:void(0)" onClick="tblShowAlertDialog(\'' + smartJ$Utils.escape_js(id) + '\', \'' + smartJ$Utils.escape_js(tx_en) + '\', \'' + smartJ$Utils.escape_js(tx_transl) + '\', \'' + smartJ$Utils.escape_js(projs) + '\', \'' + smartJ$Utils.escape_js(modif) + '\'); return false;">' + '<i class="sfi sfi-file-text2"></i>' + '</a>');
+	} //END FUNCTION
+
+	//-- Grid Data Defs
+	var columns = [
+		{id:'id', field:'id', name:'ID', sortable:false, width:25, cssClass:'smartGrid_AlignCenter', cssHeadClass:'smartGrid_HeadHighlight', editor:TextCellSelector, rerenderOnResize:true, asyncPostRender:columnPostRenderer_Id},
+		{id:'txt', field:'txt', name:'EN-Text', sortable:true, width:150, cssClass:'smartGrid_Important', editor:TextCellSelector},
+		{id:'transl', field:'transl', name:'Translations', sortable:false, width:170, editor:TextCellSelector},
+		{id:'projects', field:'projects', name:'Projects', sortable:false, width:100, editor:TextCellSelector},
+		{id:'modified', field:'modified', name:'Modified', cssClass:'smartGrid_AlignCenter', toolTip:'Date Modified ...', sortable:true, width:70, editor:TextCellSelector}
+	];
+
+	//-- Grid Options
+	var options = {
+		enableAddRow: false,
+		enableCellNavigation: true,
+		enableColumnReorder: false,
+		enableAsyncPostRender: true,
+		forceFitColumns: false,
+		asyncPostRenderDelay: 15,
+		rowHeight: 26,
+		editable: true,
+		autoEdit: false,
+		asyncEditorLoading: false
+	};
+
+	//-- Grid sizing
+	var diffWH = 205;
+	var winW = $(window).width();
+	var winH = $(window).height();
+	$('#' + IdOfGrid).css({ 'width': parseInt(winW - 75), 'height': parseInt(winH - diffWH) });
+	$(window).resize(function() {
+		winW = $(window).width();
+		winH = $(window).height();
+		$('#' + IdOfGrid).css({ 'width': parseInt(winW - 75), 'height': parseInt(winH - diffWH) });
+		TheGrid.grid.resizeCanvas();
+		TheGrid.grid.autosizeColumns();
+	});
+
+	//-- Runtime
+	TheGrid.initNavPager('SmartNavPager__TranslRepo', 3);
+	TheGrid.initGrid(columns, options);
+	TheGrid.grid.resizeCanvas();
+	TheGrid.grid.autosizeColumns();
+	TheGrid.loadGridData(0);
+
+});
+//--
+</script>

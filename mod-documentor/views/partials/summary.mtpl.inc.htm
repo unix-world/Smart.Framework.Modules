@@ -1,0 +1,47 @@
+<!-- summary r.20210420 -->
+<script>
+[@@@SUB-TEMPLATE:partials/summary-js.mtpl.inc.js@@@]
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP [###TYPE|ucfirst|html###] [###NAME|html###] # Documentation Index *</option>
+		<optgroup label="[###TYPE|ucfirst|html###] [###NAME|html###]">
+			<option value="Class--Summary-">[###TYPE|ucfirst|html###] definition</option>
+		</optgroup>
+		<optgroup label="[###TYPE|ucfirst|html###] Methods">
+			<option value="Methods--Summary-">Methods list</option>
+			[%%%LOOP:ARR-METHODS%%%]
+			[%%%IF:ARR-METHODS.IS-INTERNAL-PRIV:!=1;%%%]
+			<option value="Method--[###ARR-METHODS.NAME|htmid|html###]"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;[###ARR-METHODS.NAME|html###]()</option>
+			[%%%/IF:ARR-METHODS.IS-INTERNAL-PRIV%%%]
+			[%%%IF:ARR-METHODS.IS-MAGIC:==1;%%%]
+			[%%%LOOP:ARR-METHODS.SUB-METHODS%%%]
+			<option value="Method-Sub--[###ARR-METHODS.SUB-METHODS.NAME|htmid|html###]">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;[###ARR-METHODS.SUB-METHODS.NAME|html###]()</option>
+			[%%%/LOOP:ARR-METHODS.SUB-METHODS%%%]
+			[%%%/IF:ARR-METHODS.IS-MAGIC%%%]
+			[%%%/LOOP:ARR-METHODS%%%]
+		</optgroup>
+		<optgroup label="[###TYPE|ucfirst|html###] Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			[%%%LOOP:ARR-PROPERTIES%%%]
+			[%%%IF:ARR-PROPERTIES.IS-INTERNAL-PRIV:!=1;%%%]
+			<option value="Property--[###ARR-PROPERTIES.NAME|htmid|html###]"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$[###ARR-PROPERTIES.NAME|html###]</option>
+			[%%%/IF:ARR-PROPERTIES.IS-INTERNAL-PRIV%%%]
+			[%%%/LOOP:ARR-PROPERTIES%%%]
+		</optgroup>
+		<optgroup label="[###TYPE|ucfirst|html###] Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			[%%%LOOP:ARR-CONSTANTS%%%]
+			[%%%IF:ARR-CONSTANTS.IS-INTERNAL-PRIV:!=1;%%%]
+			<option value="Constant--[###ARR-CONSTANTS.NAME|htmid|html###]">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;[###ARR-CONSTANTS.NAME|html###]</option>
+			[%%%/IF:ARR-CONSTANTS.IS-INTERNAL-PRIV%%%]
+			[%%%/LOOP:ARR-CONSTANTS%%%]
+		</optgroup>
+		[%%%IF:DOC-CODE-HTML:!=;%%%]
+		<optgroup label="[###TYPE|ucfirst|html###] Sample usage">
+			<option value="SAMPLE--Code-">Sample code</option>
+		</optgroup>
+		[%%%/IF:DOC-CODE-HTML%%%]
+	</select>
+</div>
+[@@@SUB-TEMPLATE:partials/summary-selectjs.mtpl.inc.htm@@@]

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<title>jsPlumb demo - State Machine</title>
+
+	<link href="../../../../../../modules/mod-ui-bootstrap/toolkit/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+	<link rel="stylesheet" href="../../doc/css/main.css">
+	<link rel="stylesheet" href="../../jsplumbtoolkit-defaults.css">
+	<link rel="stylesheet" href="../jsplumbtoolkit-demo.css">
+	<link rel="stylesheet" href="demo.css">
+
+	<script src="../../jsplumb.js"></script>
+</head>
+<body data-demo-id="statemachine">
+		<div class="navbar navbar-top navbar-fixed-top" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+
+			<span class="navbar-brand">Flow Charts Demo</span>
+			<div class="community"></div>
+
+		</div>
+
+		<div class="navbar-collapse collapse nav-wrapper">
+			<ul class="nav navbar-nav">
+			</ul>
+			<div class="social-nav hidden-xs">
+			</div>
+		</div><!--/.nav-collapse -->
+	</div>
+</div>
+
+<div class="jtk-demo-main">
+	<!-- demo -->
+	<div class="jtk-demo-canvas canvas-wide statemachine-demo jtk-surface jtk-surface-nopan" id="canvas">
+		<div class="w" id="opened">BEGIN
+			<div class="ep" action="begin"></div>
+		</div>
+		<div class="w" id="phone1">PHONE INTERVIEW 1
+			<div class="ep" action="phone1"></div>
+		</div>
+		<div class="w" id="phone2">PHONE INTERVIEW 2
+			<div class="ep" action="phone2"></div>
+		</div>
+		<div class="w" id="inperson">IN PERSON
+			<div class="ep" action="inperson"></div>
+		</div>
+		<div class="w" id="rejected">REJECTED
+			<div class="ep" action="rejected"></div>
+		</div>
+	</div>
+	<!-- /demo -->
+</div>
+
+<script src="demo.js"></script>
+<script src="../demo-list.js"></script>
+
+</body>
+</html>

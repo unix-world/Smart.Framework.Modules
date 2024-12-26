@@ -1,0 +1,81 @@
+Download
+
+Photo of RedBeanPHP in 1981.
+Welcome to the Download page of RedBeanPHP. Here you can download various editions of RedBeanPHP.
+
+RedBeanPHP ships as a single, all-in-one tarball, that's all you need to get started with RedBeanPHP. Simply extract the tar.gz file to the destination folder and include the rb.php file in your PHP script.
+
+For a list of new features, fixes and changes in the latest version, please consult the changelog.
+
+
+Did you check the system requirements?
+Download RedBeanPHP 5.4   recommended
+
+The latest stable version of RedBeanPHP. If you're new to RedBeanPHP this is the recommended version to use.
+
+After downloading and extracting the file and include the rb-file in your PHP script.
+
+    Download RedBeanPHP 5 all-drivers
+    Download RedBeanPHP 5 mysql
+    Download RedBeanPHP 5 postgres
+    Download RedBeanPHP 5 sqlite
+
+
+...also see the changelog for details!
+Verify your download
+
+Here are the sha256sum outputs of the files:
+
+fe63573e2ed9be9e8f4f2b19dff432334c4cff159408f3c1f8b868734d3663d1  RedBeanPHP5_4-mysql.tgz
+81438453a7fe65e2adc64062d37ef365b07a945c48316ed80acccb2e85390f09  RedBeanPHP5_4-postgres.tgz
+20b05a6cde8fd017c69a0e789ee37ac1c6e41267dc21a6bfc8828393e791b75b  RedBeanPHP5_4-sqlite.tgz
+1776013dde1347647c01105c7fdfe1476922a34fddeb7a3b0765483087bcd92c  RedBeanPHP5_4.tgz
+signify key:
+untrusted comment: signify public key
+RWSEPjwPrf4jAtahiV/HNXWz83QYsppKn0EzVOhsoVV24gwB6mGpsdXL
+
+
+Always make sure you check the sha256sum before including the file.
+
+If you use PHP 5.3.3 or older, run the P533 patch first. Download the P533-patch for old PHP versions.
+Download RedBeanPHP 4.3.4 (Legacy)
+
+tgz package Download RedBeanPHP 4.3.4 Legacy
+
+After downloading and extracting the file and include the rb-file in your PHP script.
+Support for version 4.3.4 will end January 2020. Please upgrade to RedBeanPHP 5. Note that RedBeanPHP 5 almost 100% backward compatible with version 4 (except for Cooker plugin).
+
+31d75000fd5d3a47af4fb41087779cf930b22cdef2e8e80e83d034f67f1ac905
+
+
+
+RedBeanPHP on Github
+
+You can download RedBeanPHP from Github as well: Download RedBeanPHP from Github. On the Github page, look for a big button with the label 'download zip' and click on that button to download the source code of RedBeanPHP. After downloading run replica.php to assemble the all-in-one package.
+Download RedBeanPHP 3.5 Legacy (unsupported)
+
+This is the legacy version of RedBeanPHP (the 3.X series). It will be supported until 1 October 2016. Until then, I will answer questions and release updates and patches.
+
+Download this version of RedBeanPHP if you are running an older version of PHP (< 5.3) or you rely on RedBeanPHP 3.5 specific features that have not been backported to the 4.X series.
+
+Download the latest version of RedBeanPHP legacy LTS: RedBeanPHP 3.5.13.
+RedBeanPHP 4 Additional Plugin Pack
+
+As of RedBeanPHP 4, the core package has been trimmed down. Some less essential components have been moved to this plugin package during the clean-up. The plugin package contains the following components:
+
+    Support for CUBRID database for RedBeanPHP 4
+    BeanCan Server Version 1 and 2 for RedBeanPHP 4
+    Preloader (for eager loading features) for RedBeanPHP 4
+    SQLHelper, a Query Builder for RedBeanPHP 4
+    Old Cooker component for RedBeanPHP 4
+
+Download the additional plugin pack for RedBeanPHP4.
+
+Note that some of these plugins are considered deprecated. The Cooker and the Preloader have been replaced in RedBeanPHP 4 by different mechanisms. The SQLHelper is also considered deprecated. The CUBRID QueryWriter and the BeanCan Servers are still fully supported.
+Next version of RedBeanPHP
+
+For more details about the next version of RedBeanPHP please consult the RedBeanPHP roadmap. You can also download new beta versions on that page if you like to help us test the upcoming version of RedBeanPHP!
+Old versions
+
+It's still possible to download older versions of RedBeanPHP from the RedBeanPHP Download Archives. Feel free to visit the download archives and find one of the previous versions of RedBeanPHP.
+

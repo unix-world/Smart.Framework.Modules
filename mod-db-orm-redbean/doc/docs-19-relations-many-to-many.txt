@@ -1,0 +1,44 @@
+Many-to-many
+
+A shared list contains beans that may be associated with more than just one other bean (many-to-many relation). Tags are a common example:
+    list($vase, $lamp) = R::dispense('product', 2);
+
+    $tag = R::dispense( 'tag' );
+    $tag->name = 'Art Deco';
+
+    //creates product_tag table!
+    $vase->sharedTagList[] = $tag;
+    $lamp->sharedTagList[] = $tag;
+    R::storeAll( [$vase, $lamp] );
+
+In this example, a product can have multiple tags and every tag in the list can be associated with other products as well. The latter was not possible in the one-to-many relation.
+
+Like the own-list the name of the shared-list has to match the type of beans it contains. In the database, these assocations will be stored using a link table called 'product_tag'.
+
+This link table is cleaned up automatically, if you break the association between two beans in a shared list the link record is removed as well. Also note that a shared list cannot have aliases and always applies a UNIQUE constraint (you cannot have duplicate links). In some situations this means you have to use a slighly different approach; the N11N relation.
+Via relations
+
+Using the via() method, you can treat normal beans as if they were N-M relations:
+    $participant->project = $project;
+    $participant->employee = $lisa;
+    $participant->role = 'developer';
+    R::store( $participant );
+
+    //get all associated employees via the participants
+    //(includes $lisa!)
+    $employees = $project
+        ->via( 'participant' )
+        ->sharedEmployeeList;
+
+Remember that, since unrelated link beans are removed automatically, emptying a shared list (even using via) causes the link beans to be removed! However, you can always nullify the relations manually of course.
+
+Via is sticky, once you tell RedBeanPHP to fetch a type of bean via another bean it will remember this for the rest of the program. So, once you told RedBeanPHP: $project->via('participant')->sharedEmployee it will always load employees using the participant table as a link table, even if you later say: $project->sharedEmployee. Also note that via() reloads the list.
+Self referential N-M
+
+You can have a shared list containing beans of the same type as the owner of the list:
+    $friends = $friend->sharedFriend;
+
+In this case RedBeanPHP will operate in a special self-referential many-to-many relationship mode. It will not only retrieve all friends of $friend, but also all other friends that are associated with $friend.
+
+You can use two complimentary one-to-many relations as one many-to-many relation. This is called an aggregation or N11N-relation.
+

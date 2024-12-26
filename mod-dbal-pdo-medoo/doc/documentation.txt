@@ -1,0 +1,2016 @@
+
+### Meedoo PHP Class documentation
+
+Get Started
+
+Using Medoo is extremely easy!
+Requirement
+
+    PHP >=5.4 with PDO supported.
+    Installed SQL database like MySQL, MSSQL, SQLite or others.
+    Make sure php_pdo_xxx extension is correctly installed and enabled.
+    A little bit SQL knowledge.
+
+PHP_PDO extension list
+
+The following list indicated which PDO extension should be installed according the type and version of database or the system platform.
+Name 	Driver
+MySQL, MariaDB 	php_pdo_mysql
+MSSQL (Windows) 	php_pdo_sqlsrv
+MSSQL (Linux/UNIX) 	php_pdo_dblib / php_pdo_sqlsrv
+Oracle 	php_pdo_oci
+Oracle version 8 	php_pdo_oci8
+SQLite 	php_pdo_sqlite
+PostgreSQL 	php_pdo_pgsql
+Sybase 	php_pdo_dblib
+PHP PDO driver installation
+
+Medoo is requiring PHP with PDO supported. If you didn't install before, follow this step.
+
+    // Open php.ini and remove the ';' for the database extension you want to install.
+
+    // .dll is for Windows and .so for Linux/UNIX
+
+    // From
+    ;extension=php_pdo_mysql.dll
+    ;extension=php_pdo_mysql.so
+
+    // To
+    extension=php_pdo_mysql.dll
+    extension=php_pdo_mysql.so
+
+    // Save it, and restart PHP or Apache server.
+
+    // If PDO is installed successfully, you can find it on phpinfo().
+
+Or install via terminal. The PDO_XXX extension will be enabled and automatically configured.
+$ sudo apt-get install php5-mysql
+
+For PHP 7.0 or above
+$ sudo apt-get install php7.0-mysql
+Composer Installation
+
+If you know about composer, it is easy to install and manage the version dependence. Just use this command to add Medoo to composer.json. Or you can edit it depend on your requirement.
+$ composer require catfan/medoo
+
+And update the composer
+$ composer update
+Download Installation
+
+The most simple way. Just download medoo.php and put it into the right directory and then require the file, and now you are ready!
+
+    require  'Medoo.php';
+
+Configuration
+
+Pass an array of configuration for initialization and start a database connection.
+
+    // If you installed via composer, just use this code to require autoloader on the top of your projects.
+    require 'vendor/autoload.php';
+
+    // Using Medoo namespace
+    use Medoo\Medoo;
+
+    $database = new Medoo([
+    	// required
+    	'database_type' => 'mysql',
+    	'database_name' => 'name',
+    	'server' => 'localhost',
+    	'username' => 'your_username',
+    	'password' => 'your_password',
+
+    	// [optional]
+    	'charset' => 'utf8mb4',
+    	'collation' => 'utf8mb4_general_ci',
+    	'port' => 3306,
+
+    	// [optional] Table prefix
+    	'prefix' => 'PREFIX_',
+
+    	// [optional] Enable logging (Logging is disabled by default for better performance)
+    	'logging' => true,
+
+    	// [optional] MySQL socket (shouldn't be used with server and port)
+    	'socket' => '/tmp/mysql.sock',
+
+    	// [optional] driver_option for connection, read more from http://www.php.net/manual/en/pdo.setattribute.php
+    	'option' => [
+    		PDO::ATTR_CASE => PDO::CASE_NATURAL
+    	],
+
+    	// [optional] Medoo will execute those commands after connected to the database for initialization
+    	'command' => [
+    		'SET SQL_MODE=ANSI_QUOTES'
+    	]
+    ]);
+
+    $database->insert("account", [
+    	"user_name" => "foo",
+    	"email" => "foo@bar.com"
+    ]);
+
+Customized DSN Connection
+
+You can also use customized DSN to connect the database that Medoo didn't supported by default, especially for some new database requiring special DSN parameter for database connection, or if you want to add more DSN parameters value for connection than original one.
+The format of DSN connection string:
+{driver}:{key}={value};{key}={value}
+
+    $database = new Medoo([
+    	// Started using customized DSN connection
+    	'dsn' => [
+    		// The PDO driver name for DSN driver parameter
+    		'driver' => 'mydb',
+    		// The parameters with key and value for DSN
+    		'server' => '12.23.34.45',
+    		'port' => '8886'
+    	],
+    	// [optional] Medoo will have different handle method according to different database type
+    	'database_type' => 'mysql',
+
+    	'username' => 'your_username',
+    	'password' => 'your_password'
+    ]);
+
+    // The final DSN connection string will be generated like this
+    mydb:server=12.23.34.45;port=8886
+
+PDO object initialization
+
+You can also create Medoo by passing initialized and connected PDO object.
+
+    $pdo = new PDO('mysql:dbname=test;host=127.0.0.1', 'user', 'password');
+
+    $database = new Medoo([
+    	// Initialized and connected PDO object
+    	'pdo' => $pdo,
+
+    	// [optional] Medoo will have different handle method according to different database type
+    	'database_type' => 'mysql'
+    ]);
+
+For MSSQL
+Since Microsoft latest version of MSSQL database, it is using pdo_sqlsrv PHP extension for both Windows and Linux/UNIX platform. Medoo is using pdo_sqlsrv driver to connect MSSQL by default. You can check out their GitHub repo for more detail https://github.com/Microsoft/msphpsql. If you want to use pdo_dblib driver to connect old version database, you need to provide driver option for initialization.
+
+    $database = new Medoo([
+    	'database_type' => 'mssql',
+    	'database_name' => 'name',
+    	'server' => 'localhost',
+    	'username' => 'your_username',
+    	'password' => 'your_password',
+
+    	// [optional] The application name
+    	'appname' => 'test',
+
+    	// [optional] If you want to force Medoo to use dblib driver for connecting MSSQL database
+    	'driver' => 'dblib'
+    ]);
+
+Medoo is also supported those options for connecting MSSQL database while using sqlsrv driver. You can check out more detail from https://docs.microsoft.com/en-us/sql/connect/php/connection-options?view=sql-server-2017.
+
+    ApplicationIntent
+    AttachDBFileName
+    Authentication
+    ColumnEncryption
+    ConnectionPooling
+    Encrypt
+    Failover_Partner
+    KeyStoreAuthentication
+    KeyStorePrincipalId
+    KeyStoreSecret
+    LoginTimeout
+    MultipleActiveResultSets
+    MultiSubnetFailover
+    Scrollable
+    TraceFile
+    TraceOn
+    TransactionIsolation
+    TransparentNetworkIPResolution
+    TrustServerCertificate
+    WSID
+
+    $database = new Medoo([
+    	'database_type' => 'mssql',
+    	'database_name' => 'name',
+    	'server' => 'localhost',
+    	'username' => 'your_username',
+    	'password' => 'your_password',
+
+    	// [optional] MSSQL connection options
+    	'application_intent' => 'ReadOnly',
+    	'attach_db_file_name' => './database.sql',
+    	'authentication' => 'SqlPassword',
+    	'column_encryption' => 'Enabled',
+    	'connection_pooling' => 1,
+    	'encrypt' => 1,
+    	'failover_partner' => 'MultiSubnetFailover',
+    	'key_store_authentication' => 'KeyVaultPassword',
+    	'key_store_principal_id' => 'AzureName',
+    	'key_store_secret' => 'AzurePass',
+    	'login_timeout' => '20',
+    	'multiple_active_result_sets' => 1,
+    	'multi_subnet_failover' => 'Yes',
+    	'scrollable' => 'buffered',
+    	'trace_file' => './path',
+    	'trace_on' => 1,
+    	'transaction_isolation' => PDO::SQLSRV_TXN_SNAPSHOT,
+    	'transparent_network_ip_resolution' => 'Enabled',
+    	'trust_server_certificate' => 1,
+    	'wsid' => 'Computer1'
+    ]);
+
+For SQLite
+
+    $database = new Medoo([
+    	'database_type' => 'sqlite',
+    	'database_file' => 'my/database/path/database.db'
+    ]);
+
+    // Memory database
+    $database = new Medoo([
+    	'database_type' => 'sqlite',
+    	'database_file' => ':memory:'
+    ]);
+
+Debug DSN String
+
+You can check out the DSN string from info() API.
+
+    $database = new Medoo([
+    	'database_type' => 'mysql',
+    	'database_name' => 'test',
+    	'server' => '127.0.0.1',
+    	'username' => 'your_username',
+    	'password' => 'your_password',
+    ]);
+
+    echo $database->info()['dsn'];
+
+    // mysql:dbname=test;host=127.0.0.1
+
+
+Collaboration with other frameworks
+
+Medoo is working friendly with other frameworks together. The singleton design pattern that most of full-stack frameworks supported, is the better way for Medoo to collaborate with those, which is registered the database instance as reference only once and can be reusable without connecting the database again. We recommend this if you are using framework that supported. For more details, you can read about their official documentation about how to co-work with third-party library.
+Laravel
+
+Laravel provided singleton function to register a new singleton object. You can create and return the Medoo object there. The database configuration can be set on config file and load back via Config::get().
+Registration on app.php
+
+    // Use Medoo namespace
+    use Medoo\Medoo;
+
+    // Register as database
+    $app->singleton('database', function () {
+    	return new Medoo([
+    		'database_type' => 'mysql',
+    		'database_name' => 'name',
+    		'server' => 'localhost',
+    		'username' => 'your_username',
+    		'password' => 'your_password'
+    	]);
+    });
+
+Accessing Medoo
+
+After registered via singleton, you can access the Medoo object via using $this->app->database, and started using any Medoo APIs.
+
+    Route::get('/', function () {
+
+    	$data = $this->app->database->select('account', ['id', 'name']);
+
+    	return json_encode($data);
+    });
+
+Slim
+
+You can create Medoo object to the app's container array, and you can access it via $this->database.
+
+    require './vendor/autoload.php';
+
+    use Medoo\Medoo;
+
+    $app = new \Slim\App();
+
+    $container = $app->getContainer();
+
+    $container['database'] = function () {
+    	return new Medoo([
+    		'database_type' => 'mysql',
+    		'database_name' => 'name',
+    		'server' => 'localhost',
+    		'username' => 'your_username',
+    		'password' => 'your_password'
+    	]);
+    };
+
+    $app->get('/', function($request, $response, $args) {
+
+    	$data = $this->database->select('account', ['id', 'name']);
+
+    	return $response->write(json_encode($data));
+    });
+
+    $app->run();
+
+
+WHERE Syntax
+
+Some of Medoo functions are required $where argument to filter record like SQL WHERE clause which is powerful but with a lot of complex syntax, logical relativity, and potential security problem about SQL injection. But Medoo provided a powerful and extremely easy way to build WHERE query clause and prevent injection.
+Basic condition
+
+The basic condition is simple enough to understand. You can use additional symbol to get advanced filter range for number.
+
+    $database->select("account", "user_name", [
+    	"email" => "foo@bar.com"
+    ]);
+    // WHERE email = 'foo@bar.com'
+
+    $database->select("account", "user_name", [
+    	"user_id" => 200
+    ]);
+    // WHERE user_id = 200
+
+    $database->select("account", "user_name", [
+    	"user_id[>]" => 200
+    ]);
+    // WHERE user_id > 200
+
+    $database->select("account", "user_name", [
+    	"user_id[>=]" => 200
+    ]);
+    // WHERE user_id >= 200
+
+    $database->select("account", "user_name", [
+    	"user_id[!]" => 200
+    ]);
+    // WHERE user_id != 200
+
+    $database->select("account", "user_name", [
+    	"age[<>]" => [200, 500]
+    ]);
+    // WHERE age BETWEEN 200 AND 500
+
+    $database->select("account", "user_name", [
+    	"age[><]" => [200, 500]
+    ]);
+    // WHERE age NOT BETWEEN 200 AND 500
+
+[><] and [<>] is also available for datetime
+
+    $database->select("account", "user_name", [
+    	"birthday[<>]" => [date("Y-m-d", mktime(0, 0, 0, 1, 1, 2015)), date("Y-m-d")]
+    ]);
+    // WHERE ("birthday" BETWEEN '2015-01-01' AND '2017-01-01')
+
+    $database->select("account", "user_name", [
+    	"birthday[><]" => [date("Y-m-d", mktime(0, 0, 0, 1, 1, 2015)), date("Y-m-d")]
+    ]);
+    // WHERE ("birthday" NOT BETWEEN '2015-01-01' AND '2017-01-01')
+
+You can use not only single string or number value, but also array
+
+    $database->select("account", "user_name", [
+    	"OR" => [
+    		"user_id" => [2, 123, 234, 54],
+    		"email" => ["foo@bar.com", "cat@dog.com", "admin@medoo.in"]
+    	]
+    ]);
+    // WHERE
+    // user_id IN (2,123,234,54) OR
+    // email IN ('foo@bar.com','cat@dog.com','admin@medoo.in')
+
+Negative condition
+
+    $database->select("account", "user_name", [
+    	"AND" => [
+    		"user_name[!]" => "foo",
+    		"user_id[!]" => 1024,
+    		"email[!]" => ["foo@bar.com", "cat@dog.com", "admin@medoo.in"],
+    		"city[!]" => null,
+    		"promoted[!]" => true
+    	]
+    ]);
+    // WHERE
+    // `user_name` != 'foo' AND
+    // `user_id` != 1024 AND
+    // `email` NOT IN ('foo@bar.com','cat@dog.com','admin@medoo.in') AND
+    // `city` IS NOT NULL
+    // `promoted` != 1
+
+Or fetched from select() or get() function
+
+    $database->select("account", "user_name", [
+    	"user_id" => $database->select("post", "user_id", ["comments[>]" => 40])
+    ]);
+    // WHERE user_id IN (2, 51, 321, 3431)
+
+Relativity condition
+
+The relativity condition can describe complex relationship between data and data. You can use AND and OR to build complex relativity condition query.
+Basic
+
+    $database->select("account", "user_name", [
+    	"AND" => [
+    		"user_id[>]" => 200,
+    		"age[<>]" => [18, 25],
+    		"gender" => "female"
+    	]
+    ]);
+
+    // Medoo will connect relativity condition with AND by default. The following usage is the same like above.
+    $database->select("account", "user_name", [
+    	"user_id[>]" => 200,
+    	"age[<>]" => [18, 25],
+    	"gender" => "female"
+    ]);
+
+    // WHERE user_id > 200 AND age BETWEEN 18 AND 25 AND gender = 'female'
+
+    $database->select("account", "user_name", [
+    	"OR" => [
+    		"user_id[>]" => 200,
+    		"age[<>]" => [18, 25],
+    		"gender" => "female"
+    	]
+    ]);
+    // WHERE user_id > 200 OR age BETWEEN 18 AND 25 OR gender = 'female'
+
+Compound
+
+    $database->has("account", [
+    	"AND" => [
+    		"OR" => [
+    			"user_name" => "foo",
+    			"email" => "foo@bar.com"
+    		],
+    		"password" => "12345"
+    	]
+    ]);
+    // WHERE (user_name = 'foo' OR email = 'foo@bar.com') AND password = '12345'
+
+Because Medoo is using array data construction to describe relativity condition, array with duplicated key will be overwritten.
+
+    // This will be error:
+    $database->select("account", '*', [
+    	"AND" => [
+    		"OR" => [
+    			"user_name" => "foo",
+    			"email" => "foo@bar.com"
+    		],
+    		"OR" => [
+    			"user_name" => "bar",
+    			"email" => "bar@foo.com"
+    		]
+    	]
+    ]);
+    // [X] SELECT * FROM "account" WHERE ("user_name" = 'bar' OR "email" = 'bar@foo.com')
+
+To correct that, just assign a comment for each AND and OR key name (# with a blank space). The comment content can be everything.
+
+    $database->select("account", '*', [
+    	"AND #Actually, this comment feature can be used on every AND and OR relativity condition" => [
+    		"OR #the first condition" => [
+    			"user_name" => "foo",
+    			"email" => "foo@bar.com"
+    		],
+    		"OR #the second condition" => [
+    			"user_name" => "bar",
+    			"email" => "bar@foo.com"
+    		]
+    	]
+    ]);
+    // SELECT * FROM "account"
+    // WHERE (
+    // 	(
+    // 		"user_name" = 'foo' OR "email" = 'foo@bar.com'
+    // 	)
+    // 	AND
+    // 	(
+    // 		"user_name" = 'bar' OR "email" = 'bar@foo.com'
+    // 	)
+    // )
+
+Columns Relationship
+
+    $database->select("post", [
+    		"[>]account" => ["author_id" => "user_id"],
+    	], [
+    		"post.id",
+    		"post.content"
+    	], [
+    		"AND" => [
+    			// Connect two column with condition sign like [=], [>], [<], [!=] as one of array value
+    			"post.restrict[<]account.age",
+
+    			"account.user_name" => "foo",
+    			"account.email" => "foo@bar.com",
+    		]
+    	]
+    );
+
+    // WHERE "post"."restrict" < "account"."age" AND "account"."user_name" = 'foo' AND "account"."email" = 'foo@bar.com'
+
+LIKE condition
+
+LIKE condition can be use it like basic condition or relativity condition with just adding [~] syntax now.
+
+    // By default, the keyword will be quoted with % front and end to match the whole word.
+    $database->select("person", "id", [
+    	"city[~]" => "lon"
+    ]);
+
+    // WHERE "city" LIKE '%lon%'
+
+Group
+
+    $database->select("person", "id", [
+    	"city[~]" => ["lon", "foo", "bar"]
+    ]);
+
+    // WHERE "city" LIKE '%lon%' OR "city" LIKE '%foo%' OR "city" LIKE '%bar%'
+
+Negative condition
+
+    $database->select("person", "id", [
+    	"city[!~]" => "lon"
+    ]);
+
+    // WHERE "city" NOT LIKE '%lon%'
+
+Compound
+
+    $database->select("person", "id", [
+    	"content[~]" => ["AND" => ["lon", "on"]]
+    ]);
+
+    // WHERE ("content" LIKE '%lon%' AND "content" LIKE '%on%')
+
+    $database->select("person", "id", [
+    	"content[~]" => ["OR" => ["lon", "on"]]
+    ]);
+
+    // WHERE ("content" LIKE '%lon%' OR "content" LIKE '%on%')
+
+SQL Wildcard
+
+You can use SQL wildcard to match more complex situation
+
+    $database->select("person", "id", [
+    	"city[~]" => "%stan" // Kazakhstan,  Uzbekistan, Türkmenistan
+    ]);
+
+    $database->select("person", "id", [
+    	"city[~]" => "Londo_" // London, Londox, Londos...
+    ]);
+
+    $database->select("person", "id", [
+    	"name[~]" => "[BCR]at" // Bat, Cat, Rat
+    ]);
+
+    $database->select("person", "id", [
+    	"name[~]" => "[!BCR]at" // Eat, Fat, Hat...
+    ]);
+
+Order condition
+
+    $database->select("account", "user_id", [
+
+    	// Single condition
+    	"ORDER" => "user_id",
+
+    	// Multiple condition
+    	"ORDER" => [
+    		// Order by column with sorting by customized order.
+    		"user_id" => [43, 12, 57, 98, 144, 1],
+
+    		// Order by column
+    		"register_date",
+
+    		// Order by column with descending sorting
+    		"profile_id" => "DESC",
+
+    		// Order by column with ascending sorting
+    		"date" => "ASC"
+    	]
+    ]);
+
+Full text searching
+
+Full text searching feature is supported by MySQL database for advanced search result.
+Search mode list
+natural 	IN NATURAL LANGUAGE MODE
+natural+query 	IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION
+boolean 	IN BOOLEAN MODE
+query 	WITH QUERY EXPANSION
+
+    // [MATCH]
+    $database->select("post_table", "post_id", [
+    	"MATCH" => [
+    		"columns" => ["content", "title"],
+    		"keyword" => "foo",
+
+    		// [optional] Search mode
+    		"mode" => "natural"
+    	]
+    ]);
+    // WHERE MATCH (content, title) AGAINST ('foo' IN NATURAL LANGUAGE MODE)
+
+Using Regular Expression
+
+    $data = $database->select('account', [
+    	'user_id',
+    	'user_name'
+    ], [
+    	'user_name[REGEXP]' => '[a-z0-9]*'
+    ]);
+
+    // SELECT "user_id","user_name"
+    // FROM "account"
+    // WHERE "user_name" REGEXP '[a-z0-9]*'
+
+Using SQL functions
+
+You can now use SQL function with raw object for complex usage. Read more from https://medoo.in/api/raw.
+
+    $data = $database->select('account', [
+    	'user_id',
+    	'user_name'
+    ], [
+    	'datetime' => Medoo::raw('NOW()')
+    ]);
+
+    // SELECT "user_id","user_name"
+    // FROM "account"
+    // WHERE "datetime" = NOW()
+
+LIMIT and OFFSET
+
+    $database->select("account", "user_id", [
+
+    	// Get the first 100 of rows
+    	'LIMIT' => 100
+
+    	// Started from the top 20 rows, and get the next 100
+    	'LIMIT' => [20, 100],
+
+    	// For Oracle and MSSQL database, you also need to use with GROUP by together
+    	'GROUP' => 'location'
+    ]);
+
+GROUP and HAVING
+
+    $database->select("account", "user_id", [
+    	'GROUP' => 'type',
+
+    	// GROUP by array of values
+    	'GROUP' => [
+    		'type',
+    		'age',
+    		'gender'
+    	],
+
+    	// Must have to use it with GROUP together
+    	'HAVING' => [
+    		'user_id[>]' => 500
+    	]
+    ]);
+
+
+select
+
+Select data from database
+select($table, $columns, $where)
+
+    table [string]
+
+    The table name.
+    columns [string/array]
+
+    The target columns of data will be fetched.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+select($table, $join, $columns, $where)
+
+    table [string]
+
+    The table name.
+    join [array]
+
+    Table relativity for table joining. Ignore it if no table joining required.
+    columns [string/array]
+
+    The target columns of data will be fetched.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+Return: [array]
+You can use * as columns parameter to fetch all columns, but we recommended providing all targeted columns for better performance and readability.
+
+    $datas = $database->select("account", [
+    	"user_name",
+    	"email"
+    ], [
+    	"user_id[>]" => 100
+    ]);
+
+    // $datas = array(
+    // 	[0] => array(
+    // 		"user_name" => "foo",
+    // 		"email" => "foo@bar.com"
+    // 	),
+    // 	[1] => array(
+    // 		"user_name" => "cat",
+    // 		"email" => "cat@dog.com"
+    // 	)
+    // )
+
+    foreach($datas as $data)
+    {
+    	echo "user_name:" . $data["user_name"] . " - email:" . $data["email"] . "<br/>";
+    }
+
+    // Select all columns
+    $datas = $database->select("account", "*");
+
+    // Select a column
+    $datas = $database->select("account", "user_name");
+
+    // $datas = array(
+    // 	[0] => "foo",
+    // 	[1] => "cat"
+    // )
+
+Table joining
+
+SQL JOIN clause can combine rows together between two table. Medoo provide simple syntax for JOIN clause.
+
+    // [>] == LEFT JOIN
+    // [<] == RIGH JOIN
+    // [<>] == FULL JOIN
+    // [><] == INNER JOIN
+
+    $database->select("post", [
+    	// Here is the table relativity argument that tells the relativity between the table you want to join.
+
+    	// The row author_id from table post is equal the row user_id from table account
+    	"[>]account" => ["author_id" => "user_id"],
+
+    	// The row user_id from table post is equal the row user_id from table album.
+    	// This is a shortcut to declare the relativity if the row name are the same in both table.
+    	"[>]album" => "user_id",
+
+    	// [post.user_id is equal photo.user_id and post.avatar_id is equal photo.avatar_id]
+    	// Like above, there are two row or more are the same in both table.
+    	"[>]photo" => ["user_id", "avatar_id"],
+
+    	// If you want to join the same table with different value,
+    	// you have to assign the table with alias.
+    	"[>]account (replyer)" => ["replyer_id" => "user_id"],
+
+    	// You can refer the previous joined table by adding the table name before the column.
+    	"[>]account" => ["author_id" => "user_id"],
+    	"[>]album" => ["account.user_id" => "user_id"],
+
+    	// Multiple condition
+    	"[>]account" => [
+    		"author_id" => "user_id",
+    		"album.user_id" => "user_id"
+    	]
+    ], [
+    	"post.post_id",
+    	"post.title",
+    	"account.user_id",
+    	"account.city",
+    	"replyer.user_id",
+    	"replyer.city"
+    ], [
+    	"post.user_id" => 100,
+    	"ORDER" => ["post.post_id" => "DESC"],
+    	"LIMIT" => 50
+    ]);
+
+    // SELECT
+    // 	`post`.`post_id`,
+    // 	`post`.`title`,
+    // 	`account`.`city`
+    // FROM `post`
+    // LEFT JOIN `account` ON `post`.`author_id` = `account`.`user_id`
+    // LEFT JOIN `album` USING (`user_id`)
+    // LEFT JOIN `photo` USING (`user_id`, `avatar_id`)
+    // WHERE
+    // 	`post`.`user_id` = 100
+    // ORDER BY `post`.`post_id` DESC
+    // LIMIT 50
+
+Data mapping
+
+Customize output data construction - The key name for wrapping data has no relation with columns itself and it is multidimensional.
+
+    $data = $database->select("post", [
+    	"[>]account" => ["user_id"]
+    ], [
+    	"post.post_id",
+    	"post.content",
+
+    	"userData" => [
+    		"account.user_id",
+    		"account.email",
+
+    		"meta" => [
+    			"account.location",
+    			"account.gender"
+    		]
+    	]
+    ], [
+    	"LIMIT" => [0, 2]
+    ]);
+
+    echo json_encode($data);
+
+    // Output data
+    [
+    	{
+    		post_id: "1",
+    		content: "Hello world!",
+    		userData: {
+    			user_id: "1",
+    			email: "foo@example.com",
+    			meta: {
+    				location: "New York",
+    				gender: "male"
+    			}
+    		}
+    	},
+    	{
+    		post_id: "2",
+    		content: "Hey everyone",
+    		userData: {
+    			user_id: "2",
+    			email: "bar@example.com",
+    			meta: {
+    				location: "London",
+    				gender: "female"
+    			}
+    		}
+    	}
+    ]
+
+Index Mapping
+
+Setting the column as the first key name of the column parameter, the result will be indexed by this name.
+
+    $data = $database->select("post", [
+    	"user_id" => [
+    		"nickname",
+    		"location",
+    		"email"
+    	]
+    ]);
+
+    // Output data
+    [
+    	10: {
+    		nickname: "foo",
+    		location: "New York",
+    		email: "foo@example.com"
+    	},
+
+    	12: {
+    		nickname: "bar",
+    		location: "New York",
+    		email: "bar@medoo.in"
+    	}
+    ]
+
+Data type declaration
+
+Set the type of output data
+
+    // Supported data type: [String | Bool | Int | Number | Object | JSON]
+    // [String] is the default type for all output data.
+    // [Object] is a PHP object data decoded by serialize(), and will be unserialize()
+    // [JSON] is a valid JSON, and will be json_decode()
+
+    $data = $database->select("post", [
+    	"[>]account" => ["user_id"]
+    ], [
+    	"post.post_id",
+
+    	"profile" => [
+    		"account.age [Int]",
+    		"account.is_locked [Bool]",
+    		"account.userData [JSON]"
+    	]
+    ], [
+    	"LIMIT" => [0, 2]
+    ]);
+
+    echo json_encode($data);
+
+    // Output data
+    [
+    	{
+    		post_id: "1",
+    		profile: {
+    			age: 20,
+    			is_locked: true,
+    			userData: ["foo", "bar", "tim"]
+    		}
+    	},
+    	{
+    		post_id: "2",
+    		profile: {
+    			age: 25,
+    			is_locked: false,
+    			userData: ["mydata1", "mydata2"]
+    		}
+    	}
+    ]
+
+    // Store an object into database, and get it back
+    class Foo {
+    	var $bar = "cat";
+
+    	public function __wakeup()
+    	{
+    		$this->bar = "dog";
+    	}
+    }
+
+    $object_data = new Foo();
+
+    $database->insert("account", [
+    	"data" => $object_data
+    ]);
+
+    $data = $database->select("account", [
+    	"data [object]"
+    ], [
+    	"id" => 10
+    ]);
+
+    echo $data[ 0 ][ "data" ]->bar;
+
+    // The object's __wakeup function will be called and update the value
+    // So the output will be "dog"
+    "dog"
+
+Alias
+
+You can use alias as a new column or table name instead of original one. This is useful for table joining to prevent name conflict.
+
+    $data = $database->select("account", [
+    	"user_id",
+    	"nickname(my_nickname)"
+    ], [
+    	"LIMIT" => 20
+    ]);
+
+    // $data = array(
+    // 	[0] => array(
+    // 		"user_id" => "1",
+    // 		"my_nickname" => "foo"
+    // 	),
+    // 	[1] => array(
+    // 		"user_id" => "2",
+    // 		"my_nickname" => "bar"
+    // 	)
+    // )
+
+    $data = $database->select("post (content)", [
+    	"[>]account (user)" => "user_id",
+    ], [
+    	"content.user_id (author_id)",
+    	"user.user_id"
+    ], [
+    	"LIMIT" => 20
+    ]);
+
+    // SELECT
+    // 	"content"."user_id" AS author_id,
+    // 	"user"."user_id"
+    // FROM
+    // 	"post" AS "content"
+    // LEFT JOIN "account" AS "user" USING ("user_id")
+    // LIMIT 2
+
+    // $data = array(
+    // 	[0] => array(
+    // 		"author_id" => "1",
+    // 		"user_id" => "321"
+    // 	),
+    // 	[1] => array(
+    // 		"author_id" => "2",
+    // 		"user_id" => "322"
+    // 	)
+    // )
+
+
+insert
+
+Insert new records in table
+insert($table, $data)
+
+    table [string]
+
+    The table name.
+    data [array]
+
+    The data that will be inserted into table.
+
+Return: [PDOStatement] The PDOStatement object
+
+    $database->insert("account", [
+    	"user_name" => "foo",
+    	"email" => "foo@bar.com",
+    	"age" => 25
+    ]);
+
+Last insert ID
+
+If you want the row ID after the insertion, you need to call the lastInsertId() alone and get it.
+
+    $database->insert("account", [
+    	"user_name" => "foo",
+    	"email" => "foo@bar.com",
+    	"age" => 25
+    ]);
+
+    $account_id = $database->id();
+
+Array serialization
+
+By default, the array data will be serialized by serialize() before insertion, but you can assign it as JSON to be serialized by json_encode().
+
+    $database->insert("account", [
+    	"user_name" => "foo",
+    	"email" => "foo@bar.com",
+    	"age" => 25,
+    	"lang" => ["en", "fr", "jp", "cn"] // => 'a:4:{i:0;s:2:"en";i:1;s:2:"fr";i:2;s:2:"jp";i:3;s:2:"cn";}'
+    ]);
+
+    $database->insert("account", [
+    	"user_name" => "foo",
+    	"email" => "foo@bar.com",
+    	"age" => 25,
+    	"lang [JSON]" => ["en", "fr", "jp", "cn"] // => '["en","fr","jp","cn"]'
+    ]);
+
+Type auto-detection
+
+Medoo will automatically detect the data type before insertion and optimize it to store into database.
+
+    class Foo {
+    	var $bar = "cat";
+
+    	public function __wakeup()
+    	{
+    		$this->bar = "dog";
+    	}
+    }
+
+    $object_data = new Foo();
+
+    $fp = fopen($_FILES[ "file" ][ "tmp_name" ], "rb");
+
+    $database->insert("account", [
+    	// String value
+    	"user_name" => "foo",
+
+    	// Integer value
+    	"age" => 25,
+
+    	// Boolean value
+    	"is_locked" => true,
+
+    	// Array value
+    	"lang" => ["en", "fr", "jp", "cn"],
+
+    	// Array value encoded as JSON
+    	"lang [JSON]" => ["en", "fr", "jp", "cn"],
+
+    	// Object value
+    	"object_data" => $object_data,
+
+    	// Large Objects (LOBs)
+    	"image" => $fp
+    ]);
+
+Multi-insertion
+
+You can also insert data multiply.
+
+    $database->insert("account", [
+    	[
+    		"user_name" => "foo",
+    		"email" => "foo@bar.com",
+    		"age" => 25,
+    		"city" => "New York",
+    		"lang [JSON]" => ["en", "fr", "jp", "cn"]
+    	],
+    	[
+    		"user_name" => "bar",
+    		"email" => "bar@foo.com",
+    		"age" => 14,
+    		"city" => "Hong Kong",
+    		"lang [JSON]" => ["en", "jp", "cn"]
+    	]
+    ]);
+
+PDOStatement
+
+The return object of insert() is PDOStatement, so you can use its methods to get more information.
+
+    $data = $database->insert("account", [
+    	"user_name" => "foo",
+    	"email" => "foo@bar.com",
+    	"age" => 25
+    ]);
+
+    // Returns the number of rows affected by the last SQL statement
+    echo $data->rowCount();
+
+    // Read more: http://php.net/manual/en/class.pdostatement.php
+
+Using SQL functions
+
+You can now use SQL function with raw object for complex usage. Read more from https://medoo.in/api/raw.
+
+    $database->insert("account", [
+    	"user_name" => "bar",
+    	"uid" => Medoo::raw("UUID()")
+    ]);
+
+
+update
+
+Modify data in table
+update($table, $data, $where)
+
+    table [string]
+
+    The table name.
+    data [array]
+
+    The data that will be modified.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+Return: [PDOStatement] The PDOStatement object
+Most of feature are like insert(), it supports array serialization and type auto-detection. Additionally you can use [+], [-], [*] and [/] for mathematical operation.
+
+    class Foo {
+    	var $bar = "cat";
+
+    	public function __wakeup()
+    	{
+    		$this->bar = "dog";
+    	}
+    }
+
+    $object_data = new Foo();
+
+    $fp = fopen($_FILES[ "file" ][ "tmp_name" ], "rb");
+
+    $database->update("account", [
+    	"type" => "user",
+
+    	// All age plus one
+    	"age[+]" => 1,
+
+    	// All level subtract 5
+    	"level[-]" => 5,
+
+    	// All score multiplied by 2
+    	"score[*]" => 2,
+
+    	// Array value
+    	"lang" => ["en", "fr", "jp", "cn"],
+
+    	// Array value encoded as JSON
+    	"lang [JSON]" => ["en", "fr", "jp", "cn"],
+
+    	// Boolean value
+    	"is_locked" => true,
+
+    	// Object value
+    	"object_data" => $object_data,
+
+    	// Large Objects (LOBs)
+    	"image" => $fp,
+
+    	// You can also assign # for using SQL functions
+    	"#uid" => "UUID()"
+    ], [
+    	"user_id[<]" => 1000
+    ]);
+
+    // The return object of update() is PDOStatement, so you can use its methods to get more information.
+    $data = $database->update("account", [
+    	"age[+]" => 1
+    ], [
+    	"user_id[>]" => 100
+    ]);
+
+    // Returns the number of rows affected by the last SQL statement
+    echo $data->rowCount();
+
+    // Read more: http://php.net/manual/en/class.pdostatement.php
+
+delete
+
+Delete data from table
+delete($table, $where)
+
+    table [string]
+
+    The table name.
+    where [array]
+
+    The WHERE clause to filter records.
+
+Return: [PDOStatement] The PDOStatement object.
+
+    $database->delete("account", [
+    	"AND" => [
+    		"type" => "business",
+    		"age[<]" => 18
+    	]
+    ]);
+
+    // The return object of delete() is PDOStatement, so you can use its methods to get more information.
+    $data = $database->delete("account", [
+    	"AND" => [
+    		"type" => "business",
+    		"age[<]" => 18
+    	]
+    ]);
+
+    // Returns the number of rows affected by the last SQL statement
+    echo $data->rowCount();
+
+    // Read more: http://php.net/manual/en/class.pdostatement.php
+
+
+replace
+
+Replace old data into new one
+replace($table, $columns, $where)
+
+    table [string]
+
+    The table name.
+    columns [array]
+
+    The target columns of data will be replaced.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+Return: [PDOStatement] The PDOStatement object
+
+    $database->replace("account", [
+    	"type" => [
+    		"user" => "new_user",
+    		"business" => "new_business"
+    	],
+    	"column" => [
+    		"old_value" => "new_value"
+    	]
+    ], [
+    	"user_id[>]" => 1000
+    ]);
+
+
+create
+
+create a table
+create($table, $columns, $options)
+
+    table [string]
+
+    The table name.
+    columns [array]
+
+    Columns definition.
+    options (optional) [array/string]
+
+    Additional table options for creating table.
+
+Return: [PDOStatement] The PDOStatement object.
+Basic Sample
+
+Split every column definition into array, it will be combined together.
+
+    $database->create("account", [
+    	"id" => [
+    		"INT",
+    		"NOT NULL",
+    		"AUTO_INCREMENT",
+    		"PRIMARY KEY"
+    	],
+    	"first_name" => [
+    		"VARCHAR(30)",
+    		"NOT NULL"
+    	]
+    ]);
+
+    // CREATE TABLE IF NOT EXISTS account (
+    // 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    // 	first_name VARCHAR(30) NOT NULL
+    // )
+
+Advanced
+
+You can also set the raw string as column definition for additional options, it is supported <column_name> syntax for quotation shortcut.
+
+    $database->create("account", [
+    	"id" => [
+    		"INT",
+    		"NOT NULL",
+    		"AUTO_INCREMENT"
+    	],
+    	"email" => [
+    		"VARCHAR(70)",
+    		"NOT NULL",
+    		"UNIQUE"
+    	],
+    	"PRIMARY KEY (<id>)"
+    ], [
+    	"ENGINE" => "MyISAM",
+    	"AUTO_INCREMENT" => 200
+    ]);
+
+    // CREATE TABLE IF NOT EXISTS account (
+    // 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    // 	email VARCHAR(70) NOT NULL UNIQUE,
+    // 	PRIMARY KEY (`id`)
+    // )
+    // ENGINE = MyISAM,
+    // AUTO_INCREMENT = 200
+
+
+drop
+
+drop a table
+drop($table)
+
+    table [string]
+
+    The table name.
+
+Return: [PDOStatement] The PDOStatement object.
+Basic
+
+This API is only for dropping table, convenient when table prefix is in used on the connection. For dropping database, schema, event, index or other database resources, use exec() to execute raw command instead.
+
+    $database->drop("account");
+    // DROP TABLE IF EXISTS account
+
+    // ----------------------------------
+
+    $database = new Medoo([
+    	...
+    	"prefix" => "WP_"
+    ]);
+
+    $database->drop("account");
+    // DROP TABLE IF EXISTS WP_account
+
+
+get
+
+Get only one record from table
+get($table, $columns, $where)
+
+    table [string]
+
+    The table name.
+    columns [string/array]
+
+    The target columns of data will be fetch.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+get($table, $join, $columns, $where)
+
+    table [string]
+
+    The table name.
+    join [array]
+
+    Table relativity for table joining. Ignore it if no table joining required.
+    columns [string/array]
+
+    The target columns of data will be fetched.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+Return: [string/array/int/object] Return the data of the column
+
+    $email = $database->get("account", "email", [
+    	"user_id" => 1234
+    ]);
+
+    // $email = "foo@bar.com"
+
+    $profile = $database->get("account", [
+    	"email",
+    	"gender",
+    	"location"
+    ], [
+    	"user_id" => 1234
+    ]);
+
+    // $profile = array(
+    // 	"email" => "foo@bar.com",
+    // 	"gender" => "female",
+    // 	"location" => "earth"
+    // )
+
+    $data = $database->get("post", [
+    	"[>]account" => "user_id"
+    ], [
+    	"post.content",
+    	"account.user_name",
+    	"account.location"
+    ], [
+    	"ORDER" => "post.rate"
+    ]);
+
+    // $data = array(
+    // 	"content" => "A new day",
+    // 	"user_name" => "foo",
+    // 	"location" => "earth"
+    // )
+
+
+has
+
+Determine whether the target data existed
+has($table, $where)
+
+    table [string]
+
+    The table name.
+    where [array]
+
+    The WHERE clause to filter records.
+
+has($table, $join, $where)
+
+    table [string]
+
+    The table name.
+    join [array]
+
+    Table relativity for table joining.
+    where [array]
+
+    The WHERE clause to filter records.
+
+Return: [boolean] Boolean value for founded data
+
+    if ($database->has("account", [
+    	"AND" => [
+    		"OR" => [
+    			"user_name" => "foo",
+    			"email" => "foo"
+    		],
+    		"password" => "12345"
+    	]
+    ]))
+    {
+    	echo "Password is correct.";
+    }
+    else
+    {
+    	echo "Password error.";
+    }
+
+
+count
+
+Counts the number of rows
+count($table, $where)
+
+    table [string]
+
+    The table name.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+count($table, $join, $column, $where)
+
+    table [string]
+
+    The table name.
+    join [array]
+
+    Table relativity for table joining.
+    column [string]
+
+    The target column will be counted.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+Return: [number] The number of rows
+The type of returned data is number.
+
+    $count = $database->count("account", [
+    	"gender" => "female"
+    ]);
+
+    echo "We have " . $count . " female users.";
+
+
+max
+
+Get the maximum value for the column
+max($table, $column, $where)
+
+    table [string]
+
+    The table name.
+    column [string]
+
+    The target column will be calculated.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+max($table, $join, $column, $where)
+
+    table [string]
+
+    The table name.
+    join [array]
+
+    Table relativity for table joining.
+    column [string]
+
+    The target column will be calculated.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+Return: [number] The maximum number of the column
+
+    $max = $database->max("account", "age", [
+    	"gender" => "female"
+    ]);
+
+    echo "The age of oldest female user is " . $max;
+
+
+min
+
+Get the minimum value for the column
+min($table, $column, $where)
+
+    table [string]
+
+    The table name.
+    column [string]
+
+    The target column will be calculated.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+min($table, $join, $column, $where)
+
+    table [string]
+
+    The table name.
+    join [array]
+
+    Table relativity for table joining.
+    column [string]
+
+    The target column will be calculated.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+Return: [number] The minimum number of the column
+
+    $min = $database->min("account", "age", [
+    	"gender" => "male"
+    ]);
+
+    echo "The age of youngest male user is " . $min;
+
+
+avg
+
+Get the average value for the column
+avg($table, $column, $where)
+
+    table [string]
+
+    The table name.
+    column [string]
+
+    The target column will be calculated.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+avg($table, $join, $column, $where)
+
+    table [string]
+
+    The table name.
+    join [array]
+
+    Table relativity for table joining.
+    column [string]
+
+    The target column will be calculated.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+Return: [number] The average number of the column
+
+    $average = $database->avg("account", "age", [
+    	"gender" => "male"
+    ]);
+
+    echo "The average age of male user is " . $average;
+
+
+sum
+
+Get the total value for the column
+sum($table, $column, $where)
+
+    table [string]
+
+    The table name.
+    column [string]
+
+    The target column will be calculated.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+sum($table, $join, $column, $where)
+
+    table [string]
+
+    The table name.
+    join [array]
+
+    Table relativity for table joining.
+    column [string]
+
+    The target column will be calculated.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+Return: [number] The total number of the column
+
+    $total = $database->sum("account", "money");
+
+    echo "We have $" . $total;
+
+
+rand
+
+Fetch randomized data
+rand($table, $column, $where)
+
+    table [string]
+
+    The table name.
+    columns [string/array]
+
+    The target columns of data will be fetched.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+rand($table, $join, $column, $where)
+
+    table [string]
+
+    The table name.
+    join [array]
+
+    Table relativity for table joining. Ignore it if no table joining required.
+    columns [string/array]
+
+    The target columns of data will be fetched.
+    where (optional) [array]
+
+    The WHERE clause to filter records.
+
+Return: [array]
+
+    $data = $database->rand("account", [
+    	"user_name",
+    	"email"
+    ], [
+    	"user_id[>]" => 100
+    ]);
+
+    // $data = array(
+    // 	[0] => array(
+    // 		"user_name" => "foo",
+    // 		"email" => "foo@medoo.in"
+    // 	),
+    // 	[1] => array(
+    // 		"user_name" => "cat",
+    // 		"email" => "cat@medoo.in"
+    // 	)
+    // )
+
+
+id
+
+Returns the ID of the last inserted row
+id()
+Return: [number] The last inserted row ID.
+
+    $database->insert("account", [
+    	"user_name" => "foo",
+    	"email" => "foo@bar.com",
+    	"age" => 25
+    ]);
+
+    $account_id = $database->id();
+
+
+query
+
+Execute customized raw query
+query($query)
+
+    query [string]
+
+    The SQL query.
+    map (optional) [array]
+
+    The array of input parameters value for prepared statement
+
+Return: [object] The PDOStatement object
+Medoo is handling all queries with SQL-92 standard. You should keep in mind about the quotation mark in the query, or using prepared statement to prevent SQL injection as possible.
+
+    $database->query("CREATE TABLE table (
+    	c1 INT STORAGE DISK,
+    	c2 INT STORAGE MEMORY
+    ) ENGINE NDB;");
+
+    $data = $database->query("SELECT email FROM account")->fetchAll();
+    print_r($data);
+
+Quotation Syntax
+
+The raw SQL expression provided a shortcut quoting and prefixing for table name and column name, so you don't have to care about the quotation and maintaining the table prefix. All you have to do is using <name> to explain they are table or column name. Medoo will analysis they are table or column, and translate them with correct quotation and prefix.
+
+    $data = $database->query("SELECT <email> FROM <account>")->fetchAll();
+    // This query will be translated to:
+    // SELECT "email" FROM "account"
+
+    // If you have set table prefix from initialization, the above query will be translated to:
+    $database = new Medoo([
+    	....
+    	"prefix" => "WP_"
+    ]);
+
+    $data = $database->query("SELECT <account.email>,<account.nickname>
+    	FROM <account>
+    	WHERE <id> != 100
+    ")->fetchAll();
+    // SELECT "WP_account"."email", "WP_account"."nickname" FROM "WP_account" WHERE "id" != 100
+
+Prepared statement
+
+The query() also supports prepared statement. Medoo will auto-detect the data type for input parameters.
+
+    $data = $database->query(
+    	"SELECT * FROM <account> WHERE <user_name> = :user_name AND <age> = :age", [
+    		":user_name" => "John Smite",
+    		":age" => 20
+    	]
+    )->fetchAll();
+
+    print_r($data);
+
+
+quote
+
+Quotes the string for query
+quote($string)
+
+    string [string]
+
+    The target string.
+
+Return: [string]
+
+    $data = "Medoo";
+
+    echo "We love " . $data; // We love Medoo
+
+    echo "We love " . $database->quote($data); // We love 'Medoo'
+
+
+action
+
+Start a transaction
+action($callback)
+
+    callback [function]
+
+    The transaction wrap for executing queries.
+
+Return: void
+Not every database or database engine supported transactions. You have to check before using it. All queries will be automatically committed inside the transaction wrap. You can also return false value to rollback the transactions.
+
+    $database->action(function($database) {
+    	$database->insert("account", [
+    		"name" => "foo",
+    		"email" => "bar@abc.com"
+    	]);
+
+    	$database->delete("account", [
+    		"user_id" => 2312
+    	]);
+
+    	// If you found something wrong, just return false value to rollback the whole transaction.
+    	if ($database->has("post", ["user_id" => 2312]))
+    	{
+    		return false;
+    	}
+    });
+
+
+debug
+
+Output the generated SQL without execute it.
+debug()
+Return: [object] Medoo object with debug mode enabled
+This feature will output the generated SQL query automatically without using echo or other function. Please keep removed it when you finish debugging, and check the following code will be executed normally if this query do not be executed.
+Basic Usage
+
+Output the generated SQL.
+
+    $database->debug()->select("bccount", [
+    	"user_name",
+    	"email"
+    ], [
+    	"user_id[<]" => 20
+    ]);
+
+    // Will output:
+    // SELECT "user_name","email" FROM "bccount" WHERE "user_id" < 20
+
+Dangerous Case
+
+In some of case, the page will execute multiply SQL queries in one request. If you just using debug() on one of query, the following functions will still be called, and cause some unexpected result.
+
+    // This output nothing
+    $database->insert("account", [
+    	"user_name" => "foo",
+    	"email" => "foo@bar.com"
+    ]);
+
+    // Will output the generated query
+    $post_id = $database->debug()->get("post", "post_id", ["user_name" => "foo"]);
+
+    // Be careful, this query will be executed! $post_id is now became false value, because debug() ran above.
+    $database->update("account", [
+    	"level[+]" => 5,
+    	"post" => $post_id
+    ], [
+    	"user_name" => "foo"
+    ]);
+
+
+error
+
+Return error information associated with the last operation.
+error()
+Return: [array] Array of error information about the last operation performed
+
+    $database->select("bccount", [
+    	"user_name",
+    	"email"
+    ], [
+    	"user_id[<]" => 20
+    ]);
+
+    var_dump( $database->error() );
+
+    // array(3) { [0]=> string(5) "42S02" [1]=> int(1146) [2]=> string(36) "Table 'my_database.bccount' doesn't exist" }
+
+
+log
+
+Return all executed queries.
+log()
+Return: [array] Array with all executed queries
+This function will only retrun all records if set `logging => true` on initialization, otherwise it will only return one last record by default.
+
+    $database = new Medoo([
+    	"database_type" => "mysql",
+    	"database_name" => "name",
+    	"server" => "localhost",
+    	"username" => "your_username",
+    	"password" => "your_password",
+    	"charset" => "utf8",
+
+    	// Enable logging
+    	"logging" => true,
+    ]);
+
+    $database->select("account", [
+    	"user_name",
+    	"email"
+    ], [
+    	"user_id[<]" => 20
+    ]);
+
+    $database->insert("account", [
+    	"user_name" => "foo",
+    	"email" => "foo@bar.com"
+    ]);
+
+    var_dump($database->log());
+    // array(2) {
+    //	[0]=> string(62) "SELECT "user_name","email" FROM "account" WHERE "user_id" < 20"
+    //	[1]=> string(74) "INSERT INTO "account" ("user_name", "email") VALUES ('foo', 'foo@bar.com')"
+    // }
+
+    // Will output only one last record if "logging" => false or ignored by default on initialization
+    // array(1) {
+    //	[0]=> string(74) "INSERT INTO "account" ("user_name", "email") VALUES ('foo', 'foo@bar.com')"
+    // }
+
+
+last
+
+Return the last query performed.
+last()
+Return: [string]
+Like log(), but just return the last query.
+
+    $database->select("account", [
+    	"user_name",
+    	"email"
+    ], [
+    	"user_id[<]" => 20
+    ]);
+
+    $database->insert("account", [
+    	"user_name" => "foo",
+    	"email" => "foo@bar.com"
+    ]);
+
+    echo $database->last();
+    // INSERT INTO "account" ("user_name", "email") VALUES ('foo', 'foo@bar.com')
+
+
+info
+
+Get information about database connection.
+info()
+Return: [array] Array of information about the connection
+
+    print_r($database->info());
+
+    /*
+    Array
+    (
+    	[server] => Uptime: 5074  Threads: 1  Questions: 15  Slow queries: 0  Opens: 67  Flush tables: 1
+    		Open tables: 60  Queries per second avg: 0.002
+    	[client] => mysqlnd 5.0.10 - 20111026 - $Id: e707c415db32080b3752b232487a435ee0372157 $
+    	[driver] => mysql
+    	[version] => 5.6.10
+    	[connection] => localhost via TCP/IP
+    	[dsn] => mysql:dbname=test;host=127.0.0.1
+    )
+    */
+
+
+# END
+
+
+
+
+
+
+
+

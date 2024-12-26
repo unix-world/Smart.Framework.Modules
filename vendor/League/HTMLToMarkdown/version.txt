@@ -1,0 +1,8 @@
+
+# Smart.Framework.Modules: League PHP Html To Markdown Converter # 5.1.0
+
+// r.8.7 / smart.framework.v.8.7
+
+# PHP 7.4 .. PHP 8.4 ready
+
+###

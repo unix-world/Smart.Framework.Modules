@@ -1,0 +1,73 @@
+Meta data
+
+Beans contain meta data. For instance, the type of the bean is stored in the meta data. To obtain the type of a bean:
+    $bean->getMeta( 'type' );
+
+You can also store your own meta data in a bean:
+    $bean->setMeta( 'my.secret.property', 'secret' );
+
+this data will not get stored in the database.
+Tainted
+
+Some meta data is accessible using convenience method. For instance, if you would like to know whether a bean has been changed since it got retrieved from the database use the tainted() method.
+    $bean->isTainted();
+
+    //or:
+
+    $bean->getMeta( 'tainted' );
+
+Note that a bean is marked as tainted if a list gets accessed. You can also set the tainted flag yourself.
+Old
+
+To determine if a certain property has changed:
+    $book = R::load( 'book', $id );
+    $book->hasChanged( 'title' ); //returns FALSE
+    $book->title = 'New title';
+    $book->hasChanged( 'title' ); //returns TRUE
+
+These properties will be marked as changed even if you do a R::store(), if you would like to clear the history after every store use:
+    OODB::autoClearHistoryAfterStore( TRUE );
+
+To manually clear the history of a bean:
+    $bean->clearHistory();
+
+To get the old value of the property:
+    $book->old( 'title' );
+
+The behaviour of hasChanged sometimes suprises people, for instance take a look at the following code:
+    $employee = R::load( 'employee', $id );
+    var_dump( $employee->hasChanged( 'organisation' ) ); //FALSE
+    var_dump( $employee->hasChanged( 'organisation_id' ) ); //FALSE
+    $employee->organisation = $newOrganisation;
+    var_dump( $employee->hasChanged( 'organisation' ) ); //TRUE
+    var_dump( $employee->hasChanged( 'organisation_id' ) ); //FALSE
+
+The reason for this behaviour is that organisation_id will not be updated automatically until you call R::store(). Until, then the property has not been changed.
+List Changed (4.2+)
+
+To determine whether a list has been changed (beans have been added or deleted):
+    $author->hasListChanged( 'ownBook' );
+
+This method will return TRUE if some elements of the array have been removed or added. Note that this method does not check the state of the beans themselves. It's just about the list.
+Testing Equality
+
+To test whether two beans have the same type and primary key ID:
+    $bean->equals( $otherBean );
+Empty
+
+To determine if a bean is empty, or only contains empty values (everything that qualifies as empty() in PHP) use:
+    $bean->isEmpty();
+Copy meta data
+
+You can copy meta data from another bean like this:
+    $bean->copyMetaFrom( $otherBean );
+Meta Mask (4.3.2)
+
+As of version 4.3.2 you can specify a meta mask when converting rows to beans:
+    $rows = R::getRow( 'SELECT book.*, count( page.id ) AS meta_pages... ' );
+    $book = R::convertToBean( 'book', $data, 'meta_' );
+    $queryData = $book->getMeta('data.bundle');
+    echo $queryData['meta_pages'];
+
+Here, convertToBeans will put all columns starting with 'meta_' in the meta section of the bean. This allows the query above to select all the fields of the book and query some additional meta data in the process. The meta data from the query will be available under the key 'data.bundle'.
+

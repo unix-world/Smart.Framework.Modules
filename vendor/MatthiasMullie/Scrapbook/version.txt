@@ -1,0 +1,9 @@
+github@HEAD@20191107
+
+requires: Psr/Cache, Psr/SimpleCache
+removed: Flysystem
+
+contains unixman fixes
+
+# PHP 7.4 .. PHP 8.4 ready
+

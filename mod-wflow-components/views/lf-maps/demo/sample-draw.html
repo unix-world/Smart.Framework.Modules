@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<title>LeafletJS Maps - Draw and Measure Sample</title>
+	<style type="text/css">
+		* {
+			font-family: arial,sans-serif;
+		}
+
+		body {
+			margin: 0;
+			padding: 0;
+		}
+		.map {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+			cursor: crosshair !important;
+		}
+
+		#deleteBtn, #exportBtn {
+			position: absolute;
+			right: 10px;
+			z-index: 10000;
+			background: #FFFFFF;
+			color: #111111;
+			padding: 6px;
+			border: 2px solid #AAAAAA;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 12px;
+			text-decoration: none !important;
+		}
+		#deleteBtn {
+			top: 10px;
+		}
+		#exportBtn {
+			top: 55px;
+		}
+	</style>
+
+	<script src="../../../../../lib/js/jquery/jquery.js" type="text/javascript"></script>
+	<script src="../../../../../lib/js/framework/smart-framework.pak.js" type="text/javascript"></script>
+
+	<script src="../leaflet.js"></script>
+	<link href="../leaflet.css" rel="stylesheet">
+
+	<link rel="stylesheet" href="../mouse-position.css"  type="text/css">
+	<script type="text/javascript" src="../mouse-position.js"></script>
+
+	<link rel="stylesheet" href="../feature-select.css"  type="text/css">
+	<script type="text/javascript" src="../feature-select.js"></script>
+
+	<script type="text/javascript" src="../svg-icon.js"></script>
+
+	<script src="../leaflet.geometryutil.js"></script>
+	<link rel="stylesheet" href="../leaflet.draw.css">
+	<script src="../leaflet.draw.js"></script>
+
+</head>
+
+<body>
+<div id="myMap" class="map"></div>
+<div id="deleteBtn">Delete Features</div>
+<a href="#" id="exportBtn">Export Features</a>
+<script type="text/javascript">
+
+// v.20200426
+
+function escapeHtml(str) {
+	return str
+		 .replace(/&/g, "&amp;")
+		 .replace(/</g, "&lt;")
+		 .replace(/>/g, "&gt;")
+		 .replace(/"/g, "&quot;")
+		 .replace(/'/g, "&#039;");
+}
+
+var mapCenter = new L.LatLng(51.50739542821378, -0.12768985026245333);
+
+var myMap = L.map('myMap')
+	.setView(mapCenter, 18);
+myMap.options.maxZoom = 18;
+myMap.options.minZoom = 3;
+
+var isUxmClickActive = true;
+myMap.on('draw:deletestart', function (e) {
+	isUxmClickActive = false;
+});
+myMap.on('draw:deletestop', function (e) {
+	isUxmClickActive = true;
+});
+myMap.on('draw:editstart', function (e) {
+	isUxmClickActive = false;
+});
+myMap.on('draw:editstop', function (e) {
+	isUxmClickActive = true;
+});
+
+L.control.scale({imperial: false}).addTo(myMap);
+L.control.mousePosition().addTo(myMap);
+
+L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(myMap);
+
+//var featureGroup = L.featureGroup().addTo(myMap); // this provides a blank draw board
+var the_geo_json = 	{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"LineString","coordinates":[[-0.13008713722229007,51.50788104332645],[-0.12771606445312503,51.50775750566307]]}},{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-0.12983500957489016,51.50742027952542],[-0.12850999832153323,51.50743363506349],[-0.1276892423629761,51.506822615189535],[-0.12973308563232425,51.506562177998596],[-0.12983500957489016,51.50742027952542]]]}},{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-0.12735128402709964,51.50708972871082],[-0.12735128402709964,51.507643984271645],[-0.12651443481445315,51.507643984271645],[-0.12651443481445315,51.50708972871082],[-0.12735128402709964,51.50708972871082]]]}},{"type":"Feature","properties":{"name":"A Title for the <Marker>"},"geometry":{"type":"Point","coordinates":[-0.12839734554290774,51.50797119222076]}},{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[-0.12769997119903567,51.508101406975456]}},{"type":"Feature","properties":{"name":"A Title for the <Area>"},"geometry":{"type":"Point","coordinates":[-0.12625694274902347,51.508044646743535],"radius":32.29126160427851}}]};
+var featureGroup = L.geoJson(the_geo_json, {
+	onEachFeature: function(feature, layer) {
+		//-- #fix
+		feature = feature || {};
+		feature.type = feature.type || 'Feature'; 		// Initialize feature.type
+		feature.properties = feature.properties || {}; 	// Initialize feature.properties
+		if(!feature.geometry) {
+			return; // avoid run over new objects
+		} //end if
+		//--
+		//console.log(feature.geometry);
+		var area = 0;
+		var fmtArea = 0;
+		var len = 0;
+		if(feature.geometry && feature.geometry.type && ((feature.geometry.type.toLowerCase() == 'polygon') || (feature.geometry.type.toLowerCase() === 'multipolygon') || ((feature.geometry.type.toLowerCase() == 'point') && (feature.geometry.radius)))) {
+			area = calculateArea(layer, 'polygon'); // this is fake as can be polyline, circle ... TODO: find a way to detect the type !!!
+			fmtArea = L.GeometryUtil.readableArea(area, true); // area, isMetric :: format area in readable format
+			feature.properties.infoArea = area;
+			layer.bindTooltip('Area: ' + fmtArea);
+		} else if(feature.geometry && feature.geometry.type && ((feature.geometry.type.toLowerCase() == 'linestring') || (feature.geometry.type.toLowerCase() == 'polyline'))) {
+			len = calculateLength(layer, feature.geometry.type.toLowerCase());
+			var fmtLen = L.GeometryUtil.readableDistance(len, true); // length, isMetric :: format distance adding units (string)
+			feature.properties.infoLen = len;
+			layer.bindTooltip('Length: ' + fmtLen);
+		} //end if
+		layer.bindPopup('');
+		if(feature.properties && feature.properties.name) {
+			layer.setPopupContent(escapeHtml(String(feature.properties.name)));
+		} //end if
+		//-- {{{SYNC-LAYER-EVENTS}}}
+		layer.on('click', function (e) {
+	//	layer.on('dblclick', function(e) {
+			try {
+				this.closePopup();
+			} catch(err){}
+			if(isUxmClickActive != true) {
+				return false;
+			}
+			var newName = prompt('A Title for the Feature', feature.properties.name ? String(feature.properties.name) : '');
+			if(newName !== null) {
+				feature.properties.name = String(newName);
+				layer.setPopupContent(escapeHtml(String(feature.properties.name)));
+			}
+			try {
+				e.preventDefault();
+			} catch(err){}
+			return false;
+		});
+	/*	layer.on('click', function (e) {
+			this.openPopup();
+		}); */
+		layer.on('mouseover', function (e) {
+			this.openPopup();
+		});
+		layer.on('mouseout', function (e) {
+			this.closePopup();
+		});
+		//-- #end sync
+	},
+	style: function(feature) {
+		switch(feature.properties.color) {
+			case 'red': return {color: "#FF5500"};
+		}
+	}
+}).addTo(myMap);
+/* this does not work as expected !
+var featureGroup = L.GeoJSON.geometryToLayer(
+	the_geo_json,
+	null, // options.pointToLayer,
+	null // options.coordsToLatLng
+);
+
+// Sample with marker on roll over
+marker.bindPopup(escapeHtml("Popup content"));
+marker.on('mouseover', function (e) {
+	this.openPopup();
+});
+marker.on('mouseout', function (e) {
+	this.closePopup();
+});
+*/
+
+var drawControl = new L.Control.Draw({
+	edit: {
+		featureGroup: featureGroup,
+	//	edit: false // because allowIntersection does not yet work, an option would be to disable edit and allow only add / delete !
+	},
+	draw: {
+		marker: {
+			icon: new L.DivIcon.SVGIcon({
+				color: 'rgb(255,33,0)',
+				fillColor: 'rgb(255,33,0)',
+				fillOpacity: 0.75,
+				circleFillColor: 'rgb(255,255,255)',
+				circleFillOpacity: 0.75
+			}),
+			repeatMode: false,
+		},
+		polyline: {
+			metric: true,
+			feet: false,
+			showLength: true,
+			shapeOptions: {
+				stroke: true,
+				color: '#F00081',
+				weight: 4,
+				opacity: 0.7,
+				fill: false,
+				clickable: true
+			},
+			repeatMode: false,
+			allowIntersection: false // this currently does not work for edit !
+		},
+		polygon: {
+			metric: true,
+			feet: false,
+			showArea: true,
+			shapeOptions: {
+				stroke: true,
+				color: '#F00081',
+				weight: 4,
+				opacity: 0.7,
+				fill: true,
+				fillColor: '#003399',
+				fillOpacity: 0.3,
+				clickable: true
+			},
+			repeatMode: false,
+			allowIntersection: false // this currently does not work for edit !
+		},
+		rectangle: {
+			metric: true,
+			feet: false,
+			showArea: true,
+			shapeOptions: {
+				stroke: true,
+				color: '#F00081',
+				weight: 4,
+				opacity: 0.7,
+				fill: true,
+				fillColor: '#003399',
+				fillOpacity: 0.3,
+				showArea: true,
+				clickable: true
+			}
+		},
+		circle: {
+			metric: true,
+			feet: false,
+			showRadius: true,
+			shapeOptions: {
+				stroke: true,
+				color: '#F00081',
+				weight: 4,
+				opacity: 0.7,
+				fill: true,
+				fillColor: '#003399',
+				fillOpacity: 0.3,
+				clickable: true
+			}
+		}
+	}
+}).addTo(myMap);
+
+function calculateLength(layer, type) {
+	//console.log(type);
+	var len = 0;
+	if(layer) {
+		if((type === 'linestring') || (type === 'polyline')) {
+			var coord = layer.getLatLngs();
+			//console.log(JSON.stringify(coord,null,2));
+			for(var i=0; i<coord.length-1; i++) {
+			//	len += L.GeometryUtil.distance(myMap, coord[i], coord[i+1]); // this gives a wrong result ; maybe uses imperial not metric
+				len += coord[i].distanceTo(coord[i+1]);
+			}
+		}
+	}
+	return len;
+} //END FUNCTION
+
+function calculateArea(layer, type) {
+	//console.log(type);
+	var area = 0;
+	if(layer && ((type === 'polygon') || (type === 'multipolygon') || (type === 'rectangle') || (type === 'circle'))) {
+		if(typeof layer.getLatLngs === 'function') { // circle does have not the method: getLatLngs ; polyline does have but makes non-sense to talk about area in tthat case ...
+			var coord = layer.getLatLngs();
+			coord = coord[0]; // fix
+			//console.log(coord);
+			area = L.GeometryUtil.geodesicArea(coord); // area as number
+			//console.log(area);
+		} else { // point to circle
+			var theCenterPt = layer.getLatLng();
+			var theRadius = layer.getRadius(); // in meters
+			area = Math.PI * theRadius * theRadius;
+			//var coords = layer.toGeoJSON();
+			//var allPoints = L.geoJson(coords);
+			//console.log(distance);
+			//console.log(JSON.stringify(theCenterPt), JSON.stringify(theRadius));
+			//console.log(JSON.stringify(coords,null,2));
+		} //end if
+	}
+	return area;
+} //END FUNCTION
+
+// when a feature is created, it's added to the over the feature group
+myMap.on('draw:created', function(e) {
+	var layer = e.layer;
+	var type = e.layerType;
+	type = type.toLowerCase();
+	//console.log(type);
+	var feature = layer.feature = layer.feature || {}; 	// Initialize feature
+	feature.type = feature.type || 'Feature'; 			// Initialize feature.type
+	feature.properties = feature.properties || {}; 		// Initialize feature.properties
+	layer.bindPopup(''); // initialize
+	//-- {{{SYNC-LAYER-EVENTS}}}
+	layer.on('click', function (e) {
+//	layer.on('dblclick', function(e) {
+		try {
+			this.closePopup();
+		} catch(err){}
+		var newName = prompt('A Title for the Feature', feature.properties.name ? String(feature.properties.name) : '');
+		if(newName !== null) {
+			feature.properties.name = String(newName);
+			layer.setPopupContent(escapeHtml(String(feature.properties.name)));
+		}
+		try {
+			e.preventDefault();
+		} catch(err){}
+		return false;
+	});
+/*	layer.on('click', function (e) {
+		this.openPopup();
+	}); */
+	layer.on('mouseover', function (e) {
+		this.openPopup();
+	});
+	layer.on('mouseout', function (e) {
+		this.closePopup();
+	});
+	//-- #end sync
+	feature.properties.infoType = String(type);
+	if((type === 'polygon') || (type === 'multipolygon') || (type === 'rectangle') || (type === 'circle')) {
+		var area = calculateArea(layer, type);
+		var fmtArea = L.GeometryUtil.readableArea(area, true); // area, isMetric :: format area in readable format
+		feature.properties.infoArea = area;
+		featureGroup.addLayer(layer.bindTooltip('Area: ' + fmtArea));
+	} else if((type === 'linestring') || (type === 'polyline')) {
+		var len = calculateLength(layer, type);
+		var fmtLen = L.GeometryUtil.readableDistance(len, true); // length, isMetric :: format distance adding units (string)
+		feature.properties.infoLen = len;
+		featureGroup.addLayer(layer.bindTooltip('Length: ' + fmtLen));
+	} else {
+		featureGroup.addLayer(layer);
+	}
+});
+
+// when a feature is edited
+myMap.on('draw:edited', function(e) {
+	//alert('draw Edited !');
+	e.layers.eachLayer(function(layer) {
+	//	var type = getShapeType(layer);
+		var type = e.layerType || layer.feature.geometry.type || 'polygon'; // fallback to poligon which is safe
+		type = type.toLowerCase();
+		//console.log(type);
+		if((type === 'polygon') || (type === 'multipolygon') || (type === 'rectangle') || (type === 'circle')) {
+			var area = calculateArea(layer, type);
+			layer.feature.properties.infoArea = area;
+			var fmtArea = L.GeometryUtil.readableArea(area, true); // area, isMetric :: format area in readable format
+			layer.setTooltipContent('Area (resized): ' + fmtArea);
+			//layer.unbindTooltip().bindTooltip('Area (resized): ' + fmtArea);
+		} else if((type === 'linestring') || (type === 'polyline')) {
+			var len = calculateLength(layer, type);
+			layer.feature.properties.infoLen = len;
+			var fmtLen = L.GeometryUtil.readableDistance(len, true); // length, isMetric :: format distance adding units (string)
+			layer.setTooltipContent('Length (resized): ' + fmtLen);
+			//layer.unbindTooltip().bindTooltip('Length (resized): ' + fmtLen);
+		}
+	});
+});
+
+//function getShapeType(layer) {
+//	return 'polygon'; // this appears not to know object types after restore from geoJson !!
+/*
+	if (layer instanceof L.Circle) {
+		return 'circle';
+	}
+	if (layer instanceof L.Marker) {
+		return 'marker';
+	}
+	if ((layer instanceof L.Polyline) && ! (layer instanceof L.Polygon)) {
+		return 'polyline';
+	}
+	if ((layer instanceof L.Polygon) && ! (layer instanceof L.Rectangle)) {
+		return 'polygon';
+	}
+	if (layer instanceof L.Rectangle) {
+		return 'rectangle';
+	}
+	return 'undefined';
+*/
+//}
+
+//--
+
+var defaultStyle = {
+	opacity: 0.7,
+	color: '#F00081'
+};
+var selectStyle = {
+	opacity: 0.9,
+	color: '#FFCC00'
+};
+
+function featureSelectSetStyle(layers, style) {
+	var i;
+	for (i=0; i<layers.length; i++) {
+		try {
+			layers[i].setStyle(style);
+		} catch(err){}
+	}
+}
+var featureSelect = L.featureSelect({ // this currently does not work with new created features (maybe needs to be upated somehow ...)
+	featureGroup: featureGroup,
+	selectSize: [16, 16]
+});
+featureSelect.on('select', function(evt) {
+	//console.log(evt);
+	featureSelectSetStyle(evt.layers, selectStyle);
+});
+featureSelect.on('unselect', function(evt) {
+	//console.log(evt);
+	featureSelectSetStyle(evt.layers, defaultStyle);
+
+});
+featureSelect.addTo(myMap);
+
+//--
+
+// on click, clear all layers
+document.getElementById('deleteBtn').onclick = function(e) {
+	var ok = confirm('Delete all Features from the Map ?');
+	if(ok) {
+		featureGroup.clearLayers();
+	}
+}
+
+document.getElementById('exportBtn').onclick = function(e) {
+
+	// Extract GeoJson from featureGroup
+	var data = featureGroup.toGeoJSON();
+	//console.log(JSON.stringify(data,null,2));
+
+	var dateobj = new Date();
+	var expDoc = {
+		docTitle: '', // to be updated later
+		docDate: String(dateobj.toISOString()),
+		docType: 'smartWorkFlow.MapWork',
+		docVersion: '1.0',
+		dataFormat: 'data/geojson',
+		data: {
+			mapType: 'openstreetmaps',
+			mapZoom: myMap.getZoom(),
+			mapCenter: myMap.getCenter(),
+			mapBounds: myMap.getBounds(),
+			mapElevation: false, // display elevation for paths that have the 3rd param as elevation
+			mapSize: myMap.getSize(),
+			mapScale: 'metric',
+			mapData: data
+		}
+	};
+
+	smartJ$Browser.VirtualFileDownload(String(JSON.stringify(expDoc, null, 2)), 'map-work.json', 'application/json', 'UTF-8');
+
+/*
+	// Stringify the GeoJson
+	var convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+	// Create export
+	document.getElementById('exportBtn').setAttribute('href', 'data:' + convertedData);
+	document.getElementById('exportBtn').setAttribute('download','data.geojson');
+*/
+
+	return false;
+
+}
+
+</script>
+</body>
+</html>

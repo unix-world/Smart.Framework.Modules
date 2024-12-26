@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<!--
+// FabricJs Editor
+// v.20210411
+// (c) 2019 unix-world.org
+// License: BSD
+// contains portions of code from: fabricjs/samples, fabricjs/freedrawing
+-->
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Fabric.js - Canvas Draw ToolBox</title>
+
+	<script src="../fabric.js"></script>
+	<script src="../fabric.arrow.js"></script>
+
+	<script src="../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../../../../../lib/js/framework/smart-framework.pak.js"></script>
+	<script src="../fabric-editor.js"></script>
+</head>
+<body>
+<style>
+.property-box {
+	padding: 10px;
+	margin: 5px;
+	border: 1px solid gainsboro;
+}
+
+.colorbox {
+	width: 70px;
+	height: 35px;
+	border: 1px solid black;
+}
+</style>
+<!-- editor area -->
+<div id="editor" style="margin-bottom:10px;">
+	<canvas id="c" width="1" height="1" style="border: 1px dotted #CCCCCC;"></canvas>
+</div>
+<script>
+var canvasWidth = 700;
+var canvasHeight = 500;
+var editor = new Smart_FabricJs_EditCanvas('c', canvasWidth, canvasHeight, '#FFFFFF');
+var canvas = editor.getCanvas();
+//canvas.requestRenderAll();
+</script>
+<div id="bttns" style="position: fixed; top:25px; right:25px;"></div>
+<!-- ToolBox -->
+<div id="toolbox" style="position: fixed; top:75px; right:25px;">
+	<button id="toolbox-remove-element">Remove Element</button>
+	<button id="toolbox-clear-canvas">Clear Canvas</button>
+	<br>
+	<button id="toolbox-bring-to-front">Bring To Front</button>
+	<button id="toolbox-send-to-back">Send To Back</button>
+	<br>
+	<label for="toolbox-color">Fill Color</label><input id="toolbox-color" type="color" autocomplete="off">
+	<label for="toolbox-scolor">Stroke Color</label><input id="toolbox-scolor" type="color" autocomplete="off">
+	<br>
+	<br>
+	<div id="toolbox-elements">
+		<button onClick="editor.addTextBox('A text box ...'); return false;">Add TextBox</button>
+		<br>
+		<button onClick="editor.addRectangle(); return false;">Add Rectangle</button>
+		<button onClick="editor.addTriangle(); return false;">Add Triangle</button>
+		<br>
+		<button onClick="editor.addCircle(); return false;">Add Circle</button>
+		<button onClick="editor.addEllipse(); return false;">Add Ellipse</button>
+		<br>
+		<button onClick="editor.addPolygon('trapezoid'); return false;">Add Trapezoid</button>
+		<button onClick="editor.addPolygon('emerald'); return false;">Add Emerald</button>
+		<button onClick="editor.addPolygon('star4'); return false;">Add Star4</button>
+		<button onClick="editor.addPolygon('star5'); return false;">Add Star5</button>
+		<!--
+		<button onClick="editor.addArrow(); return false;">Add Arrow</button>
+		-->
+		<br>
+		<!-- Img -->
+		<button onClick="jQuery('#img_uploader_id').trigger('click'); return false;">Add Image</button>
+		<input id="img_uploader_id" name="img_attachment" type="file" size="1" style="width: 5px !important; height: 5px !important; opacity: 0 !important;">
+		<div id="img_uploader_preview" style="position:fixed; bottom:5px; right:5px; background-color:#FFFFFF; border: 3px solid #FFFFFF;"></div>
+		<!-- #Img -->
+	</div>
+</div>
+<!-- Free Drawing ToolBox -->
+<div style="position:fixed; top:75px; right:25px;">
+	<button id="drawing-mode" class="btn btn-info" style="font-weight:bold; padding:5px; position:fixed; top:20px; right:200px;">Cancel drawing mode</button><br>
+	<div id="drawing-mode-options">
+		<label for="drawing-mode-selector">Mode:</label>
+		<select id="drawing-mode-selector" autocomplete="off">
+			<option value="pencil">Pencil</option>
+			<option value="circle">Circle</option>
+			<option value="spray">Spray</option>
+			<option value="pattern">Pattern</option>
+			<option value="hline">H-Line</option>
+			<option value="vline">V-Line</option>
+			<option value="square">Square</option>
+			<option value="diamond">Diamond</option>
+			<option value="texture">Texture</option>
+		</select>
+		<br>
+		<label for="drawing-line-width">Line width:</label>
+		<span class="info">5</span><input type="range" value="5" min="0" max="150" id="drawing-line-width" autocomplete="off">
+		<br>
+		<label for="drawing-color">Line color:</label>
+		<input type="color" value="#003399" id="drawing-color" autocomplete="off">
+		<br>
+		<label for="drawing-shadow-color">Shadow color:</label>
+		<input type="color" value="#FFCC00" id="drawing-shadow-color" autocomplete="off">
+		<br>
+		<label for="drawing-shadow-width">Shadow width:</label>
+		<span class="info">0</span><input type="range" value="0" min="0" max="50" id="drawing-shadow-width" autocomplete="off">
+		<br>
+		<label for="drawing-shadow-offset">Shadow offset:</label>
+		<span class="info">0</span><input type="range" value="0" min="0" max="50" id="drawing-shadow-offset" autocomplete="off">
+		<br>
+	</div>
+</div>
+<script>
+
+$('#toolbox-clear-canvas').on('click', function() {
+	var ok = confirm('Clear the Drawing Canvas ?');
+	if(ok) {
+		editor.clearCanvas();
+	}
+	return false;
+});
+
+$('#toolbox-remove-element').on('click', function() {
+	//--
+	var ok = confirm('Remove Selected Element from Drawing Canvas ?');
+	if(ok) {
+		editor.removeSelected();
+	}
+	//--
+	return false;
+	//--
+});
+
+$('#toolbox-bring-to-front').on('click', function() {
+	//--
+	editor.bringSelectedToFront();
+	//--
+	return false;
+	//--
+});
+
+$('#toolbox-send-to-back').on('click', function() {
+	//--
+	editor.sendSelectedToBack();
+	//--
+	return false;
+	//--
+});
+
+$('#toolbox-color').on('change', function() {
+	//--
+	var val = $(this).val();
+//	console.log(val);
+	if(!val) {
+		return;
+	} //end if
+	editor.setColorOnSelected('fill', val);
+	//--
+	return false;
+	//--
+});
+
+$('#toolbox-scolor').on('change', function() {
+	//--
+	var val = $(this).val();
+//	console.log(val);
+	if(!val) {
+		return;
+	} //end if
+	editor.setColorOnSelected('stroke', val);
+	//--
+	return false;
+	//--
+});
+
+//--
+smartJ$Browser.VirtualImageUploadHandler('img_uploader_id', 'img_uploader_preview', 0.8, 0.15, canvasWidth, canvasHeight, function(imgDataURL, w, h, isSVG){
+	//console.log(imgDataURL);
+	if(isSVG) {
+		editor.addImage(imgDataURL, w, h, true);
+	} else {
+		editor.addImage(imgDataURL, w, h, false);
+	} //end if else
+}, true);
+//--
+
+// to svg
+var btnEl = document.createElement('button');
+btnEl.innerHTML = 'toSVG';
+btnEl.id = 'to-svg';
+document.getElementById('bttns').appendChild(btnEl);
+btnEl.onclick = function() {
+	smartJ$Browser.VirtualFileDownload(String(canvas.toSVG()), 'drawing.svg', 'image/svg+xml', 'UTF-8');
+};
+
+// to json
+var btnEl = document.createElement('button');
+btnEl.innerHTML = 'toJSON';
+btnEl.id = 'to-json';
+document.getElementById('bttns').appendChild(btnEl);
+btnEl.onclick = function() {
+	smartJ$Browser.VirtualFileDownload(String(JSON.stringify(canvas, null, 2)), 'drawing.fabric.json', 'application/json', 'UTF-8');
+};
+</script>
+<script>
+(function() {
+
+	var theTextureImage = '../../../../../lib/core/img/app/server.svg';
+
+	var isCanvasDrawingMode = null;
+
+	var drawingModeEl = $('#drawing-mode'),
+			drawingOptionsEl = $('#drawing-mode-options'),
+			drawingColorEl = $('#drawing-color'),
+			drawingShadowColorEl = $('#drawing-shadow-color'),
+			drawingLineWidthEl = $('#drawing-line-width'),
+			drawingShadowWidth = $('#drawing-shadow-width'),
+			drawingShadowOffset = $('#drawing-shadow-offset');
+
+	drawingModeEl.on('click', function() {
+		if(isCanvasDrawingMode === null) {
+			isCanvasDrawingMode = false;
+		} else {
+			isCanvasDrawingMode = !isCanvasDrawingMode;
+		}
+		if(isCanvasDrawingMode) {
+			$('#toolbox').hide();
+			drawingModeEl.text('Cancel drawing mode');
+			drawingOptionsEl.show();
+		} else {
+			$('#toolbox').show();
+			drawingModeEl.text('Enter drawing mode');
+			drawingOptionsEl.hide();
+		}
+		editor.canvasToggleDrawingMode(!!isCanvasDrawingMode);
+	}).trigger('click');
+
+	if (fabric.PatternBrush) {
+
+		var vLinePatternBrush = new fabric.PatternBrush(canvas);
+
+		vLinePatternBrush.getPatternSrc = function() {
+
+			var patternCanvas = fabric.document.createElement('canvas');
+			patternCanvas.width = patternCanvas.height = 10;
+			var ctx = patternCanvas.getContext('2d');
+
+			ctx.strokeStyle = this.color;
+			ctx.lineWidth = 5;
+			ctx.beginPath();
+			ctx.moveTo(0, 5);
+			ctx.lineTo(10, 5);
+			ctx.closePath();
+			ctx.stroke();
+
+			return patternCanvas;
+		};
+
+		var hLinePatternBrush = new fabric.PatternBrush(canvas);
+		hLinePatternBrush.getPatternSrc = function() {
+
+			var patternCanvas = fabric.document.createElement('canvas');
+			patternCanvas.width = patternCanvas.height = 10;
+			var ctx = patternCanvas.getContext('2d');
+
+			ctx.strokeStyle = this.color;
+			ctx.lineWidth = 5;
+			ctx.beginPath();
+			ctx.moveTo(5, 0);
+			ctx.lineTo(5, 10);
+			ctx.closePath();
+			ctx.stroke();
+
+			return patternCanvas;
+		};
+
+		var squarePatternBrush = new fabric.PatternBrush(canvas);
+		squarePatternBrush.getPatternSrc = function() {
+
+			var squareWidth = 10, squareDistance = 2;
+
+			var patternCanvas = fabric.document.createElement('canvas');
+			patternCanvas.width = patternCanvas.height = squareWidth + squareDistance;
+			var ctx = patternCanvas.getContext('2d');
+
+			ctx.fillStyle = this.color;
+			ctx.fillRect(0, 0, squareWidth, squareWidth);
+
+			return patternCanvas;
+		};
+
+		var diamondPatternBrush = new fabric.PatternBrush(canvas);
+		diamondPatternBrush.getPatternSrc = function() {
+
+			var squareWidth = 10, squareDistance = 5;
+			var patternCanvas = fabric.document.createElement('canvas');
+			var rect = new fabric.Rect({
+				width: squareWidth,
+				height: squareWidth,
+				angle: 45,
+				fill: this.color
+			});
+
+			var canvasWidth = rect.getBoundingRect().width;
+
+			patternCanvas.width = patternCanvas.height = canvasWidth + squareDistance;
+			rect.set({ left: canvasWidth / 2, top: canvasWidth / 2 });
+
+			var ctx = patternCanvas.getContext('2d');
+			rect.render(ctx);
+
+			return patternCanvas;
+		};
+
+		var img = new Image();
+		var texturePatternBrush = null;
+		img.onload = function(){
+			texturePatternBrush = new fabric.PatternBrush(canvas);
+			texturePatternBrush.source = this;
+		};
+		img.src = String(theTextureImage);
+
+	}
+
+	$('#drawing-mode-selector').on('change', function() {
+		//--
+		theVal = $(this).val() || '';
+		//--
+		switch(theVal.toLowerCase()) {
+			case 'hline':
+				canvas.freeDrawingBrush = hLinePatternBrush;
+				break;
+			case 'vline':
+				canvas.freeDrawingBrush = vLinePatternBrush;
+				break;
+			case 'square':
+				canvas.freeDrawingBrush = squarePatternBrush;
+				break;
+			case 'diamond':
+				canvas.freeDrawingBrush = diamondPatternBrush;
+				break;
+			case 'texture':
+				if(texturePatternBrush) {
+					canvas.freeDrawingBrush = texturePatternBrush;
+				} else {
+					console.error('Cannot Load Pattern Image: ' + theTextureImage);
+				}
+				break;
+			default:
+				try {
+					canvas.freeDrawingBrush = new fabric[theVal.charAt(0).toUpperCase() + theVal.slice(1) + 'Brush'](canvas);
+				} catch(err) {
+					console.error('Error: ' + err);
+					return;
+				}
+		} //end switch
+		//--
+		if(canvas.freeDrawingBrush) {
+			canvas.freeDrawingBrush.color = drawingColorEl.val();
+			canvas.freeDrawingBrush.width = parseInt(drawingLineWidthEl.val(), 10) || 1;
+			canvas.freeDrawingBrush.shadow = new fabric.Shadow({
+				blur: parseInt(drawingShadowWidth.val(), 10) || 0,
+				offsetX: 0,
+				offsetY: 0,
+				affectStroke: true,
+				color: drawingShadowColorEl.val(),
+			});
+		}
+		//--
+	});
+
+	drawingColorEl.on('change', function() {
+		canvas.freeDrawingBrush.color = $(this).val();
+	});
+	drawingShadowColorEl.on('change', function() {
+		canvas.freeDrawingBrush.shadow.color = $(this).val();
+	});
+	drawingLineWidthEl.on('change', function() {
+		canvas.freeDrawingBrush.width = parseInt($(this).val(), 10) || 1;
+		$(this).prev().text($(this).val());
+	});
+	drawingShadowWidth.on('change', function() {
+		canvas.freeDrawingBrush.shadow.blur = parseInt($(this).val(), 10) || 0;
+		$(this).prev().text($(this).val());
+	});
+	drawingShadowOffset.on('change', function() {
+		canvas.freeDrawingBrush.shadow.offsetX =
+		canvas.freeDrawingBrush.shadow.offsetY = parseInt($(this).val(), 10) || 0;
+		$(this).prev().text($(this).val());
+	});
+
+	if(canvas.freeDrawingBrush) {
+		canvas.freeDrawingBrush.color = drawingColorEl.val();
+		canvas.freeDrawingBrush.width = parseInt(drawingLineWidthEl.val(), 10) || 1;
+		canvas.freeDrawingBrush.shadow = new fabric.Shadow({
+			blur: parseInt(drawingShadowWidth.val(), 10) || 0,
+			offsetX: 0,
+			offsetY: 0,
+			affectStroke: true,
+			color: drawingShadowColorEl.val(),
+		});
+	}
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+About
+
+RedBeanPHP is a simple, easy-to-use, on-the-fly object mapper, especially suited for RAD, prototyping and people with deadlines. RedBeanPHP creates tables, columns, constraints and indexes automatically so you don't have to switch between your database client (phpMyAdmin) and your editor all the time (this does not mean you will never have to use phpMyAdmin or SQL though, read on... ). Also you don't have to write configuration files because RedBeanPHP simply infers the database schema from naming conventions. Because RedBeanPHP saves a lot of time you can spend more time developing the rest of the application.
+No Configuration
+
+Most ORMs use configuration files (XML, INI or YAML) or some sort of annotation system to define mappings. These systems force you to map records to objects upfront. RedBeanPHP is different. Instead of using configuration it uses conventions; a very small set of rules. RedBeanPHP uses these conventions to infer relationships and to automate mappings. RedBeanPHP also helps you to follow these conventions by automatically building the initial tables and columns for you - which also saves a lot of time. This means there is no configuration, less boilerplate code and more time left to focus on the business logic, testing and documentation, thus boosting development productivity and code quality.
+A bridge between objects and records
+
+SQL is a powerful query language for relational databases. Most ORMs act like a wall, hiding SQL from you. RedBeanPHP on the other hand tries to integrate both technologies, thus acting more like a bridge. For instance, RedBeanPHP allows you to embed SQL snippets in ORM methods to tune the retrieval of related beans from the database. RedBeanPHP seeks to strike a balance between object oriented programming and relational database querying.
+Code Quality
+
+RedBeanPHP has been carefully architected to be concise and maintainable. The core codebase is tested daily using about 20.000 unit tests (100% test coverage) on local servers and a Travis CI environment. The codebase contains a lot of inline documentation, is fully object oriented and improves security by promoting PDO based prepared statements and parameter binding.
+FAQ
+Why do you use so much static functions? What about coupling?
+
+That's only the Facade. Behind the facade you will find a landscape of elegant classes, see the API for advanced usage/more information. The API closely resembles the interface of the facade class.
+Is it wrong to use the static facade functions?
+
+If you're not planning to swap frameworks regularly you can rely on the easy-to-use static facade functions like R::dispense() and R::load() etc. People often complain about static methods but in reality many of those so-called pure OOP style projects tend to become heaps of powerless miniature objects and countless wirings. I don't believe that works very well.
+Why is RedBeanPHP one file? Isn't that bad practice?
+
+RedBeanPHP is distributed as one file to ease installation and deployment. The build script called Replica compiles the RedBeanPHP class files to one file. So in reality, RedBeanPHP is not one file, read more about Replica.
+How active is RedBeanPHP?
+
+RedBeanPHP is being developed quite actively by me and the RedBeanPHP community.
+Why don't you implement my feature request?
+
+Depends. RedBeanPHP is being developed in a very careful way. I try to keep RedBeanPHP clean yet comfortable. It's tempting to implement lots of features but that would make RedBeanPHP bloated. Feel free to write your own plugin or fork the project.
+Why does RedBeanPHP not support custom table mapping (anymore)?
+
+The idea of RedBeanPHP is to generate a useable and queryable schema based on your code and without any configuration. Custom table mappings don't fit very well in this model. However there are other reasons as well. Many so called power features like deep-copy have to make assumptions about database layout and table naming conventions. They can of course use some kind of configuration file to figure things out, but hey the whole idea of RedBeanPHP was NOT to use configuration!
+
+In the past RedBeanPHP had a bean formatter for custom mappings, this functionality does not exist anymore. If you still require custom mappings, for instance to use RedBeanPHP with existing schemas you might want to try to use VIEWS. Simply map the views to your tables. If you only change table names and column names your views can be used for updates as well. Although not a perfect solution we have received some positive feedback about this approach.
+Why does RedBeanPHP not provide a portable query language?
+
+I do not believe in portable query languages or database independent query builders. The whole point of selecting a database is to choose the system that provides the most useful features. A portable query language by definition can't use database specific features, so you simply get the worst of all. Just dare to choose your the database system that fits the best for the task at hand.
+Why are underscores and uppercase chars not allowed in type and property names?
+
+Underscores ARE allowed in property names, just not in type names. RedBeanPHP uses underscores to denote relationships among beans. Uppercase characters cause problems on different operating system platforms. These characters have one further disadvantage; because programmers like me are often lazy, they get overused to form ambiguous words. The English vocabulary is quite big and you should better be creative and find the best word for the concept your bean or model describes. For instance; instead of "user_project" or "ProjectUsr" you can use "participant". This makes your database prettier and easier to read as well.
+Checklist
+
+Is your project suitable for use with RedBeanPHP ? It depends. Most of the time this is a personal choice. Personally I would use the following checklist to determine whether RedBeanPHP can be used for a certain project.
+Suitable Projects
+
+    Prototypes
+    Import or conversion scripts
+    Blog/Website CMS, e-commerce platforms, forums
+    Small/medium sized business applications from scratch, less than 50 tables
+    Phasing out old legacy applications with horrible schemas (remap using views and make the legacy code fun again!)
+    Low power, embedded apps (with SQLite)
+
+Less Suitable Projects
+
+    Existing applications with custom database (use Propel instead)
+    Hi-traffic distributed content apps, i.e. the next Twitter... (use a NoSQL database like Cassandra)
+    Project requiring serious use of UUIDs/GUIDs. While RedBeanPHP offers basic read support for UUIDs, this is probably not sufficient.
+
+You should also NOT use RedBeanPHP if you don't like the RedBeanPHP schema policies and you want complete control over the layout of your database schema, i.e. the column names used for primary keys and foreign keys. In this case I recommend to use: Doctrine. If Doctrine is too big for your taste you might also consider a small, active record like ORM written by a friend of mine: DicaORM.
+

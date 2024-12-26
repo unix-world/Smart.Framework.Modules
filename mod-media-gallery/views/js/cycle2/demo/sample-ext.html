@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cycle2 Sample Ext.</title>
+<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+<script src="../jquery.cycle2.js"></script>
+</head>
+<body>
+<div id="outside" align="center">
+	<h1>Photo FX Slideshow</h1>
+	<p>
+		Use Netx / Prev to change image
+	</p>
+	<!-- prev/next links -->
+	<div class="center">
+		<span id="prev" style="cursor:pointer;">&lt;&lt;Prev </span>
+		<span id="next" style="cursor:pointer;"> Next&gt;&gt;</span>
+	</div>
+	<!-- slideshow -->
+	<div align="center" style="width:600px!important;">
+	<div class="cycle-slideshow" data-cycle-fx="scrollHorz" data-cycle-timeout="0" data-cycle-prev="#prev" data-cycle-next="#next">
+		<img width="600" src="//www.w3schools.com/w3css/img_mountains.jpg"><br>
+		<img width="600" src="//www.w3schools.com/w3css/img_lights.jpg" style="display:none;"><br>
+		<img width="600" src="//www.w3schools.com/w3css/img_fjords.jpg" style="display:none;"><br>
+		<img width="600" src="//www.w3schools.com/w3css/img_forest.jpg" style="display:none;"><br>
+	</div>
+	</div>
+</div>
+</body>
+</html>

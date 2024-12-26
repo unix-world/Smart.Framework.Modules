@@ -1,0 +1,28 @@
+Aliases
+
+Sometimes you want to refer to a bean using a different name. For instance, when you have a course referring to a teacher and a student, both of which are people. In this case you can use fetchAs:
+    $c = R::dispense( 'course' );
+
+    //At assignment time, no difference...
+    $c->teacher = R::dispense( 'person' );
+    $c->student = R::dispense( 'person' );
+
+    $id = R::store( $c );
+    $c = R::load( 'course', $id );
+
+    //when accessing the aliased properties,
+    //tell RedBeanPHP how to find the bean:
+    $teacher = $c->fetchAs( 'person' )->teacher;
+
+fetchAs tells RedBeanPHP the ID has to be associated with a different type (in this case 'person' instead of 'teacher' or 'student'). This also works the other way:
+    //returns all courses for this person
+    //where he/she is the teacher.
+    $person->alias( 'teacher' )->ownCourseList;
+
+From a relational point of view, we have exactly two people for every row (although one or both can be NULL of course). This is why we call these 'aliases' one-to-X relations (or one-to-fixed relations), where X is a fixed number.
+You can use as many of these 'aliases' as you like.
+
+As of 4.2 RedBeanPHP supports automatic resolve, this means you can use $course->teacher without fetchAs. Autoresolve also works with R::dup() and R::export(). To use automatic resolvement of aliased parent beans, use R::setAutoResolve( TRUE ).
+
+As of 4.2 you can use global aliases. Instead of specifying the alias with fetchAs each time you can specify the alias using R::aliases( ...aliases... );
+

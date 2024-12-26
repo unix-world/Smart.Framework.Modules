@@ -1,0 +1,60 @@
+Non-static
+
+If you don't like static methods, you can use the objects behind the facade directly. Almost every method of the R-class is available through the original RedBeanPHP objects as well. The facade is just that: a thin layer on top of these objects. Here is an overview of the most important R-methods and how to use them 'the non-static way'.
+
+Note that there are three important objects in RedBeanPHP: the adapter (DBAdapter), the query writer (QueryWriter) and the RedBeanPHP object database (OODB). We call these objects the core objects, because together they represent the foundation of RedBeanPHP. Other objects need these core objects, that's why they are bundled in a toolbox (ToolBox). So, if you need let's say an instance of the Tag Manager class (TagManager) you'll have to pass an instance of the toolbox to the contructor.
+Toolbox
+
+You can manually assemble your toolbox like this:
+    $pdo = new RPDO( $dsn );
+    $adapter = new DBAdapter( $pdo );
+    $writer = new MySQL( $adapter );
+    $oodb = new OODB( $writer );
+    $tb = new ToolBox( $oodb, $adapter, $writer );
+Wiring
+
+RedBeanPHP has a very decoupled architecture, which makes it very flexibile. However this means you need to introduce some objects to eachother. First we need to tell RedBeanPHP how beans can obtain the toolbox, this means we need to define our own BeanHelper:
+    class BeanHelper extends SimpleFacadeBeanHelper {
+            private $toolbox;
+            public function getToolbox() {
+                    return $this->toolbox;
+            }
+            public function setToolbox( $toolbox ) {
+                    $this->toolbox = $toolbox;
+            }
+    }
+
+Note that we extend the SimpleFacadeBeanHelper here, if you want to implement the interface directly you'll have to add the methods getModelForBean() and getExtractedToolbox() as well.
+
+Now let's do the wiring:
+    $r = $tb->getRedBean();
+
+    //A helper for OODB to give to its beans
+    $b = new BeanHelper;
+    $b->setToolbox( $tb );
+    $r->setBeanHelper( $b );
+
+    //allow OODB to associate beans
+    $r->setAssociationManager(new AssociationManager( $tb ));
+
+    //enable FUSE
+    $h = new SimpleModelHelper;
+    $h->attachEventListeners( $r );
+
+Hybrid
+
+Normally the facade does all this dull work for you. You can also let the facade do this work and still work with instances; simply steal the toolbox from the facade after it has been configured:
+    R::setup(...);
+    $toolbox = R::getToolBox(); //give it to me!
+Service objects
+
+Many methods in the R-facade are just wrappers around calls to methods on one of these core objects: OODB, Writer and Adapter. However many static methods in R also call so-called service objects. Service objects offer secondary functionality. To instantiate a service object you need to pass the toolbox to its constructor. The toolbox contains everything service object needs to operate: the adapter to connect to the database, the OODB object to call basic ORM methods and the writer to write queries for the database.
+
+For instance, R::find() uses the Finder class. To create an instance of Finder yourself:
+    $f = new Finder( $tb );
+
+That's it. Now we have an instance of the Finder service object. Now to find a bean use:
+    $x = $f->find( 'music', ' composer = ? ', 'Bach' );
+API
+
+This manual focuses on the facade. For details on individual objects, please consult the API pages.

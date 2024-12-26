@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Sample BPMN Modeler (Editor)</title>
+
+		<link rel="stylesheet" type="text/css" href="../../../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+		<style type="text/css">
+		* {
+			font-family: 'IBM Plex Sans',arial,sans-serif;
+		}
+		</style>
+		<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../../../../lib/js/jquery/jquery.alertable.css">
+		<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.alertable.js"></script>
+		<script src="../../../../../lib/js/framework/smart-framework.pak.js" type="text/javascript"></script>
+
+		<!-- required modeler styles -->
+		<link rel="stylesheet" href="../viewer.css">
+		<link rel="stylesheet" href="../modeler.css">
+		<link rel="stylesheet" href="../bpmn-font.css">
+		<!-- modeler distro -->
+		<script src="../bpmn-modeler.js"></script>
+
+		<!-- example styles -->
+		<style>
+			html, body, #canvas {
+				height: 100%;
+				padding: 0;
+				margin: 0;
+			}
+
+			.highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
+				fill: yellow !important; /* color elements as green */
+			}
+
+			#save-button {
+				position: fixed;
+				top: 20px;
+				right: 20px;
+			}
+			#undo-button {
+				position: fixed;
+				top: 50px;
+				right: 75px;
+			}
+			#redo-button {
+				position: fixed;
+				top: 50px;
+				right: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div style="position:fixed; top:0px; left:0px; width:99%; text-align:center;">
+			<h1 style="display:inline;">Sample BPMN Modeler (Editor)</h1>
+		</div>
+		<div id="canvas"></div>
+
+		<button id="save-button">Export (to console)</button>
+		<button id="undo-button">Undo</button>
+		<button id="redo-button">Redo</button>
+
+		<script>
+		(function(){
+
+			/*
+			var diagramUrl = 'data/diagram.bpmn';
+			var diagramProps = {
+				'SCAN_OK': {
+					note: 'A note ...'
+				},
+				'sid-52EB1772-F36E-433E-8F5B-D5DFD26E6F26': {
+					note: 'Another note ...'
+				}
+			};
+			*/
+			var diagramUrl = 'data/diagram.json';
+
+			// modeler instance
+			var diagramModeler = new bpmnModeler({
+				container: '#canvas',
+				keyboard: {
+					bindTo: window
+				}
+			});
+
+			/**
+			 * Save diagram contents and print them to the console.
+			 */
+			function exportDiagram() {
+				/*
+				//console.log(JSON.stringify(diagramModeler.get('overlays')));
+				diagramModeler.saveXML({ format: true }, function(err, xml) {
+					if (err) {
+						return console.error('could not save BPMN 2.0 diagram', err);
+					}
+					alert('Diagram XML exported to console ...');
+					console.log('----- BPMN DIAGRAM (XML) -----\n', xml);
+				});
+				*/
+				diagramModeler.saveJSON({ format: false }, function(err, json) {
+					if (err) {
+						return console.error('could not save BPMN 2.0 diagram', err);
+					}
+					alert('Diagram exported to console ...');
+					console.log('----- BPMN DIAGRAM (JSON) -----\n', JSON.stringify(json,null,2));
+				});
+			}
+
+			/**
+			 * Open diagram in our modeler instance.
+			 * @param {String} bpmnData diagram to display
+			 */
+			function openDiagram(bpmnData) {
+
+				// import diagram
+			//	diagramModeler.importXML(bpmnData, function(err){
+				diagramModeler.importJSON(bpmnData, function(err){
+
+					if(err) {
+						return console.error('could not import BPMN 2.0 diagram', err);
+					}
+
+					// access modeler components
+					var canvas = diagramModeler.get('canvas');
+					var overlays = diagramModeler.get('overlays');
+					var modeling = diagramModeler.get('modeling');
+
+					// zoom to fit full viewport
+					canvas.zoom('fit-viewport', true); // and center
+
+					// optional colors
+				//	canvas.addMarker('SCAN_OK', 'highlight');
+
+					var eventBus = diagramModeler.get('eventBus');
+					eventBus.on('element.click', function(e) { // 'element.hover', 'element.out', 'element.click', 'element.dblclick', 'element.mousedown', 'element.mouseup'
+						//--
+						/*
+						var elementsToColor = [ e.element ];
+						modeling.setColor(elementsToColor, {
+							stroke: '#111111',
+							fill: '#FFCC00'
+						});
+						*/
+						//--
+						// e.element = the model element
+						// e.gfx = the graphical element
+						//console.log(e.element.type);
+						/*
+						switch(e.element.type) {
+							case 'bpmn:StartEvent':
+							case 'bpmn:IntermediateThrowEvent':
+							case 'bpmn:EndEvent':
+							case 'bpmn:ExclusiveGateway':
+							case 'bpmn:ParallelGateway':
+								console.log('click', e.element.id, JSON.stringify(e.element,null,2));
+								break;
+							case 'bpmn:Collaboration': // area
+							case 'bpmn:Participant': // box
+							case 'bpmn:Lane': // sub-box
+								// do nothing
+								break;
+							default:
+							//	console.log('click', e.element.id, JSON.stringify(e.element,null,2));
+						}
+						*/
+					});
+
+			//	}, diagramProps);
+				});
+
+			} //END FUNCTION
+
+			// load external diagram file via AJAX and open it
+		//	$.get(diagramUrl, openDiagram, 'text'); // xml
+			$.get(diagramUrl, openDiagram, 'json');
+
+			// wire save button
+			$('#save-button').click(exportDiagram);
+			$('#undo-button').click(function(){
+				var editorActions = diagramModeler.get('editorActions');
+				editorActions.trigger('undo');
+			});
+			$('#redo-button').click(function(){
+				var editorActions = diagramModeler.get('editorActions');
+				editorActions.trigger('redo');
+			});
+
+		})();
+		</script>
+	</body>
+</html>

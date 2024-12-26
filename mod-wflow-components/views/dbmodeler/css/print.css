@@ -1,0 +1,35 @@
+
+/*
+// wwwsqldesigner v.1.7: print.css
+// (c) 2005-2018, Ondrej Zara
+// License: BSD
+
+// (c) 2017-2019 unix-world.org
+// License: GPLv3
+// v.20190207
+*/
+
+#bar, #background, #minimap {
+	display: none;
+}
+
+.table {
+	border:1px solid #000000;
+	background-color:none;
+}
+
+.row {
+	background-color:none;
+}
+
+.table .shadow-corner, .shadow-right, .shadow-bottom  {
+	display:none;
+}
+
+.table_title {
+	font-weight:bold;
+	font-size:115%;
+	background-color:none;
+}
+
+/* END */

@@ -1,0 +1,67 @@
+
+/*
+// (c) 2019-2020 unix-world.org
+// License: GPLv3
+// v.20200501
+*/
+
+/* Default Table */
+
+table.table-default {
+	width: 100% !important;
+}
+
+/* Bordered Table */
+
+table.table-bordered {
+	width: 100% !important;
+	border: 1px solid #333333 !important;
+	border-spacing: 0 !important;
+	border-collapse: collapse !important;
+}
+table.table-bordered th,
+table.table-bordered td {
+	border: 1px solid #333333 !important;
+}
+table.table-bordered > thead > tr > th,
+table.table-bordered > tbody > tr > th,
+table.table-bordered > tfoot > tr > th,
+table.table-bordered > thead > tr > td,
+table.table-bordered > tbody > tr > td,
+table.table-bordered > tfoot > tr > td {
+	border: 1px solid #333333 !important;
+}
+table.table-bordered > thead > tr > th,
+table.table-bordered > thead > tr > td {
+	border-bottom-width: 0 !important;
+}
+
+/* Stripped Table */
+
+table.table-striped {
+	width: 100% !important;
+	border: 1px solid #cccccc !important;
+	border-spacing: 0 !important;
+	border-collapse: collapse !important;
+}
+table.table-striped th,
+table.table-striped td {
+	border: 1px solid #cccccc !important;
+}
+table.table-striped > thead > tr > th,
+table.table-striped > tbody > tr > th,
+table.table-striped > tfoot > tr > th,
+table.table-striped > thead > tr > td,
+table.table-striped > tbody > tr > td,
+table.table-striped > tfoot > tr > td {
+	border: 1px solid #cccccc !important;
+}
+table.table-striped > thead > tr > th,
+table.table-striped > thead > tr > td {
+	border-bottom-width: 0 !important;
+}
+table.table-striped > tbody > tr:nth-of-type(odd) {
+	background-color: #eeeeee;
+}
+
+/* END */

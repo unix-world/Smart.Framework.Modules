@@ -1,0 +1,8 @@
+
+# Html2Markdown (PHP Html To Markdown v2 Converter) - based on League HtmlToMarkdown v.5.0.0  # github@head.20210615 # r.20221205
+
+// r.8.7 / smart.framework.v.8.7
+
+# PHP 7.4 .. PHP 8.4 ready
+
+###

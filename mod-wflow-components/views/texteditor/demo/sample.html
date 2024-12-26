@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SummerNote Demo</title>
+<link rel="stylesheet" type="text/css" href="../../../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+<style type="text/css">
+* {
+	font-family: 'IBM Plex Sans',Arial,sans-serif;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../../../lib/css/toolkit/sf-icons.css">
+<script type="text/javascript" src="../../../../../lib/js/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../../../../lib/js/framework/smart-framework.pak.js"></script>
+<link href="../summernote-lite.css" rel="stylesheet">
+<script src="../summernote-lite.js"></script>
+<script src="../plugins/summernote-paper-size.js"></script>
+<script src="../plugins/summernote-ext-print.js"></script>
+<!-- <script src="../plugins/summernote-cleaner.js"></script> not necessary at the moment ... -->
+<link href="../plugins/summernote-pagebreak.css" rel="stylesheet">
+<script src="../plugins/summernote-pagebreak.js"></script>
+<script src="../plugins/summernote-table-headers.js"></script>
+<link href="../plugins/summernote-table-styles.css" rel="stylesheet">
+<script src="../plugins/summernote-table-styles.js"></script>
+<script src="../plugins/summernote-text-findnreplace.js"></script>
+<link href="../plugins/summernote-text-findnreplace.css" rel="stylesheet">
+<script src="../plugins/summernote-ext-specialchars.js"></script>
+<style>
+	.hidden {
+		display: none;
+	}
+</style>
+</head>
+<body>
+<textarea id="summernote" spellcheck="false" style="position:fixed; right:-1000px; bottom:-1000px;">
+&lt;h1 align=&quot;center&quot;&gt;&lt;span style=&quot;color: rgb(8, 82, 148);&quot;&gt;Recognition of Achievement&lt;/span&gt;&lt;/h1&gt;
+
+	&lt;p style=&quot;text-align:justify&quot;&gt;This letter acknowledges the invaluable input &lt;strong&gt;you&lt;/strong&gt;, as a member
+		of our &lt;em&gt;Innovation Team&lt;/em&gt;,&amp;nbsp;have provided in the “Implement Rich Text Editor”&amp;nbsp;project. The Management would like to hereby thank you for this great accomplishment that was delivered in a timely fashion, up to the highest company standards, and with great results:&lt;/p&gt;
+
+	&lt;table class=&quot;table-striped&quot;&gt;
+		&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th&gt;Project Phase&lt;/th&gt;
+			&lt;th&gt;Deadline&lt;/th&gt;
+			&lt;th&gt;Status&lt;/th&gt;
+		&lt;/tr&gt;
+		&lt;/thead&gt;
+		&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;Phase 1: Market research&lt;/td&gt;
+			&lt;td align=&quot;center&quot;&gt;2017-05-15&lt;/td&gt;
+			&lt;td align=&quot;right&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;✓&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;Phase 2: Editor implementation&lt;/td&gt;
+			&lt;td align=&quot;center&quot;&gt;2017-05-20&lt;/td&gt;
+			&lt;td align=&quot;right&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;✓&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;Phase 3: Rollout to Production&lt;/td&gt;
+			&lt;td align=&quot;center&quot;&gt;2017-05-22&lt;/td&gt;
+			&lt;td align=&quot;right&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;✓&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;/tbody&gt;
+	&lt;/table&gt;
+
+	&lt;p style=&quot;text-align:justify&quot;&gt;The project that you participated in is of utmost importance to the future success of our platform. &amp;nbsp;We are very proud to share that&amp;nbsp;the&amp;nbsp;Text Editor implementation was a huge success and brought congratulations from both the key Stakeholders and the Customers:&lt;/p&gt;
+
+	&lt;blockquote&gt;
+		&lt;p style=&quot;text-align:center&quot;&gt;This new editor has totally changed our content creation experience!&lt;/p&gt;
+
+		&lt;p style=&quot;text-align:center&quot;&gt;— John F. Smith, CEO, The New Web&lt;/p&gt;
+	&lt;/blockquote&gt;
+
+	&lt;p style=&quot;text-align:justify&quot;&gt;This letter recognizes that much of our success is directly attributable to your efforts.&amp;nbsp;You deserve to be proud of your achievement. May your future efforts be equally successful and rewarding.&lt;/p&gt;
+
+	&lt;p style=&quot;text-align:justify&quot;&gt;I am sure we will be seeing and hearing a great deal more about your accomplishments in the future. Keep up the good work!&lt;/p&gt;
+
+	&lt;p&gt;&lt;img src=&quot;../../../../../lib/core/img/app/server.svg&quot; style=&quot;height:80px; width:80px;&quot; alt=&quot;Sample Image&quot;&gt;&lt;/p&gt;
+
+	&lt;p&gt;Best regards,&lt;/p&gt;
+
+	&lt;p&gt;&lt;i&gt;The Management&lt;/i&gt;&lt;/p&gt;
+</textarea>
+<script>
+// v.20200501
+/*
+$.extend($.summernote.plugins, {
+	'brenter': function (context) {
+		 this.events = {
+			'summernote.enter': function (we, e) {
+				//get hold of the enter event and trigger a shift+enter keypress
+				e.trigger($.Event("keydown", {
+					keyCode: 13, // ENTER
+					shiftKey: true
+				}));
+				//stop the normal event from happening
+				e.preventDefault();
+			 }
+		 };
+	 }
+});
+*/
+</script>
+<script>
+	$('#summernote').summernote({
+		prettifyHtml: true,
+		allowImageURL: false,
+		codeViewReadonly: true,
+		codeviewFilter: true,
+		placeholder: '',
+		tabsize: 2,
+		height: 'calc(100vh - 50px)',
+		toolbar:[
+			['paperSize', ['paperSize']],
+			['print', ['print', 'pagebreak']],
+			['cleaner', ['cleaner']],
+			//--
+			['style', ['clear', 'style']], // , 'addclass'
+			['font', ['fontname', 'fontsize', 'bold', 'italic', 'underline']],
+			['fontstyleextra', ['strikethrough', 'superscript', 'subscript']],
+			['color', ['color']], // 'fontname'
+			['para', ['ul', 'ol', 'paragraph']],
+			['height', ['height']],
+			['table', ['table']],
+			['insert', ['media', 'link', 'hr', 'picture', 'specialchars']], // ,'video'
+			['misc', ['findnreplace', 'undo', 'redo']], // 'imageAttributes'
+			['view',['codeview']], // 'fullscreen'
+			['help',['help']]
+		],
+		fontSizes: [ '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '24', '28', '32', '36', '40', '48', '60', '72' ], // list of values as string
+		fontNames: [ 'Serif', 'Sans', 'IBM Plex Sans', 'IBM Plex Serif', 'IBM Plex Mono', 'Open Sans', 'Lucida Grande', 'Courier' ],
+		popover: {
+			table: [
+				['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+				['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
+				['custom', ['tableHeaders', 'tableStyles']] // , 'tableStyles'
+			],
+			link: [
+				['link', ['linkDialogShow', 'unlink']]
+			],
+			image: [
+				['resize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+				['float', ['floatLeft', 'floatRight', 'floatNone']],
+				['remove', ['removeMedia']]
+			],
+		},
+		print: {
+			'stylesheetUrl': [
+				'../plugins/summernote-print-styles.css',
+				'../plugins/summernote-table-styles.css',
+				'../plugins/summernote-pagebreak.css'
+			]
+		},
+		callbacks: {
+			onInit: function(){
+				summertnotePaperSize_A4(); // autoselect A4
+				$('button.note-btn').filter('.btn-codeview').click().click(); // togle on/of codeView one time to invoke codeview.purify
+			}
+		}
+	});
+/*	.on('summernote.enter', function(we,e){
+		$(this).summernote('pasteHTML', '<br><br>');
+		e.preventDefault();
+	}); */
+	// var myText = $('#myField').summernote('isEmpty')? '' : $('#myField').summernote('code');
+</script>
+<button onClick="(function(){ var paperSize = $('.note-editing-area').attr('data-papersize'); var textareaValue = $('#summernote').summernote('code'); console.log('PaperSize: ' + paperSize + '\n' + 'Code:' + '\n' + textareaValue); })();" style="position:fixed; bottom:5px; right:5px;">Save (to console)</button>
+</body>
+</html>
