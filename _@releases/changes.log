@@ -2,8 +2,15 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
-December 25, 2024
-	* Refactoring of some modules, cleanup
+January 07, 2025
+	* fix versioning, release
+
+December 28, 2024
+	* fix versioning
+
+December 26, 2024
+	* Refactoring of some modules
+	* cleanup and fix licensing
 
 December 23, 2024
 	* minor fixes, stable release
