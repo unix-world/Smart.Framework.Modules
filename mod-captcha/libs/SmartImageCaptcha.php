@@ -48,7 +48,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP GD Extension w. *optional TTF support ; classes: Smart, SmartFileSysUtils
- * @version 	v.20221220
+ * @version 	v.20250107
  * @package 	modules:development:Captcha
  */
 final class SmartImageCaptcha {
@@ -433,7 +433,7 @@ final class SmartImageCaptcha {
 		//--
 		if((string)\strtolower((string)$this->format) == 'svg') {
 			// mime type: image/svg+xml (encapsulate PNG in SVG to make harder guessing it by common captcha solvers)
-			$out = '<svg width="'.(int)$this->width.'" height="'.(int)$this->height.'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><image data-time-s="'.\Smart::escape_html(\Smart::format_number_dec((float)(\microtime(true) - (float)$this->time), 9, '.', '')).'" href="data:image/png;base64,'.\Smart::escape_html(\base64_encode((string)$out)).'" height="100%" width="100%" /></svg>';
+			$out = '<svg width="'.(int)$this->width.'" height="'.(int)$this->height.'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><image data-time-s="'.\Smart::escape_html(\Smart::format_number_dec((float)(\microtime(true) - (float)$this->time), 9, '.', '')).'" href="data:image/png;base64,'.\Smart::escape_html((string)\Smart::b64_enc((string)$out)).'" height="100%" width="100%" /></svg>';
 		} //end if
 		//--
 

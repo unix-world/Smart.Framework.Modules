@@ -78,7 +78,7 @@ $configs['solr']['slowtime']	= 0.4500;									// 0.0500 .. 0.7500 slow query ti
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartComponents
- * @version 	v.20221220
+ * @version 	v.20250107
  * @package 	extralibs:Database:Solr
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -202,11 +202,11 @@ final class SmartSolrDb {
 		$this->user = (string) $user;
 		//--
 		if((string)$password != '') {
-			$password = (string) base64_decode((string)$password);
+			$password = (string) Smart::b64_dec((string)$password, true); // B64 STRICT
 		} //end if
 		$this->password = (string) $password;
 		//--
-		$this->timeout = Smart::format_number_int($timeout, '+');
+		$this->timeout = (int) Smart::format_number_int($timeout, '+');
 		if($this->timeout < 1) {
 			$this->timeout = 1;
 		} //end if

@@ -51,7 +51,7 @@ if(!defined('SMART_FRAMEWORK_BARCODE_2D_OPTS')) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	Smart.Framework
- * @version 	v.20211127
+ * @version 	v.20250107
  * @package 	modules:Barcodes
  *
  */
@@ -326,7 +326,7 @@ final class SmartBarcodes2D {
 		//--
 		$microtime = \microtime(true);
 		//--
-		return "\n".'<!-- Barcode2D / SVG -->'.'<img src="data:image/svg+xml;base64,'.\Smart::escape_html(\base64_encode(self::getBarcodeSVG($barcode_arr, $z, $color))).'" alt="BarCode2D-SVG">'.'<!-- END :: Barcode2D ['.(\microtime(true) - $microtime).'] -->'."\n";
+		return "\n".'<!-- Barcode2D / SVG -->'.'<img src="data:image/svg+xml;base64,'.\Smart::escape_html((string)\Smart::b64_enc((string)self::getBarcodeSVG($barcode_arr, $z, $color))).'" alt="BarCode2D-SVG">'.'<!-- END :: Barcode2D ['.(\microtime(true) - $microtime).'] -->'."\n";
 		//--
 	} //END FUNCTION
 
@@ -402,7 +402,7 @@ final class SmartBarcodes2D {
 		//--
 		$microtime = \microtime(true);
 		//--
-		return "\n".'<!-- Barcode2D / PNG -->'.'<img src="data:image/png;base64,'.\Smart::escape_html(\base64_encode(self::getBarcodePNG($barcode_arr, $z, $color))).'" alt="BarCode2D-PNG">'.'<!-- END :: Barcode2D ['.(\microtime(true) - $microtime).'] -->'."\n";
+		return "\n".'<!-- Barcode2D / PNG -->'.'<img src="data:image/png;base64,'.\Smart::escape_html((string)\Smart::b64_enc((string)self::getBarcodePNG($barcode_arr, $z, $color))).'" alt="BarCode2D-PNG">'.'<!-- END :: Barcode2D ['.(\microtime(true) - $microtime).'] -->'."\n";
 		//--
 	} //END FUNCTION
 

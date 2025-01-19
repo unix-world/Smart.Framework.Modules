@@ -2,7 +2,12 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
-January 07, 2025
+January 18, 2025
+	* release
+
+January 08, 2025
+	* fix: replace base64_encode / base64_decode with: Smart b64_enc / b64_dec
+	* mod Twist new escaping filters: xml, exml
 	* fix versioning, release
 
 December 28, 2024

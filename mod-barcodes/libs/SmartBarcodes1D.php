@@ -42,7 +42,7 @@ if(!defined('SMART_FRAMEWORK_BARCODE_1D_MODE')) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	Smart.Framework
- * @version 	v.20211127
+ * @version 	v.20250107
  * @package 	modules:Barcodes
  *
  */
@@ -337,7 +337,7 @@ final class SmartBarcodes1D {
 		//--
 		$html = '';
 		$html .= "\n".'<!-- Barcode1D / SVG -->';
-		$html .= '<img src="data:image/svg+xml;base64,'.\Smart::escape_html(\base64_encode(self::getBarcodeSVG($barcode_arr, $w, $h, $color, $display_text))).'" alt="BarCode1D-SVG">';
+		$html .= '<img src="data:image/svg+xml;base64,'.\Smart::escape_html((string)\Smart::b64_enc((string)self::getBarcodeSVG($barcode_arr, $w, $h, $color, $display_text))).'" alt="BarCode1D-SVG">';
 		$html .= '<!-- END :: Barcode1D ['.(\microtime(true) - $microtime).'] -->'."\n";
 		//--
 		return (string) $html;
@@ -424,7 +424,7 @@ final class SmartBarcodes1D {
 		//--
 		$html = '';
 		$html .= "\n".'<!-- Barcode1D / PNG -->';
-		$html .= '<img src="data:image/png;base64,'.\Smart::escape_html(\base64_encode(self::getBarcodePNG($barcode_arr, $w, $h, $color, $display_text))).'" alt="BarCode1D-PNG">';
+		$html .= '<img src="data:image/png;base64,'.\Smart::escape_html((string)\Smart::b64_enc((string)self::getBarcodePNG($barcode_arr, $w, $h, $color, $display_text))).'" alt="BarCode1D-PNG">';
 		$html .= '<!-- END :: Barcode1D ['.(\microtime(true) - $microtime).'] -->'."\n";
 		//--
 		return (string) $html;

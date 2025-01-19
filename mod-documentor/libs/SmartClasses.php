@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20241216
+ * @version 	v.20250107
  * @package 	Documentor
  *
  */
@@ -49,7 +49,7 @@ final class SmartClasses {
 	// ::
 
 
-	const DOCGENERATOR_VERSION = '20241216';
+	const DOCGENERATOR_VERSION = '20250107';
 
 
 	public static function getJavascriptSfFile() {

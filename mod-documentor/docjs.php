@@ -26,7 +26,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Task Area Controller
- * @version 20241216
+ * @version 20250107
  * @ignore
  */
 final class SmartAppTaskController extends SmartAbstractAppController {

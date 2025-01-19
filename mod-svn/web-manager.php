@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20231018
+	// v.20250107
 
 
 	public function Initialize() {
@@ -234,7 +234,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$fhtml = '';
 					if((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) {
 						if(\SmartModExtLib\Svn\SvnWebManager::isSvgImageFileByMimeType((string)$fmime[0]) === true) {
-							$fhtml = '<br><hr><br><center><img style="width:auto; max-width:90%!important;" alt="'.Smart::escape_html((string)$fmime[0]).'" title="'.Smart::escape_html((string)$fmime[0]).'" src="data:'.Smart::escape_html((string)$fmime[0]).';base64,'.base64_encode((string)\SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev)).'"></center><br>';
+							$fhtml = '<br><hr><br><center><img style="width:auto; max-width:90%!important;" alt="'.Smart::escape_html((string)$fmime[0]).'" title="'.Smart::escape_html((string)$fmime[0]).'" src="data:'.Smart::escape_html((string)$fmime[0]).';base64,'.Smart::b64_enc((string)\SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev)).'"></center><br>';
 						} //end if
 					} else {
 						$fhtml = '<br><hr><center><h3 style="color:#666699;">File is too large to display here ...  Size: '.(int)$bsize.' bytes ...</h3></center>';
@@ -268,7 +268,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$fhtml = '';
 					if(\SmartModExtLib\Svn\SvnWebManager::isImageFileByMimeType((string)$fmime[0]) === true) {
 						if((int)$bsize <= (int)\SmartModExtLib\Svn\SvnWebManager::MAX_FILESIZE_DISPLAY) {
-							$fhtml = '<br><hr><br><center><img style="width:auto; max-width:90%!important;" alt="'.Smart::escape_html((string)$fmime[0]).'" title="'.Smart::escape_html((string)$fmime[0]).'" src="data:'.Smart::escape_html((string)$fmime[0]).';base64,'.base64_encode((string)\SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev)).'"></center>';
+							$fhtml = '<br><hr><br><center><img style="width:auto; max-width:90%!important;" alt="'.Smart::escape_html((string)$fmime[0]).'" title="'.Smart::escape_html((string)$fmime[0]).'" src="data:'.Smart::escape_html((string)$fmime[0]).';base64,'.Smart::b64_enc((string)\SmartModExtLib\Svn\SvnWebManager::getFile($repo, $path, $rev)).'"></center>';
 						} else {
 							$fhtml = '<br><hr><center><h3 style="color:#666699;">File is too large to display here ...  Size: '.(int)$bsize.' bytes ...</h3></center>';
 						} //end switch

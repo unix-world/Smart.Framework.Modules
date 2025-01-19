@@ -130,6 +130,21 @@ final class Filters {
 	} //END FUNCTION
 
 
+	public static function filter__xml($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::escape_xml((string)$input);
+	} //END FUNCTION
+
+
+	public static function filter__exml($input) {
+		if(!\TwistTPL\SmartTwist::is_nscalar($input)) { // arrays are not supported by this filter
+			$input = null;
+		} //end if
+		return (string) \TwistTPL\SmartTwist::escape_exml((string)$input);
+	} //END FUNCTION
+
 	/**
 	 * Escape a string for Safe Use in a HTML Javascript <script>...<script> (file.html) or Javascript only Context (file.js)
 	 * It can be safe includded between single or double quotes
