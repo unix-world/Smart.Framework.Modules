@@ -1907,7 +1907,7 @@ Here's what did change in an incompatible way:
   behavior, you would initialize like so:
 
   ```html
-  <script type="text/javascript">
+  <script>
     hljs.configure({classPrefix: ''});
     hljs.initHighlightingOnLoad();
   </script>

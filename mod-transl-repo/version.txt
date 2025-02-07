@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: Translations PgSQL r.20241218 #
+# Smart.Framework.Modules: Translations PgSQL r.20250203 #
 
 // r.8.7 / smart.framework.v.8.7
 

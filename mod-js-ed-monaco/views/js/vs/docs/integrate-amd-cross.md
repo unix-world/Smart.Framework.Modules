@@ -14,7 +14,7 @@ Assuming the HTML lives on `www.mydomain.com` and the editor is hosted on `www.m
 
 * `https://www.mydomain.com/index.html`:
 ```html
-<script type="text/javascript" src="http://www.mycdn.com/monaco-editor/min/vs/loader.js"></script>
+<script src="http://www.mycdn.com/monaco-editor/min/vs/loader.js"></script>
 <script>
   require.config({ paths: { 'vs': 'http://www.mycdn.com/monaco-editor/min/vs' }});
 
@@ -45,7 +45,7 @@ Assuming the HTML lives on `www.mydomain.com` and the editor is hosted on `www.m
 
 * `https://www.mydomain.com/index.html`:
 ```html
-<script type="text/javascript" src="http://www.mycdn.com/monaco-editor/min/vs/loader.js"></script>
+<script src="http://www.mycdn.com/monaco-editor/min/vs/loader.js"></script>
 <script>
   require.config({ paths: { 'vs': 'http://www.mycdn.com/monaco-editor/min/vs' }});
 

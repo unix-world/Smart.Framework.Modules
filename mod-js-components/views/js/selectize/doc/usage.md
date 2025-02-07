@@ -1,7 +1,7 @@
 ## Selectize – Usage
 
 ```html
-<script type="text/javascript" src="selectize.js"></script>
+<script src="selectize.js"></script>
 <link rel="stylesheet" type="text/css" href="selectize.css" />
 <script>
 $(function() {

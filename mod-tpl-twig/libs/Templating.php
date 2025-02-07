@@ -238,7 +238,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			//--
 			//$content .= '<hr><pre>'.\Smart::escape_html(print_r((array)$dbgarr,1)).'</pre><hr>';
 			//-- source highlight
-			$content .= (string) \SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('div#tpl-twig-display-for-highlight', 'light').'<script type="text/javascript" src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'</div><h2 style="display:inline;background:#003366;color:#FFFFFF;padding:3px;">Twig-TPL Source</h2><div id="tpl-twig-display-for-highlight"><pre id="'.'__twig__template__debug-tpl_'.\Smart::escape_html(\sha1((string)$dbg_tpl['dbg-file-name'])).'"><code class="debug-tpl" data-syntax="twig">'.\Smart::escape_html($dbg_tpl['dbg-file-contents']).'</code></pre></div><hr>'."\n";
+			$content .= (string) \SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('div#tpl-twig-display-for-highlight', 'light').'<script src="modules/mod-tpl/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'.'</div><h2 style="display:inline;background:#003366;color:#FFFFFF;padding:3px;">Twig-TPL Source</h2><div id="tpl-twig-display-for-highlight"><pre id="'.'__twig__template__debug-tpl_'.\Smart::escape_html(\sha1((string)$dbg_tpl['dbg-file-name'])).'"><code class="debug-tpl" data-syntax="twig">'.\Smart::escape_html($dbg_tpl['dbg-file-contents']).'</code></pre></div><hr>'."\n";
 			//-- ending
 			$content .= '<!-- #END: Twig-TPL Debug Analysis @ '.\Smart::escape_html((string)$dbg_tpl['dbg-file-name']).' -->';
 			//--

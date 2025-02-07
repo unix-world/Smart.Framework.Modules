@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Test Samples
 // Route: ?/page/js-ext-login.test-login (?page=js-ext-login.test-login)
-// (c) 2006-2023 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -50,12 +50,6 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				AND
 				(strpos((string)$validateUrl, 'https://graph.facebook.com/') === 0)
 			)
-			OR
-			(
-				((string)$type === 'google-api')
-				AND
-				(strpos((string)$validateUrl, 'https://www.googleapis.com/oauth2/v1/userinfo?') === 0)
-			)
 		) {
 			$ok = true;
 		} //end if
@@ -70,6 +64,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		$browser->rawheaders = [
 			'Content-Type' => 'application/json',
 		];
+		$browser->securemode = true; // enable SSL/TLS Strict Secure Mode by default
 		$arr = (array) $browser->browse_url((string)$validateUrl, 'GET');
 		$browser = null;
 		$data = [];

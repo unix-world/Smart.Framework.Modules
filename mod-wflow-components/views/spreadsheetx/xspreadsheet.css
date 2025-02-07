@@ -1,0 +1,1045 @@
+/*
+// (c) 2017 myliang
+// License: MIT
+// v.head.20250130
+// (c) 2025-present unix-world.org
+*/
+
+.x-spreadsheet {
+	font-size: 13px;
+	line-height: normal;
+	user-select: none;
+	-moz-user-select: none;
+/*	font-family: 'Lato', 'Source Sans Pro', Roboto, Helvetica, Arial, sans-serif; */
+	box-sizing: content-box;
+	background: #fff;
+	-webkit-font-smoothing: antialiased;
+}
+.x-spreadsheet textarea {
+/*	font: 400 13px Arial, 'Lato', 'Source Sans Pro', Roboto, Helvetica, sans-serif; */
+	font-size: 13px;
+}
+.x-spreadsheet-sheet {
+	position: relative;
+	overflow: hidden;
+}
+.x-spreadsheet-table {
+	vertical-align: bottom;
+}
+.x-spreadsheet-tooltip {
+	font-family: inherit;
+	position: absolute;
+	padding: 5px 10px;
+	color: #fff;
+	border-radius: 1px;
+	background: #000000;
+	font-size: 12px;
+	z-index: 201;
+}
+.x-spreadsheet-tooltip:before {
+	pointer-events: none;
+	position: absolute;
+	left: calc(50% - 4px);
+	top: -4px;
+	content: "";
+	width: 8px;
+	height: 8px;
+	background: inherit;
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+	z-index: 1;
+	box-shadow: 1px 1px 3px -1px rgba(0, 0, 0, 0.3);
+}
+.x-spreadsheet-color-palette {
+	padding: 5px;
+}
+.x-spreadsheet-color-palette table {
+	margin: 0;
+	padding: 0;
+	border-collapse: separate;
+	border-spacing: 2;
+	background: #fff;
+}
+.x-spreadsheet-color-palette table td {
+	margin: 0;
+	cursor: pointer;
+	border: 1px solid transparent;
+}
+.x-spreadsheet-color-palette table td:hover {
+	border-color: #ddd;
+}
+.x-spreadsheet-color-palette table td .x-spreadsheet-color-palette-cell {
+	width: 16px;
+	height: 16px;
+}
+.x-spreadsheet-border-palette {
+	padding: 6px;
+}
+.x-spreadsheet-border-palette table {
+	margin: 0;
+	padding: 0;
+	border-collapse: separate;
+	border-spacing: 0;
+	background: #fff;
+	table-layout: fixed;
+}
+.x-spreadsheet-border-palette table td {
+	margin: 0;
+}
+.x-spreadsheet-border-palette .x-spreadsheet-border-palette-left {
+	border-right: 1px solid #eee;
+	padding-right: 6px;
+}
+.x-spreadsheet-border-palette .x-spreadsheet-border-palette-left .x-spreadsheet-border-palette-cell {
+	width: 30px;
+	height: 30px;
+	cursor: pointer;
+	text-align: center;
+}
+.x-spreadsheet-border-palette .x-spreadsheet-border-palette-left .x-spreadsheet-border-palette-cell .x-spreadsheet-icon-img {
+	opacity: 0.8;
+}
+.x-spreadsheet-border-palette .x-spreadsheet-border-palette-left .x-spreadsheet-border-palette-cell:hover {
+	background-color: #eee;
+}
+.x-spreadsheet-border-palette .x-spreadsheet-border-palette-right {
+	padding-left: 6px;
+}
+.x-spreadsheet-border-palette .x-spreadsheet-border-palette-right .x-spreadsheet-toolbar-btn {
+	margin-top: 0;
+	margin-bottom: 3px;
+}
+.x-spreadsheet-border-palette .x-spreadsheet-border-palette-right .x-spreadsheet-line-type {
+	position: relative;
+	left: 0;
+	top: -3px;
+}
+.x-spreadsheet-dropdown {
+	position: relative;
+}
+.x-spreadsheet-dropdown .x-spreadsheet-dropdown-content {
+	position: absolute;
+	z-index: 200;
+	background: #fff;
+	box-shadow: 1px 2px 5px 2px rgba(51, 51, 51, 0.15);
+}
+.x-spreadsheet-dropdown.bottom-left .x-spreadsheet-dropdown-content {
+	top: calc(100% + 5px);
+	left: 0;
+}
+.x-spreadsheet-dropdown.bottom-right .x-spreadsheet-dropdown-content {
+	top: calc(100% + 5px);
+	right: 0;
+}
+.x-spreadsheet-dropdown.top-left .x-spreadsheet-dropdown-content {
+	bottom: calc(100% + 5px);
+	left: 0;
+}
+.x-spreadsheet-dropdown.top-right .x-spreadsheet-dropdown-content {
+	bottom: calc(100% + 5px);
+	right: 0;
+}
+.x-spreadsheet-dropdown .x-spreadsheet-dropdown-title {
+	padding: 0 5px;
+	display: inline-block;
+}
+.x-spreadsheet-dropdown .x-spreadsheet-dropdown-header .x-spreadsheet-icon.arrow-left {
+	margin-left: 4px;
+}
+.x-spreadsheet-dropdown .x-spreadsheet-dropdown-header .x-spreadsheet-icon.arrow-right {
+	width: 10px;
+	margin-right: 4px;
+}
+.x-spreadsheet-dropdown .x-spreadsheet-dropdown-header .x-spreadsheet-icon.arrow-right .arrow-down {
+	left: -130px;
+}
+/* resizer **/
+.x-spreadsheet-resizer {
+	position: absolute;
+	z-index: 11;
+}
+.x-spreadsheet-resizer .x-spreadsheet-resizer-hover {
+	background-color: rgba(75, 137, 255, 0.25);
+}
+.x-spreadsheet-resizer .x-spreadsheet-resizer-line {
+	position: absolute;
+}
+.x-spreadsheet-resizer.horizontal {
+	cursor: row-resize;
+}
+.x-spreadsheet-resizer.horizontal .x-spreadsheet-resizer-line {
+	border-bottom: 2px dashed #4b89ff;
+	left: 0;
+	bottom: 0;
+}
+.x-spreadsheet-resizer.vertical {
+	cursor: col-resize;
+}
+.x-spreadsheet-resizer.vertical .x-spreadsheet-resizer-line {
+	border-right: 2px dashed #4b89ff;
+	top: 0;
+	right: 0;
+}
+/* scrollbar */
+.x-spreadsheet-scrollbar {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	background-color: #f4f5f8;
+	opacity: 0.9;
+	z-index: 12;
+}
+.x-spreadsheet-scrollbar.horizontal {
+	right: 15px;
+	overflow-x: scroll;
+	overflow-y: hidden;
+}
+.x-spreadsheet-scrollbar.horizontal > div {
+	height: 1px;
+	background: #ddd;
+}
+.x-spreadsheet-scrollbar.vertical {
+	bottom: 15px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+.x-spreadsheet-scrollbar.vertical > div {
+	width: 1px;
+	background: #ddd;
+}
+/* @{css-prefix}-overlayer */
+.x-spreadsheet-overlayer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 10;
+}
+.x-spreadsheet-overlayer .x-spreadsheet-overlayer-content {
+	position: absolute;
+	overflow: hidden;
+	pointer-events: none;
+	width: 100%;
+	height: 100%;
+}
+.x-spreadsheet-editor,
+.x-spreadsheet-selector {
+	box-sizing: content-box;
+	position: absolute;
+	overflow: hidden;
+	pointer-events: none;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+/* @{css-prefix}-selector */
+.x-spreadsheet-selector .hide-input {
+	position: absolute;
+	z-index: 0;
+}
+.x-spreadsheet-selector .hide-input input {
+	padding: 0;
+	width: 0;
+	border: none!important;
+}
+.x-spreadsheet-selector .x-spreadsheet-selector-area {
+	position: absolute;
+	border: 2px solid #4b89ff;
+	background: rgba(75, 137, 255, 0.1);
+	z-index: 5;
+}
+.x-spreadsheet-selector .x-spreadsheet-selector-clipboard,
+.x-spreadsheet-selector .x-spreadsheet-selector-autofill {
+	position: absolute;
+	background: transparent;
+	z-index: 100;
+}
+.x-spreadsheet-selector .x-spreadsheet-selector-clipboard {
+	border: 2px dashed #4b89ff;
+}
+.x-spreadsheet-selector .x-spreadsheet-selector-autofill {
+	border: 1px dashed rgba(0, 0, 0, 0.45);
+}
+.x-spreadsheet-selector .x-spreadsheet-selector-corner {
+	pointer-events: auto;
+	position: absolute;
+	cursor: crosshair;
+	font-size: 0;
+	height: 5px;
+	width: 5px;
+	right: -5px;
+	bottom: -5px;
+	border: 2px solid #ffffff;
+	background: #4b89ff;
+}
+.x-spreadsheet-editor {
+	z-index: 20;
+}
+.x-spreadsheet-editor .x-spreadsheet-editor-area {
+	position: absolute;
+	text-align: left;
+	border: 2px solid #4b89ff;
+	line-height: 0;
+	z-index: 100;
+	pointer-events: auto;
+}
+.x-spreadsheet-editor .x-spreadsheet-editor-area textarea {
+	box-sizing: content-box;
+	border: none;
+	padding: 0 3px;
+	outline: none;
+	resize: none;
+	text-align: start;
+	overflow-y: hidden;
+/*	font: 400 13px Arial, 'Lato', 'Source Sans Pro', Roboto, Helvetica, sans-serif; */
+	font-size: 13px;
+	color: inherit;
+	white-space: normal;
+	word-wrap: break-word;
+	line-height: 22px;
+	margin: 0;
+}
+.x-spreadsheet-editor .x-spreadsheet-editor-area .textline {
+	overflow: hidden;
+	visibility: hidden;
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+.x-spreadsheet-item {
+	user-select: none;
+	background: 0;
+	border: 1px solid transparent;
+	outline: none;
+	height: 26px;
+	color: rgba(0, 0, 0, 0.9);
+	line-height: 26px;
+	list-style: none;
+	padding: 2px 10px;
+	cursor: default;
+	text-align: left;
+	overflow: hidden;
+}
+.x-spreadsheet-item.disabled {
+	pointer-events: none;
+	opacity: 0.5;
+}
+.x-spreadsheet-item:hover,
+.x-spreadsheet-item.active {
+	background: rgba(0, 0, 0, 0.05);
+}
+.x-spreadsheet-item.divider {
+	height: 0;
+	padding: 0;
+	margin: 5px 0;
+	border: none;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.x-spreadsheet-item .label {
+	float: right;
+	opacity: 0.65;
+	font-size: 1em;
+}
+.x-spreadsheet-item.state,
+.x-spreadsheet-header.state {
+	padding-left: 35px!important;
+	position: relative;
+}
+.x-spreadsheet-item.state:before,
+.x-spreadsheet-header.state:before {
+	content: '';
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	left: 12px;
+	top: calc(50% - 5px);
+	background: rgba(0, 0, 0, 0.08);
+	border-radius: 2px;
+}
+.x-spreadsheet-item.state.checked:before,
+.x-spreadsheet-header.state.checked:before {
+	background: #4b89ff;
+}
+.x-spreadsheet-checkbox {
+	position: relative;
+	display: inline-block;
+	backface-visibility: hidden;
+	outline: 0;
+	vertical-align: baseline;
+	font-style: normal;
+	font-size: 1rem;
+	line-height: 1em;
+}
+.x-spreadsheet-checkbox > input {
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0!important;
+	outline: 0;
+	z-index: -1;
+}
+.x-spreadsheet-suggest,
+.x-spreadsheet-contextmenu,
+.x-spreadsheet-sort-filter {
+	position: absolute;
+	box-shadow: 1px 2px 5px 2px rgba(51, 51, 51, 0.15);
+	background: #fff;
+	z-index: 100;
+	width: 260px;
+	pointer-events: auto;
+	overflow: auto;
+}
+.x-spreadsheet-suggest {
+	width: 200px;
+}
+.x-spreadsheet-filter {
+	border: 1px solid #e9e9e9;
+	font-size: 12px;
+	margin: 10px;
+}
+.x-spreadsheet-filter .x-spreadsheet-header {
+	padding: 0.5em 0.75em;
+	background: #f8f8f9;
+	border-bottom: 1px solid #e9e9e9;
+	border-left: 1px solid transparent;
+}
+.x-spreadsheet-filter .x-spreadsheet-body {
+	height: 200px;
+	overflow-y: auto;
+}
+.x-spreadsheet-filter .x-spreadsheet-body .x-spreadsheet-item {
+	height: 20px;
+	line-height: 20px;
+}
+.x-spreadsheet-sort-filter .x-spreadsheet-buttons {
+	margin: 10px;
+}
+.x-spreadsheet-toolbar,
+.x-spreadsheet-bottombar {
+	height: 40px;
+	padding: 0 30px;
+	text-align: left;
+	background: #f5f6f7;
+	display: flex;
+}
+.x-spreadsheet-bottombar {
+	position: relative;
+	border-top: 1px solid #e0e2e4;
+}
+.x-spreadsheet-bottombar .x-spreadsheet-menu > li {
+	line-height: 40px;
+	height: 40px;
+	padding-top: 0;
+	padding-bottom: 0;
+	vertical-align: middle;
+	border-right: 1px solid #e8eaed;
+}
+.x-spreadsheet-menu {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	user-select: none;
+}
+.x-spreadsheet-menu > li {
+	float: left;
+	line-height: 1.25em;
+	padding: 0.785em 1em;
+	margin: 0;
+	vertical-align: middle;
+	text-align: left;
+	font-weight: 400;
+	color: #80868b;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: all 0.3s;
+	font-weight: bold;
+}
+.x-spreadsheet-menu > li.active {
+	background-color: #fff;
+	color: rgba(0, 0, 0, 0.65);
+}
+.x-spreadsheet-menu > li .x-spreadsheet-icon {
+	margin: 0 6px;
+}
+.x-spreadsheet-menu > li .x-spreadsheet-icon .x-spreadsheet-icon-img:hover {
+	opacity: 0.85;
+}
+.x-spreadsheet-menu > li .x-spreadsheet-dropdown {
+	display: inline-block;
+}
+.x-spreadsheet-toolbar {
+	border-bottom: 1px solid #e0e2e4;
+}
+.x-spreadsheet-toolbar .x-spreadsheet-toolbar-btns {
+	display: inline-flex;
+}
+.x-spreadsheet-toolbar .x-spreadsheet-toolbar-more {
+	padding: 0 6px 6px;
+	text-align: left;
+}
+.x-spreadsheet-toolbar .x-spreadsheet-toolbar-more .x-spreadsheet-toolbar-divider {
+	margin-top: 0;
+}
+.x-spreadsheet-toolbar .x-spreadsheet-toolbar-btn {
+	flex: 0 0 auto;
+	display: inline-block;
+	border: 1px solid transparent;
+	height: 26px;
+	line-height: 26px;
+	min-width: 26px;
+	margin: 6px 1px 0;
+	padding: 0;
+	text-align: center;
+	border-radius: 2px;
+}
+.x-spreadsheet-toolbar .x-spreadsheet-toolbar-btn.disabled {
+	pointer-events: none;
+	opacity: 0.5;
+}
+.x-spreadsheet-toolbar .x-spreadsheet-toolbar-btn:hover,
+.x-spreadsheet-toolbar .x-spreadsheet-toolbar-btn.active {
+	background: rgba(0, 0, 0, 0.08);
+}
+.x-spreadsheet-toolbar-divider {
+	display: inline-block;
+	border-right: 1px solid #e0e2e4;
+	width: 0;
+	vertical-align: middle;
+	height: 18px;
+	margin: 12px 3px 0;
+}
+.x-spreadsheet-print {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 100;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+.x-spreadsheet-print-bar {
+	background: #424242;
+	height: 60px;
+	line-height: 60px;
+	padding: 0 30px;
+}
+.x-spreadsheet-print-bar .-title {
+	color: #fff;
+	font-weight: bold;
+	font-size: 1.2em;
+	float: left;
+}
+.x-spreadsheet-print-bar .-right {
+	float: right;
+	margin-top: 12px;
+}
+.x-spreadsheet-print-content {
+	display: flex;
+	flex: auto;
+	flex-direction: row;
+	background: #d0d0d0;
+	height: calc(100% - 60px);
+}
+.x-spreadsheet-print-content .-sider {
+	flex: 0 0 300px;
+	width: 300px;
+	border-left: 2px solid #ccc;
+	background: #fff;
+}
+.x-spreadsheet-print-content .-content {
+	flex: auto;
+	overflow-x: auto;
+	overflow-y: scroll;
+	height: 100%;
+}
+.x-spreadsheet-canvas-card-wraper {
+	margin: 40px 20px;
+}
+.x-spreadsheet-canvas-card {
+	background: #fff;
+	margin: auto;
+	page-break-before: auto;
+	page-break-after: always;
+	box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 3px rgba(0, 0, 0, 0.12), 0 4px 5px 0 rgba(0, 0, 0, 0.2);
+}
+.x-spreadsheet-calendar {
+	color: rgba(0, 0, 0, 0.65);
+	background: #ffffff;
+	user-select: none;
+}
+.x-spreadsheet-calendar .calendar-header {
+	font-weight: 700;
+	line-height: 30px;
+	text-align: center;
+	width: 100%;
+	float: left;
+	background: #f9fafb;
+}
+.x-spreadsheet-calendar .calendar-header .calendar-header-left {
+	padding-left: 5px;
+	float: left;
+}
+.x-spreadsheet-calendar .calendar-header .calendar-header-right {
+	float: right;
+}
+.x-spreadsheet-calendar .calendar-header .calendar-header-right a {
+	padding: 3px 0;
+	margin-right: 2px;
+	border-radius: 2px;
+}
+.x-spreadsheet-calendar .calendar-header .calendar-header-right a:hover {
+	background: rgba(0, 0, 0, 0.08);
+}
+.x-spreadsheet-calendar .calendar-body {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+.x-spreadsheet-calendar .calendar-body th,
+.x-spreadsheet-calendar .calendar-body td {
+	width: 14.28571429%;
+	min-width: 32px;
+	text-align: center;
+	font-weight: 700;
+	line-height: 30px;
+	padding: 0;
+}
+.x-spreadsheet-calendar .calendar-body td > .cell:hover {
+	background: #ecf6fd;
+}
+.x-spreadsheet-calendar .calendar-body td > .cell.active,
+.x-spreadsheet-calendar .calendar-body td > .cell.active:hover {
+	background: #ecf6fd;
+	color: #2185D0;
+}
+.x-spreadsheet-calendar .calendar-body td > .cell.disabled {
+	pointer-events: none;
+	opacity: 0.5;
+}
+.x-spreadsheet-datepicker {
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+	position: absolute;
+	left: 0;
+	top: calc(100% + 5px);
+	z-index: 10;
+	width: auto;
+}
+.x-spreadsheet-buttons {
+	display: flex;
+	justify-content: flex-end;
+}
+.x-spreadsheet-buttons .x-spreadsheet-button {
+	margin-left: 8px;
+}
+.x-spreadsheet-button {
+	display: inline-block;
+	border-radius: 3px;
+	line-height: 1em;
+	min-height: 1em;
+	white-space: nowrap;
+	text-align: center;
+	cursor: pointer;
+	font-size: 1em;
+	font-weight: 700;
+	padding: 0.75em 1em;
+	color: rgba(0, 0, 0, 0.6);
+	background: #E0E1E2;
+	text-decoration: none;
+	font-family: "Lato", "proxima-nova", "Helvetica Neue", Arial, sans-serif;
+	outline: none;
+	vertical-align: baseline;
+	zoom: 1;
+	user-select: none;
+	transition: all 0.1s linear;
+}
+.x-spreadsheet-button.active,
+.x-spreadsheet-button:hover {
+	background-color: #C0C1C2;
+	color: rgba(0, 0, 0, 0.8);
+}
+.x-spreadsheet-button.primary {
+	color: #fff;
+	background-color: #2185D0;
+}
+.x-spreadsheet-button.primary:hover,
+.x-spreadsheet-button.primary.active {
+	color: #fff;
+	background-color: #1678c2;
+}
+.x-spreadsheet-form-input {
+	font-size: 1em;
+	position: relative;
+	font-weight: 400;
+	display: inline-flex;
+	color: rgba(0, 0, 0, 0.87);
+}
+.x-spreadsheet-form-input input {
+	z-index: 1;
+	margin: 0;
+	max-width: 100%;
+	flex: 1 0 auto;
+	outline: 0;
+	-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+	text-align: left;
+	line-height: 30px;
+	height: 30px;
+	padding: 0 8px;
+	background: #fff;
+	border: 1px solid #e9e9e9;
+	border-radius: 3px;
+	transition: box-shadow 0.1s ease, border-color 0.1s ease;
+	box-shadow: inset 0 1px 2px hsla(0, 0%, 4%, 0.06);
+}
+.x-spreadsheet-form-input input:focus {
+	border-color: #4b89ff;
+	box-shadow: inset 0 1px 2px rgba(75, 137, 255, 0.2);
+}
+.x-spreadsheet-form-select {
+	position: relative;
+	display: inline-block;
+	background: #fff;
+	border: 1px solid #e9e9e9;
+	border-radius: 2px;
+	cursor: pointer;
+	color: rgba(0, 0, 0, 0.87);
+	user-select: none;
+	box-shadow: inset 0 1px 2px hsla(0, 0%, 4%, 0.06);
+}
+.x-spreadsheet-form-select .input-text {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	min-width: 60px;
+	width: auto;
+	height: 30px;
+	line-height: 30px;
+	padding: 0 8px;
+}
+.x-spreadsheet-form-fields {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+.x-spreadsheet-form-fields .x-spreadsheet-form-field {
+	flex: 0 1 auto;
+}
+.x-spreadsheet-form-fields .x-spreadsheet-form-field .label {
+	display: inline-block;
+	margin: 0 10px 0 0;
+}
+.x-spreadsheet-form-field {
+	display: block;
+	vertical-align: middle;
+	margin-left: 10px;
+	margin-bottom: 10px;
+}
+.x-spreadsheet-form-field:first-child {
+	margin-left: 0;
+}
+.x-spreadsheet-form-field.error .x-spreadsheet-form-select,
+.x-spreadsheet-form-field.error input {
+	border-color: #f04134;
+}
+.x-spreadsheet-form-field .tip {
+	color: #f04134;
+	font-size: 0.9em;
+}
+.x-spreadsheet-dimmer {
+	display: none;
+	position: absolute;
+	top: 0 !important;
+	left: 0 !important;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	vertical-align: middle;
+	background-color: rgba(0, 0, 0, 0.6);
+	opacity: 0;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+	-webkit-animation-duration: 0.5s;
+	animation-duration: 0.5s;
+	transition: background-color 0.5s linear;
+	user-select: none;
+	z-index: 1000;
+}
+.x-spreadsheet-dimmer.active {
+	display: block;
+	opacity: 1;
+}
+form fieldset {
+	border: none;
+}
+form fieldset label {
+	display: block;
+	margin-bottom: 0.5em;
+	font-size: 1em;
+	color: #666;
+}
+form fieldset select {
+	font-size: 1.1em;
+	width: 100%;
+	background-color: #fff;
+	border: none;
+	border-bottom: 2px solid #ddd;
+	padding: 0.5em 0.85em;
+	border-radius: 2px;
+}
+.x-spreadsheet-modal,
+.x-spreadsheet-toast {
+	font-size: 13px;
+	position: fixed;
+	z-index: 1001;
+	text-align: left;
+	line-height: 1.25em;
+	min-width: 360px;
+	color: rgba(0, 0, 0, 0.87);
+/*	font-family: 'Lato', 'Source Sans Pro', Roboto, Helvetica, Arial, sans-serif; */
+	border-radius: 4px;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	background-color: #fff;
+	background-clip: padding-box;
+	box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 8px;
+}
+.x-spreadsheet-toast {
+	background-color: rgba(255, 255, 255, 0.85);
+}
+.x-spreadsheet-modal-header,
+.x-spreadsheet-toast-header {
+	font-weight: 600;
+	background-clip: padding-box;
+	background-color: rgba(255, 255, 255, 0.85);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+	border-radius: 4px 4px 0 0;
+}
+.x-spreadsheet-modal-header .x-spreadsheet-icon,
+.x-spreadsheet-toast-header .x-spreadsheet-icon {
+	position: absolute;
+	right: 0.8em;
+	top: 0.65em;
+	border-radius: 18px;
+}
+.x-spreadsheet-modal-header .x-spreadsheet-icon:hover,
+.x-spreadsheet-toast-header .x-spreadsheet-icon:hover {
+	opacity: 1;
+	background: rgba(0, 0, 0, 0.08);
+}
+.x-spreadsheet-toast-header {
+	color: #F2711C;
+}
+.x-spreadsheet-modal-header {
+	border-bottom: 1px solid #e0e2e4;
+	background: rgba(0, 0, 0, 0.08);
+	font-size: 1.0785em;
+}
+.x-spreadsheet-modal-header,
+.x-spreadsheet-modal-content,
+.x-spreadsheet-toast-header,
+.x-spreadsheet-toast-content {
+	padding: 0.75em 1em;
+}
+@media screen and (min-width: 320px) and (max-width: 480px) {
+	.x-spreadsheet-toolbar {
+		display: none;
+	}
+}
+.x-spreadsheet-icon {
+	width: 18px;
+	height: 18px;
+	margin: 1px 1px 2px 1px;
+	text-align: center;
+	vertical-align: middle;
+	user-select: none;
+	overflow: hidden;
+	position: relative;
+	display: inline-block;
+	line-height: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img {
+	background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20version%3D%221.1%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22262px%22%20height%3D%2272px%22%20viewBox%3D%220%200%20262%2072%22%20id%3D%22icons%22%3E%3Cg%20transform%3D%22translate%280%2C0%29%22%20id%3D%22g1%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M11.5656391%2C4.43436088%20L9%2C7%20L16%2C7%20L16%2C0%20L13.0418424%2C2.95815758%20C11.5936787%2C1.73635959%209.72260775%2C1%207.67955083%2C1%20C4.22126258%2C1%201.25575599%2C3.10984908%200%2C6%20L2%2C7%20C2.93658775%2C4.60974406%205.12943697%2C3.08011229%207.67955083%2C3%20C9.14881247%2C3.0528747%2010.4994783%2C3.57862053%2011.5656391%2C4.43436088%20Z%22%20transform%3D%22matrix%28-1%200%200%201%2017%205%29%22%20id%3D%22p1%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2818%2C0%29%22%20id%3D%22g2%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M11.5656391%2C4.43436088%20L9%2C7%20L16%2C7%20L16%2C0%20L13.0418424%2C2.95815758%20C11.5936787%2C1.73635959%209.72260775%2C1%207.67955083%2C1%20C4.22126258%2C1%201.25575599%2C3.10984908%200%2C6%20L2%2C7%20C2.93658775%2C4.60974406%205.12943697%2C3.08011229%207.67955083%2C3%20C9.14881247%2C3.0528747%2010.4994783%2C3.57862053%2011.5656391%2C4.43436088%20Z%22%20transform%3D%22translate%281%205%29%22%20id%3D%22p2%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2836%2C0%29%22%20id%3D%22g3%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M13%2C14%20L3%2C14%20L3%2C11%20L0%2C11%20L0%2C6.00591905%20C0%2C4.89808055%200.894513756%2C4%201.99406028%2C4%20L14.0059397%2C4%20C15.1072288%2C4%2016%2C4.88655484%2016%2C6.00591905%20L16%2C11%20L13%2C11%20L13%2C14%20Z%20M5%2C9%20L11%2C9%20L11%2C12%20L5%2C12%20L5%2C9%20Z%20M3%2C0%20L13%2C0%20L13%2C3%20L3%2C3%20L3%2C0%20Z%20M12%2C6%20L14%2C6%20L14%2C8%20L12%2C8%20L12%2C6%20Z%22%20transform%3D%22translate%281%202%29%22%20id%3D%22p3%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2854%2C0%29%22%20id%3D%22g4%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M9%2C0%20L1%2C0%20C0.45%2C0%200%2C0.45%200%2C1%20L0%2C4%20C0%2C4.55%200.45%2C5%201%2C5%20L9%2C5%20C9.55%2C5%2010%2C4.55%2010%2C4%20L10%2C3%20L11%2C3%20L11%2C6%20L4%2C6%20L4%2C14%20L6%2C14%20L6%2C8%20L13%2C8%20L13%2C2%20L10%2C2%20L10%2C1%20C10%2C0.45%209.55%2C0%209%2C0%20Z%22%20transform%3D%22translate%283%202%29%22%20id%3D%22p4%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2872%2C0%29%22%20id%3D%22g5%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M0.27%2C1.55%20L5.43%2C6.7%20L3%2C12%20L5.5%2C12%20L7.14%2C8.42%20L11.73%2C13%20L13%2C11.73%20L1.55%2C0.27%20L0.27%2C1.55%20L0.27%2C1.55%20Z%20M3.82%2C0%20L5.82%2C2%20L7.58%2C2%20L7.03%2C3.21%20L8.74%2C4.92%20L10.08%2C2%20L14%2C2%20L14%2C0%20L3.82%2C0%20L3.82%2C0%20Z%22%20transform%3D%22translate%282%203%29%22%20id%3D%22p5%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2890%2C0%29%22%20id%3D%22g6%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M9%2C3.5%20C9%2C1.57%207.43%2C0%205.5%2C0%20L1.77635684e-15%2C0%20L1.77635684e-15%2C12%20L6.25%2C12%20C8.04%2C12%209.5%2C10.54%209.5%2C8.75%20C9.5%2C7.45%208.73%2C6.34%207.63%2C5.82%20C8.46%2C5.24%209%2C4.38%209%2C3.5%20Z%20M5%2C2%20C5.82999992%2C2%206.5%2C2.67%206.5%2C3.5%20C6.5%2C4.33%205.82999992%2C5%205%2C5%20L3%2C5%20L3%2C2%20L5%2C2%20Z%20M3%2C10%20L3%2C7%20L5.5%2C7%20C6.32999992%2C7%207%2C7.67%207%2C8.5%20C7%2C9.33%206.32999992%2C10%205.5%2C10%20L3%2C10%20Z%22%20transform%3D%22translate%284%203%29%22%20id%3D%22p6%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28108%2C0%29%22%20id%3D%22g7%22%3E%3Cpolygon%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20points%3D%224%200%204%202%206.58%202%202.92%2010%200%2010%200%2012%208%2012%208%2010%205.42%2010%209.08%202%2012%202%2012%200%22%20transform%3D%22translate%283%203%29%22%20id%3D%22y6%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28126%2C0%29%22%20id%3D%22g8%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M6%2C12%20C8.76%2C12%2011%2C9.76%2011%2C7%20L11%2C0%20L9%2C0%20L9%2C7%20C9%2C8.75029916%207.49912807%2C10%206%2C10%20C4.50087193%2C10%203%2C8.75837486%203%2C7%20L3%2C0%20L1%2C0%20L1%2C7%20C1%2C9.76%203.24%2C12%206%2C12%20Z%20M0%2C13%20L0%2C15%20L12%2C15%20L12%2C13%20L0%2C13%20Z%22%20transform%3D%22translate%283%203%29%22%20id%3D%22p7%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28144%2C0%29%22%20id%3D%22g9%22%3E%3Cpath%20fill%3D%22%23010101%22%20fill-rule%3D%22evenodd%22%20d%3D%22M2.8875%2C3.06%20C2.8875%2C2.6025%202.985%2C2.18625%203.18375%2C1.8075%20C3.3825%2C1.42875%203.66%2C1.10625%204.02%2C0.84%20C4.38%2C0.57375%204.80375%2C0.3675%205.29875%2C0.22125%20C5.79375%2C0.075%206.33375%2C0%206.92625%2C0%20C7.53375%2C0%208.085%2C0.0825%208.58%2C0.25125%20C9.075%2C0.42%209.49875%2C0.6525%209.85125%2C0.95625%20C10.20375%2C1.25625%2010.47375%2C1.6125%2010.665%2C2.02875%20C10.85625%2C2.44125%2010.95%2C2.895%2010.95%2C3.38625%20L8.6925%2C3.38625%20C8.6925%2C3.1575%208.655%2C2.94375%208.58375%2C2.74875%20C8.5125%2C2.55%208.4%2C2.38125%208.25%2C2.2425%20C8.1%2C2.10375%207.9125%2C1.99125%207.6875%2C1.91625%20C7.4625%2C1.8375%207.19625%2C1.8%206.88875%2C1.8%20C6.5925%2C1.8%206.3375%2C1.83375%206.11625%2C1.8975%20C5.89875%2C1.96125%205.71875%2C2.05125%205.57625%2C2.1675%20C5.43375%2C2.28375%205.325%2C2.41875%205.25375%2C2.5725%20C5.1825%2C2.72625%205.145%2C2.895%205.145%2C3.0675%20C5.145%2C3.4275%205.32875%2C3.73125%205.69625%2C3.975%20C5.71780203%2C3.98908066%205.73942012%2C4.00311728%205.76118357%2C4.01733315%20C6.02342923%2C4.18863185%206.5%2C4.5%207%2C5%20L4%2C5%20C4%2C5%203.21375%2C4.37625%203.17625%2C4.30875%20C2.985%2C3.9525%202.8875%2C3.53625%202.8875%2C3.06%20Z%20M14%2C6%20L0%2C6%20L0%2C8%20L7.21875%2C8%20C7.35375%2C8.0525%207.51875%2C8.105%207.63125%2C8.15375%20C7.90875%2C8.2775%208.12625%2C8.40875%208.28375%2C8.53625%20C8.44125%2C8.6675%208.54625%2C8.81%208.6025%2C8.96%20C8.65875%2C9.11375%208.685%2C9.28625%208.685%2C9.47375%20C8.685%2C9.65%208.65125%2C9.815%208.58375%2C9.965%20C8.51625%2C10.11875%208.41125%2C10.25%208.2725%2C10.35875%20C8.13375%2C10.4675%207.95375%2C10.55375%207.74%2C10.6175%20C7.5225%2C10.68125%207.27125%2C10.71125%206.97875%2C10.71125%20C6.6525%2C10.71125%206.35625%2C10.6775%206.09%2C10.61375%20C5.82375%2C10.55%205.59875%2C10.445%205.41125%2C10.3025%20C5.22375%2C10.16%205.0775%2C9.9725%204.9725%2C9.74375%20C4.8675%2C9.515%204.78125%2C9.17%204.78125%2C9%20L2.55%2C9%20C2.55%2C9.2525%202.61%2C9.6875%202.72625%2C10.025%20C2.8425%2C10.3625%203.0075%2C10.66625%203.21375%2C10.9325%20C3.42%2C11.19875%203.6675%2C11.4275%203.94875%2C11.6225%20C4.23%2C11.8175%204.53375%2C11.9825%204.86375%2C12.11%20C5.19375%2C12.24125%205.535%2C12.33875%205.89875%2C12.39875%20C6.25875%2C12.4625%206.6225%2C12.4925%206.9825%2C12.4925%20C7.5825%2C12.4925%208.13%2C12.425%208.6175%2C12.28625%20C9.105%2C12.1475%209.525%2C11.94875%209.87%2C11.69375%20C10.215%2C11.435%2010.48125%2C11.12%2010.6725%2C10.74125%20C10.86375%2C10.3625%2010.95375%2C9.935%2010.95375%2C9.455%20C10.95375%2C9.005%2010.875%2C8.6%2010.72125%2C8.24375%20C10.68375%2C8.1575%2010.6425%2C8.075%2010.59375%2C7.9925%20L14%2C8%20L14%2C6%20Z%22%20transform%3D%22translate%282%203%29%22%20id%3D%22p8%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28162%2C0%29%22%20id%3D%22g10%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M7%2C0%20L5%2C0%20L0.5%2C12%20L2.5%2C12%20L3.62%2C9%20L8.37%2C9%20L9.49%2C12%20L11.49%2C12%20L7%2C0%20L7%2C0%20Z%20M4.38%2C7%20L6%2C2.67%20L7.62%2C7%20L4.38%2C7%20L4.38%2C7%20Z%22%20transform%3D%22translate%283%201%29%22%20id%3D%22p9%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28180%2C0%29%22%20id%3D%22g12%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%20id%3D%22g11%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M14.5%2C8.87%20C14.5%2C8.87%2013%2C10.49%2013%2C11.49%20C13%2C12.32%2013.67%2C12.99%2014.5%2C12.99%20C15.33%2C12.99%2016%2C12.32%2016%2C11.49%20C16%2C10.5%2014.5%2C8.87%2014.5%2C8.87%20L14.5%2C8.87%20Z%20M12.71%2C6.79%20L5.91%2C0%20L4.85%2C1.06%20L6.44%2C2.65%20L2.29%2C6.79%20C1.9%2C7.18%201.9%2C7.81%202.29%2C8.2%20L6.79%2C12.7%20C6.99%2C12.9%207.24%2C13%207.5%2C13%20C7.76%2C13%208.01%2C12.9%208.21%2C12.71%20L12.71%2C8.21%20C13.1%2C7.82%2013.1%2C7.18%2012.71%2C6.79%20L12.71%2C6.79%20Z%20M4.21%2C7%20L7.5%2C3.71%20L10.79%2C7%20L4.21%2C7%20L4.21%2C7%20Z%22%20id%3D%22p10%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28198%2C0%29%22%20id%3D%22g13%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M3%2C6%20L1%2C6%20L1%2C2%20L8%2C2%20L8%2C4%20L3%2C4%20L3%2C6%20Z%20M10%2C4%20L10%2C2%20L17%2C2%20L17%2C6%20L15%2C6%20L15%2C4%20L10%2C4%20Z%20M10%2C14%20L15%2C14%20L15%2C12%20L17%2C12%20L17%2C16%20L10%2C16%20L10%2C14%20Z%20M1%2C12%20L3%2C12%20L3%2C14%20L8%2C14%20L8%2C16%20L1%2C16%20L1%2C12%20Z%20M1%2C8%20L5%2C8%20L5%2C6%20L8%2C9%20L5%2C12%20L5%2C10%20L1%2C10%20L1%2C8%20Z%20M10%2C9%20L13%2C6%20L13%2C8%20L17%2C8%20L17%2C10%20L13%2C10%20L13%2C12%20L10%2C9%20Z%22%20id%3D%22p12%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28216%2C0%29%22%20id%3D%22g14%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M0%2C14%20L10%2C14%20L10%2C12%20L0%2C12%20L0%2C14%20Z%20M10%2C4%20L0%2C4%20L0%2C6%20L10%2C6%20L10%2C4%20Z%20M0%2C0%20L0%2C2%20L14%2C2%20L14%2C0%20L0%2C0%20Z%20M0%2C10%20L14%2C10%20L14%2C8%20L0%2C8%20L0%2C10%20Z%22%20transform%3D%22translate%282%202%29%22%20id%3D%22p13%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28234%2C0%29%22%20id%3D%22g15%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M2%2C12%20L2%2C14%20L12%2C14%20L12%2C12%20L2%2C12%20Z%20M2%2C4%20L2%2C6%20L12%2C6%20L12%2C4%20L2%2C4%20Z%20M0%2C10%20L14%2C10%20L14%2C8%20L0%2C8%20L0%2C10%20Z%20M0%2C0%20L0%2C2%20L14%2C2%20L14%2C0%20L0%2C0%20Z%22%20transform%3D%22translate%282%202%29%22%20id%3D%22p14%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%280%2C18%29%22%20id%3D%22g16%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M4%2C14%20L14%2C14%20L14%2C12%20L4%2C12%20L4%2C14%20Z%20M0%2C10%20L14%2C10%20L14%2C8%20L0%2C8%20L0%2C10%20Z%20M0%2C0%20L0%2C2%20L14%2C2%20L14%2C0%20L0%2C0%20Z%20M4%2C6%20L14%2C6%20L14%2C4%20L4%2C4%20L4%2C6%20Z%22%20transform%3D%22translate%282%202%29%22%20id%3D%22p15%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2818%2C18%29%22%20id%3D%22g17%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M0%2C0%20L0%2C2%20L12%2C2%20L12%2C0%20L0%2C0%20L0%2C0%20Z%20M2.5%2C7%20L5%2C7%20L5%2C14%20L7%2C14%20L7%2C7%20L9.5%2C7%20L6%2C3.5%20L2.5%2C7%20L2.5%2C7%20Z%22%20transform%3D%22translate%283%202%29%22%20id%3D%22p16%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2836%2C18%29%22%20id%3D%22g18%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M9.5%2C3%20L7%2C3%20L7%2C0%20L5%2C0%20L5%2C3%20L2.5%2C3%20L6%2C6.5%20L9.5%2C3%20L9.5%2C3%20Z%20M0%2C8%20L0%2C10%20L12%2C10%20L12%2C8%20L0%2C8%20L0%2C8%20Z%20M2.5%2C15%20L5%2C15%20L5%2C18%20L7%2C18%20L7%2C15%20L9.5%2C15%20L6%2C11.5%20L2.5%2C15%20L2.5%2C15%20Z%22%20transform%3D%22translate%283%29%22%20id%3D%22p17%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2854%2C18%29%22%20id%3D%22g19%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M9.5%2C7%20L7%2C7%20L7%2C0%20L5%2C0%20L5%2C7%20L2.5%2C7%20L6%2C10.5%20L9.5%2C7%20L9.5%2C7%20Z%20M0%2C12%20L0%2C14%20L12%2C14%20L12%2C12%20L0%2C12%20L0%2C12%20Z%22%20transform%3D%22translate%283%202%29%22%20id%3D%22p18%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2872%2C18%29%22%20id%3D%22g20%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M14%2C0%20L0%2C0%20L0%2C2%20L14%2C2%20L14%2C0%20Z%20M0%2C12%20L4%2C12%20L4%2C10%20L0%2C10%20L0%2C12%20Z%20M11.5%2C5%20L0%2C5%20L0%2C7%20L11.75%2C7%20C12.58%2C7%2013.25%2C7.67%2013.25%2C8.5%20C13.25%2C9.33%2012.58%2C10%2011.75%2C10%20L9%2C10%20L9%2C8%20L6%2C11%20L9%2C14%20L9%2C12%20L11.5%2C12%20C13.43%2C12%2015%2C10.43%2015%2C8.5%20C15%2C6.57%2013.43%2C5%2011.5%2C5%20Z%22%20transform%3D%22translate%282%203%29%22%20id%3D%22p19%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2890%2C18%29%22%20id%3D%22g21%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M0%2C0%20L0%2C1%20L6%2C7%20L6%2C12%20L8%2C11%20L8%2C7%20L14%2C1%20L14%2C0%20L0%2C0%20Z%20M4%2C3%20L10%2C3%20L7%2C6%20L4%2C3%20Z%22%20transform%3D%22translate%282%203%29%22%20id%3D%22p20%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28108%2C18%29%22%20id%3D%22g22%22%3E%3Cpolygon%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20points%3D%2210%200%200%200%200%201.8%205.5%207%200%2012.2%200%2014%2010%2014%2010%2012%203.1%2012%208%207%203.1%202%2010%202%22%20transform%3D%22translate%284%202%29%22%20id%3D%22y21%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28126%2C18%29%22%20id%3D%22g23%22%3E%3Cpolygon%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20points%3D%220%200%204%204%208%200%22%20transform%3D%22translate%285%207%29%22%20id%3D%22y22%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28144%2C18%29%22%20id%3D%22g24%22%3E%3Cpolygon%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20points%3D%22-2%202%202%206%206%202%22%20transform%3D%22rotate%28-90%208%203%29%22%20id%3D%22y23%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28162%2C18%29%22%20id%3D%22g25%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M1.9%2C4%20C1.9%2C2.84%202.84%2C1.9%204%2C1.9%20L8%2C1.9%20L8%2C0%20L4%2C0%20C1.79%2C0%200%2C1.79%200%2C4%20C0%2C6.21%201.79%2C8%204%2C8%20L8%2C8%20L8%2C6.1%20L4%2C6.1%20C2.84%2C6.1%201.9%2C5.16%201.9%2C4%20L1.9%2C4%20Z%20M14%2C0%20L10%2C0%20L10%2C1.9%20L14%2C1.9%20C15.16%2C1.9%2016.1%2C2.84%2016.1%2C4%20C16.1%2C5.16%2015.16%2C6.1%2014%2C6.1%20L10%2C6.1%20L10%2C8%20L14%2C8%20C16.21%2C8%2018%2C6.21%2018%2C4%20C18%2C1.79%2016.21%2C0%2014%2C0%20L14%2C0%20Z%20M6%2C5%20L12%2C5%20L12%2C3%20L6%2C3%20L6%2C5%20L6%2C5%20Z%22%20transform%3D%22translate%280%205%29%22%20id%3D%22p24%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28180%2C18%29%22%20id%3D%22g26%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M15%2C0%20C15.55%2C0%2016%2C0.45%2016%2C1%20L16%2C15%20C16%2C15.55%2015.55%2C16%2015%2C16%20L1%2C16%20C0.45%2C16%200%2C15.55%200%2C15%20L0%2C1%20C0%2C0.45%200.45%2C0%201%2C0%20L15%2C0%20Z%20M2%2C2%20L2%2C14%20L14%2C14%20L14%2C2%20L2%2C2%20Z%20M6%2C12%20L4%2C12%20L4%2C7%20L6%2C7%20L6%2C12%20L6%2C12%20Z%20M9%2C12%20L7%2C12%20L7%2C4%20L9%2C4%20L9%2C12%20L9%2C12%20Z%20M12%2C12%20L10%2C12%20L10%2C8%20L12%2C8%20L12%2C12%20L12%2C12%20Z%22%20transform%3D%22translate%281%201%29%22%20id%3D%22p25%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28198%2C18%29%22%20id%3D%22g30%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%20id%3D%22g29%22%3E%3Cpath%20stroke%3D%22%23000000%22%20d%3D%22M1.5%203.5H16.5V15.5H1.5z%22%20id%3D%22p26%22%2F%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M6%208H7V15H6z%22%20id%3D%22p27%22%2F%3E%3Cpath%20fill%3D%22%23D8D8D8%22%20d%3D%22M2%204H16V7H2z%22%20id%3D%22p28%22%2F%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M2%207H16V8H2zM2%2011H16V12H2z%22%20id%3D%22p29%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28216%2C18%29%22%20id%3D%22g31%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M2%2C0.5%20C1.17%2C0.5%200.5%2C1.17%200.5%2C2%20C0.5%2C2.83%201.17%2C3.5%202%2C3.5%20C2.83%2C3.5%203.5%2C2.83%203.5%2C2%20C3.5%2C1.17%202.83%2C0.5%202%2C0.5%20L2%2C0.5%20Z%20M12%2C0.5%20C11.17%2C0.5%2010.5%2C1.17%2010.5%2C2%20C10.5%2C2.83%2011.17%2C3.5%2012%2C3.5%20C12.83%2C3.5%2013.5%2C2.83%2013.5%2C2%20C13.5%2C1.17%2012.83%2C0.5%2012%2C0.5%20L12%2C0.5%20Z%20M7%2C0.5%20C6.17%2C0.5%205.5%2C1.17%205.5%2C2%20C5.5%2C2.83%206.17%2C3.5%207%2C3.5%20C7.83%2C3.5%208.5%2C2.83%208.5%2C2%20C8.5%2C1.17%207.83%2C0.5%207%2C0.5%20L7%2C0.5%20Z%22%20transform%3D%22translate%282%207%29%22%20id%3D%22p30%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28234%2C18%29%22%20id%3D%22g32%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M6%2C4%20L6%2C0%20L4%2C0%20L4%2C4%20L0%2C4%20L0%2C6%20L4%2C6%20L4%2C10%20L6%2C10%20L6%2C6%20L10%2C6%20L10%2C4%20L6%2C4%20Z%22%20transform%3D%22translate%284%204%29%22%20id%3D%22p31%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%280%2C36%29%22%20id%3D%22g33%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M0%2C0%20L0%2C14%20L14%2C14%20L14%2C0%20L0%2C0%20L0%2C0%20Z%20M6%2C12%20L2%2C12%20L2%2C8%20L6%2C8%20L6%2C12%20L6%2C12%20Z%20M6%2C6%20L2%2C6%20L2%2C2%20L6%2C2%20L6%2C6%20L6%2C6%20Z%20M12%2C12%20L8%2C12%20L8%2C8%20L12%2C8%20L12%2C12%20L12%2C12%20Z%20M12%2C6%20L8%2C6%20L8%2C2%20L12%2C2%20L12%2C6%20L12%2C6%20Z%22%20transform%3D%22translate%282%202%29%22%20id%3D%22p32%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2818%2C36%29%22%20id%3D%22g35%22%3E%3Cg%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20transform%3D%22translate%282%202%29%22%20id%3D%22g34%22%3E%3Cpath%20d%3D%22M0%2C14%20L2%2C14%20L2%2C12%20L0%2C12%20L0%2C14%20L0%2C14%20Z%20M2%2C3%20L0%2C3%20L0%2C5%20L2%2C5%20L2%2C3%20L2%2C3%20Z%20M3%2C14%20L5%2C14%20L5%2C12%20L3%2C12%20L3%2C14%20L3%2C14%20Z%20M11%2C0%20L9%2C0%20L9%2C2%20L11%2C2%20L11%2C0%20L11%2C0%20Z%20M2%2C0%20L0%2C0%20L0%2C2%20L2%2C2%20L2%2C0%20L2%2C0%20Z%20M5%2C0%20L3%2C0%20L3%2C2%20L5%2C2%20L5%2C0%20L5%2C0%20Z%20M0%2C11%20L2%2C11%20L2%2C9%20L0%2C9%20L0%2C11%20L0%2C11%20Z%20M9%2C14%20L11%2C14%20L11%2C12%20L9%2C12%20L9%2C14%20L9%2C14%20Z%20M12%2C0%20L12%2C2%20L14%2C2%20L14%2C0%20L12%2C0%20L12%2C0%20Z%20M12%2C5%20L14%2C5%20L14%2C3%20L12%2C3%20L12%2C5%20L12%2C5%20Z%20M12%2C14%20L14%2C14%20L14%2C12%20L12%2C12%20L12%2C14%20L12%2C14%20Z%20M12%2C11%20L14%2C11%20L14%2C9%20L12%2C9%20L12%2C11%20L12%2C11%20Z%22%20opacity%3D%22.54%22%20id%3D%22p33%22%2F%3E%3Cpolygon%20points%3D%228%200%206%200%206%206%200%206%200%208%206%208%206%2014%208%2014%208%208%2014%208%2014%206%208%206%22%20id%3D%22y33%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2836%2C36%29%22%20id%3D%22g37%22%3E%3Cg%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20transform%3D%22translate%282%202%29%22%20id%3D%22g36%22%3E%3Cpath%20d%3D%22M6%2C14%20L8%2C14%20L8%2C12%20L6%2C12%20L6%2C14%20L6%2C14%20Z%20M3%2C2%20L5%2C2%20L5%2C0%20L3%2C0%20L3%2C2%20L3%2C2%20Z%20M6%2C11%20L8%2C11%20L8%2C9%20L6%2C9%20L6%2C11%20L6%2C11%20Z%20M3%2C14%20L5%2C14%20L5%2C12%20L3%2C12%20L3%2C14%20L3%2C14%20Z%20M0%2C5%20L2%2C5%20L2%2C3%20L0%2C3%20L0%2C5%20L0%2C5%20Z%20M0%2C14%20L2%2C14%20L2%2C12%20L0%2C12%20L0%2C14%20L0%2C14%20Z%20M0%2C2%20L2%2C2%20L2%2C0%20L0%2C0%20L0%2C2%20L0%2C2%20Z%20M0%2C11%20L2%2C11%20L2%2C9%20L0%2C9%20L0%2C11%20L0%2C11%20Z%20M12%2C11%20L14%2C11%20L14%2C9%20L12%2C9%20L12%2C11%20L12%2C11%20Z%20M12%2C14%20L14%2C14%20L14%2C12%20L12%2C12%20L12%2C14%20L12%2C14%20Z%20M12%2C5%20L14%2C5%20L14%2C3%20L12%2C3%20L12%2C5%20L12%2C5%20Z%20M12%2C0%20L12%2C2%20L14%2C2%20L14%2C0%20L12%2C0%20L12%2C0%20Z%20M6%2C2%20L8%2C2%20L8%2C0%20L6%2C0%20L6%2C2%20L6%2C2%20Z%20M9%2C2%20L11%2C2%20L11%2C0%20L9%2C0%20L9%2C2%20L9%2C2%20Z%20M6%2C5%20L8%2C5%20L8%2C3%20L6%2C3%20L6%2C5%20L6%2C5%20Z%20M9%2C14%20L11%2C14%20L11%2C12%20L9%2C12%20L9%2C14%20L9%2C14%20Z%22%20opacity%3D%22.54%22%20id%3D%22p35%22%2F%3E%3Cpolygon%20points%3D%220%208%2014%208%2014%206%200%206%22%20id%3D%22y35%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2854%2C36%29%22%20id%3D%22g39%22%3E%3Cg%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20transform%3D%22translate%282%202%29%22%20id%3D%22g38%22%3E%3Cpath%20d%3D%22M3%2C14%20L5%2C14%20L5%2C12%20L3%2C12%20L3%2C14%20L3%2C14%20Z%20M0%2C5%20L2%2C5%20L2%2C3%20L0%2C3%20L0%2C5%20L0%2C5%20Z%20M0%2C2%20L2%2C2%20L2%2C0%20L0%2C0%20L0%2C2%20L0%2C2%20Z%20M3%2C8%20L5%2C8%20L5%2C6%20L3%2C6%20L3%2C8%20L3%2C8%20Z%20M3%2C2%20L5%2C2%20L5%2C0%20L3%2C0%20L3%2C2%20L3%2C2%20Z%20M0%2C14%20L2%2C14%20L2%2C12%20L0%2C12%20L0%2C14%20L0%2C14%20Z%20M0%2C8%20L2%2C8%20L2%2C6%20L0%2C6%20L0%2C8%20L0%2C8%20Z%20M0%2C11%20L2%2C11%20L2%2C9%20L0%2C9%20L0%2C11%20L0%2C11%20Z%20M12%2C0%20L12%2C2%20L14%2C2%20L14%2C0%20L12%2C0%20L12%2C0%20Z%20M12%2C8%20L14%2C8%20L14%2C6%20L12%2C6%20L12%2C8%20L12%2C8%20Z%20M12%2C14%20L14%2C14%20L14%2C12%20L12%2C12%20L12%2C14%20L12%2C14%20Z%20M12%2C5%20L14%2C5%20L14%2C3%20L12%2C3%20L12%2C5%20L12%2C5%20Z%20M12%2C11%20L14%2C11%20L14%2C9%20L12%2C9%20L12%2C11%20L12%2C11%20Z%20M9%2C14%20L11%2C14%20L11%2C12%20L9%2C12%20L9%2C14%20L9%2C14%20Z%20M9%2C8%20L11%2C8%20L11%2C6%20L9%2C6%20L9%2C8%20L9%2C8%20Z%20M9%2C2%20L11%2C2%20L11%2C0%20L9%2C0%20L9%2C2%20L9%2C2%20Z%22%20opacity%3D%22.54%22%20id%3D%22p37%22%2F%3E%3Cpolygon%20points%3D%226%2014%208%2014%208%200%206%200%22%20id%3D%22y37%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2872%2C36%29%22%20id%3D%22g41%22%3E%3Cg%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20transform%3D%22translate%282%202%29%22%20id%3D%22g40%22%3E%3Cpath%20d%3D%22M8%2C3%20L6%2C3%20L6%2C5%20L8%2C5%20L8%2C3%20L8%2C3%20Z%20M11%2C6%20L9%2C6%20L9%2C8%20L11%2C8%20L11%2C6%20L11%2C6%20Z%20M8%2C6%20L6%2C6%20L6%2C8%20L8%2C8%20L8%2C6%20L8%2C6%20Z%20M8%2C9%20L6%2C9%20L6%2C11%20L8%2C11%20L8%2C9%20L8%2C9%20Z%20M5%2C6%20L3%2C6%20L3%2C8%20L5%2C8%20L5%2C6%20L5%2C6%20Z%22%20opacity%3D%22.54%22%20id%3D%22p39%22%2F%3E%3Cpath%20d%3D%22M0%2C0%20L14%2C0%20L14%2C14%20L0%2C14%20L0%2C0%20Z%20M12%2C12%20L12%2C2%20L2%2C2%20L2%2C12%20L12%2C12%20Z%22%20id%3D%22p40%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2890%2C36%29%22%20id%3D%22g43%22%3E%3Cg%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20transform%3D%22translate%282%202%29%22%20id%3D%22g42%22%3E%3Cpath%20d%3D%22M6%2C8%20L8%2C8%20L8%2C6%20L6%2C6%20L6%2C8%20L6%2C8%20Z%20M6%2C5%20L8%2C5%20L8%2C3%20L6%2C3%20L6%2C5%20L6%2C5%20Z%20M6%2C11%20L8%2C11%20L8%2C9%20L6%2C9%20L6%2C11%20L6%2C11%20Z%20M6%2C14%20L8%2C14%20L8%2C12%20L6%2C12%20L6%2C14%20L6%2C14%20Z%20M3%2C14%20L5%2C14%20L5%2C12%20L3%2C12%20L3%2C14%20L3%2C14%20Z%20M3%2C2%20L5%2C2%20L5%2C0%20L3%2C0%20L3%2C2%20L3%2C2%20Z%20M3%2C8%20L5%2C8%20L5%2C6%20L3%2C6%20L3%2C8%20L3%2C8%20Z%20M12%2C14%20L14%2C14%20L14%2C12%20L12%2C12%20L12%2C14%20L12%2C14%20Z%20M12%2C8%20L14%2C8%20L14%2C6%20L12%2C6%20L12%2C8%20L12%2C8%20Z%20M12%2C11%20L14%2C11%20L14%2C9%20L12%2C9%20L12%2C11%20L12%2C11%20Z%20M12%2C5%20L14%2C5%20L14%2C3%20L12%2C3%20L12%2C5%20L12%2C5%20Z%20M6%2C2%20L8%2C2%20L8%2C0%20L6%2C0%20L6%2C2%20L6%2C2%20Z%20M12%2C0%20L12%2C2%20L14%2C2%20L14%2C0%20L12%2C0%20L12%2C0%20Z%20M9%2C14%20L11%2C14%20L11%2C12%20L9%2C12%20L9%2C14%20L9%2C14%20Z%20M9%2C8%20L11%2C8%20L11%2C6%20L9%2C6%20L9%2C8%20L9%2C8%20Z%20M9%2C2%20L11%2C2%20L11%2C0%20L9%2C0%20L9%2C2%20L9%2C2%20Z%22%20opacity%3D%22.54%22%20id%3D%22p41%22%2F%3E%3Cpolygon%20points%3D%220%2014%202%2014%202%200%200%200%22%20id%3D%22y41%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28108%2C36%29%22%20id%3D%22g45%22%3E%3Cg%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20transform%3D%22translate%282%202%29%22%20id%3D%22g44%22%3E%3Cpath%20d%3D%22M3%2C8%20L5%2C8%20L5%2C6%20L3%2C6%20L3%2C8%20L3%2C8%20Z%20M0%2C14%20L2%2C14%20L2%2C12%20L0%2C12%20L0%2C14%20L0%2C14%20Z%20M6%2C14%20L8%2C14%20L8%2C12%20L6%2C12%20L6%2C14%20L6%2C14%20Z%20M6%2C11%20L8%2C11%20L8%2C9%20L6%2C9%20L6%2C11%20L6%2C11%20Z%20M3%2C14%20L5%2C14%20L5%2C12%20L3%2C12%20L3%2C14%20L3%2C14%20Z%20M0%2C11%20L2%2C11%20L2%2C9%20L0%2C9%20L0%2C11%20L0%2C11%20Z%20M6%2C8%20L8%2C8%20L8%2C6%20L6%2C6%20L6%2C8%20L6%2C8%20Z%20M0%2C5%20L2%2C5%20L2%2C3%20L0%2C3%20L0%2C5%20L0%2C5%20Z%20M0%2C8%20L2%2C8%20L2%2C6%20L0%2C6%20L0%2C8%20L0%2C8%20Z%20M12%2C8%20L14%2C8%20L14%2C6%20L12%2C6%20L12%2C8%20L12%2C8%20Z%20M12%2C11%20L14%2C11%20L14%2C9%20L12%2C9%20L12%2C11%20L12%2C11%20Z%20M12%2C5%20L14%2C5%20L14%2C3%20L12%2C3%20L12%2C5%20L12%2C5%20Z%20M6%2C5%20L8%2C5%20L8%2C3%20L6%2C3%20L6%2C5%20L6%2C5%20Z%20M9%2C14%20L11%2C14%20L11%2C12%20L9%2C12%20L9%2C14%20L9%2C14%20Z%20M9%2C8%20L11%2C8%20L11%2C6%20L9%2C6%20L9%2C8%20L9%2C8%20Z%20M12%2C14%20L14%2C14%20L14%2C12%20L12%2C12%20L12%2C14%20L12%2C14%20Z%22%20opacity%3D%22.54%22%20id%3D%22p43%22%2F%3E%3Cpolygon%20points%3D%220%200%200%202%2014%202%2014%200%22%20id%3D%22y43%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28126%2C36%29%22%20id%3D%22g47%22%3E%3Cg%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20transform%3D%22translate%282%202%29%22%20id%3D%22g46%22%3E%3Cpath%20d%3D%22M0%2C2%20L2%2C2%20L2%2C0%20L0%2C0%20L0%2C2%20L0%2C2%20Z%20M3%2C2%20L5%2C2%20L5%2C0%20L3%2C0%20L3%2C2%20L3%2C2%20Z%20M3%2C8%20L5%2C8%20L5%2C6%20L3%2C6%20L3%2C8%20L3%2C8%20Z%20M3%2C14%20L5%2C14%20L5%2C12%20L3%2C12%20L3%2C14%20L3%2C14%20Z%20M0%2C5%20L2%2C5%20L2%2C3%20L0%2C3%20L0%2C5%20L0%2C5%20Z%20M0%2C8%20L2%2C8%20L2%2C6%20L0%2C6%20L0%2C8%20L0%2C8%20Z%20M0%2C14%20L2%2C14%20L2%2C12%20L0%2C12%20L0%2C14%20L0%2C14%20Z%20M0%2C11%20L2%2C11%20L2%2C9%20L0%2C9%20L0%2C11%20L0%2C11%20Z%20M9%2C8%20L11%2C8%20L11%2C6%20L9%2C6%20L9%2C8%20L9%2C8%20Z%20M6%2C14%20L8%2C14%20L8%2C12%20L6%2C12%20L6%2C14%20L6%2C14%20Z%20M9%2C14%20L11%2C14%20L11%2C12%20L9%2C12%20L9%2C14%20L9%2C14%20Z%20M6%2C2%20L8%2C2%20L8%2C0%20L6%2C0%20L6%2C2%20L6%2C2%20Z%20M9%2C2%20L11%2C2%20L11%2C0%20L9%2C0%20L9%2C2%20L9%2C2%20Z%20M6%2C11%20L8%2C11%20L8%2C9%20L6%2C9%20L6%2C11%20L6%2C11%20Z%20M6%2C5%20L8%2C5%20L8%2C3%20L6%2C3%20L6%2C5%20L6%2C5%20Z%20M6%2C8%20L8%2C8%20L8%2C6%20L6%2C6%20L6%2C8%20L6%2C8%20Z%22%20opacity%3D%22.54%22%20id%3D%22p45%22%2F%3E%3Cpolygon%20points%3D%2212%200%2012%2014%2014%2014%2014%200%22%20id%3D%22y45%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28144%2C36%29%22%20id%3D%22g49%22%3E%3Cg%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20transform%3D%22translate%282%202%29%22%20id%3D%22g48%22%3E%3Cpath%20d%3D%22M5%2C0%20L3%2C0%20L3%2C2%20L5%2C2%20L5%2C0%20L5%2C0%20Z%20M8%2C6%20L6%2C6%20L6%2C8%20L8%2C8%20L8%2C6%20L8%2C6%20Z%20M8%2C9%20L6%2C9%20L6%2C11%20L8%2C11%20L8%2C9%20L8%2C9%20Z%20M11%2C6%20L9%2C6%20L9%2C8%20L11%2C8%20L11%2C6%20L11%2C6%20Z%20M5%2C6%20L3%2C6%20L3%2C8%20L5%2C8%20L5%2C6%20L5%2C6%20Z%20M11%2C0%20L9%2C0%20L9%2C2%20L11%2C2%20L11%2C0%20L11%2C0%20Z%20M8%2C3%20L6%2C3%20L6%2C5%20L8%2C5%20L8%2C3%20L8%2C3%20Z%20M8%2C0%20L6%2C0%20L6%2C2%20L8%2C2%20L8%2C0%20L8%2C0%20Z%20M2%2C9%20L0%2C9%20L0%2C11%20L2%2C11%20L2%2C9%20L2%2C9%20Z%20M12%2C11%20L14%2C11%20L14%2C9%20L12%2C9%20L12%2C11%20L12%2C11%20Z%20M12%2C5%20L14%2C5%20L14%2C3%20L12%2C3%20L12%2C5%20L12%2C5%20Z%20M12%2C8%20L14%2C8%20L14%2C6%20L12%2C6%20L12%2C8%20L12%2C8%20Z%20M12%2C0%20L12%2C2%20L14%2C2%20L14%2C0%20L12%2C0%20L12%2C0%20Z%20M2%2C0%20L0%2C0%20L0%2C2%20L2%2C2%20L2%2C0%20L2%2C0%20Z%20M2%2C3%20L0%2C3%20L0%2C5%20L2%2C5%20L2%2C3%20L2%2C3%20Z%20M2%2C6%20L0%2C6%20L0%2C8%20L2%2C8%20L2%2C6%20L2%2C6%20Z%22%20opacity%3D%22.54%22%20id%3D%22p47%22%2F%3E%3Cpolygon%20points%3D%220%2014%2014%2014%2014%2012%200%2012%22%20id%3D%22y47%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28162%2C36%29%22%20id%3D%22g50%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M6%2C14%20L8%2C14%20L8%2C12%20L6%2C12%20L6%2C14%20L6%2C14%20Z%20M3%2C8%20L5%2C8%20L5%2C6%20L3%2C6%20L3%2C8%20L3%2C8%20Z%20M3%2C2%20L5%2C2%20L5%2C0%20L3%2C0%20L3%2C2%20L3%2C2%20Z%20M6%2C11%20L8%2C11%20L8%2C9%20L6%2C9%20L6%2C11%20L6%2C11%20Z%20M3%2C14%20L5%2C14%20L5%2C12%20L3%2C12%20L3%2C14%20L3%2C14%20Z%20M0%2C5%20L2%2C5%20L2%2C3%20L0%2C3%20L0%2C5%20L0%2C5%20Z%20M0%2C14%20L2%2C14%20L2%2C12%20L0%2C12%20L0%2C14%20L0%2C14%20Z%20M0%2C2%20L2%2C2%20L2%2C0%20L0%2C0%20L0%2C2%20L0%2C2%20Z%20M0%2C8%20L2%2C8%20L2%2C6%20L0%2C6%20L0%2C8%20L0%2C8%20Z%20M6%2C8%20L8%2C8%20L8%2C6%20L6%2C6%20L6%2C8%20L6%2C8%20Z%20M0%2C11%20L2%2C11%20L2%2C9%20L0%2C9%20L0%2C11%20L0%2C11%20Z%20M12%2C11%20L14%2C11%20L14%2C9%20L12%2C9%20L12%2C11%20L12%2C11%20Z%20M12%2C14%20L14%2C14%20L14%2C12%20L12%2C12%20L12%2C14%20L12%2C14%20Z%20M12%2C8%20L14%2C8%20L14%2C6%20L12%2C6%20L12%2C8%20L12%2C8%20Z%20M12%2C5%20L14%2C5%20L14%2C3%20L12%2C3%20L12%2C5%20L12%2C5%20Z%20M12%2C0%20L12%2C2%20L14%2C2%20L14%2C0%20L12%2C0%20L12%2C0%20Z%20M6%2C2%20L8%2C2%20L8%2C0%20L6%2C0%20L6%2C2%20L6%2C2%20Z%20M9%2C2%20L11%2C2%20L11%2C0%20L9%2C0%20L9%2C2%20L9%2C2%20Z%20M6%2C5%20L8%2C5%20L8%2C3%20L6%2C3%20L6%2C5%20L6%2C5%20Z%20M9%2C14%20L11%2C14%20L11%2C12%20L9%2C12%20L9%2C14%20L9%2C14%20Z%20M9%2C8%20L11%2C8%20L11%2C6%20L9%2C6%20L9%2C8%20L9%2C8%20Z%22%20transform%3D%22translate%282%202%29%22%20opacity%3D%22.54%22%20id%3D%22p49%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28180%2C36%29%22%20id%3D%22g51%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M6.5%2C3.62%20L0%2C10.12%20L0%2C13%20L2.88%2C13%20L9.38%2C6.5%20L6.5%2C3.62%20Z%20M11.85%2C4.02%20C12.05%2C3.82%2012.05%2C3.51%2011.85%2C3.31%20L9.68%2C1.14%20C9.48%2C0.94%209.17%2C0.94%208.97%2C1.14%20L7.62%2C2.5%20L10.5%2C5.38%20L11.85%2C4.02%20L11.85%2C4.02%20Z%22%20transform%3D%22translate%284%29%22%20id%3D%22p50%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28198%2C36%29%22%20id%3D%22g52%22%3E%3Cpath%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20d%3D%22M0%2C0%20L14%2C0%20L14%2C2%20L0%2C2%20L0%2C0%20Z%20M0%2C4%20L6%2C4%20L6%2C6%20L0%2C6%20L0%2C4%20Z%20M0%2C8%20L2%2C8%20L2%2C10%20L0%2C10%20L0%2C8%20Z%20M8%2C4%20L14%2C4%20L14%2C6%20L8%2C6%20L8%2C4%20Z%20M4%2C8%20L6%2C8%20L6%2C10%20L4%2C10%20L4%2C8%20Z%20M8%2C8%20L10%2C8%20L10%2C10%20L8%2C10%20L8%2C8%20Z%20M12%2C8%20L14%2C8%20L14%2C10%20L12%2C10%20L12%2C8%20Z%22%20transform%3D%22translate%282%204%29%22%20id%3D%22p51%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28216%2C36%29%22%20id%3D%22g53%22%3E%3Cpolygon%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20points%3D%22-2%202%202%206%206%202%22%20transform%3D%22rotate%2890%203%2010%29%22%20id%3D%22y52%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%28234%2C36%29%22%20id%3D%22g54%22%3E%3Cpolygon%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20points%3D%227.53%201.53%206.47%20.47%204%202.94%201.53%20.47%20.47%201.53%202.94%204%20.47%206.47%201.53%207.53%204%205.06%206.47%207.53%207.53%206.47%205.06%204%22%20transform%3D%22translate%285%205%29%22%20id%3D%22y53%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%280%2C54%29%22%20id%3D%22g55%22%3E%3Cpolygon%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20points%3D%228.44%20.44%205%203.88%201.56%20.44%20.5%201.5%205%206%209.5%201.5%22%20transform%3D%22translate%284%206%29%22%20id%3D%22y54%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2818%2C54%29%22%20id%3D%22g56%22%3E%3Cpolygon%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20points%3D%225%200%20.5%204.5%201.56%205.56%205%202.12%208.44%205.56%209.5%204.5%22%20transform%3D%22translate%284%206%29%22%20id%3D%22y55%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2836%2C54%29%22%20id%3D%22g57%22%3E%3Cpolygon%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20points%3D%228.44%20.44%205%203.88%201.56%20.44%20.5%201.5%205%206%209.5%201.5%22%20transform%3D%22rotate%2890%204%208%29%22%20id%3D%22y56%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2854%2C54%29%22%20id%3D%22g58%22%3E%3Cpolygon%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20points%3D%225%200%20.5%204.5%201.56%205.56%205%202.12%208.44%205.56%209.5%204.5%22%20transform%3D%22rotate%2890%204%208%29%22%20id%3D%22y57%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2872%2C54%29%22%20id%3D%22g59%22%3E%3Cpolygon%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20points%3D%2212%205%203.125%205%207.06%201.06%206%200%200%206%206%2012%207.06%2010.94%203.125%207%2012%207%22%20transform%3D%22matrix%28-1%200%200%201%2015%203%29%22%20id%3D%22y58%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate%2890%2C54%29%22%20id%3D%22g60%22%3E%3Cpolygon%20fill%3D%22%23000000%22%20fill-rule%3D%22evenodd%22%20points%3D%2212%205%203.125%205%207.06%201.06%206%200%200%206%206%2012%207.06%2010.94%203.125%207%2012%207%22%20transform%3D%22translate%283%203%29%22%20id%3D%22y59%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+	position: absolute;
+	width: 262px;
+	height: 444px;
+	opacity: 0.56;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.undo {
+	left: 0;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.redo {
+	left: -18px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.print {
+	left: -36px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.paintformat {
+	left: -54px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.clearformat {
+	left: -72px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.font-bold {
+	left: -90px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.font-italic {
+	left: -108px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.underline {
+	left: -126px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.strike {
+	left: -144px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.color {
+	left: -162px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.bgcolor {
+	left: -180px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.merge {
+	left: -198px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.align-left {
+	left: -216px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.align-center {
+	left: -234px;
+	top: 0;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.align-right {
+	left: 0;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.align-top {
+	left: -18px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.align-middle {
+	left: -36px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.align-bottom {
+	left: -54px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.textwrap {
+	left: -72px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.autofilter {
+	left: -90px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.formula {
+	left: -108px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.arrow-down {
+	left: -126px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.arrow-right {
+	left: -144px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.link {
+	left: -162px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.chart {
+	left: -180px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.freeze {
+	left: -198px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.ellipsis {
+	left: -216px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.add {
+	left: -234px;
+	top: -18px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.border-all {
+	left: 0;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.border-inside {
+	left: -18px;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.border-horizontal {
+	left: -36px;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.border-vertical {
+	left: -54px;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.border-outside {
+	left: -72px;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.border-left {
+	left: -90px;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.border-top {
+	left: -108px;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.border-right {
+	left: -126px;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.border-bottom {
+	left: -144px;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.border-none {
+	left: -162px;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.line-color {
+	left: -180px;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.line-type {
+	left: -198px;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.close {
+	left: -234px;
+	top: -36px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.chevron-down {
+	left: 0;
+	top: -54px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.chevron-up {
+	left: -18px;
+	top: -54px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.chevron-left {
+	left: -36px;
+	top: -54px;
+}
+.x-spreadsheet-icon .x-spreadsheet-icon-img.chevron-right {
+	left: -54px;
+	top: -54px;
+}
+
+/* END */

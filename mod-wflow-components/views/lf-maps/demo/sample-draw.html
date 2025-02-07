@@ -42,19 +42,19 @@
 		}
 	</style>
 
-	<script src="../../../../../lib/js/jquery/jquery.js" type="text/javascript"></script>
-	<script src="../../../../../lib/js/framework/smart-framework.pak.js" type="text/javascript"></script>
+	<script src="../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../../../../../lib/js/framework/smart-framework.pak.js"></script>
 
 	<script src="../leaflet.js"></script>
 	<link href="../leaflet.css" rel="stylesheet">
 
 	<link rel="stylesheet" href="../mouse-position.css"  type="text/css">
-	<script type="text/javascript" src="../mouse-position.js"></script>
+	<script src="../mouse-position.js"></script>
 
 	<link rel="stylesheet" href="../feature-select.css"  type="text/css">
-	<script type="text/javascript" src="../feature-select.js"></script>
+	<script src="../feature-select.js"></script>
 
-	<script type="text/javascript" src="../svg-icon.js"></script>
+	<script src="../svg-icon.js"></script>
 
 	<script src="../leaflet.geometryutil.js"></script>
 	<link rel="stylesheet" href="../leaflet.draw.css">
@@ -66,7 +66,7 @@
 <div id="myMap" class="map"></div>
 <div id="deleteBtn">Delete Features</div>
 <a href="#" id="exportBtn">Export Features</a>
-<script type="text/javascript">
+<script>
 
 // v.20200426
 
@@ -299,7 +299,7 @@ function calculateArea(layer, type) {
 			//console.log(coord);
 			area = L.GeometryUtil.geodesicArea(coord); // area as number
 			//console.log(area);
-		} else { // point to circle
+		} else if(typeof layer.getRadius === 'function') { // point to circle
 			var theCenterPt = layer.getLatLng();
 			var theRadius = layer.getRadius(); // in meters
 			area = Math.PI * theRadius * theRadius;

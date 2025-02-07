@@ -3,8 +3,8 @@ Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
 
-// Contains fixes by unixman (c) 2016-2021 unix-world.org
-// v.4.5.7 r.2017.05.16 with fixes up to from v.4.5.11
+// Contains fixes by unixman (c) 2016-present unix-world.org
+// v.4.5.7 r.2025.01.29 with fixes up to from v.4.5.11
 
 if(!jQuery().htmlClean) { // unixman
 	throw 'ERROR: This CkEditor version requires the jQuery htmlClean';
@@ -31421,7 +31421,7 @@ CKEDITOR.skin.chameleon = ( function() {
 					// The script that launches the bootstrap logic on 'domReady', so the document
 					// is fully editable even before the editing iframe is fully loaded (#4455).
 					var bootstrapCode =
-						'<script id="cke_actscrpt" type="text/javascript"' + ( CKEDITOR.env.ie ? ' defer="defer" ' : '' ) + '>' +
+						'<script id="cke_actscrpt"' + ( CKEDITOR.env.ie ? ' defer="defer" ' : '' ) + '>' +
 							'var wasLoaded=0;' +	// It must be always set to 0 as it remains as a window property.
 							'function onload(){' +
 								'if(!wasLoaded)' +	// FF3.6 calls onload twice when editor.setData. Stop that.

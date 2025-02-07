@@ -54,7 +54,7 @@ Load the latest version of jQuery from a CDN and provide a fallback to a local s
 Load the Zebra_Datepicker jQuery plugin:
 
 ```html
-<script type="text/javascript" src="path/to/zebra_datepicker.js"></script>
+<script src="path/to/zebra_datepicker.js"></script>
 ```
 
 Load the stylesheet:

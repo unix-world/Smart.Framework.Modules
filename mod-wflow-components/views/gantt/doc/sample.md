@@ -140,7 +140,7 @@ var users_data = {
 ## Gantt, Sample HTML Code
 
 ```html
-<script type="text/javascript">
+<script>
 var gChart = drawGantt('mygantt', 'day');
 </script>
 ```

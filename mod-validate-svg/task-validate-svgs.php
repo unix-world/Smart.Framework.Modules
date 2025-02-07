@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Task Area Controller
- * @version 20221219
+ * @version 20250203
  * @ignore
  *
  * @requires define('SMART_TESTUNIT_XML_DTD_SVG_URL', 'modules/mod-validate-svg/dtd/svg11/svg11.dtd');
@@ -30,7 +30,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 	public function Initialize() {
 		//--
 		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
-			$this->PageViewSetErrorStatus(500, ' # Mod AuthAdmins is missing !');
+			$this->PageViewSetErrorStatus(500, 'Mod AuthAdmins is missing !');
 			return false;
 		} //end if
 		//--

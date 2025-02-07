@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: TPL (Core) r.20241216 #
+# Smart.Framework.Modules: TPL (Core) r.20250124 #
 
 // r.8.7 / smart.framework.v.8.7
 

@@ -2,6 +2,14 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+February 07, 2025
+	* wflow components spreadsheet-x
+	* fixes
+
+January 24, 2025
+	* refactored Lib Auth: sync
+	* some cleanup
+
 January 18, 2025
 	* release
 

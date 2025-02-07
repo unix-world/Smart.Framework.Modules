@@ -38,7 +38,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP GD Extension (w. TrueColor support) ; optional executables: imageMagick Utility (can replace PHP GD), FFMpeg (for movies), Pdf2HtmlEx (for PDF) ; classes: Smart, SmartUtils, SmartFileSystem
- * @version 	v.20221220
+ * @version 	v.20250129
  * @package 	modules:ViewComponents
  *
  */
@@ -371,7 +371,7 @@ public function draw($y_title, $y_dir, $y_process_previews_and_images='no', $y_r
 	//--
 	if(!\SmartEnvironment::ifDebug()) {
 		if($processed > 0) {
-			$out = '<img src="'.$this->pict_reloading.'" alt="[Reloading Page ...]" title="[Reloading Page ...]"><script type="text/javascript">setTimeout(function(){ self.location = self.location; }, 2000);</script>'.'<br><hr><br>'.$out;
+			$out = '<img src="'.$this->pict_reloading.'" alt="[Reloading Page ...]" title="[Reloading Page ...]"><script>setTimeout(function(){ self.location = self.location; }, 2000);</script>'.'<br><hr><br>'.$out;
 			if(!defined('SMART_FRAMEWORK__MEDIA_GALLERY_IS_PROCESSING')) {
 				define('SMART_FRAMEWORK__MEDIA_GALLERY_IS_PROCESSING', $processed); // notice that the media galery is processing
 			} //end if

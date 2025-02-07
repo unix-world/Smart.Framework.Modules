@@ -23,29 +23,29 @@
 	</style>
 
 	<!--
-	<script type="text/javascript" src="../../jquery/jquery.js"></script>
-	<script type="text/javascript" src="../togeojson.js"></script>
+	<script src="../../jquery/jquery.js"></script>
+	<script src="../togeojson.js"></script>
 	-->
 
 	<link rel="stylesheet" href="../leaflet.css"  type="text/css">
-	<script type="text/javascript" src="../leaflet.js"></script>
+	<script src="../leaflet.js"></script>
 
 	<link rel="stylesheet" href="../mouse-position.css"  type="text/css">
-	<script type="text/javascript" src="../mouse-position.js"></script>
+	<script src="../mouse-position.js"></script>
 
 	<link rel="stylesheet" href="../mapcenter-coords.css"  type="text/css">
-	<script type="text/javascript" src="../mapcenter-coords.js"></script>
+	<script src="../mapcenter-coords.js"></script>
 
-	<script type="text/javascript" src="../../d3/d3.js"></script>
+	<script src="../../d3/d3.js"></script>
 	<link rel="stylesheet" href="../leaflet.elevation.css"  type="text/css">
-	<script type="text/javascript" src="../leaflet.elevation.js"></script>
+	<script src="../leaflet.elevation.js"></script>
 
 </head>
 <body>
 <div align="center">
 	<div id="theMap" class="map"></div>
 </div>
-<script type="text/javascript">
+<script>
 var myMap = L.map('theMap');
 myMap.options.maxZoom = 18;
 myMap.options.minZoom = 3;
@@ -57,7 +57,7 @@ L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(myMap);
 </script>
-<script type="text/javascript">
+<script>
 /*
 jQuery.ajax('map.kml').done(function(xml) {
 	var geoJson = toGeoJSON.kml(xml);

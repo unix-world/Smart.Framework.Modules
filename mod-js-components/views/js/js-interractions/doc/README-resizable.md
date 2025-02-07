@@ -8,8 +8,8 @@ You can mixin behavior with lib __js-dragndrop__
 <!doctype html>
 <html>
 <head>
-    <script type="text/javascript" src="resizable.js"></script>
-    <script type="text/javascript">
+    <script src="resizable.js"></script>
+    <script>
         resizable.initOnDocumentReady();
     </script>
     <style>
@@ -67,7 +67,7 @@ You can mixin behavior with lib __js-dragndrop__
     <div class="outer js-resizable-limiter">
         <div class="inner inner--1 js-resizable js-resizable-limiter">
             Content A
-            
+
             <div class="inner inner--2 js-resizable">
                 Sub-content A
             </div>

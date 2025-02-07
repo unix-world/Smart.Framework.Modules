@@ -27,13 +27,13 @@ It's easy. Just include DOMPurify on your website.
 ### Using the unminified development version
 
 ```html
-<script type="text/javascript" src="src/purify.js"></script>
+<script src="src/purify.js"></script>
 ```
 
 ### Using the minified and tested production version (source-map available)
 
 ```html
-<script type="text/javascript" src="dist/purify.min.js"></script>
+<script src="dist/purify.min.js"></script>
 ```
 
 Afterwards you can sanitize strings by executing the following code:
