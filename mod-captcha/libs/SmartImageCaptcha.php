@@ -48,7 +48,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP GD Extension w. *optional TTF support ; classes: Smart, SmartFileSysUtils
- * @version 	v.20250107
+ * @version 	v.20250214
  * @package 	modules:development:Captcha
  */
 final class SmartImageCaptcha {
@@ -386,54 +386,54 @@ final class SmartImageCaptcha {
 		} //end if
 		//--
 		if($this->sketchy) {
-			@\imagefilter($captcha_image, \IMG_FILTER_MEAN_REMOVAL);
+			\imagefilter($captcha_image, \IMG_FILTER_MEAN_REMOVAL);
 		} //end if
 		if($this->emboss) {
-			@\imagefilter($captcha_image, \IMG_FILTER_EMBOSS);
+			\imagefilter($captcha_image, \IMG_FILTER_EMBOSS);
 		} //end if
 		if($this->scatter) {
-			@\imagefilter($captcha_image, \IMG_FILTER_SCATTER, \Smart::random_number(1, 3), \Smart::random_number(1, 3));
+			\imagefilter($captcha_image, \IMG_FILTER_SCATTER, \Smart::random_number(1, 3), \Smart::random_number(1, 3));
 		} //end if
 		if($this->negate) {
-			@\imagefilter($captcha_image, \IMG_FILTER_NEGATE);
+			\imagefilter($captcha_image, \IMG_FILTER_NEGATE);
 		} //end if
 		if($this->contrast) {
-			@\imagefilter($captcha_image, \IMG_FILTER_CONTRAST, \Smart::random_number(-50, 10));
+			\imagefilter($captcha_image, \IMG_FILTER_CONTRAST, \Smart::random_number(-50, 10));
 		} //end if
 		if($this->colorize) {
-			@\imagefilter($captcha_image, \IMG_FILTER_COLORIZE, \Smart::random_number(-80, 50), \Smart::random_number(-80, 50), \Smart::random_number(-80, 50));
+			\imagefilter($captcha_image, \IMG_FILTER_COLORIZE, \Smart::random_number(-80, 50), \Smart::random_number(-80, 50), \Smart::random_number(-80, 50));
 		} //end if
 		if($this->grayscale) {
-			@\imagefilter($captcha_image, \IMG_FILTER_GRAYSCALE);
+			\imagefilter($captcha_image, \IMG_FILTER_GRAYSCALE);
 		} //end if
 		//--
 		switch((string)\strtolower((string)$this->format)) {
 			case 'svg':
 			case 'png':
 				// mime type: image/png
-				@\imagepng($captcha_image); // captcha is speed oriented ! default compression of zlib is 6 ; if there is a need for more optimized images as captcha have to use gif !
+				\imagepng($captcha_image); // captcha is speed oriented ! default compression of zlib is 6 ; if there is a need for more optimized images as captcha have to use gif !
 				break;
 			case 'gif':
 				// mime type: image/gif
-				@\imagegif($captcha_image);
+				\imagegif($captcha_image);
 				break;
 			case 'jpg':
 			case 'jpeg':
 			default:
 				// mime type: image/jpeg
-				@\imagejpeg($captcha_image, null, $this->quality);
+				\imagejpeg($captcha_image, null, $this->quality);
 		} //end switch
 		//--
 		$out = (string) \ob_get_contents();
 		//--
 		\ob_end_clean();
 		//--
-		@\imagedestroy($captcha_image); // free resource
+		\imagedestroy($captcha_image); // free resource
 		$captcha_image = null;
 		//--
 		if((string)\strtolower((string)$this->format) == 'svg') {
 			// mime type: image/svg+xml (encapsulate PNG in SVG to make harder guessing it by common captcha solvers)
-			$out = '<svg width="'.(int)$this->width.'" height="'.(int)$this->height.'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><image data-time-s="'.\Smart::escape_html(\Smart::format_number_dec((float)(\microtime(true) - (float)$this->time), 9, '.', '')).'" href="data:image/png;base64,'.\Smart::escape_html((string)\Smart::b64_enc((string)$out)).'" height="100%" width="100%" /></svg>';
+			$out = '<svg width="'.(int)$this->width.'" height="'.(int)$this->height.'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><image data-time-s="'.\Smart::escape_html((string)\Smart::format_number_dec((float)(\microtime(true) - (float)$this->time), 9, '.', '')).'" href="data:image/png;base64,'.\Smart::escape_html((string)\Smart::b64_enc((string)$out)).'" height="100%" width="100%" /></svg>';
 		} //end if
 		//--
 
@@ -469,7 +469,7 @@ final class SmartImageCaptcha {
 		// (c) 2012-2017 Grégoire Passault
 		// License: MIT
 		//--
-		$tcol = @\imagecolorallocate($image, \Smart::random_number(100, 255), \Smart::random_number(100, 255), \Smart::random_number(100, 255));
+		$tcol = \imagecolorallocate($image, \Smart::random_number(100, 255), \Smart::random_number(100, 255), \Smart::random_number(100, 255));
 		//--
 		if(\Smart::random_number(0, 1)) { // Horizontal
 			$Xa   = \Smart::random_number(0, $width/2);
@@ -483,8 +483,8 @@ final class SmartImageCaptcha {
 			$Yb   = \Smart::random_number($height/2, $height);
 		} //end if else
 		//--
-		@\imagesetthickness($image, \Smart::random_number(1, 3));
-		@\imageline($image, $Xa, $Ya, $Xb, $Yb, $tcol);
+		\imagesetthickness($image, \Smart::random_number(1, 3));
+		\imageline($image, $Xa, $Ya, $Xb, $Yb, $tcol);
 		//--
 		return $image;
 		//--
@@ -500,13 +500,13 @@ final class SmartImageCaptcha {
 		// License: MIT
 		//--
 		if((string)$this->gdmode == 'truecolor') {
-			$contents = @\imagecreatetruecolor($width, $height);
+			$contents = \imagecreatetruecolor($width, $height);
 		} else {
-			$contents = @\imagecreate($width, $height);
+			$contents = \imagecreate($width, $height);
 		} //end if else
 		//--
 		if(!$bg) {
-			$bg = @\imagecolorallocate($contents, 255, 255, 255);
+			$bg = \imagecolorallocate($contents, 255, 255, 255);
 		} //end if
 		//--
 		$X = \Smart::random_number(0, $width);
@@ -532,7 +532,7 @@ final class SmartImageCaptcha {
 				if($p == 0) {
 					$p = $bg;
 				} //end if
-				@\imagesetpixel($contents, $x, $y, $p);
+				\imagesetpixel($contents, $x, $y, $p);
 			} //end for
 		} //end for
 		//--
@@ -554,14 +554,14 @@ final class SmartImageCaptcha {
 			return null;
 		} //end if
 		//--
-		$L = @\imagesx($image);
-		$H = @\imagesy($image);
+		$L = \imagesx($image);
+		$H = \imagesy($image);
 		//--
 		if($x < 0 || $x >= $L || $y < 0 || $y >= $H) {
 			return $bg;
 		} //end if
 		//--
-		return @\imagecolorat($image, $x, $y);
+		return \imagecolorat($image, $x, $y);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -655,7 +655,7 @@ final class SmartImageCaptcha {
 				$font = (string) $this->charfont;
 				$use_ttf_font = true;
 			} elseif((string)\substr($this->charfont, -4, 4) == '.gdf') {
-				$font = @\imageloadfont($this->charfont);
+				$font = \imageloadfont($this->charfont);
 				if($font === false) {
 					$font = 5; // on error
 				} //end if
@@ -681,7 +681,7 @@ final class SmartImageCaptcha {
 			//--
 			if($use_ttf_font !== true) { // GDF font
 				$y = \ceil(($this->height / 2) + ($sign * \Smart::random_number(0, $this->charyvar)));
-				@\imagestring($im, (int)$font, (int)$first_x, (int)$y, (string)$w, $c);
+				\imagestring($im, (int)$font, (int)$first_x, (int)$y, (string)$w, $c);
 			} else { // TTF font
 				$y = \ceil(($this->height / 2) + ($this->charttfsize / 2) + ($sign * \Smart::random_number(0, $this->charyvar)));
 				if(\Smart::random_number(0, 1)) {
@@ -689,7 +689,7 @@ final class SmartImageCaptcha {
 				} else {
 					$angle = \Smart::random_number(330, 360);
 				} //end if else
-				@\imagettftext($im, $this->charttfsize, (int)$angle, (int)$first_x, (int)$y, $c, (string)\Smart::real_path((string)$font), (string)$w); // fix: on windows, PHP 7+ GD needs real path for TTF Fonts
+				\imagettftext($im, $this->charttfsize, (int)$angle, (int)$first_x, (int)$y, $c, (string)\Smart::real_path((string)$font), (string)$w); // fix: on windows, PHP 7+ GD needs real path for TTF Fonts
 			} //end if else
 			//--
 			$first_x += (int) $this->charspace + \Smart::random_number(5, $this->charxvar);
@@ -706,12 +706,12 @@ final class SmartImageCaptcha {
 		$word = (string) $this->generate_word();
 		//-- create image
 		if((string)$this->gdmode == 'truecolor') {
-			$im = @\imagecreatetruecolor($this->width, $this->height);
+			$im = \imagecreatetruecolor($this->width, $this->height);
 		} else {
-			$im = @\imagecreate($this->width, $this->height);
+			$im = \imagecreate($this->width, $this->height);
 		} //end if else
 		//-
-		@\imagefill($im, 0, 0, 0xDDDDDD);
+		\imagefill($im, 0, 0, 0xDDDDDD);
 		//-- add horiz lines
 		$margin = 1;
 		$first_x = $margin;
@@ -721,7 +721,7 @@ final class SmartImageCaptcha {
 			if($first_x > ($this->width - $margin)) {
 				break;
 			} //end if
-			@\imageline ($im, $first_x, 2, $first_x, ($this->height-2), 0xFFFFFF);
+			\imageline($im, $first_x, 2, $first_x, ($this->height-2), 0xFFFFFF);
 			$first_x += \ceil($factor);
 		} //end for
 		//-- add vert lines
@@ -733,7 +733,7 @@ final class SmartImageCaptcha {
 			if($first_y > ($this->height - $margin)) {
 				break;
 			} //end if
-			@\imageline ($im, 2, $first_y, ($this->width-2), $first_y, 0xFFFFFF);
+			\imageline($im, 2, $first_y, ($this->width-2), $first_y, 0xFFFFFF);
 			$first_y += \ceil($factor);
 		} //end for
 		//-- add text
@@ -741,10 +741,10 @@ final class SmartImageCaptcha {
 		//-- add noise
 		for($i=0; $i<$this->noise; $i++){
 			$noise_color = $this->generate_noise_color();
-			@\imagesetpixel($im, \Smart::random_number(2,$this->width-2), \Smart::random_number(2,$this->height-2), $noise_color);
-			@\imagesetpixel($im, \Smart::random_number(2,$this->width-2), \Smart::random_number(2,$this->height-2), $noise_color);
-			@\imagesetpixel($im, \Smart::random_number(2,$this->width-2), \Smart::random_number(2,$this->height-2), $noise_color);
-			@\imagesetpixel($im, \Smart::random_number(2,$this->width-2), \Smart::random_number(2,$this->height-2), $noise_color);
+			\imagesetpixel($im, \Smart::random_number(2,$this->width-2), \Smart::random_number(2,$this->height-2), $noise_color);
+			\imagesetpixel($im, \Smart::random_number(2,$this->width-2), \Smart::random_number(2,$this->height-2), $noise_color);
+			\imagesetpixel($im, \Smart::random_number(2,$this->width-2), \Smart::random_number(2,$this->height-2), $noise_color);
+			\imagesetpixel($im, \Smart::random_number(2,$this->width-2), \Smart::random_number(2,$this->height-2), $noise_color);
 		} //end for
 		//--
 		return array('word' => (string)$word, 'img-gd-resource' => $im);
@@ -770,12 +770,12 @@ final class SmartImageCaptcha {
 		$y_axis = ($angle >= 0 ) ? \Smart::random_number($this->height, $this->width) : \Smart::random_number(6, $this->height);
 		//--
 		if((string)$this->gdmode == 'truecolor') {
-			$im = @\imagecreatetruecolor($this->width, $this->height);
+			$im = \imagecreatetruecolor($this->width, $this->height);
 		} else {
-			$im = @\imagecreate($this->width, $this->height);
+			$im = \imagecreate($this->width, $this->height);
 		} //end if else
 		//--
-		@\imagefilledrectangle($im, 0, 0, $this->width, $this->height, 0xFFFFFF);
+		\imagefilledrectangle($im, 0, 0, $this->width, $this->height, 0xFFFFFF);
 		//--
 		$theta = 1;
 		$thetac = 7;
@@ -802,7 +802,7 @@ final class SmartImageCaptcha {
 			$x1 = ($rad1 * \cos($theta)) + $x_axis;
 			$y1 = ($rad1 * \sin($theta )) + $y_axis;
 			//--
-			@\imageline($im, ceil($x), ceil($y), ceil($x1), ceil($y1), $this->generate_noise_color());
+			\imageline($im, ceil($x), ceil($y), ceil($x1), ceil($y1), $this->generate_noise_color());
 			//--
 			$theta = $theta - $thetac;
 			//--

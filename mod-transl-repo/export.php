@@ -14,7 +14,7 @@ define('SMART_APP_MODULE_AREA', 'ADMIN');
 define('SMART_APP_MODULE_AUTH', true);
 
 
-class SmartAppAdminController extends SmartAbstractAppController {
+class SmartAppAdminController extends SmartAbstractAppController { // r.20250216
 
 	private $prj = '';
 	private $lng = '';
@@ -139,7 +139,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 		$mmodel = new \SmartModDataModel\TranslRepo\PgTranslRepoMetainfo();
 		$arr = [
-			'login-id' => (string) SmartAuth::get_auth_username(),
+			'login-id' => (string) SmartAuth::get_auth_id(),
 			'date-time' => (string) date('Y-m-d H:i:s'),
 			'operation' => 'SYNC-OUT',
 			'project' 	=> (string) $proj,
