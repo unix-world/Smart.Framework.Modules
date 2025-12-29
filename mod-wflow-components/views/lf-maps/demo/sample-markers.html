@@ -28,6 +28,17 @@
 			border-color: #CCCCCC;
 			border-radius: 4px;
 		}
+		.second-marker {
+			border: 1px solid red !important;
+			background-color: red !important;
+			color: white !important;
+			padding: 8px 20px 4px 20px !important;
+			font-size: 1rem !important;
+			line-height: 100% !important;
+		}
+		.second-marker::before {
+			border-bottom-color: red !important;
+		}
 	</style>
 
 	<link rel="stylesheet" href="../leaflet.css"  type="text/css">
@@ -55,6 +66,15 @@
 		<div id="theMap" class="map"></div>
 	</div>
 <script>
+
+function escapeHtml(str) {
+	return str
+		 .replace(/&/g, "&amp;")
+		 .replace(/</g, "&lt;")
+		 .replace(/>/g, "&gt;")
+		 .replace(/"/g, "&quot;")
+		 .replace(/'/g, "&#039;");
+}
 
 var mapCenter = new L.LatLng(51.5076139, -0.1276839);
 
@@ -101,7 +121,12 @@ var marker5 = L.marker([51.50739542821378, -0.12708985026245333], {
 		glyphSize: '16px'
 	})
 });
-marker5.addTo(myMap).bindPopup('A SVG marker (glyph)');
+marker5.addTo(myMap).bindPopup(escapeHtml('A SVG marker (glyph) <a>')).bindTooltip(escapeHtml('Heyy <a>'), {
+	permanent: true,
+	direction: 'bottom',
+	className: 'second-marker',
+//	offset: [-15, 30],
+});
 
 //--
 

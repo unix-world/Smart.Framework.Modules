@@ -163,7 +163,7 @@ class DebugViewHelper extends AbstractViewHelper
             return [
                 'class' => get_class($variable),
                 'ISO8601' => $variable->format(\DateTime::ATOM),
-                'UNIXTIME' => (integer) $variable->format('U')
+                'UNIXTIME' => (int) $variable->format('U')
             ];
         } else {
             $reflection = new \ReflectionObject($variable);

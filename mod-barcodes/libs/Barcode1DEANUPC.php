@@ -48,7 +48,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20250714
  * @package 	modules:Barcodes1D
  *
  */
@@ -242,7 +242,7 @@ final class Barcode1DEANUPC {
 			$seq .= '010101'; // right guard bar
 		} else {
 			$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-			$half_len = intval(ceil($len / 2));
+			$half_len = intval(ceil((string)($len / 2))); // unixman: fix ceil
 			if($len == 8) {
 				for($i = 0; $i < $half_len; ++$i) {
 					$seq .= $codes['A'][$code[$i]];

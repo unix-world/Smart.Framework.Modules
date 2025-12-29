@@ -89,7 +89,7 @@ final class Barcode1DRMS4CC {
 	/**
 	 * RMS4CC - CBC - KIX
 	 * @param $code (string) code to print
-	 * @param $kix (boolean) if true prints the KIX variation (doesn't use the start and end symbols, and the checksum) - in this case the house number must be sufficed with an X and placed at the end of the code.
+	 * @param $kix (bool) if true prints the KIX variation (doesn't use the start and end symbols, and the checksum) - in this case the house number must be sufficed with an X and placed at the end of the code.
 	 * @return array barcode representation.
 	 */
 	public function getBarcodeArray() { // barcode_rms4cc()

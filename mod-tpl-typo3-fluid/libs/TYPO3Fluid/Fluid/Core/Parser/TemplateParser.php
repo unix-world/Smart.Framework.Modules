@@ -116,7 +116,7 @@ class TemplateParser
      */
     public function setEscapingEnabled($escapingEnabled)
     {
-        $this->escapingEnabled = (boolean) $escapingEnabled;
+        $this->escapingEnabled = (bool) $escapingEnabled;
     }
 
     /**

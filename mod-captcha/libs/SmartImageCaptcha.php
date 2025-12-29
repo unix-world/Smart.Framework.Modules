@@ -48,7 +48,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP GD Extension w. *optional TTF support ; classes: Smart, SmartFileSysUtils
- * @version 	v.20250214
+ * @version 	v.20250714
  * @package 	modules:development:Captcha
  */
 final class SmartImageCaptcha {
@@ -680,10 +680,10 @@ final class SmartImageCaptcha {
 			} //end if
 			//--
 			if($use_ttf_font !== true) { // GDF font
-				$y = \ceil(($this->height / 2) + ($sign * \Smart::random_number(0, $this->charyvar)));
+				$y = \Smart::ceil_number(($this->height / 2) + ($sign * \Smart::random_number(0, $this->charyvar)));
 				\imagestring($im, (int)$font, (int)$first_x, (int)$y, (string)$w, $c);
 			} else { // TTF font
-				$y = \ceil(($this->height / 2) + ($this->charttfsize / 2) + ($sign * \Smart::random_number(0, $this->charyvar)));
+				$y = \Smart::ceil_number(($this->height / 2) + ($this->charttfsize / 2) + ($sign * \Smart::random_number(0, $this->charyvar)));
 				if(\Smart::random_number(0, 1)) {
 					$angle = \Smart::random_number(0, 30);
 				} else {
@@ -716,25 +716,25 @@ final class SmartImageCaptcha {
 		$margin = 1;
 		$first_x = $margin;
 		$factor = 7;
-		$max_lines = \ceil($this->width / $factor);
+		$max_lines = \Smart::ceil_number($this->width / $factor);
 		for($i=0; $i<$max_lines; $i++) {
 			if($first_x > ($this->width - $margin)) {
 				break;
 			} //end if
 			\imageline($im, $first_x, 2, $first_x, ($this->height-2), 0xFFFFFF);
-			$first_x += \ceil($factor);
+			$first_x += \Smart::ceil_number($factor);
 		} //end for
 		//-- add vert lines
 		$margin = 1;
 		$first_y = $margin;
 		$factor = 7;
-		$max_lines = \ceil($this->height / $factor);
+		$max_lines = \Smart::ceil_number($this->height / $factor);
 		for($i=0; $i<$max_lines; $i++) {
 			if($first_y > ($this->height - $margin)) {
 				break;
 			} //end if
 			\imageline($im, 2, $first_y, ($this->width-2), $first_y, 0xFFFFFF);
-			$first_y += \ceil($factor);
+			$first_y += \Smart::ceil_number($factor);
 		} //end for
 		//-- add text
 		$this->img_draw_text($im, $word);
@@ -762,7 +762,7 @@ final class SmartImageCaptcha {
 		//--
 		$word = (string) $this->generate_word();
 		//--
-		$noise = (int) ceil($this->noise / 2); // sync the level of noise with the dotted one
+		$noise = (int) \Smart::ceil_number($this->noise / 2); // sync the level of noise with the dotted one
 		//--
 		$length	= (int) \strlen($word);
 		$angle	= ($length >= 6) ? \Smart::random_number((-1*($length-6)), ($length-6)) : 0;
@@ -802,7 +802,7 @@ final class SmartImageCaptcha {
 			$x1 = ($rad1 * \cos($theta)) + $x_axis;
 			$y1 = ($rad1 * \sin($theta )) + $y_axis;
 			//--
-			\imageline($im, ceil($x), ceil($y), ceil($x1), ceil($y1), $this->generate_noise_color());
+			\imageline($im, \Smart::ceil_number($x), \Smart::ceil_number($y), \Smart::ceil_number($x1), \Smart::ceil_number($y1), $this->generate_noise_color());
 			//--
 			$theta = $theta - $thetac;
 			//--

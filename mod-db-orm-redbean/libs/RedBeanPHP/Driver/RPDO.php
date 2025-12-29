@@ -403,7 +403,7 @@ class RPDO implements Driver
 	 */
 	public function setUseStringOnlyBinding( $yesNo )
 	{
-		$this->flagUseStringOnlyBinding = (boolean) $yesNo;
+		$this->flagUseStringOnlyBinding = (bool) $yesNo;
 		if ( $this->loggingEnabled && $this->logger && method_exists($this->logger,'setUseStringOnlyBinding')) {
 			$this->logger->setUseStringOnlyBinding( $this->flagUseStringOnlyBinding );
 		}
@@ -875,7 +875,7 @@ class RPDO implements Driver
 	 */
 	public function setEnableLogging( $enable )
 	{
-		$this->loggingEnabled = (boolean) $enable;
+		$this->loggingEnabled = (bool) $enable;
 		return $this;
 	}
 

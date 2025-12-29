@@ -59,7 +59,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	extensions: PHP 64-bit
- * @version 	v.20200121
+ * @version 	v.20250714
  * @package 	modules:Barcodes2D
  *
  */
@@ -619,7 +619,7 @@ final class Barcode2DPdf417 {
 			$cols = 30;
 		} //end if else
 		//--
-		$rows = ceil($nce / $cols);
+		$rows = ceil((string)($nce / $cols)); // unixman: fix ceil
 		$size = ($cols * $rows);
 		//-- adjust rows
 		if(($rows < 3) OR ($rows > 90)) {
@@ -628,7 +628,7 @@ final class Barcode2DPdf417 {
 			} elseif($rows > 90) {
 				$rows = 90;
 			} //end if else
-			$cols = ceil($size / $rows);
+			$cols = ceil((string)($size / $rows)); // unixman: fix ceil
 			$size = ($cols * $rows);
 		} //end if
 		if($size > 928) {
@@ -904,7 +904,7 @@ final class Barcode2DPdf417 {
 	 * Compact data by mode.
 	 * @param $mode (int) compaction mode number
 	 * @param $code (string) data to compact
-	 * @param $addmode (boolean) if true add the mode codeword at first position
+	 * @param $addmode (bool) if true add the mode codeword at first position
 	 * @return array of codewords
 	 * @private
 	 */

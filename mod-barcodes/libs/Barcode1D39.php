@@ -91,8 +91,8 @@ final class Barcode1D39 {
 	/**
 	 * CODE 39 - ANSI MH10.8M-1983 - USD-3 - 3 of 9.
 	 * @param $code (string) code to represent.
-	 * @param $checksum (boolean) if true add a checksum to the code.
-	 * @param $extended (boolean) if true uses the extended mode.
+	 * @param $checksum (bool) if true add a checksum to the code.
+	 * @param $extended (bool) if true uses the extended mode.
 	 * @return array barcode representation.
 	 */
 	public function getBarcodeArray() {

@@ -1,0 +1,62 @@
+<html>
+<!-- based on: github.com/CodeHole7/fabricjs-image-editor-origin, license: MIT -->
+<head>
+	<meta charset="utf-8">
+	<title>FabricJS Draw.App</title>
+	<link rel="icon" href="data:,">
+	<link rel="stylesheet" href="../draw-app/app.css">
+
+	<script src="../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../../../../../lib/js/framework/smart-framework.pak.js"></script>
+<!--
+	<script>
+	jQuery.fn.outerHTML = function() {
+		return jQuery('<div></div>').append(this.eq(0).clone()).html();
+	};
+	</script>
+-->
+	<script>
+	Number.prototype.countDecimals = function() {
+		if(Math.floor(this.valueOf()) === this.valueOf()) return 0;
+		return this.toString().split(".")[1].length || 0;
+	}
+	</script>
+
+	<script src="../fabric.js"></script>
+
+	<script src="../../colorpicker/spectrum/spectrum.js"></script>
+	<link  href="../../colorpicker/spectrum/spectrum.css" rel="stylesheet" type="text/css">
+
+	<script src="../../colorpicker/grapick/grapick.js"></script>
+	<link  href="../../colorpicker/grapick/grapick.css" rel="stylesheet">
+
+
+	<script src="../draw-app/js/undo-redo-stack.js"></script>
+
+	<script src="../draw-app/js/core.js"></script>
+	<script src="../draw-app/js/toolbar.js"></script>
+	<script src="../draw-app/js/canvas.js"></script>
+	<script src="../draw-app/js/shapes.js"></script>
+
+	<script src="../draw-app/js/freeDrawSettings.js"></script>
+	<script src="../draw-app/js/canvasSettings.js"></script>
+	<script src="../draw-app/js/selectionSettings.js"></script>
+
+	<script src="../draw-app/js/drawingLine.js"></script>
+	<script src="../draw-app/js/drawingPath.js"></script>
+	<script src="../draw-app/js/drawingText.js"></script>
+
+	<script src="../draw-app/js/tip.js"></script>
+	<script src="../draw-app/js/upload.js"></script>
+	<script src="../draw-app/js/copyPaste.js"></script>
+
+	<script src="../draw-app/js/utils.js"></script>
+	<script src="../draw-app/js/zoom.js"></script>
+	<script src="../draw-app/js/saveInBrowser.js"></script>
+
+</head>
+<body>
+	<div id="image-editor-container"></div>
+	<script src="../draw-app/app.js"></script>
+</body>
+</html>

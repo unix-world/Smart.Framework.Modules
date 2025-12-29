@@ -49,7 +49,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20250714
  * @package 	modules:Barcodes2D
  *
  */
@@ -344,7 +344,7 @@ final class Barcode2DSemacodeDataMatrix {
 								//--
 							} else {
 								//-- codeword ID
-								$cw_id = (floor($places[$i] / 10) - 1);
+								$cw_id = (int) (floor((string)($places[$i] / 10)) - 1); // unixman: fix floor
 								//-- codeword BIT mask
 								$cw_bit = pow(2, (8 - ($places[$i] % 10)));
 								$grid[$row][$col] = (($cw[$cw_id] & $cw_bit) == 0) ? 0 : 1;
@@ -581,20 +581,20 @@ final class Barcode2DSemacodeDataMatrix {
 		//--
 		while(true) {
 			//-- STEP K
-			if(($pos + $charscount) == $data_length) {
-				if($numch[self::SEMACODE_ENCODE_ASCII] <= ceil(min($numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256]))) {
+			if(($pos + $charscount) == $data_length) { // unixman: fix ceil
+				if($numch[self::SEMACODE_ENCODE_ASCII] <= ceil((string)(min($numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])))) {
 					return self::SEMACODE_ENCODE_ASCII;
 				} //end if
-				if($numch[self::SEMACODE_ENCODE_B256] < ceil(min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF]))) {
+				if($numch[self::SEMACODE_ENCODE_B256] < ceil((string)(min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF])))) {
 					return self::SEMACODE_ENCODE_B256;
 				} //end if
-				if($numch[self::SEMACODE_ENCODE_EDF] < ceil(min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_B256]))) {
+				if($numch[self::SEMACODE_ENCODE_EDF] < ceil((string)(min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_B256])))) {
 					return self::SEMACODE_ENCODE_EDF;
 				} //end if
-				if($numch[self::SEMACODE_ENCODE_TXT] < ceil(min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256]))) {
+				if($numch[self::SEMACODE_ENCODE_TXT] < ceil((string)(min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])))) {
 					return self::SEMACODE_ENCODE_TXT;
 				} //end if
-				if($numch[self::SEMACODE_ENCODE_X12] < ceil(min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256]))) {
+				if($numch[self::SEMACODE_ENCODE_X12] < ceil((string)(min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])))) {
 					return self::SEMACODE_ENCODE_X12;
 				} //end if
 				return self::SEMACODE_ENCODE_C40;
@@ -607,10 +607,10 @@ final class Barcode2DSemacodeDataMatrix {
 			if($this->isCharMode($chr, self::SEMACODE_ENCODE_NUMASCII)) {
 				$numch[self::SEMACODE_ENCODE_ASCII] += (1 / 2);
 			} elseif($this->isCharMode($chr, self::SEMACODE_ENCODE_EXTASCII)) {
-				$numch[self::SEMACODE_ENCODE_ASCII] = ceil($numch[self::SEMACODE_ENCODE_ASCII]);
+				$numch[self::SEMACODE_ENCODE_ASCII] = ceil((string)$numch[self::SEMACODE_ENCODE_ASCII]); // unixman: fix ceil
 				$numch[self::SEMACODE_ENCODE_ASCII] += 2;
 			} else {
-				$numch[self::SEMACODE_ENCODE_ASCII] = ceil($numch[self::SEMACODE_ENCODE_ASCII]);
+				$numch[self::SEMACODE_ENCODE_ASCII] = ceil((string)$numch[self::SEMACODE_ENCODE_ASCII]); // unixman: fix ceil
 				$numch[self::SEMACODE_ENCODE_ASCII] += 1;
 			} //end if else
 			//-- STEP M
@@ -1004,7 +1004,7 @@ final class Barcode2DSemacodeDataMatrix {
 						$cw[] = $this->get255StateCodeword($field_length, ($cw_num + 1));
 						++$cw_num;
 					} else {
-						$cw[] = $this->get255StateCodeword((floor($field_length / 250) + 249), ($cw_num + 1));
+						$cw[] = $this->get255StateCodeword((floor((string)($field_length / 250)) + 249), ($cw_num + 1)); // unixman: fix floor
 						$cw[] = $this->get255StateCodeword(($field_length % 250), ($cw_num + 2));
 						$cw_num += 2;
 					} //end if else

@@ -957,7 +957,7 @@ final class Barcode2DQRCode {
 	 * @param $width (int)
 	 * @param $s (int)
 	 * @param $d (int)
-	 * @param $maskGenOnly (boolean)
+	 * @param $maskGenOnly (bool)
 	 * @return int b
 	 */
 	 private function makeMaskNo($maskNo, $width, $s, &$d, $maskGenOnly=false) {

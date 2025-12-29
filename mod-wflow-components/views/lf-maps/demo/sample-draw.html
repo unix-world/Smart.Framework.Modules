@@ -60,6 +60,9 @@
 	<link rel="stylesheet" href="../leaflet.draw.css">
 	<script src="../leaflet.draw.js"></script>
 
+	<link rel="stylesheet" href="../leaflet.fullscreen.css">
+	<script src="../leaflet.fullscreen.js"></script>
+
 </head>
 
 <body>
@@ -85,6 +88,8 @@ var myMap = L.map('myMap')
 	.setView(mapCenter, 18);
 myMap.options.maxZoom = 18;
 myMap.options.minZoom = 3;
+
+myMap.addControl(new L.Control.Fullscreen());
 
 var isUxmClickActive = true;
 myMap.on('draw:deletestart', function (e) {
@@ -127,12 +132,12 @@ var featureGroup = L.geoJson(the_geo_json, {
 			area = calculateArea(layer, 'polygon'); // this is fake as can be polyline, circle ... TODO: find a way to detect the type !!!
 			fmtArea = L.GeometryUtil.readableArea(area, true); // area, isMetric :: format area in readable format
 			feature.properties.infoArea = area;
-			layer.bindTooltip('Area: ' + fmtArea);
+			layer.bindTooltip('Area: ' + fmtArea, { direction: 'bottom' });
 		} else if(feature.geometry && feature.geometry.type && ((feature.geometry.type.toLowerCase() == 'linestring') || (feature.geometry.type.toLowerCase() == 'polyline'))) {
 			len = calculateLength(layer, feature.geometry.type.toLowerCase());
 			var fmtLen = L.GeometryUtil.readableDistance(len, true); // length, isMetric :: format distance adding units (string)
 			feature.properties.infoLen = len;
-			layer.bindTooltip('Length: ' + fmtLen);
+			layer.bindTooltip('Length: ' + fmtLen, { direction: 'bottom' });
 		} //end if
 		layer.bindPopup('');
 		if(feature.properties && feature.properties.name) {
@@ -354,12 +359,12 @@ myMap.on('draw:created', function(e) {
 		var area = calculateArea(layer, type);
 		var fmtArea = L.GeometryUtil.readableArea(area, true); // area, isMetric :: format area in readable format
 		feature.properties.infoArea = area;
-		featureGroup.addLayer(layer.bindTooltip('Area: ' + fmtArea));
+		featureGroup.addLayer(layer.bindTooltip('Area: ' + fmtArea, { direction: 'bottom' }));
 	} else if((type === 'linestring') || (type === 'polyline')) {
 		var len = calculateLength(layer, type);
 		var fmtLen = L.GeometryUtil.readableDistance(len, true); // length, isMetric :: format distance adding units (string)
 		feature.properties.infoLen = len;
-		featureGroup.addLayer(layer.bindTooltip('Length: ' + fmtLen));
+		featureGroup.addLayer(layer.bindTooltip('Length: ' + fmtLen, { direction: 'bottom' }));
 	} else {
 		featureGroup.addLayer(layer);
 	}
@@ -378,13 +383,13 @@ myMap.on('draw:edited', function(e) {
 			layer.feature.properties.infoArea = area;
 			var fmtArea = L.GeometryUtil.readableArea(area, true); // area, isMetric :: format area in readable format
 			layer.setTooltipContent('Area (resized): ' + fmtArea);
-			//layer.unbindTooltip().bindTooltip('Area (resized): ' + fmtArea);
+			//layer.unbindTooltip().bindTooltip('Area (resized): ' + fmtArea, { direction: 'bottom' });
 		} else if((type === 'linestring') || (type === 'polyline')) {
 			var len = calculateLength(layer, type);
 			layer.feature.properties.infoLen = len;
 			var fmtLen = L.GeometryUtil.readableDistance(len, true); // length, isMetric :: format distance adding units (string)
 			layer.setTooltipContent('Length (resized): ' + fmtLen);
-			//layer.unbindTooltip().bindTooltip('Length (resized): ' + fmtLen);
+			//layer.unbindTooltip().bindTooltip('Length (resized): ' + fmtLen, { direction: 'bottom' });
 		}
 	});
 });

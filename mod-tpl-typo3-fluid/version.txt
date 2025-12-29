@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: TplTypo3Fluid r.20241216 #
+# Smart.Framework.Modules: TplTypo3Fluid r.20251204 (contains fixes by unixman for PHP 8.5) #
 ## Typo3 Fluid Templating Engine v.2.7.1 (github#master@20211115) ##
 
 // r.8.7 / smart.framework.v.8.7

@@ -151,7 +151,7 @@ class TemplateCompiler
             return false;
         }
         if (!empty($identifier)) {
-            return (boolean) $this->renderingContext->getCache()->get($identifier);
+            return (bool) $this->renderingContext->getCache()->get($identifier);
         }
         return false;
     }
