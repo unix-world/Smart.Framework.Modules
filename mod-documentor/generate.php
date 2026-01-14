@@ -19,7 +19,7 @@ define('SMART_APP_MODULE_AUTH', true); // if set to TRUE requires auth always
 
 /**
  * Task Area Controller
- * @version 20250107
+ * @version 20260114
  * @ignore
  *
  * @requires define('SMART_FRAMEWORK_DOCUMENTOR_GENERATE_ALLOW', true);

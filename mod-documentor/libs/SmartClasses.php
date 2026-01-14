@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20250107
+ * @version 	v.20260114
  * @package 	Documentor
  *
  */
@@ -49,7 +49,7 @@ final class SmartClasses {
 	// ::
 
 
-	const DOCGENERATOR_VERSION = '20250107';
+	const DOCGENERATOR_VERSION = '20260113';
 
 
 	public static function getJavascriptSfFile() {
@@ -101,13 +101,18 @@ final class SmartClasses {
 			'\\SmartAbstractPersistentCache', // dev
 			'\\SmartPersistentCache',
 			'\\SmartHashCrypto',
-			'\\SmartCsrf',
+		//	'\\SmartHashPoly1305',
 			'\\SmartCipherCrypto',
-		//	'\\SmartCipherUtils',
 		//	'\\SmartCryptoCiphersHashCryptOFB',
 		//	'\\SmartCryptoCiphersBlowfishCBC',
+		//	'\\SmartCryptoCiphersTwofishCBC',
+		//	'\\SmartCryptoCiphersThreefishCBC',
 		//	'\\SmartCryptoCiphersOpenSSL',
 		//	'\\SmartDhKx',
+			'\\SmartCsrf',
+			'\\SmartCryptoEddsaSodium',
+			'\\SmartCryptoEcdsaOpenSSL',
+		//	'\\SmartCryptoEcdsaAsn1Sig',
 			'\\SmartMarkersTemplating',
 			'\\SmartValidator',
 			'\\SmartParser',
