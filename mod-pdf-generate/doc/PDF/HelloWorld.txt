@@ -1,0 +1,7 @@
+English: Hello World
+Romanian: Salut Lume ! șȘ țȚ ăĂ îÎ âÂ
+Portuguese: Olá mundo
+Polish: Witaj świecie
+Greek: Γειά σου κόσμος
+Bulgarian: Здравствулте мир
+Vietnamese: Xin chào thế giới

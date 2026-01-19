@@ -19,8 +19,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //		* SmartUtils::
 //		* SmartFileSysUtils::
 //		* SmartHtmlParser->
-// DEPENDS-EXT: HTMLDOC Executable 1.8.x (external) ; Rsvg-Convert Executable 2.x
-// 		tested with htmldoc-1.8.24 / htmldoc-1.8.25 / htmldoc-1.8.26 / htmldoc-1.8.27 ; rsvg-convert-2.40.20
+// DEPENDS-EXT: HTMLDOC Executable 1.9.x (external) ; Rsvg-Convert Executable 2.x
+// 		tested with htmldoc-1.8.24 ... htmldoc-1.9.22 ; rsvg-convert-2.40.20 .. rsvg-convert-2.61.3
 //======================================================
 
 // [REGEX-SAFE-OK]
@@ -28,8 +28,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 /* Config settings required for this library:
 define('SMART_HTMLTOPDF_HTMLDOC_BIN_PATH', 		'/usr/local/bin/htmldoc'); 			// path to HtmlDoc Utility (change to match your system) ; can be `/usr/bin/htmldoc` or `/usr/local/bin/htmldoc` or `c:/open_runtime/htmldoc/htmldoc.exe` or any custom path
 define('SMART_HTMLTOPDF_RSVG_BIN_PATH', 		'/usr/local/bin/rsvg-convert');		// path to RsvgConvert Utility (used to convert SVG to PNG)
-define('SMART_HTMLTOPDF_DOCUMENT_FORMAT', 		'pdf13'); 							// PDF format: `pdf14` | `pdf13` | `pdf12`
-define('SMART_HTMLTOPDF_DOCUMENT_MODE', 		'color'); 							// PDF mode: `color` | `gray`
+define('SMART_HTMLTOPDF_DOCUMENT_FORMAT', 		'pdf14'); 							// PDF format: `pdf14` | `pdf13`
+define('SMART_HTMLTOPDF_DOCUMENT_MODE', 		'color'); 							// PDF mode:   `color` | `gray`
 */
 
 //=====================================================================================
@@ -48,7 +48,7 @@ define('SMART_HTMLTOPDF_DOCUMENT_MODE', 		'color'); 							// PDF mode: `color` 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	executables: HTMLDoc ; classes: Smart, SmartUtils, SmartFileSysUtils, SmartHtmlParser
- * @version 	v.20231005
+ * @version 	v.20260120
  * @package 	modules:PDF-Generate
  *
  */
@@ -190,14 +190,15 @@ final class HtmlToPdfExport {
 						if(((string)$tmp_img_ext == '.png') OR ((string)$tmp_img_ext == '.gif') OR ((string)$tmp_img_ext == '.jpg')) {
 							//-- !! customize !!
 							$tmp_fname = (string) 'pdf_img_'.\SmartHashCrypto::sha256('@@PDF#File::Cache::IMG@@'.'#'.$i.'@'.$tmp_img_src.'//'.$tmp_uuid);
+							\SmartFileSystem::write((string)$the_dir.$tmp_fname.$tmp_img_ext, (string)$tmp_fcontent);
 							$y_html_content = (string) \str_replace('src="'.$tmp_img_src.'"', 'src="'.$tmp_fname.$tmp_img_ext.'"', (string)$y_html_content);
-							\SmartFileSystem::write($the_dir.$tmp_fname.$tmp_img_ext, $tmp_fcontent);
 							//--
 						} elseif((string)$tmp_img_ext == '.svg') {
 							//-- SVG not supported !
 							if((string)$rsvg != '') {
+								//--
 								$tmp_fname = (string) 'pdf_img_'.\SmartHashCrypto::sha256('@@PDF#File::Cache::IMG@@'.'#'.$i.'@'.$tmp_img_src.'//'.$tmp_uuid);
-								\SmartFileSystem::write($the_dir.$tmp_fname.$tmp_img_ext, $tmp_fcontent);
+								\SmartFileSystem::write((string)$the_dir.$tmp_fname.$tmp_img_ext, (string)$tmp_fcontent);
 								$svg2png_options = (string) self::svg2png_options($the_dir.$tmp_fname.$tmp_img_ext);
 								if((string)$svg2png_options != '') {
 									@\exec($rsvg.' '.$svg2png_options);
@@ -207,17 +208,24 @@ final class HtmlToPdfExport {
 								} else { // get rid of SVG images
 									$y_html_content = (string) \str_replace('src="'.$tmp_img_src.'"', 'src=""', (string)$y_html_content);
 								} //end if else
+								//--
 							} else { // ignore SVG images
-									$y_html_content = (string) \str_replace('src="'.$tmp_img_src.'"', 'src="'.$tmp_fname.$tmp_img_ext.'"', (string)$y_html_content);
+								//--
+								$tmp_img_ext = '.png';
+								$tmp_fname = 'img-fail.png';
+								$fail_img_path = 'modules/mod-pdf-generate/views/img/pdfexport/'.$tmp_fname;
+								\SmartFileSystem::write((string)$the_dir.$tmp_fname.$tmp_img_ext, (string)\SmartFileSysUtils::readStaticFile((string)$fail_img_path));
+								$y_html_content = (string) \str_replace('src="'.$tmp_img_src.'"', 'src="'.$tmp_fname.$tmp_img_ext.'"', (string)$y_html_content);
+								//--
 							} //end if else
 							//--
 						} else {
 							//--
 							$tmp_img_ext = '.png';
 							$tmp_fname = 'img-unknown.png';
-							$tmp_fname = (string) 'pdf_img-unknown_'.\SmartHashCrypto::sha256('@@PDF#File::Cache::IMG@@'.'#'.$i.'@'.$tmp_img_src.'//'.$tmp_uuid);
+							$fail_img_path = 'modules/mod-pdf-generate/views/img/pdfexport/'.$tmp_fname;
+							\SmartFileSystem::write((string)$the_dir.$tmp_fname.$tmp_img_ext, (string)\SmartFileSysUtils::readStaticFile((string)$fail_img_path));
 							$y_html_content = (string) \str_replace('src="'.$tmp_img_src.'"', 'src="'.$tmp_fname.$tmp_img_ext.'"', (string)$y_html_content);
-							\SmartFileSystem::write($the_dir.$tmp_fname.$tmp_img_ext, \SmartFileSystem::read('modules/mod-pdf-generate/views/img/pdfexportimg-unknown.png'));
 							//--
 						} //end if else
 						//--
@@ -225,9 +233,9 @@ final class HtmlToPdfExport {
 						//--
 						$tmp_img_ext = '.png';
 						$tmp_fname = 'img-fail.png';
-						$tmp_fname = (string) 'pdf_img-fail_'.\SmartHashCrypto::sha256('@@PDF#File::Cache::IMG@@'.'#'.$i.'@'.$tmp_img_src.'//'.$tmp_uuid);
+						$fail_img_path = 'modules/mod-pdf-generate/views/img/pdfexport/'.$tmp_fname;
+						\SmartFileSystem::write((string)$the_dir.$tmp_fname.$tmp_img_ext, (string)\SmartFileSysUtils::readStaticFile((string)$fail_img_path));
 						$y_html_content = (string) \str_replace('src="'.$tmp_img_src.'"', 'src="'.$tmp_fname.$tmp_img_ext.'"', (string)$y_html_content);
-						\SmartFileSystem::write($the_dir.$tmp_fname.$tmp_img_ext, \SmartFileSystem::read('modules/mod-pdf-generate/views/img/pdfexportimg-fail.png'));
 						//--
 					} //end if
 					//--
@@ -435,18 +443,15 @@ final class HtmlToPdfExport {
 		//--
 		if(\defined('\\SMART_HTMLTOPDF_DOCUMENT_FORMAT')) {
 			switch((string)\strtolower((string)\SMART_HTMLTOPDF_DOCUMENT_FORMAT)) {
-				case 'pdf14':
-					$pdf_ver = 'pdf14';
-					break;
-				case 'pdf12':
-					$pdf_ver = 'pdf12';
-					break;
 				case 'pdf13':
-				default:
 					$pdf_ver = 'pdf13';
+					break;
+				case 'pdf14':
+				default:
+					$pdf_ver = 'pdf14';
 			} //end switch
 		} else {
-			$pdf_ver = 'pdf13';
+			$pdf_ver = 'pdf14';
 		} //end if else
 		//--
 		$y_html_file = (string) \trim((string)\str_replace('"', '', (string)$y_html_file)); // replace out "

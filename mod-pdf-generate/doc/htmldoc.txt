@@ -122,3 +122,4 @@ Options:
         l = logo image
         t = title text
         T = current time
+

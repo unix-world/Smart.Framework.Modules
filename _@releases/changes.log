@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+January 20, 2026
+	* mod PDF: PDF Generator htmldoc+rsvg fixes
+	* mod PDF: PDF Creator, a complete rework based on tFPDF, for PHP 8.1+ with: optimizations, security fixes, unicode fonts, json caching for font metrics and path validation
+
 January 16, 2026
 	* release, fixes
 

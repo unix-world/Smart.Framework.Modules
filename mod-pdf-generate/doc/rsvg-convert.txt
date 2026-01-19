@@ -23,3 +23,4 @@ Application Options:
   --keep-image-data                                           Keep image data
   --no-keep-image-data                                        Don't keep image data
   -v, --version                                               show version information
+
