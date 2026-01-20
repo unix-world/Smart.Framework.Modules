@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\TplTwig\Templating
 // [Smart.Framework.Modules - Twig / Templating]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype (optional) ; classes: \SmartModExtLib\Tpl\AbstractTemplating, \SmartModExtLib\TplTwig\SmartTwigEnvironment, \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20240924
+ * @version 	v.20260120
  * @package 	modules:TemplatingEngine
  *
  */
@@ -69,7 +69,10 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 
 	public function __construct() {
 		//--
-		$this->dir = './';
+		$this->dir = (string) \trim((string)\SmartFileSysUtils::getStaticFilesRootPath()); // sf.vendoring
+		if((string)$this->dir == '') {
+			$this->dir = './'; // Smart.Framework
+		} //end if
 		//--
 		$this->twig = new \SmartModExtLib\TplTwig\SmartTwigEnvironment(
 			new \Twig\Loader\FilesystemLoader(array($this->dir)),
@@ -84,7 +87,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			]
 		);
 		//--
-		$the_twig_cache_dir = (string) $this->twig->smartSetupCacheDir();
+		$the_twig_cache_dir = (string) \SmartFileSysUtils::getStaticFilesRootPath().$this->twig->smartSetupCacheDir();
 		//--
 		if(\SmartEnvironment::ifDebug()) {
 			//--
@@ -138,7 +141,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			AND
 			(\SmartFileSysUtils::checkIfSafePath((string)($dbg_tpl['dbg-file-name'] ?? null)))
 			AND
-			(\SmartFileSystem::is_type_file((string)($dbg_tpl['dbg-file-name'] ?? null)))
+			(\is_file((string)($dbg_tpl['dbg-file-name'] ?? null))) // be independent of smart file system class, this module can be exported for vendoring
 			AND
 			((string)($dbg_tpl['dbg-file-contents'] ?? null) != '')
 		) {
@@ -312,7 +315,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			return;
 		} //end if
 		//--
-		if(!\is_file((string)$file)) {
+		if(!\is_file((string)$this->dir.$file)) {
 			throw new \Exception('Twig Templating / The Template file to render does not exists: '.$file);
 			return;
 		} //end if
@@ -369,7 +372,7 @@ function autoload__TwigTemplating_SFM($classname) {
 			$cls = (string) \trim((string)$cls);
 			//--
 			if($cls) {
-				$path = 'modules/mod-tpl-twig/libs/polyfill/'.$cls;
+				$path = (string) \SmartFileSysUtils::getStaticFilesRootPath().'modules/mod-tpl-twig/libs/polyfill/'.$cls;
 			} //end if
 			//--
 			$cls = '';
@@ -381,7 +384,7 @@ function autoload__TwigTemplating_SFM($classname) {
 		//--
 		if((string)\substr((string)$classname, 0, 5) === 'Twig\\') { // if class name is starting with Twig\
 			//--
-			$path = 'modules/mod-tpl-twig/libs/twig/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
+			$path = (string) \SmartFileSysUtils::getStaticFilesRootPath().'modules/mod-tpl-twig/libs/twig/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
 			//--
 		} //end if
 		//--
@@ -408,11 +411,11 @@ function autoload__TwigTemplating_SFM($classname) {
 
 //--
 if(!\function_exists('\\ctype_alnum')) {
-	require_once('modules/mod-tpl-twig/libs/polyfill/Ctype-bootstrap.php');
+	require_once(\SmartFileSysUtils::getStaticFilesRootPath().'modules/mod-tpl-twig/libs/polyfill/Ctype-bootstrap.php');
 } //end if
 //--
 //if(!\function_exists('\\trigger_deprecation')) {
-	require_once('modules/mod-tpl-twig/libs/deprecation-contracts/function.php');
+	require_once(\SmartFileSysUtils::getStaticFilesRootPath().'modules/mod-tpl-twig/libs/deprecation-contracts/function.php');
 //} //end if
 //--
 
