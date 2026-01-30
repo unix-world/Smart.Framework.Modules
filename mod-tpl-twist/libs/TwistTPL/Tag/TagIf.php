@@ -113,7 +113,7 @@ final class TagIf extends \TwistTPL\Decision {
 							'right' 	=> $right
 						]);
 					} else {
-						throw new \Exception("Syntax Error in tag 'if' - Valid syntax: if [condition]");
+						throw new \Exception('Syntax Error in tag `if` - Valid syntax: if [condition]');
 					} //end if else
 				} //end foreach
 				if(count($logicalOperators)) {

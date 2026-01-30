@@ -1,36 +1,36 @@
 <?php
-namespace TYPO3Fluid\Fluid\Core\Parser\SyntaxTree;
+
+declare(strict_types=1);
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
+namespace TYPO3Fluid\Fluid\Core\Parser\SyntaxTree;
+
+use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
 use TYPO3Fluid\Fluid\Core\Parser\BooleanParser;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * A node which is used inside boolean arguments
+ *
+ * @internal
  */
-class BooleanNode extends AbstractNode
+final class BooleanNode extends AbstractNode
 {
-
     /**
      * Stack of expression nodes to be evaluated
      *
      * @var NodeInterface[]
      */
-    protected $childNodes = [];
-
-    /**
-     * @var NodeInterface
-     */
-    protected $node;
+    protected array $childNodes = [];
 
     /**
      * @var array
      */
-    protected $stack = [];
+    protected array $stack = [];
 
     /**
      * @param mixed $input NodeInterface, array (of nodes or expression parts) or a simple type that can be evaluated to boolean
@@ -50,29 +50,17 @@ class BooleanNode extends AbstractNode
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getStack()
+    public function getStack(): array
     {
         return $this->stack;
     }
 
-    /**
-     * @param RenderingContextInterface $renderingContext
-     * @return boolean the boolean value
-     */
-    public function evaluate(RenderingContextInterface $renderingContext)
+    public function evaluate(RenderingContextInterface $renderingContext): bool
     {
         return self::evaluateStack($renderingContext, $this->stack);
     }
 
-    /**
-     * @param NodeInterface $node
-     * @param RenderingContextInterface $renderingContext
-     * @return boolean
-     */
-    public static function createFromNodeAndEvaluate(NodeInterface $node, RenderingContextInterface $renderingContext)
+    public static function createFromNodeAndEvaluate(NodeInterface $node, RenderingContextInterface $renderingContext): bool
     {
         $booleanNode = new BooleanNode($node);
         return $booleanNode->evaluate($renderingContext);
@@ -82,12 +70,8 @@ class BooleanNode extends AbstractNode
      * Takes a stack of nodes evaluates it with the end result
      * being a single boolean value. Creates new BooleanNodes
      * recursively to process braced expressions as single units.
-     *
-     * @param RenderingContextInterface $renderingContext
-     * @param array $expressionParts
-     * @return boolean the boolean value
      */
-    public static function evaluateStack(RenderingContextInterface $renderingContext, array $expressionParts)
+    public static function evaluateStack(RenderingContextInterface $renderingContext, array $expressionParts): bool
     {
         $expression = static::reconcatenateExpression($expressionParts);
         $context = static::gatherContext($renderingContext, $expressionParts);
@@ -98,11 +82,8 @@ class BooleanNode extends AbstractNode
 
     /**
      * Walk all expressionParts and concatenate an expression string
-     *
-     * @param array $expressionParts
-     * @return string
      */
-    public static function reconcatenateExpression($expressionParts)
+    public static function reconcatenateExpression(array $expressionParts): string
     {
         $merged = [];
         foreach ($expressionParts as $key => $expressionPart) {
@@ -119,12 +100,8 @@ class BooleanNode extends AbstractNode
 
     /**
      * Walk all expressionParts and gather a context array of all non textNode parts
-     *
-     * @param RenderingContextInterface $renderingContext
-     * @param array $expressionParts
-     * @return array
      */
-    public static function gatherContext($renderingContext, $expressionParts)
+    public static function gatherContext(RenderingContextInterface $renderingContext, array $expressionParts): array
     {
         $context = [];
         foreach ($expressionParts as $key => $expressionPart) {
@@ -141,32 +118,58 @@ class BooleanNode extends AbstractNode
      * Convert argument strings to their equivalents. Needed to handle strings with a boolean meaning.
      *
      * Must be public and static as it is used from inside cached templates.
-     *
-     * @param boolean $value Value to be converted to boolean
-     * @param RenderingContextInterface $renderingContext
-     * @return boolean
      */
-    public static function convertToBoolean($value, $renderingContext)
+    public static function convertToBoolean(mixed $value, RenderingContextInterface $renderingContext): bool
     {
         if (is_bool($value)) {
             return $value;
         }
         if (is_numeric($value)) {
-            return (bool) ((float) $value);
+            return (bool)((float)$value);
         }
         if (is_string($value)) {
             if (strlen($value) === 0) {
                 return false;
             }
             $value = $renderingContext->getTemplateParser()->unquoteString($value);
-            return (strtolower($value) !== 'false' && !empty($value));
+            return strtolower($value) !== 'false' && !empty($value);
         }
-        if (is_array($value) || (is_object($value) && $value instanceof \Countable)) {
+        if (is_array($value) || $value instanceof \Countable) {
             return count($value) > 0;
         }
         if (is_object($value)) {
             return true;
         }
         return false;
+    }
+
+    public function convert(TemplateCompiler $templateCompiler): array
+    {
+        $stack = (new ArrayNode($this->getStack()))->convert($templateCompiler);
+        $initializationPhpCode = $stack['initialization'] . chr(10);
+
+        $parser = new BooleanParser();
+        $compiledExpression = $parser->compile(BooleanNode::reconcatenateExpression($this->getStack()));
+        $functionName = $templateCompiler->variableName('expression');
+        $initializationPhpCode .= $functionName . ' = function($context) {return ' . $compiledExpression . ';};' . chr(10);
+
+        // @todo: There are possible paths to short-circuit this code in combination
+        //        with EscapingNode, to hint EscapingNode no further sanitation
+        //        is needed. See PR #440 for options on this. The PR however introduces
+        //        multiple different values for 'execution', which needs to be decided
+        //        if we really want this.
+        return [
+            'initialization' => $initializationPhpCode,
+            'execution' => sprintf(
+                '%s::convertToBoolean(' . chr(10)
+                . '    %s(%s::gatherContext($renderingContext, %s)),' . chr(10)
+                . '    $renderingContext' . chr(10)
+                . ')',
+                BooleanNode::class,
+                $functionName,
+                BooleanNode::class,
+                $stack['execution'],
+            ),
+        ];
     }
 }

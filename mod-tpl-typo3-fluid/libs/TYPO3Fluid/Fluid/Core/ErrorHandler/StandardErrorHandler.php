@@ -1,10 +1,13 @@
 <?php
-namespace TYPO3Fluid\Fluid\Core\ErrorHandler;
+
+declare(strict_types=1);
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
+
+namespace TYPO3Fluid\Fluid\Core\ErrorHandler;
 
 /**
  * Class StandardErrorHandler
@@ -16,52 +19,28 @@ namespace TYPO3Fluid\Fluid\Core\ErrorHandler;
  */
 class StandardErrorHandler implements ErrorHandlerInterface
 {
-    /**
-     * @param \TYPO3Fluid\Fluid\Core\Parser\Exception $error
-     * @throws \TYPO3Fluid\Fluid\Core\Parser\Exception
-     * @return void
-     */
-    public function handleParserError(\TYPO3Fluid\Fluid\Core\Parser\Exception $error)
+    public function handleParserError(\TYPO3Fluid\Fluid\Core\Parser\Exception $error): string
     {
         throw $error;
     }
 
-    /**
-     * @param \TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\Expression\ExpressionException $error
-     * @throws \TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\Expression\ExpressionException
-     * @return void
-     */
-    public function handleExpressionError(\TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\Expression\ExpressionException $error)
+    public function handleExpressionError(\TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\Expression\ExpressionException $error): string
     {
         throw $error;
     }
 
-    /**
-     * @param \TYPO3Fluid\Fluid\Core\ViewHelper\Exception $error
-     * @throws \TYPO3Fluid\Fluid\Core\ViewHelper\Exception
-     * @return void
-     */
-    public function handleViewHelperError(\TYPO3Fluid\Fluid\Core\ViewHelper\Exception $error)
+    public function handleViewHelperError(\TYPO3Fluid\Fluid\Core\ViewHelper\Exception $error): string
     {
         throw $error;
     }
 
-    /**
-     * @param \TYPO3Fluid\Fluid\Core\Compiler\StopCompilingException $error
-     * @return void
-     */
-    public function handleCompilerError(\TYPO3Fluid\Fluid\Core\Compiler\StopCompilingException $error)
+    public function handleCompilerError(\TYPO3Fluid\Fluid\Core\Compiler\StopCompilingException $error): string
     {
+        return '';
     }
 
-    /**
-     * @param \TYPO3Fluid\Fluid\View\Exception $error
-     * @throws \TYPO3Fluid\Fluid\View\Exception
-     * @return void
-     */
-    public function handleViewError(\TYPO3Fluid\Fluid\View\Exception $error)
+    public function handleViewError(\TYPO3Fluid\Fluid\View\Exception $error): string
     {
         throw $error;
     }
-
 }

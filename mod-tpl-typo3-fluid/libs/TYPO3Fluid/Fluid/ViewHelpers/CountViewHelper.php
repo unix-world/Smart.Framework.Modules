@@ -1,15 +1,14 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+namespace TYPO3Fluid\Fluid\ViewHelpers;
+
 use TYPO3Fluid\Fluid\Core\ViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic;
 
 /**
  * This ViewHelper counts elements of the specified array or countable object.
@@ -43,46 +42,43 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderS
  */
 class CountViewHelper extends AbstractViewHelper
 {
-    use CompileWithContentArgumentAndRenderStatic;
-
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeChildren = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
-    /**
-     * @return void
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
-        parent::initializeArguments();
         $this->registerArgument('subject', 'array', 'Countable subject, array or \Countable');
     }
 
-    /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return integer
-     */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public function render(): int
     {
-        $countable = $renderChildrenClosure();
+        $countable = $this->renderChildren();
         if ($countable === null) {
             return 0;
-        } elseif (!$countable instanceof \Countable && !is_array($countable)) {
+        }
+        if (!$countable instanceof \Countable && !is_array($countable)) {
             throw new ViewHelper\Exception(
                 sprintf(
                     'Subject given to f:count() is not countable (type: %s)',
-                    is_object($countable) ? get_class($countable) : gettype($countable)
-                )
+                    is_object($countable) ? get_class($countable) : gettype($countable),
+                ),
             );
         }
         return count($countable);
+    }
+
+    /**
+     * Explicitly set argument name to be used as content.
+     */
+    public function getContentArgumentName(): string
+    {
+        return 'subject';
     }
 }

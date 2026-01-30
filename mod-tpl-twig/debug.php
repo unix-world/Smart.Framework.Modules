@@ -1,8 +1,8 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Controller: Twig Templating Debug r.20200121
+// Controller: Twig Templating Debug r.20260128
 // Route: ?/page/tpl-twig.debug (?page=tpl-twig.debug)
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -38,7 +38,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$tpl = $this->RequestVarGet('tpl', '', 'string');
+		$tpl = (string) $this->RequestVarGet('tpl', '', 'string');
 		//--
 
 		//--
@@ -48,7 +48,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			'main',
 			(string) SmartDebugProfiler::display_debug_page(
 				'{{ Twig-TPL }} Template Debug Profiling',
-				(string) \SmartModExtLib\TplTwig\SmartTwigTemplating::debug($tpl)
+				(string) \SmartModExtLib\TplTwig\SmartTwigTemplating::debug((string)$tpl)
 			)
 		);
 		//--

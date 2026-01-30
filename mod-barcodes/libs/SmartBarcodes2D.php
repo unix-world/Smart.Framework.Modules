@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\Barcodes\SmartBarcodes2D
 // [Smart.Framework.Modules - Barcodes 2D]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -51,7 +51,7 @@ if(!defined('SMART_FRAMEWORK_BARCODE_2D_OPTS')) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	Smart.Framework
- * @version 	v.20250107
+ * @version 	v.20260130
  * @package 	modules:Barcodes
  *
  */
@@ -71,10 +71,10 @@ final class SmartBarcodes2D {
 	 * @param MIXED		$y_extraoptions		Extra Options: for QRCode = Quality [L, M, Q, H] L as default ; for PDF417 a Ratio Integer between 1 and 17
 	 * @param INTEGER	$y_cachetime		If > 0 will cache it for this number of seconds ; if zero will never expire ; if < 0 will use no cache
 	 *
-	 * @return MIXED	By Type Selection: 	HTML Code / PNG Image / SVG Code
+	 * @return STRING	By Type Selection: 	HTML Code / PNG Image / SVG Code
 	 *
 	 */
-	public static function getBarcode($y_code, $y_type, $y_format, $y_size, $y_color='#000000', $y_extraoptions='', $y_cachetime=-1) {
+	public static function getBarcode(string $y_code, string $y_type, string $y_format, int $y_size, string $y_color='#000000', int|string $y_extraoptions='', int $y_cachetime=-1) : string {
 		//--
 		if((string)\trim((string)$y_code) == '') {
 			\Smart::log_warning(__METHOD__.' # Empty Code');
@@ -270,9 +270,10 @@ final class SmartBarcodes2D {
 	 * @internal
 	 *
 	 */
-	public static function getBarcodeHTML($barcode_arr, $z=3, $color='#000000') {
+	public static function getBarcodeHTML(?array $barcode_arr, int $z=3, string $color='#000000') : string {
 		//--
-		if(!\is_array($barcode_arr)) {
+		if((int)\Smart::array_size($barcode_arr) <= 0) {
+			\Smart::log_warning(__METHOD__.' # Barcode is Null or Empty Array');
 			return '<span style="background:#FAFAFA; color:#FF5500;"><font size="1">[ INVALID BARCODE ]</font></span>';
 		} //end if
 		//--
@@ -316,9 +317,10 @@ final class SmartBarcodes2D {
 	 * @internal
 	 *
 	 */
-	public static function getBarcodeEmbeddedHTMLSVG($barcode_arr, $z=3, $color='#000000') {
+	public static function getBarcodeEmbeddedHTMLSVG(?array $barcode_arr, int $z=3, string $color='#000000') : string {
 		//--
-		if(!\is_array($barcode_arr)) {
+		if((int)\Smart::array_size($barcode_arr) <= 0) {
+			\Smart::log_warning(__METHOD__.' # Barcode is Null or Empty Array');
 			return '<span style="background:#FAFAFA; color:#FF5500;"><font size="1">[ INVALID BARCODE ]</font></span>';
 		} //end if
 		//--
@@ -338,9 +340,10 @@ final class SmartBarcodes2D {
 	 * @internal
 	 *
 	 */
-	public static function getBarcodeSVG($barcode_arr, $z=3, $color='#000000') {
+	public static function getBarcodeSVG(?array $barcode_arr, int $z=3, string $color='#000000') : string {
 		//--
-		if(!\is_array($barcode_arr)) {
+		if((int)\Smart::array_size($barcode_arr) <= 0) {
+			\Smart::log_warning(__METHOD__.' # Barcode is Null or Empty Array');
 			return '<svg width="100" height="10"><text x="0" y="10" fill="#FF0000" font-size="9" font-family="monospace">[ INVALID BARCODE ]</text></svg>';
 		} //end if
 		//--
@@ -392,9 +395,10 @@ final class SmartBarcodes2D {
 	 * @internal
 	 *
 	 */
-	public static function getBarcodeEmbeddedHTMLPNG($barcode_arr, $z=3, $color='#000000') {
+	public static function getBarcodeEmbeddedHTMLPNG(?array $barcode_arr, int $z=3, string $color='#000000') : string {
 		//--
-		if(!\is_array($barcode_arr)) {
+		if((int)\Smart::array_size($barcode_arr) <= 0) {
+			\Smart::log_warning(__METHOD__.' # Barcode is Null or Empty Array');
 			return '<span style="background:#FAFAFA; color:#FF5500;"><font size="1">[ INVALID BARCODE ]</font></span>';
 		} //end if
 		//--
@@ -414,17 +418,17 @@ final class SmartBarcodes2D {
 	 * @internal
 	 *
 	 */
-	public static function getBarcodePNG($barcode_arr, $z=3, $color=array(0,0,0)) {
+	public static function getBarcodePNG(?array $barcode_arr, int $z=3, string|array $color=[0,0,0]) : string {
 		//--
 		if(!\is_array($color)) {
 			$color = (string) $color;
-			$color = \trim(\str_replace('#', '', $color));
-			$color = array(\hexdec(\substr($color, 0, 2)), \hexdec(\substr($color, 2, 2)), \hexdec(\substr($color, 4, 2)));
+			$color = (string) \trim((string)\str_replace('#', '', (string)$color));
+			$color = [ \hexdec((string)\substr((string)$color, 0, 2)), \hexdec((string)\substr((string)$color, 2, 2)), \hexdec((string)\substr((string)$color, 4, 2)) ];
 		} //end if
 		//--
-		if(!\is_array($barcode_arr)) {
+		if((int)\Smart::array_size($barcode_arr) <= 0) {
 			//--
-			\Smart::log_notice('Invalid Barcode2D PNG Data: Not Array !');
+			\Smart::log_warning(__METHOD__.' # Barcode is Null or Empty Array');
 			//--
 			$width = 125;
 			$height = 10;
@@ -432,7 +436,7 @@ final class SmartBarcodes2D {
 			$png = @\imagecreate($width, $height);
 			$bgcol = @\imagecolorallocate($png, 250, 250, 250);
 			$fgcol = @\imagecolorallocate($png, 255, 0, 0);
-			@\imagestring($png, 1, 1, 1, "[ INVALID BARCODE (1) ]", $fgcol);
+			@\imagestring($png, 1, 1, 1, '[ INVALID BARCODE (1) ]', $fgcol);
 			//--
 		} else {
 			//--
@@ -448,7 +452,7 @@ final class SmartBarcodes2D {
 			//--
 			if(!$png) {
 				//--
-				\Smart::log_notice('Invalid Barcode2D PNG Dimensions: '."\n".'Code='.$barcode_arr['code']."\n".'Cols='.$barcode_arr['num_cols'].' ; Rows='.$barcode_arr['num_rows']);
+				\Smart::log_notice(__METHOD__.' # Invalid Barcode2D PNG Dimensions: '."\n".'Code='.$barcode_arr['code']."\n".'Cols='.$barcode_arr['num_cols'].' ; Rows='.$barcode_arr['num_rows']);
 				//--
 				$width = 125;
 				$height = 10;
@@ -456,7 +460,7 @@ final class SmartBarcodes2D {
 				$png = @\imagecreate($width, $height);
 				$bgcol = @\imagecolorallocate($png, 250, 250, 250);
 				$fgcol = @\imagecolorallocate($png, 255, 0, 0);
-				@\imagestring($png, 1, 1, 1, "[ INVALID BARCODE (2) ]", $fgcol);
+				@\imagestring($png, 1, 1, 1, '[ INVALID BARCODE (2) ]', $fgcol);
 				//--
 			} else {
 				//--
@@ -492,17 +496,16 @@ final class SmartBarcodes2D {
 		\ob_start();
 		@\imagepng($png); // barcodes are speed oriented ! for 2 color png the zlib default compression level (6) is enough and increasing to 9 makes no diff in size ; more, if adding PNG_ALL_FILTERS will increase the size
 		$imagedata = \ob_get_clean();
-		@\imagedestroy($png);
-		$png = null;
+		$png = null; // image destroy is deprecated and has no effect since PHP 8.0
 		//--
 		return (string) $imagedata;
 		//--
 	} //END FUNCTION
 
 
-	private static function conformZ($z) {
+	private static function conformZ($z) : int {
 		//-- z must be between 1 and 16
-		$z = (int) $z;
+		$z = (int) intval($z);
 		if($z < 1) {
 			$z = 1;
 		} //end if

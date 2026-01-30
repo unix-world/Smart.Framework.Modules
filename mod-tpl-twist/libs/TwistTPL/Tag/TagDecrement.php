@@ -46,11 +46,11 @@ final class TagDecrement extends \TwistTPL\AbstractTag {
 		if($syntax->match($markup)) {
 			$this->toDecrement = (string) \trim((string)($syntax->matches[0] ?? null));
 			if((string)$this->toDecrement == '') {
-				throw new \Exception("Syntax Error in 'decrement' (2) - Valid syntax: decrement [var]");
+				throw new \Exception('Syntax Error in `decrement` (2) - Valid syntax: decrement [var]');
 				return;
 			} //end if
 		} else {
-			throw new \Exception("Syntax Error in 'decrement' (1) - Valid syntax: decrement [var]");
+			throw new \Exception('Syntax Error in `decrement` (1) - Valid syntax: decrement [var]');
 			return;
 		} //end if else
 		//--

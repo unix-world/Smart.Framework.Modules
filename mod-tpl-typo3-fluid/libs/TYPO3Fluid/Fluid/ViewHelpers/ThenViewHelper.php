@@ -1,10 +1,11 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
+
+namespace TYPO3Fluid\Fluid\ViewHelpers;
 
 use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
 use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
@@ -18,19 +19,17 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class ThenViewHelper extends AbstractViewHelper
 {
-
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
     /**
      * Just render everything.
      *
-     * @return string the rendered string
      * @api
      */
-    public function render()
+    public function render(): mixed
     {
         return $this->renderChildren();
     }
@@ -41,9 +40,8 @@ class ThenViewHelper extends AbstractViewHelper
      * @param string $initializationPhpCode
      * @param ViewHelperNode $node
      * @param TemplateCompiler $compiler
-     * @return string
      */
-    public function compile($argumentsName, $closureName, &$initializationPhpCode, ViewHelperNode $node, TemplateCompiler $compiler)
+    public function compile($argumentsName, $closureName, &$initializationPhpCode, ViewHelperNode $node, TemplateCompiler $compiler): string
     {
         return '\'\'';
     }

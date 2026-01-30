@@ -1,33 +1,29 @@
 <?php
-namespace TYPO3Fluid\Fluid\Core\Parser\SyntaxTree;
+
+declare(strict_types=1);
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
+namespace TYPO3Fluid\Fluid\Core\Parser\SyntaxTree;
+
+use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\Variables\VariableExtractor;
+use TYPO3Fluid\Fluid\Core\Variables\InvalidVariableIdentifierException;
 
 /**
  * A node which handles object access. This means it handles structures like {object.accessor.bla}
+ *
+ * @internal
  */
-class ObjectAccessorNode extends AbstractNode
+final class ObjectAccessorNode extends AbstractNode
 {
-
     /**
      * Object path which will be called. Is a list like "post.name.email"
-     *
-     * @var string
      */
-    protected $objectPath;
-
-    /**
-     * Accessor names, one per segment in the object path. Use constants from VariableExtractor
-     *
-     * @var array
-     */
-    protected $accessors = [];
+    protected string $objectPath;
 
     /**
      * Constructor. Takes an object path as input.
@@ -36,31 +32,25 @@ class ObjectAccessorNode extends AbstractNode
      * VariableProvider.
      *
      * @param string $objectPath An Object Path, like object1.object2.object3
-     * @param array $accessors Optional list of accessor strategies; starting from beginning of dotted path. Incomplete allowed.
      */
-    public function __construct($objectPath, array $accessors = [])
+    public function __construct(string $objectPath)
     {
+        // TODO consider removing this exception in later Fluid versions. For now it allows the
+        //      TemplateValidator to find occurrances of variables starting with "_" in templates,
+        //      which are no longer allowed since Fluid 5.
+        if (str_starts_with($objectPath, '_') && $objectPath !== '_all') {
+            throw new InvalidVariableIdentifierException('Variable identifiers cannot start with a "_": ' . $objectPath, 1765900762);
+        }
         $this->objectPath = $objectPath;
-        $this->accessors = $accessors;
     }
 
-
     /**
-     * Internally used for building up cached templates; do not use directly!
-     *
+     * @internal Internally used for building up cached templates; do not use directly!
      * @return string
      */
-    public function getObjectPath()
+    public function getObjectPath(): string
     {
         return $this->objectPath;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAccessors()
-    {
-        return $this->accessors;
     }
 
     /**
@@ -74,16 +64,46 @@ class ObjectAccessorNode extends AbstractNode
      * The first part of the object path has to be a variable in the
      * VariableProvider.
      *
-     * @param RenderingContextInterface $renderingContext
      * @return mixed The evaluated object, can be any object type.
      */
-    public function evaluate(RenderingContextInterface $renderingContext)
+    public function evaluate(RenderingContextInterface $renderingContext): mixed
     {
-        $objectPath = strtolower($this->objectPath);
         $variableProvider = $renderingContext->getVariableProvider();
-        if ($objectPath === '_all') {
-            return $variableProvider->getAll();
-        }
-        return VariableExtractor::extract($variableProvider, $this->objectPath, $this->accessors);
+        return match (strtolower($this->objectPath)) {
+            '_all' => $variableProvider->getAll(),
+            'true' => true,
+            'false' => false,
+            'null' => null,
+            default => $variableProvider->getByPath($this->objectPath),
+        };
+    }
+
+    public function convert(TemplateCompiler $templateCompiler): array
+    {
+        return match (strtolower($this->objectPath)) {
+            '_all' => [
+                'initialization' => '',
+                'execution' => '$renderingContext->getVariableProvider()->getAll()',
+            ],
+            'true' => [
+                'initialization' => '',
+                'execution' => 'true',
+            ],
+            'false' => [
+                'initialization' => '',
+                'execution' => 'false',
+            ],
+            'null' => [
+                'initialization' => '',
+                'execution' => 'null',
+            ],
+            default => [
+                'initialization' => '',
+                'execution' => sprintf(
+                    '$renderingContext->getVariableProvider()->getByPath(\'%s\')',
+                    $this->objectPath,
+                ),
+            ],
+        };
     }
 }

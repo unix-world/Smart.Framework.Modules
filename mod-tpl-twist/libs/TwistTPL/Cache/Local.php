@@ -16,7 +16,7 @@ namespace TwistTPL\Cache;
  */
 class Local extends \TwistTPL\AbstractCache {
 
-	private $cache = array();
+	private $cache = [];
 
 	/**
 	 * {@inheritdoc}
@@ -52,5 +52,6 @@ class Local extends \TwistTPL\AbstractCache {
 	}
 
 } //END CLASS
+
 
 // #end

@@ -1,6 +1,6 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Controller: Twist Templating Test Sample
+// Controller: Twist Templating Test Sample r.20260130
 // Route: ?/page/tpl-twist.test (?page=tpl-twist.test)
 // (c) 2006-2021 unix-world.org - all rights reserved
 
@@ -102,24 +102,28 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$data = [ // v.20200121
+		$data = [ // v.20260130
 			//### variables are case sensitive in Twist ; array keys that contain - and . will be replaced recursive by _ to make compliant with PHP variable names
 			'version' => (string) \SmartModExtLib\TplTwist\Templating::getVersion(),
+			'svgDataUrl' => (string) \SmartFileSysUtils::readFile('modules/mod-tpl-twist/views/img/twist.svg'),
+			'UrlReload' 		=> '?/page/tpl-twist.test',
+			'UrlViewSource' 	=> '?/page/tpl-twist.test/op/viewsource',
+			'UrlViewSubSource' 	=> '?/page/tpl-twist.test/op/viewpartialsource',
 			'hello-.world' => '<h1>Demo: Twist Templating as module for Smart.Framework</h1>',
 			'navigation' => [
-				array('href' => '#link1', 'caption' => 'Sample Link <1>'),
-				array('href' => '#link2', 'caption' => 'Sample Link <2>'),
-				array('href' => '#link3', 'caption' => 'Sample Link <3>')
+				[ 'href' => '#link1', 'caption' => 'Sample Link <1>' ],
+				[ 'href' => '#link2', 'caption' => 'Sample Link <2>' ],
+				[ 'href' => '#link3', 'caption' => 'Sample Link <3>' ],
 			],
 			'date_time' => (string) date('Y-m-d H:i:s O')."\t"."'".date('T')."'",
 			'tbl' => [
 				['a1' => '1.1', 'a2' => '1.2', 'a3' => '1.3'],
 				['a1' => '2.1', 'a2' => '2.2', 'a3' => '2.3'],
-				['a1' => '3.1', 'a2' => '3.2', 'a3' => '3.3']
+				['a1' => '3.1', 'a2' => '3.2', 'a3' => '3.3'],
 			],
 			'tCount' => 3,
 			'a' => 'Test-1',
-			'b' => 'Test-2'
+			'b' => 'Test-2',
 		];
 		//--
 

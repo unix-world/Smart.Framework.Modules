@@ -52,10 +52,10 @@ final class TagSet extends \TwistTPL\AbstractTag {
 				$this->from = new \TwistTPL\Variable($syntaxRegexp->matches[2], true);
 			} //end if
 			if(($this->to === null) OR ($this->from === null)) {
-				throw new \Exception("Syntax Error in 'assign' (2) - Valid syntax: set [var] = [source]");
+				throw new \Exception('Syntax Error in `assign` (2) - Valid syntax: set [var] = [source]');
 			} //end if
 		} else {
-			throw new \Exception("Syntax Error in 'assign' (1) - Valid syntax: set [var] = [source]");
+			throw new \Exception('Syntax Error in `assign` (1) - Valid syntax: set [var] = [source]');
 		} //end if else
 		//--
 	} //END FUNCTION

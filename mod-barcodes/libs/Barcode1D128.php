@@ -1,7 +1,7 @@
 <?php
 // Code128 Barcode 1D for Smart.Framework
 // Module Library
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -53,7 +53,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20260130
  * @package 	modules:Barcodes1D
  *
  */
@@ -94,14 +94,14 @@ final class Barcode1D128 {
 	 * @param $type (string) barcode type: A, B, C or empty for automatic switch (AUTO mode)
 	 * @return array barcode representation.
 	 */
-	public function getBarcodeArray() { // barcode_c128()
+	public function getBarcodeArray() : array { // barcode_c128()
 		//--
-		$code = $this->code;
-		$type = $this->mode;
+		$code = (string) $this->code;
+		$type = (string) $this->mode;
 		//--
-		$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
+		$bararray = [ 'code' => (string)$code, 'maxw' => 0, 'maxh' => 1, 'bcode' => [] ];
 		//--
-		$chr = array(
+		$chr = [
 			'212222', /* 00 */
 			'222122', /* 01 */
 			'222221', /* 02 */
@@ -210,7 +210,7 @@ final class Barcode1D128 {
 			'211232', /* 105 START C */
 			'233111', /* STOP */
 			'200000'  /* END */
-		);
+		];
 		//-- ASCII characters for code A (ASCII 00 - 95)
 		$keys_a = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_';
 		$keys_a .= chr(0).chr(1).chr(2).chr(3).chr(4).chr(5).chr(6).chr(7).chr(8).chr(9);
@@ -238,7 +238,7 @@ final class Barcode1D128 {
 					} elseif(($char_id >= 0) AND ($char_id <= 95)) {
 						$code_data[] = strpos($keys_a, $char);
 					} else {
-						return false;
+						return [];
 					} //end if else
 				} //end for
 				break;
@@ -251,14 +251,14 @@ final class Barcode1D128 {
 				} //end if
 				if(($len % 2) != 0) {
 					// the length must be even
-					return false;
+					return [];
 				} //end if
 				for($i = 0; $i < $len; $i+=2) {
 					$chrnum = $code[$i].$code[$i+1];
 					if(preg_match('/([0-9]{2})/', (string)$chrnum) > 0) {
 						$code_data[] = intval($chrnum);
 					} else {
-						return false;
+						return [];
 					} //end if else
 				} //end for
 				break;
@@ -273,7 +273,7 @@ final class Barcode1D128 {
 					} elseif(($char_id >= 32) AND ($char_id <= 127)) {
 						$code_data[] = strpos($keys_b, $char);
 					} else {
-						return false;
+						return [];
 					} //end if else
 				} //end for
 		} //end switch

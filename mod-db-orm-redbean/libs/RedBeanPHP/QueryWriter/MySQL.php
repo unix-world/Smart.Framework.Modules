@@ -1,7 +1,5 @@
 <?php
 
-// fixes by unixman
-
 namespace RedBeanPHP\QueryWriter;
 
 use RedBeanPHP\QueryWriter\AQueryWriter as AQueryWriter;
@@ -46,8 +44,6 @@ class MySQL extends AQueryWriter implements QueryWriter
 	const C_DATATYPE_SPECIAL_JSON       = 94;  //JSON support (only manual)
 
 	const C_DATATYPE_SPECIFIED        = 99;
-
-	private $svalue = null; // fix by unixman for PHP 8.4 cannot create dynamic property
 
 	/**
 	 * @var DBAdapter
@@ -182,7 +178,7 @@ class MySQL extends AQueryWriter implements QueryWriter
 		if (!isset($options['noInitcode']))
 		$this->adapter->setInitCode(function($version) use(&$me) {
 			try {
-				if (strpos($version, 'maria')===FALSE && intval($version)>=8) {
+				if (strpos(strtolower($version), 'maria')===FALSE && intval($version)>=8) {
 						$me->useFeature('ignoreDisplayWidth');
 				}
 			} catch( \Exception $e ){}
@@ -264,8 +260,6 @@ class MySQL extends AQueryWriter implements QueryWriter
 	 */
 	public function scanType( $value, $flagSpecial = FALSE )
 	{
-		$this->svalue = $value;
-
 		if ( is_null( $value ) ) return MySQL::C_DATATYPE_BOOL;
 		if ( $value === INF ) return MySQL::C_DATATYPE_TEXT7;
 

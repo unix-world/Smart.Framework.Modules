@@ -1,8 +1,8 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Readbean ORM Test Sample
-// Route: ?/page/db-orm-redbean.test (?page=db-orm-redbean.test)
-// (c) 2006-2021 unix-world.org - all rights reserved
+// Route: ?page=db-orm-redbean.test&driver=sqlite|pgsql|mysql
+// (c) 2006-present unix-world.org - all rights reserved
 
 use \SmartModExtLib\DbOrmRedbean\ORM as R;
 
@@ -21,7 +21,9 @@ define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
  * @ignore
  *
  */
-class SmartAppIndexController extends SmartAbstractAppController { // r.20241216
+class SmartAppIndexController extends SmartAbstractAppController {
+
+	// r.20260130
 
 	public function Run() {
 
@@ -60,16 +62,18 @@ class SmartAppIndexController extends SmartAbstractAppController { // r.20241216
 		} //end switch
 		//--
 		if(!$setup) {
-			$this->PageViewSetErrorStatus(500, 'ERROR: RedBean-ORM Test: Invalid Config Detected ...');
+			$this->PageViewSetErrorStatus(500, 'ERROR: RedBean-ORM Test: Invalid Request Detected ...');
 			return;
 		} //end if
+		$pdo = $setup->getDatabaseAdapter()->getDatabase()->getPDO();
 		//--
 		R::freeze(false); // enable create schema on need
 		$tblname = 'readbeantest';
 		$table = R::dispense((string)$tblname);
+		$records = [];
 		if(R::count((string)$tblname) >= 5) {
 			R::count((string)$tblname, ' id > ? ', [0]);
-			$test = R::getAll('SELECT * from '.$tblname.' WHERE id > ?', [0]);
+			$records = R::getAll('SELECT * from '.$tblname.' WHERE id > ?', [0]);
 		//	print_r($test); die();
 		} else {
 			$table->title = 'Mr.';
@@ -79,9 +83,11 @@ class SmartAppIndexController extends SmartAbstractAppController { // r.20241216
 		R::freeze(true); // disable create schema on need (restore as default)
 		R::close();
 		//--
+		$infoFromPdo = (string) $pdo->getAttribute(PDO::ATTR_DRIVER_NAME).' v.'.$pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
+		//--
 		$this->PageViewSetVars([
 			'title' => 'Test: RedBean ORM (an easy to use ORM for Smart.Framework)',
-			'main'  => '<h1 id="qunit-test-result">Test OK: RedBean-ORM/'.Smart::escape_html((string)strtoupper((string)$driver)).'.</h1><br><h2>Driver: '.Smart::escape_html((string)$driver)
+			'main'  => '<h1 id="qunit-test-result">Test OK: RedBean-ORM/'.Smart::escape_html((string)strtoupper((string)$driver)).'.</h1><br><h2>Driver: `'.Smart::escape_html((string)$driver).'`<br>PDO DB Version Info: `'.Smart::escape_html((string)$infoFromPdo).'`<hr>Records (will display only after 5 inserts, refresh the page 5 times): <pre>'.Smart::escape_html((string)SmartUtils::pretty_print_var($records, 0, true)).'</pre>',
 		]);
 		//--
 

@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221220
+ * @version 	v.20260128
  * @package 	development:modules:TemplatingEngine
  *
  */
@@ -78,17 +78,17 @@ abstract class AbstractTemplating {
 	/**
 	 * UTILITY: fix array keys to be compliant with PHP variable names, but only at level 1 ; level 2..n must not be fixed as tkey can accessible in loops even if not compatible with PHP variable names
 	 */
-	final protected function fixArrayKeys(?array $y_arr, bool $y_allow_upper_letters) : array {
+	final protected function fixArrayKeys(?array $arr, bool $allow_upper_letters) : array {
 		//--
-		if(!\is_array($y_arr)) { // fix bug if empty array / max nested level
+		if(!\is_array($arr)) { // fix bug if empty array / max nested level
 			return [];
 		} //end if
 		//--
 		$new_arr = [];
 		//--
-		foreach($y_arr as $key => $val) {
+		foreach($arr as $key => $val) {
 			$key = (string) \rtrim((string)\preg_replace('/[^0-9a-zA-Z_]/', '_', (string)$key), '_'); // dissalow ending in __ which is reserved here ; make safe variable name for PHP
-			if(\SmartFrameworkSecurity::ValidateVariableName((string)$key, (bool)$y_allow_upper_letters)) {
+			if(\SmartFrameworkSecurity::ValidateVariableName((string)$key, (bool)$allow_upper_letters)) {
 				if(\is_array($val)) {
 					$new_arr[(string)$key] = (array) $val;
 				} else {

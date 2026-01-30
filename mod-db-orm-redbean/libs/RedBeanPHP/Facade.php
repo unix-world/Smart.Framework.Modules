@@ -1,5 +1,7 @@
 <?php
 
+// modified by unixman
+
 namespace RedBeanPHP;
 
 use RedBeanPHP\QueryWriter as QueryWriter;
@@ -238,6 +240,34 @@ class Facade
 	}
 
 	/**
+	 * Tests the database connection.
+	 * Returns TRUE if connection has been established and
+	 * FALSE otherwise. Suppresses any warnings that may
+	 * occur during the testing process and catches all
+	 * exceptions that might be thrown during the test.
+	 *
+	 * @param boolean   $autoReconnect   if the function attempts to reconnect to the server on failure
+	 * @param string    $sql             the sql you want to execute to test the connection
+	 *
+	 * @return boolean
+	 */
+	public static function testConnectionSQL( $autoReconnect = FALSE, $sql = 'SELECT 1' )
+	{
+		if ( !isset( self::$adapter ) ) return FALSE;
+
+		$database = self::$adapter->getDatabase();
+		try {
+			$database->getPDO()->query( $sql );
+		} catch ( \Exception $e ) {
+			if ( !$autoReconnect ) return FALSE;
+			$database->close();
+			$database->connect();
+			return self::testConnectionSQL( FALSE, $sql );
+		}
+		return TRUE;
+	}
+
+	/**
 	 * Kickstarts redbean for you. This method should be called before you start using
 	 * RedBeanPHP. The Setup() method can be called without any arguments, in this case it will
 	 * try to create a SQLite database in /tmp called red.db (this only works on UNIX-like systems).
@@ -272,10 +302,12 @@ class Facade
 	 *
 	 * @return ToolBox
 	 */
-	public static function setup( $dsn = NULL, $username = NULL, $password = NULL, $frozen = FALSE, $partialBeans = FALSE, $options = array() )
+//	public static function setup( $dsn = NULL, $username = NULL, $password = NULL, $frozen = FALSE, $partialBeans = FALSE, $options = array() )
+	public static function setup(?string $dsn=null, ?string $username=null, ?string $password=null, bool $frozen=false, bool $partialBeans=false, array $options=[]) : ?\RedBeanPHP\ToolBox // unixman
 	{
 		if ( is_null( $dsn ) ) {
-			$dsn = 'sqlite:' . DIRECTORY_SEPARATOR . sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'red.db';
+		//	$dsn = 'sqlite:' . DIRECTORY_SEPARATOR . sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'red.db';
+			$dsn = 'sqlite:' . ':memory:'; // in-memory db ; unixman
 		}
 
 		self::addDatabase( 'default', $dsn, $username, $password, $frozen, $partialBeans, $options );
@@ -381,6 +413,7 @@ class Facade
 	 */
 	public static function transaction( $callback )
 	{
+		if ( !self::$allowFluidTransactions && !self::$redbean->isFrozen() ) return FALSE;
 		return Transaction::transaction( self::$adapter, $callback );
 	}
 
@@ -655,7 +688,7 @@ class Facade
 	 * will automatically temporarily switch to fluid mode to attempt to store the
 	 * bean in case of an SQLException.
 	 *
-	 * @param OODBBean|SimpleModel $bean             bean to store
+	 * @param OODBBean|SimpleModel|SimpleModelInterface $bean             bean to store
 	 * @param boolean              $unfreezeIfNeeded retries in fluid mode in hybrid mode
 	 *
 	 * @return integer|string
@@ -858,7 +891,7 @@ class Facade
 	 * key ID $id assigned by the database. We can now use this
 	 * ID to load the bean from the database again and delete it.
 	 *
-	 * @param string|OODBBean|SimpleModel $beanOrType bean you want to remove from database
+	 * @param string|OODBBean|SimpleModel|SimpleModelInterface $beanOrType bean you want to remove from database
 	 * @param integer                     $id         ID if the bean to trash (optional, type-id variant only)
 	 *
 	 * @return int
@@ -1220,7 +1253,7 @@ class Facade
 	 */
 	public static function exec( $sql, $bindings = array() )
 	{
-		return self::query( 'exec', $sql, $bindings );
+		return intval( self::query( 'exec', $sql, $bindings ) );
 	}
 
 	/**
@@ -2055,11 +2088,11 @@ class Facade
 	 * );
 	 * </code>
 	 *
-	 * @param OODBBean[]  $beans       a list of OODBBeans
+	 * @param OODBBean[]|TypedModel[]  $beans       a list of OODBBeans
 	 * @param string      $type        a type string
 	 * @param string      $sqlTemplate an SQL template string for the SELECT-query
 	 *
-	 * @return OODBBean[]
+	 * @return OODBBean[]|TypedModel[]
 	 */
 	public static function loadJoined( $beans, $type, $sqlTemplate = 'SELECT %s.* FROM %s WHERE id IN (%s)' )
 	{

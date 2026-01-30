@@ -253,7 +253,7 @@ class Memcached implements KeyValueStore
 
 		/*
 		 * Not doing \Memcached::increment because that one:
-		 * * needs \Memcached::OPT_BINARY_PROTOCOL == true
+		 * * needs \Memcached::OPT_BINARY_PROTOCOL === true
 		 * * is prone to errors after a flush ("merges" with pruned data) in at
 		 *   least some particular versions of Memcached
 		 */
@@ -295,7 +295,7 @@ class Memcached implements KeyValueStore
 		 *
 		 * @see http://docs.hhvm.com/manual/en/memcached.touch.php
 		 *
-		 * PHP does, but only with \Memcached::OPT_BINARY_PROTOCOL == true,
+		 * PHP does, but only with \Memcached::OPT_BINARY_PROTOCOL === true,
 		 * and even then, it appears to be buggy on particular versions of
 		 * Memcached.
 		 *

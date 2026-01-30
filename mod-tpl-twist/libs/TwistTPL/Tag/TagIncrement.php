@@ -46,11 +46,11 @@ final class TagIncrement extends \TwistTPL\AbstractTag {
 		if($syntax->match($markup)) {
 			$this->toIncrement = (string) \trim((string)($syntax->matches[0] ?? null));
 			if((string)$this->toIncrement == '') {
-				throw new \Exception("Syntax Error in 'increment' (2) - Valid syntax: increment [var]");
+				throw new \Exception('Syntax Error in `increment` (2) - Valid syntax: increment [var]');
 				return;
 			} //end if
 		} else {
-			throw new \Exception("Syntax Error in 'increment' (1) - Valid syntax: increment [var]");
+			throw new \Exception('Syntax Error in `increment` (1) - Valid syntax: increment [var]');
 			return;
 		} //end if else
 		//--

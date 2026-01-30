@@ -1,15 +1,16 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+namespace TYPO3Fluid\Fluid\ViewHelpers;
+
+use TYPO3Fluid\Fluid\Core\Variables\ScopedVariableProvider;
+use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 use TYPO3Fluid\Fluid\Core\ViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * This ViewHelper cycles through the specified values.
@@ -65,82 +66,60 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class CycleViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
-    /**
-     * @return void
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
-        parent::initializeArguments();
         $this->registerArgument('values', 'array', 'The array or object implementing \ArrayAccess (for example \SplObjectStorage) to iterated over');
-        $this->registerArgument('as', 'strong', 'The name of the iteration variable', true);
+        $this->registerArgument('as', 'string', 'The name of the iteration variable', true);
     }
 
-    /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return mixed
-     */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public function render(): mixed
     {
-        $values = $arguments['values'];
-        $as = $arguments['as'];
+        $values = $this->arguments['values'];
+        $as = $this->arguments['as'];
         if ($values === null) {
-            return $renderChildrenClosure();
+            return $this->renderChildren();
         }
         $values = static::initializeValues($values);
-        $index = static::initializeIndex($as, $renderingContext->getViewHelperVariableContainer());
-
+        $index = static::initializeIndex($as, $this->renderingContext->getViewHelperVariableContainer());
         $currentValue = isset($values[$index]) ? $values[$index] : null;
-
-        $renderingContext->getVariableProvider()->add($as, $currentValue);
-        $output = $renderChildrenClosure();
-        $renderingContext->getVariableProvider()->remove($as);
-
+        $scopedVariableProvider = new ScopedVariableProvider(
+            $this->renderingContext->getVariableProvider(),
+            new StandardVariableProvider([$as => $currentValue]),
+        );
+        $this->renderingContext->setVariableProvider($scopedVariableProvider);
+        $output = $this->renderChildren();
+        $this->renderingContext->setVariableProvider($scopedVariableProvider->getGlobalVariableProvider());
         $index++;
         if (!isset($values[$index])) {
             $index = 0;
         }
-        $renderingContext->getViewHelperVariableContainer()->addOrUpdate(static::class, $as, $index);
-
+        $this->renderingContext->getViewHelperVariableContainer()->addOrUpdate(static::class, $as, $index);
         return $output;
     }
 
-    /**
-     * @param mixed $values
-     * @return array
-     * @throws ViewHelper\Exception
-     */
-    protected static function initializeValues($values)
+    protected static function initializeValues(mixed $values): array
     {
         if (is_array($values)) {
             return array_values($values);
         }
 
-        if (is_object($values) && $values instanceof \Traversable) {
+        if ($values instanceof \Traversable) {
             return iterator_to_array($values, false);
         }
 
         throw new ViewHelper\Exception('CycleViewHelper only supports arrays and objects implementing \Traversable interface', 1248728393);
     }
 
-    /**
-     * @param string $as
-     * @param ViewHelper\ViewHelperVariableContainer $viewHelperVariableContainer
-     * @return integer
-     */
-    protected static function initializeIndex($as, ViewHelper\ViewHelperVariableContainer $viewHelperVariableContainer)
+    protected static function initializeIndex(string $as, ViewHelper\ViewHelperVariableContainer $viewHelperVariableContainer): int
     {
         $index = 0;
         if ($viewHelperVariableContainer->exists(static::class, $as)) {
-            $index = $viewHelperVariableContainer->get(static::class, $as);
+            $index = (int)$viewHelperVariableContainer->get(static::class, $as);
         }
 
         return $index;

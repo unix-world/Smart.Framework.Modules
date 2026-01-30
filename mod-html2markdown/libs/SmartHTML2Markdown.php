@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220918
+ * @version 	v.20260130
  * @package 	Html2markdown
  *
  */
@@ -65,33 +65,29 @@ final class SmartHTML2Markdown {
  * @internal
  *
  */
-function autoload__HTML2Markdown_SFM($classname) {
-	//--
-	$classname = (string) $classname;
+\spl_autoload_register(function(string $classname) : void {
 	//--
 	if(\strpos((string)$classname, '\\') === false) { // if have namespace
 		return;
 	} //end if
 	//--
-	if((string)\substr((string)$classname, 0, 14) !== 'HTML2Markdown\\') { // if class name is not starting with HTML2Markdown
+	if(\str_starts_with((string)$classname, 'HTML2Markdown\\') === false) { // if class name is starting with HTML2Markdown\
 		return;
 	} //end if
 	//--
-	$path = 'modules/mod-html2markdown/libs/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
+	$path = (string) \SmartFileSysUtils::getSmartFsRootPath().'modules/mod-html2markdown/libs/'.\str_replace([ '\\', "\0" ], [ '/', '' ], (string)$classname);
 	//--
-	if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
+	if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', (string)$path)) {
 		return; // invalid path characters in path
 	} //end if
 	//--
-	if(!\is_file($path.'.php')) {
+	if(!\is_file((string)$path.'.php')) {
 		return; // file does not exists
 	} //end if
 	//--
-	require_once($path.'.php');
+	require_once((string)$path.'.php');
 	//--
-} //END FUNCTION
-//--
-\spl_autoload_register('\\SmartModExtLib\\Html2markdown\\autoload__HTML2Markdown_SFM', true, false); // throw / append
+}, true, false); // throw / append
 //--
 
 

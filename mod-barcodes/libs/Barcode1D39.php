@@ -1,7 +1,7 @@
 <?php
 // Code39 Barcode 1D for Smart.Framework
 // Module Library
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -51,7 +51,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20260130
  * @package 	modules:Barcodes1D
  *
  */
@@ -95,17 +95,17 @@ final class Barcode1D39 {
 	 * @param $extended (bool) if true uses the extended mode.
 	 * @return array barcode representation.
 	 */
-	public function getBarcodeArray() {
+	public function getBarcodeArray() : array {
 		//--
-		$code = $this->code;
+		$code = (string) $this->code;
 		$checksum = $this->checksum;
 		$extended = $this->extended;
 		//--
-		if((is_null($code)) OR ($code == '\0') OR ((string)$code == '')) {
-			return false;
+		if((is_null($code)) OR ((string)$code == '\0') OR ((string)$code == '')) {
+			return [];
 		} //end if
 		//--
-		$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
+		$bararray = [ 'code' => (string)$code, 'maxw' => 0, 'maxh' => 1, 'bcode' => [] ];
 		//--
 		$chr['0'] = '111331311';
 		$chr['1'] = '311311113';
@@ -160,7 +160,7 @@ final class Barcode1D39 {
 		} //end if
 		//--
 		if($code === false) {
-			return false;
+			return [];
 		} //end if
 		//--
 		if($checksum) {
@@ -177,7 +177,7 @@ final class Barcode1D39 {
 			$char = $code[$i];
 			//--
 			if(!isset($chr[$char])) {
-				return false; // invalid character
+				return []; // invalid character
 			} //end if
 			//--
 			for($j = 0; $j < 9; ++$j) {

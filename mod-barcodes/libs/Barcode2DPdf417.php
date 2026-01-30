@@ -1,7 +1,7 @@
 <?php
 // PDF417 Barcode 2D for Smart.Framework
 // Module Library
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -59,7 +59,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	extensions: PHP 64-bit
- * @version 	v.20250714
+ * @version 	v.20260130
  * @package 	modules:Barcodes2D
  *
  */
@@ -72,26 +72,26 @@ final class Barcode2DPdf417 {
 	 * @const INT
 	 * Row height respect X dimension of single module
 	 */
-	const BCODE2D_PDF_417_ROW_HEIGHT = 4;
+	public const BCODE2D_PDF_417_ROW_HEIGHT = 4;
 
 	/**
 	 * @const INT
 	 * Horizontal quiet zone in modules
 	 */
-	const BCODE2D_PDF_417_QUIET_HORIZ = 2;
+	private const BCODE2D_PDF_417_QUIET_HORIZ = 2;
 
 	/**
 	 * @const INT
 	 * Vertical quiet zone in modules
 	 */
-	const BCODE2D_PDF_417_QUIET_VERT = 2;
+	private const BCODE2D_PDF_417_QUIET_VERT = 2;
 
 
 	/**
 	 * Barcode array to be returned which is readable by TCPDF.
 	 * @private
 	 */
-	private $barcode_array = array();
+	private $barcode_array = [];
 
 	/**
 	 * Start pattern.
@@ -752,7 +752,7 @@ final class Barcode2DPdf417 {
 	 * @return array barcode array readable by TCPDF;
 	 * @public
 	 */
-	public function getBarcodeArray() {
+	public function getBarcodeArray() : array {
 		//--
 		return (array) $this->barcode_array;
 		//--

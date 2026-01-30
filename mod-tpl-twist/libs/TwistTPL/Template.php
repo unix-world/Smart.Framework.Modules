@@ -54,7 +54,7 @@ final class Template {
 			$this->fileSystem = new \TwistTPL\FileSystem\LocalFileSystem((string)$path); // TODO: check here for a valid path !
 		} //end if
 		//--
-		if(\is_array($cache) && ((int)\count($cache) == 2) && isset($cache['cache']) && ($cache['cache'] === 'file') && isset($cache['cache:path'])) {
+		if(\is_array($cache) && ((int)\count($cache) == 3) && isset($cache['cache']) && ($cache['cache'] === 'file') && isset($cache['cache:path']) && isset($cache['root:path'])) {
 			\TwistTPL\Twist::setCache((array)$cache);
 		} //end if
 		//--

@@ -129,7 +129,7 @@ final class TagInclude extends \TwistTPL\AbstractTag {
 		$regex = new \TwistTPL\Regexp('/("[^"]+"|\'[^\']+\'|[^\'"\s]+)(\s+(with|for)\s+('.\TwistTPL\Twist::get('QUOTED_FRAGMENT').'+))?/');
 		//--
 		if(!$regex->match($markup)) {
-			throw new \Exception("Error in tag 'include' - Valid syntax: include '[template]' (with|for) [object|collection]");
+			throw new \Exception('Error in tag `include` - Valid syntax: include `[template]` (with|for) [object|collection]');
 			return;
 		} //end if
 		//--
@@ -233,7 +233,7 @@ final class TagInclude extends \TwistTPL\AbstractTag {
 	 */
 	public function hasIncludes() {
 		//--
-		if($this->document->hasIncludes() == true) {
+		if($this->document->hasIncludes() === true) {
 			return true;
 		} //end if
 		//--
@@ -287,13 +287,14 @@ final class TagInclude extends \TwistTPL\AbstractTag {
 	} //END FUNCTION
 
 
-	private function subTplHash(string $source, string $tplPath) : string {
+	private function subTplHash(string $source, string $tplPath) : string { // {{{SYNC-TWIST-TPL-HASHING}}}
 		//--
-		return (string) \TwistTPL\Twist::tplHash((string)$source, (string)$tplPath, false); // {{{SYNC-TWIST-TPL-HASHING}}}
+		return (string) \TwistTPL\Twist::tplHash((string)$source, (string)$tplPath, false); // root=false
 		//--
 	} //END FUNCTION
 
 
 } //END CLASS
+
 
 // #end

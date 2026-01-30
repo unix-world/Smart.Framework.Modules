@@ -1,5 +1,7 @@
 <?php
 
+// modified by unixman
+
 namespace SVG\Rasterization\Renderers;
 
 use SVG\Rasterization\SVGRasterizer;
@@ -124,7 +126,7 @@ class RectRenderer extends MultiPassRenderer
         // right-bottom
         imagecopy($image, $corners, $x2 - $rx + 1, $y2 - $ry + 1, $rx + 1, $ry + 1, $rx, $ry);
 
-        imagedestroy($corners);
+        $corners = null; // image destroy is deprecated and has no effect since PHP 8.0 ; unixman
     }
 
     /**

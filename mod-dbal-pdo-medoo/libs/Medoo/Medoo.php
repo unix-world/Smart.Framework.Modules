@@ -1,6 +1,6 @@
 <?php
 
-// fixes by unixman, r.20241216
+// fixes by unixman, r.20260122
 
 declare(strict_types=1);
 /**
@@ -237,7 +237,8 @@ class Medoo
 			$this->prefix = $options['prefix'];
 		}
 
-		if (isset($options['testMode']) && $options['testMode'] == true) {
+	//	if (isset($options['testMode']) && $options['testMode'] == true) {
+		if (isset($options['testMode']) && $options['testMode'] === true) { // unixman
 			$this->testMode = true;
 			return;
 		}
@@ -742,7 +743,7 @@ class Medoo
 	 */
 	public function tableQuote(string $table): string
 	{
-		if (preg_match("/^" . $this::TABLE_PATTERN . "$/u", $table)) {
+		if (preg_match('/^' . $this::TABLE_PATTERN . '$/u', $table)) {
 			return '"' . $this->prefix . $table . '"';
 		}
 
@@ -757,7 +758,7 @@ class Medoo
 	 */
 	public function columnQuote(string $column): string
 	{
-		if (preg_match("/^" . $this::TABLE_PATTERN . "(\.?" . $this::ALIAS_PATTERN . ")?$/u", $column)) {
+		if (preg_match('/^' . $this::TABLE_PATTERN . '(\.?' . $this::ALIAS_PATTERN . ')?$/u', $column)) {
 			return strpos($column, '.') !== false ?
 				'"' . $this->prefix . str_replace('.', '"."', $column) . '"' :
 				'"' . $column . '"';
@@ -826,14 +827,14 @@ class Medoo
 			} elseif ($isArrayValue) {
 				$stack[] = $this->columnPush($value, $map, false, $isJoin);
 			} elseif (!$isIntKey && $raw = $this->buildRaw($value, $map)) {
-				preg_match("/(?<column>" . $this::COLUMN_PATTERN . ")(\s*\[(?<type>(String|Bool|Int|Number))\])?/u", $key, $match);
+				preg_match('/(?<column>' . $this::COLUMN_PATTERN . ')(\s*\[(?<type>(String|Bool|Int|Number))\])?/u', $key, $match);
 				$stack[] = "{$raw} AS {$this->columnQuote($match['column'])}";
 			} elseif ($isIntKey && is_string($value)) {
 				if ($isJoin && strpos($value, '*') !== false) {
 					throw new InvalidArgumentException('Cannot use table.* to select all columns while joining table.');
 				}
 
-				preg_match("/(?<column>" . $this::COLUMN_PATTERN . ")(?:\s*\((?<alias>" . $this::ALIAS_PATTERN . ")\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u", $value, $match);
+				preg_match('/(?<column>' . $this::COLUMN_PATTERN . ')(?:\s*\((?<alias>' . $this::ALIAS_PATTERN . ')\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u', $value, $match);
 
 				$columnString = '';
 
@@ -880,7 +881,7 @@ class Medoo
 
 			if (
 				$type === 'array' &&
-				preg_match("/^(AND|OR)(\s+#.*)?$/", $key, $relationMatch)
+				preg_match('/^(AND|OR)(\s+#.*)?$/', $key, $relationMatch)
 			) {
 				$stack[] = '(' . $this->dataImplode($value, $map, ' ' . $relationMatch[1]) . ')';
 				continue;
@@ -1214,7 +1215,7 @@ class Medoo
 		$where = null,
 		$columnFn = null
 	): string {
-		preg_match("/(?<table>" . $this::TABLE_PATTERN . ")\s*\((?<alias>" . $this::ALIAS_PATTERN . ")\)/u", $table, $tableMatch);
+		preg_match('/(?<table>' . $this::TABLE_PATTERN . ')\s*\((?<alias>' . $this::ALIAS_PATTERN . ')\)/u', $table, $tableMatch);
 
 		if (isset($tableMatch['table'], $tableMatch['alias'])) {
 			$table = $this->tableQuote($tableMatch['table']);
@@ -1315,7 +1316,7 @@ class Medoo
 		];
 
 		foreach ($join as $subtable => $relation) {
-			preg_match("/(\[(?<join>\<\>?|\>\<?)\])?(?<table>" . $this::TABLE_PATTERN . ")\s?(\((?<alias>" . $this::ALIAS_PATTERN . ")\))?/u", $subtable, $match);
+			preg_match('/(\[(?<join>\<\>?|\>\<?)\])?(?<table>' . $this::TABLE_PATTERN . ')\s?(\((?<alias>' . $this::ALIAS_PATTERN . ')\))?/u', $subtable, $match);
 
 			if ($match['join'] === '' || $match['table'] === '') {
 				continue;
@@ -1382,7 +1383,7 @@ class Medoo
 
 		foreach ($columns as $key => $value) {
 			if (is_int($key)) {
-				preg_match("/(" . $this::TABLE_PATTERN . "\.)?(?<column>" . $this::COLUMN_PATTERN . ")(?:\s*\((?<alias>" . $this::ALIAS_PATTERN . ")\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u", $value, $keyMatch);
+				preg_match('/(' . $this::TABLE_PATTERN . '\.)?(?<column>' . $this::COLUMN_PATTERN . ')(?:\s*\((?<alias>' . $this::ALIAS_PATTERN . ')\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u', $value, $keyMatch);
 
 				$columnKey = !empty($keyMatch['alias']) ?
 					$keyMatch['alias'] :
@@ -1392,7 +1393,7 @@ class Medoo
 					[$columnKey, $keyMatch['type']] :
 					[$columnKey];
 			} elseif ($this->isRaw($value)) {
-				preg_match("/(" . $this::TABLE_PATTERN . "\.)?(?<column>" . $this::COLUMN_PATTERN . ")(\s*\[(?<type>(String|Bool|Int|Number))\])?/u", $key, $keyMatch);
+				preg_match('/(' . $this::TABLE_PATTERN . '\.)?(?<column>' . $this::COLUMN_PATTERN . ')(\s*\[(?<type>(String|Bool|Int|Number))\])?/u', $key, $keyMatch);
 				$columnKey = $keyMatch['column'];
 
 				$stack[$key] = isset($keyMatch['type']) ?
@@ -1824,7 +1825,7 @@ class Medoo
 				continue;
 			}
 
-			preg_match("/" . $this::COLUMN_PATTERN . "(\[(?<operator>\+|\-|\*|\/)\])?/u", $key, $match);
+			preg_match('/' . $this::COLUMN_PATTERN . '(\[(?<operator>\+|\-|\*|\/)\])?/u', $key, $match);
 
 			if (isset($match['operator'])) {
 				if (is_numeric($value)) {

@@ -1,0 +1,585 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file belongs to the package "TYPO3 Fluid".
+ * See LICENSE.txt that was shipped with this package.
+ */
+
+namespace TYPO3Fluid\Fluid\Tools;
+
+use Composer\Autoload\ClassLoader;
+use TYPO3Fluid\Fluid\Core\Cache\SimpleFileCache;
+use TYPO3Fluid\Fluid\Core\Parser\Patterns;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContext;
+use TYPO3Fluid\Fluid\Core\Variables\JSONVariableProvider;
+use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
+use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
+use TYPO3Fluid\Fluid\Exception;
+use TYPO3Fluid\Fluid\Schema\SchemaGenerator;
+use TYPO3Fluid\Fluid\Schema\ViewHelperFinder;
+use TYPO3Fluid\Fluid\Validation\TemplateValidator;
+use TYPO3Fluid\Fluid\View\AbstractTemplateView;
+use TYPO3Fluid\Fluid\View\TemplateFinder;
+use TYPO3Fluid\Fluid\View\TemplatePaths;
+use TYPO3Fluid\Fluid\View\TemplateView;
+
+/**
+ * @internal
+ */
+final class ConsoleRunner
+{
+    private const COMMAND_HELP = 'help';
+    private const COMMAND_RUN = 'run';
+    private const COMMAND_SCHEMA = 'schema';
+    private const COMMAND_WARMUP = 'warmup';
+
+    private const ARGUMENT_HELP = 'help';
+    private const ARGUMENT_SOCKET = 'socket';
+    private const ARGUMENT_TEMPLATEFILE = 'template';
+    private const ARGUMENT_CACHEDIRECTORY = 'cacheDirectory';
+    private const ARGUMENT_VARIABLES = 'variables';
+    private const ARGUMENT_CONTROLLERNAME = 'controller';
+    private const ARGUMENT_CONTROLLERACTION = 'action';
+    private const ARGUMENT_BOOTSTRAP = 'bootstrap';
+    private const ARGUMENT_TEMPLATEROOTPATHS = 'templateRootPaths';
+    private const ARGUMENT_LAYOUTROOTPATHS = 'layoutRootPaths';
+    private const ARGUMENT_PARTIALROOTPATHS = 'partialRootPaths';
+    private const ARGUMENT_RENDERINGCONTEXT = 'renderingContext';
+    private const ARGUMENT_DESTINATION = 'destination';
+    private const ARGUMENT_PATH = 'path';
+    private const ARGUMENT_EXTENSION = 'extension';
+
+    private array $commandDesccriptions = [
+        self::COMMAND_HELP => 'Show this help screen',
+        self::COMMAND_RUN => 'Run fluid code, either interactively or file-based',
+        self::COMMAND_SCHEMA => 'Generate xsd schema files based on all available ViewHelper classes',
+        self::COMMAND_WARMUP => 'Warmup template cache',
+    ];
+
+    private array $argumentDescriptions = [
+        self::COMMAND_RUN => [
+            self::ARGUMENT_HELP => 'Shows usage examples',
+            self::ARGUMENT_SOCKET => 'Path to socket (ignored unless running as socket server)',
+            self::ARGUMENT_TEMPLATEFILE => 'A single template file to render',
+            self::ARGUMENT_CACHEDIRECTORY => 'Path to a directory used as cache for compiled Fluid templates',
+            self::ARGUMENT_VARIABLES => 'Variables (JSON string or JSON file) to use when rendering',
+            self::ARGUMENT_CONTROLLERNAME => 'Controller name to use when rendering in MVC mode',
+            self::ARGUMENT_CONTROLLERACTION => 'Controller action when rendering in MVC mode',
+            self::ARGUMENT_BOOTSTRAP => 'A PHP file path or name of a PHP class (ClassName::functionToCall) which will bootstrap environment before rendering',
+            self::ARGUMENT_TEMPLATEROOTPATHS => 'Template root paths, multiple paths can be passed separated by spaces',
+            self::ARGUMENT_PARTIALROOTPATHS => 'Partial root paths, multiple paths can be passed separated by spaces',
+            self::ARGUMENT_LAYOUTROOTPATHS => 'Layout root paths, multiple paths can be passed separated by spaces',
+            self::ARGUMENT_RENDERINGCONTEXT => 'Class name of custom RenderingContext implementation to use when rendering',
+        ],
+        self::COMMAND_HELP => [
+        ],
+        self::COMMAND_SCHEMA => [
+            self::ARGUMENT_HELP => 'Shows usage examples',
+            self::ARGUMENT_DESTINATION => 'Destination folder where the schema files should be written to',
+        ],
+        self::COMMAND_WARMUP => [
+            self::ARGUMENT_PATH => 'Paths that should be checked for template files for warmup',
+            self::ARGUMENT_CACHEDIRECTORY => 'Path to a directory used as cache for compiled Fluid templates',
+            self::ARGUMENT_EXTENSION => 'File extensions that should be treated as Fluid templates (default: *.fluid.*)',
+        ],
+    ];
+
+    /**
+     * @param string[] $arguments
+     */
+    public function handleCommand(array $arguments, ClassLoader $autoloader): string
+    {
+        array_shift($arguments);
+
+        if (!isset($arguments[0]) || str_starts_with($arguments[0], '--')) {
+            // Support old command syntax where run was the default/only command
+            $command = self::COMMAND_RUN;
+        } elseif (isset($this->commandDesccriptions[$arguments[0]])) {
+            $command = array_shift($arguments);
+        } else {
+            throw new \InvalidArgumentException('Unsupported command: ' . $arguments[0]);
+        }
+
+        $arguments = $this->parseAndValidateInputArguments(
+            $arguments,
+            array_keys($this->argumentDescriptions[$command]),
+        );
+
+        switch ($command) {
+            case self::COMMAND_HELP:
+                return $this->handleHelpCommand();
+
+            case self::COMMAND_SCHEMA:
+                return $this->handleSchemaCommand($arguments, $autoloader);
+
+            case self::COMMAND_WARMUP:
+                return $this->handleWarmupCommand($arguments);
+
+            case self::COMMAND_RUN:
+            default:
+                return $this->handleRunCommand($arguments);
+        }
+    }
+
+    private function handleHelpCommand(): string
+    {
+        return $this->dumpHelpHeader()
+            . $this->dumpSupportedCommands($this->commandDesccriptions);
+    }
+
+    /**
+     * @param array<string, string> $arguments
+     */
+    private function handleSchemaCommand(array $arguments, ClassLoader $autoloader): string
+    {
+        if (isset($arguments[self::ARGUMENT_HELP])) {
+            return $this->dumpHelpHeader()
+                . $this->dumpSupportedParameters($this->argumentDescriptions[self::COMMAND_SCHEMA]);
+        }
+
+        $allViewHelpers = (new ViewHelperFinder())->findViewHelpersInComposerProject($autoloader);
+
+        $groupedByNamespace = [];
+        foreach ($allViewHelpers as $viewHelper) {
+            $groupedByNamespace[$viewHelper->xmlNamespace] ??= [];
+            $groupedByNamespace[$viewHelper->xmlNamespace][] = $viewHelper;
+        }
+
+        $destination = rtrim($arguments[self::ARGUMENT_DESTINATION] ?? '.', '/') . '/';
+        if (!file_exists($destination)) {
+            mkdir($destination, recursive: true);
+        } elseif (!is_dir($destination)) {
+            throw new \InvalidArgumentException(
+                'Invalid destination folder: ' . $destination,
+            );
+        }
+
+        foreach ($groupedByNamespace as $xmlNamespace => $viewHelpers) {
+            $schema = (new SchemaGenerator())->generate($xmlNamespace, $viewHelpers);
+            $fileName = str_replace(Patterns::NAMESPACEPREFIX, '', $xmlNamespace);
+            $fileName = str_replace('/', '_', $fileName);
+            $fileName = preg_replace('#[^0-9a-zA-Z_]#', '', $fileName);
+            file_put_contents($destination . 'schema_' . $fileName . '.xsd', $schema->asXml());
+        }
+        return '';
+    }
+
+    private function handleWarmupCommand(array $arguments): string
+    {
+        // @todo add argument for global namespaces
+        $paths = $arguments[self::ARGUMENT_PATH] ?? [];
+        $cacheDirectory = $arguments[self::ARGUMENT_CACHEDIRECTORY] ?? '';
+        $extension = $arguments[self::ARGUMENT_EXTENSION] ?? null;
+        if ($paths === []) {
+            throw new \InvalidArgumentException(
+                'At least one path needs to be supplied to perform cache warmup.',
+            );
+        }
+        if ($cacheDirectory === '') {
+            throw new \InvalidArgumentException(
+                'Cache directory needs to be supplied to perform cache warmup.',
+            );
+        }
+
+        $templateScanner = new TemplateFinder();
+        $templates = $extension === null
+            ? $templateScanner->findTemplatesWithFluidFileExtension($paths)
+            : $templateScanner->findTemplatesByFileExtension($paths, $extension);
+
+        $templateValidator = new TemplateValidator();
+        $scanResults = $templateValidator->validateTemplateFiles($templates);
+
+        if (!is_dir($cacheDirectory)) {
+            mkdir($cacheDirectory);
+        }
+        $cache = new SimpleFileCache($cacheDirectory);
+
+        $output = [];
+        foreach ($scanResults as $result) {
+            $errors = [];
+            foreach ($result->errors as $error) {
+                $errors[] = sprintf(
+                    'Parsing error triggered in %s, line %d: %s',
+                    $error->getFile(),
+                    $error->getLine(),
+                    $error->getMessage(),
+                );
+            }
+
+            foreach ($result->deprecations as $deprecation) {
+                $errors[] = sprintf(
+                    'Deprecation triggered in %s, line %d: %s',
+                    $deprecation->file,
+                    $deprecation->line,
+                    $deprecation->message,
+                );
+            }
+
+            if ($result->canBeCompiled()) {
+                try {
+                    $cachingRenderingContext = new RenderingContext();
+                    $cachingRenderingContext->setCache($cache);
+                    $cachingRenderingContext->getTemplateCompiler()->store(
+                        $result->identifier,
+                        $result->parsedTemplate,
+                    );
+                } catch (\Exception $e) {
+                    $errors[] = sprintf(
+                        'Compilation error triggered in %s, line %s: %s',
+                        $e->getFile(),
+                        $e->getLine(),
+                        $e->getMessage(),
+                    );
+                }
+            } else {
+                $errors[] = 'Template cannot be compiled.';
+            }
+
+            if ($errors !== []) {
+                $title = sprintf('Template %s (%s)', $result->path, $result->identifier);
+                $output[] = implode(PHP_EOL . '  ', [$title, ...$errors]);
+            }
+        }
+
+        return implode(PHP_EOL . PHP_EOL, $output) . PHP_EOL;
+    }
+
+    /**
+     * @param array<string, string|array> $arguments
+     */
+    private function handleRunCommand(array $arguments): string
+    {
+        if (isset($arguments[self::ARGUMENT_HELP])) {
+            return $this->dumpHelpHeader()
+                . $this->dumpSupportedParameters($this->argumentDescriptions[self::COMMAND_RUN])
+                . $this->dumpRunExamples();
+        }
+        if (isset($arguments[self::ARGUMENT_BOOTSTRAP])) {
+            if (is_file($arguments[self::ARGUMENT_BOOTSTRAP])) {
+                include $arguments[self::ARGUMENT_BOOTSTRAP];
+            } elseif (
+                strpos($arguments[self::ARGUMENT_BOOTSTRAP], '::')
+                && is_callable(explode('::', $arguments[self::ARGUMENT_BOOTSTRAP]))
+            ) {
+                call_user_func(explode('::', $arguments[self::ARGUMENT_BOOTSTRAP]));
+            } else {
+                throw new \InvalidArgumentException(
+                    'Provided bootstrap argument is neither a file nor an executable, public, static function!',
+                );
+            }
+        }
+        $view = new TemplateView();
+        if (isset($arguments[self::ARGUMENT_RENDERINGCONTEXT])) {
+            $context = new $arguments[self::ARGUMENT_RENDERINGCONTEXT]($view);
+            $view->setRenderingContext($context);
+        } else {
+            $context = $view->getRenderingContext();
+        }
+        if (isset($arguments[self::ARGUMENT_CACHEDIRECTORY])) {
+            $cache = new SimpleFileCache($arguments[self::ARGUMENT_CACHEDIRECTORY]);
+            $context->setCache($cache);
+        }
+        $paths = $context->getTemplatePaths();
+        $paths->setTemplateRootPaths($arguments[self::ARGUMENT_TEMPLATEROOTPATHS] ?? []);
+        $paths->setLayoutRootPaths($arguments[self::ARGUMENT_LAYOUTROOTPATHS] ?? []);
+        $paths->setPartialRootPaths($arguments[self::ARGUMENT_PARTIALROOTPATHS] ?? []);
+        if (isset($arguments[self::ARGUMENT_TEMPLATEFILE])) {
+            $paths->setTemplatePathAndFilename($arguments[self::ARGUMENT_TEMPLATEFILE]);
+        } elseif (isset($arguments[self::ARGUMENT_CONTROLLERNAME])) {
+            $context->setControllerName($arguments[self::ARGUMENT_CONTROLLERNAME]);
+        } else {
+            $paths->setTemplatePathAndFilename('php://stdin');
+        }
+        if (isset($arguments[self::ARGUMENT_VARIABLES])) {
+            $variablesReference = trim($arguments[self::ARGUMENT_VARIABLES]);
+            if (!preg_match('/[^a-z0-9\\\:\/\.\s]+/i', $variablesReference)) {
+                if (strpos($variablesReference, ':') !== false) {
+                    list($variableProviderClassName, $source) = explode(':', $variablesReference, 2);
+                } else {
+                    $variableProviderClassName = $variablesReference;
+                    $source = null;
+                }
+                /** @var VariableProviderInterface $variableProvider */
+                $variableProvider = new $variableProviderClassName();
+                $variableProvider->setSource($source);
+            } elseif (($variablesReference[0] === '{' && substr($variablesReference, -1) === '}')
+                || file_exists($variablesReference)
+                || strpos($variablesReference, ':/') !== false
+            ) {
+                $variableProvider = new JSONVariableProvider();
+                $variableProvider->setSource($variablesReference);
+            } else {
+                $variableProvider = new StandardVariableProvider();
+            }
+            $context->setVariableProvider($variableProvider);
+        }
+        if (isset($arguments[self::ARGUMENT_SOCKET])) {
+            $this->listenIndefinitelyOnSocket($arguments[self::ARGUMENT_SOCKET], $view);
+            return '';
+        }
+        $action = $arguments[self::ARGUMENT_CONTROLLERACTION] ?? null;
+        return $view->render($action);
+    }
+
+    private function listenIndefinitelyOnSocket(string $socketIdentifier, AbstractTemplateView $view): void
+    {
+        if (file_exists($socketIdentifier)) {
+            unlink($socketIdentifier);
+        }
+        umask(0);
+        if (preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}:[0-9]{1,5}/', $socketIdentifier)) {
+            $socketServer = stream_socket_server('tcp://' . $socketIdentifier);
+        } else {
+            $socketServer = stream_socket_server('unix://' . $socketIdentifier);
+        }
+        while ($socket = stream_socket_accept($socketServer, -1)) {
+            $input = stream_socket_recvfrom($socket, 1024);
+            $templatePathAndFilename = $this->parseTemplatePathAndFilenameFromHeaders($input, $view->getRenderingContext()->getTemplatePaths());
+            if (!file_exists($templatePathAndFilename)) {
+                $response = $this->createErrorResponse('Not Found', 404);
+            } else {
+                try {
+                    $rendered = $this->renderSocketRequest($templatePathAndFilename, $view);
+                    $response = $this->createResponse($rendered);
+                } catch (Exception $error) {
+                    $response = $this->createErrorResponse($error->getMessage(), 500);
+                }
+            }
+            stream_socket_sendto($socket, $response);
+            stream_socket_sendto($socket, "\x0B");
+            stream_socket_shutdown($socket, STREAM_SHUT_WR);
+        }
+    }
+
+    private function parseTemplatePathAndFilenameFromHeaders(string $input, TemplatePaths $paths): string
+    {
+        if (strpos($input, "\000") !== false) {
+            return $this->parseTemplatePathAndFilenameFromScgiHeaders($input);
+        }
+        return $this->parseTemplatePathAndFilenameFromProcessedHeaders($input, $paths);
+    }
+
+    private function parseTemplatePathAndFilenameFromProcessedHeaders(string $input, TemplatePaths $paths): string
+    {
+        $matches = [];
+        preg_match('/^GET ([^\s]+)/', $input, $matches);
+        $uri = $matches[1];
+        if (substr($uri, -1) === '/') {
+            $uri .= 'index.html';
+        }
+        $templateRootPaths = $paths->getTemplateRootPaths();
+        $templateRootPath = reset($templateRootPaths);
+        $templateRootPath = rtrim($templateRootPath, '/');
+        return $templateRootPath . $uri;
+    }
+
+    private function parseTemplatePathAndFilenameFromScgiHeaders(string $input): string
+    {
+        $lines = explode("\000", $input);
+        $parameters = [];
+        while ($name = array_shift($lines)) {
+            $parameters[$name] = array_shift($lines);
+        }
+        return $parameters['DOCUMENT_ROOT'] . $parameters['REQUEST_URI'];
+    }
+
+    private function createErrorResponse(string $response, int $code): string
+    {
+        $headers = [
+            'HTTP/1.1 ' . $code . ' ' . $response,
+        ];
+        return implode("\n", $headers) . "\n\n" . $response;
+    }
+
+    private function createResponse(string $response): string
+    {
+        $headers = [
+            'HTTP/1.1 200 OK',
+            'Cache-Control:no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
+            'Connection:keep-alive',
+            'Content-Type:text/html;charset=utf-8',
+            'Content-Length:' . strlen($response),
+            'Pragma:no-cache',
+        ];
+        return implode("\n", $headers) . "\n\n" . $response;
+    }
+
+    /**
+     * @return string
+     */
+    private function renderSocketRequest(string $templatePathAndFilename, AbstractTemplateView $view)
+    {
+        $view->getRenderingContext()->getTemplatePaths()->setTemplatePathAndFilename($templatePathAndFilename);
+        return $view->render();
+    }
+
+    /**
+     * @param string[] $arguments
+     * @param string[] $allowed
+     * @return array<string, mixed>
+     */
+    private function parseAndValidateInputArguments(array $arguments, array $allowed): array
+    {
+        $argumentPointer = false;
+        $parsed = [];
+        foreach ($arguments as $argument) {
+            if (substr($argument, 0, 2) === '--') {
+                $argument = substr($argument, 2);
+                if (!in_array($argument, $allowed)) {
+                    throw new \InvalidArgumentException('Unsupported argument: ' . $argument);
+                }
+                $parsed[$argument] = false;
+                $argumentPointer = &$parsed[$argument];
+            } else {
+                if ($argumentPointer === false) {
+                    $argumentPointer = $argument;
+                } elseif (is_array($argumentPointer)) {
+                    $argumentPointer[] = $argument;
+                } else {
+                    $argumentPointer = [$argumentPointer];
+                    $argumentPointer[] = $argument;
+                }
+            }
+        }
+        if (isset($parsed[self::ARGUMENT_TEMPLATEROOTPATHS])) {
+            $parsed[self::ARGUMENT_TEMPLATEROOTPATHS] = (array)$parsed[self::ARGUMENT_TEMPLATEROOTPATHS];
+        }
+        if (isset($parsed[self::ARGUMENT_LAYOUTROOTPATHS])) {
+            $parsed[self::ARGUMENT_LAYOUTROOTPATHS] = (array)$parsed[self::ARGUMENT_LAYOUTROOTPATHS];
+        }
+        if (isset($parsed[self::ARGUMENT_PARTIALROOTPATHS])) {
+            $parsed[self::ARGUMENT_PARTIALROOTPATHS] = (array)$parsed[self::ARGUMENT_PARTIALROOTPATHS];
+        }
+        if (isset($parsed[self::ARGUMENT_PATH])) {
+            $parsed[self::ARGUMENT_PATH] = (array)$parsed[self::ARGUMENT_PATH];
+        }
+        return $parsed;
+    }
+
+    private function dumpHelpHeader(): string
+    {
+        return PHP_EOL
+            . '----------------------------------------------------------------------------------------------' . PHP_EOL
+            . '				TYPO3 Fluid CLI: Help text' . PHP_EOL
+            . '----------------------------------------------------------------------------------------------'
+            . PHP_EOL . PHP_EOL;
+    }
+
+    /**
+     * @param array<string, string> $commands
+     */
+    private function dumpSupportedCommands(array $commands): string
+    {
+        $commandString = 'Supported commands:' . PHP_EOL . PHP_EOL;
+        foreach ($commands as $name => $description) {
+            $commandString .= "\t" . 'bin/fluid ' . str_pad($name, 20, ' ') . ' # ' . $description . PHP_EOL;
+        }
+        return $commandString . PHP_EOL;
+    }
+
+    /**
+     * @param array<string, string> $parameters
+     */
+    private function dumpSupportedParameters(array $parameters): string
+    {
+        $parameterString = 'Supported parameters:' . PHP_EOL . PHP_EOL;
+        foreach ($parameters as $name => $description) {
+            $parameterString .= "\t" . '--' . str_pad($name, 20, ' ') . ' # ' . $description . PHP_EOL;
+        }
+        return $parameterString . PHP_EOL;
+    }
+
+    private function dumpRunExamples(): string
+    {
+        return <<< HELP
+Use the CLI utility in the following modes:
+
+Interactive mode:
+
+    ./bin/fluid run
+    (enter fluid template code, then enter key, then ctrl+d to send the input)
+
+Or using STDIN:
+
+    cat mytemplatefile.html | ./bin/fluid run
+
+Or using parameters:
+
+    ./bin/fluid run --template mytemplatefile.html
+
+To specify multiple values, for example for the templateRootPaths argument:
+
+    ./bin/fluid run --templateRootPaths /path/to/first/ /path/to/second/ "/path/with spaces/"
+
+To specify variables, use any JSON source - string of JSON, local file or URI, or class
+name of a PHP class implementing DataProviderInterface:
+
+    ./bin/fluid run --variables /path/to/fluidvariables.json
+
+    ./bin/fluid run --variables unix:/path/to/unixpipe
+
+    ./bin/fluid run --variables http://offsite.com/variables.json
+
+    ./bin/fluid run --variables `cat /path/to/fluidvariables.json`
+
+    ./bin/fluid run --variables "TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider"
+
+    ./bin/fluid run --variables "TYPO3Fluid\Fluid\Core\Variables\JSONVariableProvider:/path/to/file.json"
+
+When specifying a VariableProvider class name it is possible to additionally add a
+simple string value which gets passed to the VariableProvider through ->setSource()
+upon instantiation. If working with custom VariableProviders, check the documentation
+for each VariableProvider to know which source types are supported.
+
+Should you require it you can pass the class name of a custom RenderingContext:
+
+    ./bin/fluid run --renderingContext "My\Custom\RenderingContext"
+
+Furthermore, should you require special bootstrapping of a framework, you can specify
+an entry point containing a bootstrap (with or without output, does not matter) which
+will be required/included as part of the initialisation.
+
+    ./bin/fluid run --renderingContext "My\\Custom\\RenderingContext" --bootstrap /path/to/bootstrap.php
+
+Or using a public, static function on a class which bootstraps:
+
+    ./bin/fluid run --renderingContext "My\\Custom\\RenderingContext" --bootstrap MyBootstrapClass::bootstrapMethod
+
+When passing a class-and-method bootstrap it is important that the method has no
+required arguments and is possible to call as static method.
+
+Be careful to use a bootstrapper which does not cause output if you intend to render templates.
+
+A WebSocket mode is available. When starting the CLI utility in WebSocket mode,
+very basic HTTP requests are rendered directly by listening on an IP:PORT combination:
+
+    sudo ./bin/fluid run --socket 0.0.0.0:8080 --templateRootPaths /path/to/files/
+
+Pointing your browser to http://localhost:8080 should then render the requested
+file from the given path, defaulting to `index.html` when URI ends in `/`.
+
+Note that when started this way, there is no DOCUMENT_ROOT except for the root
+path you define as templateRootPaths. In this mode, the *FIRST* templateRootPath
+gets used as if it were the DOCUMENT_ROOT.
+
+Note also that this mode does not provide any \$_SERVER or other variables of use
+as would be done through for example Apache or Nginx.
+
+An additional SocketServer mode is available. When started in SocketServer mode,
+the CLI utility can be used as upstream (SCGI currently) in Nginx:
+
+    sudo ./bin/fluid run --socket /var/run/fluid.sock
+
+Example SCGI config for Nginx:
+
+    location ~ \.html$ {
+        scgi_pass unix:/var/run/fluid.sock;
+        include scgi_params;
+    }
+
+End of help text for FLuid CLI.
+HELP;
+    }
+}

@@ -57,7 +57,7 @@ class QuickExport
 		$out = '';
 		switch( $name ) {
 			case 'test':
-				self::$test = (bool) $arg1;
+				self::$test = (boolean) $arg1;
 				break;
 			case 'header':
 				$out = ( self::$test ) ? $arg1 : header( $arg1, $arg2 );

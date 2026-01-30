@@ -1,10 +1,13 @@
 <?php
-namespace TYPO3Fluid\Fluid\Core\Parser\TemplateProcessor;
+
+declare(strict_types=1);
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
+
+namespace TYPO3Fluid\Fluid\Core\Parser\TemplateProcessor;
 
 use TYPO3Fluid\Fluid\Core\Parser\PassthroughSourceException;
 use TYPO3Fluid\Fluid\Core\Parser\TemplateProcessorInterface;
@@ -23,11 +26,9 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 class PassthroughSourceModifierTemplateProcessor implements TemplateProcessorInterface
 {
     /**
-     * @param string $templateSource
-     * @return string
      * @throws PassthroughSourceException
      */
-    public function preProcessSource($templateSource)
+    public function preProcessSource(string $templateSource): string
     {
         if (strpos($templateSource, '{parsing off}') !== false) {
             $templateSource = str_replace('{parsing off}', '', $templateSource);
@@ -38,11 +39,7 @@ class PassthroughSourceModifierTemplateProcessor implements TemplateProcessorInt
         return str_replace('{parsing on}', '', $templateSource);
     }
 
-    /**
-     * @param RenderingContextInterface $renderingContext
-     * @return void
-     */
-    public function setRenderingContext(RenderingContextInterface $renderingContext)
+    public function setRenderingContext(RenderingContextInterface $renderingContext): void
     {
         // void
     }

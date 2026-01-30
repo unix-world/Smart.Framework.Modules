@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210305
+ * @version 	v.20260122
  * @package 	extralibs:Network
  *
  */
@@ -877,7 +877,7 @@ final class SmartFtpClient {
 		//--
 		$this->_debug_print(str_replace("\r\n", "\n", $this->_resp));
 		//--
-		if(!preg_match("/^[123]/", (string)$this->_resp)) {
+		if(!preg_match('/^[123]/', (string)$this->_resp)) {
 			return false;
 		} //end if
 		//--
@@ -942,8 +942,8 @@ final class SmartFtpClient {
 	//===================================
 	private function _open_data_connection($ip_port) {
 		//--
-		if(!preg_match("/[0-9]{1,3},[0-9]{1,3},[0-9]{1,3},[0-9]{1,3},[0-9]+,[0-9]+/", (string)$ip_port)) {
-			$this->_debug_print("Error : Illegal ip-port format(".$ip_port.")\n");
+		if(!preg_match('/[0-9]{1,3},[0-9]{1,3},[0-9]{1,3},[0-9]{1,3},[0-9]+,[0-9]+/', (string)$ip_port)) {
+			$this->_debug_print('Error : Illegal ip-port format('.$ip_port.')'."\n");
 			return false;
 		} //end if
 		//--

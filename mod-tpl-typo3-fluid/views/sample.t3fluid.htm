@@ -1,4 +1,4 @@
-<f:section name="Typo3FluidTpl"><!-- start Typo3Fluid template v.20221208 -->
+<f:section name="Typo3FluidTpl"><!-- start Typo3Fluid template v.20260128 -->
 <f:comment> Template: sample.t3fluid.htm </f:comment><!-- comments are removed -->
 <center><div>
 	<div>
@@ -8,11 +8,11 @@
 	</div>
 	<f:format.raw>{hello__world}</f:format.raw>
 	<div>
-		<a href="?/page/tpl-typo3-fluid.test" class="ux-button ux-button-small ux-button-info"><i class="sfi sfi-loop2"></i> &nbsp; Reload TPL Render Test</a>
+		<a href="{UrlReload}" class="ux-button ux-button-small ux-button-info"><i class="sfi sfi-loop2"></i> &nbsp; Reload TPL Render Test</a>
 		&nbsp;&nbsp;
-		<a href="?/page/tpl-typo3-fluid.test/op/viewsource" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-primary"><i class="sfi sfi-embed"></i> &nbsp; View TPL Source</a>
+		<a href="{UrlViewSource}" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-primary"><i class="sfi sfi-embed"></i> &nbsp; View TPL Source</a>
 		&nbsp;&nbsp;
-		<a href="?/page/tpl-typo3-fluid.test/op/viewpartialsource" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="sfi sfi-embed2"></i> &nbsp; View Sub-TPL Source</a>
+		<a href="{UrlViewSubSource}" target="tpl_typo3fluid_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="sfi sfi-embed2"></i> &nbsp; View Sub-TPL Source</a>
 	</div>
 	<br>
 	<div style="color:#777777;">{date_time}</div>

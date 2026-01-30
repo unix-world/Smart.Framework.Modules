@@ -1,0 +1,94 @@
+.. include:: /Includes.rst.txt
+
+.. _changelog-5.x:
+
+=============
+Changelog 5.x
+=============
+
+5.0
+---
+
+* Breaking: Property :php:`TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper::$childNodes`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper::setChildNodes()`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface::setChildNodes()`
+  has been removed.
+* Breaking: ViewHelper namespaces are no longer inherited from templates to layouts and partials.
+* Breaking: Trait :php:`TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic`
+  has been removed.
+* Breaking: Trait :php:`TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic`
+  has been removed.
+* Breaking: Static method :php:`renderStatic()` on ViewHelpers that don't use :php:`TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic`
+  or :php:`TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic`
+  is no longer called.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\View\TemplatePaths->__construct()`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\View\TemplatePaths->fillFromConfigurationArray()`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\View\TemplatePaths->fillDefaultsByPackageName()`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\View\TemplatePaths->ensureAbsolutePaths()`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\View\TemplatePaths->extractPathArrays()`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\View\TemplatePaths->getPackagePath()`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\View\TemplatePaths->toArray()`
+  has been removed.
+* Breaking: Constant :php:`TYPO3Fluid\Fluid\View\TemplatePaths::DEFAULT_TEMPLATES_DIRECTORY`
+  has been removed.
+* Breaking: Constant :php:`TYPO3Fluid\Fluid\View\TemplatePaths::DEFAULT_LAYOUTS_DIRECTORY`
+  has been removed.
+* Breaking: Constant :php:`TYPO3Fluid\Fluid\View\TemplatePaths::DEFAULT_PARTIALS_DIRECTORY`
+* Breaking: Method :php:`TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperResolver::resolvePhpNamespaceFromFluidNamespace()`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperResolver::isNamespaceValidOrIgnored()`
+  has been removed.
+* Breaking: Constant :php:`TYPO3Fluid\Fluid\Core\Parser\Patterns::NAMESPACESUFFIX`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperResolver::addNamespaces()`
+* Breaking: Setting a template's layout with the variable `layoutName` is no longer possible.
+* Breaking: Constant :php:`TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler::LAYOUT_VARIABLE`
+* Breaking: Method :php:`TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper->overrideArgument()`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper::isValidType()`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper::getFirstElementOfNonEmpty()`
+  has been removed.
+* Breaking: Method :php:`postParseEvent()` on ViewHelpers is no longer called.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper->registerUniversalTagAttributes()`
+  has been removed.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper->registerTagAttribute()`
+  has been removed.
+* Breaking: Using the `xmlns` namespace syntax with a PHP namespace instead of an url is no longer possible.
+* Breaking: ViewHelper argument validation now uses the `StrictArgumentProcessor`, which might lead to
+  slightly different behavior within ViewHelpers or exceptions if ViewHelpers didn't validate arguments properly before.
+* Breaking: Classes, interfaces, methods and constants related to cache warmup have been removed:
+    * :php:`TYPO3Fluid\Fluid\Core\Cache\FluidCacheInterface::getCacheWarmer()`
+    * :php: `TYPO3Fluid\Fluid\Core\Cache\SimpleFileCache::getCacheWarmer()`
+    * :php:`TYPO3Fluid\Fluid\Core\Cache\FluidCacheWarmerInterface`
+    * :php:`TYPO3Fluid\Fluid\Core\Cache\StandardCacheWarmer`
+    * :php:`TYPO3Fluid\Fluid\Core\Cache\FluidCacheWarmupResult`
+    * :php:`TYPO3Fluid\Fluid\Core\Compiler\FailedCompilingState`
+    * :php:`TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler::MODE_NORMAL`
+    * :php:`TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler::MODE_WARMUP`
+    * :php:`TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler::$mode`
+    * :php:`TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler::enterWarmupMode()`
+    * :php:`TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler::isWarmupMode()`
+* Breaking: The `<f:cache.warmup>` ViewHelper has been removed.
+* Breaking: `TYPO3Fluid\Fluid\Core\Parser\TemplateParser::parse()` and
+  `TYPO3Fluid\Fluid\Core\Parser\TemplateParser::createParsingRelatedExceptionWithContext()` no longer
+  allow `null` as template identifier.
+* Breaking: Tag attributes that are set to `null` are now removed from the tag instead of being
+  interpreted as empty string in :php:`TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder`.
+* Breaking: Method :php:`TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper::validateArguments()`
+  has been removed.
+* Breaking: Custom implementations of the `validateArguments()` methods in ViewHelpers are no longer called.
+* Breaking: Fluid variable names can no longer start with an underscore character (`_`). Adding such a variable to a template
+  results in an exception. Note that this doesn't affect array keys or object property names, only the name of the variable itself.
+* Deprecation: Class :php:`TYPO3Fluid\Fluid\Core\ViewHelper\LenientArgumentProcessor`
+  is no longer being used by Fluid v5 and will be removed with Fluid v6.
+* Breaking: CDATA sections are no longer removed from Fluid templates. Use `<f:comment>` instead
+  if you want to comment out code in Fluid templates.

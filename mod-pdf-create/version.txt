@@ -1,0 +1,12 @@
+
+# Smart.Framework.Modules: PdfCreate r.20260130 #
+
+// r.8.7 / smart.framework.v.8.7
+
+# PHP 8.1 .. PHP 8.5 ready
+
+----------------------------
+@ SF.Base.Vendor Ready
+----------------------------
+
+###

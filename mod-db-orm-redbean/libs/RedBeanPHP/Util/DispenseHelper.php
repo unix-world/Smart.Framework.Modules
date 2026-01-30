@@ -10,7 +10,7 @@ use RedBeanPHP\RedException as RedException;
  * Dispense Helper
  *
  * A helper class containing a dispense utility.
- *
+ * 
  * @file    RedBeanPHP/Util/DispenseHelper.php
  * @author  Gabor de Mooij and the RedBeanPHP Community
  * @license BSD/GPLv2
@@ -39,7 +39,7 @@ class DispenseHelper
 	 */
 	public static function setEnforceNamingPolicy( $yesNo )
 	{
-		self::$enforceNamingPolicy = (bool) $yesNo;
+		self::$enforceNamingPolicy = (boolean) $yesNo;
 	}
 
 	/**
@@ -75,7 +75,7 @@ class DispenseHelper
 	public static function checkType( $type )
 	{
 		if ( !preg_match( '/^[a-z0-9]+$/', $type ) ) {
-			throw new RedException( 'Invalid type: ' . $type );
+			throw new RedException( 'Invalid bean type: ' . $type );
 		}
 	}
 

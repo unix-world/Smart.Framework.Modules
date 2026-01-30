@@ -1,9 +1,13 @@
 <?php
+
+/*
+ * This file belongs to the package "TYPO3 Fluid".
+ * See LICENSE.txt that was shipped with this package.
+ */
+
 namespace TYPO3Fluid\Fluid\ViewHelpers;
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic;
 
 /**
  * Inline Fluid rendering ViewHelper
@@ -28,35 +32,29 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderS
  */
 class InlineViewHelper extends AbstractViewHelper
 {
-    use CompileWithContentArgumentAndRenderStatic;
-
     protected $escapeChildren = false;
 
     protected $escapeOutput = false;
 
-    /**
-     * @return void
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument(
             'code',
             'string',
-            'Fluid code to be rendered as if it were part of the template rendering it. Can be passed as inline argument or tag content'
+            'Fluid code to be rendered as if it were part of the template rendering it. Can be passed as inline argument or tag content',
         );
     }
 
+    public function render(): mixed
+    {
+        return $this->renderingContext->getTemplateParser()->parse((string)$this->renderChildren())->render($this->renderingContext);
+    }
+
     /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return mixed|string
+     * Explicitly set argument name to be used as content.
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        return $renderingContext->getTemplateParser()->parse($renderChildrenClosure())->render($renderingContext);
+    public function getContentArgumentName(): string
+    {
+        return 'code';
     }
 }

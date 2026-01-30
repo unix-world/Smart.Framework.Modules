@@ -1,4 +1,4 @@
-<!-- start twist partial / sub-template v.20221208 -->
+<!-- start twist partial / sub-template v.20260130 -->
 {% comment %} Partial / Sub-Template: sample-partial.inc.twist.htm {% endcomment %}<!-- this kind of comments are removed but preserved internally -->
 	<h5 id="qunit-test-result">Twist TPL w. Sub-Template Render (Table with #{{ tCount }} columns):</h5>
 	<table style="border: 1px solid #ECECEC; width: 550px;" id="qunit-test-el">
@@ -7,7 +7,7 @@
 		<th>Column 2<th>
 		<th>Column 3<th>
 	</tr>
-	{% for row in tbl%}
+	{% for row in tbl %}
 	<tr>
 		<td>cell {{ row.a1 }}<td>
 		<td>cell {{ row.a2 }}<td>
@@ -35,7 +35,7 @@
 	{% if b == a %}
 		<span style="color:#FF3300;"><b>NOT OK</b></span>
 	{% else %}
-		{%if b == 'Test-1' %}
+		{% if b == 'Test-1' %}
 			<span style="color:#FF3300;"><b>NOT OK</b></span>
 		{% else %}
 			{% if a != 'Test-1' %}

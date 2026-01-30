@@ -1,8 +1,8 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: DBAL PDO Medoo Tests
-// Route: ?page=dbal-pdo-medoo.test
-// (c) 2006-2024 unix-world.org - all rights reserved
+// Route: ?page=dbal-pdo-medoo.test&driver=sqlite|pgsql|mysql
+// (c) 2006-present unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application

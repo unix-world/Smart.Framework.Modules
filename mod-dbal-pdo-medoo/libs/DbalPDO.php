@@ -1,7 +1,7 @@
 <?php
 // Medoo DBAL PDO adapter for Smart.Framework
 // Module Library
-// (c) 2006-2024 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -13,43 +13,6 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 	die('Invalid Runtime Status in PHP Script: '.@\basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
-
-
-//--
-/**
- *
- * @access 		private
- * @internal
- *
- */
-function autoload__DbalPDOMedoo_SFM($classname) {
-	//--
-	$classname = (string) $classname;
-	//--
-	if(\strpos((string)$classname, '\\') === false) { // if have namespace
-		return;
-	} //end if
-	//--
-	if((string)\substr((string)$classname, 0, 6) !== 'Medoo\\') { // if class name is not starting with Medoo
-		return;
-	} //end if
-	//--
-	$path = 'modules/mod-dbal-pdo-medoo/libs/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
-	//--
-	if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
-		return; // invalid path characters in path
-	} //end if
-	//--
-	if(!\is_file($path.'.php')) {
-		return; // file does not exists
-	} //end if
-	//--
-	require_once($path.'.php');
-	//--
-} //END FUNCTION
-//--
-\spl_autoload_register('\\SmartModExtLib\\DbalPdoMedoo\\autoload__DbalPDOMedoo_SFM', true, false); // throw / append
-//--
 
 
 //=====================================================================================
@@ -65,7 +28,7 @@ function autoload__DbalPDOMedoo_SFM($classname) {
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP PDO ; vendor-classes: \Medoo\Medoo ; classes: Smart, SmartFileSysUtils, SmartEnvironment
- * @version 	v.20241216
+ * @version 	v.20260130
  * @package 	modules:Database:PDO:Medoo-DBAL
  *
  */
@@ -75,11 +38,17 @@ final class DbalPDO {
 
 	private $conexion = null;
 
+	private static bool $initialized = false;
+
+
 	public function __construct() {
 		//--
 		$this->conexion = null;
 		//--
+		$this->init();
+		//--
 	} //END FUNCTION
+
 
 	public function setup(string $type, array $options=[]) : ?\Medoo\Medoo {
 		//--
@@ -164,6 +133,41 @@ final class DbalPDO {
 		} //END FUNCTION
 		//--
 		return $this->conexion;
+		//--
+	} //END FUNCTION
+
+
+	private function init() : void {
+		//--
+		if(self::$initialized === true) {
+			return;
+		} //end if
+		//--
+		\spl_autoload_register(function(string $classname) : void {
+			//--
+			if((\strpos((string)$classname, '\\') === false) OR (!\preg_match('/^[a-zA-Z0-9_\\\]+$/', (string)$classname))) { // if have no namespace or not valid character set
+				return;
+			} //end if
+			//--
+			if(\str_starts_with((string)$classname, 'Medoo\\') === false) { // if class name is starting with Medoo\
+				return;
+			} //end if
+			//--
+			$path = (string) \SmartFileSysUtils::getSmartFsRootPath().'modules/mod-dbal-pdo-medoo/libs/'.\str_replace([ '\\', "\0" ], [ '/', '' ], (string)$classname);
+			//--
+			if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', (string)$path)) {
+				return; // invalid path characters in path
+			} //end if
+			//--
+			if(!\is_file((string)$path.'.php')) {
+				return; // file does not exists
+			} //end if
+			//--
+			require_once((string)$path.'.php');
+			//--
+		}, true, false); // throw / append
+		//--
+		self::$initialized = true;
 		//--
 	} //END FUNCTION
 

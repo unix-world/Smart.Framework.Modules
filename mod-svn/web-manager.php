@@ -15,7 +15,7 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20250107
+	// v.20260128
 
 
 	public function Initialize() {

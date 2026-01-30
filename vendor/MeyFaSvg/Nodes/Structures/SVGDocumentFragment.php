@@ -1,5 +1,7 @@
 <?php
 
+// modified by unixman
+
 namespace SVG\Nodes\Structures;
 
 use SVG\Nodes\SVGNodeContainer;
@@ -131,7 +133,7 @@ class SVGDocumentFragment extends SVGNodeContainer
             $subRasterizer->getWidth(), // src_w
             $subRasterizer->getHeight() // src_h
         );
-        imagedestroy($img);
+        $img = null; // image destroy is deprecated and has no effect since PHP 8.0 ; unixman
     }
 
     /**

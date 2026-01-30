@@ -1,7 +1,5 @@
 <?php
 
-// fixes by unixman
-
 namespace RedBeanPHP\QueryWriter;
 
 use RedBeanPHP\QueryWriter\AQueryWriter as AQueryWriter;
@@ -44,8 +42,6 @@ class PostgreSQL extends AQueryWriter implements QueryWriter
 	const C_DATATYPE_SPECIAL_MONEY2   = 95; //Numbers only money, i.e. fixed point numeric
 	const C_DATATYPE_SPECIAL_JSON     = 96; //JSON support (only manual)
 	const C_DATATYPE_SPECIFIED        = 99;
-
-	private $svalue = null; // fix by unixman for PHP 8.4 cannot create dynamic property
 
 	/**
 	 * @var DBAdapter
@@ -255,8 +251,6 @@ class PostgreSQL extends AQueryWriter implements QueryWriter
 	 */
 	public function scanType( $value, $flagSpecial = FALSE )
 	{
-		$this->svalue = $value;
-
 		if ( $value === INF ) return self::C_DATATYPE_TEXT;
 
 		if ( $flagSpecial && $value ) {

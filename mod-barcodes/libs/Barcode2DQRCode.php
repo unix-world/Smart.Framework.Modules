@@ -1,7 +1,7 @@
 <?php
 // Semacode DataMatrix Barcode 2D for Smart.Framework
 // Module Library
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -72,7 +72,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20211127
+ * @version 	v.20260130
  * @package 	modules:Barcodes2D
  *
  */
@@ -82,49 +82,49 @@ final class Barcode2DQRCode {
 
 
 	// Encoding modes (characters which can be encoded in QRcode)
-	const QR_BARCODE_MODE_NL = -1; 				// Encoding modes (characters which can be encoded in QRcode)
-	const QR_BARCODE_MODE_NM = 0; 				// Encoding mode numeric (0-9). 3 characters are encoded to 10bit length. In theory, 7089 characters or less can be stored in a QRcode.
-	const QR_BARCODE_MODE_AN = 1; 				// Encoding mode alphanumeric (0-9A-Z $%*+-./:) 45characters. 2 characters are encoded to 11bit length. In theory, 4296 characters or less can be stored in a QRcode.
-	const QR_BARCODE_MODE_8B = 2; 				// Encoding mode 8bit byte data. In theory, 2953 characters or less can be stored in a QRcode.
-	const QR_BARCODE_MODE_KJ = 3; 				// Encoding mode KANJI. A KANJI character (multibyte character) is encoded to 13bit length. In theory, 1817 characters or less can be stored in a QRcode.
-	const QR_BARCODE_MODE_ST = 4; 				// Encoding mode STRUCTURED (currently unsupported)
+	public const QR_BARCODE_MODE_NL = -1; 				// Encoding modes (characters which can be encoded in QRcode)
+	public const QR_BARCODE_MODE_NM =  0; 				// Encoding mode numeric (0-9). 3 characters are encoded to 10bit length. In theory, 7089 characters or less can be stored in a QRcode.
+	public const QR_BARCODE_MODE_AN =  1; 				// Encoding mode alphanumeric (0-9A-Z $%*+-./:) 45characters. 2 characters are encoded to 11bit length. In theory, 4296 characters or less can be stored in a QRcode.
+	public const QR_BARCODE_MODE_8B =  2; 				// Encoding mode 8bit byte data. In theory, 2953 characters or less can be stored in a QRcode.
+	public const QR_BARCODE_MODE_KJ =  3; 				// Encoding mode KANJI. A KANJI character (multibyte character) is encoded to 13bit length. In theory, 1817 characters or less can be stored in a QRcode.
+	public const QR_BARCODE_MODE_ST =  4; 				// Encoding mode STRUCTURED (currently unsupported)
 
 	// Levels of error correction. QRcode has a function of an error correcting for miss reading that white is black. Error correcting is defined in 4 level as below.
-	const QR_BARCODE_ECC_LEVEL_L = 0; 			// Error correction level L : About 7% or less errors can be corrected.
-	const QR_BARCODE_ECC_LEVEL_M = 1; 			// Error correction level M : About 15% or less errors can be corrected.
-	const QR_BARCODE_ECC_LEVEL_Q = 2; 			// Error correction level Q : About 25% or less errors can be corrected.
-	const QR_BARCODE_ECC_LEVEL_H = 3; 			// Error correction level H : About 30% or less errors can be corrected.
+	public const QR_BARCODE_ECC_LEVEL_L = 0; 			// Error correction level L : About 7% or less errors can be corrected.
+	public const QR_BARCODE_ECC_LEVEL_M = 1; 			// Error correction level M : About 15% or less errors can be corrected.
+	public const QR_BARCODE_ECC_LEVEL_Q = 2; 			// Error correction level Q : About 25% or less errors can be corrected.
+	public const QR_BARCODE_ECC_LEVEL_H = 3; 			// Error correction level H : About 30% or less errors can be corrected.
 
 	// Version. Size of QRcode is defined as version from 1 to 40. Version 1 is 21*21 matrix. And 4 modules increases whenever 1 version increases. So version 40 is 177*177 matrix.
-	const QR_BARCODE_SPEC_VERSION_MAX = 40; 	// Maximum QR Code version.
-	const QR_BARCODE_SPEC_WIDTH_MAX = 177; 		// Maximum matrix size for maximum version (version 40 is 177*177 matrix).
+	public const QR_BARCODE_SPEC_VERSION_MAX =  40; 	// Maximum QR Code version.
+	public const QR_BARCODE_SPEC_WIDTH_MAX   = 177; 	// Maximum matrix size for maximum version (version 40 is 177*177 matrix).
 
 	// Capacity
-	const QR_BARCODE_CAP_WIDTH = 0; 			// Matrix index to get width from $capacity array.
-	const QR_BARCODE_CAP_WORDS = 1; 			// Matrix index to get number of words from $capacity array.
-	const QR_BARCODE_CAP_REMINDER = 2; 			// Matrix index to get remainder from $capacity array.
-	const QR_BARCODE_CAP_ECC = 3; 				// Matrix index to get error correction level from $capacity array.
+	private const QR_BARCODE_CAP_WIDTH 		= 0; 		// Matrix index to get width from $capacity array.
+	private const QR_BARCODE_CAP_WORDS 		= 1; 		// Matrix index to get number of words from $capacity array.
+	private const QR_BARCODE_CAP_REMINDER 	= 2; 		// Matrix index to get remainder from $capacity array.
+	private const QR_BARCODE_CAP_ECC 		= 3; 		// Matrix index to get error correction level from $capacity array.
 
 	// Structure (currently usupported)
-	const QR_BARCODE_STRUCT_HEAD_BITS =  20; 	// Number of header bits for structured mode
-	const QR_BARCODE_STRUCT_MAX_SYMBOLS = 16; 	// Max number of symbols for structured mode
+	private const QR_BARCODE_STRUCT_HEAD_BITS   = 20; 	// Number of header bits for structured mode
+	private const QR_BARCODE_STRUCT_MAX_SYMBOLS = 16; 	// Max number of symbols for structured mode
 
 	// Masks
-	const QR_BARCODE_MASK_N1 = 3; 				// Down point base value for case 1 mask pattern (concatenation of same color in a line or a column)
-	const QR_BARCODE_MASK_N2 = 3; 				// Down point base value for case 2 mask pattern (module block of same color)
-	const QR_BARCODE_MASK_N3 = 40; 				// Down point base value for case 3 mask pattern (1:1:3:1:1(dark:bright:dark:bright:dark)pattern in a line or a column)
-	const QR_BARCODE_MASK_N4 = 10; 				// Down point base value for case 4 mask pattern (ration of dark modules in whole)
+	private const QR_BARCODE_MASK_N1 =  3; 				// Down point base value for case 1 mask pattern (concatenation of same color in a line or a column)
+	private const QR_BARCODE_MASK_N2 =  3; 				// Down point base value for case 2 mask pattern (module block of same color)
+	private const QR_BARCODE_MASK_N3 = 40; 				// Down point base value for case 3 mask pattern (1:1:3:1:1(dark:bright:dark:bright:dark)pattern in a line or a column)
+	private const QR_BARCODE_MASK_N4 = 10; 				// Down point base value for case 4 mask pattern (ration of dark modules in whole)
 
 	// Optimization settings
-	const QR_BARCODE_FIND_BEST_MASK = true; 	// if true, estimates best mask (spec. default, but extremally slow; set to false to significant performance boost but (propably) worst quality code
-	const QR_BARCODE_FIND_FROM_RANDOM = false; 	// (default is 2) ; if false, checks all masks available, otherwise value tells count of masks need to be checked, mask id are got randomly
-	const QR_BARCODE_FIND_DEFAULT_MASK = 2; 	// when self::QR_BARCODE_FIND_BEST_MASK === false
+	private const QR_BARCODE_FIND_BEST_MASK    = true; 	// if true, estimates best mask (spec. default, but extremally slow; set to false to significant performance boost but (propably) worst quality code
+	private const QR_BARCODE_FIND_FROM_RANDOM  = false; // (default is 2) ; if false, checks all masks available, otherwise value tells count of masks need to be checked, mask id are got randomly
+	private const QR_BARCODE_FIND_DEFAULT_MASK = 2; 	// when self::QR_BARCODE_FIND_BEST_MASK === false
 
 	/**
 	 * Barcode array to be returned which is readable by TCPDF.
 	 * @private
 	 */
-	private $barcode_array = array();
+	private $barcode_array = [];
 
 	/**
 	 * QR code version. Size of QRcode is defined as version. Version is from 1 to 40. Version 1 is 21*21 matrix. And 4 modules increases whenever 1 version increases. So version 40 is 177*177 matrix.
@@ -520,7 +520,7 @@ final class Barcode2DQRCode {
 	 * @return array barcode array readable by TCPDF;
 	 * @public
 	 */
-	public function getBarcodeArray() {
+	public function getBarcodeArray() : array {
 		//--
 		return (array) $this->barcode_array;
 		//--

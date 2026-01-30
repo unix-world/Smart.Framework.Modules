@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\TplTwist\SmartTwistTemplating
 // [Smart.Framework.Modules - TwistTPL / Smart TwistTemplating]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -42,7 +42,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype ; classes: TwistTPL, \SmartModExtLib\TplTwist\Templating
- * @version 	v.20221220
+ * @version 	v.20260128
  * @package 	modules:TemplatingEngine
  *
  */
@@ -62,12 +62,13 @@ final class SmartTwistTemplating implements \SmartModExtLib\Tpl\InterfaceSmartTe
 
 	public static function render_file_template(?string $file, ?array $arr_vars=[]) : string {
 		//--
-		if(!\SmartAppInfo::TestIfModuleExists('mod-tpl')) {
-			return '{# ERROR: '.__CLASS__.' :: The module mod-tpl cannot be found ... #}';
-		} //end if
-		//--
-		if(!\SmartAppInfo::TestIfModuleExists('mod-tpl-twist')) {
-			return '{# ERROR: '.__CLASS__.' :: The module mod-tpl-twist cannot be found ... #}';
+		if(\class_exists('\\SmartAppInfo')) {
+			if(!\SmartAppInfo::TestIfModuleExists('mod-tpl')) {
+				return '{# ERROR: '.__CLASS__.' :: The module mod-tpl cannot be found ... #}';
+			} //end if
+			if(!\SmartAppInfo::TestIfModuleExists('mod-tpl-twist')) {
+				return '{# ERROR: '.__CLASS__.' :: The module mod-tpl-twist cannot be found ... #}';
+			} //end if
 		} //end if
 		//--
 		self::startEngine();
@@ -116,7 +117,7 @@ final class SmartTwistTemplating implements \SmartModExtLib\Tpl\InterfaceSmartTe
 	//#####
 
 
-	private static function startEngine() {
+	private static function startEngine() : void {
 		//--
 		if(self::$engine === null) {
 	//	if((self::$engine === null) OR (\SmartEnvironment::ifDebug())) {

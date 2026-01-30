@@ -99,20 +99,20 @@ class OODB extends Observable
 	 */
 	public static function autoClearHistoryAfterStore( $autoClear = TRUE )
 	{
-		self::$autoClearHistoryAfterStore = (bool) $autoClear;
+		self::$autoClearHistoryAfterStore = (boolean) $autoClear;
 	}
 
 	/**
 	 * Unboxes a bean from a FUSE model if needed and checks whether the bean is
 	 * an instance of OODBBean.
 	 *
-	 * @param OODBBean|SimpleModel $bean bean you wish to unbox
+	 * @param OODBBean|SimpleModel|SimpleModelInterface $bean bean you wish to unbox
 	 *
 	 * @return OODBBean
 	 */
 	protected function unboxIfNeeded( $bean )
 	{
-		if ( $bean instanceof SimpleModel ) {
+		if ( $bean instanceof SimpleModelInterface ) {
 			$bean = $bean->unbox();
 		}
 		if ( !( $bean instanceof OODBBean ) ) {
@@ -185,7 +185,7 @@ class OODB extends Observable
 			$this->chillList = $toggle;
 			$this->isFrozen  = FALSE;
 		} else {
-			$this->isFrozen = (bool) $toggle;
+			$this->isFrozen = (boolean) $toggle;
 		}
 
 		if ( $this->isFrozen ) {
@@ -236,7 +236,7 @@ class OODB extends Observable
 	 */
 	public function isChilled( $type )
 	{
-		return (bool) ( in_array( $type, $this->chillList ) );
+		return (boolean) ( in_array( $type, $this->chillList ) );
 	}
 
 	/**
@@ -375,7 +375,7 @@ class OODB extends Observable
 	 * explicit casts instead of functions to preserve performance
 	 * (0.13 vs 0.28 for 10000 iterations on Core i3).
 	 *
-	 * @param OODBBean|SimpleModel $bean bean to store
+	 * @param OODBBean|SimpleModel|SimpleModelInterface $bean bean to store
 	 *
 	 * @return integer|string
 	 */
@@ -421,7 +421,7 @@ class OODB extends Observable
 	 * This function will remove the specified OODBBean
 	 * Bean Object from the database.
 	 *
-	 * @param OODBBean|SimpleModel $bean bean you want to remove from database
+	 * @param OODBBean|SimpleModel|SimpleModelInterface $bean bean you want to remove from database
 	 *
 	 * @return int
 	 */

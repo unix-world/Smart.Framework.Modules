@@ -2,6 +2,21 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+January 30, 2026
+	* PHP 8.5 compatibility fixes
+	* optimize autoloaders
+	* upgrade ORM RedBean
+
+January 29, 2026
+	* minor fixes
+
+January 28, 2026
+	* PHP 8+ optimizations
+	* optimize and refactoring mod TPL Twist ; implement debug ; implement safe checksums ; change cache file format to JSON
+	* upgrade mod TPL Twig from 3.22.2 to 3.23.0 ; fixes for debug
+	* upgrade mod TPL Typo3Fluid from 2.7 to 5.0.3
+	* fixes to support changes in Smart.Framework base
+
 January 20, 2026
 	* mod PDF: PDF Generator htmldoc+rsvg fixes
 	* mod PDF: PDF Creator, a complete rework based on tFPDF, for PHP 8.1+ with: optimizations, security fixes, unicode fonts, json caching for font metrics and path validation

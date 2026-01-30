@@ -37,28 +37,22 @@ class LocalFileSystem implements \TwistTPL\AbstractInterfaceFileSystem {
 	 * @throws \Exception
 	 */
 	public function __construct(string $root) {
-		//-- since root path can only be set from constructor, we check it once right here
-		$realRoot = (string) $root;
-		$realRoot = (string) \trim((string)$realRoot);
-		$realRoot = (string) \trim((string)$realRoot, '/');
-		$realRoot = (string) \trim((string)$realRoot);
 		//--
-		if(((string)$realRoot == '') OR \in_array((string)$realRoot, (array)\TwistTPL\Twist::INVALID_PATH)) { // {{{SYNC-TWIST-CHECK-SAFE-PATH}}}
-			throw new \Exception(__METHOD__.' # Root path could not be found or is invalid: `'.$realRoot.'`');
+		if((string)$root == '') {
+			throw new \Exception(__METHOD__.' # Root path is empty');
+			return;
+		} //end if
+		if(\SmartFileSysUtils::checkIfSafePath((string)$root) !== 1) {
+			throw new \Exception(__METHOD__.' # Root path is invalid: `'.$root.'`');
 			return;
 		} //end if
 		//--
-		if(!\preg_match((string)\TwistTPL\Twist::REGEX_SAFE_PATH_NAME, (string)$realRoot)) { // {{{SYNC-CHK-SAFE-PATH}}}
-			throw new \Exception(__METHOD__.' # Root path Path is Invalid: `'.$realRoot.'`');
+		if(\SmartFileSysUtils::isDir((string)$root, true) !== true) { // use caching
+			throw new \Exception(__METHOD__.' # Root path must be a directory: `'.$root.'`');
 			return;
 		} //end if
 		//--
-		if(!\is_dir((string)$realRoot)) {
-			throw new \Exception(__METHOD__.' # Root path must be a directory: `'.$realRoot.'`');
-			return;
-		} //end if
-		//--
-		$this->root = (string) $realRoot;
+		$this->root = (string) $root;
 		//--
 	} //END FUNCTION
 
@@ -76,6 +70,10 @@ class LocalFileSystem implements \TwistTPL\AbstractInterfaceFileSystem {
 		$templatePath = (string) \trim((string)$templatePath);
 		//--
 		if((string)$templateFile == '') {
+			throw new \Exception(__METHOD__.' # TPL File Name is Empty');
+			return '';
+		} //end if
+		if(\SmartFileSysUtils::checkIfSafePath((string)$templateFile) !== 1) {
 			throw new \Exception(__METHOD__.' # TPL File Name is Invalid (1): `'.$templateFile.'`');
 			return '';
 		} //end if
@@ -84,12 +82,24 @@ class LocalFileSystem implements \TwistTPL\AbstractInterfaceFileSystem {
 			return '';
 		} //end if
 		//--
-		if(((string)$templatePath == '') OR \in_array((string)$templatePath, (array)\TwistTPL\Twist::INVALID_PATH)) { // {{{SYNC-TWIST-CHECK-SAFE-PATH}}}
+		if((string)$templatePath == '') {
+			throw new \Exception(__METHOD__.' # TPL Path is Empty');
+			return '';
+		} //end if
+		if(\SmartFileSysUtils::checkIfSafePath((string)$templatePath) !== 1) {
 			throw new \Exception(__METHOD__.' # TPL Path is Invalid (1): `'.$templatePath.'`');
 			return '';
 		} //end if
-		if(!\preg_match((string)\TwistTPL\Twist::REGEX_SAFE_PATH_NAME, (string)$templatePath)) { // {{{SYNC-CHK-SAFE-PATH}}}
+		if(((string)$templatePath == '') OR \in_array((string)$templatePath, (array)\TwistTPL\Twist::INVALID_PATH)) { // {{{SYNC-TWIST-CHECK-SAFE-PATH}}}
 			throw new \Exception(__METHOD__.' # TPL Path is Invalid (2): `'.$templatePath.'`');
+			return '';
+		} //end if
+		if(!\preg_match((string)\TwistTPL\Twist::REGEX_SAFE_PATH_NAME, (string)$templatePath)) { // {{{SYNC-CHK-SAFE-PATH}}}
+			throw new \Exception(__METHOD__.' # TPL Path is Invalid (3): `'.$templatePath.'`');
+			return '';
+		} //end if
+		if(\SmartFileSysUtils::isDir((string)$templatePath, true) !== true) { // use caching
+			throw new \Exception(__METHOD__.' # TPL Path must be a Dir: `'.$templatePath.'`');
 			return '';
 		} //end if
 		//--
@@ -97,26 +107,20 @@ class LocalFileSystem implements \TwistTPL\AbstractInterfaceFileSystem {
 			throw new \Exception(__METHOD__.' # TPL File Path is Invalid: `'.$templatePath.$templateFile.'`');
 			return '';
 		} //end if
-		//--
 		if(\strpos((string)$templatePath.$templateFile, (string)$this->root) !== 0) {
-			throw new \Exception(__METHOD__.' # TPL Path must be under the TPL root path: `'.$this->root.'`');
+			throw new \Exception(__METHOD__.' # TPL File Path must be under the TPL root path: `'.$templatePath.$templateFile.'` vs. `'.$this->root.'`');
 			return '';
 		} //end if
-		if(\strpos((string)$templatePath.$templateFile, '..') !== false) {
-			throw new \Exception(__METHOD__.' # TPL Path cannot contain `..`');
+		if(\SmartFileSysUtils::isFile((string)$templatePath.$templateFile, true) !== true) { // use caching
+			throw new \Exception(__METHOD__.' # TPL TPL File Path must be a File: `'.$templatePath.$templateFile.'`');
 			return '';
 		} //end if
-		//--
-		if(!\is_file((string)$templatePath.$templateFile)) {
-			throw new \Exception(__METHOD__.' # The TPL is not a file: `'.$templatePath.$templateFile.'`');
-			return '';
-		} //end if
-		if(!\is_readable((string)$templatePath.$templateFile)) {
-			throw new \Exception(__METHOD__.' # The TPL file is not readable: `'.$templatePath.$templateFile.'`');
+		if(\SmartFileSysUtils::pathIsReadable((string)$templatePath.$templateFile) !== true) { // use caching
+			throw new \Exception(__METHOD__.' # TPL TPL File Path is Not Readable: `'.$templatePath.$templateFile.'`');
 			return '';
 		} //end if
 		//--
-		$tpl = (string) \file_get_contents((string)$templatePath.$templateFile, false);
+		$tpl = (string) \SmartFileSysUtils::readStaticFile((string)$templatePath.$templateFile, (int)\Smart::SIZE_BYTES_16M, true); // {{{SYNC-TPL-MAX-SIZE}}} ; max read size enforced, don't read if oversized
 		if((string)$tpl == '') {
 			throw new \Exception(__METHOD__.' # Failed to read the TPL path: `'.$templatePath.$templateFile.'`');
 			return '';
@@ -128,5 +132,6 @@ class LocalFileSystem implements \TwistTPL\AbstractInterfaceFileSystem {
 
 
 } //END CLASS
+
 
 // #end

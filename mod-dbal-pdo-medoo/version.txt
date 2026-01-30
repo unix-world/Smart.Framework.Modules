@@ -1,7 +1,11 @@
-# Smart.Framework.Modules: Medoo DBAL PDO r.20241218 #
+# Smart.Framework.Modules: Medoo DBAL PDO r.20260130 #
 
 github.com/catfan/Medoo v.2.1.12 @ head.20241204
 
 contains fixes by unixman
 
-# PHP 7.4 .. PHP 8.4 ready
+# PHP 8.1 .. PHP 8.5 ready
+
+----------------------------
+@ SF.Base.Vendor Ready
+----------------------------

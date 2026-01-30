@@ -1,9 +1,9 @@
 
-# Smart.Framework.Modules: RedBean-ORM r.20251204 #
-## gabordemooij/redbean 5.7.3 + head@20221112 (includes fixes by unixman for PHP 8.5, logging facility to integrate with Smart.Framework logging facility + a space between impements and the class name) ##
+# Smart.Framework.Modules: RedBean-ORM r.20260130 #
+## gabordemooij/redbean 5.7.5 + head@20260130 (includes fixes by unixman for logging facility to integrate with Smart.Framework logging facility + connect on get version) ##
 
 // r.8.7 / smart.framework.v.8.7
 
-# PHP 7.4 .. PHP 8.4 ready
+# PHP 8.1 .. PHP 8.5 ready
 
 ###

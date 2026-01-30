@@ -77,8 +77,8 @@ $configs['solr']['slowtime']	= 0.4500;									// 0.0500 .. 0.7500 slow query ti
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @access 		PUBLIC
- * @depends 	extensions: PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartComponents
- * @version 	v.20250107
+ * @depends 	extensions: PHP SOLR Client (v.2.0 or later) ; classes: Smart, SmartFramework
+ * @version 	v.20260128
  * @package 	extralibs:Database:Solr
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -872,7 +872,7 @@ final class SmartSolrDb {
 			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
 		} //end if else
 		//--
-		$out = (string) SmartComponents::app_error_message(
+		$out = (string) SmartFramework::app_error_message(
 			'Solr Client',
 			'Apache-Solr',
 			'FTS',

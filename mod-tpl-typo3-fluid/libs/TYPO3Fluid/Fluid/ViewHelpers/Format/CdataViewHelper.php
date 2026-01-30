@@ -1,14 +1,13 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers\Format;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+namespace TYPO3Fluid\Fluid\ViewHelpers\Format;
+
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic;
 
 /**
  * Outputs an argument/value without any escaping and wraps it with CDATA tags.
@@ -56,38 +55,31 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderS
  */
 class CdataViewHelper extends AbstractViewHelper
 {
-
-    use CompileWithContentArgumentAndRenderStatic;
-
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeChildren = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
-    /**
-     * @return void
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('value', 'mixed', 'The value to output');
     }
 
+    public function render(): string
+    {
+        return sprintf('<![CDATA[%s]]>', $this->renderChildren());
+    }
+
     /**
-     * @param array $arguments
-     * @param callable $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
+     * Explicitly set argument name to be used as content.
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        return sprintf('<![CDATA[%s]]>', $renderChildrenClosure());
+    public function getContentArgumentName(): string
+    {
+        return 'value';
     }
 }

@@ -1,14 +1,13 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+namespace TYPO3Fluid\Fluid\ViewHelpers;
+
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic;
 
 /**
  * Variable assigning ViewHelper
@@ -30,35 +29,28 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderS
  *     {oldvariable -> f:format.htmlspecialchars() -> f:variable(name: 'newvariable')}
  *     <f:variable name="myvariable"><f:format.htmlspecialchars>{oldvariable}</f:format.htmlspecialchars></f:variable>
  *
- * @see \TYPO3Fluid\Fluid\ViewHelpers\IfViewHelper
  * @api
  */
 class VariableViewHelper extends AbstractViewHelper
 {
-    use CompileWithContentArgumentAndRenderStatic;
-
-    /**
-     * @return void
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('value', 'mixed', 'Value to assign. If not in arguments then taken from tag content');
         $this->registerArgument('name', 'string', 'Name of variable to create', true);
     }
 
-    /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return null
-     */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $value = $renderChildrenClosure();
-        $renderingContext->getVariableProvider()->add($arguments['name'], $value);
+    public function render(): string
+    {
+        $value = $this->renderChildren();
+        $this->renderingContext->getVariableProvider()->add($this->arguments['name'], $value);
+        return '';
     }
 
+    /**
+     * Explicitly set argument name to be used as content.
+     */
+    public function getContentArgumentName(): string
+    {
+        return 'value';
+    }
 }

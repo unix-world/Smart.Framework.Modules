@@ -1,10 +1,11 @@
 
 github.com/meyfa/php-svg#HEAD@2020-12-04
 
-// includes fixes by unixman #r.20241216
+// includes fixes by unixman #r.20260130
 * fix: on windows, PHP 7+ GD needs real path for TTF Fonts
 * some fixes for PHP 8.0
 * some fixes for PHP 8.1+
+* some fixes for PHP 8.5
 * fix: [security] use SmartRobot class instead of the unsecure file_get_contents() ; the file_get_contents() may load an unattended file from local file system if embedded in a crafted URL that match a local file system in a SVG !
 
-# PHP 7.4 .. PHP 8.4 ready
+# PHP 8.1 .. PHP 8.5 ready

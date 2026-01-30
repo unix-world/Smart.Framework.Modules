@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: PdfGenerate r.20260120 #
+# Smart.Framework.Modules: PdfGenerate r.20260121 #
 
 // r.8.7 / smart.framework.v.8.7
 

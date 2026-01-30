@@ -1,10 +1,11 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers\Cache;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
+
+namespace TYPO3Fluid\Fluid\ViewHelpers\Cache;
 
 use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
 use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
@@ -52,7 +53,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  *
  *     <f:cache.disable>
  *        Some output or Fluid code
- *     </f:cache.disble>
+ *     </f:cache.disable>
  *
  * Additional output is also not compilable because of the ViewHelper
  *
@@ -60,39 +61,24 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class DisableViewHelper extends AbstractViewHelper
 {
-
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeChildren = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
-    /**
-     * @return string
-     */
-    public function render()
+    public function render(): mixed
     {
         return $this->renderChildren();
     }
 
-    /**
-     * @param string $argumentsName
-     * @param string $closureName
-     * @param string $initializationPhpCode
-     * @param ViewHelperNode $node
-     * @param TemplateCompiler $compiler
-     */
-    public function compile(
-        $argumentsName,
-        $closureName,
-        &$initializationPhpCode,
-        ViewHelperNode $node,
-        TemplateCompiler $compiler
-    ) {
+    public function compile($argumentsName, $closureName, &$initializationPhpCode, ViewHelperNode $node, TemplateCompiler $compiler): string
+    {
         $compiler->disable();
+        return '';
     }
 }

@@ -1,7 +1,7 @@
 <?php
 // SemaCode DataMatrix Barcode 2D for Smart.Framework
 // Module Library
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -49,7 +49,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250714
+ * @version 	v.20260130
  * @package 	modules:Barcodes2D
  *
  */
@@ -62,56 +62,56 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @const INT
 	 * ASCII encoding: ASCII character 0 to 127 (1 byte per CW)
 	 */
-	const SEMACODE_ENCODE_ASCII = 0;
+	public const SEMACODE_ENCODE_ASCII = 0;
 
 	/**
 	 * @const INT
 	 * C40 encoding: Upper-case alphanumeric (3/2 bytes per CW)
 	 */
-	const SEMACODE_ENCODE_C40 = 1;
+	public const SEMACODE_ENCODE_C40 = 1;
 
 	/**
 	 * @const INT
 	 * TEXT encoding: Lower-case alphanumeric (3/2 bytes per CW)
 	 */
-	const SEMACODE_ENCODE_TXT = 2;
+	public const SEMACODE_ENCODE_TXT = 2;
 
 	/**
 	 * @const INT
 	 * X12 encoding: ANSI X12 (3/2 byte per CW)
 	 */
-	const SEMACODE_ENCODE_X12 = 3;
+	public const SEMACODE_ENCODE_X12 = 3;
 
 	/**
 	 * @const INT
 	 * EDIFACT encoding: ASCII character 32 to 94 (4/3 bytes per CW)
 	 */
-	const SEMACODE_ENCODE_EDF = 4;
+	public const SEMACODE_ENCODE_EDF = 4;
 
 	/**
 	 * @const INT
 	 * BASE 256 encoding: ASCII character 0 to 255 (1 byte per CW)
 	 */
-	const SEMACODE_ENCODE_B256 = 5;
+	public const SEMACODE_ENCODE_B256 = 5;
 
 	/**
 	 * @const INT
 	 * ASCII extended encoding: ASCII character 128 to 255 (1/2 byte per CW)
 	 */
-	const SEMACODE_ENCODE_EXTASCII = 6;
+	public const SEMACODE_ENCODE_EXTASCII = 6;
 
 	/**
 	 * @const INT
 	 * ASCII number encoding: ASCII digits (2 bytes per CW)
 	 */
-	const SEMACODE_ENCODE_NUMASCII = 7;
+	public const SEMACODE_ENCODE_NUMASCII = 7;
 
 
 	/**
 	 * Barcode array to be returned which is readable by TCPDF.
 	 * @private
 	 */
-	private $barcode_array = array();
+	private $barcode_array = [];
 
 	/**
 	 * Store last used encoding for data codewords.
@@ -375,7 +375,7 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return array barcode array readable by TCPDF;
 	 * @public
 	 */
-	public function getBarcodeArray() {
+	public function getBarcodeArray() : array {
 		//--
 		return (array) $this->barcode_array;
 		//--

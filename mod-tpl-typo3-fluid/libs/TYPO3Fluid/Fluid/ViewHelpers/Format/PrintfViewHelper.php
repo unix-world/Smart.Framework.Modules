@@ -1,14 +1,13 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers\Format;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+namespace TYPO3Fluid\Fluid\ViewHelpers\Format;
+
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic;
 
 /**
  * A ViewHelper for formatting values with printf. Either supply an array for
@@ -69,29 +68,25 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderS
  */
 class PrintfViewHelper extends AbstractViewHelper
 {
-
-    use CompileWithContentArgumentAndRenderStatic;
-
-    /**
-     * @return void
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
-        parent::initializeArguments();
         $this->registerArgument('value', 'string', 'String to format');
         $this->registerArgument('arguments', 'array', 'The arguments for vsprintf', false, []);
     }
 
     /**
      * Applies vsprintf() on the specified value.
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param \TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface $renderingContext
-     * @return string
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public function render(): string
     {
-        return vsprintf($renderChildrenClosure(), $arguments['arguments']);
+        return vsprintf($this->renderChildren(), $this->arguments['arguments']);
+    }
+
+    /**
+     * Explicitly set argument name to be used as content.
+     */
+    public function getContentArgumentName(): string
+    {
+        return 'value';
     }
 }

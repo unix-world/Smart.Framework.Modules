@@ -1,16 +1,15 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers\Format;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
+namespace TYPO3Fluid\Fluid\ViewHelpers\Format;
+
 use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
 use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic;
 
 /**
  * Outputs an argument/value without any escaping. Is normally used to output
@@ -59,36 +58,27 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderS
  */
 class RawViewHelper extends AbstractViewHelper
 {
-
-    use CompileWithContentArgumentAndRenderStatic;
-
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeChildren = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
-    /**
-     * @return void
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('value', 'mixed', 'The value to output', false, null, false);
     }
 
     /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
      * @return mixed
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public function render(): mixed
     {
-        return $renderChildrenClosure();
+        return $this->renderChildren();
     }
 
     /**
@@ -97,18 +87,25 @@ class RawViewHelper extends AbstractViewHelper
      * @param string $initializationPhpCode
      * @param ViewHelperNode $node
      * @param TemplateCompiler $compiler
-     * @return mixed
      */
-    public function compile($argumentsName, $closureName, &$initializationPhpCode, ViewHelperNode $node, TemplateCompiler $compiler)
+    public function compile($argumentsName, $closureName, &$initializationPhpCode, ViewHelperNode $node, TemplateCompiler $compiler): string
     {
-        $contentArgumentName = $this->resolveContentArgumentName();
+        $contentArgumentName = $this->getContentArgumentName();
         return sprintf(
             'isset(%s[\'%s\']) ? %s[\'%s\'] : %s()',
             $argumentsName,
             $contentArgumentName,
             $argumentsName,
             $contentArgumentName,
-            $closureName
+            $closureName,
         );
+    }
+
+    /**
+     * Explicitly set argument name to be used as content.
+     */
+    public function getContentArgumentName(): string
+    {
+        return 'value';
     }
 }

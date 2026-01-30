@@ -48,7 +48,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP GD Extension w. *optional TTF support ; classes: Smart, SmartFileSysUtils
- * @version 	v.20250714
+ * @version 	v.20260130
  * @package 	modules:development:Captcha
  */
 final class SmartImageCaptcha {
@@ -428,8 +428,7 @@ final class SmartImageCaptcha {
 		//--
 		\ob_end_clean();
 		//--
-		\imagedestroy($captcha_image); // free resource
-		$captcha_image = null;
+		$captcha_image = null; // image destroy is deprecated and has no effect since PHP 8.0
 		//--
 		if((string)\strtolower((string)$this->format) == 'svg') {
 			// mime type: image/svg+xml (encapsulate PNG in SVG to make harder guessing it by common captcha solvers)

@@ -1,7 +1,7 @@
 <?php
 // EAN/UPC Barcode 1D for Smart.Framework
 // Module Library
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -48,7 +48,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20250714
+ * @version 	v.20260130
  * @package 	modules:Barcodes1D
  *
  */
@@ -90,10 +90,12 @@ final class Barcode1DEANUPC {
 	 * @param $len (string) barcode type: 6 = UPC-E, 8 = EAN8, 13 = EAN13, 12 = UPC-A
 	 * @return array barcode representation.
 	 */
-	public function getBarcodeArray() {
+	public function getBarcodeArray() : array {
 		//--
 		$code = (string) $this->code;
 		$len = (int) $this->len;
+		//--
+		$bararray = [ 'code' => '', 'maxw' => 0, 'maxh' => 1, 'bcode' => [] ];
 		//--
 		$upce = false;
 		if($len == 6) {
@@ -128,13 +130,14 @@ final class Barcode1DEANUPC {
 			$code .= $r;
 		} elseif($r !== intval($code[$data_len])) {
 			// wrong checkdigit
-			return false;
+			return [];
 		} //end if else
 		if($len == 12) {
 			// UPC-A
 			$code = (string) '0'.$code;
 			++$len;
 		} //end if
+		$upce_code = '';
 		if($upce) {
 			// convert UPC-A to UPC-E
 			$tmp = (string) substr((string)$code, 4, 3);
@@ -234,14 +237,14 @@ final class Barcode1DEANUPC {
 		$k = 0;
 		$seq = '101'; // left guard bar
 		if($upce) {
-			$bararray = array('code' => $upce_code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
+			$bararray = [ 'code' => (string)$upce_code, 'maxw' => 0, 'maxh' => 1, 'bcode' => [] ];
 			$p = $upce_parities[$code[1]][$r];
 			for($i = 0; $i < 6; ++$i) {
 				$seq .= $codes[$p[$i]][$upce_code[$i]];
 			} //end for
 			$seq .= '010101'; // right guard bar
 		} else {
-			$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
+			$bararray = [ 'code' => (string)$code, 'maxw' => 0, 'maxh' => 1, 'bcode' => [] ];
 			$half_len = intval(ceil((string)($len / 2))); // unixman: fix ceil
 			if($len == 8) {
 				for($i = 0; $i < $half_len; ++$i) {

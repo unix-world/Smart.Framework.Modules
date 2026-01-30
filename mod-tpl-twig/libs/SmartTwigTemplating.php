@@ -42,7 +42,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype (optional) ; classes: \SmartModExtLib\Tpl\InterfaceSmartTemplating, \Twig, \Symfony\Polyfill\Ctype\Ctype if PHP Ctype ext is N/A
- * @version 	v.20260120
+ * @version 	v.20260128
  * @package 	modules:TemplatingEngine
  *
  */
@@ -112,7 +112,7 @@ final class SmartTwigTemplating implements \SmartModExtLib\Tpl\InterfaceSmartTem
 	//#####
 
 
-	private static function startEngine() {
+	private static function startEngine() : void {
 		//--
 		if(self::$engine === null) {
 	//	if((self::$engine === null) OR (\SmartEnvironment::ifDebug())) { // {{{SYNC-TWIG-SMARTFRAMEWORK-DEBUG-BUG}}} # BugFix: if debug do not reuse the Twig object to avoid crash on Twig's internal bug: 'Call to a member function getCurrent() on null' in mod-tpl-twig/libs/Twig/Parser.php ; this bug occurs when includding a twig sub-tpl in a {% for ... %} {% include Tpl_Path__ ~ 'some-partial.twig.htm' %} {% endfor %} ; or can be used as: {{Tpl_Path__}}img/twig.svg

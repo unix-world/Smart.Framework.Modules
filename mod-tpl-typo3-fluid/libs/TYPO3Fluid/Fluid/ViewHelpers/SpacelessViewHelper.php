@@ -1,14 +1,13 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+namespace TYPO3Fluid\Fluid\ViewHelpers;
+
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Space Removal ViewHelper
@@ -42,21 +41,13 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class SpacelessViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
-    /**
-     * @param array $arguments
-     * @param \Closure $childClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
-     */
-    public static function renderStatic(array $arguments, \Closure $childClosure, RenderingContextInterface $renderingContext)
+    public function render(): string
     {
-        return trim(preg_replace('/\\>\\s+\\</', '><', (string)$childClosure()));
+        return trim(preg_replace('/\\>\\s+\\</', '><', (string)$this->renderChildren()));
     }
 }

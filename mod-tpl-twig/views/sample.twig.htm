@@ -1,8 +1,8 @@
-<!-- start twig template v.20260120 -->
+<!-- start twig template v.20260130 -->
 {# Template: sample.twig.htm #}<!-- comments are removed -->
 <center><div>
-	<div><!-- {{Tpl_Path__}}img/twig.svg -->
-		<a href="//twig.symfony.com/doc/3.x/" target="_blank"><img src="data:image/svg+xml,{{ source(Tpl_Path__ ~ 'img/twig.svg') |url_encode }}" width="160" height="160"></a>
+	<div>
+		<a href="//twig.symfony.com/doc/3.x/" target="_blank"><img title="{{Tpl_Path__}}img/twig.svg" src="data:image/svg+xml,{{ source(Tpl_Path__ ~ 'img/twig.svg') |url_encode }}" width="160" height="160"></a>
 		<br>
 		{% if version != '' %}<span style="color:#778899;"><b><i>Twig</i></b> <i>Templating</i> Engine v.{{ version }}</span>{% endif %}
 	</div>

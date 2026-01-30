@@ -23,11 +23,12 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SvnWebManager {
 
 	// ::
-	// v.20250107
+	// v.20260128
 
-	const MAX_FILESIZE_DISPLAY = 8388608; // 8MB
+	public const MAX_FILESIZE_DISPLAY = 8388608; // 8MB
 
-	private static $svn_cache_dir = 'tmp/cache/svn/'; 		// must have trailing slash :: the svn proc jail root
+	public const SVN_TMP_CACHE_DIR = 'tmp/cache/svn/'; // must have trailing slash :: the svn proc jail root
+
 	private static $configs = null;
 
 
@@ -565,19 +566,19 @@ final class SvnWebManager {
 			return array();
 		} //end if
 		//--
-		\SmartFileSystem::dir_create((string)self::$svn_cache_dir.$expdir, true); // recursive
+		\SmartFileSystem::dir_create((string)self::SVN_TMP_CACHE_DIR.$expdir, true); // recursive
 		//--
 		$ok = self::execSvnCmd('export', (string)$rdata['url'], (string)$path, $rdata['user'], $rdata['pass'], 'exit-code', [ 'export-dir' => (string)$archdir, 'rev' => (string)$rev ]); // OK
 		$archname = '';
 		$fcontent = '';
-		if(($ok) AND (\SmartFileSystem::is_type_dir((string)self::$svn_cache_dir.$archdir))) {
+		if(($ok) AND (\SmartFileSystem::is_type_dir((string)self::SVN_TMP_CACHE_DIR.$archdir))) {
 			$archname = (string) self::buildArchive((string)$expdir, (string)$expname, (string)$archtype);
 			if((string)$archname != '') {
 				$fcontent = (string) \SmartFileSystem::read((string)$archname);
 			} //end if
 		} //end if
 		//--
-		self::rmDirRecursive((string)self::$svn_cache_dir.$expdir); // fix: because some paths in SVN may contain unsafe characters not allowed in Smart.Framework FileSystem this function will check just if dir is safe and minimal safety for paths
+		self::rmDirRecursive((string)self::SVN_TMP_CACHE_DIR.$expdir); // fix: because some paths in SVN may contain unsafe characters not allowed in Smart.Framework FileSystem this function will check just if dir is safe and minimal safety for paths
 		//--
 		return array(
 			'f-content' => (string) $fcontent,
@@ -731,7 +732,7 @@ final class SvnWebManager {
 			return array();
 		} //end if
 		//--
-		$exearr = (array) \SmartUtils::run_proc_cmd((string)$cmd, null, (string)self::$svn_cache_dir); // avoid proc open in web root !!
+		$exearr = (array) \SmartUtils::run_proc_cmd((string)$cmd, null, (string)self::SVN_TMP_CACHE_DIR); // avoid proc open in web root !!
 		if(($exearr['exitcode'] !== 0) OR ((string)$exearr['stderr'] != '')) {
 			//-- Fix: not raise error here ! in some cases when path renames going backward to select diff, props or view if path renames will have an error ; make this a nice error and do not raise fatal
 			if(\SmartEnvironment::ifDebug()) {
@@ -945,7 +946,7 @@ final class SvnWebManager {
 		\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$arch_dir);
 		$arch_file = (string) \Smart::safe_filename((string)$archname.'.'.$format); // archive name
 		\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$arch_file);
-		$fpatharch = (string) \Smart::safe_pathname((string)self::$svn_cache_dir.$dir.$arch_file);
+		$fpatharch = (string) \Smart::safe_pathname((string)self::SVN_TMP_CACHE_DIR.$dir.$arch_file);
 		\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$fpatharch);
 		//--
 		$cmdarch = '';
@@ -990,7 +991,7 @@ final class SvnWebManager {
 			);
 		} //end if
 		//--
-		$exearr = (array) \SmartUtils::run_proc_cmd((string)$cmd, null, (string)self::$svn_cache_dir.$dir);
+		$exearr = (array) \SmartUtils::run_proc_cmd((string)$cmd, null, (string)self::SVN_TMP_CACHE_DIR.$dir);
 		if(($exearr['exitcode'] !== 0) OR ((string)$exearr['stderr'] != '')) {
 			\Smart::raise_error(
 				__METHOD__.' #ERR# Archive Command:['.$cmd.'] Returned Some Errors ; ExitCode=['.$exearr['exitcode'].'] ; ErrorMsg: '.$exearr['stderr'],
@@ -1025,7 +1026,7 @@ final class SvnWebManager {
 					);
 				} //end if
 				//--
-				$exearr = (array) \SmartUtils::run_proc_cmd((string)$testcmd, null, (string)self::$svn_cache_dir.$dir);
+				$exearr = (array) \SmartUtils::run_proc_cmd((string)$testcmd, null, (string)self::SVN_TMP_CACHE_DIR.$dir);
 				if(($exearr['exitcode'] !== 0) OR ((string)$exearr['stderr'] != '') OR (((string)$testtxt != '') AND (\stripos((string)$exearr['stdout'], (string)$testtxt) === false))) {
 					\Smart::raise_error(
 						__METHOD__.' #ERR# Archive Test Command:['.$testcmd.'] Returned Some Errors ; ExitCode=['.$exearr['exitcode'].'] ; ErrorMsg: '.$exearr['stderr'].' ; StdOut: '.$exearr['stdout'],

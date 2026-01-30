@@ -1,46 +1,42 @@
 <?php
-namespace TYPO3Fluid\Fluid\Core\Parser\SyntaxTree;
+
+declare(strict_types=1);
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
-use TYPO3Fluid\Fluid\Core\Parser\ParsingState;
+namespace TYPO3Fluid\Fluid\Core\Parser\SyntaxTree;
+
+use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\ArgumentDefinition;
 use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperResolverDelegateInterface;
 
 /**
  * Node which will call a ViewHelper associated with this node.
  */
-class ViewHelperNode extends AbstractNode
+final class ViewHelperNode extends AbstractNode
 {
-
-    /**
-     * @var string
-     */
-    protected $viewHelperClassName;
+    protected readonly string $namespace;
+    protected readonly string $name;
+    protected string $viewHelperClassName;
 
     /**
      * @var NodeInterface[]
      */
-    protected $arguments = [];
+    protected array $arguments = [];
 
-    /**
-     * @var ViewHelperInterface
-     */
-    protected $uninitializedViewHelper = null;
+    protected ViewHelperInterface $uninitializedViewHelper;
+
+    protected readonly ?ViewHelperResolverDelegateInterface $resolverDelegate;
 
     /**
      * @var ArgumentDefinition[]
      */
-    protected $argumentDefinitions = [];
-
-    /**
-     * @var string
-     */
-    protected $pointerTemplateCode = null;
+    protected array $argumentDefinitions = [];
 
     /**
      * Constructor.
@@ -49,24 +45,36 @@ class ViewHelperNode extends AbstractNode
      * @param string $namespace the namespace identifier of the ViewHelper.
      * @param string $identifier the name of the ViewHelper to render, inside the namespace provided.
      * @param NodeInterface[] $arguments Arguments of view helper - each value is a RootNode.
-     * @param ParsingState $state
      */
-    public function __construct(RenderingContextInterface $renderingContext, $namespace, $identifier, array $arguments, ParsingState $state)
+    public function __construct(RenderingContextInterface $renderingContext, string $namespace, string $identifier, array $arguments = [])
     {
         $resolver = $renderingContext->getViewHelperResolver();
+        $this->namespace = $namespace;
+        $this->name = $identifier;
         $this->arguments = $arguments;
         $this->viewHelperClassName = $resolver->resolveViewHelperClassName($namespace, $identifier);
         $this->uninitializedViewHelper = $resolver->createViewHelperInstanceFromClassName($this->viewHelperClassName);
+        $this->resolverDelegate = $resolver->getResponsibleDelegate($namespace, $identifier);
         $this->uninitializedViewHelper->setViewHelperNode($this);
         // Note: RenderingContext required here though replaced later. See https://github.com/TYPO3Fluid/Fluid/pull/93
         $this->uninitializedViewHelper->setRenderingContext($renderingContext);
         $this->argumentDefinitions = $resolver->getArgumentDefinitionsForViewHelper($this->uninitializedViewHelper);
     }
 
+    public function getNamespace(): string
+    {
+        return $this->namespace;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     /**
      * @return ArgumentDefinition[]
      */
-    public function getArgumentDefinitions()
+    public function getArgumentDefinitions(): array
     {
         return $this->argumentDefinitions;
     }
@@ -74,10 +82,8 @@ class ViewHelperNode extends AbstractNode
     /**
      * Returns the attached (but still uninitialized) ViewHelper for this ViewHelperNode.
      * We need this method because sometimes Interceptors need to ask some information from the ViewHelper.
-     *
-     * @return ViewHelperInterface
      */
-    public function getUninitializedViewHelper()
+    public function getUninitializedViewHelper(): ViewHelperInterface
     {
         return $this->uninitializedViewHelper;
     }
@@ -87,66 +93,68 @@ class ViewHelperNode extends AbstractNode
      *
      * @return string Class Name of associated view helper
      */
-    public function getViewHelperClassName()
+    public function getViewHelperClassName(): string
     {
         return $this->viewHelperClassName;
     }
 
+    public function getResolverDelegate(): ?ViewHelperResolverDelegateInterface
+    {
+        return $this->resolverDelegate;
+    }
+
     /**
-     * INTERNAL - only needed for compiling templates
-     *
-     * @return NodeInterface[]
+     * @internal only for parser
+     * @param NodeInterface[] $arguments Arguments of view helper - each value is a RootNode.
      */
-    public function getArguments()
+    public function setArguments(array $arguments): void
+    {
+        $this->arguments = $arguments;
+    }
+
+    /**
+     * @internal only needed for compiling templates
+     * @return array<NodeInterface|scalar> For simple values, an argument might also be scalar
+     *                                     because of Fluid's compiler optimizations
+     */
+    public function getArguments(): array
     {
         return $this->arguments;
     }
 
     /**
-     * INTERNAL - only needed for compiling templates
-     *
-     * @param string $argumentName
-     * @return ArgumentDefinition
-     */
-    public function getArgumentDefinition($argumentName)
-    {
-        return $this->argumentDefinitions[$argumentName];
-    }
-
-    /**
-     * @param NodeInterface $childNode
-     * @return void
-     */
-    public function addChildNode(NodeInterface $childNode)
-    {
-        parent::addChildNode($childNode);
-        $this->uninitializedViewHelper->setChildNodes($this->childNodes);
-    }
-
-    /**
-     * @param string $pointerTemplateCode
-     * @return void
-     */
-    public function setPointerTemplateCode($pointerTemplateCode)
-    {
-        $this->pointerTemplateCode = $pointerTemplateCode;
-    }
-
-    /**
      * Call the view helper associated with this object.
      *
-     * First, it evaluates the arguments of the view helper.
-     *
-     * If the view helper implements \TYPO3Fluid\Fluid\Core\ViewHelper\ChildNodeAccessInterface,
-     * it calls setChildNodes(array childNodes) on the view helper.
-     *
-     * Afterwards, checks that the view helper did not leave a variable lying around.
-     *
      * @param RenderingContextInterface $renderingContext
-     * @return string evaluated node after the view helper has been called.
+     * @return mixed evaluated node after the view helper has been called. This can be of any type,
+     *               as ViewHelpers can return any type.
      */
-    public function evaluate(RenderingContextInterface $renderingContext)
+    public function evaluate(RenderingContextInterface $renderingContext): mixed
     {
+        // This is added as a safe-off, currently no evidence that we need this here like in convert().
+        // See: https://github.com/TYPO3/Fluid/issues/804
+        $this->updateViewHelperNodeInViewHelper();
         return $renderingContext->getViewHelperInvoker()->invoke($this->uninitializedViewHelper, $this->arguments, $renderingContext);
+    }
+
+    public function convert(TemplateCompiler $templateCompiler): array
+    {
+        // We need this here to avoid https://github.com/TYPO3/Fluid/issues/804.
+        $this->updateViewHelperNodeInViewHelper();
+        return $this->uninitializedViewHelper->convert($templateCompiler);
+    }
+
+    /**
+     * Ensure correct ViewHelperNode (this) reference in the uninitialized ViewHelper instance.
+     */
+    protected function updateViewHelperNodeInViewHelper(): void
+    {
+        // Custom ViewHelperResolver can and are implemented providing the ability to instantiate ViewHelpers through
+        // a DependencyInjection system like Symfony DI, for example done by TYPO3. Due to the nature, instances may be
+        // set as shared, which means that changes to property reflects the latest set state. Therefore, we need to set
+        // the current ViewHelperNode to a viewhelper instance to ensure correct context.
+        // See https://github.com/TYPO3/Fluid/issues/804
+        // @todo We should evaluate if we can get rid of this state and better pass it around.
+        $this->uninitializedViewHelper->setViewHelperNode($this);
     }
 }

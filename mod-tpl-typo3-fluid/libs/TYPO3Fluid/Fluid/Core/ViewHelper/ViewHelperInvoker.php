@@ -1,12 +1,13 @@
 <?php
-namespace TYPO3Fluid\Fluid\Core\ViewHelper;
 
-// contains fixes by unixman
+declare(strict_types=1);
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
+
+namespace TYPO3Fluid\Fluid\Core\ViewHelper;
 
 use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\NodeInterface;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
@@ -31,18 +32,11 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  */
 class ViewHelperInvoker
 {
-
     /**
      * Invoke the ViewHelper described by the ViewHelperNode, the properties
      * of which will already have been filled by the ViewHelperResolver.
-     *
-     * @param string|ViewHelperInterface $viewHelperClassNameOrInstance
-     * @param array $arguments
-     * @param RenderingContextInterface $renderingContext
-     * @param null|\Closure $renderChildrenClosure
-     * @return string
      */
-    public function invoke($viewHelperClassNameOrInstance, array $arguments, RenderingContextInterface $renderingContext, ?\Closure $renderChildrenClosure = null) // unixman: fix nullable type for PHP 8.4
+    public function invoke(string|ViewHelperInterface $viewHelperClassNameOrInstance, array $arguments, RenderingContextInterface $renderingContext, ?\Closure $renderChildrenClosure = null): mixed
     {
         $viewHelperResolver = $renderingContext->getViewHelperResolver();
         if ($viewHelperClassNameOrInstance instanceof ViewHelperInterface) {
@@ -50,34 +44,55 @@ class ViewHelperInvoker
         } else {
             $viewHelper = $viewHelperResolver->createViewHelperInstanceFromClassName($viewHelperClassNameOrInstance);
         }
-        $expectedViewHelperArguments = $viewHelperResolver->getArgumentDefinitionsForViewHelper($viewHelper);
-
-        // Rendering process
-        $evaluatedArguments = [];
-        $undeclaredArguments = [];
+        $argumentDefinitions = $viewHelperResolver->getArgumentDefinitionsForViewHelper($viewHelper);
 
         try {
-            foreach ($expectedViewHelperArguments as $argumentName => $argumentDefinition) {
+            // Convert nodes to actual values (in uncached context)
+            $arguments = array_map(
+                fn($value) => $value instanceof NodeInterface ? $value->evaluate($renderingContext) : $value,
+                $arguments,
+            );
+
+            // Determine arguments defined by the ViewHelper API
+            $registeredArguments = [];
+            foreach ($argumentDefinitions as $argumentName => $argumentDefinition) {
                 if (isset($arguments[$argumentName])) {
-                    /** @var NodeInterface|mixed $argumentValue */
-                    $argumentValue = $arguments[$argumentName];
-                    $evaluatedArguments[$argumentName] = $argumentValue instanceof NodeInterface ? $argumentValue->evaluate($renderingContext) : $argumentValue;
+                    // Perform argument processing and validation
+                    $value = $renderingContext->getArgumentProcessor()->process($arguments[$argumentName], $argumentDefinition);
+                    if (!$renderingContext->getArgumentProcessor()->isValid($value, $argumentDefinition)) {
+                        $givenType = is_object($value) ? get_class($value) : gettype($value);
+                        throw new \InvalidArgumentException(sprintf(
+                            'The argument "%s" was registered with type "%s", but is of type "%s" in view helper "%s".',
+                            $argumentName,
+                            $argumentDefinition->getType(),
+                            $givenType,
+                            get_class($viewHelper),
+                        ), 1256475113);
+                    }
+                    $registeredArguments[$argumentName] = $value;
                 } else {
-                    $evaluatedArguments[$argumentName] = $argumentDefinition->getDefaultValue();
+                    // @todo we might add a check for isRequired() here. Currently, this relies on the check
+                    //       being performed by the TemplateParser
+                    $registeredArguments[$argumentName] = $argumentDefinition->getDefaultValue();
                 }
-            }
-            foreach ($arguments as $argumentName => $argumentValue) {
-                if (!array_key_exists($argumentName, $evaluatedArguments)) {
-                    $undeclaredArguments[$argumentName] = $argumentValue instanceof NodeInterface ? $argumentValue->evaluate($renderingContext) : $argumentValue;
-                }
+
+                // Argument has definition, so it is no additionalArgument
+                unset($arguments[$argumentName]);
             }
 
             if ($renderChildrenClosure) {
                 $viewHelper->setRenderChildrenClosure($renderChildrenClosure);
             }
             $viewHelper->setRenderingContext($renderingContext);
-            $viewHelper->setArguments($evaluatedArguments);
-            $viewHelper->handleAdditionalArguments($undeclaredArguments);
+            $viewHelper->setArguments($registeredArguments);
+            $viewHelper->handleAdditionalArguments($arguments);
+            if ($viewHelper instanceof ViewHelperArgumentsValidatedEventInterface) {
+                $viewHelper::argumentsValidatedEvent(
+                    $registeredArguments,
+                    $argumentDefinitions,
+                    $viewHelper,
+                );
+            }
             return $viewHelper->initializeArgumentsAndRender();
         } catch (Exception $error) {
             return $renderingContext->getErrorHandler()->handleViewHelperError($error);

@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.20221220
+ * @version 	v.20260130
  * @package 	modules:TemplatingEngine
  *
  */
@@ -55,10 +55,11 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 
 	// ->
 
-	const FLUID_VERSION = '2.7.1';
+	public const FLUID_VERSION = '5.0.3';
 
-	private const VERSION_MAJOR = 2;
-	private const VERSION_MINOR = 7;
+	private const VERSION_MAJOR = 5;
+	private const VERSION_MINOR = 0;
+	private const VERSION_EXTRA = 3;
 
 	private $dir;
 	private $t3fluid;
@@ -77,17 +78,25 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		$this->dir = './';
 		//--
 		$this->t3fluid = new \TYPO3Fluid\Fluid\View\TemplateView();
-		$this->t3fpaths = $this->t3fluid->getTemplatePaths();
+		$this->t3fpaths = $this->t3fluid->getRenderingContext()->getTemplatePaths();
 		//--
 		$the_t3fluid_cache_dir = (string) $this->smartSetupCacheDir();
-		$this->t3fluid->setCache(new \TYPO3Fluid\Fluid\Core\Cache\SimpleFileCache((string)$the_t3fluid_cache_dir));
+		$this->t3fluid->getRenderingContext()->setCache(new \TYPO3Fluid\Fluid\Core\Cache\SimpleFileCache((string)$the_t3fluid_cache_dir));
 		//--
 	} //END FUNCTION
 
 
 	public function renderFileTemplate(?string $file, ?array $arr_vars=[]) : string {
 		//--
-		return (string) $this->render_file_template((string)$file, (array)$arr_vars, false);
+		$rendered = '';
+		try {
+			$rendered = (string) $this->render_file_template((string)$file, (array)$arr_vars);
+		} catch(\Exception $e) {
+			\Smart::raise_error((string)$e->getMessage());
+			return '';
+		} //end try catch
+		//--
+		return (string) $rendered;
 		//--
 	} //END FUNCTION
 
@@ -116,7 +125,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 	//======= PRIVATES
 
 
-	private function smartSetupCacheDir() {
+	private function smartSetupCacheDir() : string {
 		//--
 		$the_t3fluid_cache_dir = 'tmp/cache/tpl-t3fluid/v'.(int)self::VERSION_MAJOR.'.'.(int)self::VERSION_MINOR.'/';
 		//--
@@ -129,7 +138,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		} else {
 			$the_t3fluid_cache_dir .= 'idx';
 		} //end if else
-		if(!\SmartFileSystem::is_type_dir((string)$the_t3fluid_cache_dir)) {
+		if(!\SmartFileSysUtils::isDir((string)$the_t3fluid_cache_dir)) {
 			if(!\SmartFileSystem::dir_create((string)$the_t3fluid_cache_dir, true)) {
 				throw new \Exception('Typo3Fluid Templating / Initialize / Could not create the Cache Directory: '.$the_t3fluid_cache_dir);
 				return '';
@@ -141,28 +150,21 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 	} //END FUNCTION
 
 
-	private function render_file_template($file, $arr_vars=array(), $onlydebug=false) {
+	private function render_file_template(string $file, array $arr_vars=[], bool $onlydebug=false) : null|string|array {
 		//--
-		if($onlydebug !== true) {
-			$onlydebug = false;
-		} //end else
 		if(!\SmartEnvironment::ifDebug()) {
 			$onlydebug = false;
 		} //end if
-		//--
-		if(!\is_array($arr_vars)) {
-			$arr_vars = array();
-		} //end if
 		//-- allow camelCase keys
-		$arr_vars = (array) $this->fixArrayKeys($arr_vars, true); // make keys compatible with PHP variable names, LOWER and UPPER (only 1st level, not nested)
+		$arr_vars = (array) $this->fixArrayKeys((array)$arr_vars, true); // make keys compatible with PHP variable names, LOWER and UPPER (only 1st level, not nested)
 		//--
 		if((string)\trim((string)$file) == '') {
 			throw new \Exception('Typo3Fluid Templating / Render File / The file name is Empty');
-			return;
+			return null;
 		} //end if
 		if(!\SmartFileSysUtils::checkIfSafePath((string)$file)) {
 			throw new \Exception('Typo3Fluid Templating / Render File / Invalid file Path');
-			return;
+			return null;
 		} //end if
 		//--
 		$invalid_dir = 'modules/mod-tpl-typo3-fluid/views/INVALID-PATH'; // this path cannot be empty as templates cannot be located in the app's root !!!
@@ -181,7 +183,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		} //end if
 		if(!\SmartFileSysUtils::checkIfSafePath((string)$dir_of_tpl)) {
 			throw new \Exception('Typo3Fluid Templating / Render File / Invalid tpl Path');
-			return;
+			return null;
 		} //end if
 		//--
 		$arr_vars[(string)$this->getTplPathVar().'__'] = (string) $dir_of_tpl;
@@ -198,25 +200,43 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 		//--
 		if(!\SmartFileSysUtils::checkIfSafePath((string)$file)) {
 			throw new \Exception('Typo3Fluid Templating / Render File / The file name / path contains invalid characters: '.$file);
-			return;
+			return null;
 		} //end if
 		//--
 		if(!\is_file((string)$file)) {
 			throw new \Exception('Typo3Fluid Templating / The Template file to render does not exists: '.$file);
-			return;
+			return null;
 		} //end if
 		//--
-	/*	foreach($arr_vars as $key => $val) {
+		/*
+		foreach($arr_vars as $key => $val) {
 			$this->t3fluid->assign((string)$key, $val);
-		} //end foreach */
+		} //end foreach
+		*/
 		$this->t3fluid->assignMultiple((array)$arr_vars);
 		$this->t3fpaths->setTemplatePathAndFilename((string)$file);
 		//--
-		return (string) $this->t3fluid->renderSection(
+		$bench = \microtime(true);
+		$rendered = (string) $this->t3fluid->renderSection(
 			'Typo3FluidTpl', // sectionName,
 			(array) $arr_vars, //array $variables,
 			true // ignoreUnknown
 		);
+		$bench = \Smart::format_number_dec((float)(\microtime(true) - (float)$bench), 9, '.', '');
+		//--
+		if(\SmartEnvironment::ifDebug()) {
+			if($onlydebug === true) {
+				return []; // TO BE DONE ...
+			} else {
+				\SmartEnvironment::setDebugMsg('extra', 'TYPO3FLUID-TEMPLATING', [
+					'title' => '[TPL-Parsing:Render.DONE] :: Typo3Fluid-TPL / Processing ; Time = '.$bench.' sec.',
+					'data' => 'TPL Rendered Files: '.\Smart::array_size([ $file ]).' ; TPL Variables: '.\Smart::array_size($arr_vars)
+				]);
+				return (string) $rendered;
+			} //end if else
+		} else {
+			return (string) $rendered;
+		} //end if else
 		//--
 	} //END FUNCTION
 
@@ -236,33 +256,29 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
  * @internal
  *
  */
-function autoload__TYPO3FluidTemplating_SFM($classname) {
-	//--
-	$classname = (string) $classname;
+\spl_autoload_register(function(string $classname) : void {
 	//--
 	if(\strpos((string)$classname, '\\') === false) { // if have namespace
 		return;
 	} //end if
 	//--
-	if((string)\substr((string)$classname, 0, 17) !== 'TYPO3Fluid\\Fluid\\') { // if class name is not starting with Typo3Fluid
+	if(\str_starts_with((string)$classname, 'TYPO3Fluid\\Fluid\\') === false) { // if class name is starting with TYPO3Fluid\Fluid\
 		return;
 	} //end if
 	//--
-	$path = 'modules/mod-tpl-typo3-fluid/libs/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
+	$path = (string) \SmartFileSysUtils::getSmartFsRootPath().'modules/mod-tpl-typo3-fluid/libs/'.\str_replace([ '\\', "\0" ], [ '/', '' ], (string)$classname);
 	//--
-	if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
+	if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', (string)$path)) {
 		return; // invalid path characters in path
 	} //end if
 	//--
-	if(!\is_file($path.'.php')) {
+	if(!\is_file((string)$path.'.php')) {
 		return; // file does not exists
 	} //end if
 	//--
-	require_once($path.'.php');
+	require_once((string)$path.'.php');
 	//--
-} //END FUNCTION
-//--
-\spl_autoload_register('\\SmartModExtLib\\TplTypo3Fluid\\autoload__TYPO3FluidTemplating_SFM', true, false); // throw / append
+}, true, false); // throw / append
 //--
 
 

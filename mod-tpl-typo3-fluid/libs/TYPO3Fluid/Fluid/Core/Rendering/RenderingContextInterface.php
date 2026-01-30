@@ -1,10 +1,11 @@
 <?php
-namespace TYPO3Fluid\Fluid\Core\Rendering;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
+
+namespace TYPO3Fluid\Fluid\Core\Rendering;
 
 use TYPO3Fluid\Fluid\Core\Cache\FluidCacheInterface;
 use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
@@ -13,6 +14,7 @@ use TYPO3Fluid\Fluid\Core\Parser\Configuration;
 use TYPO3Fluid\Fluid\Core\Parser\TemplateParser;
 use TYPO3Fluid\Fluid\Core\Parser\TemplateProcessorInterface;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\ArgumentProcessorInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInvoker;
 use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperResolver;
 use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperVariableContainer;
@@ -20,6 +22,7 @@ use TYPO3Fluid\Fluid\View\TemplatePaths;
 
 /**
  * Contract for the rendering context
+ * @todo add return types with Fluid v5
  */
 interface RenderingContextInterface
 {
@@ -30,7 +33,6 @@ interface RenderingContextInterface
 
     /**
      * @param ErrorHandlerInterface $errorHandler
-     * @return void
      */
     public function setErrorHandler(ErrorHandlerInterface $errorHandler);
 
@@ -68,7 +70,6 @@ interface RenderingContextInterface
 
     /**
      * @param ViewHelperResolver $viewHelperResolver
-     * @return void
      */
     public function setViewHelperResolver(ViewHelperResolver $viewHelperResolver);
 
@@ -79,15 +80,17 @@ interface RenderingContextInterface
 
     /**
      * @param ViewHelperInvoker $viewHelperInvoker
-     * @return void
      */
     public function setViewHelperInvoker(ViewHelperInvoker $viewHelperInvoker);
+
+    public function getArgumentProcessor(): ArgumentProcessorInterface;
+
+    public function setArgumentProcessor(ArgumentProcessorInterface $argumentProcessor): void;
 
     /**
      * Inject the Template Parser
      *
      * @param TemplateParser $templateParser The template parser
-     * @return void
      */
     public function setTemplateParser(TemplateParser $templateParser);
 
@@ -98,7 +101,6 @@ interface RenderingContextInterface
 
     /**
      * @param TemplateCompiler $templateCompiler
-     * @return void
      */
     public function setTemplateCompiler(TemplateCompiler $templateCompiler);
 
@@ -114,7 +116,6 @@ interface RenderingContextInterface
 
     /**
      * @param TemplatePaths $templatePaths
-     * @return void
      */
     public function setTemplatePaths(TemplatePaths $templatePaths);
 
@@ -122,7 +123,6 @@ interface RenderingContextInterface
      * Delegation: Set the cache used by this View's compiler
      *
      * @param FluidCacheInterface $cache
-     * @return void
      */
     public function setCache(FluidCacheInterface $cache);
 
@@ -132,7 +132,7 @@ interface RenderingContextInterface
     public function getCache();
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isCacheEnabled();
 
@@ -141,7 +141,6 @@ interface RenderingContextInterface
      * through a public API.
      *
      * @param TemplateProcessorInterface[] $templateProcessors
-     * @return void
      */
     public function setTemplateProcessors(array $templateProcessors);
 
@@ -157,7 +156,6 @@ interface RenderingContextInterface
 
     /**
      * @param array $expressionNodeTypes
-     * @return void
      */
     public function setExpressionNodeTypes(array $expressionNodeTypes);
 
@@ -175,7 +173,6 @@ interface RenderingContextInterface
 
     /**
      * @param string $controllerName
-     * @return void
      */
     public function setControllerName($controllerName);
 
@@ -186,7 +183,37 @@ interface RenderingContextInterface
 
     /**
      * @param string $action
-     * @return void
      */
     public function setControllerAction($action);
+
+    /**
+     * Add an object to this instance.
+     *
+     * This method allows you to attach arbitrary objects to the
+     * rendering context to be used later e.g. in ViewHelpers.
+     *
+     * A typical use case is to attach a ServerRequestInterface here.
+     *
+     * @template T of object
+     * @param class-string<T> $className
+     * @param T $value
+     */
+    public function setAttribute(string $className, object $value): void;
+
+    /**
+     * Return true if an attribute object of that type exists.
+     *
+     * @template T of object
+     * @param class-string<T> $className
+     */
+    public function hasAttribute(string $className): bool;
+
+    /**
+     * Retrieve a single attribute instance.
+     *
+     * @template T of object
+     * @param class-string<T> $className
+     * @return T
+     */
+    public function getAttribute(string $className): object;
 }

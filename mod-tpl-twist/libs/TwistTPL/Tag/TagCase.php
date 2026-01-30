@@ -71,7 +71,7 @@ final class TagCase extends \TwistTPL\Decision {
 		if($syntaxRegexp->match($markup)) {
 			$this->left = $syntaxRegexp->matches[0];
 		} else {
-			throw new \Exception("Syntax Error in tag 'case' - Valid syntax: case [condition]");
+			throw new \Exception('Syntax Error in tag `case` - Valid syntax: case [condition]');
 			return;
 		} //end if else
 		//--
@@ -108,7 +108,7 @@ final class TagCase extends \TwistTPL\Decision {
 					$this->right = $whenSyntaxRegexp->matches[0];
 					$this->nodelist = array();
 				} else {
-					throw new \Exception("Syntax Error in tag 'case' - Valid when condition: when [condition]");
+					throw new \Exception('Syntax Error in tag `case` - Valid when condition: when [condition]');
 					return;
 				} //end if else
 				break;

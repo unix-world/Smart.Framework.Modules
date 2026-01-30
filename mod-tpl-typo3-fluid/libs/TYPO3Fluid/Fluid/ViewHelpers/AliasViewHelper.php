@@ -1,14 +1,15 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+namespace TYPO3Fluid\Fluid\ViewHelpers;
+
+use TYPO3Fluid\Fluid\Core\Variables\ScopedVariableProvider;
+use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Declares new variables which are aliases of other variables.
@@ -55,40 +56,24 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class AliasViewHelper extends AbstractViewHelper
 {
-
-    use CompileWithRenderStatic;
-
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
-    /**
-     * @return void
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
-        parent::initializeArguments();
         $this->registerArgument('map', 'array', 'Array that specifies which variables should be mapped to which alias', true);
     }
 
-    /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return mixed
-     */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public function render(): mixed
     {
-        $templateVariableContainer = $renderingContext->getVariableProvider();
-        $map = $arguments['map'];
-        foreach ($map as $aliasName => $value) {
-            $templateVariableContainer->add($aliasName, $value);
-        }
-        $output = $renderChildrenClosure();
-        foreach ($map as $aliasName => $value) {
-            $templateVariableContainer->remove($aliasName);
-        }
+        $globalVariableProvider = $this->renderingContext->getVariableProvider();
+        $localVariableProvider = new StandardVariableProvider($this->arguments['map']);
+        $scopedVariableProvider = new ScopedVariableProvider($globalVariableProvider, $localVariableProvider);
+        $this->renderingContext->setVariableProvider($scopedVariableProvider);
+        $output = $this->renderChildren();
+        $this->renderingContext->setVariableProvider($globalVariableProvider);
         return $output;
     }
 }

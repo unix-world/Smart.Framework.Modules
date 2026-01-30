@@ -1,7 +1,7 @@
 <?php
 // RMS4CC Barcode 1D for Smart.Framework
 // Module Library
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -53,7 +53,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20260130
  * @package 	modules:Barcodes1D
  *
  */
@@ -92,11 +92,11 @@ final class Barcode1DRMS4CC {
 	 * @param $kix (bool) if true prints the KIX variation (doesn't use the start and end symbols, and the checksum) - in this case the house number must be sufficed with an X and placed at the end of the code.
 	 * @return array barcode representation.
 	 */
-	public function getBarcodeArray() { // barcode_rms4cc()
+	public function getBarcodeArray() : array { // barcode_rms4cc()
 		//--
-		$code = $this->code;
+		$code = (string) $this->code;
 		//--
-		$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 3, 'bcode' => array());
+		$bararray = [ 'code' => (string)$code, 'maxw' => 0, 'maxh' => 3, 'bcode' => [] ];
 		//--
 		if((string)$this->mode == 'KIX') {
 			$kix = true;

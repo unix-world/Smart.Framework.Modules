@@ -1,7 +1,5 @@
 <?php
 
-// fixes by unixman
-
 namespace RedBeanPHP\QueryWriter;
 
 use RedBeanPHP\QueryWriter\AQueryWriter as AQueryWriter;
@@ -34,8 +32,6 @@ class SQLiteT extends AQueryWriter implements QueryWriter
 	const C_DATATYPE_TEXT      = 2;
 	const C_DATATYPE_SPECIFIED = 99;
 
-	private $svalue = null; // fix by unixman for PHP 8.4 cannot create dynamic property
-
 	/**
 	 * @var DBAdapter
 	 */
@@ -45,6 +41,11 @@ class SQLiteT extends AQueryWriter implements QueryWriter
 	 * @var string
 	 */
 	protected $quoteCharacter = '`';
+
+	/**
+	 * @var array
+	 */
+	protected $tableArchive = array();
 
 	/**
 	 * @var array
@@ -301,8 +302,6 @@ class SQLiteT extends AQueryWriter implements QueryWriter
 	 */
 	public function scanType( $value, $flagSpecial = FALSE )
 	{
-		$this->svalue = $value;
-
 		if ( $value === NULL ) return self::C_DATATYPE_INTEGER;
 		if ( $value === INF ) return self::C_DATATYPE_TEXT;
 

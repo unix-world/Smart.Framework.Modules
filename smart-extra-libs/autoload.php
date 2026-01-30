@@ -21,14 +21,12 @@ require_once('modules/smart-extra-libs/version.php'); // extra libs version
  * @access 		private
  * @internal
  *
- * @version 	20221225
+ * @version 	20260130
  *
  */
-function autoload__SmartFrameworkModulesExtraLibs($classname) {
+spl_autoload_register(function(string $classname) : void {
 	//--
-	$classname = (string) $classname;
-	//--
-	if(substr($classname, 0, 5) !== 'Smart') { // must start with Smart
+	if(str_starts_with((string)$classname, 'Smart') !== true) { // class name must start with Smart
 		return;
 	} //end if
 	//--
@@ -86,9 +84,7 @@ function autoload__SmartFrameworkModulesExtraLibs($classname) {
 		//--
 	} //end switch
 	//--
-} //END FUNCTION
-//--
-spl_autoload_register('autoload__SmartFrameworkModulesExtraLibs', true, false); 	// throw / append
+}, true, false); // throw / append
 //--
 
 

@@ -18,10 +18,15 @@ abstract class AbstractCache {
 
 	/** @var int */
 	protected $expire = 3600;
+
 	/** @var string */
 	protected $prefix = 'TwistTPL_';
+
 	/** @var string  */
 	protected $path;
+
+	/** @var string  */
+	protected $root;
 
 	/**
 	 * @param array $options
@@ -73,5 +78,6 @@ abstract class AbstractCache {
 	abstract public function flush(bool $expiredOnly=false) : void;
 
 } //END CLASS
+
 
 // #end

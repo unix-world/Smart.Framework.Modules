@@ -50,8 +50,8 @@ final class TagCycle extends \TwistTPL\AbstractTag {
 	 * @throws \Exception
 	 */
 	public function __construct(?string $markup, array &$tokens, ?\TwistTPL\AbstractInterfaceFileSystem $fileSystem=null) {
-		$simpleSyntax = new \TwistTPL\Regexp("/".\TwistTPL\Twist::get('QUOTED_FRAGMENT')."/");
-		$namedSyntax = new \TwistTPL\Regexp("/(".\TwistTPL\Twist::get('QUOTED_FRAGMENT').")\s*\:\s*(.*)/");
+		$simpleSyntax = new \TwistTPL\Regexp('/'.\TwistTPL\Twist::get('QUOTED_FRAGMENT').'/');
+		$namedSyntax = new \TwistTPL\Regexp('/('.\TwistTPL\Twist::get('QUOTED_FRAGMENT').')\s*\:\s*(.*)/');
 		if($namedSyntax->match($markup)) {
 			$this->variables = (array) $this->variablesFromString((string)($namedSyntax->matches[2] ?? null));
 			$this->name = (string) ($namedSyntax->matches[1] ?? null);
@@ -59,7 +59,7 @@ final class TagCycle extends \TwistTPL\AbstractTag {
 			$this->variables = (array) $this->variablesFromString($markup);
 			$this->name = "'".\implode((array)$this->variables)."'";
 		} else {
-			throw new \Exception("Syntax Error in 'cycle' - Valid syntax: cycle [name :] var [, var2, var3 ...]");
+			throw new \Exception('Syntax Error in `cycle` - Valid syntax: cycle [name :] var [, var2, var3 ...]');
 			return;
 		} //end if else
 	} //END FUNCTION

@@ -1,14 +1,13 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers\Cache;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
-use TYPO3Fluid\Fluid\Core\Compiler\StopCompilingChildrenException;
+namespace TYPO3Fluid\Fluid\ViewHelpers\Cache;
+
 use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
-use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -69,42 +68,26 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class StaticViewHelper extends AbstractViewHelper
 {
-
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeChildren = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
-    /**
-     * @return string
-     */
-    public function render()
+    public function render(): mixed
     {
         return $this->renderChildren();
     }
 
-    /**
-     * @param string $argumentsName
-     * @param string $closureName
-     * @param string $initializationPhpCode
-     * @param ViewHelperNode $node
-     * @param TemplateCompiler $compiler
-     */
-    public function compile(
-        $argumentsName,
-        $closureName,
-        &$initializationPhpCode,
-        ViewHelperNode $node,
-        TemplateCompiler $compiler
-    ) {
-        $renderedString = $node->evaluateChildNodes($this->renderingContext);
-        $stopCompilingChildrenException = new StopCompilingChildrenException();
-        $stopCompilingChildrenException->setReplacementString($renderedString);
-        throw $stopCompilingChildrenException;
+    final public function convert(TemplateCompiler $templateCompiler): array
+    {
+        return [
+            'initialization' => '// Rendering ViewHelper ' . $this->viewHelperNode->getViewHelperClassName() . chr(10),
+            'execution' => '\'' . str_replace("'", "\'", $this->viewHelperNode->evaluateChildNodes($this->renderingContext)) . '\'',
+        ];
     }
 }

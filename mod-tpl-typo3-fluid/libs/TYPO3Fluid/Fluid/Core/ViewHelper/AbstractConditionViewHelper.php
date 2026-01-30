@@ -1,12 +1,14 @@
 <?php
-namespace TYPO3Fluid\Fluid\Core\ViewHelper;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
+namespace TYPO3Fluid\Fluid\Core\ViewHelper;
+
 use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\NodeInterface;
 use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
@@ -17,30 +19,33 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  *
  * To create a custom Condition ViewHelper, you need to subclass this class, and
  * implement your own render() method. Inside there, you should call $this->renderThenChild()
- * if the condition evaluated to TRUE, and $this->renderElseChild() if the condition evaluated
- * to FALSE.
+ * if the condition evaluated to true, and $this->renderElseChild() if the condition evaluated
+ * to false.
  *
  * Every Condition ViewHelper has a "then" and "else" argument, so it can be used like:
  * <[aConditionViewHelperName] .... then="condition true" else="condition false" />,
  * or as well use the "then" and "else" child nodes.
  *
- * @see TYPO3Fluid\Fluid\ViewHelpers\IfViewHelper for a more detailed explanation and a simple usage example.
- * Make sure to NOT OVERRIDE the constructor.
+ * @see \TYPO3Fluid\Fluid\ViewHelpers\IfViewHelper for a more detailed explanation and a simple usage example.
  *
  * @api
  */
 abstract class AbstractConditionViewHelper extends AbstractViewHelper
 {
+    protected $escapeOutput = false;
+
+    private ?\Closure $thenClosure = null;
+    private ?\Closure $elseClosure = null;
 
     /**
-     * @var boolean
+     * @var array<array{'condition': \Closure, 'body': \Closure}>
      */
-    protected $escapeOutput = false;
+    private array $elseIfClosures = [];
 
     /**
      * Initializes the "then" and "else" arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('then', 'mixed', 'Value to be returned if the condition if met.', false, null, true);
         $this->registerArgument('else', 'mixed', 'Value to be returned if the condition if not met.', false, null, true);
@@ -48,13 +53,10 @@ abstract class AbstractConditionViewHelper extends AbstractViewHelper
 
     /**
      * Renders <f:then> child if $condition is true, otherwise renders <f:else> child.
-     * Method which only gets called if the template is not compiled. For static calling,
-     * the then/else nodes are converted to closures and condition evaluation closures.
      *
-     * @return string the rendered string
      * @api
      */
-    public function render()
+    public function render(): mixed
     {
         if (static::verdict($this->arguments, $this->renderingContext)) {
             return $this->renderThenChild();
@@ -63,84 +65,15 @@ abstract class AbstractConditionViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return mixed
-     */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
-        if (static::verdict($arguments, $renderingContext)) {
-            if (isset($arguments['then'])) {
-                return $arguments['then'];
-            }
-            if (isset($arguments['__thenClosure'])) {
-                return $arguments['__thenClosure']();
-            }
-        } elseif (!empty($arguments['__elseClosures'])) {
-            $elseIfClosures = isset($arguments['__elseifClosures']) ? $arguments['__elseifClosures'] : [];
-            return static::evaluateElseClosures($arguments['__elseClosures'], $elseIfClosures, $renderingContext);
-        } elseif (array_key_exists('else', $arguments)) {
-            return $arguments['else'];
-        }
-        return '';
-    }
-
-    /**
      * Static method which can be overridden by subclasses. If a subclass
      * requires a different (or faster) decision then this method is the one
      * to override and implement.
      *
-     * @param array $arguments
-     * @param RenderingContextInterface $renderingContext
-     * @return bool
+     * @param array<string, mixed> $arguments
      */
-    public static function verdict(array $arguments, RenderingContextInterface $renderingContext)
-    {
-        return static::evaluateCondition($arguments);
-    }
-
-    /**
-     * Static method which can be overridden by subclasses. If a subclass
-     * requires a different (or faster) decision then this method is the one
-     * to override and implement.
-     *
-     * Note: method signature does not type-hint that an array is desired,
-     * and as such, *appears* to accept any input type. There is no type hint
-     * here for legacy reasons - the signature is kept compatible with third
-     * party packages which depending on PHP version would error out if this
-     * signature was not compatible with that of existing and in-production
-     * subclasses that will be using this base class in the future. Let this
-     * be a warning if someone considers changing this method signature!
-     *
-     * @deprecated Deprecated in favor of ClassName::verdict($arguments, renderingContext), will no longer be called in 3.0
-     * @param array|NULL $arguments
-     * @return boolean
-     * @api
-     */
-    protected static function evaluateCondition($arguments = null)
+    public static function verdict(array $arguments, RenderingContextInterface $renderingContext): bool
     {
         return isset($arguments['condition']) && (bool)($arguments['condition']);
-    }
-
-    /**
-     * @param array $closures
-     * @param array $conditionClosures
-     * @param RenderingContextInterface $renderingContext
-     * @return string
-     */
-    private static function evaluateElseClosures(array $closures, array $conditionClosures, RenderingContextInterface $renderingContext)
-    {
-        foreach ($closures as $elseNodeIndex => $elseNodeClosure) {
-            if (!isset($conditionClosures[$elseNodeIndex])) {
-                return $elseNodeClosure();
-            } else {
-                if ($conditionClosures[$elseNodeIndex]()) {
-                    return $elseNodeClosure();
-                }
-            }
-        }
-        return '';
     }
 
     /**
@@ -151,104 +84,253 @@ abstract class AbstractConditionViewHelper extends AbstractViewHelper
      * @return mixed rendered ThenViewHelper or contents of <f:if> if no ThenViewHelper was found
      * @api
      */
-    protected function renderThenChild()
+    protected function renderThenChild(): mixed
     {
-        if ($this->hasArgument('then')) {
+        // In cached templates, a closure is defined if any variant of "then" has been specified
+        if ($this->thenClosure !== null) {
+            return ($this->thenClosure)();
+        }
+
+        // The following code can only be evaluated for uncached templates where the node structure
+        // is still available. If it's not, it has already been executed during compilation and we can
+        // assume that the condition wasn't met
+        if (!$this->viewHelperNode instanceof ViewHelperNode) {
+            return null;
+        }
+
+        // node arguments are used because the ViewHelper arguments are already merged with default
+        // values, which makes it impossible to differentiate between "argument is not defined" and
+        // "argument returns null"
+        $nodeArguments = $this->viewHelperNode->getArguments();
+
+        // Prefer "then" ViewHelper argument if present
+        if (array_key_exists('then', $nodeArguments)) {
             return $this->arguments['then'];
         }
 
+        // Search for f:then ViewHelper and identify possible f:else to decide how the tag's children should
+        // be interpreted afterwards
         $elseViewHelperEncountered = false;
         foreach ($this->viewHelperNode->getChildNodes() as $childNode) {
             if ($childNode instanceof ViewHelperNode
-                && substr($childNode->getViewHelperClassName(), -14) === 'ThenViewHelper') {
+                && str_ends_with($childNode->getViewHelperClassName(), 'ThenViewHelper')) {
                 $data = $childNode->evaluate($this->renderingContext);
                 return $data;
             }
             if ($childNode instanceof ViewHelperNode
-                && substr($childNode->getViewHelperClassName(), -14) === 'ElseViewHelper') {
+                && str_ends_with($childNode->getViewHelperClassName(), 'ElseViewHelper')) {
                 $elseViewHelperEncountered = true;
             }
         }
 
+        // If there's a f:else viewhelper, but no matching f:then, the ViewHelper should return "null" as default
         if ($elseViewHelperEncountered) {
-            return '';
-        } else {
+            return null;
+        }
+
+        // If there's no f:then or f:else, the direct children of the ViewHelper are used as f:then if present
+        if ($this->viewHelperNode->getChildNodes() !== []) {
             return $this->renderChildren();
         }
+
+        // If there were no children present, but an else handling is specified as ViewHelper argument,
+        // the Viewhelper again should return a "null" as default. If no then/else handling is present at all,
+        // the ViewHelper should return the verdict as boolean
+        return array_key_exists('else', $nodeArguments) ? null : true;
     }
 
     /**
      * Returns value of "else" attribute.
      * If else attribute is not set, iterates through child nodes and renders ElseViewHelper.
-     * If else attribute is not set and no ElseViewHelper is found, an empty string will be returned.
+     * If else attribute is not set and no ElseViewHelper is found, null will be returned.
      *
-     * @return string rendered ElseViewHelper or an empty string if no ThenViewHelper was found
+     * @return mixed rendered ElseViewHelper or null if no ThenViewHelper was found
      * @api
      */
-    protected function renderElseChild()
+    protected function renderElseChild(): mixed
     {
-
-        if ($this->hasArgument('else')) {
-            return $this->arguments['else'];
+        // Closures are present if ViewHelper is called from a cached template
+        if ($this->elseIfClosures !== []) {
+            // Check each "f:else if" by evaluating its "condition" closure; evaluate and return
+            // the "body" closure if condition is met
+            foreach ($this->elseIfClosures as $elseIf) {
+                if ($elseIf['condition']()) {
+                    return $elseIf['body']();
+                }
+            }
         }
 
-        /** @var ViewHelperNode|NULL $elseNode */
+        // Closure might be present if ViewHelper is called from a cached template
+        if ($this->elseClosure !== null) {
+            return ($this->elseClosure)();
+        }
+
+        // The following code can only be evaluated for uncached templates where the node structure
+        // is still available. If it's not, it has already been executed during compilation and we can
+        // assume that the condition wasn't met
+        if (!$this->viewHelperNode instanceof ViewHelperNode) {
+            return null;
+        }
+
+        /** @var ViewHelperNode|null $elseNode */
         $elseNode = null;
         foreach ($this->viewHelperNode->getChildNodes() as $childNode) {
             if ($childNode instanceof ViewHelperNode
-                && substr($childNode->getViewHelperClassName(), -14) === 'ElseViewHelper') {
+                && str_ends_with($childNode->getViewHelperClassName(), 'ElseViewHelper')) {
                 $arguments = $childNode->getArguments();
                 if (isset($arguments['if'])) {
                     if ($arguments['if']->evaluate($this->renderingContext)) {
                         return $childNode->evaluate($this->renderingContext);
                     }
-                } else {
+                } elseif ($elseNode === null) {
                     $elseNode = $childNode;
                 }
             }
         }
 
-        return $elseNode instanceof ViewHelperNode ? $elseNode->evaluate($this->renderingContext) : '';
+        // node arguments are used because the ViewHelper arguments are already merged with default
+        // values, which makes it impossible to differentiate between "argument is not defined" and
+        // "argument returns null"
+        $nodeArguments = $this->viewHelperNode->getArguments();
+
+        // If no else-if matches here and an else argument exists, this is prefered over
+        // a possible f:else ViewHelper. See above for the same implementation for cached templates
+        if (array_key_exists('else', $nodeArguments)) {
+            return $this->arguments['else'];
+        }
+
+        // If a f:else node exists, evaluate its content
+        if ($elseNode instanceof ViewHelperNode) {
+            return $elseNode->evaluate($this->renderingContext);
+        }
+
+        // If only the condition is specified, but no then/else handling, the whole ViewHelper should
+        // return the verdict as boolean. Most code paths have already been eliminated until this point,
+        // so the existence of a valid then decides if the boolean should be returned
+        if (!array_key_exists('then', $nodeArguments) && $this->viewHelperNode->getChildNodes() === []) {
+            return false;
+        }
+
+        // If some kind of then handling has been specified, the ViewHelper always returns "null" as default
+        return null;
     }
 
     /**
-     * The compiled ViewHelper adds two new ViewHelper arguments: __thenClosure and __elseClosure.
-     * These contain closures which are be executed to render the then(), respectively else() case.
-     *
-     * @param string $argumentsName
-     * @param string $closureName
-     * @param string $initializationPhpCode
-     * @param ViewHelperNode $node
-     * @param TemplateCompiler $compiler
-     * @return string
+     * Receives special ViewHelper arguments from compiled templates containing the
+     * individual renderChildrenClosures for the condition cases (then/elseif/else)
+     * and stores them in class properties for later use.
      */
-    public function compile($argumentsName, $closureName, &$initializationPhpCode, ViewHelperNode $node, TemplateCompiler $compiler)
+    public function handleAdditionalArguments(array $arguments): void
     {
-        $thenViewHelperEncountered = $elseViewHelperEncountered = false;
+        $this->thenClosure = $arguments['__then'] ?? null;
+        $this->elseIfClosures = $arguments['__elseIf'] ?? [];
+        $this->elseClosure = $arguments['__else'] ?? null;
+    }
+
+    /**
+     * Optimized version combining default convert() / compile() into one
+     * method: The condition VHs dissect children and looks for then, else
+     * and elseif nodes, separates them and puts them into special "__"
+     * prefixed arguments. The default renderChildrenClosure is not needed
+     * and skipped.
+     */
+    final public function convert(TemplateCompiler $templateCompiler): array
+    {
+        $node = $this->viewHelperNode;
+        $nodeArguments = $node->getArguments();
+        $argumentsCode = [];
+
+        // Convert then/else arguments to closures to simplify handling for cached templates
+        // This also allows to differentiate between undefined and null states for cached templates
+        foreach (['then', 'else'] as $argumentName) {
+            if (array_key_exists($argumentName, $nodeArguments)) {
+                $argumentsCode['__' . $argumentName]
+                    = $nodeArguments[$argumentName] instanceof NodeInterface
+                    ? $templateCompiler->wrapViewHelperNodeArgumentEvaluationInClosure($node, $argumentName)
+                    : 'function () { return ' . $nodeArguments[$argumentName] . ';}';
+            }
+        }
+
+        $elseChildEncountered = false;
         foreach ($node->getChildNodes() as $childNode) {
-            if ($childNode instanceof ViewHelperNode) {
-                $viewHelperClassName = $childNode->getViewHelperClassName();
-                if (substr($viewHelperClassName, -14) === 'ThenViewHelper') {
-                    $thenViewHelperEncountered = true;
-                    $childNodesAsClosure = $compiler->wrapChildNodesInClosure($childNode);
-                    $initializationPhpCode .= sprintf('%s[\'__thenClosure\'] = %s;', $argumentsName, $childNodesAsClosure) . chr(10);
-                } elseif (substr($viewHelperClassName, -14) === 'ElseViewHelper') {
-                    $elseViewHelperEncountered = true;
-                    $childNodesAsClosure = $compiler->wrapChildNodesInClosure($childNode);
-                    $initializationPhpCode .= sprintf('%s[\'__elseClosures\'][] = %s;', $argumentsName, $childNodesAsClosure) . chr(10);
-                    $arguments = $childNode->getArguments();
-                    if (isset($arguments['if'])) {
-                        // The "else" has an argument, indicating it has a secondary (elseif) condition.
-                        // Compile a closure which will evaluate the condition.
-                        $elseIfConditionAsClosure = $compiler->wrapViewHelperNodeArgumentEvaluationInClosure($childNode, 'if');
-                        $initializationPhpCode .= sprintf('%s[\'__elseifClosures\'][] = %s;', $argumentsName, $elseIfConditionAsClosure) . chr(10);
-                    }
+            if (!$childNode instanceof ViewHelperNode) {
+                continue;
+            }
+            $viewHelperClassName = $childNode->getViewHelperClassName();
+            if (!isset($argumentsCode['__then']) && str_ends_with($viewHelperClassName, 'ThenViewHelper')) {
+                // If there are multiple f:then children, we pick the first one only.
+                // This is in line with the non-compiled behavior.
+                $argumentsCode['__then'] =  $templateCompiler->wrapChildNodesInClosure($childNode);
+            } elseif (str_ends_with($viewHelperClassName, 'ElseViewHelper')) {
+                $elseChildEncountered = true;
+                if (isset($childNode->getArguments()['if'])) {
+                    // This "f:else" has the "if" argument, indicating this is a secondary (elseif) condition.
+                    // Compile a closure which will evaluate the condition.
+                    $argumentsCode['__elseIf'] ??= [];
+                    $argumentsCode['__elseIf'][] = [
+                        'condition' => $templateCompiler->wrapViewHelperNodeArgumentEvaluationInClosure($childNode, 'if'),
+                        'body' => $templateCompiler->wrapChildNodesInClosure($childNode),
+                    ];
+                } elseif (!isset($argumentsCode['__else'])) {
+                    // If there are multiple f:else children, we pick the first one only.
+                    // This is in line with the non-compiled behavior.
+                    $argumentsCode['__else'] = $templateCompiler->wrapChildNodesInClosure($childNode);
                 }
             }
         }
-        if (!$thenViewHelperEncountered && !$elseViewHelperEncountered && !isset($node->getArguments()['then'])) {
-            $initializationPhpCode .= sprintf('%s[\'__thenClosure\'] = %s;', $argumentsName, $closureName) . chr(10);
+
+        $accumulatedArgumentInitializationCode = '';
+        foreach ($node->getArgumentDefinitions() as $argumentName => $argumentDefinition) {
+            // then/else has already been dealt with above
+            if ($argumentName === 'then' || $argumentName === 'else') {
+                continue;
+            }
+            if (!array_key_exists($argumentName, $nodeArguments)) {
+                // Argument *not* given to VH, use default value
+                $defaultValue = $argumentDefinition->getDefaultValue();
+                $argumentsCode[$argumentName] = is_array($defaultValue) && empty($defaultValue) ? '[]' : var_export($defaultValue, true);
+            } elseif ($nodeArguments[$argumentName] instanceof NodeInterface) {
+                // Argument *is* given to VH and is a node, resolve
+                $converted = $nodeArguments[$argumentName]->convert($templateCompiler);
+                $accumulatedArgumentInitializationCode .= $converted['initialization'];
+                $argumentsCode[$argumentName] = $converted['execution'];
+            } else {
+                // Argument *is* given to VH and is a simple type.
+                // @todo: Why is this not a node object as well? See f:if inline syntax tests.
+                $argumentsCode[$argumentName] = $nodeArguments[$argumentName];
+            }
         }
-        return parent::compile($argumentsName, $closureName, $initializationPhpCode, $node, $compiler);
+
+        // If there is no then argument, and there are neither "f:then", "f:else" nor "f:else if" children,
+        // then the entire body is considered the "then" child if it is specified.
+        if (!isset($argumentsCode['__then']) && !$elseChildEncountered && $node->getChildNodes() !== []) {
+            $argumentsCode['__then'] = $templateCompiler->wrapChildNodesInClosure($node);
+        }
+
+        // If the ViewHelper has no then or else specified in any supported way, the verdict will be
+        // returned directly. This allows usage of custom condition-based ViewHelpers in f:if, like
+        // <f:if condition="{my:conditionBasedViewHelper()} || somethingElse">
+        if (!isset($argumentsCode['__then']) && !isset($argumentsCode['__elseIf']) && !isset($argumentsCode['__else'])) {
+            $argumentsCode['__then'] = 'function () { return true;}';
+            $argumentsCode['__else'] = 'function () { return false;}';
+        }
+
+        $argumentsVariableName = $templateCompiler->variableName('arguments');
+        $argumentInitializationCode = sprintf(
+            '%s = %s;',
+            $argumentsVariableName,
+            $templateCompiler->generateViewHelperArgumentsCode($argumentsCode),
+        );
+
+        return [
+            'initialization' => '// Rendering ViewHelper ' . $node->getViewHelperClassName() . chr(10)
+                . $accumulatedArgumentInitializationCode . chr(10)
+                . $argumentInitializationCode . chr(10),
+            'execution' => sprintf(
+                '$renderingContext->getViewHelperInvoker()->invoke(%s::class, %s, $renderingContext)' . chr(10),
+                get_class($this),
+                $argumentsVariableName,
+            ),
+        ];
     }
 }

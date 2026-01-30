@@ -172,7 +172,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 */
 	 public static function setEnforceUTF8encoding( $toggle )
 	 {
-		 self::$enforceUTF8encoding = (bool) $toggle;
+		 self::$enforceUTF8encoding = (boolean) $toggle;
 	 }
 
 	/**
@@ -642,8 +642,8 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	 * </code>
 	 *
 	 * The example above exports all bean properties to an array
-	 * called $bookData including its meta data, parent objects but without
-	 * any beans of type 'author'.
+	 * called $bookData including its meta data, parent objects and includes only
+	 * beans of type 'author'.
 	 *
 	 * @param boolean $meta    set to TRUE if you want to export meta data as well
 	 * @param boolean $parents set to TRUE if you want to export parents as well
@@ -1117,7 +1117,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 		$differentAlias = ($hasAlias && $isOwn && isset($this->__info['sys.alias.'.$listName])) ?
 									($this->__info['sys.alias.'.$listName] !== $this->aliasName) : FALSE;
 		$hasSQL         = ($this->withSql !== '' || $this->via !== NULL);
-		$hasAll         = (bool) ($this->all);
+		$hasAll         = (boolean) ($this->all);
 
 		//If exists and no list or exits and list not changed, bail out.
 		if ( $exists && ((!$isOwn && !$isShared ) || (!$hasSQL && !$differentAlias && !$hasAll)) ) {
@@ -1259,7 +1259,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 		} elseif ( $value === TRUE ) {
 			$value = '1';
 			/* for some reason there is some kind of bug in xdebug so that it doesn't count this line otherwise... */
-		} elseif ( $value instanceof \DateTime ) { $value = $value->format( 'Y-m-d H:i:s' ); }
+		} elseif ( ( ( $value instanceof \DateTime ) or ( $value instanceof \DateTimeInterface ) ) ) { $value = $value->format( 'Y-m-d H:i:s' ); }
 		$this->properties[$property] = $value;
 	}
 
@@ -2226,7 +2226,7 @@ class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 			$count = $redbean->getAssociationManager()->relatedCount( $this, $type, $this->withSql, $this->withParams );
 		}
 		$this->clearModifiers();
-		return (int) $count;
+		return (integer) $count;
 	}
 
 	/**

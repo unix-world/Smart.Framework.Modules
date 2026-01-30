@@ -1,66 +1,56 @@
 <?php
-namespace TYPO3Fluid\Fluid\Core\ViewHelper;
+
+declare(strict_types=1);
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
+namespace TYPO3Fluid\Fluid\Core\ViewHelper;
+
 /**
  * Argument definition of each view helper argument
  */
 class ArgumentDefinition
 {
-
     /**
      * Name of argument
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * Type of argument
-     *
-     * @var string
      */
-    protected $type;
+    protected string $type;
 
     /**
      * Description of argument
-     *
-     * @var string
      */
-    protected $description;
+    protected string $description;
 
     /**
      * Is argument required?
-     *
-     * @var boolean
      */
-    protected $required = false;
+    protected bool $required = false;
 
     /**
      * Default value for argument
-     *
-     * @var mixed
      */
-    protected $defaultValue = null;
+    protected mixed $defaultValue;
 
     /**
      * Escaping instruction, in line with $this->escapeOutput / $this->escapeChildren on ViewHelpers.
      *
-     * A value of NULL means "use default behavior" (which is to escape nodes contained in the value).
+     * "null" means "use default behavior" (which is to escape nodes contained in the value).
      *
-     * A value of TRUE means "escape unless escaping is disabled" (e.g. if argument is used in a ViewHelper nested
+     * "true" means "escape unless escaping is disabled" (e.g. if argument is used in a ViewHelper nested
      * within f:format.raw which disables escaping, the argument will not be escaped).
      *
-     * A value of FALSE means "never escape argument" (as in behavior of f:format.raw, which supports both passing
+     * "false" means "never escape argument" (as in behavior of f:format.raw, which supports both passing
      * argument as actual argument or as tag content, but wants neither to be escaped).
-     *
-     * @var bool|null
      */
-    protected $escape = null;
+    protected ?bool $escape;
 
     /**
      * Constructor for this argument definition.
@@ -68,12 +58,19 @@ class ArgumentDefinition
      * @param string $name Name of argument
      * @param string $type Type of argument
      * @param string $description Description of argument
-     * @param boolean $required TRUE if argument is required
+     * @param bool $required true if argument is required
      * @param mixed $defaultValue Default value
-     * @param bool|null $escape Whether or not argument is escaped, or uses default escaping behavior (see class var comment)
+     * @param bool|null $escape Whether argument is escaped, or uses default escaping behavior (see class var comment)
      */
-    public function __construct($name, $type, $description, $required, $defaultValue = null, $escape = null)
+    public function __construct(string $name, string $type, string $description, bool $required, mixed $defaultValue = null, ?bool $escape = null)
     {
+        if ($required && $defaultValue !== null) {
+            throw new \InvalidArgumentException(
+                sprintf('ArgumentDefinition "%s" cannot have a default value while also being required. Either remove the default or mark it as optional.', $name),
+                1754235900,
+            );
+        }
+
         $this->name = $name;
         $this->type = $type;
         $this->description = $description;
@@ -87,7 +84,7 @@ class ArgumentDefinition
      *
      * @return string Name of argument
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -97,7 +94,7 @@ class ArgumentDefinition
      *
      * @return string Type of argument
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -107,7 +104,7 @@ class ArgumentDefinition
      *
      * @return string Description of argument
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -115,9 +112,9 @@ class ArgumentDefinition
     /**
      * Get the optionality of the argument
      *
-     * @return boolean TRUE if argument is optional
+     * @return bool true if argument is optional
      */
-    public function isRequired()
+    public function isRequired(): bool
     {
         return $this->required;
     }
@@ -127,7 +124,7 @@ class ArgumentDefinition
      *
      * @return mixed Default value
      */
-    public function getDefaultValue()
+    public function getDefaultValue(): mixed
     {
         return $this->defaultValue;
     }
@@ -135,8 +132,21 @@ class ArgumentDefinition
     /**
      * @return bool|null
      */
-    public function getEscape()
+    public function getEscape(): ?bool
     {
         return $this->escape;
+    }
+
+    public function isBooleanType(): bool
+    {
+        return $this->getType() === 'bool' || $this->getType() === 'boolean';
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getUnionTypes(): array
+    {
+        return array_map('trim', explode('|', $this->type));
     }
 }

@@ -15,7 +15,7 @@ require_once('modules/smart-extra-libs/version.php'); 						// extra libs versio
 //--
 
 //--
-// StaticLoad Extra Libs from (Smart.Framework.Modules), v.20221225
+// StaticLoad Extra Libs from (Smart.Framework.Modules), v.20260130
 //--
 require_once('modules/smart-extra-libs/lib_templating_ext.php'); 			// extended templating
 //--

@@ -1,10 +1,11 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
+
+namespace TYPO3Fluid\Fluid\ViewHelpers;
 
 use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
 use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
@@ -20,27 +21,22 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class CaseViewHelper extends AbstractViewHelper
 {
-
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
-    /**
-     * @return void
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
-        parent::initializeArguments();
         $this->registerArgument('value', 'mixed', 'Value to match in this case', true);
     }
 
     /**
-     * @return string the contents of this ViewHelper if $value equals the expression of the surrounding switch ViewHelper, otherwise an empty string
+     * @return mixed the contents of this ViewHelper if $value equals the expression of the surrounding switch ViewHelper, otherwise an empty string
      * @throws ViewHelper\Exception
      * @api
      */
-    public function render()
+    public function render(): mixed
     {
         $value = $this->arguments['value'];
         $viewHelperVariableContainer = $this->renderingContext->getViewHelperVariableContainer();
@@ -63,9 +59,8 @@ class CaseViewHelper extends AbstractViewHelper
      * @param string $initializationPhpCode
      * @param ViewHelperNode $node
      * @param TemplateCompiler $compiler
-     * @return string
      */
-    public function compile($argumentsName, $closureName, &$initializationPhpCode, ViewHelperNode $node, TemplateCompiler $compiler)
+    public function compile($argumentsName, $closureName, &$initializationPhpCode, ViewHelperNode $node, TemplateCompiler $compiler): string
     {
         return '\'\'';
     }

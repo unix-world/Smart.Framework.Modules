@@ -79,7 +79,7 @@ final class TagFor extends \TwistTPL\AbstractBlock {
 				$this->name = $syntaxRegexp->matches[1].'-digit';
 				$this->extractAttributes($markup);
 			} else {
-				throw new \Exception("Syntax Error in 'for loop' - Valid syntax: for [item] in [collection]");
+				throw new \Exception('Syntax Error in `for loop` - Valid syntax: for [item] in [collection]');
 				return;
 			} //end if else
 		} //end if else

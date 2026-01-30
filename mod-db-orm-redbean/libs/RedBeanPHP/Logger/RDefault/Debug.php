@@ -264,7 +264,7 @@ class Debug extends RDefault implements Logger
 	 */
 	public function setUseStringOnlyBinding( $yesNo = false )
 	{
-		$this->flagUseStringOnlyBinding = (bool) $yesNo;
+		$this->flagUseStringOnlyBinding = (boolean) $yesNo;
 		return $this;
 	}
 }

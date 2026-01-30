@@ -1,14 +1,14 @@
 <?php
-namespace TYPO3Fluid\Fluid\Core\ViewHelper;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
+namespace TYPO3Fluid\Fluid\Core\ViewHelper;
+
 use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
 use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\NodeInterface;
-use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\TextNode;
 use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
@@ -20,12 +20,11 @@ use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
  */
 abstract class AbstractViewHelper implements ViewHelperInterface
 {
-
     /**
-     * Stores all \TYPO3Fluid\Fluid\ArgumentDefinition instances
-     * @var ArgumentDefinition[]
+     * Argument definition of this ViewHelper
+     * @var array<string, ArgumentDefinition>
      */
-    protected $argumentDefinitions = [];
+    protected array $argumentDefinitions = [];
 
     /**
      * Cache of argument definitions; the key is the ViewHelper class name, and the
@@ -33,88 +32,79 @@ abstract class AbstractViewHelper implements ViewHelperInterface
      *
      * In our benchmarks, this cache leads to a 40% improvement when using a certain
      * ViewHelper class many times throughout the rendering process.
-     * @var array
+     * @var array<string, array<string, ArgumentDefinition>>
      */
-    static private $argumentDefinitionCache = [];
+    private static array $argumentDefinitionCache = [];
 
     /**
-     * Current view helper node
-     * @var ViewHelperNode
+     * Current view helper node; null if template is cached
      */
-    protected $viewHelperNode;
+    protected ?ViewHelperNode $viewHelperNode = null;
 
     /**
-     * Arguments array.
-     * @var array
+     * @var array<string, mixed>
      * @api
      */
-    protected $arguments = [];
-
-    /**
-     * Arguments array.
-     * @var NodeInterface[] array
-     * @api
-     */
-    protected $childNodes = [];
+    protected array $arguments = [];
 
     /**
      * Current variable container reference.
-     * @var VariableProviderInterface
      * @api
      */
-    protected $templateVariableContainer;
+    protected ?VariableProviderInterface $templateVariableContainer = null;
+
+    protected ?RenderingContextInterface $renderingContext = null;
 
     /**
-     * @var RenderingContextInterface
+     * Stores rendering contexts in a situation where ViewHelpers are called recursively from inside
+     * one of their child nodes. In that case, the rendering context can change during the recursion,
+     * but needs to be restored properly after each run. Thus, we store a stack of rendering contexts
+     * to be able to restore the initial state of the ViewHelper.
+     *
+     * @var RenderingContextInterface[]
      */
-    protected $renderingContext;
+    protected array $renderingContextStack = [];
 
-    /**
-     * @var \Closure
-     */
-    protected $renderChildrenClosure = null;
+    protected ?\Closure $renderChildrenClosure = null;
 
     /**
      * ViewHelper Variable Container
-     * @var ViewHelperVariableContainer
      * @api
      */
-    protected $viewHelperVariableContainer;
+    protected ?ViewHelperVariableContainer $viewHelperVariableContainer = null;
 
     /**
      * Specifies whether the escaping interceptors should be disabled or enabled for the result of renderChildren() calls within this ViewHelper
      * @see isChildrenEscapingEnabled()
      *
-     * Note: If this is NULL the value of $this->escapingInterceptorEnabled is considered for backwards compatibility
+     * Note: If this is null, the value will be determined based on $escapeOutput.
      *
-     * @var boolean
+     * @var bool|null
      * @api
      */
-    protected $escapeChildren = null;
+    protected $escapeChildren;
 
     /**
      * Specifies whether the escaping interceptors should be disabled or enabled for the render-result of this ViewHelper
      * @see isOutputEscapingEnabled()
      *
-     * @var boolean
+     * @var bool
      * @api
      */
-    protected $escapeOutput = null;
+    protected $escapeOutput = true;
 
     /**
-     * @param array $arguments
-     * @return void
+     * @param array<string, mixed> $arguments
      */
-    public function setArguments(array $arguments)
+    public function setArguments(array $arguments): void
     {
         $this->arguments = $arguments;
     }
 
     /**
      * @param RenderingContextInterface $renderingContext
-     * @return void
      */
-    public function setRenderingContext(RenderingContextInterface $renderingContext)
+    public function setRenderingContext(RenderingContextInterface $renderingContext): void
     {
         $this->renderingContext = $renderingContext;
         $this->templateVariableContainer = $renderingContext->getVariableProvider();
@@ -125,10 +115,8 @@ abstract class AbstractViewHelper implements ViewHelperInterface
      * Returns whether the escaping interceptors should be disabled or enabled for the result of renderChildren() calls within this ViewHelper
      *
      * Note: This method is no public API, use $this->escapeChildren instead!
-     *
-     * @return boolean
      */
-    public function isChildrenEscapingEnabled()
+    public function isChildrenEscapingEnabled(): bool
     {
         if ($this->escapeChildren === null) {
             // Disable children escaping automatically, if output escaping is on anyway.
@@ -140,64 +128,40 @@ abstract class AbstractViewHelper implements ViewHelperInterface
     /**
      * Returns whether the escaping interceptors should be disabled or enabled for the render-result of this ViewHelper
      *
-     * Note: This method is no public API, use $this->escapeChildren instead!
-     *
-     * @return boolean
+     * Note: This method is no public API, use $this->escapeOutput instead!
      */
-    public function isOutputEscapingEnabled()
+    public function isOutputEscapingEnabled(): bool
     {
         return $this->escapeOutput !== false;
     }
 
     /**
-     * Register a new argument. Call this method from your ViewHelper subclass
-     * inside the initializeArguments() method.
+     * Returns the name of variable that contains the value to use instead of render children closure, if specified.
+     * ViewHelpers that want to use contentArgumentName are expected to override this method with their own implementation.
      *
-     * @param string $name Name of the argument
-     * @param string $type Type of the argument
-     * @param string $description Description of the argument
-     * @param boolean $required If TRUE, argument is required. Defaults to FALSE.
-     * @param mixed $defaultValue Default value of argument
-     * @param bool|null $escape Can be toggled to TRUE to force escaping of variables and inline syntax passed as argument value.
-     * @return \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper $this, to allow chaining.
-     * @throws Exception
      * @api
      */
-    protected function registerArgument($name, $type, $description, $required = false, $defaultValue = null, $escape = null)
+    public function getContentArgumentName(): ?string
     {
-        if (array_key_exists($name, $this->argumentDefinitions)) {
-            throw new Exception(
-                'Argument "' . $name . '" has already been defined, thus it should not be defined again.',
-                1253036401
-            );
-        }
-        $this->argumentDefinitions[$name] = new ArgumentDefinition($name, $type, $description, $required, $defaultValue, $escape);
-        return $this;
+        return null;
     }
 
     /**
-     * Overrides a registered argument. Call this method from your ViewHelper subclass
-     * inside the initializeArguments() method if you want to override a previously registered argument.
-     * @see registerArgument()
+     * Register a new argument. Call this method from your ViewHelper subclass
+     * inside the initializeArguments() method. If an argument with the same name
+     * is already defined, it will be overridden.
      *
      * @param string $name Name of the argument
      * @param string $type Type of the argument
      * @param string $description Description of the argument
-     * @param boolean $required If TRUE, argument is required. Defaults to FALSE.
-     * @param mixed $defaultValue Default value of argument
-     * @param bool|null $escape Can be toggled to TRUE to force escaping of variables and inline syntax passed as argument value.
-     * @return \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper $this, to allow chaining.
-     * @throws Exception
+     * @param bool $required If true, argument is required. Defaults to false.
+     * @param mixed $defaultValue Default value of argument. Will be used if the argument is not set.
+     * @param bool|null $escape Can be toggled to true to force escaping of variables and inline syntax passed as argument value.
+     * @return static $this, to allow chaining.
      * @api
      */
-    protected function overrideArgument($name, $type, $description, $required = false, $defaultValue = null, $escape = null)
+    protected function registerArgument($name, $type, $description, $required = false, $defaultValue = null, $escape = null): static
     {
-        if (!array_key_exists($name, $this->argumentDefinitions)) {
-            throw new Exception(
-                'Argument "' . $name . '" has not been defined, thus it can\'t be overridden.',
-                1279212461
-            );
-        }
         $this->argumentDefinitions[$name] = new ArgumentDefinition($name, $type, $description, $required, $defaultValue, $escape);
         return $this;
     }
@@ -205,36 +169,18 @@ abstract class AbstractViewHelper implements ViewHelperInterface
     /**
      * Sets all needed attributes needed for the rendering. Called by the
      * framework. Populates $this->viewHelperNode.
-     * This is PURELY INTERNAL! Never override this method!!
-     *
      * @param ViewHelperNode $node View Helper node to be set.
-     * @return void
+     * @internal
      */
-    public function setViewHelperNode(ViewHelperNode $node)
+    public function setViewHelperNode(ViewHelperNode $node): void
     {
         $this->viewHelperNode = $node;
     }
 
     /**
-     * Sets all needed attributes needed for the rendering. Called by the
-     * framework. Populates $this->viewHelperNode.
-     * This is PURELY INTERNAL! Never override this method!!
-     *
-     * @param NodeInterface[] $childNodes
-     * @return void
-     */
-    public function setChildNodes(array $childNodes)
-    {
-        $this->childNodes = $childNodes;
-    }
-
-    /**
      * Called when being inside a cached template.
-     *
-     * @param \Closure $renderChildrenClosure
-     * @return void
      */
-    public function setRenderChildrenClosure(\Closure $renderChildrenClosure)
+    public function setRenderChildrenClosure(\Closure $renderChildrenClosure): void
     {
         $this->renderChildrenClosure = $renderChildrenClosure;
     }
@@ -242,40 +188,12 @@ abstract class AbstractViewHelper implements ViewHelperInterface
     /**
      * Initialize the arguments of the ViewHelper, and call the render() method of the ViewHelper.
      *
-     * @return string the rendered ViewHelper.
+     * @return mixed the result of the ViewHelper.
      */
-    public function initializeArgumentsAndRender()
+    public function initializeArgumentsAndRender(): mixed
     {
-        $this->validateArguments();
         $this->initialize();
-
-        return $this->callRenderMethod();
-    }
-
-    /**
-     * Call the render() method and handle errors.
-     *
-     * @return string the rendered ViewHelper
-     * @throws Exception
-     */
-    protected function callRenderMethod()
-    {
-        if (method_exists($this, 'render')) {
-            return call_user_func([$this, 'render']);
-        }
-        if ((new \ReflectionMethod($this, 'renderStatic'))->getDeclaringClass()->getName() !== AbstractViewHelper::class) {
-            // Method is safe to call - will not recurse through ViewHelperInvoker via the default
-            // implementation of renderStatic() on this class.
-            return static::renderStatic($this->arguments, $this->buildRenderChildrenClosure(), $this->renderingContext);
-        }
-        throw new Exception(
-            sprintf(
-                'ViewHelper class "%s" does not declare a "render()" method and inherits the default "renderStatic". ' .
-                'Executing this ViewHelper would cause infinite recursion - please either implement "render()" or ' .
-                '"renderStatic()" on your ViewHelper class',
-                get_class($this)
-            )
-        );
+        return $this->render();
     }
 
     /**
@@ -283,12 +201,9 @@ abstract class AbstractViewHelper implements ViewHelperInterface
      *
      * Override this method to solve tasks before the view helper content is rendered.
      *
-     * @return void
      * @api
      */
-    public function initialize()
-    {
-    }
+    public function initialize(): void {}
 
     /**
      * Helper method which triggers the rendering of everything between the
@@ -297,28 +212,34 @@ abstract class AbstractViewHelper implements ViewHelperInterface
      * @return mixed The finally rendered child nodes.
      * @api
      */
-    public function renderChildren()
+    public function renderChildren(): mixed
     {
-        if ($this->renderChildrenClosure !== null) {
-            $closure = $this->renderChildrenClosure;
-            return $closure();
-        }
-        return $this->viewHelperNode->evaluateChildNodes($this->renderingContext);
+        return $this->buildRenderChildrenClosure()();
     }
 
     /**
-     * Helper which is mostly needed when calling renderStatic() from within
-     * render().
+     * Creates a closure that renders a view helper's child nodes. It also takes
+     * into account the contentArgumentName, which if defined leads to that argument
+     * being rendered instead.
      *
      * No public API yet.
-     *
-     * @return \Closure
      */
-    protected function buildRenderChildrenClosure()
+    protected function buildRenderChildrenClosure(): \Closure
     {
-        $self = clone $this;
-        return function() use ($self) {
-            return $self->renderChildren();
+        $contentArgumentName = $this->getContentArgumentName();
+        if ($contentArgumentName !== null && isset($this->arguments[$contentArgumentName])) {
+            return fn() => $this->arguments[$contentArgumentName];
+        }
+        if ($this->renderChildrenClosure !== null) {
+            // @todo apply processing if contentArgumentName is set? Or implement sync from closure to argument?
+            return $this->renderChildrenClosure;
+        }
+        return function () {
+            $this->renderingContextStack[] = $this->renderingContext;
+            $result = $this->viewHelperNode->evaluateChildNodes($this->renderingContext);
+            $this->setRenderingContext(array_pop($this->renderingContextStack));
+            // @todo apply processing if contentArgumentName is set? Or implement sync from closure to argument?
+            return $result;
         };
     }
 
@@ -327,7 +248,7 @@ abstract class AbstractViewHelper implements ViewHelperInterface
      *
      * @return ArgumentDefinition[]
      */
-    public function prepareArguments()
+    public function prepareArguments(): array
     {
         $thisClassName = get_class($this);
         if (isset(self::$argumentDefinitionCache[$thisClassName])) {
@@ -340,108 +261,21 @@ abstract class AbstractViewHelper implements ViewHelperInterface
     }
 
     /**
-     * Validate arguments, and throw exception if arguments do not validate.
-     *
-     * @return void
-     * @throws \InvalidArgumentException
-     */
-    public function validateArguments()
-    {
-        $argumentDefinitions = $this->prepareArguments();
-        foreach ($argumentDefinitions as $argumentName => $registeredArgument) {
-            if ($this->hasArgument($argumentName)) {
-                $value = $this->arguments[$argumentName];
-                $type = $registeredArgument->getType();
-                if ($value !== $registeredArgument->getDefaultValue() && $type !== 'mixed') {
-                    $givenType = is_object($value) ? get_class($value) : gettype($value);
-                    if (!$this->isValidType($type, $value)) {
-                        throw new \InvalidArgumentException(
-                            'The argument "' . $argumentName . '" was registered with type "' . $type . '", but is of type "' .
-                            $givenType . '" in view helper "' . get_class($this) . '".',
-                            1256475113
-                        );
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Check whether the defined type matches the value type
-     *
-     * @param string $type
-     * @param mixed $value
-     * @return boolean
-     */
-    protected function isValidType($type, $value)
-    {
-        if ($type === 'object') {
-            if (!is_object($value)) {
-                return false;
-            }
-        } elseif ($type === 'array' || substr($type, -2) === '[]') {
-            if (!is_array($value) && !$value instanceof \ArrayAccess && !$value instanceof \Traversable && !empty($value)) {
-                return false;
-            } elseif (substr($type, -2) === '[]') {
-                $firstElement = $this->getFirstElementOfNonEmpty($value);
-                if ($firstElement === null) {
-                    return true;
-                }
-                return $this->isValidType(substr($type, 0, -2), $firstElement);
-            }
-        } elseif ($type === 'string') {
-            if (is_object($value) && !method_exists($value, '__toString')) {
-                return false;
-            }
-        } elseif ($type === 'boolean' && !is_bool($value)) {
-            return false;
-        } elseif (class_exists($type) && $value !== null && !$value instanceof $type) {
-            return false;
-        } elseif (is_object($value) && !is_a($value, $type, true)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Return the first element of the given array, ArrayAccess or Traversable
-     * that is not empty
-     *
-     * @param mixed $value
-     * @return mixed
-     */
-    protected function getFirstElementOfNonEmpty($value)
-    {
-        if (is_array($value)) {
-            return reset($value);
-        } elseif ($value instanceof \Traversable) {
-            foreach ($value as $element) {
-                return $element;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Initialize all arguments. You need to override this method and call
      * $this->registerArgument(...) inside this method, to register all your arguments.
      *
-     * @return void
      * @api
      */
-    public function initializeArguments()
-    {
-    }
+    public function initializeArguments(): void {}
 
     /**
-     * Tests if the given $argumentName is set, and not NULL.
+     * Tests if the given $argumentName is set, and not null.
      * The isset() test used fills both those requirements.
      *
-     * @param string $argumentName
-     * @return boolean TRUE if $argumentName is found, FALSE otherwise
+     * @return bool true if $argumentName is found
      * @api
      */
-    protected function hasArgument($argumentName)
+    protected function hasArgument(string $argumentName): bool
     {
         return isset($this->arguments[$argumentName]);
     }
@@ -449,17 +283,11 @@ abstract class AbstractViewHelper implements ViewHelperInterface
     /**
      * Default implementation of "handling" additional, undeclared arguments.
      * In this implementation the behavior is to consistently throw an error
-     * about NOT supporting any additional arguments. This method MUST be
-     * overridden by any ViewHelper that desires this support and this inherited
-     * method must not be called, obviously.
+     * about NOT supporting any additional arguments.
      *
-     * @throws Exception
-     * @param array $arguments
-     * @return void
+     * @param array<string, mixed> $arguments
      */
-    public function handleAdditionalArguments(array $arguments)
-    {
-    }
+    public function handleAdditionalArguments(array $arguments): void {}
 
     /**
      * Default implementation of validating additional, undeclared arguments.
@@ -469,82 +297,164 @@ abstract class AbstractViewHelper implements ViewHelperInterface
      * method must not be called, obviously.
      *
      * @throws Exception
-     * @param array $arguments
-     * @return void
+     * @param array<string, mixed> $arguments
      */
-    public function validateAdditionalArguments(array $arguments)
+    public function validateAdditionalArguments(array $arguments): void
     {
         if (!empty($arguments)) {
+            if ($this->argumentDefinitions === []) {
+                throw new Exception(
+                    sprintf(
+                        'Undeclared arguments passed to ViewHelper %s: %s. No arguments are allowed.',
+                        get_class($this),
+                        implode(', ', array_keys($arguments)),
+                    ),
+                );
+            }
             throw new Exception(
                 sprintf(
                     'Undeclared arguments passed to ViewHelper %s: %s. Valid arguments are: %s',
                     get_class($this),
                     implode(', ', array_keys($arguments)),
-                    implode(', ', array_keys($this->argumentDefinitions))
-                )
+                    implode(', ', array_keys($this->argumentDefinitions)),
+                ),
             );
         }
     }
+
+    /**
+     * Main render method of the ViewHelper. Every modern ViewHelper implementation
+     * must implement this method.
+     *
+     * @return mixed
+     */
+    abstract public function render();
 
     /**
      * You only should override this method *when you absolutely know what you
      * are doing*, and really want to influence the generated PHP code during
      * template compilation directly.
      *
-     * @param string $argumentsName
-     * @param string $closureName
-     * @param string $initializationPhpCode
-     * @param ViewHelperNode $node
-     * @param TemplateCompiler $compiler
-     * @return string
+     * This method is called on compilation time.
+     *
+     * It has to return a *single* PHP statement without semi-colon or newline
+     * at the end, which will be embedded at various places.
+     *
+     * Furthermore, it can append PHP code to the variable $initializationPhpCode.
+     * In this case, all statements have to end with semi-colon and newline.
+     *
+     * Outputting new variables
+     * ========================
+     * If you want create a new PHP variable, you need to use
+     * $templateCompiler->variableName('nameOfVariable') for this, as all variables
+     * need to be globally unique.
+     *
+     * Return Value
+     * ============
+     * Besides returning a single string, it can also return the constant
+     * \TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler::SHOULD_GENERATE_VIEWHELPER_INVOCATION
+     * which means that after the $initializationPhpCode, the ViewHelper invocation
+     * is built as normal. This is especially needed if you want to build new arguments
+     * at run-time, as it is done for the AbstractConditionViewHelper.
+     *
+     * @param string $argumentsName Name of the variable in which the ViewHelper arguments are stored
+     * @param string $closureName Name of the closure which can be executed to render the child nodes
      */
-    public function compile($argumentsName, $closureName, &$initializationPhpCode, ViewHelperNode $node, TemplateCompiler $compiler)
+    public function compile(string $argumentsName, string $closureName, string &$initializationPhpCode, ViewHelperNode $node, TemplateCompiler $compiler): string
     {
-        return sprintf(
-            '%s::renderStatic(%s, %s, $renderingContext)',
-            get_class($this),
+        $execution = sprintf(
+            '$renderingContext->getViewHelperInvoker()->invoke(%s::class, %s, $renderingContext, %s)',
+            static::class,
             $argumentsName,
-            $closureName
+            $closureName,
         );
+
+        $contentArgumentName = $this->getContentArgumentName();
+        if ($contentArgumentName !== null) {
+            $initializationPhpCode .= sprintf(
+                '%s = (%s[\'%s\'] !== null) ? function() use (%s) { return %s[\'%s\']; } : %s;',
+                $closureName,
+                $argumentsName,
+                $contentArgumentName,
+                $argumentsName,
+                $argumentsName,
+                $contentArgumentName,
+                $closureName,
+            );
+        }
+
+        return $execution;
     }
 
     /**
-     * Default implementation of static rendering; useful API method if your ViewHelper
-     * when compiled is able to render itself statically to increase performance. This
-     * default implementation will simply delegate to the ViewHelperInvoker.
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return mixed
+     * @internal See interface description.
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public function convert(TemplateCompiler $templateCompiler): array
     {
-        $viewHelperClassName = get_called_class();
-        return $renderingContext->getViewHelperInvoker()->invoke($viewHelperClassName, $arguments, $renderingContext, $renderChildrenClosure);
-    }
+        $initializationPhpCode = '// Rendering ViewHelper ' . $this->viewHelperNode->getViewHelperClassName() . chr(10);
 
-    /**
-     * Save the associated ViewHelper node in a static public class variable.
-     * called directly after the ViewHelper was built.
-     *
-     * @param ViewHelperNode $node
-     * @param TextNode[] $arguments
-     * @param VariableProviderInterface $variableContainer
-     * @return void
-     */
-    public static function postParseEvent(ViewHelperNode $node, array $arguments, VariableProviderInterface $variableContainer)
-    {
-    }
+        $argumentsVariableName = $templateCompiler->variableName('arguments');
+        $renderChildrenClosureVariableName = $templateCompiler->variableName('renderChildrenClosure');
+        $viewHelperInitializationPhpCode = '';
 
-    /**
-     * Resets the ViewHelper state.
-     *
-     * Overwrite this method if you need to get a clean state of your ViewHelper.
-     *
-     * @return void
-     */
-    public function resetState()
-    {
+        $convertedViewHelperExecutionCode = $this->compile(
+            $argumentsVariableName,
+            $renderChildrenClosureVariableName,
+            $viewHelperInitializationPhpCode,
+            $this->viewHelperNode,
+            $templateCompiler,
+        );
+
+        $accumulatedArgumentInitializationCode = '';
+        $argumentInitializationCode = sprintf('%s = [' . chr(10), $argumentsVariableName);
+
+        $arguments = $this->viewHelperNode->getArguments();
+        $argumentDefinitions = $this->viewHelperNode->getArgumentDefinitions();
+        foreach ($argumentDefinitions as $argumentName => $argumentDefinition) {
+            if (!array_key_exists($argumentName, $arguments)) {
+                // Argument *not* given to VH, use default value
+                $defaultValue = $argumentDefinition->getDefaultValue();
+                $argumentInitializationCode .= sprintf(
+                    '\'%s\' => %s,' . chr(10),
+                    $argumentName,
+                    is_array($defaultValue) && empty($defaultValue) ? '[]' : var_export($defaultValue, true),
+                );
+            }
+        }
+
+        foreach ($arguments as $argumentName => $argumentValue) {
+            if ($argumentValue instanceof NodeInterface) {
+                $converted = $argumentValue->convert($templateCompiler);
+                if (!empty($converted['initialization'])) {
+                    $accumulatedArgumentInitializationCode .= $converted['initialization'];
+                }
+                $argumentInitializationCode .= sprintf(
+                    '\'%s\' => %s,' . chr(10),
+                    $argumentName,
+                    $converted['execution'],
+                );
+            } else {
+                $argumentInitializationCode .= sprintf(
+                    '\'%s\' => %s,' . chr(10),
+                    $argumentName,
+                    $argumentValue,
+                );
+            }
+        }
+
+        $argumentInitializationCode .= '];' . chr(10);
+
+        // Build up closure which renders the child nodes
+        $initializationPhpCode .= sprintf(
+            '%s = %s;' . chr(10),
+            $renderChildrenClosureVariableName,
+            $templateCompiler->wrapChildNodesInClosure($this->viewHelperNode),
+        );
+
+        $initializationPhpCode .= $accumulatedArgumentInitializationCode . chr(10) . $argumentInitializationCode . $viewHelperInitializationPhpCode;
+        return [
+            'initialization' => $initializationPhpCode,
+            'execution' => $convertedViewHelperExecutionCode === '' ? "''" : $convertedViewHelperExecutionCode,
+        ];
     }
 }

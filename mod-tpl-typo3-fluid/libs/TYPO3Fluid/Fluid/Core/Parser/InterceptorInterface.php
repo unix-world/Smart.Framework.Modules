@@ -1,32 +1,36 @@
 <?php
-namespace TYPO3Fluid\Fluid\Core\Parser;
+
+declare(strict_types=1);
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
+namespace TYPO3Fluid\Fluid\Core\Parser;
+
 use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\NodeInterface;
 
 /**
  * An interceptor interface. Interceptors are used in the parsing stage to change
  * the syntax tree of a template, e.g. by adding viewhelper nodes.
+ *
+ * @todo add return types with Fluid v5
  */
 interface InterceptorInterface
 {
-
-    const INTERCEPT_OPENING_VIEWHELPER = 1;
-    const INTERCEPT_CLOSING_VIEWHELPER = 2;
-    const INTERCEPT_TEXT = 3;
-    const INTERCEPT_OBJECTACCESSOR = 4;
-    const INTERCEPT_EXPRESSION = 5;
+    public const INTERCEPT_OPENING_VIEWHELPER = 1;
+    public const INTERCEPT_CLOSING_VIEWHELPER = 2;
+    public const INTERCEPT_TEXT = 3;
+    public const INTERCEPT_OBJECTACCESSOR = 4;
+    public const INTERCEPT_EXPRESSION = 5;
 
     /**
      * The interceptor can process the given node at will and must return a node
      * that will be used in place of the given node.
      *
      * @param NodeInterface $node
-     * @param integer $interceptorPosition One of the INTERCEPT_* constants for the current interception point
+     * @param int $interceptorPosition One of the INTERCEPT_* constants for the current interception point
      * @param ParsingState $parsingState the parsing state
      * @return NodeInterface
      */

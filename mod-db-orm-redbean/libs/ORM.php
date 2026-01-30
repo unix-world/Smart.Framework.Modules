@@ -1,7 +1,7 @@
 <?php
 // Redbean ORM for Smart.Framework
 // Module Library
-// (c) 2006-2023 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -16,39 +16,29 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 
 //--
-/**
- *
- * @access 		private
- * @internal
- *
- */
-function autoload__RedbeanOrm_SFM($classname) {
+\spl_autoload_register(function(string $classname) : void {
 	//--
-	$classname = (string) $classname;
-	//--
-	if(\strpos((string)$classname, '\\') === false) { // if have namespace
+	if((\strpos((string)$classname, '\\') === false) OR (!\preg_match('/^[a-zA-Z0-9_\\\]+$/', (string)$classname))) { // if have no namespace or not valid character set
 		return;
 	} //end if
 	//--
-	if((string)\substr((string)$classname, 0, 11) !== 'RedBeanPHP\\') { // if class name is not starting with RedBeanPHP
+	if(\str_starts_with((string)$classname, 'RedBeanPHP\\') === false) { // if class name is starting with RedBeanPHP\
 		return;
 	} //end if
 	//--
-	$path = 'modules/mod-db-orm-redbean/libs/'.\str_replace(array('\\', "\0"), array('/', ''), (string)$classname);
+	$path = (string) \SmartFileSysUtils::getSmartFsRootPath().'modules/mod-db-orm-redbean/libs/'.\str_replace([ '\\', "\0" ], [ '/', '' ], (string)$classname);
 	//--
-	if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
+	if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', (string)$path)) {
 		return; // invalid path characters in path
 	} //end if
 	//--
-	if(!\is_file($path.'.php')) {
+	if(!\is_file((string)$path.'.php')) {
 		return; // file does not exists
 	} //end if
 	//--
-	require_once($path.'.php');
+	require_once((string)$path.'.php');
 	//--
-} //END FUNCTION
-//--
-\spl_autoload_register('\\SmartModExtLib\\DbOrmRedbean\\autoload__RedbeanOrm_SFM', true, false); // throw / append
+}, true, false); // throw / append
 //--
 
 
@@ -82,7 +72,7 @@ function autoload__RedbeanOrm_SFM($classname) {
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Ctype, PHP PDO ; vendor-classes: \RedbeanOrm\Db ; classes: Smart, SmartFileSysUtils, SmartEnvironment
- * @version 	v.20241216
+ * @version 	v.20260130
  * @package 	modules:Database:PDO:Redbean-ORM
  *
  */
@@ -92,16 +82,17 @@ final class ORM extends \RedBeanPHP\Facade {
 
 	private static $conexion = null;
 
-	public static function setup($dsn=null, $username=null, $password=null, $frozen=true, $partialBeans=false, $pdo_options=[]) {
+
+	public static function setup(?string $dsn=null, ?string $username=null, ?string $password=null, bool $frozen=true, bool $partialBeans=false, array $pdo_options=[]) : ?\RedBeanPHP\ToolBox {
 		//--
 		if(!\function_exists('\\ctype_alnum')) {
 			\Smart::raise_error(__METHOD__.'() # PHP Ctype extension is required but not found ...');
-			return false;
+			return null;
 		} //end if
 		//--
 		if(self::$conexion) {
 			\Smart::raise_error(__METHOD__.' Already have setup a connection ...');
-			return false;
+			return null;
 		} //end if
 		//--
 		switch((string)$dsn) {
@@ -109,7 +100,7 @@ final class ORM extends \RedBeanPHP\Facade {
 				$arr_cfg = \Smart::get_from_config('mysqli');
 				if(\Smart::array_size($arr_cfg) <= 0) {
 					\Smart::raise_error(__METHOD__.' The DSN not found in Smart.Framework config (mysqli): '.$dsn);
-					return false;
+					return null;
 				} //end if
 				$conex_str = (string) 'mysql:host='.($arr_cfg['server-host'] ?? null).';port='.((int)($arr_cfg['server-port'] ?? null)).';dbname='.($arr_cfg['dbname'] ?? null);
 				$conex_usr = (string) ($arr_cfg['username'] ?? null);
@@ -127,9 +118,9 @@ final class ORM extends \RedBeanPHP\Facade {
 				$arr_cfg = \Smart::get_from_config('pgsql');
 				if(\Smart::array_size($arr_cfg) <= 0) {
 					\Smart::raise_error(__METHOD__.' The DSN not found in Smart.Framework config (pgsql): '.$dsn);
-					return false;
+					return null;
 				} //end if
-				$conex_str = (string) 'pgsql:host='.($arr_cfg['server-host'] ?? null).';port='.((int)($arr_cfg['server-port'] ?? null)).';dbname='.($arr_cfg['dbname'] ?? null).';connect_timeout='.((int)($arr_cfg['timeout'] ?? null));
+				$conex_str = (string) 'pgsql:host='.($arr_cfg['server-host'] ?? null).';port='.((int)($arr_cfg['server-port'] ?? null)).';dbname='.($arr_cfg['dbname'] ?? null).';connect_timeout='.((int)($arr_cfg['timeout'] ?? null).';sslmode=disable;gssencmode=disable');
 				$conex_usr = (string) ($arr_cfg['username'] ?? null);
 				$conex_pwd = (string) (isset($arr_cfg['password']) ? \base64_decode((string)$arr_cfg['password']) : '');
 				self::$conexion = parent::setup(
@@ -144,28 +135,28 @@ final class ORM extends \RedBeanPHP\Facade {
 			default: // sqlite:tmp/sample-dbfile.sqlite OR custom DSN
 				if((string)\trim((string)$dsn) == '') {
 					\Smart::raise_error(__METHOD__.' Empty DSN not allowed !');
-					return false;
+					return null;
 				} //end if
 				if(\strpos((string)$dsn, 'sqlite:') !== 0) {
 					\Smart::raise_error(__METHOD__.' Invalid DSN: `'.$dsn.'`');
-					return false;
+					return null;
 				} //end if
 				$the_db = (string) \trim((string)\substr((string)$dsn, 7));
 				if((string)$the_db == '') {
 					\Smart::raise_error(__METHOD__.' Empty Database Path (sqlite): '.$dsn);
-					return false;
+					return null;
 				} //end if
 				if(!\SmartFileSysUtils::checkIfSafePath((string)$the_db, true, true)) { // deny absolute path access ; allow protected path access (starting with #)
 					\Smart::raise_error(__METHOD__.' Unsafe Database Path (sqlite): '.$dsn);
-					return false;
+					return null;
 				} //end if
 				if(\Smart::array_size(\Smart::get_from_config('sqlite')) <= 0) {
 					\Smart::raise_error(__METHOD__.' The CFG not found in Smart.Framework config (sqlite): '.$dsn);
-					return false;
+					return null;
 				} //end if
 				if((!defined('\\SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH')) OR (!is_string(\SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH))) {
 					\Smart::raise_error(__METHOD__.' The SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH was not defined or is not valid string in Smart.Framework (sqlite)');
-					return false;
+					return null;
 				} //end if
 				self::$conexion = parent::setup(
 					(string) 'sqlite:'.\SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH.$the_db, 	// DSN
@@ -197,7 +188,7 @@ final class ORM extends \RedBeanPHP\Facade {
 	 * @internal
 	 *
 	 */
-	public static function registerToDebugLog() {
+	public static function registerToDebugLog() : void {
 		//--
 		// this must be called at the end
 		//--

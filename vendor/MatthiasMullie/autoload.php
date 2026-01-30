@@ -8,22 +8,20 @@
  * @internal
  *
  */
-function autoload__VendorMatthiasMullie($classname) {
+spl_autoload_register(function(string $classname) : void {
 	//--
-	$classname = (string) $classname;
-	//--
-	if((strpos($classname, '\\') === false) OR (!preg_match('/^[a-zA-Z0-9_\\\]+$/', $classname))) { // if have no namespace or not valid character set
+	if((strpos((string)$classname, '\\') === false) OR (!preg_match('/^[a-zA-Z0-9_\\\]+$/', (string)$classname))) { // if have no namespace or not valid character set
 		return;
 	} //end if
 	//--
-	if(strpos($classname, 'MatthiasMullie\\') === false) { // must start with this namespaces only
+	if(str_starts_with((string)$classname, 'MatthiasMullie\\') === false) { // if class name is starting with MatthiasMullie\
 		return;
 	} //end if
 	//--
-	$parts = (array) explode('\\', $classname);
+	$parts = (array) explode('\\', (string)$classname);
 	//--
-	$max = (int) count($parts) - 1; // the last is the class
-	if($max < 1) {
+	$max = (int) count((array)$parts) - 1; // the last is the class
+	if((int)$max < (int)(2 - 1)) {
 		return;
 	} //end if
 	//--
@@ -47,21 +45,19 @@ function autoload__VendorMatthiasMullie($classname) {
 	$dir  = (string) $dir;
 	$file = (string) $parts[(int)$max];
 	$path = (string) $dir.$file;
-	$path = (string) str_replace(array('\\', "\0"), array('', ''), $path); // filter out null byte and backslash
+	$path = (string) str_replace([ '\\', "\0" ], [ '', '' ], (string)$path); // filter out null byte and backslash
 	//--
-	if(!preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
+	if(!preg_match('/^[_a-zA-Z0-9\-\/]+$/', (string)$path)) {
 		return; // invalid path characters in file
 	} //end if
 	//--
-	if(!is_file($path.'.php')) {
+	if(!is_file((string)$path.'.php')) {
 		return; // file does not exists
 	} //end if
 	//--
-	require_once($path.'.php');
+	require_once((string)$path.'.php');
 	//--
-} //END FUNCTION
-//--
-spl_autoload_register('autoload__VendorMatthiasMullie', true, false); // throw / append
+}, true, false); // throw / append
 //--
 
 // end of php code

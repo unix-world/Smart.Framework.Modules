@@ -1,17 +1,19 @@
 <?php
-namespace TYPO3Fluid\Fluid\ViewHelpers;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
-use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\TextNode;
+namespace TYPO3Fluid\Fluid\ViewHelpers;
+
+use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
+use TYPO3Fluid\Fluid\Core\Parser\ParsingState;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\NodeInterface;
 use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
-use TYPO3Fluid\Fluid\Core\Variables\VariableProviderInterface;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\TemplateVariableContainer;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\ParserRuntimeOnly;
+use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperNodeInitializedEventInterface;
 
 /**
  * A ViewHelper to declare sections in templates for later use with e.g. the ``f:render`` ViewHelper.
@@ -64,52 +66,29 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\ParserRuntimeOnly;
  *
  * @api
  */
-class SectionViewHelper extends AbstractViewHelper
+class SectionViewHelper extends AbstractViewHelper implements ViewHelperNodeInitializedEventInterface
 {
-    use ParserRuntimeOnly;
-
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
 
     /**
      * Initialize the arguments.
      *
-     * @return void
      * @api
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('name', 'string', 'Name of the section', true);
     }
 
     /**
-     * Save the associated ViewHelper node in a static public class variable.
-     * called directly after the ViewHelper was built.
-     *
-     * @param ViewHelperNode $node
-     * @param TextNode[] $arguments
-     * @param VariableProviderInterface $variableContainer
-     * @return void
-     */
-    public static function postParseEvent(ViewHelperNode $node, array $arguments, VariableProviderInterface $variableContainer)
-    {
-        /** @var $nameArgument TextNode */
-        $nameArgument = $arguments['name'];
-        $sectionName = $nameArgument->getText();
-        $sections = $variableContainer['1457379500_sections'] ? $variableContainer['1457379500_sections'] : [];
-        $sections[$sectionName] = $node;
-        $variableContainer['1457379500_sections'] = $sections;
-    }
-
-    /**
      * Rendering directly returns all child nodes.
      *
-     * @return string HTML String of all child nodes.
      * @api
      */
-    public function render()
+    public function render(): mixed
     {
         $content = '';
         if ($this->viewHelperVariableContainer->exists(SectionViewHelper::class, 'isCurrentlyRenderingSection')) {
@@ -117,5 +96,35 @@ class SectionViewHelper extends AbstractViewHelper
             $content = $this->renderChildren();
         }
         return $content;
+    }
+
+    /**
+     * This VH does not ever output anything as such: Sections are
+     * handled differently in the compiler / parser and the f:render
+     * VH invokes section body execution.
+     * We optimize compilation to always return an empty here.
+     */
+    final public function convert(TemplateCompiler $templateCompiler): array
+    {
+        return [
+            'initialization' => '',
+            'execution' => '\'\'',
+        ];
+    }
+
+    /**
+     * Save the associated ViewHelper node in a static public class variable.
+     * called directly after the ViewHelper was built.
+     *
+     * @param array<string, NodeInterface> $arguments Unevaluated ViewHelper arguments
+     */
+    public static function nodeInitializedEvent(ViewHelperNode $node, array $arguments, ParsingState $parsingState): void
+    {
+        $variableContainer = $parsingState->getVariableContainer();
+        $nameArgument = $arguments['name'];
+        $sectionName = $nameArgument->evaluate(new RenderingContext());
+        $sections = $variableContainer[TemplateCompiler::SECTIONS_VARIABLE] ? $variableContainer[TemplateCompiler::SECTIONS_VARIABLE] : [];
+        $sections[$sectionName] = $node;
+        $variableContainer[TemplateCompiler::SECTIONS_VARIABLE] = $sections;
     }
 }

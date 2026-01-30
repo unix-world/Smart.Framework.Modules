@@ -1,7 +1,7 @@
 <?php
 // Aztec Barcode 2D for Smart.Framework
 // Module Library
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -48,7 +48,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	classes: \Metzli
- * @version 	v.20200121
+ * @version 	v.20260130
  * @package 	modules:Barcodes2D
  *
  */
@@ -56,17 +56,21 @@ final class Barcode2DAztec {
 
 	// ->
 
-	private $code;
+	private string $code;
+
+	private static bool $initialized = false;
 
 
-	public function __construct($y_code) {
+	public function __construct(?string $y_code) {
 		//--
 		$this->code = (string) $y_code;
+		//--
+		$this->init();
 		//--
 	} //END FUNCTION
 
 
-	public function getBarcodeArray() {
+	public function getBarcodeArray() : array {
 		//--
 		try {
 			//--
@@ -91,10 +95,61 @@ final class Barcode2DAztec {
 			} //end for
 		} catch(\Exception $err) { // don't throw if MongoDB error !
 			\Smart::log_warning(__METHOD__.' # ERROR: '.$err->getMessage());
-			return array();
+			return [];
 		} //end try catch
 		//--
 		return (array) $barcode_array;
+		//--
+	} //END FUNCTION
+
+
+	private function init() : void {
+		//--
+		if(self::$initialized === true) {
+			return;
+		} //end if
+		//--
+		\spl_autoload_register(function(string $classname) : void {
+			//--
+			if((\strpos($classname, '\\') === false) OR (!\preg_match('/^[a-zA-Z0-9_\\\]+$/', $classname))) { // if have no namespace or not valid character set
+				return;
+			} //end if
+			//--
+			if(\str_starts_with((string)$classname, 'Metzli\\') !== true) { // class name must start with Metzli\
+				return;
+			} //end if
+			//--
+			$parts = (array) \explode('\\', (string)$classname);
+			//--
+			$max = (int) \count((array)$parts) - 1; // the last is the class
+			if((int)$max < (int)(3 - 1)) { // must have at least 3 segments as: `\Metzli\Encoder\{Class}` or `\Metzli\Utils\{Class}` or or `\Metzli\Exception\{Class}`
+				return;
+			} //end if
+			//--
+			$dir = (string) \SmartFileSysUtils::getSmartFsRootPath().'modules/mod-barcodes/libs/Barcode2DAztec/Metzli/';
+			//--
+			for($i=1; $i<$max; $i++) {
+				$dir .= (string) $parts[$i].'/';
+			} //end for
+			//--
+			$dir  = (string) $dir;
+			$file = (string) $parts[(int)$max];
+			$path = (string) $dir.$file;
+			$path = (string) \str_replace(array('\\', "\0"), array('', ''), $path); // filter out null byte and backslash
+			//--
+			if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
+				return; // invalid path characters in file
+			} //end if
+			//--
+			if(!\is_file($path.'.php')) {
+				return; // file does not exists
+			} //end if
+			//--
+			require_once($path.'.php');
+			//--
+		}, true, false); // throw / append
+		//--
+		self::$initialized = true;
 		//--
 	} //END FUNCTION
 
@@ -105,60 +160,6 @@ final class Barcode2DAztec {
 //=====================================================================================
 //===================================================================================== CLASS END
 //=====================================================================================
-
-
-//--
-/**
- *
- * @access 		private
- * @internal
- *
- */
-function autoload__Aztec2DBarcodeMetzli_SFM($classname) {
-	//--
-	$classname = (string) $classname;
-	//--
-	if((\strpos($classname, '\\') === false) OR (!\preg_match('/^[a-zA-Z0-9_\\\]+$/', $classname))) { // if have no namespace or not valid character set
-		return;
-	} //end if
-	//--
-	if(\strpos($classname, 'Metzli\\') === false) { // must start with this namespaces only
-		return;
-	} //end if
-	//--
-	$parts = (array) \explode('\\', $classname);
-	//--
-	$max = (int) \count($parts) - 1; // the last is the class
-	//--
-	$dir = 'modules/mod-barcodes/libs/Barcode2DAztec/Metzli/';
-	//--
-	if((string)$parts[1] != '') {
-		for($i=1; $i<$max; $i++) {
-			$dir .= (string) $parts[$i].'/';
-		} //end for
-	} else {
-		return; // module not handled by this loader
-	} //end if
-	//--
-	$dir  = (string) $dir;
-	$file = (string) $parts[(int)$max];
-	$path = (string) $dir.$file;
-	$path = (string) \str_replace(array('\\', "\0"), array('', ''), $path); // filter out null byte and backslash
-	//--
-	if(!\preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path)) {
-		return; // invalid path characters in file
-	} //end if
-	//--
-	if(!\is_file($path.'.php')) {
-		return; // file does not exists
-	} //end if
-	//--
-	require_once($path.'.php');
-	//--
-} //END FUNCTION
-//--
-\spl_autoload_register('\\SmartModExtLib\\Barcodes\\autoload__Aztec2DBarcodeMetzli_SFM', true, false); // throw / append
-//--
 
 
 // end of php code

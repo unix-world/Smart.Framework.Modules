@@ -1,28 +1,28 @@
 <?php
-namespace TYPO3Fluid\Fluid\Core\Variables;
+
+declare(strict_types=1);
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
 
+namespace TYPO3Fluid\Fluid\Core\Variables;
+
 /**
- * Class ChainedVariableProvider
- *
- * Allows chainging any number of prioritised VariableProviders
+ * Allows chaining any number of prioritised VariableProviders
  * to be consulted whenever a variable is requested. First
  * VariableProvider to return a value "wins".
  */
 class ChainedVariableProvider extends StandardVariableProvider implements VariableProviderInterface
 {
-
     /**
      * @var VariableProviderInterface[]
      */
-    protected $variableProviders = [];
+    protected array $variableProviders = [];
 
     /**
-     * @param array $variableProviders
+     * @param VariableProviderInterface[] $variableProviders
      */
     public function __construct(array $variableProviders = [])
     {
@@ -30,9 +30,9 @@ class ChainedVariableProvider extends StandardVariableProvider implements Variab
     }
 
     /**
-     * @return array
+     * @return VariableProviderInterface[]
      */
-    public function getAll()
+    public function getAll(): array
     {
         $merged = [];
         foreach (array_reverse($this->variableProviders) as $provider) {
@@ -41,17 +41,15 @@ class ChainedVariableProvider extends StandardVariableProvider implements Variab
         return array_merge($merged, $this->variables);
     }
 
-    /**
-     * @param string $identifier
-     * @return mixed
-     */
-    public function get($identifier)
+    public function getByPath(string $path): mixed
     {
-        if (array_key_exists($identifier, $this->variables)) {
-            return $this->variables[$identifier];
+        $result = parent::getByPath($path);
+        if ($result !== null) {
+            return $result;
         }
+        // We did not resolve with native StandardVariableProvider. Let's try the chain.
         foreach ($this->variableProviders as $provider) {
-            $value = $provider->get($identifier);
+            $value = $provider->getByPath($path);
             if ($value !== null) {
                 return $value;
             }
@@ -59,30 +57,7 @@ class ChainedVariableProvider extends StandardVariableProvider implements Variab
         return null;
     }
 
-    /**
-     * @param string $path
-     * @param array $accessors
-     * @return mixed|null
-     */
-    public function getByPath($path, array $accessors = [])
-    {
-        $value = VariableExtractor::extract($this->variables, $path, $accessors);
-        if ($value !== null) {
-            return $value;
-        }
-        foreach ($this->variableProviders as $provider) {
-            $value = $provider->getByPath($path, $accessors);
-            if ($value !== null) {
-                return $value;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllIdentifiers()
+    public function getAllIdentifiers(): array
     {
         $merged = parent::getAllIdentifiers();
         foreach ($this->variableProviders as $provider) {
@@ -91,11 +66,7 @@ class ChainedVariableProvider extends StandardVariableProvider implements Variab
         return array_values(array_unique($merged));
     }
 
-    /**
-     * @param array|\ArrayAccess $variables
-     * @return ChainedVariableProvider
-     */
-    public function getScopeCopy($variables)
+    public function getScopeCopy(array|\ArrayAccess $variables): ChainedVariableProvider
     {
         $clone = clone $this;
         $clone->setSource($variables);

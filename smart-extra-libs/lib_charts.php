@@ -63,7 +63,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210307
+ * @version 	v.20260130
  * @package 	extralibs:ViewComponents
  *
  */
@@ -305,8 +305,7 @@ public function generate($y_mode='raw') {
 	//--
 	ob_end_clean();
 	//--
-	@imagedestroy($this->img);
-	$this->img = null;
+	$this->img = null; // image destroy is deprecated and has no effect since PHP 8.0
 	//--
 
 	//--
@@ -523,7 +522,7 @@ private function color_alocate($y_color) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210307
+ * @version 	v.20260130
  * @package 	extralibs:ViewComponents
  *
  */
@@ -725,14 +724,14 @@ public function generate($y_mode='raw') {
 	//--
 
 	//--
-	if(($this->exists_graph2 == true) && ((!empty($this->graphic_1)) || (!empty($this->graphic_2)))) {
+	if(($this->exists_graph2 === true) && ((!empty($this->graphic_1)) || (!empty($this->graphic_2)))) {
 		$this->legend_exists = true;
 	} //end if
 	//--
 
 	//--
 	$this->sum_total = array_sum($this->y);
-	$this->space_between_bars += ($this->exists_graph2 == true) ? 10 : 0;
+	$this->space_between_bars += ($this->exists_graph2 === true) ? 10 : 0;
 	//--
 
 	//--
@@ -780,9 +779,9 @@ private function draw_chart() {
 	//--
 
 	//--
-	if(preg_match("/^(1|3|4)$/", (string)$this->type)) { // Draw axis and background lines for "vertical bars", "dots" and "lines"
+	if(preg_match('/^(1|3|4)$/', (string)$this->type)) { // Draw axis and background lines for "vertical bars", "dots" and "lines"
 		//--
-		if($this->legend_exists == true) {
+		if($this->legend_exists === true) {
 			$this->draw_legend();
 		} //end if
 		//--
@@ -820,7 +819,7 @@ private function draw_chart() {
 		//--
 	} elseif($this->type == 2) { // Draw axis and background lines for "horizontal bars"
 		//--
-		if($this->legend_exists == true) {
+		if($this->legend_exists === true) {
 			$this->draw_legend();
 		} //end if
 		//--
@@ -850,7 +849,7 @@ private function draw_chart() {
 		$this->draw_img_string($this->size, 20, ($this->graphic_area_y1-20), $this->axis_x, $this->color['title']);
 		@imageline($this->img, $this->graphic_area_x1, $this->graphic_area_y1, $this->graphic_area_x1, $this->graphic_area_y2, $this->color['axis_line']);
 		//--
-	} elseif(preg_match("/^(5|6)$/", (string)$this->type)) { // Draw legend box for "pie" or "donut"
+	} elseif(preg_match('/^(5|6)$/', (string)$this->type)) { // Draw legend box for "pie" or "donut"
 		//--
 		$this->draw_legend();
 		//--
@@ -941,13 +940,13 @@ private function draw_chart() {
 			//--
 		} //end foreach
 		//--
-	} elseif(preg_match("/^(3|4)$/", (string)$this->type)) { // Draw graphic: DOTS or LINE
+	} elseif(preg_match('/^(3|4)$/', (string)$this->type)) { // Draw graphic: DOTS or LINE
 		//--
 		$x[0] = $this->graphic_area_x1+1;
 		//--
 		foreach($this->x as $i => $parameter) {
 			//--
-			if($this->exists_graph2 == true) {
+			if($this->exists_graph2 === true) {
 				//--
 				$size  = round($this->z[$i] * $higher_value_size / $this->higher_value);
 				$z[$i] = $this->graphic_area_y2 - $size;
@@ -985,7 +984,7 @@ private function draw_chart() {
 						//--
 						if(isset($z[$i+1])) {
 							//--
-							if($this->exists_graph2 == true) {
+							if($this->exists_graph2 === true) {
 								@imageline($this->img, $x[$i], $z[$i], $x[$i+1], $z[$i+1], $this->color['line_2']);
 								@imageline($this->img, $x[$i], ($z[$i]+1), $x[$i+1], ($z[$i+1]+1), $this->color['line_2']);
 							} //end if
@@ -999,7 +998,7 @@ private function draw_chart() {
 					//--
 				} //end if else
 				//--
-				if($this->exists_graph2 == true) {
+				if($this->exists_graph2 === true) {
 					@imagefilledrectangle($this->img, $x[$i]-3, $z[$i]-3, $x[$i]+4, $z[$i]+4, $this->color['line_2']);
 					if($this->type != 4) {
 						if($this->w[$i] > 0) {
@@ -1019,7 +1018,7 @@ private function draw_chart() {
 			//--
 		} //end for
 		//--
-	} elseif(preg_match("/^(5|6)$/", (string)$this->type)) { // Draw graphic: PIE or DONUT
+	} elseif(preg_match('/^(5|6)$/', (string)$this->type)) { // Draw graphic: PIE or DONUT
 		//--
 		$center_x = ($this->graphic_area_x1 + $this->graphic_area_x2) / 2;
 		$center_y = ($this->graphic_area_y1 + $this->graphic_area_y2) / 2;
@@ -1124,8 +1123,7 @@ private function draw_chart() {
 	//--
 	ob_end_clean();
 	//--
-	@imagedestroy($this->img);
-	$this->img = null;
+	$this->img = null; // image destroy is deprecated and has no effect since PHP 8.0
 	//--
 
 	//--
@@ -1160,10 +1158,10 @@ private function draw_legend() {
 	$x = $x1 + 5;
 	$y = $y1 + 5;
 	//--
-	if(preg_match("/^(1|2|3|4)$/", (string)$this->type)) { // Draw legend values for VERTICAL BARS, HORIZONTAL BARS, DOTS and LINES
+	if(preg_match('/^(1|2|3|4)$/', (string)$this->type)) { // Draw legend values for VERTICAL BARS, HORIZONTAL BARS, DOTS and LINES
 		//--
-		$color_1 = (preg_match("/^(1|2)$/", (string)$this->type)) ? $this->color['bars']   : $this->color['line'];
-		$color_2 = (preg_match("/^(1|2)$/", (string)$this->type)) ? $this->color['bars_2'] : $this->color['line_2'];
+		$color_1 = (preg_match('/^(1|2)$/', (string)$this->type)) ? $this->color['bars']   : $this->color['line'];
+		$color_2 = (preg_match('/^(1|2)$/', (string)$this->type)) ? $this->color['bars_2'] : $this->color['line_2'];
 		//--
 		imagefilledrectangle($this->img, $x, $y, ($x+10), ($y+10), $color_1);
 		imagerectangle($this->img, $x, $y, ($x+10), ($y+10), $this->color['wireframe']);
@@ -1177,7 +1175,7 @@ private function draw_legend() {
 		//--
 		$this->draw_img_string($this->size, ($x+15), ($y-2), $this->graphic_2, $this->color['axis_values']);
 		//--
-	} elseif(preg_match("/^(5|6)$/", (string)$this->type)) { // Draw legend values for PIE or DONUT
+	} elseif(preg_match('/^(5|6)$/', (string)$this->type)) { // Draw legend values for PIE or DONUT
 		//--
 		if(!empty($this->axis_x)) {
 			$this->draw_img_string($this->size, ((($x1+$x2)/2) - (strlen($this->axis_x)*7/2)), $y, $this->axis_x, $this->color['wireframe']);
@@ -1265,35 +1263,35 @@ private function calculate_width() {
 	switch($this->type) {
 		//-- Vertical bars
 		case 1:
-			$this->legend_box_width   = ($this->legend_exists == true) ? ($this->string_width($this->biggest_graphic_name, $this->tsize) + 25) : 0;
+			$this->legend_box_width   = ($this->legend_exists === true) ? ($this->string_width($this->biggest_graphic_name, $this->tsize) + 25) : 0;
 			$this->graphic_area_width = ($this->space_between_bars * $this->total_parameters) + 30;
 			$this->graphic_area_x1   += $this->string_width(($this->higher_strvalue), $this->size);
 			$this->width += $this->graphic_area_x1 + 20;
-			$this->width += ($this->legend_exists == true) ? 50 : ((7 * strlen($this->axis_x)) + 10);
+			$this->width += ($this->legend_exists === true) ? 50 : ((7 * strlen($this->axis_x)) + 10);
 			break;
 		//-- Horizontal bars
 		case 2:
-			$this->legend_box_width   = ($this->legend_exists == true) ? ($this->string_width($this->biggest_graphic_name, $this->size) + 25) : 0;
+			$this->legend_box_width   = ($this->legend_exists === true) ? ($this->string_width($this->biggest_graphic_name, $this->size) + 25) : 0;
 			$this->graphic_area_width = ($this->string_width($this->higher_strvalue, $this->size) > 50) ? (5 * ($this->string_width($this->higher_strvalue, $this->size)) * 0.85) : 200;
 			$this->graphic_area_x1 += 7 * strlen($this->biggest_x);
-			$this->width += ($this->legend_exists == true) ? 60 : ((7 * strlen($this->axis_y)) + 30);
+			$this->width += ($this->legend_exists === true) ? 60 : ((7 * strlen($this->axis_y)) + 30);
 			$this->width += $this->graphic_area_x1;
 			break;
 		//-- Dots
 		case 3:
-			$this->legend_box_width   = ($this->legend_exists == true) ? ($this->string_width($this->biggest_graphic_name, $this->size) + 25) : 0;
+			$this->legend_box_width   = ($this->legend_exists === true) ? ($this->string_width($this->biggest_graphic_name, $this->size) + 25) : 0;
 			$this->graphic_area_width = ($this->space_between_dots * $this->total_parameters) - 10;
 			$this->graphic_area_x1   += $this->string_width(($this->higher_strvalue), $this->size);
 			$this->width += $this->graphic_area_x1 + 20;
-			$this->width += ($this->legend_exists == true) ? 40 : ((7 * strlen($this->axis_x)) + 10);
+			$this->width += ($this->legend_exists === true) ? 40 : ((7 * strlen($this->axis_x)) + 10);
 			break;
 		//-- Lines
 		case 4:
-			$this->legend_box_width   = ($this->legend_exists == true) ? ($this->string_width($this->biggest_graphic_name, $this->size) + 25) : 0;
+			$this->legend_box_width   = ($this->legend_exists === true) ? ($this->string_width($this->biggest_graphic_name, $this->size) + 25) : 0;
 			$this->graphic_area_width = ($this->space_between_dots * $this->total_parameters) - 10;
 			$this->graphic_area_x1   += $this->string_width(($this->higher_strvalue), $this->size);
 			$this->width += $this->graphic_area_x1 + 20;
-			$this->width += ($this->legend_exists == true) ? 40 : ((7 * strlen($this->axis_x)) + 10);
+			$this->width += ($this->legend_exists === true) ? 40 : ((7 * strlen($this->axis_x)) + 10);
 			break;
 		//-- Pie
 		case 5:
@@ -1326,25 +1324,25 @@ private function calculate_height() {
 	switch($this->type) {
 		//-- Vertical bars
 		case 1:
-			$this->legend_box_height   = ($this->exists_graph2 == true) ? 40 : 0;
+			$this->legend_box_height   = ($this->exists_graph2 === true) ? 40 : 0;
 			$this->graphic_area_height = 150;
 			$this->height += 65;
 			break;
 		//-- Horizontal bars
 		case 2:
-			$this->legend_box_height   = ($this->exists_graph2 == true) ? 40 : 0;
+			$this->legend_box_height   = ($this->exists_graph2 === true) ? 40 : 0;
 			$this->graphic_area_height = ($this->space_between_bars * $this->total_parameters) + 10;
 			$this->height += 65;
 			break;
 		//-- Dots
 		case 3:
-			$this->legend_box_height   = ($this->exists_graph2 == true) ? 40 : 0;
+			$this->legend_box_height   = ($this->exists_graph2 === true) ? 40 : 0;
 			$this->graphic_area_height = 150;
 			$this->height += 65;
 			break;
 		//-- Lines
 		case 4:
-			$this->legend_box_height   = ($this->exists_graph2 == true) ? 40 : 0;
+			$this->legend_box_height   = ($this->exists_graph2 === true) ? 40 : 0;
 			$this->graphic_area_height = 150;
 			$this->height += 65;
 			break;
@@ -1407,15 +1405,15 @@ private function load_color_palette() {
 			$this->color['bg_lines'] 			= @imagecolorallocate($this->img, 236, 236, 236); // #ECECEC
 			$this->color['bg_legend'] 			= @imagecolorallocate($this->img, 246, 246, 246); // #F6F6F6
 			//--
-			if(preg_match("/^(1|2)$/", (string)$this->type)) {
+			if(preg_match('/^(1|2)$/', (string)$this->type)) {
 				$this->color['bars'] 			= @imagecolorallocate($this->img, 102, 153,   0); // #669900
 				$this->color['bars_shadow'] 	= @imagecolorallocate($this->img,  51, 102,   0); // #336600
 				$this->color['bars_2'] 			= @imagecolorallocate($this->img,   0,  51, 102); // #003366
 				$this->color['bars_2_shadow'] 	= @imagecolorallocate($this->img,   0,  51, 153); // #003399
-			} elseif(preg_match("/^(3|4)$/", (string)$this->type)) {
+			} elseif(preg_match('/^(3|4)$/', (string)$this->type)) {
 				$this->color['line'] 			= @imagecolorallocate($this->img, 255, 102,   0); // #FF6600
 				$this->color['line_2'] 			= @imagecolorallocate($this->img,   0,  51, 153); // #003399
-			} elseif(preg_match("/^(5|6)$/", (string)$this->type)) {
+			} elseif(preg_match('/^(5|6)$/', (string)$this->type)) {
 				$this->color['arc_1'] 			= @imagecolorallocate($this->img, 255, 102,   0); // #FF6600
 				$this->color['arc_2'] 			= @imagecolorallocate($this->img,   0,  51, 153); // #003399
 				$this->color['arc_3'] 			= @imagecolorallocate($this->img, 150, 221,  76); // #96DD4C

@@ -1,10 +1,10 @@
 
-# Smart.Framework.Modules: BarCodes r.20251204 #
+# Smart.Framework.Modules: BarCodes r.20260130 #
 ## TcPDF BarCodes v.20211127
 ## Metzli Aztec BarCode (github.head.20191214) + uxm fixes for PHP 8.4 + ##
 
 // r.8.7 / smart.framework.v.8.7
 
-# PHP 7.4 .. PHP 8.4 ready
+# PHP 8.1 .. PHP 8.5 ready
 
 ###

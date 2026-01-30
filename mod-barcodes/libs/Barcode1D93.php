@@ -1,7 +1,7 @@
 <?php
 // Code93 Barcode 1D for Smart.Framework
 // Module Library
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 
 // this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
 
@@ -51,7 +51,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20260130
  * @package 	modules:Barcodes1D
  *
  */
@@ -84,11 +84,11 @@ final class Barcode1D93 {
 	 * @param $code (string) code to represent.
 	 * @return array barcode representation.
 	 */
-	public function getBarcodeArray() {
+	public function getBarcodeArray() : array {
 		//--
-		$code = $this->code;
+		$code = (string) $this->code;
 		//--
-		$bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
+		$bararray = [ 'code' => (string)$code, 'maxw' => 0, 'maxh' => 1, 'bcode' => [] ];
 		//--
 		$chr[48] = '131112'; // 0
 		$chr[49] = '111213'; // 1
@@ -180,7 +180,7 @@ final class Barcode1D93 {
 		//--
 		for($i = 0 ; $i < $clen; ++$i) {
 			if(ord($code[$i]) > 127) {
-				return false;
+				return [];
 			} //end if
 			$code_ext .= $encode[$code[$i]];
 		} //end for
@@ -197,7 +197,7 @@ final class Barcode1D93 {
 			$char = ord($code[$i]);
 			//--
 			if(!isset($chr[$char])) {
-				return false; // invalid character
+				return []; // invalid character
 			} //end if
 			//--
 			for($j = 0; $j < 6; ++$j) {

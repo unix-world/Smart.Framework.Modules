@@ -163,7 +163,7 @@ class RPDO implements Driver
 	 * @return mixed
 	 * @throws SQL
 	 */
-	protected function runQuery( $sql, $bindings, $options = array() )
+	public function runQuery( $sql, $bindings, $options = array() )
 	{
 		$this->connect();
 		if ( $this->loggingEnabled && $this->logger ) {
@@ -183,12 +183,12 @@ class RPDO implements Driver
 			$statement->execute();
 			$this->queryCounter ++;
 			$this->affectedRows = $statement->rowCount();
+			if ( isset( $options['noFetch'] ) && $options['noFetch'] ) {
+				$this->resultArray = array();
+				return $statement;
+			}
 			if ( $statement->columnCount() ) {
 				$fetchStyle = ( isset( $options['fetchStyle'] ) ) ? $options['fetchStyle'] : NULL;
-				if ( isset( $options['noFetch'] ) && $options['noFetch'] ) {
-					$this->resultArray = array();
-					return $statement;
-				}
 				if ( is_null( $fetchStyle) ) {
 					$this->resultArray = $statement->fetchAll();
 				} else {
@@ -403,7 +403,7 @@ class RPDO implements Driver
 	 */
 	public function setUseStringOnlyBinding( $yesNo )
 	{
-		$this->flagUseStringOnlyBinding = (bool) $yesNo;
+		$this->flagUseStringOnlyBinding = (boolean) $yesNo;
 		if ( $this->loggingEnabled && $this->logger && method_exists($this->logger,'setUseStringOnlyBinding')) {
 			$this->logger->setUseStringOnlyBinding( $this->flagUseStringOnlyBinding );
 		}
@@ -550,7 +550,10 @@ class RPDO implements Driver
 	public function GetAll( $sql, $bindings = array() )
 	{
 		$this->runQuery( $sql, $bindings );
-		return $this->resultArray;
+
+		$result_array = $this->resultArray;
+		$this->resultArray = null;
+		return $result_array;
 	}
 
 	/**
@@ -562,7 +565,9 @@ class RPDO implements Driver
 				'fetchStyle' => \PDO::FETCH_ASSOC
 			)
 		);
-		return $this->resultArray;
+		$result_array = $this->resultArray;
+		$this->resultArray = null;
+		return $result_array;
 	}
 
 	/**
@@ -570,18 +575,32 @@ class RPDO implements Driver
 	 */
 	public function GetCol( $sql, $bindings = array() )
 	{
-		$rows = $this->GetAll( $sql, $bindings );
+		if (!defined('PDO::FETCH_COLUMN')) { //PHP 5.3
+			$rows = $this->GetAll( $sql, $bindings );
+			if ( empty( $rows ) || !is_array( $rows ) ) {
+				return array();
+			}
+			$cols = array();
+			foreach ( $rows as $row ) {
+				   $cols[] = reset( $row );
+			}
 
-		if ( empty( $rows ) || !is_array( $rows ) ) {
-			return array();
+			$result_array = $cols;
+			$this->resultArray = null;
+		} else {
+			$this->runQuery( $sql, $bindings, array(
+					'fetchStyle' => \PDO::FETCH_COLUMN
+				)
+			);
+			$result_array = $this->resultArray;
+			$this->resultArray = null;
+
+			if ( empty( $result_array ) || !is_array( $result_array ) ) {
+				return array();
+			}
 		}
 
-		$cols = array();
-		foreach ( $rows as $row ) {
-			$cols[] = reset( $row );
-		}
-
-		return $cols;
+		return $result_array;
 	}
 
 	/**
@@ -875,7 +894,7 @@ class RPDO implements Driver
 	 */
 	public function setEnableLogging( $enable )
 	{
-		$this->loggingEnabled = (bool) $enable;
+		$this->loggingEnabled = (boolean) $enable;
 		return $this;
 	}
 

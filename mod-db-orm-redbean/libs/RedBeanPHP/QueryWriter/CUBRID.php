@@ -1,7 +1,5 @@
 <?php
 
-// fixes by unixman
-
 namespace RedBeanPHP\QueryWriter;
 use RedBeanPHP\QueryWriter\AQueryWriter as AQueryWriter;
 use RedBeanPHP\QueryWriter as QueryWriter;
@@ -34,8 +32,6 @@ class CUBRID extends AQueryWriter implements QueryWriter
 	const C_DATATYPE_SPECIAL_DATE     = 80;
 	const C_DATATYPE_SPECIAL_DATETIME = 81;
 	const C_DATATYPE_SPECIFIED        = 99;
-
-	private $svalue = null; // fix by unixman for PHP 8.4 cannot create dynamic property
 
 	/**
 	 * @var DBAdapter
@@ -223,8 +219,6 @@ class CUBRID extends AQueryWriter implements QueryWriter
 	 */
 	public function scanType( $value, $flagSpecial = FALSE )
 	{
-		$this->svalue = $value;
-
 		if ( is_null( $value ) ) {
 			return self::C_DATATYPE_INTEGER;
 		}

@@ -1,10 +1,11 @@
 <?php
-namespace TYPO3Fluid\Fluid\View;
 
 /*
  * This file belongs to the package "TYPO3 Fluid".
  * See LICENSE.txt that was shipped with this package.
  */
+
+namespace TYPO3Fluid\Fluid\View;
 
 /**
  * An abstract View
@@ -13,7 +14,6 @@ namespace TYPO3Fluid\Fluid\View;
  */
 abstract class AbstractView implements ViewInterface
 {
-
     /**
      * View variables and their values
      * @var array
@@ -24,7 +24,7 @@ abstract class AbstractView implements ViewInterface
     /**
      * Renders the view
      *
-     * @return string The rendered view
+     * @return mixed The rendered view
      * @api
      */
     public function render()
@@ -41,7 +41,7 @@ abstract class AbstractView implements ViewInterface
      * @return $this
      * @api
      */
-    public function assign($key, $value)
+    public function assign(string $key, mixed $value)
     {
         $this->variables[$key] = $value;
         return $this;
