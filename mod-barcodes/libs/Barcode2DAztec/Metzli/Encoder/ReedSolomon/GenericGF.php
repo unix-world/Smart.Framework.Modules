@@ -1,5 +1,8 @@
 <?php
 
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
+
 /*
  * Copyright 2013 Metzli and ZXing authors
  *
@@ -61,8 +64,8 @@ class GenericGF
 
 	private function initialize()
 	{
-		$this->expTable = array_fill(0, $this->size, 0);
-		$this->logTable = array_fill(0, $this->size, 0);
+		$this->expTable = \array_fill(0, $this->size, 0);
+		$this->logTable = \array_fill(0, $this->size, 0);
 		$x = 1;
 		for ($i = 0; $i < $this->size; $i++) {
 			$this->expTable[$i] = $x;
@@ -118,7 +121,7 @@ class GenericGF
 			return $this->getZero();
 		}
 
-		$coefficients = array_fill(0, ($degree + 1), 0);
+		$coefficients = \array_fill(0, ($degree + 1), 0);
 		$coefficients[0] = $coefficient;
 
 		return new GenericGFPoly($this, $coefficients);
@@ -141,7 +144,7 @@ class GenericGF
 
 	public static function addOrSubtract($a, $b)
 	{
-		if (!is_int($a) || !is_int($b)) {
+		if (!\is_int($a) || !\is_int($b)) {
 			throw new \InvalidArgumentException('Can not add or substract non-integers');
 		}
 

@@ -2,6 +2,9 @@
 
 // fixes by unixman
 
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
+
 /*
  * Copyright 2013 Metzli and ZXing authors
  *
@@ -47,7 +50,7 @@ class BinaryShiftToken extends Token
 					$bitArray->append($this->shiftByteCount - 31, 5);
 				}
 			}
-			$bitArray->append(ord($text[$this->shiftStart + $i]), 8);
+			$bitArray->append(\ord($text[$this->shiftStart + $i]), 8);
 		}
 
 		return $bitArray;
@@ -55,7 +58,7 @@ class BinaryShiftToken extends Token
 
 	public function __toString()
 	{
-		return sprintf('%s { start: %d, byteCount: %d, end: %d }', __CLASS__, $this->shiftStart, $this->shiftByteCount, ($this->shiftStart + $this->shiftByteCount - 1));
+		return \sprintf('%s { start: %d, byteCount: %d, end: %d }', __CLASS__, $this->shiftStart, $this->shiftByteCount, ($this->shiftStart + $this->shiftByteCount - 1));
 	}
 }
 

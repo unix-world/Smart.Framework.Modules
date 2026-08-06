@@ -1,5 +1,8 @@
 <?php
 
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
+
 /*
  * Copyright 2013 Metzli authors
  *
@@ -28,18 +31,18 @@ class BinaryDataEncoder implements DataEncoderInterface
 	{
 		$result = new BitArray();
 
-		while (strlen($data) >= 32) {
-			$chunkLength = min(strlen($data), (2048 + 32 - 1));
+		while (\strlen($data) >= 32) {
+			$chunkLength = \min(\strlen($data), (2048 + 32 - 1));
 			$result->append(self::CODE_UPPER_BS, 5);
 			$result->append(0, 5);
 			$result->append(($chunkLength - 32), 11);
-			$result->appendBytes(substr($data, 0, $chunkLength));
-			$data = substr($data, $chunkLength);
+			$result->appendBytes(\substr($data, 0, $chunkLength));
+			$data = \substr($data, $chunkLength);
 		}
 
 		if (strlen($data) > 0) {
 			$result->append(self::CODE_UPPER_BS, 5);
-			$result->append(strlen($data), 5);
+			$result->append(\strlen($data), 5);
 			$result->appendBytes($data);
 		}
 

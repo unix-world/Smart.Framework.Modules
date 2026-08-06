@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Date, PHP Pcre ; classes: Smart, \PDF\zFPDF and \PDF\zFPDF\zTTFontFile
- * @version 	v.20260130
+ * @version 	v.20260728
  * @package 	modules:PDF-Create
  *
  */
@@ -35,11 +35,11 @@ final class Module {
 	private static bool $initialized = false;
 
 
-	public static function newPdf(bool $useFontCaching=false, string $orientation='P', string $unit='mm', string $size='A4', ?string $uxmFontsPath=null) : \PDF\zFPDF\zFPDF { // {{{SYNC-ZFPDF-CONSTRUCT-PARAMS}}}
+	public static function newPdf(bool $loadDefaultIconicFont, bool $useAlternateDefaultFont, bool $useFontCaching=false, string $orientation='P', string $unit='mm', string $size='A4', ?string $uxmFontsPath=null) : \PDF\zFPDF\zFPDF { // {{{SYNC-ZFPDF-CONSTRUCT-PARAMS}}}
 		//--
 		self::init();
 		//--
-		return (new \PDF\zFPDF\zFPDF((bool)$useFontCaching, (string)$orientation, (string)$unit, (string)$size, $uxmFontsPath));
+		return (new \PDF\zFPDF\zFPDF((bool)$loadDefaultIconicFont, (bool)$useAlternateDefaultFont, (bool)$useFontCaching, (string)$orientation, (string)$unit, (string)$size, $uxmFontsPath));
 		//--
 	} //END FUNCTION
 

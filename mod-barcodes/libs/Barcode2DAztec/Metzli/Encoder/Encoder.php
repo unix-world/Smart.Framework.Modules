@@ -1,5 +1,8 @@
 <?php
 
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
+
 /*
  * Copyright 2013 Metzli and ZXing authors
  *
@@ -43,7 +46,7 @@ class Encoder
 
 	public static function encode($content, $eccPercent = self::DEFAULT_EC_PERCENT, $dataEncoder = null)
 	{
-		if (strlen($content) == 0) {
+		if (\strlen($content) == 0) {
 			throw new \InvalidArgumentException('No content provided');
 		}
 
@@ -54,7 +57,7 @@ class Encoder
 		}
 		$bits = $dataEncoder->encode($content);
 
-		$eccBits = intval($bits->getLength() * $eccPercent / 100 + 11);
+		$eccBits = \intval($bits->getLength() * $eccPercent / 100 + 11);
 		$totalSizeBits = $bits->getLength() + $eccBits;
 
 		$layers = 0;
@@ -94,14 +97,14 @@ class Encoder
 			throw new \InvalidArgumentException('Data too large');
 		}
 
-		$messageSizeInWords = intval(($stuffedBits->getLength() + $wordSize - 1) / $wordSize);
+		$messageSizeInWords = \intval(($stuffedBits->getLength() + $wordSize - 1) / $wordSize);
 		for ($i = $messageSizeInWords * $wordSize - $stuffedBits->getLength(); $i > 0; $i--) {
 			$stuffedBits->append(1);
 		}
 
 		// generate check words
 		$rs = new ReedSolomonEncoder(self::getGF($wordSize));
-		$totalSizeInFullWords = intval($totalSymbolBits / $wordSize);
+		$totalSizeInFullWords = \intval($totalSymbolBits / $wordSize);
 		$messageWords = self::bitsToWords($stuffedBits, $wordSize, $totalSizeInFullWords);
 		$messageWords = $rs->encodePadded($messageWords, $totalSizeInFullWords - $messageSizeInWords);
 
@@ -125,12 +128,12 @@ class Encoder
 			}
 		} else {
 			$baseMatrixSize = 14 + $layers * 4;
-			$matrixSize = $baseMatrixSize + 1 + 2 * intval((intval($baseMatrixSize / 2) - 1) / 15);
-			$alignmentMap = array_fill(0, $baseMatrixSize, 0);
-			$origCenter = intval($baseMatrixSize / 2);
-			$center = intval($matrixSize / 2);
+			$matrixSize = $baseMatrixSize + 1 + 2 * \intval((\intval($baseMatrixSize / 2) - 1) / 15);
+			$alignmentMap = \array_fill(0, $baseMatrixSize, 0);
+			$origCenter = \intval($baseMatrixSize / 2);
+			$center = \intval($matrixSize / 2);
 			for ($i = 0; $i < $origCenter; $i++) {
-				$newOffset = $i + intval($i / 15);
+				$newOffset = $i + \intval($i / 15);
 				$alignmentMap[$origCenter - $i - 1] = $center - $newOffset - 1;
 				$alignmentMap[$origCenter + $i] = $center + $newOffset + 1;
 			}
@@ -168,15 +171,15 @@ class Encoder
 
 		// draw alignment marks
 		if ($compact) {
-			$matrix = self::drawBullsEye($matrix, intval($matrixSize / 2), 5);
+			$matrix = self::drawBullsEye($matrix, \intval($matrixSize / 2), 5);
 		} else {
-			$matrix = self::drawBullsEye($matrix, intval($matrixSize / 2), 7);
-			for ($i = 0, $j = 0; $i < intval($baseMatrixSize / 2) - 1; $i += 15, $j += 16) {
+			$matrix = self::drawBullsEye($matrix, \intval($matrixSize / 2), 7);
+			for ($i = 0, $j = 0; $i < \intval($baseMatrixSize / 2) - 1; $i += 15, $j += 16) {
 				for ($k = intval($matrixSize / 2) & 1; $k < $matrixSize; $k += 2) {
-					$matrix->set(intval($matrixSize / 2) - $j, $k);
-					$matrix->set(intval($matrixSize / 2) + $j, $k);
-					$matrix->set($k, intval($matrixSize / 2) - $j);
-					$matrix->set($k, intval($matrixSize / 2) + $j);
+					$matrix->set(\intval($matrixSize / 2) - $j, $k);
+					$matrix->set(\intval($matrixSize / 2) + $j, $k);
+					$matrix->set($k, \intval($matrixSize / 2) - $j);
+					$matrix->set($k, \intval($matrixSize / 2) + $j);
 				}
 			}
 		}
@@ -201,8 +204,8 @@ class Encoder
 
 	private static function bitsToWords(BitArray $stuffedBits, $wordSize, $totalWords)
 	{
-		$message = array_fill(0, $totalWords, 0);
-		$n = intval($stuffedBits->getLength() / $wordSize);
+		$message = \array_fill(0, $totalWords, 0);
+		$n = \intval($stuffedBits->getLength() / $wordSize);
 		for ($i = 0; $i < $n; $i++) {
 			$value = 0;
 			for ($j = 0; $j < $wordSize; $j++) {
@@ -335,7 +338,7 @@ class Encoder
 
 	private static function drawModeMessage(BitMatrix $matrix, $compact, $matrixSize, BitArray $modeMessage)
 	{
-		$center = intval($matrixSize / 2);
+		$center = \intval($matrixSize / 2);
 		if ($compact) {
 			for ($i = 0; $i < 7; $i++) {
 				if ($modeMessage->get($i)) {
@@ -354,16 +357,16 @@ class Encoder
 		} else {
 			for ($i = 0; $i < 10; $i++) {
 				if ($modeMessage->get($i)) {
-					$matrix->set($center - 5 + $i + intval($i / 5), $center - 7);
+					$matrix->set($center - 5 + $i + \intval($i / 5), $center - 7);
 				}
 				if ($modeMessage->get($i + 10)) {
-					$matrix->set($center + 7, $center - 5 + $i + intval($i / 5));
+					$matrix->set($center + 7, $center - 5 + $i + \intval($i / 5));
 				}
 				if ($modeMessage->get(29 - $i)) {
-					$matrix->set($center - 5 + $i + intval($i / 5), $center + 7);
+					$matrix->set($center - 5 + $i + \intval($i / 5), $center + 7);
 				}
 				if ($modeMessage->get(39 - $i)) {
-					$matrix->set($center - 7, $center - 5 + $i + intval($i / 5));
+					$matrix->set($center - 7, $center - 5 + $i + \intval($i / 5));
 				}
 			}
 		}

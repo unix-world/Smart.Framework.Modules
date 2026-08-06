@@ -21,7 +21,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 //============================================================
 // BarCode 2D: QRCode
-// License: GPLv3
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
 //============================================================
 // Class to create QR-Code barcode arrays.
 // QR Code symbol is a 2D barcode that can be scanned by
@@ -72,7 +73,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20260130
+ * @version 	v.20260203
  * @package 	modules:Barcodes2D
  *
  */
@@ -124,43 +125,43 @@ final class Barcode2DQRCode {
 	 * Barcode array to be returned which is readable by TCPDF.
 	 * @private
 	 */
-	private $barcode_array = [];
+	private array $barcode_array = [];
 
 	/**
 	 * QR code version. Size of QRcode is defined as version. Version is from 1 to 40. Version 1 is 21*21 matrix. And 4 modules increases whenever 1 version increases. So version 40 is 177*177 matrix.
 	 * @private
 	 */
-	private $version = 0;
+	private int $version = 0;
 
 	/**
 	 * Levels of error correction. See definitions for possible values.
 	 * @private
 	 */
-	private $level = 0; // must be set with the same value as: const_QR_BARCODE_ECC_LEVEL_L
+	private int $level = 0; // must be set with the same value as: const_QR_BARCODE_ECC_LEVEL_L
 
 	/**
 	 * Encoding mode.
 	 * @private
 	 */
-	private $hint = 2; // must be initialized with the same value as: const_QR_BARCODE_MODE_8B
+	private int $hint = 2; // must be initialized with the same value as: const_QR_BARCODE_MODE_8B
 
 	/**
 	 * Boolean flag, if true the input string will be converted to uppercase.
 	 * @private
 	 */
-	private $casesensitive = true;
+	private bool $casesensitive = true;
 
 	/**
 	 * Structured QR code (not supported yet).
 	 * @private
 	 */
-	private $structured = 0;
+	private int $structured = 0;
 
 	/**
 	 * Mask data.
 	 * @private
 	 */
-	private $data;
+	private ?array $data = null;
 
 	// FrameFiller
 
@@ -168,37 +169,37 @@ final class Barcode2DQRCode {
 	 * Width.
 	 * @private
 	 */
-	private $width;
+	private int $width = 0;
 
 	/**
 	 * Frame.
 	 * @private
 	 */
-	private $frame;
+	private ?array $frame = null;
 
 	/**
 	 * X position of bit.
 	 * @private
 	 */
-	private $x;
+	private int $x = 0;
 
 	/**
 	 * Y position of bit.
 	 * @private
 	 */
-	private $y;
+	private int $y = 0;
 
 	/**
 	 * Direction.
 	 * @private
 	 */
-	private $dir;
+	private int $dir = 0;
 
 	/**
 	 * Single bit value.
 	 * @private
 	 */
-	private $bit;
+	private int $bit = 0;
 
 	// ---- QRrawcode ----
 
@@ -206,49 +207,49 @@ final class Barcode2DQRCode {
 	 * Data code.
 	 * @private
 	 */
-	private $datacode = array();
+	private array $datacode = [];
 
 	/**
 	 * Error correction code.
 	 * @private
 	 */
-	private $ecccode = array();
+	private array $ecccode = [];
 
 	/**
 	 * Blocks.
 	 * @private
 	 */
-	private $blocks;
+	private int $blocks = 0;
 
 	/**
 	 * Reed-Solomon blocks.
 	 * @private
 	 */
-	private $rsblocks = array(); //of RSblock
+	private array $rsblocks = []; //of RSblock
 
 	/**
 	 * Counter.
 	 * @private
 	 */
-	private $count;
+	private int $count = 0;
 
 	/**
 	 * Data length.
 	 * @private
 	 */
-	private $dataLength;
+	private int $dataLength = 0;
 
 	/**
 	 * Error correction length.
 	 * @private
 	 */
-	private $eccLength;
+	private int $eccLength = 0;
 
 	/**
 	 * Value b1.
 	 * @private
 	 */
-	private $b1;
+	private int $b1 = 0;
 
 	// ---- QRmask ----
 
@@ -256,7 +257,7 @@ final class Barcode2DQRCode {
 	 * Run length.
 	 * @private
 	 */
-	private $runLength = array();
+	private array $runLength = [];
 
 	// ---- QRsplit ----
 
@@ -264,13 +265,13 @@ final class Barcode2DQRCode {
 	 * Input data string.
 	 * @private
 	 */
-	private $dataStr = '';
+	private string $dataStr = '';
 
 	/**
 	 * Input items.
 	 * @private
 	 */
-	private $items;
+	private array $items = [];
 
 	// Reed-Solomon items
 
@@ -278,19 +279,19 @@ final class Barcode2DQRCode {
 	 * Reed-Solomon items.
 	 * @private
 	 */
-	private $rsitems = array();
+	private array $rsitems = [];
 
 	/**
 	 * Array of frames.
 	 * @private
 	 */
-	private $frames = array();
+	private array $frames = [];
 
 	/**
 	 * Alphabet-numeric convesion table.
 	 * @private
 	 */
-	private $anTable = array(
+	private const AN_TABLE = [
 		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, //
 		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, //
 		36, -1, -1, -1, 37, 38, -1, -1, -1, -1, 39, 40, -1, 41, 42, 43, //
@@ -298,117 +299,117 @@ final class Barcode2DQRCode {
 		-1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, //
 		25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, -1, -1, -1, -1, -1, //
 		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, //
-		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1  //
-		);
+		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  //
+	];
 
 	/**
 	 * Array Table of the capacity of symbols.
 	 * See Table 1 (pp.13) and Table 12-16 (pp.30-36), JIS X0510:2004.
 	 * @private
 	 */
-	private $capacity = array(
-		array(  0,    0, 0, array(   0,    0,    0,    0)), //
-		array( 21,   26, 0, array(   7,   10,   13,   17)), //  1
-		array( 25,   44, 7, array(  10,   16,   22,   28)), //
-		array( 29,   70, 7, array(  15,   26,   36,   44)), //
-		array( 33,  100, 7, array(  20,   36,   52,   64)), //
-		array( 37,  134, 7, array(  26,   48,   72,   88)), //  5
-		array( 41,  172, 7, array(  36,   64,   96,  112)), //
-		array( 45,  196, 0, array(  40,   72,  108,  130)), //
-		array( 49,  242, 0, array(  48,   88,  132,  156)), //
-		array( 53,  292, 0, array(  60,  110,  160,  192)), //
-		array( 57,  346, 0, array(  72,  130,  192,  224)), // 10
-		array( 61,  404, 0, array(  80,  150,  224,  264)), //
-		array( 65,  466, 0, array(  96,  176,  260,  308)), //
-		array( 69,  532, 0, array( 104,  198,  288,  352)), //
-		array( 73,  581, 3, array( 120,  216,  320,  384)), //
-		array( 77,  655, 3, array( 132,  240,  360,  432)), // 15
-		array( 81,  733, 3, array( 144,  280,  408,  480)), //
-		array( 85,  815, 3, array( 168,  308,  448,  532)), //
-		array( 89,  901, 3, array( 180,  338,  504,  588)), //
-		array( 93,  991, 3, array( 196,  364,  546,  650)), //
-		array( 97, 1085, 3, array( 224,  416,  600,  700)), // 20
-		array(101, 1156, 4, array( 224,  442,  644,  750)), //
-		array(105, 1258, 4, array( 252,  476,  690,  816)), //
-		array(109, 1364, 4, array( 270,  504,  750,  900)), //
-		array(113, 1474, 4, array( 300,  560,  810,  960)), //
-		array(117, 1588, 4, array( 312,  588,  870, 1050)), // 25
-		array(121, 1706, 4, array( 336,  644,  952, 1110)), //
-		array(125, 1828, 4, array( 360,  700, 1020, 1200)), //
-		array(129, 1921, 3, array( 390,  728, 1050, 1260)), //
-		array(133, 2051, 3, array( 420,  784, 1140, 1350)), //
-		array(137, 2185, 3, array( 450,  812, 1200, 1440)), // 30
-		array(141, 2323, 3, array( 480,  868, 1290, 1530)), //
-		array(145, 2465, 3, array( 510,  924, 1350, 1620)), //
-		array(149, 2611, 3, array( 540,  980, 1440, 1710)), //
-		array(153, 2761, 3, array( 570, 1036, 1530, 1800)), //
-		array(157, 2876, 0, array( 570, 1064, 1590, 1890)), // 35
-		array(161, 3034, 0, array( 600, 1120, 1680, 1980)), //
-		array(165, 3196, 0, array( 630, 1204, 1770, 2100)), //
-		array(169, 3362, 0, array( 660, 1260, 1860, 2220)), //
-		array(173, 3532, 0, array( 720, 1316, 1950, 2310)), //
-		array(177, 3706, 0, array( 750, 1372, 2040, 2430))  // 40
-	);
+	private const CAPACITY = [
+		[  0,    0, 0, [   0,    0,    0,    0]], //
+		[ 21,   26, 0, [   7,   10,   13,   17]], //  1
+		[ 25,   44, 7, [  10,   16,   22,   28]], //
+		[ 29,   70, 7, [  15,   26,   36,   44]], //
+		[ 33,  100, 7, [  20,   36,   52,   64]], //
+		[ 37,  134, 7, [  26,   48,   72,   88]], //  5
+		[ 41,  172, 7, [  36,   64,   96,  112]], //
+		[ 45,  196, 0, [  40,   72,  108,  130]], //
+		[ 49,  242, 0, [  48,   88,  132,  156]], //
+		[ 53,  292, 0, [  60,  110,  160,  192]], //
+		[ 57,  346, 0, [  72,  130,  192,  224]], // 10
+		[ 61,  404, 0, [  80,  150,  224,  264]], //
+		[ 65,  466, 0, [  96,  176,  260,  308]], //
+		[ 69,  532, 0, [ 104,  198,  288,  352]], //
+		[ 73,  581, 3, [ 120,  216,  320,  384]], //
+		[ 77,  655, 3, [ 132,  240,  360,  432]], // 15
+		[ 81,  733, 3, [ 144,  280,  408,  480]], //
+		[ 85,  815, 3, [ 168,  308,  448,  532]], //
+		[ 89,  901, 3, [ 180,  338,  504,  588]], //
+		[ 93,  991, 3, [ 196,  364,  546,  650]], //
+		[ 97, 1085, 3, [ 224,  416,  600,  700]], // 20
+		[101, 1156, 4, [ 224,  442,  644,  750]], //
+		[105, 1258, 4, [ 252,  476,  690,  816]], //
+		[109, 1364, 4, [ 270,  504,  750,  900]], //
+		[113, 1474, 4, [ 300,  560,  810,  960]], //
+		[117, 1588, 4, [ 312,  588,  870, 1050]], // 25
+		[121, 1706, 4, [ 336,  644,  952, 1110]], //
+		[125, 1828, 4, [ 360,  700, 1020, 1200]], //
+		[129, 1921, 3, [ 390,  728, 1050, 1260]], //
+		[133, 2051, 3, [ 420,  784, 1140, 1350]], //
+		[137, 2185, 3, [ 450,  812, 1200, 1440]], // 30
+		[141, 2323, 3, [ 480,  868, 1290, 1530]], //
+		[145, 2465, 3, [ 510,  924, 1350, 1620]], //
+		[149, 2611, 3, [ 540,  980, 1440, 1710]], //
+		[153, 2761, 3, [ 570, 1036, 1530, 1800]], //
+		[157, 2876, 0, [ 570, 1064, 1590, 1890]], // 35
+		[161, 3034, 0, [ 600, 1120, 1680, 1980]], //
+		[165, 3196, 0, [ 630, 1204, 1770, 2100]], //
+		[169, 3362, 0, [ 660, 1260, 1860, 2220]], //
+		[173, 3532, 0, [ 720, 1316, 1950, 2310]], //
+		[177, 3706, 0, [ 750, 1372, 2040, 2430]],  // 40
+	];
 
 	/**
 	 * Array Length indicator.
 	 * @private
 	 */
-	private $lengthTableBits = array(
-		array(10, 12, 14),
-		array( 9, 11, 13),
-		array( 8, 16, 16),
-		array( 8, 10, 12)
-	);
+	private const LENGTH_TABLE_BITS = [
+		[ 10, 12, 14 ],
+		[  9, 11, 13 ],
+		[  8, 16, 16 ],
+		[  8, 10, 12 ],
+	];
 
 	/**
 	 * Array Table of the error correction code (Reed-Solomon block).
 	 * See Table 12-16 (pp.30-36), JIS X0510:2004.
 	 * @private
 	 */
-	private $eccTable = array(
-		array(array( 0,  0), array( 0,  0), array( 0,  0), array( 0,  0)), //
-		array(array( 1,  0), array( 1,  0), array( 1,  0), array( 1,  0)), //  1
-		array(array( 1,  0), array( 1,  0), array( 1,  0), array( 1,  0)), //
-		array(array( 1,  0), array( 1,  0), array( 2,  0), array( 2,  0)), //
-		array(array( 1,  0), array( 2,  0), array( 2,  0), array( 4,  0)), //
-		array(array( 1,  0), array( 2,  0), array( 2,  2), array( 2,  2)), //  5
-		array(array( 2,  0), array( 4,  0), array( 4,  0), array( 4,  0)), //
-		array(array( 2,  0), array( 4,  0), array( 2,  4), array( 4,  1)), //
-		array(array( 2,  0), array( 2,  2), array( 4,  2), array( 4,  2)), //
-		array(array( 2,  0), array( 3,  2), array( 4,  4), array( 4,  4)), //
-		array(array( 2,  2), array( 4,  1), array( 6,  2), array( 6,  2)), // 10
-		array(array( 4,  0), array( 1,  4), array( 4,  4), array( 3,  8)), //
-		array(array( 2,  2), array( 6,  2), array( 4,  6), array( 7,  4)), //
-		array(array( 4,  0), array( 8,  1), array( 8,  4), array(12,  4)), //
-		array(array( 3,  1), array( 4,  5), array(11,  5), array(11,  5)), //
-		array(array( 5,  1), array( 5,  5), array( 5,  7), array(11,  7)), // 15
-		array(array( 5,  1), array( 7,  3), array(15,  2), array( 3, 13)), //
-		array(array( 1,  5), array(10,  1), array( 1, 15), array( 2, 17)), //
-		array(array( 5,  1), array( 9,  4), array(17,  1), array( 2, 19)), //
-		array(array( 3,  4), array( 3, 11), array(17,  4), array( 9, 16)), //
-		array(array( 3,  5), array( 3, 13), array(15,  5), array(15, 10)), // 20
-		array(array( 4,  4), array(17,  0), array(17,  6), array(19,  6)), //
-		array(array( 2,  7), array(17,  0), array( 7, 16), array(34,  0)), //
-		array(array( 4,  5), array( 4, 14), array(11, 14), array(16, 14)), //
-		array(array( 6,  4), array( 6, 14), array(11, 16), array(30,  2)), //
-		array(array( 8,  4), array( 8, 13), array( 7, 22), array(22, 13)), // 25
-		array(array(10,  2), array(19,  4), array(28,  6), array(33,  4)), //
-		array(array( 8,  4), array(22,  3), array( 8, 26), array(12, 28)), //
-		array(array( 3, 10), array( 3, 23), array( 4, 31), array(11, 31)), //
-		array(array( 7,  7), array(21,  7), array( 1, 37), array(19, 26)), //
-		array(array( 5, 10), array(19, 10), array(15, 25), array(23, 25)), // 30
-		array(array(13,  3), array( 2, 29), array(42,  1), array(23, 28)), //
-		array(array(17,  0), array(10, 23), array(10, 35), array(19, 35)), //
-		array(array(17,  1), array(14, 21), array(29, 19), array(11, 46)), //
-		array(array(13,  6), array(14, 23), array(44,  7), array(59,  1)), //
-		array(array(12,  7), array(12, 26), array(39, 14), array(22, 41)), // 35
-		array(array( 6, 14), array( 6, 34), array(46, 10), array( 2, 64)), //
-		array(array(17,  4), array(29, 14), array(49, 10), array(24, 46)), //
-		array(array( 4, 18), array(13, 32), array(48, 14), array(42, 32)), //
-		array(array(20,  4), array(40,  7), array(43, 22), array(10, 67)), //
-		array(array(19,  6), array(18, 31), array(34, 34), array(20, 61))  // 40
-	);
+	private const ECC_TABLE = [
+		[[ 0,  0], [ 0,  0], [ 0,  0], [ 0,  0]], //
+		[[ 1,  0], [ 1,  0], [ 1,  0], [ 1,  0]], //  1
+		[[ 1,  0], [ 1,  0], [ 1,  0], [ 1,  0]], //
+		[[ 1,  0], [ 1,  0], [ 2,  0], [ 2,  0]], //
+		[[ 1,  0], [ 2,  0], [ 2,  0], [ 4,  0]], //
+		[[ 1,  0], [ 2,  0], [ 2,  2], [ 2,  2]], //  5
+		[[ 2,  0], [ 4,  0], [ 4,  0], [ 4,  0]], //
+		[[ 2,  0], [ 4,  0], [ 2,  4], [ 4,  1]], //
+		[[ 2,  0], [ 2,  2], [ 4,  2], [ 4,  2]], //
+		[[ 2,  0], [ 3,  2], [ 4,  4], [ 4,  4]], //
+		[[ 2,  2], [ 4,  1], [ 6,  2], [ 6,  2]], // 10
+		[[ 4,  0], [ 1,  4], [ 4,  4], [ 3,  8]], //
+		[[ 2,  2], [ 6,  2], [ 4,  6], [ 7,  4]], //
+		[[ 4,  0], [ 8,  1], [ 8,  4], [12,  4]], //
+		[[ 3,  1], [ 4,  5], [11,  5], [11,  5]], //
+		[[ 5,  1], [ 5,  5], [ 5,  7], [11,  7]], // 15
+		[[ 5,  1], [ 7,  3], [15,  2], [ 3, 13]], //
+		[[ 1,  5], [10,  1], [ 1, 15], [ 2, 17]], //
+		[[ 5,  1], [ 9,  4], [17,  1], [ 2, 19]], //
+		[[ 3,  4], [ 3, 11], [17,  4], [ 9, 16]], //
+		[[ 3,  5], [ 3, 13], [15,  5], [15, 10]], // 20
+		[[ 4,  4], [17,  0], [17,  6], [19,  6]], //
+		[[ 2,  7], [17,  0], [ 7, 16], [34,  0]], //
+		[[ 4,  5], [ 4, 14], [11, 14], [16, 14]], //
+		[[ 6,  4], [ 6, 14], [11, 16], [30,  2]], //
+		[[ 8,  4], [ 8, 13], [ 7, 22], [22, 13]], // 25
+		[[10,  2], [19,  4], [28,  6], [33,  4]], //
+		[[ 8,  4], [22,  3], [ 8, 26], [12, 28]], //
+		[[ 3, 10], [ 3, 23], [ 4, 31], [11, 31]], //
+		[[ 7,  7], [21,  7], [ 1, 37], [19, 26]], //
+		[[ 5, 10], [19, 10], [15, 25], [23, 25]], // 30
+		[[13,  3], [ 2, 29], [42,  1], [23, 28]], //
+		[[17,  0], [10, 23], [10, 35], [19, 35]], //
+		[[17,  1], [14, 21], [29, 19], [11, 46]], //
+		[[13,  6], [14, 23], [44,  7], [59,  1]], //
+		[[12,  7], [12, 26], [39, 14], [22, 41]], // 35
+		[[ 6, 14], [ 6, 34], [46, 10], [ 2, 64]], //
+		[[17,  4], [29, 14], [49, 10], [24, 46]], //
+		[[ 4, 18], [13, 32], [48, 14], [42, 32]], //
+		[[20,  4], [40,  7], [43, 22], [10, 67]], //
+		[[19,  6], [18, 31], [34, 34], [20, 61]],  // 40
+	];
 
 	/**
 	 * Array Positions of alignment patterns.
@@ -416,17 +417,17 @@ final class Barcode2DQRCode {
 	 * See Table 1 in Appendix E (pp.71) of JIS X0510:2004.
 	 * @private
 	 */
-	private $alignmentPattern = array(
-		array( 0,  0),
-		array( 0,  0), array(18,  0), array(22,  0), array(26,  0), array(30,  0), //  1- 5
-		array(34,  0), array(22, 38), array(24, 42), array(26, 46), array(28, 50), //  6-10
-		array(30, 54), array(32, 58), array(34, 62), array(26, 46), array(26, 48), // 11-15
-		array(26, 50), array(30, 54), array(30, 56), array(30, 58), array(34, 62), // 16-20
-		array(28, 50), array(26, 50), array(30, 54), array(28, 54), array(32, 58), // 21-25
-		array(30, 58), array(34, 62), array(26, 50), array(30, 54), array(26, 52), // 26-30
-		array(30, 56), array(34, 60), array(30, 58), array(34, 62), array(30, 54), // 31-35
-		array(24, 50), array(28, 54), array(32, 58), array(26, 54), array(30, 58)  // 35-40
-	);
+	private const ALIGNMENT_PATTERN = [
+		[ 0,  0],
+		[ 0,  0], [18,  0], [22,  0], [26,  0], [30,  0], //  1- 5
+		[34,  0], [22, 38], [24, 42], [26, 46], [28, 50], //  6-10
+		[30, 54], [32, 58], [34, 62], [26, 46], [26, 48], // 11-15
+		[26, 50], [30, 54], [30, 56], [30, 58], [34, 62], // 16-20
+		[28, 50], [26, 50], [30, 54], [28, 54], [32, 58], // 21-25
+		[30, 58], [34, 62], [26, 50], [30, 54], [26, 52], // 26-30
+		[30, 56], [34, 60], [30, 58], [34, 62], [30, 54], // 31-35
+		[24, 50], [28, 54], [32, 58], [26, 54], [30, 58], // 35-40
+	];
 
 	/**
 	 * Array Version information pattern (BCH coded).
@@ -434,24 +435,42 @@ final class Barcode2DQRCode {
 	 * size: [self::QR_BARCODE_SPEC_VERSION_MAX - 6]
 	 * @private
 	 */
-	private $versionPattern = array(
+	private const VERSION_PATTERN = [
 		0x07c94, 0x085bc, 0x09a99, 0x0a4d3, 0x0bbf6, 0x0c762, 0x0d847, 0x0e60d, //
 		0x0f928, 0x10b78, 0x1145d, 0x12a17, 0x13532, 0x149a6, 0x15683, 0x168c9, //
 		0x177ec, 0x18ec4, 0x191e1, 0x1afab, 0x1b08e, 0x1cc1a, 0x1d33f, 0x1ed75, //
 		0x1f250, 0x209d5, 0x216f0, 0x228ba, 0x2379f, 0x24b0b, 0x2542e, 0x26a64, //
-		0x27541, 0x28c69
-	);
+		0x27541, 0x28c69,
+	];
 
 	/**
 	 * Array Format information
 	 * @private
 	 */
-	private $formatInfo = array(
-		array(0x77c4, 0x72f3, 0x7daa, 0x789d, 0x662f, 0x6318, 0x6c41, 0x6976), //
-		array(0x5412, 0x5125, 0x5e7c, 0x5b4b, 0x45f9, 0x40ce, 0x4f97, 0x4aa0), //
-		array(0x355f, 0x3068, 0x3f31, 0x3a06, 0x24b4, 0x2183, 0x2eda, 0x2bed), //
-		array(0x1689, 0x13be, 0x1ce7, 0x19d0, 0x0762, 0x0255, 0x0d0c, 0x083b)  //
-	);
+	private const FORMAT_INFO = [
+		[ 0x77c4, 0x72f3, 0x7daa, 0x789d, 0x662f, 0x6318, 0x6c41, 0x6976 ], //
+		[ 0x5412, 0x5125, 0x5e7c, 0x5b4b, 0x45f9, 0x40ce, 0x4f97, 0x4aa0 ], //
+		[ 0x355f, 0x3068, 0x3f31, 0x3a06, 0x24b4, 0x2183, 0x2eda, 0x2bed ], //
+		[ 0x1689, 0x13be, 0x1ce7, 0x19d0, 0x0762, 0x0255, 0x0d0c, 0x083b ], //
+	];
+
+	private const FINDER_ALIGN = [
+		"\xa1\xa1\xa1\xa1\xa1",
+		"\xa1\xa0\xa0\xa0\xa1",
+		"\xa1\xa0\xa1\xa0\xa1",
+		"\xa1\xa0\xa0\xa0\xa1",
+		"\xa1\xa1\xa1\xa1\xa1",
+	];
+
+	private const FINDER_PATTERN = [
+		"\xc1\xc1\xc1\xc1\xc1\xc1\xc1",
+		"\xc1\xc0\xc0\xc0\xc0\xc0\xc1",
+		"\xc1\xc0\xc1\xc1\xc1\xc0\xc1",
+		"\xc1\xc0\xc1\xc1\xc1\xc0\xc1",
+		"\xc1\xc0\xc1\xc1\xc1\xc0\xc1",
+		"\xc1\xc0\xc0\xc0\xc0\xc0\xc1",
+		"\xc1\xc1\xc1\xc1\xc1\xc1\xc1"
+	];
 
 
 	// -------------------------------------------------
@@ -466,45 +485,46 @@ final class Barcode2DQRCode {
 	 * @public
 	 * @since 1.0.000
 	 */
-	public function __construct($code, $eclevel='L') {
+	public function __construct(?string $code, ?string $eclevel='L') {
 		//--
-		$this->level = self::QR_BARCODE_ECC_LEVEL_L; // fix after converting class const to vars
-		$this->hint = self::QR_BARCODE_MODE_8B; // fix after converting class const to vars
-		//--
-		if((is_null($code)) OR ($code == '\0') OR ((string)$code == '')) {
-			return false;
+		if(((string)$code == '') OR ((string)$code === '\0')) {
+			return;
 		} //end if
 		//--
 		$code = (string) $code; // force string
+		$eclevel = (string) $eclevel;
 		//--
-		$this->barcode_array = array();
-		$barcode_array = array();
-		$barcode_array['code'] = $code;
+		$this->level = self::QR_BARCODE_ECC_LEVEL_L; // fix after converting class const to vars
+		$this->hint  = self::QR_BARCODE_MODE_8B; // fix after converting class const to vars
 		//--
-		$this->level = array_search($eclevel, array('L', 'M', 'Q', 'H')); // set error correction level
+		$this->barcode_array = [];
+		$barcode_array = [];
+		$barcode_array['code'] = (string) $code;
+		//--
+		$this->level = \array_search((string)$eclevel, [ 'L', 'M', 'Q', 'H' ]); // set error correction level
 		if($this->level === false) {
 			$this->level = self::QR_BARCODE_ECC_LEVEL_L; // default is L
 		} //end if
-		if(($this->hint != self::QR_BARCODE_MODE_8B) AND ($this->hint != self::QR_BARCODE_MODE_KJ)) {
-			return false;
+		if(($this->hint !== self::QR_BARCODE_MODE_8B) AND ($this->hint !== self::QR_BARCODE_MODE_KJ)) {
+			return;
 		} //end if
 		if(($this->version < 0) OR ($this->version > self::QR_BARCODE_SPEC_VERSION_MAX)) {
-			return false;
+			return;
 		} //end if
 		//--
-		$this->items = array();
+		$this->items = [];
 		$this->encodeString($code);
-		if(is_null($this->data)) {
-			return false;
+		if(\is_null($this->data)) {
+			return;
 		} //end if
 		$qrTab = $this->binarize($this->data);
-		$size = count($qrTab);
+		$size  = (int) \count($qrTab);
 		$barcode_array['num_rows'] = (int) $size;
 		$barcode_array['num_cols'] = (int) $size;
-		$barcode_array['bcode'] = array();
+		$barcode_array['bcode'] = [];
 		foreach($qrTab as $u => $line) {
-			$arrAdd = array();
-			foreach(str_split($line) as $u => $char) {
+			$arrAdd = [];
+			foreach(\str_split($line) as $u => $char) {
 				$arrAdd[] = ($char=='1') ? 1 : 0;
 			} //end foreach
 			$barcode_array['bcode'][] = (array) $arrAdd;
@@ -532,12 +552,12 @@ final class Barcode2DQRCode {
 	 * @param $frame (array) array to binarize
 	 * @return array frame in binary form
 	 */
-	private function binarize($frame) {
-		$len = count($frame);
+	private function binarize(array $frame) : array {
+		$len = (int) \count($frame);
 		// the frame is square (width = height)
 		foreach($frame as &$frameLine) { // PHP7-CHECK:FOREACH-BY-VAL
 			for($i=0; $i<$len; $i++) {
-				$frameLine[$i] = (ord($frameLine[$i])&1)?'1':'0';
+				$frameLine[$i] = (\ord($frameLine[$i])&1)?'1':'0';
 			} //end for
 		} //end foreach
 		return $frame;
@@ -548,14 +568,14 @@ final class Barcode2DQRCode {
 	 * Encode the input string to QR code
 	 * @param $string (string) input string to encode
 	 */
-	private function encodeString($string) {
-		$this->dataStr = $string;
+	private function encodeString(?string $string) {
+		$this->dataStr = (string) $string;
 		if(!$this->casesensitive) {
 			$this->toUpper();
 		} //end if
 		$ret = $this->splitString();
 		if($ret < 0) {
-			return NULL;
+			return null;
 		} //end if
 		$this->encodeMask(-1);
 	} //END FUNCTION
@@ -565,21 +585,21 @@ final class Barcode2DQRCode {
 	 * Encode mask
 	 * @param $mask (int) masking mode
 	 */
-	private function encodeMask($mask) {
+	private function encodeMask(?int $mask) : void {
 		$spec = array(0, 0, 0, 0, 0);
 		$this->datacode = $this->getByteStream($this->items);
 		if(is_null($this->datacode)) {
-			return NULL;
+			return;
 		} //end if
 		$spec = $this->getEccSpec($this->version, $this->level, $spec);
 		$this->b1 = $this->rsBlockNum1($spec);
 		$this->dataLength = $this->rsDataLength($spec);
 		$this->eccLength = $this->rsEccLength($spec);
-		$this->ecccode = array_fill(0, $this->eccLength, 0);
+		$this->ecccode = \array_fill(0, $this->eccLength, 0);
 		$this->blocks = $this->rsBlockNum($spec);
 		$ret = $this->init($spec);
 		if($ret < 0) {
-			return NULL;
+			return;
 		} //end if
 		$this->count = 0;
 		$this->width = $this->getWidth($this->version);
@@ -605,8 +625,8 @@ final class Barcode2DQRCode {
 			$this->setFrameAt($addr, 0x02);
 		} //end for
 		//-- masking
-		$this->runLength = array_fill(0, self::QR_BARCODE_SPEC_WIDTH_MAX + 1, 0);
-		if($mask < 0) {
+		$this->runLength = \array_fill(0, self::QR_BARCODE_SPEC_WIDTH_MAX + 1, 0);
+		if((int)$mask < 0) {
 			if(self::QR_BARCODE_FIND_BEST_MASK) {
 				$masked = $this->mask($this->width, $this->frame, $this->level);
 			} else {
@@ -615,8 +635,8 @@ final class Barcode2DQRCode {
 		} else {
 			$masked = $this->makeMask($this->width, $this->frame, $mask, $this->level);
 		} //end if else
-		if($masked == NULL) {
-			return NULL;
+		if($masked == null) {
+			return;
 		} //end if
 		$this->data = $masked;
 	} //END FUNCTION
@@ -630,8 +650,10 @@ final class Barcode2DQRCode {
 	 * @param $at (array) x,y position
 	 * @param $val (int) value of the character to set
 	 */
-	private function setFrameAt($at, $val) {
-		$this->frame[$at['y']][$at['x']] = chr($val);
+	private function setFrameAt(array $at, int $val) : void {
+		//--
+		$this->frame[$at['y']][$at['x']] = \chr($val);
+		//--
 	} //END FUNCTION
 
 
@@ -640,21 +662,23 @@ final class Barcode2DQRCode {
 	 * @param $at (array) x,y position
 	 * @return value at specified position
 	 */
-	private function getFrameAt($at) {
-		return ord($this->frame[$at['y']][$at['x']]);
+	private function getFrameAt(array $at) : int {
+		//--
+		return (int) \ord(\strval($this->frame[$at['y']][$at['x']]));
+		//--
 	} //END FUNCTION
 
 
 	/**
 	 * Return the next frame position
-	 * @return array of x,y coordinates
+	 * @return array|null of x,y coordinates
 	 */
-	private function getNextPosition() {
+	private function getNextPosition() : ?array {
 		//--
 		do {
 			if($this->bit == -1) {
 				$this->bit = 0;
-				return array('x'=>$this->x, 'y'=>$this->y);
+				return [ 'x'=>$this->x, 'y'=>$this->y ];
 			} //end if
 			$x = $this->x;
 			$y = $this->y;
@@ -689,13 +713,13 @@ final class Barcode2DQRCode {
 				} //end if
 			} //end if else
 			if(($x < 0) OR ($y < 0)) {
-				return NULL;
+				return null;
 			} //end if
 			$this->x = $x;
 			$this->y = $y;
-		} while(ord($this->frame[$y][$x]) & 0x80);
+		} while(\ord($this->frame[$y][$x]) & 0x80);
 		//--
-		return array('x'=>$x, 'y'=>$y);
+		return [ 'x'=>$x, 'y'=>$y ];
 		//--
 	} //END FUNCTION
 
@@ -708,7 +732,7 @@ final class Barcode2DQRCode {
 	 * @param $spec (array) array of ECC specification
 	 * @return 0 in case of success, -1 in case of error
 	 */
-	private function init($spec) {
+	private function init(array $spec) : int {
 		//--
 		$dl = $this->rsDataCodes1($spec);
 		$el = $this->rsEccCodes1($spec);
@@ -718,14 +742,14 @@ final class Barcode2DQRCode {
 		$eccPos = 0;
 		$endfor = $this->rsBlockNum1($spec);
 		for($i=0; $i < $endfor; ++$i) {
-			$ecc = array_slice($this->ecccode, $eccPos);
-			$this->rsblocks[$blockNo] = array();
+			$ecc = \array_slice($this->ecccode, $eccPos);
+			$this->rsblocks[$blockNo] = [];
 			$this->rsblocks[$blockNo]['dataLength'] = $dl;
-			$this->rsblocks[$blockNo]['data'] = array_slice($this->datacode, $dataPos);
+			$this->rsblocks[$blockNo]['data'] = \array_slice($this->datacode, $dataPos);
 			$this->rsblocks[$blockNo]['eccLength'] = $el;
 			$ecc = $this->encode_rs_char($rs, $this->rsblocks[$blockNo]['data'], $ecc);
 			$this->rsblocks[$blockNo]['ecc'] = $ecc;
-			$this->ecccode = array_merge(array_slice($this->ecccode,0, $eccPos), $ecc);
+			$this->ecccode = \array_merge(\array_slice($this->ecccode,0, $eccPos), $ecc);
 			$dataPos += $dl;
 			$eccPos += $el;
 			$blockNo++;
@@ -736,19 +760,19 @@ final class Barcode2DQRCode {
 		$dl = $this->rsDataCodes2($spec);
 		$el = $this->rsEccCodes2($spec);
 		$rs = $this->init_rs(8, 0x11d, 0, 1, $el, 255 - $dl - $el);
-		if($rs == NULL) {
+		if($rs == null) {
 			return -1;
 		} //end if
 		$endfor = $this->rsBlockNum2($spec);
 		for($i=0; $i < $endfor; ++$i) {
-			$ecc = array_slice($this->ecccode, $eccPos);
-			$this->rsblocks[$blockNo] = array();
+			$ecc = \array_slice($this->ecccode, $eccPos);
+			$this->rsblocks[$blockNo] = [];
 			$this->rsblocks[$blockNo]['dataLength'] = $dl;
-			$this->rsblocks[$blockNo]['data'] = array_slice($this->datacode, $dataPos);
+			$this->rsblocks[$blockNo]['data'] = \array_slice($this->datacode, $dataPos);
 			$this->rsblocks[$blockNo]['eccLength'] = $el;
 			$ecc = $this->encode_rs_char($rs, $this->rsblocks[$blockNo]['data'], $ecc);
 			$this->rsblocks[$blockNo]['ecc'] = $ecc;
-			$this->ecccode = array_merge(array_slice($this->ecccode, 0, $eccPos), $ecc);
+			$this->ecccode = \array_merge(\array_slice($this->ecccode, 0, $eccPos), $ecc);
 			$dataPos += $dl;
 			$eccPos += $el;
 			$blockNo++;
@@ -761,10 +785,11 @@ final class Barcode2DQRCode {
 
 	/**
 	 * Return Reed-Solomon block code.
-	 * @return array rsblocks
+	 * @return int rsblocks
 	 */
-	private function getCode() {
+	private function getCode() : ?int {
 		//--
+		$ret = [];
 		if($this->count < $this->dataLength) {
 			$row = $this->count % $this->blocks;
 			$col = $this->count / $this->blocks;
@@ -794,11 +819,11 @@ final class Barcode2DQRCode {
 	 * Write Format Information on frame and returns the number of black bits
 	 * @param $width (int) frame width
 	 * @param $frame (array) frame
-	 * @param $mask (array) masking mode
+	 * @param $mask (int) masking mode
 	 * @param $level (int) error correction level
 	 * @return int blacks
 	 */
-	 private function writeFormatInformation($width, &$frame, $mask, $level) {
+	 private function writeFormatInformation(?int $width, array &$frame, int $mask, ?int $level) : ?int {
 		//--
 		$blacks = 0;
 		$format =  $this->getFormatInfo($mask, $level);
@@ -810,11 +835,11 @@ final class Barcode2DQRCode {
 			} else {
 				$v = 0x84;
 			} //end if else
-			$frame[8][$width - 1 - $i] = chr($v);
+			$frame[8][$width - 1 - $i] = \chr($v);
 			if($i < 6) {
-				$frame[$i][8] = chr($v);
+				$frame[$i][8] = \chr($v);
 			} else {
-				$frame[$i + 1][8] = chr($v);
+				$frame[$i + 1][8] = \chr($v);
 			} //end if else
 			$format = $format >> 1;
 		} //end for
@@ -826,11 +851,11 @@ final class Barcode2DQRCode {
 			} else {
 				$v = 0x84;
 			} //end if else
-			$frame[$width - 7 + $i][8] = chr($v);
+			$frame[$width - 7 + $i][8] = \chr($v);
 			if($i == 0) {
-				$frame[8][7] = chr($v);
+				$frame[8][7] = \chr($v);
 			} else {
-				$frame[8][6 - $i] = chr($v);
+				$frame[8][6 - $i] = \chr($v);
 			} //end if else
 			$format = $format >> 1;
 		} //end for
@@ -846,8 +871,8 @@ final class Barcode2DQRCode {
 	 * @param $y (int) Y position
 	 * @return int mask
 	 */
-	 private function mask0($x, $y) {
-		return ($x + $y) & 1;
+	 private function mask0(int $x, int $y) : int {
+		return (int) ($x + $y) & 1;
 	} //END FUNCTION
 
 
@@ -857,8 +882,8 @@ final class Barcode2DQRCode {
 	 * @param $y (int) Y position
 	 * @return int mask
 	 */
-	 private function mask1($x, $y) {
-		return ($y & 1);
+	 private function mask1(int $x, int $y) : int {
+		return (int) ($y & 1);
 	} //END FUNCTION
 
 
@@ -868,8 +893,8 @@ final class Barcode2DQRCode {
 	 * @param $y (int) Y position
 	 * @return int mask
 	 */
-	 private function mask2($x, $y) {
-		return ($x % 3);
+	 private function mask2(int $x, int $y) : int {
+		return (int) ($x % 3);
 	} //END FUNCTION
 
 
@@ -879,8 +904,8 @@ final class Barcode2DQRCode {
 	 * @param $y (int) Y position
 	 * @return int mask
 	 */
-	 private function mask3($x, $y) {
-		return ($x + $y) % 3;
+	 private function mask3(int $x, int $y) : int {
+		return (int) ($x + $y) % 3;
 	} //END FUNCTION
 
 
@@ -890,8 +915,9 @@ final class Barcode2DQRCode {
 	 * @param $y (int) Y position
 	 * @return int mask
 	 */
-	 private function mask4($x, $y) {
-		return (((int)($y / 2)) + ((int)($x / 3))) & 1;
+	 private function mask4(int $x, int $y) : int {
+	//	return (((int)($y / 2)) + ((int)($x / 3))) & 1;
+		return (int) ((\round($y / 2)) + (\round($x / 3))) & 1; // unixman
 	} //END FUNCTION
 
 
@@ -901,8 +927,8 @@ final class Barcode2DQRCode {
 	 * @param $y (int) Y position
 	 * @return int mask
 	 */
-	 private function mask5($x, $y) {
-		return (($x * $y) & 1) + ($x * $y) % 3;
+	 private function mask5(int $x, int $y) : int {
+		return (int) (($x * $y) & 1) + ($x * $y) % 3;
 	} //END FUNCTION
 
 
@@ -912,8 +938,8 @@ final class Barcode2DQRCode {
 	 * @param $y (int) Y position
 	 * @return int mask
 	 */
-	 private function mask6($x, $y) {
-		return ((($x * $y) & 1) + ($x * $y) % 3) & 1;
+	 private function mask6(int $x, int $y) : int {
+		return (int) ((($x * $y) & 1) + ($x * $y) % 3) & 1;
 	} //END FUNCTION
 
 
@@ -923,8 +949,8 @@ final class Barcode2DQRCode {
 	 * @param $y (int) Y position
 	 * @return int mask
 	 */
-	 private function mask7($x, $y) {
-		return ((($x * $y) % 3) + (($x + $y) & 1)) & 1;
+	 private function mask7(int $x, int $y) : int {
+		return (int) ((($x * $y) % 3) + (($x + $y) & 1)) & 1;
 	} //END FUNCTION
 
 
@@ -935,15 +961,15 @@ final class Barcode2DQRCode {
 	 * @param $frame (array) frame
 	 * @return array bitmask
 	 */
-	private function generateMaskNo($maskNo, $width, $frame) {
-		$bitMask = array_fill(0, $width, array_fill(0, $width, 0));
+	private function generateMaskNo(int $maskNo, int $width, array $frame) : ?array {
+		$bitMask = \array_fill(0, $width, \array_fill(0, $width, 0));
 		for($y=0; $y<$width; ++$y) {
 			for($x=0; $x<$width; ++$x) {
-				if(ord($frame[$y][$x]) & 0x80) {
+				if(((int)\ord((string)$frame[$y][$x]) & 0x80)) {
 					$bitMask[$y][$x] = 0;
 				} else {
-					$maskFunc = call_user_func(array($this, 'mask'.$maskNo), $x, $y);
-					$bitMask[$y][$x] = ($maskFunc == 0)?1:0;
+					$maskFunc = \call_user_func([$this, 'mask'.$maskNo], $x, $y);
+					$bitMask[$y][$x] = ($maskFunc === 0) ? 1 : 0;
 				} //end if else
 			} //end for
 		} //end for
@@ -955,28 +981,28 @@ final class Barcode2DQRCode {
 	 * makeMaskNo
 	 * @param $maskNo (int)
 	 * @param $width (int)
-	 * @param $s (int)
-	 * @param $d (int)
+	 * @param $s (array)
+	 * @param $d (array)
 	 * @param $maskGenOnly (bool)
 	 * @return int b
 	 */
-	 private function makeMaskNo($maskNo, $width, $s, &$d, $maskGenOnly=false) {
+	 private function makeMaskNo(int $maskNo, int $width, array $s, array &$d, bool $maskGenOnly=false) : int {
 		$b = 0;
-		$bitMask = array();
-		$bitMask = $this->generateMaskNo($maskNo, $width, $s, $d);
+		$bitMask = [];
+		$bitMask = $this->generateMaskNo($maskNo, $width, $s);
 		if($maskGenOnly) {
-			return;
+			return 0;
 		} //end if
 		$d = $s;
 		for($y=0; $y<$width; ++$y) {
 			for($x=0; $x<$width; ++$x) {
 				if($bitMask[$y][$x] == 1) {
-					$d[$y][$x] = chr(ord($s[$y][$x]) ^ ((int)($bitMask[$y][$x])));
+					$d[$y][$x] = \chr(\ord($s[$y][$x]) ^ ((int)($bitMask[$y][$x])));
 				} //end if
-				$b += (int)(ord($d[$y][$x]) & 1);
+				$b += (int) (\ord($d[$y][$x]) & 1);
 			} //end for
 		} //end for
-		return $b;
+		return (int) $b;
 	} //END FUNCTION
 
 
@@ -988,11 +1014,11 @@ final class Barcode2DQRCode {
 	 * @param $level (int)
 	 * @return array mask
 	 */
-	 private function makeMask($width, $frame, $maskNo, $level) {
-		$masked = array_fill(0, $width, str_repeat("\0", $width));
+	 private function makeMask(int $width, array $frame, int $maskNo, int $level) : array {
+		$masked = \array_fill(0, $width, \str_repeat("\0", $width));
 		$this->makeMaskNo($maskNo, $width, $frame, $masked);
 		$this->writeFormatInformation($width, $masked, $maskNo, $level);
-		return $masked;
+		return (array) $masked;
 	} //END FUNCTION
 
 
@@ -1001,7 +1027,7 @@ final class Barcode2DQRCode {
 	 * @param $length (int)
 	 * @return int demerit
 	 */
-	 private function calcN1N3($length) {
+	 private function calcN1N3(int $length) : int {
 		$demerit = 0;
 		for($i=0; $i<$length; ++$i) {
 			if($this->runLength[$i] >= 5) {
@@ -1020,7 +1046,7 @@ final class Barcode2DQRCode {
 				} //end if
 			} //end if
 		} //end for
-		return $demerit;
+		return (int) $demerit;
 	} //END FUNCTION
 
 
@@ -1030,7 +1056,7 @@ final class Barcode2DQRCode {
 	 * @param $frame (array)
 	 * @return int demerit
 	 */
-	 private function evaluateSymbol($width, $frame) {
+	 private function evaluateSymbol(int $width, array $frame) : int {
 		$head = 0;
 		$demerit = 0;
 		for($y=0; $y<$width; ++$y) {
@@ -1042,18 +1068,18 @@ final class Barcode2DQRCode {
 			} //end if
 			for($x=0; $x<$width; ++$x) {
 				if(($x > 0) AND ($y > 0)) {
-					$b22 = ord($frameY[$x]) & ord($frameY[$x-1]) & ord($frameYM[$x]) & ord($frameYM[$x-1]);
-					$w22 = ord($frameY[$x]) | ord($frameY[$x-1]) | ord($frameYM[$x]) | ord($frameYM[$x-1]);
+					$b22 = \ord($frameY[$x]) & \ord($frameY[$x-1]) & \ord($frameYM[$x]) & \ord($frameYM[$x-1]);
+					$w22 = \ord($frameY[$x]) | \ord($frameY[$x-1]) | \ord($frameYM[$x]) | \ord($frameYM[$x-1]);
 					if(($b22 | ($w22 ^ 1)) & 1) {
 						$demerit += self::QR_BARCODE_MASK_N2;
 					} //end if
 				} //end if
-				if(($x == 0) AND (ord($frameY[$x]) & 1)) {
+				if(($x == 0) AND (\ord($frameY[$x]) & 1)) {
 					$this->runLength[0] = -1;
 					$head = 1;
 					$this->runLength[$head] = 1;
 				} elseif($x > 0) {
-					if((ord($frameY[$x]) ^ ord($frameY[$x-1])) & 1) {
+					if((\ord($frameY[$x]) ^ \ord($frameY[$x-1])) & 1) {
 						$head++;
 						$this->runLength[$head] = 1;
 					} else {
@@ -1067,12 +1093,12 @@ final class Barcode2DQRCode {
 			$head = 0;
 			$this->runLength[0] = 1;
 			for($y=0; $y<$width; ++$y) {
-				if(($y == 0) AND (ord($frame[$y][$x]) & 1)) {
+				if(($y == 0) AND (\ord($frame[$y][$x]) & 1)) {
 					$this->runLength[0] = -1;
 					$head = 1;
 					$this->runLength[$head] = 1;
 				} elseif($y > 0) {
-					if((ord($frame[$y][$x]) ^ ord($frame[$y-1][$x])) & 1) {
+					if((\ord($frame[$y][$x]) ^ \ord($frame[$y-1][$x])) & 1) {
 						$head++;
 						$this->runLength[$head] = 1;
 					} else {
@@ -1082,7 +1108,7 @@ final class Barcode2DQRCode {
 			} //end for
 			$demerit += $this->calcN1N3($head+1);
 		} //end for
-		return $demerit;
+		return (int) $demerit;
 	} //END FUNCTION
 
 
@@ -1093,28 +1119,28 @@ final class Barcode2DQRCode {
 	 * @param $level (int)
 	 * @return array best mask
 	 */
-	 private function mask($width, $frame, $level) {
-		$minDemerit = PHP_INT_MAX;
+	 private function mask(int $width, array $frame, int $level) : ?array {
+		$minDemerit = \PHP_INT_MAX;
 		$bestMaskNum = 0;
-		$bestMask = array();
+		$bestMask = [];
 		$checked_masks = array(0, 1, 2, 3, 4, 5, 6, 7);
 		if(self::QR_BARCODE_FIND_FROM_RANDOM !== false) {
 			$howManuOut = 8 - (self::QR_BARCODE_FIND_FROM_RANDOM % 9);
 			for($i = 0; $i <  $howManuOut; ++$i) {
-				$remPos = rand (0, count($checked_masks)-1);
+				$remPos = \rand(0, \count($checked_masks)-1);
 				unset($checked_masks[$remPos]);
-				$checked_masks = array_values($checked_masks);
+				$checked_masks = \array_values($checked_masks);
 			} //end for
 		} //end if
 		$bestMask = $frame;
 		foreach($checked_masks as $u => $i) {
-			$mask = array_fill(0, $width, str_repeat("\0", $width));
+			$mask = \array_fill(0, $width, \str_repeat("\0", $width));
 			$demerit = 0;
 			$blacks = 0;
 			$blacks  = $this->makeMaskNo($i, $width, $frame, $mask);
 			$blacks += $this->writeFormatInformation($width, $mask, $i, $level);
 			$blacks  = (int)(100 * $blacks / ($width * $width));
-			$demerit = (int)((int)(abs($blacks - 50) / 5) * self::QR_BARCODE_MASK_N4);
+			$demerit = (int)((int)(\abs($blacks - 50) / 5) * self::QR_BARCODE_MASK_N4);
 			$demerit += $this->evaluateSymbol($width, $mask);
 			if($demerit < $minDemerit) {
 				$minDemerit = $demerit;
@@ -1135,11 +1161,11 @@ final class Barcode2DQRCode {
 	 * @param $pos (int) characted position
 	 * @return boolean true of false
 	 */
-	 private function isdigitat($str, $pos) {
-		if($pos >= strlen($str)) {
+	 private function isdigitat(string $str, int $pos) : bool {
+		if($pos >= \strlen((string)$str)) {
 			return false;
 		} //end if
-		return ((ord($str[$pos]) >= ord('0'))&&(ord($str[$pos]) <= ord('9')));
+		return (bool) ((\ord($str[$pos]) >= \ord('0')) && (\ord($str[$pos]) <= \ord('9')));
 	} //END FUNCTION
 
 
@@ -1149,11 +1175,11 @@ final class Barcode2DQRCode {
 	 * @param $pos (int) characted position
 	 * @return boolean true of false
 	 */
-	 private function isalnumat($str, $pos) {
-		if($pos >= strlen($str)) {
+	 private function isalnumat(string $str, int $pos) : bool {
+		if($pos >= \strlen($str)) {
 			return false;
 		} //end if
-		return ($this->lookAnTable(ord($str[$pos])) >= 0);
+		return (bool) ($this->lookAnTable(\ord($str[$pos])) >= 0);
 	} //END FUNCTION
 
 
@@ -1162,8 +1188,8 @@ final class Barcode2DQRCode {
 	 * @param $pos (int)
 	 * @return int mode
 	 */
-	 private function identifyMode($pos) {
-		if($pos >= strlen($this->dataStr)) {
+	 private function identifyMode(int $pos) : int {
+		if($pos >= \strlen($this->dataStr)) {
 			return self::QR_BARCODE_MODE_NL;
 		} //end if
 		$c = $this->dataStr[$pos];
@@ -1172,9 +1198,9 @@ final class Barcode2DQRCode {
 		} elseif($this->isalnumat($this->dataStr, $pos)) {
 			return self::QR_BARCODE_MODE_AN;
 		} elseif($this->hint == self::QR_BARCODE_MODE_KJ) {
-			if($pos+1 < strlen($this->dataStr)) {
+			if($pos+1 < \strlen($this->dataStr)) {
 				$d = $this->dataStr[$pos+1];
-				$word = (ord($c) << 8) | ord($d);
+				$word = (\ord($c) << 8) | \ord($d);
 				if(($word >= 0x8140 && $word <= 0x9ffc) OR ($word >= 0xe040 && $word <= 0xebbf)) {
 					return self::QR_BARCODE_MODE_KJ;
 				} //end if
@@ -1188,7 +1214,7 @@ final class Barcode2DQRCode {
 	 * eatNum
 	 * @return int run
 	 */
-	 private function eatNum() {
+	 private function eatNum() : ?int {
 		$ln = $this->lengthIndicator(self::QR_BARCODE_MODE_NM, $this->version);
 		$p = 0;
 		while($this->isdigitat($this->dataStr, $p)) {
@@ -1212,7 +1238,7 @@ final class Barcode2DQRCode {
 				return $this->eatAn();
 			} //end if
 		} //end if
-		$this->items = $this->appendNewInputItem($this->items, self::QR_BARCODE_MODE_NM, $run, str_split($this->dataStr));
+		$this->items = $this->appendNewInputItem($this->items, self::QR_BARCODE_MODE_NM, $run, \str_split($this->dataStr));
 		return $run;
 	} //END FUNCTION
 
@@ -1221,7 +1247,7 @@ final class Barcode2DQRCode {
 	 * eatAn
 	 * @return int run
 	 */
-	 private function eatAn() {
+	 private function eatAn() : ?int {
 		$la = $this->lengthIndicator(self::QR_BARCODE_MODE_AN,  $this->version);
 		$ln = $this->lengthIndicator(self::QR_BARCODE_MODE_NM, $this->version);
 		$p =1 ;
@@ -1252,7 +1278,7 @@ final class Barcode2DQRCode {
 				return $this->eat8();
 			} //end if
 		} //end if
-		$this->items = $this->appendNewInputItem($this->items, self::QR_BARCODE_MODE_AN, $run, str_split($this->dataStr));
+		$this->items = $this->appendNewInputItem($this->items, self::QR_BARCODE_MODE_AN, $run, \str_split($this->dataStr));
 		return $run;
 	} //END FUNCTION
 
@@ -1261,12 +1287,12 @@ final class Barcode2DQRCode {
 	 * eatKanji
 	 * @return int run
 	 */
-	 private function eatKanji() {
+	 private function eatKanji() : int {
 		$p = 0;
 		while($this->identifyMode($p) == self::QR_BARCODE_MODE_KJ) {
 			$p += 2;
 		} //end while
-		$this->items = $this->appendNewInputItem($this->items, self::QR_BARCODE_MODE_KJ, $p, str_split($this->dataStr));
+		$this->items = $this->appendNewInputItem($this->items, self::QR_BARCODE_MODE_KJ, $p, \str_split($this->dataStr));
 		return $run;
 	} //END FUNCTION
 
@@ -1275,11 +1301,11 @@ final class Barcode2DQRCode {
 	 * eat8
 	 * @return int run
 	 */
-	 private function eat8() {
+	 private function eat8() : int {
 		$la = $this->lengthIndicator(self::QR_BARCODE_MODE_AN, $this->version);
 		$ln = $this->lengthIndicator(self::QR_BARCODE_MODE_NM, $this->version);
 		$p = 1;
-		$dataStrLen = strlen($this->dataStr);
+		$dataStrLen = \strlen($this->dataStr);
 		while($p < $dataStrLen) {
 			$mode = $this->identifyMode($p);
 			if($mode == self::QR_BARCODE_MODE_KJ) {
@@ -1316,7 +1342,7 @@ final class Barcode2DQRCode {
 			} //end if else
 		} //end while
 		$run = $p;
-		$this->items = $this->appendNewInputItem($this->items, self::QR_BARCODE_MODE_8B, $run, str_split($this->dataStr));
+		$this->items = $this->appendNewInputItem($this->items, self::QR_BARCODE_MODE_8B, $run, \str_split($this->dataStr));
 		return $run;
 	} //END FUNCTION
 
@@ -1325,7 +1351,7 @@ final class Barcode2DQRCode {
 	 * splitString
 	 * @return (int)
 	 */
-	 private function splitString() {
+	 private function splitString() : int {
 		while(strlen($this->dataStr) > 0) {
 			$mode = $this->identifyMode(0);
 			switch($mode) {
@@ -1352,7 +1378,7 @@ final class Barcode2DQRCode {
 			if($length < 0) {
 				return -1;
 			} //end if
-			$this->dataStr = substr($this->dataStr, $length);
+			$this->dataStr = \substr($this->dataStr, $length);
 		} //end while
 		return 0;
 	} //END FUNCTION
@@ -1361,21 +1387,21 @@ final class Barcode2DQRCode {
 	/**
 	 * toUpper
 	 */
-	 private function toUpper() {
-		$stringLen = strlen($this->dataStr);
+	 private function toUpper() : string {
+		$stringLen = \strlen($this->dataStr);
 		$p = 0;
 		while($p < $stringLen) {
 			$mode = $this->identifyMode(substr($this->dataStr, $p), $this->hint);
 			if($mode == self::QR_BARCODE_MODE_KJ) {
 				$p += 2;
 			} else {
-				if((ord($this->dataStr[$p]) >= ord('a')) AND (ord($this->dataStr[$p]) <= ord('z'))) {
-					$this->dataStr[$p] = chr(ord($this->dataStr[$p]) - 32);
+				if((\ord($this->dataStr[$p]) >= \ord('a')) AND (\ord($this->dataStr[$p]) <= \ord('z'))) {
+					$this->dataStr[$p] = \chr(\ord($this->dataStr[$p]) - 32);
 				} //end if
 				$p++;
 			} //end if else
 		} //end while
-		return $this->dataStr;
+		return (string) $this->dataStr;
 	} //END FUNCTION
 
 
@@ -1390,15 +1416,15 @@ final class Barcode2DQRCode {
 	 * @param $bstream (array)
 	 * @return array input item
 	 */
-	 private function newInputItem($mode, $size, $data, $bstream=null) {
-		$setData = array_slice($data, 0, $size);
-		if(count($setData) < $size) {
-			$setData = array_merge($setData, array_fill(0, ($size - count($setData)), 0));
+	 private function newInputItem(int $mode, int $size, array $data, ?array $bstream=null) : ?array {
+		$setData = \array_slice($data, 0, $size);
+		if(\count($setData) < $size) {
+			$setData = \array_merge($setData, \array_fill(0, ($size - \count($setData)), 0));
 		} //end if
 		if(!$this->check($mode, $size, $setData)) {
-			return NULL;
+			return null;
 		} //end if
-		$inputitem = array();
+		$inputitem = [];
 		$inputitem['mode'] = $mode;
 		$inputitem['size'] = $size;
 		$inputitem['data'] = $setData;
@@ -1413,24 +1439,24 @@ final class Barcode2DQRCode {
 	 * @param $version (int)
 	 * @return array input item
 	 */
-	 private function encodeModeNum($inputitem, $version) {
-		$words = (int)($inputitem['size'] / 3);
-		$inputitem['bstream'] = array();
+	 private function encodeModeNum(array $inputitem, ?int $version) : array {
+		$words = (int) ($inputitem['size'] / 3);
+		$inputitem['bstream'] = [];
 		$val = 0x1;
 		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 4, $val);
 		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], $this->lengthIndicator(self::QR_BARCODE_MODE_NM, $version), $inputitem['size']);
 		for($i=0; $i < $words; ++$i) {
-			$val  = (ord($inputitem['data'][$i*3  ]) - ord('0')) * 100;
-			$val += (ord($inputitem['data'][$i*3+1]) - ord('0')) * 10;
-			$val += (ord($inputitem['data'][$i*3+2]) - ord('0'));
+			$val  = (\ord($inputitem['data'][$i*3  ]) - \ord('0')) * 100;
+			$val += (\ord($inputitem['data'][$i*3+1]) - \ord('0')) * 10;
+			$val += (\ord($inputitem['data'][$i*3+2]) - \ord('0'));
 			$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 10, $val);
 		} //end for
 		if($inputitem['size'] - $words * 3 == 1) {
-			$val = ord($inputitem['data'][$words*3]) - ord('0');
+			$val = \ord($inputitem['data'][$words*3]) - \ord('0');
 			$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 4, $val);
 		} elseif(($inputitem['size'] - ($words * 3)) == 2) {
-			$val  = (ord($inputitem['data'][$words*3  ]) - ord('0')) * 10;
-			$val += (ord($inputitem['data'][$words*3+1]) - ord('0'));
+			$val  = (\ord($inputitem['data'][$words*3  ]) - \ord('0')) * 10;
+			$val += (\ord($inputitem['data'][$words*3+1]) - \ord('0'));
 			$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 7, $val);
 		} //end if else
 		return $inputitem;
@@ -1443,18 +1469,18 @@ final class Barcode2DQRCode {
 	 * @param $version (int)
 	 * @return array input item
 	 */
-	 private function encodeModeAn($inputitem, $version) {
+	 private function encodeModeAn(array $inputitem, int $version) : array {
 		$words = (int)($inputitem['size'] / 2);
-		$inputitem['bstream'] = array();
+		$inputitem['bstream'] = [];
 		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 4, 0x02);
 		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], $this->lengthIndicator(self::QR_BARCODE_MODE_AN, $version), $inputitem['size']);
 		for($i=0; $i < $words; ++$i) {
-			$val  = (int)($this->lookAnTable(ord($inputitem['data'][$i*2])) * 45);
-			$val += (int)($this->lookAnTable(ord($inputitem['data'][($i*2)+1])));
+			$val  = (int)($this->lookAnTable(\ord($inputitem['data'][$i*2])) * 45);
+			$val += (int)($this->lookAnTable(\ord($inputitem['data'][($i*2)+1])));
 			$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 11, $val);
 		} //end for
 		if($inputitem['size'] & 1) {
-			$val = $this->lookAnTable(ord($inputitem['data'][($words * 2)]));
+			$val = $this->lookAnTable(\ord($inputitem['data'][($words * 2)]));
 			$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 6, $val);
 		} //end if
 		return $inputitem;
@@ -1467,12 +1493,12 @@ final class Barcode2DQRCode {
 	 * @param $version (int)
 	 * @return array input item
 	 */
-	 private function encodeMode8($inputitem, $version) {
-		$inputitem['bstream'] = array();
+	 private function encodeMode8(array $inputitem, int $version) : array {
+		$inputitem['bstream'] = [];
 		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 4, 0x4);
 		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], $this->lengthIndicator(self::QR_BARCODE_MODE_8B, $version), $inputitem['size']);
 		for($i=0; $i < $inputitem['size']; ++$i) {
-			$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 8, ord($inputitem['data'][$i]));
+			$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 8, \ord($inputitem['data'][$i]));
 		} //end for
 		return $inputitem;
 	} //END FUNCTION
@@ -1484,12 +1510,12 @@ final class Barcode2DQRCode {
 	 * @param $version (int)
 	 * @return array input item
 	 */
-	 private function encodeModeKanji($inputitem, $version) {
-		$inputitem['bstream'] = array();
+	 private function encodeModeKanji(array $inputitem, int $version) : array {
+		$inputitem['bstream'] = [];
 		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 4, 0x8);
 		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], $this->lengthIndicator(self::QR_BARCODE_MODE_KJ, $version), (int)($inputitem['size'] / 2));
 		for($i=0; $i<$inputitem['size']; $i+=2) {
-			$val = (ord($inputitem['data'][$i]) << 8) | ord($inputitem['data'][$i+1]);
+			$val = (\ord($inputitem['data'][$i]) << 8) | \ord($inputitem['data'][$i+1]);
 			if($val <= 0x9ffc) {
 				$val -= 0x8140;
 			} else {
@@ -1508,12 +1534,12 @@ final class Barcode2DQRCode {
 	 * @param $inputitem (array)
 	 * @return array input item
 	 */
-	 private function encodeModeStructure($inputitem) {
-		$inputitem['bstream'] = array();
+	 private function encodeModeStructure(array $inputitem) : array {
+		$inputitem['bstream'] = [];
 		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 4, 0x03);
-		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 4, ord($inputitem['data'][1]) - 1);
-		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 4, ord($inputitem['data'][0]) - 1);
-		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 8, ord($inputitem['data'][2]));
+		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 4, \ord($inputitem['data'][1]) - 1);
+		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 4, \ord($inputitem['data'][0]) - 1);
+		$inputitem['bstream'] = $this->appendNum($inputitem['bstream'], 8, \ord($inputitem['data'][2]));
 		return $inputitem;
 	} //END FUNCTION
 
@@ -1524,15 +1550,15 @@ final class Barcode2DQRCode {
 	 * @param $version (int)
 	 * @return array input item
 	 */
-	 private function encodeBitStream($inputitem, $version) {
-		$inputitem['bstream'] = array();
+	 private function encodeBitStream(array $inputitem, int $version) : array {
+		$inputitem['bstream'] = [];
 		$words = $this->maximumWords($inputitem['mode'], $version);
 		if($inputitem['size'] > $words) {
 			$st1 = $this->newInputItem($inputitem['mode'], $words, $inputitem['data']);
-			$st2 = $this->newInputItem($inputitem['mode'], $inputitem['size'] - $words, array_slice($inputitem['data'], $words));
+			$st2 = $this->newInputItem($inputitem['mode'], $inputitem['size'] - $words, \array_slice($inputitem['data'], $words));
 			$st1 = $this->encodeBitStream($st1, $version);
 			$st2 = $this->encodeBitStream($st2, $version);
-			$inputitem['bstream'] = array();
+			$inputitem['bstream'] = [];
 			$inputitem['bstream'] = $this->appendBitstream($inputitem['bstream'], $st1['bstream']);
 			$inputitem['bstream'] = $this->appendBitstream($inputitem['bstream'], $st2['bstream']);
 		} else {
@@ -1573,7 +1599,7 @@ final class Barcode2DQRCode {
 	 * @return items
 	 *
 	 */
-	private function appendNewInputItem($items, $mode, $size, $data) {
+	private function appendNewInputItem(array $items, int $mode, int $size, array $data) : array {
 		$newitem = $this->newInputItem($mode, $size, $data);
 		if(!empty($newitem)) {
 			$items[] = $newitem;
@@ -1590,7 +1616,7 @@ final class Barcode2DQRCode {
 	 * @param $parity (int)
 	 * @return array items
 	 */
-	 private function insertStructuredAppendHeader($items, $size, $index, $parity) {
+	 private function insertStructuredAppendHeader(array $items, int $size, int $index, int $parity) : array {
 		if($size > self::QR_BARCODE_STRUCT_MAX_SYMBOLS) {
 			return -1;
 		} //end if
@@ -1599,7 +1625,7 @@ final class Barcode2DQRCode {
 		} //end if
 		$buf = array($size, $index, $parity);
 		$entry = $this->newInputItem(self::QR_BARCODE_MODE_ST, 3, buf);
-		array_unshift($items, $entry);
+		\array_unshift($items, $entry);
 		return $items;
 	} //END FUNCTION
 
@@ -1609,7 +1635,7 @@ final class Barcode2DQRCode {
 	 * @param $items (array)
 	 * @return int parity
 	 */
-	 private function calcParity($items) {
+	 private function calcParity(array $items) : int {
 		$parity = 0;
 		foreach($items as $u => $item) {
 			if($item['mode'] != self::QR_BARCODE_MODE_ST) {
@@ -1628,9 +1654,9 @@ final class Barcode2DQRCode {
 	 * @param $data (array)
 	 * @return boolean true or false
 	 */
-	 private function checkModeNum($size, $data) {
+	 private function checkModeNum(int $size, array $data) : bool {
 		for($i=0; $i<$size; ++$i) {
-			if((ord($data[$i]) < ord('0')) OR (ord($data[$i]) > ord('9'))) {
+			if((\ord($data[$i]) < \ord('0')) OR (\ord($data[$i]) > \ord('9'))) {
 				return false;
 			} //end if
 		} //end for
@@ -1643,8 +1669,8 @@ final class Barcode2DQRCode {
 	 * @param $c (int) character value
 	 * @return value
 	 */
-	private function lookAnTable($c) {
-		return (($c > 127)?-1:$this->anTable[$c]);
+	private function lookAnTable(int $c) : int {
+		return (int) (($c > 127) ? -1 : self::AN_TABLE[$c]);
 	} //END FUNCTION
 
 
@@ -1654,9 +1680,9 @@ final class Barcode2DQRCode {
 	 * @param $data (array)
 	 * @return boolean true or false
 	 */
-	private function checkModeAn($size, $data) {
+	private function checkModeAn(int $size, array $data) : bool {
 		for($i=0; $i<$size; ++$i) {
-			if($this->lookAnTable(ord($data[$i])) == -1) {
+			if($this->lookAnTable(\ord($data[$i])) == -1) {
 				return false;
 			} //end if
 		} //end for
@@ -1669,8 +1695,8 @@ final class Barcode2DQRCode {
 	 * @param $size (int)
 	 * @return int number of bits
 	 */
-	private function estimateBitsModeNum($size) {
-		$w = (int)($size / 3);
+	private function estimateBitsModeNum(int $size) : int {
+		$w = (int) ($size / 3);
 		$bits = ($w * 10);
 		switch($size - ($w * 3)) {
 			case 1:
@@ -1689,8 +1715,8 @@ final class Barcode2DQRCode {
 	 * @param $size (int)
 	 * @return int number of bits
 	 */
-	private function estimateBitsModeAn($size) {
-		$bits = (int)($size * 5.5); // (size / 2 ) * 11
+	private function estimateBitsModeAn(int $size) : int {
+		$bits = (int) ($size * 5.5); // (size / 2 ) * 11
 		if($size & 1) {
 			$bits += 6;
 		} //end if
@@ -1703,8 +1729,8 @@ final class Barcode2DQRCode {
 	 * @param $size (int)
 	 * @return int number of bits
 	 */
-	private function estimateBitsMode8($size) {
-		return (int)($size * 8);
+	private function estimateBitsMode8(?int $size) : int {
+		return (int) ((int)$size * 8);
 	} //END FUNCTION
 
 
@@ -1713,8 +1739,8 @@ final class Barcode2DQRCode {
 	 * @param $size (int)
 	 * @return int number of bits
 	 */
-	private function estimateBitsModeKanji($size) {
-		return (int)($size * 6.5); // (size / 2 ) * 13
+	private function estimateBitsModeKanji(?int $size) : int {
+		return (int)((int)$size * 6.5); // (size / 2 ) * 13
 	} //END FUNCTION
 
 
@@ -1724,12 +1750,12 @@ final class Barcode2DQRCode {
 	 * @param $data (array)
 	 * @return boolean true or false
 	 */
-	private function checkModeKanji($size, $data) {
+	private function checkModeKanji(int $size, array $data) : bool {
 		if($size & 1) {
 			return false;
 		} //end if
 		for($i=0; $i<$size; $i+=2) {
-			$val = (ord($data[$i]) << 8) | ord($data[$i+1]);
+			$val = (\ord($data[$i]) << 8) | \ord($data[$i+1]);
 			if(($val < 0x8140) OR (($val > 0x9ffc) AND ($val < 0xe040)) OR ($val > 0xebbf)) {
 				return false;
 			} //end if
@@ -1745,19 +1771,19 @@ final class Barcode2DQRCode {
 	 * @param $data (array) data to validate
 	 * @return boolean true in case of valid data, false otherwise
 	 */
-	private function check($mode, $size, $data) {
+	private function check(int $mode, int $size, array $data) : bool {
 		if($size <= 0) {
 			return false;
 		} //end if
 		switch($mode) {
 			case self::QR_BARCODE_MODE_NM:
-				return $this->checkModeNum($size, $data);
+				return (bool) $this->checkModeNum($size, $data);
 				break;
 			case self::QR_BARCODE_MODE_AN:
-				return $this->checkModeAn($size, $data);
+				return (bool) $this->checkModeAn($size, $data);
 				break;
 			case self::QR_BARCODE_MODE_KJ:
-				return $this->checkModeKanji($size, $data);
+				return (bool) $this->checkModeKanji($size, $data);
 				break;
 			case self::QR_BARCODE_MODE_8B:
 				return true;
@@ -1778,7 +1804,7 @@ final class Barcode2DQRCode {
 	 * @param $version (int)
 	 * @return int bits
 	 */
-	 private function estimateBitStreamSize($items, $version) {
+	 private function estimateBitStreamSize(array $items, int $version) : int {
 		$bits = 0;
 		if($version == 0) {
 			$version = 1;
@@ -1816,7 +1842,7 @@ final class Barcode2DQRCode {
 	 * @param $items (array)
 	 * @return int version
 	 */
-	 private function estimateVersion($items) {
+	 private function estimateVersion(array $items) : int {
 		$version = 0;
 		$prev = 0;
 		do {
@@ -1827,7 +1853,7 @@ final class Barcode2DQRCode {
 				return -1;
 			} //end if
 		} while ($version > $prev);
-		return $version;
+		return (int) $version;
 	} //END FUNCTION
 
 
@@ -1838,7 +1864,8 @@ final class Barcode2DQRCode {
 	 * @param $bits (int)
 	 * @return int size
 	 */
-	 private function lengthOfCode($mode, $version, $bits) {
+	 private function lengthOfCode(int $mode, int $version, int $bits) : int {
+		$size = 0;
 		$payload = $bits - 4 - $this->lengthIndicator($mode, $version);
 		switch($mode) {
 			case self::QR_BARCODE_MODE_NM:
@@ -1879,7 +1906,7 @@ final class Barcode2DQRCode {
 		if($size > $maxsize) {
 			$size = $maxsize;
 		} //end if
-		return $size;
+		return (int) $size;
 	} //END FUNCTION
 
 
@@ -1888,14 +1915,14 @@ final class Barcode2DQRCode {
 	 * @param $items (array)
 	 * @return array of items and total bits
 	 */
-	 private function createBitStream($items) {
+	 private function createBitStream(array $items) : array {
 		$total = 0;
 		foreach($items as $key => $item) {
 			$items[$key] = $this->encodeBitStream($item, $this->version);
-			$bits = count($items[$key]['bstream']);
+			$bits = \count($items[$key]['bstream']);
 			$total += $bits;
 		} //end foreach
-		return array($items, $total);
+		return [ $items, $total ];
 	} //END FUNCTION
 
 
@@ -1904,7 +1931,7 @@ final class Barcode2DQRCode {
 	 * @param $items (array)
 	 * @return array items
 	 */
-	 private function convertData($items) {
+	 private function convertData(array $items) : array {
 		$ver = $this->estimateVersion($items);
 		if($ver > $this->version) {
 			$this->version = $ver;
@@ -1934,11 +1961,11 @@ final class Barcode2DQRCode {
 	 * @param $bstream (array)
 	 * @return array bitstream
 	 */
-	 private function appendPaddingBit($bstream) {
-	 	if(is_null($bstream)) {
+	 private function appendPaddingBit(?array $bstream) : ?array {
+	 	if(\is_null($bstream)) {
 	 		return null;
 	 	} //end if
-		$bits = count($bstream);
+		$bits = \count($bstream);
 		$maxwords = $this->getDataLength($this->version, $this->level);
 		$maxbits = $maxwords * 8;
 		if($maxbits == $bits) {
@@ -1949,11 +1976,11 @@ final class Barcode2DQRCode {
 		} //end if
 		$bits += 4;
 		$words = (int)(($bits + 7) / 8);
-		$padding = array();
+		$padding = [];
 		$padding = $this->appendNum($padding, $words * 8 - $bits + 4, 0);
 		$padlen = $maxwords - $words;
 		if($padlen > 0) {
-			$padbuf = array();
+			$padbuf = [];
 			for($i=0; $i<$padlen; ++$i) {
 				$padbuf[$i] = ($i&1)?0x11:0xec;
 			} //end for
@@ -1968,12 +1995,12 @@ final class Barcode2DQRCode {
 	 * @param $items (array) items
 	 * @return array bitstream
 	 */
-	 private function mergeBitStream($items) {
+	 private function mergeBitStream(?array $items) : ?array {
 		$items = $this->convertData($items);
-		if(!is_array($items)) {
+		if(!\is_array($items)) {
 			return null;
 		} //end if
-		$bstream = array();
+		$bstream = [];
 		foreach($items as $u => $item) {
 			$bstream = $this->appendBitstream($bstream, $item['bstream']);
 		} //end foreach
@@ -1986,7 +2013,7 @@ final class Barcode2DQRCode {
 	 * @param $items (int)
 	 * @return array padded merged byte stream
 	 */
-	private function getBitStream($items) {
+	private function getBitStream(?array $items) : ?array {
 		$bstream = $this->mergeBitStream($items);
 		return $this->appendPaddingBit($bstream);
 	} //END FUNCTION
@@ -1997,7 +2024,7 @@ final class Barcode2DQRCode {
 	 * @param $items (int)
 	 * @return array padded merged byte stream
 	 */
-	private function getByteStream($items) {
+	private function getByteStream(?array $items) : ?array {
 		$bstream = $this->getBitStream($items);
 		return $this->bitstreamToByte($bstream);
 	} //END FUNCTION
@@ -2011,8 +2038,8 @@ final class Barcode2DQRCode {
 	 * @param $setLength (int) array size
 	 * @return array
 	 */
-	private function allocate($setLength) {
-		return array_fill(0, $setLength, 0);
+	private function allocate(int $setLength) : array {
+		return \array_fill(0, $setLength, 0);
 	} //END FUNCTION
 
 
@@ -2022,7 +2049,7 @@ final class Barcode2DQRCode {
 	 * @param $num (int) number
 	 * @return array bitstream
 	 */
-	private function newFromNum($bits, $num) {
+	private function newFromNum(int $bits, int $num) : array {
 		$bstream = $this->allocate($bits);
 		$mask = 1 << ($bits - 1);
 		for($i=0; $i<$bits; ++$i) {
@@ -2043,7 +2070,7 @@ final class Barcode2DQRCode {
 	 * @param $data (array) bytes
 	 * @return array bitstream
 	 */
-	private function newFromBytes($size, $data) {
+	private function newFromBytes(int $size, array $data) : array {
 		$bstream = $this->allocate($size * 8);
 		$p=0;
 		for($i=0; $i<$size; ++$i) {
@@ -2068,14 +2095,14 @@ final class Barcode2DQRCode {
 	 * @param $append (array) bitstream to append
 	 * @return array bitstream
 	 */
-	private function appendBitstream($bitstream, $append) {
-		if((!is_array($append)) OR (count($append) == 0)) {
+	private function appendBitstream(?array $bitstream, ?array $append) : ?array {
+		if((!\is_array($append)) OR (\count($append) == 0)) {
 			return $bitstream;
 		} //end if
-		if(count($bitstream) == 0) {
+		if(\count($bitstream) == 0) {
 			return $append;
 		} //end if
-		return array_values(array_merge($bitstream, $append));
+		return \array_values(\array_merge($bitstream, $append));
 	} //END FUNCTION
 
 
@@ -2086,7 +2113,7 @@ final class Barcode2DQRCode {
 	 * @param $num (int) number
 	 * @return array bitstream
 	 */
-	private function appendNum($bitstream, $bits, $num) {
+	private function appendNum(?array $bitstream, int $bits, int $num) : ?array {
 		if($bits == 0) {
 			return 0;
 		} //end if
@@ -2102,7 +2129,7 @@ final class Barcode2DQRCode {
 	 * @param $data (array) bytes
 	 * @return array bitstream
 	 */
-	private function appendBytes($bitstream, $size, $data) {
+	private function appendBytes(?array $bitstream, int $size, ?array $data) : ?array {
 		if($size == 0) {
 			return 0;
 		} //end if
@@ -2116,16 +2143,16 @@ final class Barcode2DQRCode {
 	 * @param $bstream (array) original bitstream
 	 * @return array of bytes
 	 */
-	private function bitstreamToByte($bstream) {
-		if(is_null($bstream)) {
+	private function bitstreamToByte(?array $bstream) : ?array {
+		if(\is_null($bstream)) {
 	 		return null;
 	 	} //end if
-		$size = count($bstream);
+		$size = \count($bstream);
 		if($size == 0) {
-			return array();
+			return [];
 		} //end if
-		$data = array_fill(0, (int)(($size + 7) / 8), 0);
-		$bytes = (int)($size / 8);
+		$data = \array_fill(0, (int)(($size + 7) / 8), 0);
+		$bytes = (int) ($size / 8);
 		$p = 0;
 		for($i=0; $i<$bytes; $i++) {
 			$v = 0;
@@ -2161,8 +2188,8 @@ final class Barcode2DQRCode {
 	 * @param $replLen (int) length of the repl string
 	 * @return array srctab
 	 */
-	private function qrstrset($srctab, $x, $y, $repl, $replLen=false) {
-		$srctab[$y] = substr_replace($srctab[$y], ($replLen !== false)?substr($repl,0,$replLen):$repl, $x, ($replLen !== false)?$replLen:strlen($repl));
+	private function qrstrset(array $srctab, int $x, int $y, string $repl, int|false $replLen=false) : array {
+		$srctab[$y] = \substr_replace($srctab[$y], ($replLen !== false) ? \substr($repl, 0, $replLen) : $repl, $x, ($replLen !== false) ? $replLen : \strlen($repl));
 		return $srctab;
 	} //END FUNCTION
 
@@ -2173,8 +2200,8 @@ final class Barcode2DQRCode {
 	 * @param $level (int) error correction level
 	 * @return int maximum size (bytes)
 	 */
-	private function getDataLength($version, $level) {
-		return $this->capacity[$version][self::QR_BARCODE_CAP_WORDS] - $this->capacity[$version][self::QR_BARCODE_CAP_ECC][$level];
+	private function getDataLength(int $version, int $level) : int {
+		return self::CAPACITY[$version][self::QR_BARCODE_CAP_WORDS] - self::CAPACITY[$version][self::QR_BARCODE_CAP_ECC][$level];
 	} //END FUNCTION
 
 
@@ -2184,8 +2211,8 @@ final class Barcode2DQRCode {
 	 * @param $level (int) error correction level
 	 * @return int ECC size (bytes)
 	 */
-	private function getECCLength($version, $level){
-		return $this->capacity[$version][self::QR_BARCODE_CAP_ECC][$level];
+	private function getECCLength(int $version, int $level) : int {
+		return self::CAPACITY[$version][self::QR_BARCODE_CAP_ECC][$level];
 	} //END FUNCTION
 
 
@@ -2194,8 +2221,8 @@ final class Barcode2DQRCode {
 	 * @param $version (int) version
 	 * @return int width
 	 */
-	private function getWidth($version) {
-		return $this->capacity[$version][self::QR_BARCODE_CAP_WIDTH];
+	private function getWidth(int $version) : int {
+		return self::CAPACITY[$version][self::QR_BARCODE_CAP_WIDTH];
 	} //END FUNCTION
 
 
@@ -2204,8 +2231,8 @@ final class Barcode2DQRCode {
 	 * @param $version (int) version
 	 * @return int number of remainder bits
 	 */
-	private function getRemainder($version) {
-		return $this->capacity[$version][self::QR_BARCODE_CAP_REMINDER];
+	private function getRemainder(int $version) : int {
+		return self::CAPACITY[$version][self::QR_BARCODE_CAP_REMINDER];
 	} //END FUNCTION
 
 
@@ -2215,9 +2242,9 @@ final class Barcode2DQRCode {
 	 * @param $level (int) error correction level
 	 * @return int version number
 	 */
-	private function getMinimumVersion($size, $level) {
+	private function getMinimumVersion(int $size, int $level) : int {
 		for($i = 1; $i <= self::QR_BARCODE_SPEC_VERSION_MAX; ++$i) {
-			$words = ($this->capacity[$i][self::QR_BARCODE_CAP_WORDS] - $this->capacity[$i][self::QR_BARCODE_CAP_ECC][$level]);
+			$words = (self::CAPACITY[$i][self::QR_BARCODE_CAP_WORDS] - self::CAPACITY[$i][self::QR_BARCODE_CAP_ECC][$level]);
 			if($words >= $size) {
 				return $i;
 			} //end if
@@ -2233,7 +2260,7 @@ final class Barcode2DQRCode {
 	 * @param $version (int) version
 	 * @return int the size of the appropriate length indicator (bits).
 	 */
-	private function lengthIndicator($mode, $version) {
+	private function lengthIndicator(int $mode, int $version) : int {
 		if($mode == self::QR_BARCODE_MODE_ST) {
 			return 0;
 		} //end if
@@ -2244,7 +2271,7 @@ final class Barcode2DQRCode {
 		} else {
 			$l = 2;
 		} //end if else
-		return $this->lengthTableBits[$mode][$l];
+		return (int) self::LENGTH_TABLE_BITS[$mode][$l];
 	} //END FUNCTION
 
 
@@ -2254,7 +2281,7 @@ final class Barcode2DQRCode {
 	 * @param $version (int) version
 	 * @return int the maximum length (bytes)
 	 */
-	private function maximumWords($mode, $version) {
+	private function maximumWords(int $mode, int $version) : int {
 		if($mode == self::QR_BARCODE_MODE_ST) {
 			return 3;
 		} //end if
@@ -2265,7 +2292,7 @@ final class Barcode2DQRCode {
 		} else {
 			$l = 2;
 		} //end if else
-		$bits = $this->lengthTableBits[$mode][$l];
+		$bits = self::LENGTH_TABLE_BITS[$mode][$l];
 		$words = (1 << $bits) - 1;
 		if($mode == self::QR_BARCODE_MODE_KJ) {
 			$words *= 2; // the number of bytes is required
@@ -2281,12 +2308,12 @@ final class Barcode2DQRCode {
 	 * @param $spec (array) an array of ECC specification contains as following: {# of type1 blocks, # of data code, # of ecc code, # of type2 blocks, # of data code}
 	 * @return array spec
 	 */
-	private function getEccSpec($version, $level, $spec) {
-		if(count($spec) < 5) {
+	private function getEccSpec(int $version, int $level, array $spec) : array {
+		if(\count($spec) < 5) {
 			$spec = array(0, 0, 0, 0, 0);
 		} //end if
-		$b1 = $this->eccTable[$version][$level][0];
-		$b2 = $this->eccTable[$version][$level][1];
+		$b1 = self::ECC_TABLE[$version][$level][0];
+		$b2 = self::ECC_TABLE[$version][$level][1];
 		$data = $this->getDataLength($version, $level);
 		$ecc = $this->getECCLength($version, $level);
 		if($b2 == 0) {
@@ -2302,7 +2329,7 @@ final class Barcode2DQRCode {
 			$spec[3] = $b2;
 			$spec[4] = $spec[1] + 1;
 		} //end if else
-		return $spec;
+		return (array) $spec;
 	} //END FUNCTION
 
 
@@ -2313,18 +2340,11 @@ final class Barcode2DQRCode {
 	 * @param $oy (int) Y center coordinate of the pattern
 	 * @return array frame
 	 */
-	private function putAlignmentMarker($frame, $ox, $oy) {
-		$finder = array(
-			"\xa1\xa1\xa1\xa1\xa1",
-			"\xa1\xa0\xa0\xa0\xa1",
-			"\xa1\xa0\xa1\xa0\xa1",
-			"\xa1\xa0\xa0\xa0\xa1",
-			"\xa1\xa1\xa1\xa1\xa1"
-			);
+	private function putAlignmentMarker(array $frame, int $ox, int $oy) : array {
 		$yStart = $oy - 2;
 		$xStart = $ox - 2;
 		for($y=0; $y < 5; $y++) {
-			$frame = $this->qrstrset($frame, $xStart, $yStart+$y, $finder[$y]);
+			$frame = $this->qrstrset($frame, $xStart, $yStart+$y, self::FINDER_ALIGN[$y]);
 		} //end for
 		return $frame;
 	} //END FUNCTION
@@ -2337,32 +2357,32 @@ final class Barcode2DQRCode {
 	 * @param $width (int) width
 	 * @return array frame
 	 */
-	 private function putAlignmentPattern($version, $frame, $width) {
+	 private function putAlignmentPattern(int $version, array $frame, int $width) : array {
 		if($version < 2) {
 			return $frame;
 		} //end if
-		$d = $this->alignmentPattern[$version][1] - $this->alignmentPattern[$version][0];
+		$d = self::ALIGNMENT_PATTERN[$version][1] - self::ALIGNMENT_PATTERN[$version][0];
 		if($d < 0) {
 			$w = 2;
 		} else {
-			$w = (int)(($width - $this->alignmentPattern[$version][0]) / $d + 2);
+			$w = (int)(($width - self::ALIGNMENT_PATTERN[$version][0]) / $d + 2);
 		} //end if else
 		if($w * $w - 3 == 1) {
-			$x = $this->alignmentPattern[$version][0];
-			$y = $this->alignmentPattern[$version][0];
+			$x = self::ALIGNMENT_PATTERN[$version][0];
+			$y = self::ALIGNMENT_PATTERN[$version][0];
 			$frame = $this->putAlignmentMarker($frame, $x, $y);
 			return $frame;
 		} //end if
-		$cx = $this->alignmentPattern[$version][0];
+		$cx = self::ALIGNMENT_PATTERN[$version][0];
 		$wo = $w - 1;
 		for($x=1; $x < $wo; ++$x) {
 			$frame = $this->putAlignmentMarker($frame, 6, $cx);
 			$frame = $this->putAlignmentMarker($frame, $cx,  6);
 			$cx += $d;
 		} //end for
-		$cy = $this->alignmentPattern[$version][0];
+		$cy = self::ALIGNMENT_PATTERN[$version][0];
 		for($y=0; $y < $wo; ++$y) {
-			$cx = $this->alignmentPattern[$version][0];
+			$cx = self::ALIGNMENT_PATTERN[$version][0];
 			for($x=0; $x < $wo; ++$x) {
 				$frame = $this->putAlignmentMarker($frame, $cx, $cy);
 				$cx += $d;
@@ -2378,11 +2398,11 @@ final class Barcode2DQRCode {
 	 * @param $version (int) version
 	 * @return BCH encoded version information pattern
 	 */
-	private function getVersionPattern($version) {
+	private function getVersionPattern(int $version) : int {
 		if(($version < 7) OR ($version > self::QR_BARCODE_SPEC_VERSION_MAX)) {
 			return 0;
 		} //end if
-		return $this->versionPattern[($version - 7)];
+		return (int) self::VERSION_PATTERN[($version - 7)];
 	} //END FUNCTION
 
 
@@ -2392,14 +2412,14 @@ final class Barcode2DQRCode {
 	 * @param $level (int) error correction level
 	 * @return BCH encoded format information pattern
 	 */
-	private function getFormatInfo($mask, $level) {
+	private function getFormatInfo(int $mask, int $level) : int {
 		if(($mask < 0) OR ($mask > 7)) {
 			return 0;
 		} //end if
 		if(($level < 0) OR ($level > 3)) {
 			return 0;
 		} //end if
-		return $this->formatInfo[$level][$mask];
+		return (int) self::FORMAT_INFO[$level][$mask];
 	} //END FUNCTION
 
 
@@ -2410,18 +2430,9 @@ final class Barcode2DQRCode {
 	 * @param $oy (int) Y center coordinate of the pattern
 	 * @return array frame
 	 */
-	private function putFinderPattern($frame, $ox, $oy) {
-		$finder = array(
-		"\xc1\xc1\xc1\xc1\xc1\xc1\xc1",
-		"\xc1\xc0\xc0\xc0\xc0\xc0\xc1",
-		"\xc1\xc0\xc1\xc1\xc1\xc0\xc1",
-		"\xc1\xc0\xc1\xc1\xc1\xc0\xc1",
-		"\xc1\xc0\xc1\xc1\xc1\xc0\xc1",
-		"\xc1\xc0\xc0\xc0\xc0\xc0\xc1",
-		"\xc1\xc1\xc1\xc1\xc1\xc1\xc1"
-		);
+	private function putFinderPattern(array $frame, int $ox, int $oy) : array {
 		for($y=0; $y < 7; $y++) {
-			$frame = $this->qrstrset($frame, $ox, ($oy + $y), $finder[$y]);
+			$frame = $this->qrstrset($frame, $ox, ($oy + $y), self::FINDER_PATTERN[$y]);
 		} //end for
 		return $frame;
 	} //END FUNCTION
@@ -2432,11 +2443,11 @@ final class Barcode2DQRCode {
 	 * @param $version (int) version
 	 * @return Array of unsigned char.
 	 */
-	private function createFrame($version) {
+	private function createFrame(int $version) : array {
 		//--
-		$width = $this->capacity[$version][self::QR_BARCODE_CAP_WIDTH];
-		$frameLine = str_repeat ("\0", $width);
-		$frame = array_fill(0, $width, $frameLine);
+		$width = self::CAPACITY[$version][self::QR_BARCODE_CAP_WIDTH];
+		$frameLine = \str_repeat ("\0", $width);
+		$frame = \array_fill(0, $width, $frameLine);
 		//-- Finder pattern
 		$frame = $this->putFinderPattern($frame, 0, 0);
 		$frame = $this->putFinderPattern($frame, $width - 7, 0);
@@ -2449,12 +2460,12 @@ final class Barcode2DQRCode {
 			$frame[$yOffset][7] = "\xc0";
 			++$yOffset;
 		} //end for
-		$setPattern = str_repeat("\xc0", 8);
+		$setPattern = \str_repeat("\xc0", 8);
 		$frame = $this->qrstrset($frame, 0, 7, $setPattern);
 		$frame = $this->qrstrset($frame, $width-8, 7, $setPattern);
 		$frame = $this->qrstrset($frame, 0, $width - 8, $setPattern);
 		//-- Format info
-		$setPattern = str_repeat("\x84", 9);
+		$setPattern = \str_repeat("\x84", 9);
 		$frame = $this->qrstrset($frame, 0, 8, $setPattern);
 		$frame = $this->qrstrset($frame, $width - 8, 8, $setPattern, 8);
 		$yOffset = $width - 8;
@@ -2465,8 +2476,8 @@ final class Barcode2DQRCode {
 		//-- Timing pattern
 		$wo = $width - 15;
 		for($i=1; $i < $wo; ++$i) {
-			$frame[6][7+$i] = chr(0x90 | ($i & 1));
-			$frame[7+$i][6] = chr(0x90 | ($i & 1));
+			$frame[6][7+$i] = \chr(0x90 | ($i & 1));
+			$frame[7+$i][6] = \chr(0x90 | ($i & 1));
 		} //end for
 		//-- Alignment pattern
 		$frame = $this->putAlignmentPattern($version, $frame, $width);
@@ -2476,14 +2487,14 @@ final class Barcode2DQRCode {
 			$v = $vinf;
 			for($x=0; $x<6; ++$x) {
 				for($y=0; $y<3; ++$y) {
-					$frame[($width - 11)+$y][$x] = chr(0x88 | ($v & 1));
+					$frame[($width - 11)+$y][$x] = \chr(0x88 | ($v & 1));
 					$v = $v >> 1;
 				} //end for
 			} //end for
 			$v = $vinf;
 			for($y=0; $y<6; ++$y) {
 				for($x=0; $x<3; ++$x) {
-					$frame[$y][$x+($width - 11)] = chr(0x88 | ($v & 1));
+					$frame[$y][$x+($width - 11)] = \chr(0x88 | ($v & 1));
 					$v = $v >> 1;
 				} //end for
 			} //end for
@@ -2501,15 +2512,15 @@ final class Barcode2DQRCode {
 	 * @param $version (int) version
 	 * @return Array of unsigned char.
 	 */
-	private function newFrame($version) {
+	private function newFrame(int $version) : ?array {
 		if(($version < 1) OR ($version > self::QR_BARCODE_SPEC_VERSION_MAX)) {
-			return NULL;
+			return null;
 		} //end if
 		if(!isset($this->frames[$version])) {
 			$this->frames[$version] = $this->createFrame($version);
 		} //end if
 		if(is_null($this->frames[$version])) {
-			return NULL;
+			return null;
 		} //end if
 		return $this->frames[$version];
 	} //END FUNCTION
@@ -2520,8 +2531,8 @@ final class Barcode2DQRCode {
 	 * @param $spec (array)
 	 * @return int value
 	 */
-	private function rsBlockNum($spec) {
-		return ($spec[0] + $spec[3]);
+	private function rsBlockNum(array $spec) : int {
+		return (int) ($spec[0] + $spec[3]);
 	} //END FUNCTION
 
 
@@ -2530,8 +2541,8 @@ final class Barcode2DQRCode {
 	 * @param $spec (array)
 	 * @return int value
 	 */
-	private function rsBlockNum1($spec) {
-		return $spec[0];
+	private function rsBlockNum1(array $spec) : int {
+		return (int) ($spec[0]);
 	} //END FUNCTION
 
 
@@ -2540,8 +2551,8 @@ final class Barcode2DQRCode {
 	 * @param $spec (array)
 	 * @return int value
 	 */
-	private function rsDataCodes1($spec) {
-		return $spec[1];
+	private function rsDataCodes1(array $spec) : int {
+		return (int) ($spec[1]);
 	} //END FUNCTION
 
 
@@ -2550,8 +2561,8 @@ final class Barcode2DQRCode {
 	 * @param $spec (array)
 	 * @return int value
 	 */
-	private function rsEccCodes1($spec) {
-		return $spec[2];
+	private function rsEccCodes1(array $spec) : int {
+		return (int) ($spec[2]);
 	} //END FUNCTION
 
 
@@ -2560,8 +2571,8 @@ final class Barcode2DQRCode {
 	 * @param $spec (array)
 	 * @return int value
 	 */
-	private function rsBlockNum2($spec) {
-		return $spec[3];
+	private function rsBlockNum2(array $spec) : int {
+		return (int) ($spec[3]);
 	} //END FUNCTION
 
 
@@ -2570,8 +2581,8 @@ final class Barcode2DQRCode {
 	 * @param $spec (array)
 	 * @return int value
 	 */
-	private function rsDataCodes2($spec) {
-		return $spec[4];
+	private function rsDataCodes2(array $spec) : int {
+		return (int) ($spec[4]);
 	} //END FUNCTION
 
 
@@ -2580,8 +2591,8 @@ final class Barcode2DQRCode {
 	 * @param $spec (array)
 	 * @return int value
 	 */
-	private function rsEccCodes2($spec) {
-		return $spec[2];
+	private function rsEccCodes2(array $spec) : int {
+		return (int) ($spec[2]);
 	} //END FUNCTION
 
 
@@ -2590,8 +2601,8 @@ final class Barcode2DQRCode {
 	 * @param $spec (array)
 	 * @return int value
 	 */
-	private function rsDataLength($spec) {
-		return ($spec[0] * $spec[1]) + ($spec[3] * $spec[4]);
+	private function rsDataLength(array $spec) : int {
+		return (int) (($spec[0] * $spec[1]) + ($spec[3] * $spec[4]));
 	} //END FUNCTION
 
 
@@ -2600,8 +2611,8 @@ final class Barcode2DQRCode {
 	 * @param $spec (array)
 	 * @return int value
 	 */
-	private function rsEccLength($spec) {
-		return ($spec[0] + $spec[3]) * $spec[2];
+	private function rsEccLength(array $spec) : int {
+		return (int) (($spec[0] + $spec[3]) * $spec[2]);
 	} //END FUNCTION
 
 
@@ -2618,7 +2629,7 @@ final class Barcode2DQRCode {
 	 * @param $pad (int)  padding bytes at front of shortened block
 	 * @return array Array of RS values:<ul><li>mm = Bits per symbol;</li><li>nn = Symbols per block;</li><li>alpha_to = log lookup table array;</li><li>index_of = Antilog lookup table array;</li><li>genpoly = Generator polynomial array;</li><li>nroots = Number of generator;</li><li>roots = number of parity symbols;</li><li>fcr = First consecutive root, index form;</li><li>prim = Primitive element, index form;</li><li>iprim = prim-th root of 1, index form;</li><li>pad = Padding bytes in shortened block;</li><li>gfpoly</ul>.
 	 */
-	private function init_rs($symsize, $gfpoly, $fcr, $prim, $nroots, $pad) {
+	private function init_rs(int $symsize, int $gfpoly, int $fcr, int $prim, int $nroots, int $pad) : ?array {
 		foreach($this->rsitems as $u => $rs) {
 			if(($rs['pad'] != $pad) OR ($rs['nroots'] != $nroots) OR ($rs['mm'] != $symsize) OR ($rs['gfpoly'] != $gfpoly) OR ($rs['fcr'] != $fcr) OR ($rs['prim'] != $prim)) {
 				continue;
@@ -2626,7 +2637,7 @@ final class Barcode2DQRCode {
 			return $rs;
 		} //end foreach
 		$rs = $this->init_rs_char($symsize, $gfpoly, $fcr, $prim, $nroots, $pad);
-		array_unshift($this->rsitems, $rs);
+		\array_unshift($this->rsitems, $rs);
 		return $rs;
 	} //END FUNCTION
 
@@ -2638,9 +2649,9 @@ final class Barcode2DQRCode {
 	 * modnn
 	 * @param $rs (array) RS values
 	 * @param $x (int) X position
-	 * @return int X osition
+	 * @return int X position
 	 */
-	private function modnn($rs, $x) {
+	private function modnn(array $rs, int $x) : int {
 		while($x >= $rs['nn']) {
 			$x -= $rs['nn'];
 			$x = ($x >> $rs['mm']) + ($x & $rs['nn']);
@@ -2659,7 +2670,7 @@ final class Barcode2DQRCode {
 	 * @param $pad (int)  padding bytes at front of shortened block
 	 * @return array Array of RS values:<ul><li>mm = Bits per symbol;</li><li>nn = Symbols per block;</li><li>alpha_to = log lookup table array;</li><li>index_of = Antilog lookup table array;</li><li>genpoly = Generator polynomial array;</li><li>nroots = Number of generator;</li><li>roots = number of parity symbols;</li><li>fcr = First consecutive root, index form;</li><li>prim = Primitive element, index form;</li><li>iprim = prim-th root of 1, index form;</li><li>pad = Padding bytes in shortened block;</li><li>gfpoly</ul>.
 	 */
-	private function init_rs_char($symsize, $gfpoly, $fcr, $prim, $nroots, $pad) {
+	private function init_rs_char(int $symsize, int $gfpoly, int $fcr, int $prim, int $nroots, int $pad) : ?array {
 		// Based on Reed solomon encoder by Phil Karn, KA9Q (GNU-LGPLv2)
 		$rs = null;
 		// Check parameter ranges
@@ -2678,12 +2689,12 @@ final class Barcode2DQRCode {
 		if(($pad < 0) OR ($pad >= ((1<<$symsize) -1 - $nroots))) {
 			return $rs;
 		} //end if
-		$rs = array();
+		$rs = [];
 		$rs['mm'] = $symsize;
 		$rs['nn'] = (1 << $symsize) - 1;
 		$rs['pad'] = $pad;
-		$rs['alpha_to'] = array_fill(0, ($rs['nn'] + 1), 0);
-		$rs['index_of'] = array_fill(0, ($rs['nn'] + 1), 0);
+		$rs['alpha_to'] = \array_fill(0, ($rs['nn'] + 1), 0);
+		$rs['index_of'] = \array_fill(0, ($rs['nn'] + 1), 0);
 		// PHP style macro replacement ;)
 		$NN =& $rs['nn'];
 		$A0 =& $NN;
@@ -2702,10 +2713,10 @@ final class Barcode2DQRCode {
 		} //end for
 		if($sr != 1) {
 			// field generator polynomial is not primitive!
-			return NULL;
+			return null;
 		} //end if
 		// Form RS code generator polynomial from its roots
-		$rs['genpoly'] = array_fill(0, ($nroots + 1), 0);
+		$rs['genpoly'] = \array_fill(0, ($nroots + 1), 0);
 		$rs['fcr'] = $fcr;
 		$rs['prim'] = $prim;
 		$rs['nroots'] = $nroots;
@@ -2745,7 +2756,7 @@ final class Barcode2DQRCode {
 	 * @param $parity (array) parity
 	 * @return parity array
 	 */
-	 private function encode_rs_char($rs, $data, $parity) {
+	 private function encode_rs_char(?array $rs, array $data, array $parity) : array {
 		$MM       =& $rs['mm']; // bits per symbol
 		$NN       =& $rs['nn']; // the total number of symbols in a RS block
 		$ALPHA_TO =& $rs['alpha_to']; // the address of an array of NN elements to convert Galois field elements in index (log) form to polynomial form
@@ -2757,7 +2768,7 @@ final class Barcode2DQRCode {
 		$IPRIM    =& $rs['iprim']; // prim-th root of 1, index form
 		$PAD      =& $rs['pad']; // the number of pad symbols in a block
 		$A0       =& $NN;
-		$parity = array_fill(0, $NROOTS, 0);
+		$parity = \array_fill(0, $NROOTS, 0);
 		for($i=0; $i < ($NN - $NROOTS - $PAD); $i++) {
 			$feedback = $INDEX_OF[$data[$i] ^ $parity[0]];
 			if($feedback != $A0) {
@@ -2770,11 +2781,11 @@ final class Barcode2DQRCode {
 				} //end for
 			} //end if
 			// Shift
-			array_shift($parity);
+			\array_shift($parity);
 			if($feedback != $A0) {
-				array_push($parity, $ALPHA_TO[$this->modnn($rs, $feedback + $GENPOLY[0])]);
+				\array_push($parity, $ALPHA_TO[$this->modnn($rs, $feedback + $GENPOLY[0])]);
 			} else {
-				array_push($parity, 0);
+				\array_push($parity, 0);
 			} //end if else
 		} //end for
 		return $parity;

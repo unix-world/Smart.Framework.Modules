@@ -1,22 +1,8 @@
+Copyright 2017-2019 The Libre Barcode Project Authors (https://github.com/graphicore/librebarcode)
 
-=================================================================================
-This license (SIL OPEN FONT LICENSE Version 1.1) aplies for the following fonts:
-* LibreBarcode39ExtendedText				https://fonts.google.com/attribution
-* LibreBarcode128Text						https://fonts.google.com/attribution
-=================================================================================
-
-Font: LibreBarcode39ExtendedText
-Copyright 2017 The Libre Barcode Project Authors (lasse@graphicore.de)
-
-Font: LibreBarcode128Text
-Copyright 2017 The Libre Barcode Project Authors (lasse@graphicore.de)
-
-
-=================================================================================
-
-These Fonts Software are licensed under the SIL Open Font License, Version 1.1.
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
-http://scripts.sil.org/OFL
+https://scripts.sil.org/OFL
 
 
 -----------------------------------------------------------
@@ -105,3 +91,4 @@ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
+

@@ -48,7 +48,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP GD Extension w. *optional TTF support ; classes: Smart, SmartFileSysUtils
- * @version 	v.20260130
+ * @version 	v.20260717
  * @package 	modules:development:Captcha
  */
 final class SmartImageCaptcha {
@@ -649,7 +649,7 @@ final class SmartImageCaptcha {
 		$use_ttf_font = false;
 		if((string)$this->charfont == '') {
 			$font = 5;
-		} elseif(((string)$this->charfont != '') AND (\SmartFileSysUtils::checkIfSafePath((string)$this->charfont)) AND (\SmartFileSystem::is_type_file((string)$this->charfont))) {
+		} elseif(((string)$this->charfont != '') AND (\SmartFileSysUtils::checkIfSafePath((string)$this->charfont)) AND (\SmartFileSysUtils::isFile((string)$this->charfont))) {
 			if(\function_exists('\\imagettftext') AND ((string)\substr((string)$this->charfont, -4, 4) == '.ttf')) {
 				$font = (string) $this->charfont;
 				$use_ttf_font = true;

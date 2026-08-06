@@ -2,6 +2,9 @@
 
 // fixes by unixman
 
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
+
 /*
  * Copyright 2013 Metzli and ZXing authors
  *

@@ -1,5 +1,8 @@
 <?php
 
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
+
 /*
  * Copyright 2013 Metzli authors
  *
@@ -23,7 +26,7 @@ class StringDataEncoder extends BinaryDataEncoder
 	public function encode($data)
 	{
 	//	$encoded = iconv('UTF-8', 'ISO-8859-1//IGNORE', $data);
-		$encoded = \SmartUnicode::utf8_to_iso($data, true);
+		$encoded = \SmartUnicode::utf8_to_iso((string)$data, true);
 
 		return parent::encode($encoded);
 	}

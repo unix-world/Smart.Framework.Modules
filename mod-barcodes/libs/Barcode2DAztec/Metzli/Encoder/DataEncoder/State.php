@@ -1,5 +1,8 @@
 <?php
 
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
+
 /*
  * Copyright 2013 Metzli and ZXing authors
  *
@@ -136,9 +139,9 @@ class State
 	public function toBitArray(array $text)
 	{
 		$symbols = array();
-		$token = $this->endBinaryShift(count($text))->getToken();
+		$token = $this->endBinaryShift(\count($text))->getToken();
 		while ($token !== null) {
-			array_unshift($symbols, $token);
+			\array_unshift($symbols, $token);
 			$token = $token->getPrevious();
 		}
 
@@ -159,7 +162,7 @@ class State
 			$token = $token->getPrevious();
 		}
 
-		return sprintf('%s { mode = %s, bits = %d, shiftBytes = %d, tokens = [ %s ] }', __CLASS__, DynamicDataEncoder::getModeName($this->mode), $this->bitCount, $this->shiftByteCount, implode(', ', array_reverse($tokens)));
+		return \sprintf('%s { mode = %s, bits = %d, shiftBytes = %d, tokens = [ %s ] }', __CLASS__, DynamicDataEncoder::getModeName($this->mode), $this->bitCount, $this->shiftByteCount, \implode(', ', \array_reverse($tokens)));
 	}
 }
 

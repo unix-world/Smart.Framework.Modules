@@ -22,7 +22,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 //============================================================
 // BarCode 2D: PDF-417
-// License: GPLv3
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
 //============================================================
 // Class to create PDF417 barcode arrays.
 // PDF417 (ISO/IEC 15438:2006) is a 2-dimensional stacked barcode
@@ -59,7 +60,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	extensions: PHP 64-bit
- * @version 	v.20260130
+ * @version 	v.20260203
  * @package 	modules:Barcodes2D
  *
  */
@@ -91,41 +92,41 @@ final class Barcode2DPdf417 {
 	 * Barcode array to be returned which is readable by TCPDF.
 	 * @private
 	 */
-	private $barcode_array = [];
+	private array $barcode_array = [];
 
 	/**
 	 * Start pattern.
 	 * @private
 	 */
-	private $start_pattern = '11111111010101000';
+	private const START_PATTERN = '11111111010101000';
 
 	/**
 	 * Stop pattern.
 	 * @private
 	 */
-	private $stop_pattern = '111111101000101001';
+	private const STOP_PATTERN = '111111101000101001';
 
 	/**
 	 * Array of text Compaction Sub-Modes (values 0xFB - 0xFF are used for submode changers).
 	 * @private
 	 */
-	private $textsubmodes = array(
-		array(0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48,0x49,0x4a,0x4b,0x4c,0x4d,0x4e,0x4f,0x50,0x51,0x52,0x53,0x54,0x55,0x56,0x57,0x58,0x59,0x5a,0x20,0xFD,0xFE,0xFF), // Alpha
-		array(0x61,0x62,0x63,0x64,0x65,0x66,0x67,0x68,0x69,0x6a,0x6b,0x6c,0x6d,0x6e,0x6f,0x70,0x71,0x72,0x73,0x74,0x75,0x76,0x77,0x78,0x79,0x7a,0x20,0xFD,0xFE,0xFF), // Lower
-		array(0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x26,0x0d,0x09,0x2c,0x3a,0x23,0x2d,0x2e,0x24,0x2f,0x2b,0x25,0x2a,0x3d,0x5e,0xFB,0x20,0xFD,0xFE,0xFF), // Mixed
-		array(0x3b,0x3c,0x3e,0x40,0x5b,0x5c,0x5d,0x5f,0x60,0x7e,0x21,0x0d,0x09,0x2c,0x3a,0x0a,0x2d,0x2e,0x24,0x2f,0x22,0x7c,0x2a,0x28,0x29,0x3f,0x7b,0x7d,0x27,0xFF) // Puntuaction
-	);
+	private const TEXT_SUB_MODES = [
+		[ 0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48,0x49,0x4a,0x4b,0x4c,0x4d,0x4e,0x4f,0x50,0x51,0x52,0x53,0x54,0x55,0x56,0x57,0x58,0x59,0x5a,0x20,0xFD,0xFE,0xFF ], // Alpha
+		[ 0x61,0x62,0x63,0x64,0x65,0x66,0x67,0x68,0x69,0x6a,0x6b,0x6c,0x6d,0x6e,0x6f,0x70,0x71,0x72,0x73,0x74,0x75,0x76,0x77,0x78,0x79,0x7a,0x20,0xFD,0xFE,0xFF ], // Lower
+		[ 0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x26,0x0d,0x09,0x2c,0x3a,0x23,0x2d,0x2e,0x24,0x2f,0x2b,0x25,0x2a,0x3d,0x5e,0xFB,0x20,0xFD,0xFE,0xFF ], // Mixed
+		[ 0x3b,0x3c,0x3e,0x40,0x5b,0x5c,0x5d,0x5f,0x60,0x7e,0x21,0x0d,0x09,0x2c,0x3a,0x0a,0x2d,0x2e,0x24,0x2f,0x22,0x7c,0x2a,0x28,0x29,0x3f,0x7b,0x7d,0x27,0xFF ], // Puntuaction
+	];
 
 	/**
 	 * Array of switching codes for Text Compaction Sub-Modes.
 	 * @private
 	 */
-	private $textlatch = array(
-		'01' => array(27), '02' => array(28), '03' => array(28,25), //
-		'10' => array(28,28), '12' => array(28), '13' => array(28,25), //
-		'20' => array(28), '21' => array(27), '23' => array(25), //
-		'30' => array(29), '31' => array(29,27), '32' => array(29,28) //
-	);
+	private const TEXT_LATCH = [
+		'01' => [27],    '02' => [28],    '03' => [28,25], //
+		'10' => [28,28], '12' => [28],    '13' => [28,25], //
+		'20' => [28],    '21' => [27],    '23' => [25],    //
+		'30' => [29],    '31' => [29,27], '32' => [29,28]  //
+	];
 
 	/**
 	 * Clusters of codewords (0, 3, 6)<br/>
@@ -148,8 +149,8 @@ final class Barcode2DPdf417 {
 	 * </ul>
 	 * @private
 	 */
-	private $clusters = array(
-		array( // cluster 0 -----------------------------------------------------------------------
+	private const CLUSTERS = [
+		[ // cluster 0 -----------------------------------------------------------------------
 			0x1d5c0,0x1eaf0,0x1f57c,0x1d4e0,0x1ea78,0x1f53e,0x1a8c0,0x1d470,0x1a860,0x15040, //  10
 			0x1a830,0x15020,0x1adc0,0x1d6f0,0x1eb7c,0x1ace0,0x1d678,0x1eb3e,0x158c0,0x1ac70, //  20
 			0x15860,0x15dc0,0x1aef0,0x1d77c,0x15ce0,0x1ae78,0x1d73e,0x15c70,0x1ae3c,0x15ef0, //  30
@@ -242,8 +243,8 @@ final class Barcode2DPdf417 {
 			0x18e64,0x18622,0x19ee4,0x18e62,0x19ee2,0x10428,0x18216,0x10c68,0x18636,0x11ce8, // 900
 			0x10c64,0x10422,0x13de8,0x11ce4,0x10c62,0x13de4,0x11ce2,0x10436,0x10c76,0x11cf6, // 910
 			0x13df6,0x1f7d4,0x1f7d2,0x1e794,0x1efb4,0x1e792,0x1efb2,0x1c714,0x1cf34,0x1c712, // 920
-			0x1df74,0x1cf32,0x1df72,0x18614,0x18e34,0x18612,0x19e74,0x18e32,0x1bef4),        // 929
-		array( // cluster 3 -----------------------------------------------------------------------
+			0x1df74,0x1cf32,0x1df72,0x18614,0x18e34,0x18612,0x19e74,0x18e32,0x1bef4],        // 929
+		[ // cluster 3 -----------------------------------------------------------------------
 			0x1f560,0x1fab8,0x1ea40,0x1f530,0x1fa9c,0x1ea20,0x1f518,0x1fa8e,0x1ea10,0x1f50c, //  10
 			0x1ea08,0x1f506,0x1ea04,0x1eb60,0x1f5b8,0x1fade,0x1d640,0x1eb30,0x1f59c,0x1d620, //  20
 			0x1eb18,0x1f58e,0x1d610,0x1eb0c,0x1d608,0x1eb06,0x1d604,0x1d760,0x1ebb8,0x1f5de, //  30
@@ -336,8 +337,8 @@ final class Barcode2DPdf417 {
 			0x106fa,0x10ebe,0x11ebc,0x11e9e,0x13eb8,0x19f5e,0x13e9c,0x13e8e,0x11e5e,0x13ede, // 900
 			0x17eb0,0x1bf5c,0x17e98,0x1bf4e,0x17e8c,0x17e86,0x13e5c,0x17edc,0x13e4e,0x17ece, // 910
 			0x17e58,0x1bf2e,0x17e4c,0x17e46,0x13e2e,0x17e6e,0x17e2c,0x17e26,0x10f5e,0x11f5c, // 920
-			0x11f4e,0x13f58,0x19fae,0x13f4c,0x13f46,0x11f2e,0x13f6e,0x13f2c,0x13f26),        // 929
-		array( // cluster 6 -----------------------------------------------------------------------
+			0x11f4e,0x13f58,0x19fae,0x13f4c,0x13f46,0x11f2e,0x13f6e,0x13f2c,0x13f26],        // 929
+		[ // cluster 6 -----------------------------------------------------------------------
 			0x1abe0,0x1d5f8,0x153c0,0x1a9f0,0x1d4fc,0x151e0,0x1a8f8,0x1d47e,0x150f0,0x1a87c, //  10
 			0x15078,0x1fad0,0x15be0,0x1adf8,0x1fac8,0x159f0,0x1acfc,0x1fac4,0x158f8,0x1ac7e, //  20
 			0x1fac2,0x1587c,0x1f5d0,0x1faec,0x15df8,0x1f5c8,0x1fae6,0x15cfc,0x1f5c4,0x15c7e, //  30
@@ -430,31 +431,31 @@ final class Barcode2DPdf417 {
 			0x11f64,0x10f22,0x11f62,0x10716,0x10f36,0x11f76,0x1cfd4,0x1cfd2,0x18f94,0x19fb4, // 900
 			0x18f92,0x19fb2,0x10f14,0x11f34,0x10f12,0x13f74,0x11f32,0x13f72,0x1cfca,0x18f8a, // 910
 			0x19f9a,0x10f0a,0x11f1a,0x13f3a,0x103ac,0x103a6,0x107a8,0x183d6,0x107a4,0x107a2, // 920
-			0x10396,0x107b6,0x187d4,0x187d2,0x10794,0x10fb4,0x10792,0x10fb2,0x1c7ea)         // 929
-	); // end of $clusters array
+			0x10396,0x107b6,0x187d4,0x187d2,0x10794,0x10fb4,0x10792,0x10fb2,0x1c7ea]         // 929
+	]; // end
 
 	/**
 	 * Array of factors of the Reed-Solomon polynomial equations used for error correction; one sub array for each correction level (0-8).
 	 * @private
 	 */
-	private $rsfactors = array(
-		array( // ECL 0 (2 factors) -------------------------------------------------------------------------------
-			0x01b,0x395),                                                                                    //   2
-		array( // ECL 1 (4 factors) -------------------------------------------------------------------------------
-			0x20a,0x238,0x2d3,0x329),                                                                        //   4
-		array( // ECL 2 (8 factors) -------------------------------------------------------------------------------
-			0x0ed,0x134,0x1b4,0x11c,0x286,0x28d,0x1ac,0x17b),                                                //   8
-		array( // ECL 3 (16 factors) ------------------------------------------------------------------------------
-			0x112,0x232,0x0e8,0x2f3,0x257,0x20c,0x321,0x084,0x127,0x074,0x1ba,0x1ac,0x127,0x02a,0x0b0,0x041),//  16
-		array( // ECL 4 (32 factors) ------------------------------------------------------------------------------
+	private const RSFACTORS = [
+		[ // ECL 0 (2 factors) -------------------------------------------------------------------------------
+			0x01b,0x395],                                                                                    //   2
+		[ // ECL 1 (4 factors) -------------------------------------------------------------------------------
+			0x20a,0x238,0x2d3,0x329],                                                                        //   4
+		[ // ECL 2 (8 factors) -------------------------------------------------------------------------------
+			0x0ed,0x134,0x1b4,0x11c,0x286,0x28d,0x1ac,0x17b],                                                //   8
+		[ // ECL 3 (16 factors) ------------------------------------------------------------------------------
+			0x112,0x232,0x0e8,0x2f3,0x257,0x20c,0x321,0x084,0x127,0x074,0x1ba,0x1ac,0x127,0x02a,0x0b0,0x041],//  16
+		[ // ECL 4 (32 factors) ------------------------------------------------------------------------------
 			0x169,0x23f,0x39a,0x20d,0x0b0,0x24a,0x280,0x141,0x218,0x2e6,0x2a5,0x2e6,0x2af,0x11c,0x0c1,0x205, //  16
-			0x111,0x1ee,0x107,0x093,0x251,0x320,0x23b,0x140,0x323,0x085,0x0e7,0x186,0x2ad,0x14a,0x03f,0x19a),//  32
-		array( // ECL 5 (64 factors) ------------------------------------------------------------------------------
+			0x111,0x1ee,0x107,0x093,0x251,0x320,0x23b,0x140,0x323,0x085,0x0e7,0x186,0x2ad,0x14a,0x03f,0x19a],//  32
+		[ // ECL 5 (64 factors) ------------------------------------------------------------------------------
 			0x21b,0x1a6,0x006,0x05d,0x35e,0x303,0x1c5,0x06a,0x262,0x11f,0x06b,0x1f9,0x2dd,0x36d,0x17d,0x264, //  16
 			0x2d3,0x1dc,0x1ce,0x0ac,0x1ae,0x261,0x35a,0x336,0x21f,0x178,0x1ff,0x190,0x2a0,0x2fa,0x11b,0x0b8, //  32
 			0x1b8,0x023,0x207,0x01f,0x1cc,0x252,0x0e1,0x217,0x205,0x160,0x25d,0x09e,0x28b,0x0c9,0x1e8,0x1f6, //  48
-			0x288,0x2dd,0x2cd,0x053,0x194,0x061,0x118,0x303,0x348,0x275,0x004,0x17d,0x34b,0x26f,0x108,0x21f),//  64
-		array( // ECL 6 (128 factors) -----------------------------------------------------------------------------
+			0x288,0x2dd,0x2cd,0x053,0x194,0x061,0x118,0x303,0x348,0x275,0x004,0x17d,0x34b,0x26f,0x108,0x21f],//  64
+		[ // ECL 6 (128 factors) -----------------------------------------------------------------------------
 			0x209,0x136,0x360,0x223,0x35a,0x244,0x128,0x17b,0x035,0x30b,0x381,0x1bc,0x190,0x39d,0x2ed,0x19f, //  16
 			0x336,0x05d,0x0d9,0x0d0,0x3a0,0x0f4,0x247,0x26c,0x0f6,0x094,0x1bf,0x277,0x124,0x38c,0x1ea,0x2c0, //  32
 			0x204,0x102,0x1c9,0x38b,0x252,0x2d3,0x2a2,0x124,0x110,0x060,0x2ac,0x1b0,0x2ae,0x25e,0x35c,0x239, //  48
@@ -462,8 +463,8 @@ final class Barcode2DPdf417 {
 			0x0ab,0x1eb,0x129,0x2fb,0x09c,0x2dc,0x05f,0x10e,0x1bf,0x05a,0x1fb,0x030,0x0e4,0x335,0x328,0x382, //  80
 			0x310,0x297,0x273,0x17a,0x17e,0x106,0x17c,0x25a,0x2f2,0x150,0x059,0x266,0x057,0x1b0,0x29e,0x268, //  96
 			0x09d,0x176,0x0f2,0x2d6,0x258,0x10d,0x177,0x382,0x34d,0x1c6,0x162,0x082,0x32e,0x24b,0x324,0x022, // 112
-			0x0d3,0x14a,0x21b,0x129,0x33b,0x361,0x025,0x205,0x342,0x13b,0x226,0x056,0x321,0x004,0x06c,0x21b),// 128
-		array( // ECL 7 (256 factors) -----------------------------------------------------------------------------
+			0x0d3,0x14a,0x21b,0x129,0x33b,0x361,0x025,0x205,0x342,0x13b,0x226,0x056,0x321,0x004,0x06c,0x21b],// 128
+		[ // ECL 7 (256 factors) -----------------------------------------------------------------------------
 			0x20c,0x37e,0x04b,0x2fe,0x372,0x359,0x04a,0x0cc,0x052,0x24a,0x2c4,0x0fa,0x389,0x312,0x08a,0x2d0, //  16
 			0x35a,0x0c2,0x137,0x391,0x113,0x0be,0x177,0x352,0x1b6,0x2dd,0x0c2,0x118,0x0c9,0x118,0x33c,0x2f5, //  32
 			0x2c6,0x32e,0x397,0x059,0x044,0x239,0x00b,0x0cc,0x31c,0x25d,0x21c,0x391,0x321,0x2bc,0x31f,0x089, //  48
@@ -479,8 +480,8 @@ final class Barcode2DPdf417 {
 			0x049,0x392,0x156,0x07e,0x020,0x2a9,0x14b,0x318,0x26c,0x03c,0x261,0x1b9,0x0b4,0x317,0x37d,0x2f2, // 208
 			0x25d,0x17f,0x0e4,0x2ed,0x2f8,0x0d5,0x036,0x129,0x086,0x036,0x342,0x12b,0x39a,0x0bf,0x38e,0x214, // 224
 			0x261,0x33d,0x0bd,0x014,0x0a7,0x01d,0x368,0x1c1,0x053,0x192,0x029,0x290,0x1f9,0x243,0x1e1,0x0ad, // 240
-			0x194,0x0fb,0x2b0,0x05f,0x1f1,0x22b,0x282,0x21f,0x133,0x09f,0x39c,0x22e,0x288,0x037,0x1f1,0x00a),// 256
-		array( // ECL 8 (512 factors) -----------------------------------------------------------------------------
+			0x194,0x0fb,0x2b0,0x05f,0x1f1,0x22b,0x282,0x21f,0x133,0x09f,0x39c,0x22e,0x288,0x037,0x1f1,0x00a],// 256
+		[ // ECL 8 (512 factors) -----------------------------------------------------------------------------
 			0x160,0x04d,0x175,0x1f8,0x023,0x257,0x1ac,0x0cf,0x199,0x23e,0x076,0x1f2,0x11d,0x17c,0x15e,0x1ec, //  16
 			0x0c5,0x109,0x398,0x09b,0x392,0x12b,0x0e5,0x283,0x126,0x367,0x132,0x058,0x057,0x0c1,0x160,0x30d, //  32
 			0x34e,0x04b,0x147,0x208,0x1b3,0x21f,0x0cb,0x29a,0x0f9,0x15a,0x30d,0x26d,0x280,0x10c,0x31a,0x216, //  48
@@ -512,8 +513,8 @@ final class Barcode2DPdf417 {
 			0x1bf,0x0ab,0x268,0x1d0,0x0be,0x213,0x129,0x141,0x2fa,0x2f0,0x215,0x0af,0x086,0x00e,0x17d,0x1b1, // 464
 			0x2cd,0x02d,0x06f,0x014,0x254,0x11c,0x2e0,0x08a,0x286,0x19b,0x36d,0x29d,0x08d,0x397,0x02d,0x30c, // 480
 			0x197,0x0a4,0x14c,0x383,0x0a5,0x2d6,0x258,0x145,0x1f2,0x28f,0x165,0x2f0,0x300,0x0df,0x351,0x287, // 496
-			0x03f,0x136,0x35f,0x0fb,0x16e,0x130,0x11a,0x2e2,0x2a3,0x19a,0x185,0x0f4,0x01f,0x079,0x12f,0x107) // 512
-	);
+			0x03f,0x136,0x35f,0x0fb,0x16e,0x130,0x11a,0x2e2,0x2a3,0x19a,0x185,0x0f4,0x01f,0x079,0x12f,0x107] // 512
+	];
 
 
 	/**
@@ -525,20 +526,21 @@ final class Barcode2DPdf417 {
 	 * @param $macro (array) information for macro block
 	 * @public
 	 */
-	public function __construct($code, $aspectratio=1, $ecl=-1, $macro=array()) {
+	public function __construct(?string $code, null|string|int $aspectratio=1, int $ecl=-1, array $macro=[]) {
 		//--
-		if((int)PHP_INT_SIZE < 8) {
+		if((int)\PHP_INT_SIZE < 8) {
 	//	if(!function_exists('bcadd')) {
 	//		\Smart::log_warning(__CLASS__.' # Requires PHP BCMath Extension'); // require BCMath Extension
 			\Smart::log_warning(__CLASS__.' # Requires 64-bit PHP');
 			return false;
 		} //end if
 		//--
-		if((is_null($code)) OR ($code == '\0') OR ((string)$code == '')) {
-			return false;
+		if(((string)$code == '') OR ((string)$code === '\0')) {
+			return;
 		} //end if
 		//--
 		$code = (string) $code; // force string
+		$aspectratio = (int) \intval($aspectratio);
 		//--
 		$aspectratio = (int) $aspectratio;
 		if($aspectratio < 1) {
@@ -556,10 +558,10 @@ final class Barcode2DPdf417 {
 		$codewords = array(); // array of code-words
 		foreach($sequence as $u => $seq) {
 			$cw = $this->getCompaction($seq[0], $seq[1], true);
-			$codewords = array_merge($codewords, $cw);
+			$codewords = \array_merge($codewords, $cw);
 		} //end foreach
 		if($codewords[0] == 900) {
-			array_shift($codewords); // Text Alpha is the default mode, so remove the first code
+			\array_shift($codewords); // Text Alpha is the default mode, so remove the first code
 		} //end if
 		//-- count number of codewords
 		$numcw = count($codewords);
@@ -572,11 +574,11 @@ final class Barcode2DPdf417 {
 			//-- beginning of macro control block
 			$macrocw[] = 928;
 			//-- segment index
-			$cw = $this->getCompaction(902, sprintf('%05d', $macro['segment_index']), false);
-			$macrocw = array_merge($macrocw, $cw);
+			$cw = $this->getCompaction(902, \sprintf('%05d', $macro['segment_index']), false);
+			$macrocw = \array_merge($macrocw, $cw);
 			//-- file ID
 			$cw = $this->getCompaction(900, $macro['file_id'], false);
-			$macrocw = array_merge($macrocw, $cw);
+			$macrocw = \array_merge($macrocw, $cw);
 			//-- optional fields
 			$optmodes = array(900,902,902,900,900,902,902);
 			$optsize = array(-1,2,4,-1,-1,-1,2);
@@ -585,12 +587,12 @@ final class Barcode2DPdf417 {
 					$macrocw[] = 923;
 					$macrocw[] = $k;
 					if($optsize[$k] == 2) {
-						$macro['option_'.$k] = sprintf('%05d', $macro['option_'.$k]);
+						$macro['option_'.$k] = \sprintf('%05d', $macro['option_'.$k]);
 					} elseif($optsize[$k] == 4) {
-						$macro['option_'.$k] = sprintf('%010d', $macro['option_'.$k]);
+						$macro['option_'.$k] = \sprintf('%010d', $macro['option_'.$k]);
 					} //end if else
 					$cw = $this->getCompaction($omode, $macro['option_'.$k], false);
-					$macrocw = array_merge($macrocw, $cw);
+					$macrocw = \array_merge($macrocw, $cw);
 				} //end if
 			} //end foreach
 			if($macro['segment_index'] == ($macro['segment_total'] - 1)) {
@@ -598,7 +600,7 @@ final class Barcode2DPdf417 {
 				$macrocw[] = 922;
 			} //end if
 			//-- update total codewords
-			$numcw += count($macrocw);
+			$numcw += \count($macrocw);
 			//--
 		} //end if
 		//-- unixman fix for PHP 7 (Bit Shift by Negative Number is not allowed)
@@ -611,7 +613,7 @@ final class Barcode2DPdf417 {
 		$errsize = (2 << $ecl);
 		//-- calculate number of columns (number of codewords per row) and rows
 		$nce = ($numcw + $errsize + 1);
-		$cols = round((sqrt(4761 + (68 * $aspectratio * self::BCODE2D_PDF_417_ROW_HEIGHT * $nce)) - 69) / 34);
+		$cols = \round((\sqrt(4761 + (68 * $aspectratio * self::BCODE2D_PDF_417_ROW_HEIGHT * $nce)) - 69) / 34);
 		//-- adjust cols
 		if($cols < 1) {
 			$cols = 1;
@@ -619,7 +621,7 @@ final class Barcode2DPdf417 {
 			$cols = 30;
 		} //end if else
 		//--
-		$rows = ceil((string)($nce / $cols)); // unixman: fix ceil
+		$rows = \ceil((string)($nce / $cols)); // unixman: fix ceil
 		$size = ($cols * $rows);
 		//-- adjust rows
 		if(($rows < 3) OR ($rows > 90)) {
@@ -628,12 +630,12 @@ final class Barcode2DPdf417 {
 			} elseif($rows > 90) {
 				$rows = 90;
 			} //end if else
-			$cols = ceil((string)($size / $rows)); // unixman: fix ceil
+			$cols = \ceil((string)($size / $rows)); // unixman: fix ceil
 			$size = ($cols * $rows);
 		} //end if
 		if($size > 928) {
 			//-- set dimensions to get maximum capacity
-			if(abs($aspectratio - (17 * 29 / 32)) < abs($aspectratio - (17 * 16 / 58))) {
+			if(\abs($aspectratio - (17 * 29 / 32)) < \abs($aspectratio - (17 * 16 / 58))) {
 				$cols = 29;
 				$rows = 32;
 			} else {
@@ -651,31 +653,31 @@ final class Barcode2DPdf417 {
 				--$rows;
 				$size -= $rows;
 			} else {
-				$codewords = array_merge($codewords, array_fill(0, $pad, 900)); // add pading
+				$codewords = \array_merge($codewords, \array_fill(0, $pad, 900)); // add pading
 			} //end if else
 		} //end if
 		//--
 		if(!empty($macro)) {
-			$codewords = array_merge($codewords, $macrocw); // add macro section
+			$codewords = \array_merge($codewords, $macrocw); // add macro section
 		} //end if
 		//-- Symbol Length Descriptor (number of data codewords including Symbol Length Descriptor and pad codewords)
 		$sld = $size - $errsize;
 		//-- add symbol length description
-		array_unshift($codewords, $sld);
+		\array_unshift($codewords, $sld);
 		//-- calculate error correction
 		$ecw = $this->getErrorCorrection($codewords, $ecl);
 		//-- add error correction codewords
-		$codewords = array_merge($codewords, $ecw);
+		$codewords = \array_merge($codewords, $ecw);
 		//-- add horizontal quiet zones to start and stop patterns
-		$pstart = str_repeat('0', self::BCODE2D_PDF_417_QUIET_HORIZ).$this->start_pattern;
-		$pstop = $this->stop_pattern.str_repeat('0', self::BCODE2D_PDF_417_QUIET_HORIZ);
+		$pstart = \str_repeat('0', self::BCODE2D_PDF_417_QUIET_HORIZ).self::START_PATTERN;
+		$pstop = self::STOP_PATTERN.\str_repeat('0', self::BCODE2D_PDF_417_QUIET_HORIZ);
 		$barcode_array['num_rows'] = ($rows * self::BCODE2D_PDF_417_ROW_HEIGHT) + (2 * self::BCODE2D_PDF_417_QUIET_VERT);
 		$barcode_array['num_cols'] = (($cols + 2) * 17) + 35 + (2 * self::BCODE2D_PDF_417_QUIET_HORIZ);
-		$barcode_array['bcode'] = array();
+		$barcode_array['bcode']    = [];
 		//-- build rows for vertical quiet zone
 		$empty_row = array();
 		if(self::BCODE2D_PDF_417_QUIET_VERT > 0) {
-			$empty_row = array_fill(0, $barcode_array['num_cols'], 0);
+			$empty_row = \array_fill(0, $barcode_array['num_cols'], 0);
 			for($i=0; $i<self::BCODE2D_PDF_417_QUIET_VERT; ++$i) {
 				$barcode_array['bcode'][] = (array) $empty_row; // add vertical quiet rows
 			} //end for
@@ -690,39 +692,39 @@ final class Barcode2DPdf417 {
 			//--
 			switch($cid) {
 				case 0:
-					$L = ((30 * intval($r / 3)) + intval(($rows - 1) / 3));
+					$L = ((30 * \intval($r / 3)) + \intval(($rows - 1) / 3));
 					break;
 				case 1:
-					$L = ((30 * intval($r / 3)) + ($ecl * 3) + (($rows - 1) % 3));
+					$L = ((30 * \intval($r / 3)) + ($ecl * 3) + (($rows - 1) % 3));
 					break;
 				case 2:
-					$L = ((30 * intval($r / 3)) + ($cols - 1));
+					$L = ((30 * \intval($r / 3)) + ($cols - 1));
 					break;
 			} //end switch
 			//-- left row indicator
-			$row .= sprintf('%17b', $this->clusters[$cid][$L]);
+			$row .= \sprintf('%17b', self::CLUSTERS[$cid][$L]);
 			//-- for each column
 			for($c = 0; $c < $cols; ++$c) {
-				$row .= sprintf('%17b', $this->clusters[$cid][$codewords[$k]]);
+				$row .= \sprintf('%17b', self::CLUSTERS[$cid][$codewords[$k]]);
 				++$k;
 			} //end for
 			switch($cid) {
 				case 0:
-					$L = ((30 * intval($r / 3)) + ($cols - 1));
+					$L = ((30 * \intval($r / 3)) + ($cols - 1));
 					break;
 				case 1:
-					$L = ((30 * intval($r / 3)) + intval(($rows - 1) / 3));
+					$L = ((30 * \intval($r / 3)) + \intval(($rows - 1) / 3));
 					break;
 				case 2:
-					$L = ((30 * intval($r / 3)) + ($ecl * 3) + (($rows - 1) % 3));
+					$L = ((30 * \intval($r / 3)) + ($ecl * 3) + (($rows - 1) % 3));
 					break;
 			} //end switch
 			//-- right row indicator
-			$row .= sprintf('%17b', $this->clusters[$cid][$L]);
+			$row .= \sprintf('%17b', self::CLUSTERS[$cid][$L]);
 			//-- row stop code
 			$row .= $pstop;
 			//-- convert the string to array
-			$arow = preg_split('//', (string)$row, -1, PREG_SPLIT_NO_EMPTY);
+			$arow = \preg_split('//', (string)$row, -1, \PREG_SPLIT_NO_EMPTY);
 			//-- duplicate row to get the desired height
 			for($h = 0; $h < self::BCODE2D_PDF_417_ROW_HEIGHT; ++$h) {
 				$barcode_array['bcode'][] = (array) $arow;
@@ -766,7 +768,7 @@ final class Barcode2DPdf417 {
 	 * @return int error correction level
 	 * @private
 	 */
-	private function getErrorCorrectionLevel($ecl, $numcw) {
+	private function getErrorCorrectionLevel(int $ecl, int $numcw) : int {
 		//-- get maximum correction level
 		$maxecl = 8; // starting error level
 		$maxerrsize = (928 - $numcw); // available codewords for error
@@ -808,15 +810,15 @@ final class Barcode2DPdf417 {
 	 * @return array of error correction codewords
 	 * @private
 	 */
-	private function getErrorCorrection($cw, $ecl) {
+	private function getErrorCorrection(array $cw, int $ecl) : array {
 		//-- get error correction coefficients
-		$ecc = $this->rsfactors[$ecl];
+		$ecc = self::RSFACTORS[$ecl];
 		//-- number of error correction factors
 		$eclsize = (2 << $ecl);
-		//-- maximum index for $rsfactors[$ecl]
+		//-- maximum index for self::RSFACTORS[$ecl]
 		$eclmaxid = ($eclsize - 1);
 		//-- initialize array of error correction codewords
-		$ecw = array_fill(0, $eclsize, 0);
+		$ecw = \array_fill(0, $eclsize, 0);
 		//-- for each data codeword
 		foreach($cw as $k => $d) {
 			$t1 = ($d + $ecw[$eclmaxid]) % 929;
@@ -836,7 +838,7 @@ final class Barcode2DPdf417 {
 			} //end if
 		} //end foreach
 		//--
-		$ecw = array_reverse($ecw);
+		$ecw = \array_reverse($ecw);
 		//--
 		return $ecw;
 		//--
@@ -849,32 +851,34 @@ final class Barcode2DPdf417 {
 	 * @return bidimensional array containing characters and classification
 	 * @private
 	 */
-	private function getInputSequences($code) {
+	private function getInputSequences(?string $code) : array {
 		//--
-		$sequence_array = array(); // array to be returned
+		$code = (string) $code; // force string
 		//--
-		$numseq = array();
-		preg_match_all('/([0-9]{13,44})/', (string)$code, $numseq, PREG_OFFSET_CAPTURE); // get numeric sequences
+		$sequence_array = []; // array to be returned
+		//--
+		$numseq = [];
+		\preg_match_all('/([0-9]{13,44})/', (string)$code, $numseq, \PREG_OFFSET_CAPTURE); // get numeric sequences
 		$numseq[1][] = array('', strlen($code));
 		$offset = 0;
 		foreach($numseq[1] as $u => $seq) {
-			$seqlen = strlen($seq[0]);
+			$seqlen = \strlen($seq[0]);
 			if($seq[1] > 0) {
-				$prevseq = substr($code, $offset, ($seq[1] - $offset)); // extract text sequence before the number sequence
+				$prevseq = \substr($code, $offset, ($seq[1] - $offset)); // extract text sequence before the number sequence
 				$textseq = array();
-				preg_match_all('/([\x09\x0a\x0d\x20-\x7e]{5,})/', (string)$prevseq, $textseq, PREG_OFFSET_CAPTURE); // get text sequences
+				\preg_match_all('/([\x09\x0a\x0d\x20-\x7e]{5,})/', (string)$prevseq, $textseq, \PREG_OFFSET_CAPTURE); // get text sequences
 				$textseq[1][] = array('', strlen($prevseq));
 				$txtoffset = 0;
 				foreach($textseq[1] as $u => $txtseq) {
-					$txtseqlen = strlen($txtseq[0]);
+					$txtseqlen = \strlen($txtseq[0]);
 					if($txtseq[1] > 0) {
 						// extract byte sequence before the text sequence
-						$prevtxtseq = substr($prevseq, $txtoffset, ($txtseq[1] - $txtoffset));
-						if(strlen($prevtxtseq) > 0) {
+						$prevtxtseq = \substr($prevseq, $txtoffset, ($txtseq[1] - $txtoffset));
+						if(\strlen($prevtxtseq) > 0) {
 							// add BYTE sequence
-							if((strlen($prevtxtseq) == 1) AND ((count($sequence_array) > 0) AND ($sequence_array[(count($sequence_array) - 1)][0] == 900))) {
+							if((\strlen($prevtxtseq) == 1) AND ((\count($sequence_array) > 0) AND ($sequence_array[(\count($sequence_array) - 1)][0] == 900))) {
 								$sequence_array[] = array(913, $prevtxtseq);
-							} elseif((strlen($prevtxtseq) % 6) == 0) {
+							} elseif((\strlen($prevtxtseq) % 6) == 0) {
 								$sequence_array[] = array(924, $prevtxtseq);
 							} else {
 								$sequence_array[] = array(901, $prevtxtseq);
@@ -908,29 +912,31 @@ final class Barcode2DPdf417 {
 	 * @return array of codewords
 	 * @private
 	 */
-	private function getCompaction($mode, $code, $addmode=true) {
+	private function getCompaction(int $mode, ?string $code, bool $addmode=true) : array {
 		//--
-		$cw = array(); // array of codewords to return
+		$code = (string) $code; // force string
+		//--
+		$cw = []; // array of codewords to return
 		//--
 		switch($mode) {
 			case 900: // Text Compaction mode latch
 				//--
 				$submode = 0; // default Alpha sub-mode
-				$txtarr = array(); // array of characters and sub-mode switching characters
-				$codelen = strlen($code);
+				$txtarr = []; // array of characters and sub-mode switching characters
+				$codelen = \strlen($code);
 				//--
 				for($i = 0; $i < $codelen; ++$i) {
-					$chval = ord($code[$i]);
-					if(($k = array_search($chval, $this->textsubmodes[$submode])) !== false) {
+					$chval = \ord($code[$i]);
+					if(($k = \array_search($chval, self::TEXT_SUB_MODES[$submode])) !== false) {
 						// we are on the same sub-mode
 						$txtarr[] = $k;
 					} else {
 						//-- the sub-mode is changed
 						for($s = 0; $s < 4; ++$s) {
 							//-- search new sub-mode
-							if(($s != $submode) AND (($k = array_search($chval, $this->textsubmodes[$s])) !== false)) {
+							if(($s != $submode) AND (($k = \array_search($chval, self::TEXT_SUB_MODES[$s])) !== false)) {
 								//-- $s is the new submode
-								if(((($i + 1) == $codelen) OR ((($i + 1) < $codelen) AND (array_search(ord($code[($i+1)]), $this->textsubmodes[$submode]) !== false))) AND (($s == 3) OR (($s == 0) AND ($submode == 1)))) {
+								if(((($i + 1) == $codelen) OR ((($i + 1) < $codelen) AND (\array_search(\ord($code[($i+1)]), self::TEXT_SUB_MODES[$submode]) !== false))) AND (($s == 3) OR (($s == 0) AND ($submode == 1)))) {
 									//-- shift (temporary change only for this char)
 									if($s == 3) {
 										//-- shift to puntuaction
@@ -941,7 +947,7 @@ final class Barcode2DPdf417 {
 									} //end if else
 								} else {
 									//-- latch
-									$txtarr	= array_merge($txtarr, $this->textlatch[(string)$submode.$s]);
+									$txtarr	= \array_merge($txtarr, self::TEXT_LATCH[(string)$submode.$s]);
 									//-- set new submode
 									$submode = $s;
 								} //end if else
@@ -958,7 +964,7 @@ final class Barcode2DPdf417 {
 					//--
 				} //end for
 				//--
-				$txtarrlen = count($txtarr);
+				$txtarrlen = \count($txtarr);
 				//--
 				if(($txtarrlen % 2) != 0) {
 					// add padding
@@ -974,52 +980,52 @@ final class Barcode2DPdf417 {
 			case 901:
 			case 924: // Byte Compaction mode latch
 				//--
-				while(($codelen = strlen($code)) > 0) {
+				while(($codelen = \strlen($code)) > 0) {
 					if($codelen > 6) {
-						$rest = substr($code, 6);
-						$code = substr($code, 0, 6);
+						$rest = \substr($code, 6);
+						$code = \substr($code, 0, 6);
 						$sublen = 6;
 					} else {
 						$rest = '';
-						$sublen = strlen($code);
+						$sublen = \strlen($code);
 					} //end if else
 					if($sublen == 6) {
 						//--
-					//	$t = bcmul((string)ord($code[0]), '1099511627776');
-						$t = (int) (ord($code[0]) * 1099511627776);
+					//	$t = \bcmul((string)\ord($code[0]), '1099511627776');
+						$t = (int) (\ord($code[0]) * 1099511627776);
 						//--
-					//	$t = bcadd($t, bcmul((string)ord($code[1]), '4294967296'));
-						$t += (int) (ord($code[1]) * 4294967296);
+					//	$t = \bcadd($t, \bcmul((string)\ord($code[1]), '4294967296'));
+						$t += (int) (\ord($code[1]) * 4294967296);
 						//--
-					//	$t = bcadd($t, bcmul((string)ord($code[2]), '16777216'));
-						$t += (int) (ord($code[2]) * 16777216);
+					//	$t = \bcadd($t, \bcmul((string)\ord($code[2]), '16777216'));
+						$t += (int) (\ord($code[2]) * 16777216);
 						//--
-					//	$t = bcadd($t, bcmul((string)ord($code[3]), '65536'));
-						$t += (int) (ord($code[3]) * 65536);
+					//	$t = \bcadd($t, \bcmul((string)\ord($code[3]), '65536'));
+						$t += (int) (\ord($code[3]) * 65536);
 						//--
-					//	$t = bcadd($t, bcmul((string)ord($code[4]), '256'));
-						$t += (int) (ord($code[4]) * 256);
+					//	$t = \bcadd($t, \bcmul((string)\ord($code[4]), '256'));
+						$t += (int) (\ord($code[4]) * 256);
 						//--
-					//	$t = bcadd($t, (string)ord($code[5]));
-						$t += (int) ord($code[5]);
+					//	$t = \bcadd($t, (string)\ord($code[5]));
+						$t += (int) \ord($code[5]);
 						//-- tmp array for the 6 bytes block
-						$cw6 = array();
+						$cw6 = [];
 						do {
 							//--
-						//	$d = bcmod($t, '900');
+						//	$d = \bcmod($t, '900');
 							$d = $t % 900;
 							//--
-						//	$t = bcdiv($t, '900');
-							$t = round($t / 900); // bcdiv with zero scale have no decimals
+						//	$t = \bcdiv($t, '900');
+							$t = \round($t / 900); // bcdiv with zero scale have no decimals
 							//-- prepend the value to the beginning of the array
-							array_unshift($cw6, $d);
+							\array_unshift($cw6, $d);
 							//--
-						} while($t != '0');
+						} while((string)$t != '0');
 						// append the result array at the end
-						$cw = array_merge($cw, $cw6);
+						$cw = \array_merge($cw, $cw6);
 					} else {
 						for($i = 0; $i < $sublen; ++$i) {
-							$cw[] = ord($code[$i]);
+							$cw[] = \ord($code[$i]);
 						} //end for
 					} //end if else
 					$code = $rest;
@@ -1028,23 +1034,23 @@ final class Barcode2DPdf417 {
 				break;
 			case 902:  // Numeric Compaction mode latch
 				//--
-				while(($codelen = strlen($code)) > 0) {
+				while(($codelen = \strlen($code)) > 0) {
 					if($codelen > 44) {
-						$rest = substr($code, 44);
-						$code = substr($code, 0, 44);
+						$rest = \substr($code, 44);
+						$code = \substr($code, 0, 44);
 					} else {
 						$rest = '';
 					} //end if else
 					$t = '1'.$code;
 					do {
 						//--
-					//	$d = bcmod($t, '900');
+					//	$d = \bcmod($t, '900');
 						$d = $t % 900;
 						//--
-					//	$t = bcdiv($t, '900');
-						$t = round($t / 900); // bcdiv with zero scale have no decimals
+					//	$t = \bcdiv($t, '900');
+						$t = \round($t / 900); // bcdiv with zero scale have no decimals
 						//--
-						array_unshift($cw, $d);
+						\array_unshift($cw, $d);
 						//--
 					} while($t != '0');
 					$code = $rest;
@@ -1053,13 +1059,13 @@ final class Barcode2DPdf417 {
 				break;
 			case 913:  // Byte Compaction mode shift
 				//--
-				$cw[] = ord($code);
+				$cw[] = \ord($code);
 				//--
 				break;
 		} //end switch
 		//--
 		if($addmode) {
-			array_unshift($cw, $mode); // add the compaction mode codeword at the beginning
+			\array_unshift($cw, $mode); // add the compaction mode codeword at the beginning
 		} //end if
 		//--
 		return $cw;

@@ -33,8 +33,8 @@ if(!defined('SMART_FRAMEWORK_BARCODE_2D_OPTS')) {
 
 //======================================================
 // BarCodes 2D: QRCode, Aztec, DataMatrix (SemaCode), PDF417
-// License: GPLv3
-// (c) 2015-2020 unix-world.org
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
 //======================================================
 
 
@@ -46,12 +46,12 @@ if(!defined('SMART_FRAMEWORK_BARCODE_2D_OPTS')) {
 /**
  * Class: SmartBarcodes2D - Generates 2D BarCodes: QRCode, Aztec, DataMatrix (SemaCode), PDF417.
  *
- * @license: GPLv3
+ * @license: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	Smart.Framework
- * @version 	v.20260130
+ * @version 	v.20260728
  * @package 	modules:Barcodes
  *
  */
@@ -64,17 +64,17 @@ final class SmartBarcodes2D {
 	 * Function: Generate a 2D Barcode: QRCode, DataMatrix (SemaCode), PDF417
 	 *
 	 * @param STRING 	$y_code 			The code for the BarCode Generator
-	 * @param ENUM 		$y_type				The BarCode Type: qrcode / aztec / semacode / pdf417 (the pdf417 req. PHP BCMath Extension))
-	 * @param ENUM 		$y_format			The Barcode format: html, html-png, png, html-svg, svg
+	 * @param ENUM 		$y_type				The BarCode Type: qrcode / aztec / semacode / pdf417
+	 * @param ENUM 		$y_format			The Barcode format: json, svg, html-svg, html, html-png, png
 	 * @param INTEGER+ 	$y_size				The Scale-Size for Barcode (1..4)
 	 * @param HEXCOLOR	$y_color			The Hexadecimal Color for the Barcode Pixels ; default is Black = #000000
 	 * @param MIXED		$y_extraoptions		Extra Options: for QRCode = Quality [L, M, Q, H] L as default ; for PDF417 a Ratio Integer between 1 and 17
 	 * @param INTEGER	$y_cachetime		If > 0 will cache it for this number of seconds ; if zero will never expire ; if < 0 will use no cache
 	 *
-	 * @return STRING	By Type Selection: 	HTML Code / PNG Image / SVG Code
+	 * @return STRING						By Type Selection: 	JSON / SVG Code / HTML Code / PNG Image Data
 	 *
 	 */
-	public static function getBarcode(string $y_code, string $y_type, string $y_format, int $y_size, string $y_color='#000000', int|string $y_extraoptions='', int $y_cachetime=-1) : string {
+	public static function getBarcode(string $y_code, string $y_type, string $y_format, ?int $y_size=null, ?string $y_color=null, int|string|null $y_extraoptions=null, int $y_cachetime=-1) : string {
 		//--
 		if((string)\trim((string)$y_code) == '') {
 			\Smart::log_warning(__METHOD__.' # Empty Code');
@@ -84,18 +84,19 @@ final class SmartBarcodes2D {
 		$y_size = (int) $y_size;
 		if($y_size < 1) {
 			$y_size = 1;
-		} elseif($y_size > 4) {
-			$y_size = 4;
+		} elseif($y_size > 8) {
+			$y_size = 8;
 		} //end if
 		//--
-		$y_color = (string) \strtoupper((string)$y_color);
-		if(!\preg_match('/^\#([A-F0-9]{6})$/', (string)$y_color)) {
+		$y_color = (string) \trim((string)\strtoupper((string)$y_color));
+		if(((string)$y_color == '') OR (!\preg_match('/^\#([A-F0-9]{6})$/', (string)$y_color))) {
 			$y_color = '#000000';
 		} //end if
 		//--
+		$c__typ = 0;
 		switch((string)$y_type) {
 			case 'qrcode':
-				$c__typ = 1;
+				$c__typ = 0;
 				switch((string)$y_extraoptions) {
 					case 'H':
 						$y_extraoptions = 'H';
@@ -103,34 +104,33 @@ final class SmartBarcodes2D {
 					case 'Q':
 						$y_extraoptions = 'Q';
 						break;
-					case 'M':
-						$y_extraoptions = 'M';
-						break;
 					case 'L':
-					default:
 						$y_extraoptions = 'L';
+						break;
+					case 'M':
+					default:
+						$y_extraoptions = 'M'; // default to M, as L in some circumstances fails ...
 				} //end switch
 				$barcode_type = 'qrcode';
 				break;
 			case 'aztec':
-				$c__typ = 2;
+				$c__typ = 1;
 				$y_extraoptions = '';
 				$barcode_type = 'aztec';
 				break;
 			case 'semacode':
-				$c__typ = 3;
+				$c__typ = 2;
 				$y_extraoptions = '';
 				$barcode_type = 'semacode';
 				break;
 			case 'pdf417':
-				$c__typ = 0;
-				$y_extraoptions = (int) $y_extraoptions;
-				if($y_extraoptions <= 0) {
+				$c__typ = 3;
+				$y_extraoptions = (int) \intval($y_extraoptions);
+				if((int)$y_extraoptions <= 0) {
 					$y_extraoptions = 1;
-				} //end if
-				if($y_extraoptions > 17) {
+				} elseif((int)$y_extraoptions > 17) {
 					$y_extraoptions = 17;
-				} //end if
+				} //end if else
 				$barcode_type = 'pdf417';
 				break;
 			default:
@@ -139,25 +139,29 @@ final class SmartBarcodes2D {
 		} //end switch
 		//--
 		switch((string)$y_format) {
-			case 'html':
-				$barcode_format = '.htm';
-				$c__fmt = 1;
-				break;
-			case 'html-png':
-				$barcode_format = '.png.htm';
-				$c__fmt = 2;
-				break;
-			case 'png':
-				$barcode_format = '.png';
-				$c__fmt = 3;
-				break;
-			case 'html-svg':
-				$barcode_format = '.svg.htm';
-				$c__fmt = 4;
+			case 'json':
+				$barcode_format = '.json';
+				$c__fmt = 0;
 				break;
 			case 'svg':
 				$barcode_format = '.svg';
-				$c__fmt = 0;
+				$c__fmt = 1;
+				break;
+			case 'html-svg':
+				$barcode_format = '.svg.htm';
+				$c__fmt = 2;
+				break;
+			case 'html':
+				$barcode_format = '.htm';
+				$c__fmt = 3;
+				break;
+			case 'html-png':
+				$barcode_format = '.png.htm';
+				$c__fmt = 4;
+				break;
+			case 'png':
+				$barcode_format = '.png';
+				$c__fmt = 5;
 				break;
 			default:
 				\Smart::log_warning(__METHOD__.' # Invalid Barcode Format: '.$y_format);
@@ -181,8 +185,8 @@ final class SmartBarcodes2D {
 			//--
 			if($cache_handler) { // and of course if DBA or SQLite PCache is Available/Active
 				//--
-				$cache_realm = (string) $cache_handler::safeKey($realm.'-T'.$c__typ.'-F'.$c__fmt.'-S'.(int)$y_size.'-E'.$y_extraoptions.'-Q'.\trim((string)$y_color,'#'));
-				$cache_uuid  = (string) $cache_handler::safeKey(substr((string)\Smart::safe_filename($y_code), 0, 25).'-'.\sha1($realm.'://'.$barcode_type.'/'.$barcode_format.'/'.(int)$y_size.'/'.$y_extraoptions.'/'.$y_color.'/'.$y_code));
+				$cache_realm = (string) $cache_handler::safeKey((string)$realm.'-T'.$c__typ.'-F'.$c__fmt.'-S'.(int)$y_size.'-E'.$y_extraoptions.'-Q'.\trim((string)$y_color,'#'));
+				$cache_uuid  = (string) $cache_handler::safeKey((string)substr((string)\Smart::safe_filename($y_code), 0, 25).'-'.\sha1((string)$realm.'://'.$barcode_type.'/'.$barcode_format.'/'.(int)$y_size.'/'.$y_extraoptions.'/'.$y_color.'/'.$y_code));
 				//--
 				$out = $cache_handler::getKey( // mixed
 					(string) $cache_realm, 	// realm
@@ -191,9 +195,9 @@ final class SmartBarcodes2D {
 				//--
 				if((string)$out != '') {
 					return (string) $cache_handler::varUncompress($out); // if found in cache return it
-				} else {
-					$out = '';
-				} //end if else
+				} //end if
+				//--
+				$out = ''; // clear
 				//--
 			} //end if
 			//--
@@ -218,27 +222,28 @@ final class SmartBarcodes2D {
 		} //end switch
 		//--
 		switch((string)$y_format) {
-			case 'html':
-				$out = '<!-- '.\Smart::escape_html(\strtoupper($barcode_type).' ('.$y_size.'/'.$y_color.') ['.$y_extraoptions.']'.' :: '.\date('YmdHis')).' -->'.'<div title="'.\Smart::escape_html($y_code).'">'.self::getBarcodeHTML($arr_barcode, $y_size, $y_color).'</div>'.'<!-- #END :: '.\Smart::escape_html(\strtoupper($barcode_type)).' -->';
-				break;
-			case 'html-png': // html img embedded png
-				$out = '<!-- '.\Smart::escape_html(\strtoupper($barcode_type).' ('.$y_size.'/'.$y_color.') ['.$y_extraoptions.']'.' :: '.\date('YmdHis')).' -->'.'<div title="'.\Smart::escape_html($y_code).'">'.self::getBarcodeEmbeddedHTMLPNG($arr_barcode, $y_size, $y_color).'</div>'.'<!-- #END :: '.\Smart::escape_html(\strtoupper($barcode_type)).' -->';
-				break;
-			case 'png': // raw png
-				$out = self::getBarcodePNG($arr_barcode, $y_size, $y_color); // needs header image/png on output
-				break;
-			case 'html-svg':
-				$out = '<!-- '.\Smart::escape_html(\strtoupper($barcode_type).' ('.$y_size.'/'.$y_color.') ['.$y_extraoptions.']'.' :: '.\date('YmdHis')).' -->'.'<div title="'.\Smart::escape_html($y_code).'">'.self::getBarcodeEmbeddedHTMLSVG($arr_barcode, $y_size, $y_color).'</div>'.'<!-- #END :: '.\Smart::escape_html(\strtoupper($barcode_type)).' -->';
+			case 'json':
+				$out = (string) \Smart::json_encode($arr_barcode, false, false, false, 3); // max 3 levels
 				break;
 			case 'svg':
-				$out = self::getBarcodeSVG($arr_barcode, $y_size, $y_color); // needs header image/svg on output
+				$out = (string) self::getBarcodeSVG($arr_barcode, $y_size, $y_color); // needs header image/svg on output
+				break;
+			case 'html-svg':
+				$out = '<!-- '.\Smart::escape_html((string)\strtoupper($barcode_type).' ('.$y_size.'/'.$y_color.') ['.$y_extraoptions.']'.' :: '.\date('YmdHis')).' -->'.'<div title="'.\Smart::escape_html((string)$y_code).'">'.self::getBarcodeEmbeddedHTMLSVG($arr_barcode, $y_size, $y_color).'</div>'.'<!-- #END :: '.\Smart::escape_html((string)\strtoupper((string)$barcode_type)).' -->';
+				break;
+			case 'html':
+				$out = '<!-- '.\Smart::escape_html((string)\strtoupper($barcode_type).' ('.$y_size.'/'.$y_color.') ['.$y_extraoptions.']'.' :: '.\date('YmdHis')).' -->'.'<div title="'.\Smart::escape_html((string)$y_code).'">'.self::getBarcodeHTML($arr_barcode, $y_size, $y_color).'</div>'.'<!-- #END :: '.\Smart::escape_html((string)\strtoupper((string)$barcode_type)).' -->';
+				break;
+			case 'html-png': // html img embedded png
+				$out = '<!-- '.\Smart::escape_html((string)\strtoupper($barcode_type).' ('.$y_size.'/'.$y_color.') ['.$y_extraoptions.']'.' :: '.\date('YmdHis')).' -->'.'<div title="'.\Smart::escape_html((string)$y_code).'">'.self::getBarcodeEmbeddedHTMLPNG($arr_barcode, $y_size, $y_color).'</div>'.'<!-- #END :: '.\Smart::escape_html((string)\strtoupper((string)$barcode_type)).' -->';
+				break;
+			case 'png': // raw png
+				$out = (string) self::getBarcodePNG($arr_barcode, $y_size, $y_color); // needs header image/png on output
 				break;
 			default:
 				// if invalid format is logged before
 				return '';
 		} //end switch
-		//--
-
 		//--
 		if((int)$y_cachetime >= 0) { // if allow caching, try to save in cache
 			//--
@@ -351,12 +356,11 @@ final class SmartBarcodes2D {
 		//--
 		$svg = '';
 		//--
-		$svg .= '<'.'?'.'xml version="1.0" encoding="UTF-8" standalone="no"'.' ?'.'>'."\n";
-		$svg .= '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'."\n";
+	//	$svg .= '<'.'?'.'xml version="1.0" encoding="UTF-8" '.'?'.'>'."\n";
 		$svg .= '<svg width="'.\round(($barcode_arr['num_cols'] * $z), 3).'" height="'.\round(($barcode_arr['num_rows'] * $z), 3).'" version="1.1" xmlns="http://www.w3.org/2000/svg">'."\n";
-		$svg .= "\t".'<desc>'.\Smart::escape_html($barcode_arr['code']).'</desc>'."\n";
+		$svg .= "\t".'<desc>'.\Smart::escape_xml($barcode_arr['code']).'</desc>'."\n";
 		$svg .= "\t".'<rect fill="#FFFFFF" x="0" y="0" width="'.\round(($barcode_arr['num_cols'] * $z), 3).'" height="'.\round(($barcode_arr['num_rows'] * $z), 3).'" />'."\n";
-		$svg .= "\t".'<g id="elements" fill="'.$color.'" stroke="none">'."\n";
+		$svg .= "\t".'<g id="elements" fill="'.\Smart::escape_xml($color).'" stroke="none">'."\n";
 		//-- print barcode elements
 		$y = 0;
 		//-- for each row
@@ -368,7 +372,7 @@ final class SmartBarcodes2D {
 				//--
 				if($barcode_arr['bcode'][$r][$c] == 1) {
 					//-- draw a single barcode cell
-					$svg .= "\t\t".'<rect x="'.$x.'" y="'.$y.'" width="'.$z.'" height="'.$z.'" />'."\n";
+					$svg .= "\t\t".'<rect x="'.\intval($x).'" y="'.\intval($y).'" width="'.\intval($z).'" height="'.\intval($z).'" />'."\n";
 					//--
 				} //end if
 				//--

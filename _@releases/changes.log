@@ -2,6 +2,25 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+August 06, 2026
+	* bug fix release
+
+July 31, 2026
+	* removed module: Countries, moved to core modules
+	* removed lib Zip Archive, moved to core libs
+	* mod PDF Create fixes
+
+February 18, 2026
+	* Fix comment
+
+February 08, 2026
+	* Mod PDF Create bug fixes
+	* Mod PDF Create optimization: use static in-memory font cache
+
+February 03, 2026
+	* Mod BarCodes: refactoring, optimizations, bug fixing, implement method signatures
+	* Mod Barcodes new Barcode: MSI / MSI+
+
 January 30, 2026
 	* PHP 8.5 compatibility fixes
 	* optimize autoloaders

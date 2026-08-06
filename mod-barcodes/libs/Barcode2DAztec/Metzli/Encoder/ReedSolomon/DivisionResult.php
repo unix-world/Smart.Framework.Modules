@@ -1,5 +1,8 @@
 <?php
 
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
+
 /*
  * Copyright 2013 Metzli and ZXing authors
  *
@@ -33,7 +36,7 @@ class DivisionResult
 
 	private function checkType($number)
 	{
-		if (!is_int($number) && !is_float($number) && !($number instanceof GenericGFPoly)) {
+		if (!\is_int($number) && !\is_float($number) && !($number instanceof GenericGFPoly)) {
 			throw new \InvalidArgumentException('Non-numbers are not allowed');
 		}
 	}

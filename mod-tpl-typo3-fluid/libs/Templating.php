@@ -47,7 +47,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: classes: TYPO3Fluid
- * @version 	v.20260130
+ * @version 	v.20260717
  * @package 	modules:TemplatingEngine
  *
  */
@@ -139,7 +139,7 @@ final class Templating extends \SmartModExtLib\Tpl\AbstractTemplating {
 			$the_t3fluid_cache_dir .= 'idx';
 		} //end if else
 		if(!\SmartFileSysUtils::isDir((string)$the_t3fluid_cache_dir)) {
-			if(!\SmartFileSystem::dir_create((string)$the_t3fluid_cache_dir, true)) {
+			if(!\SmartFileSysUtils::createDir((string)$the_t3fluid_cache_dir)) {
 				throw new \Exception('Typo3Fluid Templating / Initialize / Could not create the Cache Directory: '.$the_t3fluid_cache_dir);
 				return '';
 			} //end if

@@ -40,7 +40,7 @@ if(\function_exists('\\opcache_get_status')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20260114
+ * @version 	v.20260714
  * @package 	Documentor
  *
  */
@@ -148,6 +148,8 @@ final class SmartClasses {
 			'\\SmartQR2DBarcode',
 			'\\SmartAsciiCaptcha',
 			'\\SmartImageGdProcess',
+			'\\SmartZipArchive',
+			'\\SmartZipUnArchive',
 			//-- registry
 			'\\SmartFrameworkRegistry',
 			//-- core file sys
@@ -240,7 +242,6 @@ final class SmartClasses {
 			//--
 			'\\SmartHTMLCalendar',
 			'\\SmartCalendarComponent',
-			'\\SmartZipArchive',
 			'\\SmartExportToOpenOffice',
 			'\\SmartImportFromOpenOffice',
 			//--

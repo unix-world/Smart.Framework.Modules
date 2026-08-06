@@ -21,7 +21,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 //============================================================
 // BarCode 2D: Aztec Barcode
-// License: GPLv3
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
 //============================================================
 // Copyright 2013 Metzli and ZXing authors
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,7 +49,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @internal
  *
  * @depends 	classes: \Metzli
- * @version 	v.20260130
+ * @version 	v.20260203
  * @package 	modules:Barcodes2D
  *
  */
@@ -61,11 +62,15 @@ final class Barcode2DAztec {
 	private static bool $initialized = false;
 
 
-	public function __construct(?string $y_code) {
-		//--
-		$this->code = (string) $y_code;
+	public function __construct(?string $code) {
 		//--
 		$this->init();
+		//--
+		if(((string)$code == '') OR ((string)$code === '\0')) {
+			return;
+		} //end if
+		//--
+		$this->code = (string) $code;
 		//--
 	} //END FUNCTION
 

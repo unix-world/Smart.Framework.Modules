@@ -1,5 +1,8 @@
 <?php
 
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
+
 /*
  * Copyright 2013 Metzli and ZXing authors
  *
@@ -32,9 +35,9 @@ class ReedSolomonEncoder
 
 	private function buildGenerator($degree)
 	{
-		if ($degree >= count($this->cachedGenerators)) {
-			$lastGenerator = end($this->cachedGenerators);
-			for ($d = count($this->cachedGenerators); $d <= $degree; $d++) {
+		if ($degree >= \count($this->cachedGenerators)) {
+			$lastGenerator = \end($this->cachedGenerators);
+			for ($d = \count($this->cachedGenerators); $d <= $degree; $d++) {
 				$nextCoefficent = $this->field->exp($d - 1 + $this->field->getGeneratorBase());
 				$nextGenerator = $lastGenerator->multiply(new GenericGFPoly($this->field, array(1, $nextCoefficent)));
 				$this->cachedGenerators[] = $nextGenerator;
@@ -50,7 +53,7 @@ class ReedSolomonEncoder
 		if ($ecBytes == 0) {
 			throw new \InvalidArgumentException('No error correction bytes');
 		}
-		if (count($data) == 0) {
+		if (\count($data) == 0) {
 			throw new \InvalidArgumentException('No data bytes provided');
 		}
 
@@ -60,16 +63,16 @@ class ReedSolomonEncoder
 
 		$remainder = $info->divide($generator)->getRemainder();
 		$coefficients = $remainder->getCoefficients();
-		$paddedCoefficients = array_pad($coefficients, -$ecBytes, 0);
+		$paddedCoefficients = \array_pad($coefficients, -$ecBytes, 0);
 
-		return array_merge($data, $paddedCoefficients);
+		return \array_merge($data, $paddedCoefficients);
 	}
 
 	public function encodePadded(array $paddedData, $ecBytes)
 	{
-		$dataLength = count($paddedData) - $ecBytes;
+		$dataLength = \count($paddedData) - $ecBytes;
 
-		return $this->encode(array_splice($paddedData, 0, $dataLength), $ecBytes);
+		return $this->encode(\array_splice($paddedData, 0, $dataLength), $ecBytes);
 	}
 }
 

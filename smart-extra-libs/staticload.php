@@ -15,21 +15,19 @@ require_once('modules/smart-extra-libs/version.php'); 						// extra libs versio
 //--
 
 //--
-// StaticLoad Extra Libs from (Smart.Framework.Modules), v.20260130
+// StaticLoad Extra Libs from (Smart.Framework.Modules), v.20260723
 //--
 require_once('modules/smart-extra-libs/lib_templating_ext.php'); 			// extended templating
 //--
 require_once('modules/smart-extra-libs/lib_pmarkdown.php'); 				// markdown to html parser, v1, classic (parsedown flavor)
 //--
 require_once('modules/smart-extra-libs/lib_ftp_cli.php');					// ftp client
-require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); 		// curl http/ftp connector
+require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); 		// curl http/ftp client
 //--
 require_once('modules/smart-extra-libs/lib_db_ext_pgsql.php'); 				// pgsql extended db connector
 require_once('modules/smart-extra-libs/lib_db_solr.php'); 					// solr db connector
 //--
-require_once('modules/smart-extra-libs/lib_export_zip.php');				// zip archive
-//--
-require_once('modules/smart-extra-libs/lib_export_import_ooffice.php'); 	// ooffice export
+require_once('modules/smart-extra-libs/lib_export_import_ooffice.php'); 	// ooffice export / import
 //--
 require_once('modules/smart-extra-libs/lib_calendar.php');					// calendar component (html)
 require_once('modules/smart-extra-libs/lib_charts.php'); 					// gd charts

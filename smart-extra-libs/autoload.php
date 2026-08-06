@@ -21,7 +21,7 @@ require_once('modules/smart-extra-libs/version.php'); // extra libs version
  * @access 		private
  * @internal
  *
- * @version 	20260130
+ * @version 	20260723
  *
  */
 spl_autoload_register(function(string $classname) : void {
@@ -46,7 +46,7 @@ spl_autoload_register(function(string $classname) : void {
 			require_once('modules/smart-extra-libs/lib_ftp_cli.php');				// ftp client
 			break;
 		case 'SmartCurlHttpFtpClient':
-			require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); 	// curl http/ftp connector
+			require_once('modules/smart-extra-libs/lib_curl_http_ftp_cli.php'); 	// curl http/ftp client
 			break;
 		//--
 		case 'SmartAbstractPgsqlExtDb':
@@ -54,10 +54,6 @@ spl_autoload_register(function(string $classname) : void {
 			break;
 		case 'SmartSolrDb':
 			require_once('modules/smart-extra-libs/lib_db_solr.php'); 				// solr db connector
-			break;
-		//-- zip archive
-		case 'SmartZipArchive':
-			require_once('modules/smart-extra-libs/lib_export_zip.php');			// zip archive
 			break;
 		//-- ooffice export
 		case 'SmartExportToOpenOffice':

@@ -21,7 +21,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 //============================================================
 // BarCode 2D: DataMatrix (Semacode)
-// License: GPLv3
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
 //============================================================
 // Class to create DataMatrix ECC 200 barcode arrays.
 // DataMatrix (ISO/IEC 16022:2006) is a 2-D bar code.
@@ -49,7 +50,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20260130
+ * @version 	v.20260203
  * @package 	modules:Barcodes2D
  *
  */
@@ -111,13 +112,13 @@ final class Barcode2DSemacodeDataMatrix {
 	 * Barcode array to be returned which is readable by TCPDF.
 	 * @private
 	 */
-	private $barcode_array = [];
+	private array $barcode_array = [];
 
 	/**
 	 * Store last used encoding for data codewords.
 	 * @private
 	 */
-	private $last_enc = self::SEMACODE_ENCODE_ASCII;
+	private int $last_enc = self::SEMACODE_ENCODE_ASCII;
 
 	/**
 	 * Table of Data Matrix ECC 200 Symbol Attributes:<ul>
@@ -140,87 +141,98 @@ final class Barcode2DSemacodeDataMatrix {
 	 * </ul>
 	 * @private
 	 */
-	private $symbattr = array(
+	private const SYMBATTR = [
 		// square form ---------------------------------------------------------------------------------------
-		array(0x00a,0x00a,0x008,0x008,0x00a,0x00a,0x008,0x008,0x001,0x001,0x001,0x003,0x005,0x001,0x003,0x005), // 10x10
-		array(0x00c,0x00c,0x00a,0x00a,0x00c,0x00c,0x00a,0x00a,0x001,0x001,0x001,0x005,0x007,0x001,0x005,0x007), // 12x12
-		array(0x00e,0x00e,0x00c,0x00c,0x00e,0x00e,0x00c,0x00c,0x001,0x001,0x001,0x008,0x00a,0x001,0x008,0x00a), // 14x14
-		array(0x010,0x010,0x00e,0x00e,0x010,0x010,0x00e,0x00e,0x001,0x001,0x001,0x00c,0x00c,0x001,0x00c,0x00c), // 16x16
-		array(0x012,0x012,0x010,0x010,0x012,0x012,0x010,0x010,0x001,0x001,0x001,0x012,0x00e,0x001,0x012,0x00e), // 18x18
-		array(0x014,0x014,0x012,0x012,0x014,0x014,0x012,0x012,0x001,0x001,0x001,0x016,0x012,0x001,0x016,0x012), // 20x20
-		array(0x016,0x016,0x014,0x014,0x016,0x016,0x014,0x014,0x001,0x001,0x001,0x01e,0x014,0x001,0x01e,0x014), // 22x22
-		array(0x018,0x018,0x016,0x016,0x018,0x018,0x016,0x016,0x001,0x001,0x001,0x024,0x018,0x001,0x024,0x018), // 24x24
-		array(0x01a,0x01a,0x018,0x018,0x01a,0x01a,0x018,0x018,0x001,0x001,0x001,0x02c,0x01c,0x001,0x02c,0x01c), // 26x26
-		array(0x020,0x020,0x01c,0x01c,0x010,0x010,0x00e,0x00e,0x002,0x002,0x004,0x03e,0x024,0x001,0x03e,0x024), // 32x32
-		array(0x024,0x024,0x020,0x020,0x012,0x012,0x010,0x010,0x002,0x002,0x004,0x056,0x02a,0x001,0x056,0x02a), // 36x36
-		array(0x028,0x028,0x024,0x024,0x014,0x014,0x012,0x012,0x002,0x002,0x004,0x072,0x030,0x001,0x072,0x030), // 40x40
-		array(0x02c,0x02c,0x028,0x028,0x016,0x016,0x014,0x014,0x002,0x002,0x004,0x090,0x038,0x001,0x090,0x038), // 44x44
-		array(0x030,0x030,0x02c,0x02c,0x018,0x018,0x016,0x016,0x002,0x002,0x004,0x0ae,0x044,0x001,0x0ae,0x044), // 48x48
-		array(0x034,0x034,0x030,0x030,0x01a,0x01a,0x018,0x018,0x002,0x002,0x004,0x0cc,0x054,0x002,0x066,0x02a), // 52x52
-		array(0x040,0x040,0x038,0x038,0x010,0x010,0x00e,0x00e,0x004,0x004,0x010,0x118,0x070,0x002,0x08c,0x038), // 64x64
-		array(0x048,0x048,0x040,0x040,0x012,0x012,0x010,0x010,0x004,0x004,0x010,0x170,0x090,0x004,0x05c,0x024), // 72x72
-		array(0x050,0x050,0x048,0x048,0x014,0x014,0x012,0x012,0x004,0x004,0x010,0x1c8,0x0c0,0x004,0x072,0x030), // 80x80
-		array(0x058,0x058,0x050,0x050,0x016,0x016,0x014,0x014,0x004,0x004,0x010,0x240,0x0e0,0x004,0x090,0x038), // 88x88
-		array(0x060,0x060,0x058,0x058,0x018,0x018,0x016,0x016,0x004,0x004,0x010,0x2b8,0x110,0x004,0x0ae,0x044), // 96x96
-		array(0x068,0x068,0x060,0x060,0x01a,0x01a,0x018,0x018,0x004,0x004,0x010,0x330,0x150,0x006,0x088,0x038), // 104x104
-		array(0x078,0x078,0x06c,0x06c,0x014,0x014,0x012,0x012,0x006,0x006,0x024,0x41a,0x198,0x006,0x0af,0x044), // 120x120
-		array(0x084,0x084,0x078,0x078,0x016,0x016,0x014,0x014,0x006,0x006,0x024,0x518,0x1f0,0x008,0x0a3,0x03e), // 132x132
-		array(0x090,0x090,0x084,0x084,0x018,0x018,0x016,0x016,0x006,0x006,0x024,0x616,0x26c,0x00a,0x09c,0x03e), // 144x144
+		[ 0x00a,0x00a,0x008,0x008,0x00a,0x00a,0x008,0x008,0x001,0x001,0x001,0x003,0x005,0x001,0x003,0x005 ], // 10x10
+		[ 0x00c,0x00c,0x00a,0x00a,0x00c,0x00c,0x00a,0x00a,0x001,0x001,0x001,0x005,0x007,0x001,0x005,0x007 ], // 12x12
+		[ 0x00e,0x00e,0x00c,0x00c,0x00e,0x00e,0x00c,0x00c,0x001,0x001,0x001,0x008,0x00a,0x001,0x008,0x00a ], // 14x14
+		[ 0x010,0x010,0x00e,0x00e,0x010,0x010,0x00e,0x00e,0x001,0x001,0x001,0x00c,0x00c,0x001,0x00c,0x00c ], // 16x16
+		[ 0x012,0x012,0x010,0x010,0x012,0x012,0x010,0x010,0x001,0x001,0x001,0x012,0x00e,0x001,0x012,0x00e ], // 18x18
+		[ 0x014,0x014,0x012,0x012,0x014,0x014,0x012,0x012,0x001,0x001,0x001,0x016,0x012,0x001,0x016,0x012 ], // 20x20
+		[ 0x016,0x016,0x014,0x014,0x016,0x016,0x014,0x014,0x001,0x001,0x001,0x01e,0x014,0x001,0x01e,0x014 ], // 22x22
+		[ 0x018,0x018,0x016,0x016,0x018,0x018,0x016,0x016,0x001,0x001,0x001,0x024,0x018,0x001,0x024,0x018 ], // 24x24
+		[ 0x01a,0x01a,0x018,0x018,0x01a,0x01a,0x018,0x018,0x001,0x001,0x001,0x02c,0x01c,0x001,0x02c,0x01c ], // 26x26
+		[ 0x020,0x020,0x01c,0x01c,0x010,0x010,0x00e,0x00e,0x002,0x002,0x004,0x03e,0x024,0x001,0x03e,0x024 ], // 32x32
+		[ 0x024,0x024,0x020,0x020,0x012,0x012,0x010,0x010,0x002,0x002,0x004,0x056,0x02a,0x001,0x056,0x02a ], // 36x36
+		[ 0x028,0x028,0x024,0x024,0x014,0x014,0x012,0x012,0x002,0x002,0x004,0x072,0x030,0x001,0x072,0x030 ], // 40x40
+		[ 0x02c,0x02c,0x028,0x028,0x016,0x016,0x014,0x014,0x002,0x002,0x004,0x090,0x038,0x001,0x090,0x038 ], // 44x44
+		[ 0x030,0x030,0x02c,0x02c,0x018,0x018,0x016,0x016,0x002,0x002,0x004,0x0ae,0x044,0x001,0x0ae,0x044 ], // 48x48
+		[ 0x034,0x034,0x030,0x030,0x01a,0x01a,0x018,0x018,0x002,0x002,0x004,0x0cc,0x054,0x002,0x066,0x02a ], // 52x52
+		[ 0x040,0x040,0x038,0x038,0x010,0x010,0x00e,0x00e,0x004,0x004,0x010,0x118,0x070,0x002,0x08c,0x038 ], // 64x64
+		[ 0x048,0x048,0x040,0x040,0x012,0x012,0x010,0x010,0x004,0x004,0x010,0x170,0x090,0x004,0x05c,0x024 ], // 72x72
+		[ 0x050,0x050,0x048,0x048,0x014,0x014,0x012,0x012,0x004,0x004,0x010,0x1c8,0x0c0,0x004,0x072,0x030 ], // 80x80
+		[ 0x058,0x058,0x050,0x050,0x016,0x016,0x014,0x014,0x004,0x004,0x010,0x240,0x0e0,0x004,0x090,0x038 ], // 88x88
+		[ 0x060,0x060,0x058,0x058,0x018,0x018,0x016,0x016,0x004,0x004,0x010,0x2b8,0x110,0x004,0x0ae,0x044 ], // 96x96
+		[ 0x068,0x068,0x060,0x060,0x01a,0x01a,0x018,0x018,0x004,0x004,0x010,0x330,0x150,0x006,0x088,0x038 ], // 104x104
+		[ 0x078,0x078,0x06c,0x06c,0x014,0x014,0x012,0x012,0x006,0x006,0x024,0x41a,0x198,0x006,0x0af,0x044 ], // 120x120
+		[ 0x084,0x084,0x078,0x078,0x016,0x016,0x014,0x014,0x006,0x006,0x024,0x518,0x1f0,0x008,0x0a3,0x03e ], // 132x132
+		[ 0x090,0x090,0x084,0x084,0x018,0x018,0x016,0x016,0x006,0x006,0x024,0x616,0x26c,0x00a,0x09c,0x03e ], // 144x144
 		// rectangular form (currently unused) ---------------------------------------------------------------------------
-		array(0x008,0x012,0x006,0x010,0x008,0x012,0x006,0x010,0x001,0x001,0x001,0x005,0x007,0x001,0x005,0x007), // 8x18
-		array(0x008,0x020,0x006,0x01c,0x008,0x010,0x006,0x00e,0x001,0x002,0x002,0x00a,0x00b,0x001,0x00a,0x00b), // 8x32
-		array(0x00c,0x01a,0x00a,0x018,0x00c,0x01a,0x00a,0x018,0x001,0x001,0x001,0x010,0x00e,0x001,0x010,0x00e), // 12x26
-		array(0x00c,0x024,0x00a,0x020,0x00c,0x012,0x00a,0x010,0x001,0x002,0x002,0x00c,0x012,0x001,0x00c,0x012), // 12x36
-		array(0x010,0x024,0x00e,0x020,0x010,0x012,0x00e,0x010,0x001,0x002,0x002,0x020,0x018,0x001,0x020,0x018), // 16x36
-		array(0x010,0x030,0x00e,0x02c,0x010,0x018,0x00e,0x016,0x001,0x002,0x002,0x031,0x01c,0x001,0x031,0x01c)  // 16x48
-	);
+		[ 0x008,0x012,0x006,0x010,0x008,0x012,0x006,0x010,0x001,0x001,0x001,0x005,0x007,0x001,0x005,0x007 ], // 8x18
+		[ 0x008,0x020,0x006,0x01c,0x008,0x010,0x006,0x00e,0x001,0x002,0x002,0x00a,0x00b,0x001,0x00a,0x00b ], // 8x32
+		[ 0x00c,0x01a,0x00a,0x018,0x00c,0x01a,0x00a,0x018,0x001,0x001,0x001,0x010,0x00e,0x001,0x010,0x00e ], // 12x26
+		[ 0x00c,0x024,0x00a,0x020,0x00c,0x012,0x00a,0x010,0x001,0x002,0x002,0x00c,0x012,0x001,0x00c,0x012 ], // 12x36
+		[ 0x010,0x024,0x00e,0x020,0x010,0x012,0x00e,0x010,0x001,0x002,0x002,0x020,0x018,0x001,0x020,0x018 ], // 16x36
+		[ 0x010,0x030,0x00e,0x02c,0x010,0x018,0x00e,0x016,0x001,0x002,0x002,0x031,0x01c,0x001,0x031,0x01c ], // 16x48
+	];
 
 	/**
 	 * Map encodation modes whit character sets.
 	 * @private
 	 */
-	private $chset_id = array(self::SEMACODE_ENCODE_C40 => 'C40', self::SEMACODE_ENCODE_TXT => 'TXT', self::SEMACODE_ENCODE_X12 =>'X12');
+	private const CHSET_ID = [
+		self::SEMACODE_ENCODE_C40 => 'C40',
+		self::SEMACODE_ENCODE_TXT => 'TXT',
+		self::SEMACODE_ENCODE_X12 => 'X12',
+	];
 
 	/**
 	 * Basic set of characters for each encodation mode.
 	 * @private
 	 */
-	private $chset = array(
-		'C40' => array( // Basic set for C40 ----------------------------------------------------------------------------
+	private const CHSET_ARR = [
+		'C40' => [ // Basic set for C40 ----------------------------------------------------------------------------
 			'S1'=>0x00,'S2'=>0x01,'S3'=>0x02,0x20=>0x03,0x30=>0x04,0x31=>0x05,0x32=>0x06,0x33=>0x07,0x34=>0x08,0x35=>0x09, //
 			0x36=>0x0a,0x37=>0x0b,0x38=>0x0c,0x39=>0x0d,0x41=>0x0e,0x42=>0x0f,0x43=>0x10,0x44=>0x11,0x45=>0x12,0x46=>0x13, //
 			0x47=>0x14,0x48=>0x15,0x49=>0x16,0x4a=>0x17,0x4b=>0x18,0x4c=>0x19,0x4d=>0x1a,0x4e=>0x1b,0x4f=>0x1c,0x50=>0x1d, //
-			0x51=>0x1e,0x52=>0x1f,0x53=>0x20,0x54=>0x21,0x55=>0x22,0x56=>0x23,0x57=>0x24,0x58=>0x25,0x59=>0x26,0x5a=>0x27),//
-		'TXT' => array( // Basic set for TEXT ---------------------------------------------------------------------------
+			0x51=>0x1e,0x52=>0x1f,0x53=>0x20,0x54=>0x21,0x55=>0x22,0x56=>0x23,0x57=>0x24,0x58=>0x25,0x59=>0x26,0x5a=>0x27, //
+		],
+		'TXT' => [ // Basic set for TEXT ---------------------------------------------------------------------------
 			'S1'=>0x00,'S2'=>0x01,'S3'=>0x02,0x20=>0x03,0x30=>0x04,0x31=>0x05,0x32=>0x06,0x33=>0x07,0x34=>0x08,0x35=>0x09, //
 			0x36=>0x0a,0x37=>0x0b,0x38=>0x0c,0x39=>0x0d,0x61=>0x0e,0x62=>0x0f,0x63=>0x10,0x64=>0x11,0x65=>0x12,0x66=>0x13, //
 			0x67=>0x14,0x68=>0x15,0x69=>0x16,0x6a=>0x17,0x6b=>0x18,0x6c=>0x19,0x6d=>0x1a,0x6e=>0x1b,0x6f=>0x1c,0x70=>0x1d, //
-			0x71=>0x1e,0x72=>0x1f,0x73=>0x20,0x74=>0x21,0x75=>0x22,0x76=>0x23,0x77=>0x24,0x78=>0x25,0x79=>0x26,0x7a=>0x27),//
-		'SH1' => array( // Shift 1 set ----------------------------------------------------------------------------------
+			0x71=>0x1e,0x72=>0x1f,0x73=>0x20,0x74=>0x21,0x75=>0x22,0x76=>0x23,0x77=>0x24,0x78=>0x25,0x79=>0x26,0x7a=>0x27, //
+		],
+		'SH1' => [ // Shift 1 set ----------------------------------------------------------------------------------
 			0x00=>0x00,0x01=>0x01,0x02=>0x02,0x03=>0x03,0x04=>0x04,0x05=>0x05,0x06=>0x06,0x07=>0x07,0x08=>0x08,0x09=>0x09, //
 			0x0a=>0x0a,0x0b=>0x0b,0x0c=>0x0c,0x0d=>0x0d,0x0e=>0x0e,0x0f=>0x0f,0x10=>0x10,0x11=>0x11,0x12=>0x12,0x13=>0x13, //
 			0x14=>0x14,0x15=>0x15,0x16=>0x16,0x17=>0x17,0x18=>0x18,0x19=>0x19,0x1a=>0x1a,0x1b=>0x1b,0x1c=>0x1c,0x1d=>0x1d, //
-			0x1e=>0x1e,0x1f=>0x1f),                                                                                        //
-		'SH2' => array( // Shift 2 set ----------------------------------------------------------------------------------
+			0x1e=>0x1e,0x1f=>0x1f,                                                                                         //
+		],
+		'SH2' => [ // Shift 2 set ----------------------------------------------------------------------------------
 			0x21=>0x00,0x22=>0x01,0x23=>0x02,0x24=>0x03,0x25=>0x04,0x26=>0x05,0x27=>0x06,0x28=>0x07,0x29=>0x08,0x2a=>0x09, //
 			0x2b=>0x0a,0x2c=>0x0b,0x2d=>0x0c,0x2e=>0x0d,0x2f=>0x0e,0x3a=>0x0f,0x3b=>0x10,0x3c=>0x11,0x3d=>0x12,0x3e=>0x13, //
-			0x3f=>0x14,0x40=>0x15,0x5b=>0x16,0x5c=>0x17,0x5d=>0x18,0x5e=>0x19,0x5f=>0x1a,'F1'=>0x1b,'US'=>0x1e),           //
-		'S3C' => array( // Shift 3 set for C40 --------------------------------------------------------------------------
+			0x3f=>0x14,0x40=>0x15,0x5b=>0x16,0x5c=>0x17,0x5d=>0x18,0x5e=>0x19,0x5f=>0x1a,'F1'=>0x1b,'US'=>0x1e,            //
+		],
+		'S3C' => [ // Shift 3 set for C40 --------------------------------------------------------------------------
 			0x60=>0x00,0x61=>0x01,0x62=>0x02,0x63=>0x03,0x64=>0x04,0x65=>0x05,0x66=>0x06,0x67=>0x07,0x68=>0x08,0x69=>0x09, //
 			0x6a=>0x0a,0x6b=>0x0b,0x6c=>0x0c,0x6d=>0x0d,0x6e=>0x0e,0x6f=>0x0f,0x70=>0x10,0x71=>0x11,0x72=>0x12,0x73=>0x13, //
 			0x74=>0x14,0x75=>0x15,0x76=>0x16,0x77=>0x17,0x78=>0x18,0x79=>0x19,0x7a=>0x1a,0x7b=>0x1b,0x7c=>0x1c,0x7d=>0x1d, //
-			0x7e=>0x1e,0x7f=>0x1f),
-		'S3T' => array( // Shift 3 set for TEXT -------------------------------------------------------------------------
+			0x7e=>0x1e,0x7f=>0x1f,                                                                                         //
+		],
+		'S3T' => [ // Shift 3 set for TEXT -------------------------------------------------------------------------
 			0x60=>0x00,0x41=>0x01,0x42=>0x02,0x43=>0x03,0x44=>0x04,0x45=>0x05,0x46=>0x06,0x47=>0x07,0x48=>0x08,0x49=>0x09, //
 			0x4a=>0x0a,0x4b=>0x0b,0x4c=>0x0c,0x4d=>0x0d,0x4e=>0x0e,0x4f=>0x0f,0x50=>0x10,0x51=>0x11,0x52=>0x12,0x53=>0x13, //
 			0x54=>0x14,0x55=>0x15,0x56=>0x16,0x57=>0x17,0x58=>0x18,0x59=>0x19,0x5a=>0x1a,0x7b=>0x1b,0x7c=>0x1c,0x7d=>0x1d, //
-			0x7e=>0x1e,0x7f=>0x1f),                                                                                        //
-		'X12' => array( // Set for X12 ----------------------------------------------------------------------------------
+			0x7e=>0x1e,0x7f=>0x1f,                                                                                         //
+		],
+		'X12' => [ // Set for X12 ----------------------------------------------------------------------------------
 			0x0d=>0x00,0x2a=>0x01,0x3e=>0x02,0x20=>0x03,0x30=>0x04,0x31=>0x05,0x32=>0x06,0x33=>0x07,0x34=>0x08,0x35=>0x09, //
 			0x36=>0x0a,0x37=>0x0b,0x38=>0x0c,0x39=>0x0d,0x41=>0x0e,0x42=>0x0f,0x43=>0x10,0x44=>0x11,0x45=>0x12,0x46=>0x13, //
 			0x47=>0x14,0x48=>0x15,0x49=>0x16,0x4a=>0x17,0x4b=>0x18,0x4c=>0x19,0x4d=>0x1a,0x4e=>0x1b,0x4f=>0x1c,0x50=>0x1d, //
-			0x51=>0x1e,0x52=>0x1f,0x53=>0x20,0x54=>0x21,0x55=>0x22,0x56=>0x23,0x57=>0x24,0x58=>0x25,0x59=>0x26,0x5a=>0x27) //
-		);
+			0x51=>0x1e,0x52=>0x1f,0x53=>0x20,0x54=>0x21,0x55=>0x22,0x56=>0x23,0x57=>0x24,0x58=>0x25,0x59=>0x26,0x5a=>0x27, //
+		],
+	];
 
 
 	/**
@@ -229,44 +241,44 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @param $code (string) Code to represent using Datamatrix.
 	 * @public
 	 */
-	public function __construct($code) {
+	public function __construct(?string $code) {
 		//--
-		if((is_null($code)) OR ($code == '\0') OR ((string)$code == '')) {
-			return false;
+		if(((string)$code == '') OR ((string)$code === '\0')) {
+			return;
 		} //end if
 		//--
 		$code = (string) $code; // force string
 		//--
-		$this->barcode_array = array();
+		$this->barcode_array = [];
 		$this->barcode_array['code'] = $code;
 		//-- get data codewords
 		$cw = $this->getHighLevelEncoding($code);
 		// number of data codewords
-		$nd = count($cw);
+		$nd = (int) \count($cw);
 		// check size
-		if($nd > 1558) {
-			return false;
+		if((int)$nd > 1558) {
+			return;
 		} //end if
 		//-- get minimum required matrix size.
-		foreach($this->symbattr as $u => $params) {
-			if($params[11] >= $nd) {
+		foreach(self::SYMBATTR as $u => $params) {
+			if((int)$params[11] >= (int)$nd) {
 				break;
 			} //end if
 		} //end foreach
 		//--
-		if($params[11] < $nd) {
+		if((int)$params[11] < (int)$nd) {
 			//-- too much data
-			return false;
+			return;
 			//--
-		} elseif($params[11] > $nd) {
+		} elseif((int)$params[11] > (int)$nd) {
 			//-- add padding
-			if((($params[11] - $nd) > 1) AND ($cw[($nd - 1)] != 254)) {
-				if($this->last_enc == self::SEMACODE_ENCODE_EDF) {
+			if(((int)((int)$params[11] - (int)$nd) > 1) AND ((int)$cw[($nd - 1)] != 254)) {
+				if((int)$this->last_enc == (int)self::SEMACODE_ENCODE_EDF) {
 					//-- switch to ASCII encoding
 					$cw[] = 124;
 					++$nd;
 					//--
-				} elseif(($this->last_enc != self::SEMACODE_ENCODE_ASCII) AND ($this->last_enc != self::SEMACODE_ENCODE_B256)) {
+				} elseif(((int)$this->last_enc != (int)self::SEMACODE_ENCODE_ASCII) AND ((int)$this->last_enc != (int)self::SEMACODE_ENCODE_B256)) {
 					//-- switch to ASCII encoding
 					$cw[] = 254;
 					++$nd;
@@ -274,45 +286,45 @@ final class Barcode2DSemacodeDataMatrix {
 				} //end if else
 			} //end if
 			//--
-			if($params[11] > $nd) {
+			if((int)$params[11] > (int)$nd) {
 				//-- add first pad
 				$cw[] = 129;
 				++$nd;
 				//-- add remaining pads
-				for($i = $nd; $i < $params[11]; ++$i) {
-					$cw[] = $this->get253StateCodeword(129, $i);
+				for($i=$nd; $i<(int)$params[11]; ++$i) {
+					$cw[] = (int) $this->get253StateCodeword(129, $i);
 				} //end for
 				//--
 			} //end if
 			//--
 		} //end if else
 		//-- add error correction codewords
-		$cw = $this->getErrorCorrection($cw, $params[13], $params[14], $params[15]);
+		$cw = (array) $this->getErrorCorrection($cw, $params[13], $params[14], $params[15]);
 		//-- initialize empty arrays
-		$grid = array_fill(0, ($params[2] * $params[3]), 0);
+		$grid = \array_fill(0, ($params[2] * $params[3]), 0);
 		//-- get placement map
 		$places = $this->getPlacementMap($params[2], $params[3]);
 		//-- fill the grid with data
-		$grid = array();
+		$grid = [];
 		$i = 0;
 		//-- region data row max index
-		$rdri = ($params[4] - 1);
+		$rdri = (int) ($params[4] - 1);
 		//-- region data column max index
-		$rdci = ($params[5] - 1);
+		$rdci = (int) ($params[5] - 1);
 		//-- for each vertical region
-		for($vr = 0; $vr < $params[9]; ++$vr) {
+		for($vr=0; $vr<$params[9]; ++$vr) {
 			//-- for each row on region
-			for($r = 0; $r < $params[4]; ++$r) {
+			for($r=0; $r<$params[4]; ++$r) {
 				//-- get row
-				$row = (($vr * $params[4]) + $r);
+				$row = (int) (($vr * $params[4]) + $r);
 				//-- for each horizontal region
-				for($hr = 0; $hr < $params[8]; ++$hr) {
+				for($hr=0; $hr<$params[8]; ++$hr) {
 					//-- for each column on region
-					for($c = 0; $c < $params[5]; ++$c) {
+					for($c=0; $c<$params[5]; ++$c) {
 						//-- get column
-						$col = (($hr * $params[5]) + $c);
+						$col = (int) (($hr * $params[5]) + $c);
 						//-- braw bits by case
-						if($r == 0) {
+						if((int)$r == 0) {
 							//-- top finder pattern
 							if($c % 2) {
 								$grid[$row][$col] = 0;
@@ -320,15 +332,15 @@ final class Barcode2DSemacodeDataMatrix {
 								$grid[$row][$col] = 1;
 							} //end if else
 							//--
-						} elseif($r == $rdri) {
+						} elseif((int)$r == (int)$rdri) {
 							//-- bottom finder pattern
 							$grid[$row][$col] = 1;
 							//--
-						} elseif($c == 0) {
+						} elseif((int)$c == 0) {
 							//-- left finder pattern
 							$grid[$row][$col] = 1;
 							//--
-						} elseif($c == $rdci) {
+						} elseif((int)$c == (int)$rdci) {
 							//-- right finder pattern
 							if($r % 2) {
 								$grid[$row][$col] = 1;
@@ -338,15 +350,15 @@ final class Barcode2DSemacodeDataMatrix {
 							//--
 						} else {
 							//-- data bit
-							if($places[$i] < 2) {
+							if((int)$places[$i] < 2) {
 								//--
 								$grid[$row][$col] = $places[$i];
 								//--
 							} else {
 								//-- codeword ID
-								$cw_id = (int) (floor((string)($places[$i] / 10)) - 1); // unixman: fix floor
+								$cw_id = (int) (\floor((string)($places[$i] / 10)) - 1); // unixman: fix floor
 								//-- codeword BIT mask
-								$cw_bit = pow(2, (8 - ($places[$i] % 10)));
+								$cw_bit = \pow(2, (8 - ($places[$i] % 10)));
 								$grid[$row][$col] = (($cw[$cw_id] & $cw_bit) == 0) ? 0 : 1;
 								//--
 							} //end if else
@@ -363,8 +375,8 @@ final class Barcode2DSemacodeDataMatrix {
 			//--
 		} //end for
 		//--
-		$this->barcode_array['num_rows'] = (int) $params[0];
-		$this->barcode_array['num_cols'] = (int) $params[1];
+		$this->barcode_array['num_rows'] = (int)   $params[0];
+		$this->barcode_array['num_cols'] = (int)   $params[1];
 		$this->barcode_array['bcode']    = (array) $grid;
 		//--
 	} //END FUNCTION
@@ -388,17 +400,17 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @param $b (int) second number to multiply.
 	 * @param $log (array) Log table.
 	 * @param $alog (array) Anti-Log table.
-	 * @param $gf (array) Number of Factors of the Reed-Solomon polynomial.
+	 * @param $gf (int) Number of Factors of the Reed-Solomon polynomial.
 	 * @return int product
 	 * @private
 	 */
-	private function getGFProduct($a, $b, $log, $alog, $gf) {
+	private function getGFProduct(int $a, int $b, array $log, array $alog, int $gf) : int {
 		//--
-		if(($a == 0) OR ($b == 0)) {
+		if(((int)$a == 0) OR ((int)$b == 0)) {
 			return 0;
 		} //end if
 		//--
-		return ($alog[($log[$a] + $log[$b]) % ($gf - 1)]);
+		return (int) ($alog[($log[$a] + $log[$b]) % ($gf - 1)]);
 		//--
 	} //END FUNCTION
 
@@ -414,53 +426,53 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return array data codewords + error codewords
 	 * @private
 	 */
-	private function getErrorCorrection($wd, $nb, $nd, $nc, $gf=256, $pp=301) {
+	private function getErrorCorrection(array $wd, int $nb, int $nd, int $nc, int $gf=256, int $pp=301) : array {
 		//-- generate the log ($log) and antilog ($alog) tables
 		$log[0] = 0;
 		$alog[0] = 1;
-		for($i = 1; $i < $gf; ++$i) {
-			$alog[$i] = ($alog[($i - 1)] * 2);
-			if($alog[$i] >= $gf) {
+		for($i=1; $i<$gf; ++$i) {
+			$alog[$i] = (int) ($alog[($i - 1)] * 2);
+			if((int)$alog[$i] >= (int)$gf) {
 				$alog[$i] ^= $pp;
 			} //end if
 			$log[$alog[$i]] = $i;
 		} //end for
 		ksort($log);
 		//-- generate the polynomial coefficients (c)
-		$c = array_fill(0, ($nc + 1), 0);
+		$c = \array_fill(0, ($nc + 1), 0);
 		$c[0] = 1;
-		for($i = 1; $i <= $nc; ++$i) {
+		for($i=1; $i<=$nc; ++$i) {
 			$c[$i] = $c[($i-1)];
-			for($j = ($i - 1); $j >= 1; --$j) {
-				$c[$j] = $c[($j - 1)] ^ $this->getGFProduct($c[$j], $alog[$i], $log, $alog, $gf);
+			for($j=($i-1); $j>= 1; --$j) {
+				$c[$j] = (int)($c[($j - 1)]) ^ (int)$this->getGFProduct($c[$j], $alog[$i], $log, $alog, $gf);
 			} //end for
-			$c[0] = $this->getGFProduct($c[0], $alog[$i], $log, $alog, $gf);
+			$c[0] = (int) $this->getGFProduct($c[0], $alog[$i], $log, $alog, $gf);
 		} //end for
 		ksort($c);
 		//-- total number of data codewords
-		$num_wd = ($nb * $nd);
+		$num_wd = (int) ($nb * $nd);
 		//-- total number of error codewords
-		$num_we = ($nb * $nc);
+		$num_we = (int) ($nb * $nc);
 		//-- for each block
-		for($b = 0; $b < $nb; ++$b) {
+		for($b=0; $b<$nb; ++$b) {
 			//-- create interleaved data block
-			$block = array();
-			for($n = $b; $n < $num_wd; $n += $nb) {
+			$block = [];
+			for($n=$b; $n<$num_wd; $n+=$nb) {
 				$block[] = $wd[$n];
 			} //end for
 			//-- initialize error codewords
-			$we = array_fill(0, ($nc + 1), 0);
+			$we = \array_fill(0, ($nc + 1), 0);
 			//-- calculate error correction codewords for this block
-			for($i = 0; $i < $nd; ++$i) {
-				$k = ($we[0] ^ $block[$i]);
-				for($j = 0; $j < $nc; ++$j) {
-					$we[$j] = ($we[($j + 1)] ^ $this->getGFProduct($k, $c[($nc - $j - 1)], $log, $alog, $gf));
+			for($i=0; $i<$nd; ++$i) {
+				$k = (int) ($we[0] ^ $block[$i]);
+				for($j=0; $j<$nc; ++$j) {
+					$we[$j] = (int) ((int)$we[($j + 1)] ^ (int)$this->getGFProduct($k, $c[($nc - $j - 1)], $log, $alog, $gf));
 				} //end for
 			} //end for
 			//-- add error codewords at the end of data codewords
 			$j = 0;
-			for($i = $b; $i < $num_we; $i += $nb) {
-				$wd[($num_wd + $i)] = $we[$j];
+			for($i=$b; $i<$num_we; $i+=$nb) {
+				$wd[($num_wd + $i)] = (int) $we[$j];
 				++$j;
 			} //end for
 			//--
@@ -480,15 +492,15 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return pad codeword
 	 * @private
 	 */
-	private function get253StateCodeword($cwpad, $cwpos) {
+	private function get253StateCodeword(int $cwpad, int $cwpos) : int {
 		//--
-		$pad = ($cwpad + (((149 * $cwpos) % 253) + 1));
+		$pad = (int) ($cwpad + (((149 * $cwpos) % 253) + 1));
 		//--
-		if($pad > 254) {
+		if((int)$pad > 254) {
 			$pad -= 254;
 		} //end if
 		//--
-		return $pad;
+		return (int) $pad;
 		//--
 	} //END FUNCTION
 
@@ -500,15 +512,15 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return pad codeword
 	 * @private
 	 */
-	private function get255StateCodeword($cwpad, $cwpos) {
+	private function get255StateCodeword(int $cwpad, int $cwpos) : int {
 		//--
-		$pad = ($cwpad + (((149 * $cwpos) % 255) + 1));
+		$pad = (int) ($cwpad + (((149 * $cwpos) % 255) + 1));
 		//--
-		if($pad > 255) {
+		if((int)$pad > 255) {
 			$pad -= 256;
 		} //end if
 		//--
-		return $pad;
+		return (int) $pad;
 		//--
 	} //END FUNCTION
 
@@ -520,7 +532,7 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return boolean true if the char is of the selected mode.
 	 * @private
 	 */
-	private function isCharMode($chr, $mode) {
+	private function isCharMode(int $chr, int $mode) : bool {
 		//--
 		$status = false;
 		//--
@@ -551,7 +563,7 @@ final class Barcode2DSemacodeDataMatrix {
 				break;
 		} //end switch
 		//--
-		return $status;
+		return (bool) $status;
 		//--
 	} //END FUNCTION
 
@@ -564,43 +576,45 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return int encoding mode
 	 * @private
 	 */
-	private function lookAheadTest($data, $pos, $mode) {
+	private function lookAheadTest(?string $data, int $pos, int $mode) : int {
 		//--
-		$data_length = strlen($data);
-		if($pos >= $data_length) {
-			return $mode;
+		$data = (string) $data;
+		//--
+		$data_length = (int) \strlen($data);
+		if((int)$pos >= (int)$data_length) {
+			return (int) $mode;
 		} //end if
 		$charscount = 0; // count processed chars
 		//-- STEP J
-		if($mode == self::SEMACODE_ENCODE_ASCII) {
-			$numch = array(0, 1, 1, 1, 1, 1.25);
+		if((int)$mode == (int)self::SEMACODE_ENCODE_ASCII) {
+			$numch = [ 0, 1, 1, 1, 1, 1.25 ];
 		} else {
-			$numch = array(1, 2, 2, 2, 2, 2.25);
+			$numch = [ 1, 2, 2, 2, 2, 2.25 ];
 			$numch[$mode] = 0;
 		} //end if else
 		//--
 		while(true) {
 			//-- STEP K
-			if(($pos + $charscount) == $data_length) { // unixman: fix ceil
-				if($numch[self::SEMACODE_ENCODE_ASCII] <= ceil((string)(min($numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])))) {
-					return self::SEMACODE_ENCODE_ASCII;
+			if((int)((int)$pos + (int)$charscount) == (int)$data_length) { // unixman: fix ceil
+				if((int)$numch[self::SEMACODE_ENCODE_ASCII] <= (int)\ceil((string)(\min($numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])))) {
+					return (int) self::SEMACODE_ENCODE_ASCII;
 				} //end if
-				if($numch[self::SEMACODE_ENCODE_B256] < ceil((string)(min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF])))) {
-					return self::SEMACODE_ENCODE_B256;
+				if((int)$numch[self::SEMACODE_ENCODE_B256] < (int)\ceil((string)(\min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF])))) {
+					return (int) self::SEMACODE_ENCODE_B256;
 				} //end if
-				if($numch[self::SEMACODE_ENCODE_EDF] < ceil((string)(min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_B256])))) {
-					return self::SEMACODE_ENCODE_EDF;
+				if((int)$numch[self::SEMACODE_ENCODE_EDF] < (int)\ceil((string)(\min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_B256])))) {
+					return (int) self::SEMACODE_ENCODE_EDF;
 				} //end if
-				if($numch[self::SEMACODE_ENCODE_TXT] < ceil((string)(min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])))) {
-					return self::SEMACODE_ENCODE_TXT;
+				if((int)$numch[self::SEMACODE_ENCODE_TXT] < (int)\ceil((string)(\min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])))) {
+					return (int) self::SEMACODE_ENCODE_TXT;
 				} //end if
-				if($numch[self::SEMACODE_ENCODE_X12] < ceil((string)(min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])))) {
-					return self::SEMACODE_ENCODE_X12;
+				if((int)$numch[self::SEMACODE_ENCODE_X12] < (int)\ceil((string)(\min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])))) {
+					return (int) self::SEMACODE_ENCODE_X12;
 				} //end if
-				return self::SEMACODE_ENCODE_C40;
+				return (int) self::SEMACODE_ENCODE_C40;
 			} //end while
 			//-- get char
-			$chr = ord($data[$pos + $charscount]);
+			$chr = (int) \ord((string)$data[(int)$pos + (int)$charscount]);
 			//--
 			$charscount++;
 			//-- STEP L
@@ -652,43 +666,45 @@ final class Barcode2DSemacodeDataMatrix {
 				$numch[self::SEMACODE_ENCODE_B256] += 1;
 			} //end if else
 			//-- STEP R
-			if($charscount >= 4) {
-				if(($numch[self::SEMACODE_ENCODE_ASCII] + 1) <= min($numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])) {
-					return self::SEMACODE_ENCODE_ASCII;
+			if((int)$charscount >= 4) {
+				if((int)($numch[self::SEMACODE_ENCODE_ASCII] + 1) <= (int)\min($numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])) {
+					return (int) self::SEMACODE_ENCODE_ASCII;
 				} //end if
-				if((($numch[self::SEMACODE_ENCODE_B256] + 1) <= $numch[self::SEMACODE_ENCODE_ASCII]) OR (($numch[self::SEMACODE_ENCODE_B256] + 1) < min($numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF]))) {
-					return self::SEMACODE_ENCODE_B256;
+				if(((int)($numch[self::SEMACODE_ENCODE_B256] + 1) <= (int)$numch[self::SEMACODE_ENCODE_ASCII]) OR ((int)($numch[self::SEMACODE_ENCODE_B256] + 1) < (int)\min($numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF]))) {
+					return (int) self::SEMACODE_ENCODE_B256;
 				} //end if
-				if(($numch[self::SEMACODE_ENCODE_EDF] + 1) < min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_B256])) {
-					return self::SEMACODE_ENCODE_EDF;
+				if((int)($numch[self::SEMACODE_ENCODE_EDF] + 1) < (int)\min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_B256])) {
+					return (int) self::SEMACODE_ENCODE_EDF;
 				} //end if
-				if(($numch[self::SEMACODE_ENCODE_TXT] + 1) < min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])) {
-					return self::SEMACODE_ENCODE_TXT;
+				if((int)($numch[self::SEMACODE_ENCODE_TXT] + 1) < (int)\min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_X12], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])) {
+					return (int) self::SEMACODE_ENCODE_TXT;
 				} //end if
-				if(($numch[self::SEMACODE_ENCODE_X12] + 1) < min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])) {
-					return self::SEMACODE_ENCODE_X12;
+				if((int)($numch[self::SEMACODE_ENCODE_X12] + 1) < (int)\min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_C40], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])) {
+					return (int) self::SEMACODE_ENCODE_X12;
 				} //end if
-				if(($numch[self::SEMACODE_ENCODE_C40] + 1) < min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])) {
-					if($numch[self::SEMACODE_ENCODE_C40] < $numch[self::SEMACODE_ENCODE_X12]) {
-						return self::SEMACODE_ENCODE_C40;
+				if((int)($numch[self::SEMACODE_ENCODE_C40] + 1) < (int)\min($numch[self::SEMACODE_ENCODE_ASCII], $numch[self::SEMACODE_ENCODE_TXT], $numch[self::SEMACODE_ENCODE_EDF], $numch[self::SEMACODE_ENCODE_B256])) {
+					if((int)$numch[self::SEMACODE_ENCODE_C40] < (int)$numch[self::SEMACODE_ENCODE_X12]) {
+						return (int) self::SEMACODE_ENCODE_C40;
 					} //end if
-					if($numch[self::SEMACODE_ENCODE_C40] == $numch[self::SEMACODE_ENCODE_X12]) {
-						$k = ($pos + $charscount + 1);
-						while ($k < $data_length) {
-							$tmpchr = ord($data[$k]);
+					if((int)$numch[self::SEMACODE_ENCODE_C40] == (int)$numch[self::SEMACODE_ENCODE_X12]) {
+						$k = (int) ($pos + $charscount + 1);
+						while((int)$k < (int)$data_length) {
+							$tmpchr = (int) \ord((string)$data[$k]);
 							if($this->isCharMode($tmpchr, self::SEMACODE_ENCODE_X12)) {
-								return self::SEMACODE_ENCODE_X12;
+								return (int) self::SEMACODE_ENCODE_X12;
 							} elseif(!($this->isCharMode($tmpchr, self::SEMACODE_ENCODE_X12) OR $this->isCharMode($tmpchr, self::SEMACODE_ENCODE_C40))) {
 								break;
 							} //end if else
 							++$k;
 						} //end while
-						return self::SEMACODE_ENCODE_C40;
+						return (int) self::SEMACODE_ENCODE_C40;
 					} //end if
 				} //end if
 			} //end if
 			//--
 		} // end of while
+		//--
+		return (int) self::SEMACODE_ENCODE_ASCII;
 		//--
 	} //END FUNCTION
 
@@ -699,12 +715,14 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return (int) Switch codeword.
 	 * @private
 	 */
-	private function getSwitchEncodingCodeword($mode) {
+	private function getSwitchEncodingCodeword(int $mode) : int {
+		//--
+		$cw = 0;
 		//--
 		switch($mode) {
 			case self::SEMACODE_ENCODE_ASCII:  // ASCII character 0 to 127
 				$cw = 254;
-				if($this->last_enc == self::SEMACODE_ENCODE_EDF) {
+				if((int)$this->last_enc == (int)self::SEMACODE_ENCODE_EDF) {
 					$cw = 124;
 				} //end if
 				break;
@@ -725,7 +743,7 @@ final class Barcode2DSemacodeDataMatrix {
 				break;
 		} //end switch
 		//--
-		return $cw;
+		return (int) $cw;
 		//--
 	} //END FUNCTION
 
@@ -736,11 +754,11 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return number of data codewords in matrix
 	 * @private
 	 */
-	private function getMaxDataCodewords($numcw) {
+	private function getMaxDataCodewords(int $numcw) : int {
 		//--
-		foreach($this->symbattr as $key => $matrix) {
-			if($matrix[11] >= $numcw) {
-				return $matrix[11];
+		foreach(self::SYMBATTR as $key => $matrix) {
+			if((int)$matrix[11] >= (int)$numcw) {
+				return (int) $matrix[11];
 			} //end if
 		} //end foreach
 		//--
@@ -755,45 +773,47 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return array of codewords
 	 * @private
 	 */
-	private function getHighLevelEncoding($data) {
-		//-- STEP A. Start in ASCII encodation.
-		$enc = self::SEMACODE_ENCODE_ASCII; // current encoding mode
-		$pos = 0; // current position
-		$cw = array(); // array of codewords to be returned
-		$cw_num = 0; // number of data codewords
-		$data_length = strlen($data); // number of chars
+	private function getHighLevelEncoding(?string $data) : array {
 		//--
-		while($pos < $data_length) {
+		$data = (string) $data;
+		//-- STEP A. Start in ASCII encodation.
+		$enc = (int) self::SEMACODE_ENCODE_ASCII; // current encoding mode
+		$pos = 0; // current position
+		$cw = []; // array of codewords to be returned
+		$cw_num = 0; // number of data codewords
+		$data_length = (int) \strlen($data); // number of chars
+		//--
+		while((int)$pos < (int)$data_length) {
 			//-- set last used encoding
-			$this->last_enc = $enc;
+			$this->last_enc = (int) $enc;
 			switch($enc) {
 				case self::SEMACODE_ENCODE_ASCII:  // STEP B. While in ASCII encodation
 					//--
-					if(($data_length > 1) AND ($pos < ($data_length - 1)) AND ($this->isCharMode(ord($data[$pos]), self::SEMACODE_ENCODE_NUMASCII) AND $this->isCharMode(ord($data[$pos + 1]), self::SEMACODE_ENCODE_NUMASCII))) {
+					if(((int)$data_length > 1) AND ((int)$pos < (int)((int)$data_length - 1)) AND ($this->isCharMode(ord($data[$pos]), self::SEMACODE_ENCODE_NUMASCII) AND $this->isCharMode(ord($data[$pos + 1]), self::SEMACODE_ENCODE_NUMASCII))) {
 						// 1. If the next data sequence is at least 2 consecutive digits, encode the next two digits as a double digit in ASCII mode.
-						$cw[] = (intval(substr($data, $pos, 2)) + 130);
+						$cw[] = (int) (\intval(\substr($data, $pos, 2)) + 130);
 						++$cw_num;
 						$pos += 2;
 					} else {
 						// 2. If the look-ahead test (starting at step J) indicates another mode, switch to that mode.
-						$newenc = $this->lookAheadTest($data, $pos, $enc);
-						if($newenc != $enc) {
+						$newenc = (int) $this->lookAheadTest($data, $pos, $enc);
+						if((int)$newenc != (int)$enc) {
 							// switch to new encoding
-							$enc = $newenc;
-							$cw[] = $this->getSwitchEncodingCodeword($enc);
+							$enc = (int) $newenc;
+							$cw[] = (int) $this->getSwitchEncodingCodeword($enc);
 							++$cw_num;
 						} else {
 							// get new byte
-							$chr = ord($data[$pos]);
+							$chr = (int) \ord((string)$data[$pos]);
 							++$pos;
 							if($this->isCharMode($chr, self::SEMACODE_ENCODE_EXTASCII)) {
 								// 3. If the next data character is extended ASCII (greater than 127) encode it in ASCII mode first using the Upper Shift (value 235) character.
 								$cw[] = 235;
-								$cw[] = ($chr - 127);
+								$cw[] = (int) ((int)$chr - 127);
 								$cw_num += 2;
 							} else {
 								// 4. Otherwise process the next data character in ASCII encodation.
-								$cw[] = ($chr + 1);
+								$cw[] = (int) ((int)$chr + 1);
 								++$cw_num;
 							} //end if else
 						} //end if else
@@ -804,23 +824,23 @@ final class Barcode2DSemacodeDataMatrix {
 				case self::SEMACODE_ENCODE_TXT :   // Lower-case alphanumeric
 				case self::SEMACODE_ENCODE_X12 :   // ANSI X12
 					//--
-					$temp_cw = array();
+					$temp_cw = [];
 					$p = 0;
 					$epos = $pos;
 					// get charset ID
-					$set_id = $this->chset_id[$enc];
+					$set_id = self::CHSET_ID[$enc];
 					// get basic charset for current encoding
-					$charset = $this->chset[$set_id];
+					$charset = self::CHSET_ARR[$set_id];
 					do {
 						//-- 2. process the next character in C40 encodation.
-						$chr = ord($data[$epos]);
+						$chr = (int) \ord((string)$data[$epos]);
 						++$epos;
 						//-- check for extended character
 						if($chr & 0x80) {
-							if($enc == self::SEMACODE_ENCODE_X12) {
-								return false;
+							if((int)$enc == (int)self::SEMACODE_ENCODE_X12) {
+								return [];
 							} //end if
-							$chr = ($chr & 0x7f);
+							$chr = (int) ($chr & 0x7f);
 							$temp_cw[] = 1; // shift 2
 							$temp_cw[] = 30; // upper shift
 							$p += 2;
@@ -829,95 +849,95 @@ final class Barcode2DSemacodeDataMatrix {
 							$temp_cw[] = $charset[$chr];
 							++$p;
 						} else {
-							if(isset($this->chset['SH1'][$chr])) {
+							if(isset(self::CHSET_ARR['SH1'][$chr])) {
 								$temp_cw[] = 0; // shift 1
-								$shiftset = $this->chset['SH1'];
-							} elseif(isset($chr, $this->chset['SH2'][$chr])) {
+								$shiftset = self::CHSET_ARR['SH1'];
+							} elseif(isset($chr, self::CHSET_ARR['SH2'][$chr])) {
 								$temp_cw[] = 1; // shift 2
-								$shiftset = $this->chset['SH2'];
-							} elseif(($enc == self::SEMACODE_ENCODE_C40) AND isset($this->chset['S3C'][$chr])) {
+								$shiftset = self::CHSET_ARR['SH2'];
+							} elseif(($enc == self::SEMACODE_ENCODE_C40) AND isset(self::CHSET_ARR['S3C'][$chr])) {
 								$temp_cw[] = 2; // shift 3
-								$shiftset = $this->chset['S3C'];
-							} elseif(($enc == self::SEMACODE_ENCODE_TXT) AND isset($this->chset['S3T'][$chr])) {
+								$shiftset = self::CHSET_ARR['S3C'];
+							} elseif(($enc == self::SEMACODE_ENCODE_TXT) AND isset(self::CHSET_ARR['S3T'][$chr])) {
 								$temp_cw[] = 2; // shift 3
-								$shiftset = $this->chset['S3T'];
+								$shiftset = self::CHSET_ARR['S3T'];
 							} else {
-								return false;
+								return [];
 							} //end if else
 							$temp_cw[] = $shiftset[$chr];
 							$p += 2;
 						} //end if else
 						if($p >= 3) {
-							$c1 = array_shift($temp_cw);
-							$c2 = array_shift($temp_cw);
-							$c3 = array_shift($temp_cw);
+							$c1 = \array_shift($temp_cw);
+							$c2 = \array_shift($temp_cw);
+							$c3 = \array_shift($temp_cw);
 							$p -= 3;
 							$tmp = ((1600 * $c1) + (40 * $c2) + $c3 + 1);
-							$cw[] = ($tmp >> 8);
-							$cw[] = ($tmp % 256);
+							$cw[] = (int) ($tmp >> 8);
+							$cw[] = (int) ($tmp % 256);
 							$cw_num += 2;
-							$pos = $epos;
+							$pos = (int) $epos;
 							// 1. If the C40 encoding is at the point of starting a new double symbol character and if the look-ahead test (starting at step J) indicates another mode, switch to that mode.
-							$newenc = $this->lookAheadTest($data, $pos, $enc);
-							if($newenc != $enc) {
+							$newenc = (int) $this->lookAheadTest($data, $pos, $enc);
+							if((int)$newenc != (int)$enc) {
 								// switch to new encoding
-								$enc = $newenc;
-								if ($enc != self::SEMACODE_ENCODE_ASCII) {
+								$enc = (int) $newenc;
+								if((int)$enc != (int)self::SEMACODE_ENCODE_ASCII) {
 									// set unlatch character
-									$cw[] = $this->getSwitchEncodingCodeword(self::SEMACODE_ENCODE_ASCII);
+									$cw[] = (int) $this->getSwitchEncodingCodeword(self::SEMACODE_ENCODE_ASCII);
 									++$cw_num;
-								}
-								$cw[] = $this->getSwitchEncodingCodeword($enc);
+								} //end if
+								$cw[] = (int) $this->getSwitchEncodingCodeword($enc);
 								++$cw_num;
 								$pos -= $p;
 								$p = 0;
 								break;
 							} //end if
 						} //end if
-					} while(($p > 0) AND ($epos < $data_length));
+					} while(((int)$p > 0) AND ((int)$epos < (int)$data_length));
 					//-- process last data (if any)
 					if($p > 0) {
 						// get remaining number of data symbols
-						$cwr = ($this->getMaxDataCodewords($cw_num) - $cw_num);
-						if(($cwr == 1) AND ($p == 1)) {
+						$cwr = (int) ((int)$this->getMaxDataCodewords($cw_num) - (int)$cw_num);
+						if(((int)$cwr == 1) AND ((int)$p == 1)) {
 							// d. If one symbol character remains and one C40 value (data character) remains to be encoded
-							$c1 = array_shift($temp_cw);
+							$c1 = \array_shift($temp_cw);
 							--$p;
-							$cw[] = ($chr + 1);
+							$cw[] = (int) ($chr + 1);
 							++$cw_num;
-							$pos = $epos;
+							$pos = (int) $epos;
 							$enc = self::SEMACODE_ENCODE_ASCII;
-							$this->last_enc = $enc;
-						} elseif(($cwr == 2) AND ($p == 1)) {
+							$this->last_enc = (int) $enc;
+						} elseif(((int)$cwr == 2) AND ((int)$p == 1)) {
 							// c. If two symbol characters remain and only one C40 value (data character) remains to be encoded
-							$c1 = array_shift($temp_cw);
+							$c1 = \array_shift($temp_cw);
 							--$p;
 							$cw[] = 254;
-							$cw[] = ($chr + 1);
+							$cw[] = (int) ($chr + 1);
 							$cw_num += 2;
-							$pos = $epos;
+							$pos = (int) $epos;
 							$enc = self::SEMACODE_ENCODE_ASCII;
-							$this->last_enc = $enc;
-						} elseif(($cwr == 2) AND ($p == 2)) {
+							$this->last_enc = (int) $enc;
+						} elseif(((int)$cwr == 2) AND ((int)$p == 2)) {
 							// b. If two symbol characters remain and two C40 values remain to be encoded
-							$c1 = array_shift($temp_cw);
-							$c2 = array_shift($temp_cw);
+							$c1 = \array_shift($temp_cw);
+							$c2 = \array_shift($temp_cw);
 							$p -= 2;
-							$tmp = ((1600 * $c1) + (40 * $c2) + 1);
-							$cw[] = ($tmp >> 8);
-							$cw[] = ($tmp % 256);
+							$tmp = (int) ((1600 * $c1) + (40 * $c2) + 1);
+							$cw[] = (int) ($tmp >> 8);
+							$cw[] = (int) ($tmp % 256);
 							$cw_num += 2;
-							$pos = $epos;
+							$pos = (int) $epos;
 							$enc = self::SEMACODE_ENCODE_ASCII;
-							$this->last_enc = $enc;
+							$this->last_enc = (int) $enc;
 						} else {
 							// switch to ASCII encoding
-							if($enc != self::SEMACODE_ENCODE_ASCII) {
+							if((int)$enc != (int)self::SEMACODE_ENCODE_ASCII) {
 								$enc = self::SEMACODE_ENCODE_ASCII;
-								$this->last_enc = $enc;
-								$cw[] = $this->getSwitchEncodingCodeword($enc);
+								$this->last_enc = (int) $enc;
+								$cw[] = (int) $this->getSwitchEncodingCodeword($enc);
 								++$cw_num;
-								$pos = ($epos - $p);
+								$pos = (int) ($epos - $p);
 							} //end if
 						} //end if else
 					} //end if
@@ -925,94 +945,94 @@ final class Barcode2DSemacodeDataMatrix {
 					break;
 				case self::SEMACODE_ENCODE_EDF:  // F. While in EDIFACT (EDF) encodation
 					//-- initialize temporary array with 0 length
-					$temp_cw = array();
+					$temp_cw = [];
 					$epos = $pos;
 					$field_length = 0;
 					$newenc = $enc;
 					do {
 						// 2. process the next character in EDIFACT encodation.
-						$chr = ord($data[$epos]);
+						$chr = (int) \ord((string)$data[$epos]);
 						if($this->isCharMode($chr, self::SEMACODE_ENCODE_EDF)) {
 							++$epos;
 							$temp_cw[] = $chr;
 							++$field_length;
 						} //end if
-						if(($field_length == 4) OR ($epos == $data_length) OR !$this->isCharMode($chr, self::SEMACODE_ENCODE_EDF)) {
-							if(($epos == $data_length) AND ($field_length < 3)) {
+						if(((int)$field_length == 4) OR ((int)$epos == (int)$data_length) OR !$this->isCharMode($chr, self::SEMACODE_ENCODE_EDF)) {
+							if(((int)$epos == (int)$data_length) AND ((int)$field_length < 3)) {
 								$enc = self::SEMACODE_ENCODE_ASCII;
-								$cw[] = $this->getSwitchEncodingCodeword($enc);
+								$cw[] = (int) $this->getSwitchEncodingCodeword($enc);
 								++$cw_num;
 								break;
 							} //end if
-							if($field_length < 4) {
+							if((int)$field_length < 4) {
 								// set unlatch character
 								$temp_cw[] = 0x1f;
 								++$field_length;
 								// fill empty characters
-								for($i = $field_length; $i < 4; ++$i) {
+								for($i=$field_length; $i<4; ++$i) {
 									$temp_cw[] = 0;
 								} //end for
 								$enc = self::SEMACODE_ENCODE_ASCII;
-								$this->last_enc = $enc;
+								$this->last_enc = (int) $enc;
 							} //end if
 							//-- encodes four data characters in three codewords
-							$tcw = (($temp_cw[0] & 0x3F) << 2) + (($temp_cw[1] & 0x30) >> 4);
-							if($tcw > 0) {
-								$cw[] = $tcw;
+							$tcw = (int) ((($temp_cw[0] & 0x3F) << 2) + (($temp_cw[1] & 0x30) >> 4));
+							if((int)$tcw > 0) {
+								$cw[] = (int) $tcw;
 								$cw_num++;
 							} //end if
-							$tcw= (($temp_cw[1] & 0x0F) << 4) + (($temp_cw[2] & 0x3C) >> 2);
-							if($tcw > 0) {
-								$cw[] = $tcw;
+							$tcw = (int) ((($temp_cw[1] & 0x0F) << 4) + (($temp_cw[2] & 0x3C) >> 2));
+							if((int)$tcw > 0) {
+								$cw[] = (int) $tcw;
 								$cw_num++;
 							} //end if
-							$tcw = (($temp_cw[2] & 0x03) << 6) + ($temp_cw[3] & 0x3F);
-							if($tcw > 0) {
-								$cw[] = $tcw;
+							$tcw = (int) ((($temp_cw[2] & 0x03) << 6) + ($temp_cw[3] & 0x3F));
+							if((int)$tcw > 0) {
+								$cw[] = (int) $tcw;
 								$cw_num++;
 							} //end if
-							$temp_cw = array();
-							$pos = $epos;
+							$temp_cw = [];
+							$pos = (int) $epos;
 							$field_length = 0;
-							if($enc == self::SEMACODE_ENCODE_ASCII) {
+							if((int)$enc == (int)self::SEMACODE_ENCODE_ASCII) {
 								break; // exit from EDIFACT mode
 							} //end if
 						} //end if
-					} while($epos < $data_length);
+					} while((int)$epos < (int)$data_length);
 					//--
 					break;
 				case self::SEMACODE_ENCODE_B256: // G. While in Base 256 (B256) encodation
 					//-- initialize temporary array with 0 length
-					$temp_cw = array();
+					$temp_cw = [];
 					$field_length = 0;
-					while(($pos < $data_length) AND ($field_length <= 1555)) {
-						$newenc = $this->lookAheadTest($data, $pos, $enc);
-						if($newenc != $enc) {
+					while(((int)$pos < (int)$data_length) AND ((int)$field_length <= 1555)) {
+						$newenc = (int) $this->lookAheadTest($data, $pos, $enc);
+						if((int)$newenc != (int)$enc) {
 							// 1. If the look-ahead test (starting at step J) indicates another mode, switch to that mode.
-							$enc = $newenc;
+							$enc = (int) $newenc;
 							break; // exit from B256 mode
 						} else {
 							// 2. Otherwise, process the next character in Base 256 encodation.
-							$chr = ord($data[$pos]);
+							$chr = (int) \ord((string)$data[$pos]);
 							++$pos;
-							$temp_cw[] = $chr;
+							$temp_cw[] = (int) $chr;
 							++$field_length;
 						} //end if else
 					} //end while
 					//-- set field length
-					if($field_length <= 249) {
-						$cw[] = $this->get255StateCodeword($field_length, ($cw_num + 1));
+					if((int)$field_length <= 249) {
+						$cw[] = (int) $this->get255StateCodeword($field_length, ($cw_num + 1));
 						++$cw_num;
 					} else {
-						$cw[] = $this->get255StateCodeword((floor((string)($field_length / 250)) + 249), ($cw_num + 1)); // unixman: fix floor
-						$cw[] = $this->get255StateCodeword(($field_length % 250), ($cw_num + 2));
+						$cw[] = (int) $this->get255StateCodeword((\floor((string)($field_length / 250)) + 249), ($cw_num + 1)); // unixman: fix floor
+						$cw[] = (int) $this->get255StateCodeword(($field_length % 250), ($cw_num + 2));
 						$cw_num += 2;
 					} //end if else
 					//--
 					if(!empty($temp_cw)) {
 						// add B256 field
 						foreach($temp_cw as $p => $cht) {
-							$cw[] = $this->get255StateCodeword($cht, ($cw_num + $p + 1));
+							$cw[] = (int) $this->get255StateCodeword($cht, ($cw_num + $p + 1));
 						} //end foreach
 					} //end if
 					//--
@@ -1021,7 +1041,7 @@ final class Barcode2DSemacodeDataMatrix {
 			//--
 		} // end of while
 		//--
-		return $cw;
+		return (array) $cw;
 		//--
 	} //END FUNCTION
 
@@ -1039,7 +1059,7 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return array
 	 * @private
 	 */
-	private function placeModule($marr, $nrow, $ncol, $row, $col, $chr, $bit) {
+	private function placeModule(array $marr, int $nrow, int $ncol, int $row, int $col, int $chr, int $bit) : array {
 		//--
 		if($row < 0) {
 			$row += $nrow;
@@ -1070,7 +1090,7 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return array
 	 * @private
 	 */
-	private function placeUtah($marr, $nrow, $ncol, $row, $col, $chr) {
+	private function placeUtah(array $marr, int $nrow, int $ncol, int $row, int $col, int $chr) : array {
 		//--
 		$marr = $this->placeModule($marr, $nrow, $ncol, $row-2, $col-2, $chr, 1);
 		$marr = $this->placeModule($marr, $nrow, $ncol, $row-2, $col-1, $chr, 2);
@@ -1096,7 +1116,7 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return array
 	 * @private
 	 */
-	private function placeCornerA($marr, $nrow, $ncol, $chr) {
+	private function placeCornerA(array $marr, int $nrow, int $ncol, int $chr) : array {
 		//--
 		$marr = $this->placeModule($marr, $nrow, $ncol, $nrow-1, 0,       $chr, 1);
 		$marr = $this->placeModule($marr, $nrow, $ncol, $nrow-1, 1,       $chr, 2);
@@ -1122,7 +1142,7 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return array
 	 * @private
 	 */
-	private function placeCornerB($marr, $nrow, $ncol, $chr) {
+	private function placeCornerB(array $marr, int $nrow, int $ncol, int $chr) : array {
 		//--
 		$marr = $this->placeModule($marr, $nrow, $ncol, $nrow-3, 0,       $chr, 1);
 		$marr = $this->placeModule($marr, $nrow, $ncol, $nrow-2, 0,       $chr, 2);
@@ -1148,7 +1168,7 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return array
 	 * @private
 	 */
-	private function placeCornerC($marr, $nrow, $ncol, $chr) {
+	private function placeCornerC(array $marr, int $nrow, int $ncol, int $chr) : array {
 		//--
 		$marr = $this->placeModule($marr, $nrow, $ncol, $nrow-3, 0,       $chr, 1);
 		$marr = $this->placeModule($marr, $nrow, $ncol, $nrow-2, 0,       $chr, 2);
@@ -1174,7 +1194,7 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return array
 	 * @private
 	 */
-	private function placeCornerD($marr, $nrow, $ncol, $chr) {
+	private function placeCornerD(array $marr, int $nrow, int $ncol, int $chr) : array {
 		//--
 		$marr = $this->placeModule($marr, $nrow, $ncol, $nrow-1, 0,       $chr, 1);
 		$marr = $this->placeModule($marr, $nrow, $ncol, $nrow-1, $ncol-1, $chr, 2);
@@ -1198,9 +1218,9 @@ final class Barcode2DSemacodeDataMatrix {
 	 * @return array
 	 * @private
 	 */
-	private function getPlacementMap($nrow, $ncol) {
+	private function getPlacementMap(int $nrow, int $ncol) : array {
 		//-- initialize array with zeros
-		$marr = array_fill(0, ($nrow * $ncol), 0);
+		$marr = \array_fill(0, ($nrow * $ncol), 0);
 		//-- set starting values
 		$chr = 1;
 		$row = 4;

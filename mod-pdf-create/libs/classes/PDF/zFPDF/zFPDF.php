@@ -5,39 +5,70 @@ namespace PDF\zFPDF;
 //-- class:
 // zPdf (based on tFPDF 1.33)
 // Version: 1.33.uxm
-// Date:     2026-01-30
+// Date:     2026-07-28
 // Authors:  Radu Ovidiu I. <iradu@unix-world.org>
 // Copyright (c) unix-world.org, 2026-present
-// License:  GPLv3
+// License:  aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
 //-- based on class:
-// tFPDF (PHP), based on FPDF 1.85
+// tFPDF (PHP)
 // Version:  1.33
 // Date:     2022-12-20
 // Authors:  Ian Back <ianb@bpm1.com> ; Tycho Veltmeijer <tfpdf@tychoveltmeijer.nl> (versions 1.30+)
 // Copyright (c) Ian Back, 2010
 // License:  LGPL
+//-- based on class:
+// FPDF (PHP)
+// Version:  1.86
+// Date:     2023-06-25
+// Author:  Olivier Plathey
+// Copyright (c) Olivier Plathey, 2023
+// License:  FPDF
+//-- portions of code based on class:
+// FPDF Transformations (PHP)
+// Date: 2009-09-26
+// Authors:  Moritz Wagner & Andreas Würmser
+// License: FPDF
+//-- portions of code based on class:
+// FPDF Invoice (PHP)
+// Version: 1.03
+// Date: 2009-05-08
+// Author: Xavier Nicolay <XavierNicolay@ifrance.com>
+// Copyright (c) Xavier Nicolay, 2004-2009
+// License: FPDF
+//-- @
+// License FPDF:
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software to use, copy, modify, distribute, sublicense, and/or sell
+// copies of the software, and to permit persons to whom the software is furnished
+// to do so.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
 //-- #
 
 
-interface zInterfaceFPDF {
-
-	public function Header() : void;
-	public function Footer() : void;
-
-} //END INTERFACE
-
-
-class zFPDF
-	implements zInterfaceFPDF {
+class zFPDF {
 
 	// PHP 8.1 or later
 	// depends on PHP Extensions: MBString, Zlib, GD
 	// depends on classes: PDF\zFPDF\zTTFontFile, Smart, SmartFileSysUtils, SmartHashCrypto
 
-	public const VERSION = '1.33.uxm.20260130.2358';
+	public const VERSION = '1.33.uxm.20260728';
 
-	public const ZTTFontPath      = 'modules/mod-pdf-create/libs/classes/PDF/zFPDF/';
-	public const ZTTFontCachePath = 'tmp/cache/zFPDF/';
+	public const ZTTFontPath 		= 'modules/mod-pdf-create/libs/classes/PDF/zFPDF/';
+	public const ZTTFontCachePath 	= 'tmp/cache/zFPDF/';
+
+	public const ZTTFontDefaultFontName  = 'IBMPlexSans';
+	public const ZTTFontDefaultFontStyle = '';
+	public const ZTTFontDefaultFontSize  = 10;
+
+	public const ZTTFontDefaultIconicFontName = 'SfIcons';
+
+	private static array $cachedFonts = []; // unxm
+
+	//-- Core fonts
+	private const CORE_FONTS = [ 'ibmplexsans', 'sficons' ]; // [ 'courier', 'helvetica', 'times', 'symbol', 'zapfdingbats' ];
+	//--
+
+	private const AliasNumberOfPages = '{{┆♯np:0123456789♯┆}}'; // sync with golang ; default was: '{nb}' ; bug fix: add numbers because of font embedding issue
 
 	private const PDFVersion = '1.4'; // {{{SYNC-PDF-MIN-VERSION}}}
 
@@ -50,8 +81,10 @@ class zFPDF
 		'legal'		=>	[ 612,    1008    ],
 	];
 
-	private $uxmFontsPath; 		// Fonts Path (unixman)
-	private $uxmUseFontCache; 	// if TRUE will use caching for Font Metrics, otherwise will not
+	private $uxmLoadDefaultIconicFont 	= false; 	// if set to TRUE will load the default Iconic Font: SfIcons
+	private $uxmUseAlternateDefaultFont = false; 	// if set to TRUE will use SemiBold and Text variants of IBM Plex
+	private $uxmUseFontCache 			= false; 	// if TRUE will use caching for Font Metrics, otherwise will not
+	private $uxmFontsPath 				= ''; 		// Fonts Path (unixman)
 
 	private $unifontSubset;
 	private $page; 				// current page number
@@ -79,7 +112,6 @@ class zFPDF
 	private $lasth; 			// height of last printed cell
 	private $LineWidth; 		// line width in user unit
 	private $fontpath; 			// path containing fonts
-	private $CoreFonts; 		// array of core font names
 	private $fonts; 			// array of used fonts
 	private $FontFiles; 		// array of font files
 	private $encodings; 		// array of encodings
@@ -99,6 +131,7 @@ class zFPDF
 	private $images; 			// array of used images
 	private $PageLinks; 		// array of links in pages
 	private $links; 			// array of internal links
+	private $inTransform; 		// unixman: transformation transaction flag
 	private $AutoPageBreak; 	// automatic page breaking
 	private $PageBreakTrigger; 	// threshold used to trigger page breaks
 	private $InHeader; 			// flag set when processing header
@@ -109,10 +142,11 @@ class zFPDF
 	private $metadata; 			// document properties
 	private $CreationDate; 		// document creation date
 
+
 	//-------- [PUBLIC METHODS]
 
 
-	final public function __construct(bool $useFontCaching=false, string $orientation='P', string $unit='mm', string $size='A4', ?string $uxmFontsPath=null) { // {{{SYNC-ZFPDF-CONSTRUCT-PARAMS}}}
+	final public function __construct(bool $loadDefaultIconicFont=false, bool $useAlternateDefaultFont=false, bool $useFontCaching=false, string $orientation='P', string $unit='mm', string $size='A4', ?string $uxmFontsPath=null) { // {{{SYNC-ZFPDF-CONSTRUCT-PARAMS}}}
 
 		//--
 		if(!\class_exists('\\PDF\\zFPDF\\zTTFontFile')) {
@@ -120,30 +154,32 @@ class zFPDF
 			return;
 		} //end if
 		//--
-
+		$this->uxmLoadDefaultIconicFont   = (bool) $loadDefaultIconicFont;
+		$this->uxmUseAlternateDefaultFont = (bool) $useAlternateDefaultFont;
 		//--
 		$this->uxmUseFontCache = (bool) $useFontCaching;
 		//--
-		if($uxmFontsPath === null) {
-			$uxmFontsPath = (string) self::ZTTFontPath;
+		$theFontPath = (string) self::ZTTFontPath;
+		if($uxmFontsPath !== null) {
+			$theFontPath = (string) $uxmFontsPath;
 		} //end if
-		$uxmFontsPath = (string) \trim((string)$uxmFontsPath);
+		$theFontPath = (string) \trim((string)$theFontPath);
 		//--
-		if((string)$uxmFontsPath == '') {
+		if((string)$theFontPath == '') {
 			$this->Error('Init: Fonts Path is Empty');
 			return;
 		} //end if
 
-		if(!!\str_starts_with((string)$uxmFontsPath, '.')) {
+		if(!!\str_starts_with((string)$theFontPath, '.')) {
 			$this->Error('Init: Fonts Path Must Not Start with a Dot `.`');
 			return;
 		} //end if
-		if(!!\str_starts_with((string)$uxmFontsPath, '/')) {
+		if(!!\str_starts_with((string)$theFontPath, '/')) {
 			$this->Error('Init: Fonts Path Must Not Start with a Slash `/`');
 			return;
 		} //end if
 
-		if(!\str_ends_with((string)$uxmFontsPath, '/')) {
+		if(!\str_ends_with((string)$theFontPath, '/')) {
 			$this->Error('Init: Fonts Path Must End with a Slash `/`');
 			return;
 		} //end if
@@ -163,9 +199,9 @@ class zFPDF
 		$this->images = [];
 		$this->links = [];
 		$this->lasth = 0;
-		$this->FontFamily = '';
-		$this->FontStyle = '';
-		$this->FontSizePt = 12;
+		$this->FontFamily = self::ZTTFontDefaultFontName;
+		$this->FontStyle  = self::ZTTFontDefaultFontStyle;
+		$this->FontSizePt = self::ZTTFontDefaultFontSize;
 		$this->underline = false;
 		$this->DrawColor = '0 G';
 		$this->FillColor = '0 g';
@@ -174,26 +210,25 @@ class zFPDF
 		$this->WithAlpha = false;
 		$this->ws = 0;
 		//--
+		$this->inTransform = false; // unixman
+		//--
 		$this->InHeader = false;
 		$this->InFooter = false;
 		//--
 
 		//-- Font path
-		$this->fontpath = (string) $uxmFontsPath;
-		//--
-
-		//-- Core fonts
-		$this->CoreFonts = [ 'courier', 'helvetica', 'times', 'symbol', 'zapfdingbats' ];
+		$this->fontpath = (string) $theFontPath;
 		//--
 
 		//-- Scale factor
-		if((string)$unit == 'pt') {
+		$theUnit = (string) \strtolower((string)\trim((string)$unit));
+		if((string)$theUnit == 'pt') {
 			$this->k = 1;
-		} elseif((string)$unit == 'mm') {
+		} elseif((string)$theUnit == 'mm') {
 			$this->k = 72/25.4;
-		} elseif((string)$unit == 'cm') {
+		} elseif((string)$theUnit == 'cm') {
 			$this->k = 72/2.54;
-		} elseif((string)$unit == 'in') {
+		} elseif((string)$theUnit == 'in') {
 			$this->k = 72;
 		} else {
 			$this->Error('Incorrect unit: '.$unit);
@@ -202,42 +237,46 @@ class zFPDF
 		//--
 
 		//--
-		$size = $this->_getpagesize((string)$size);
-		$this->DefPageSize = $size;
-		$this->CurPageSize = $size;
+		$this->AliasNbPages = ''; // $this->AliasNbPages: init as empty (to avoid embedd extra font characters) ; {{{SYNC-EMBEDD-NB-ALIAS-EXTRA-CHARACTERS}}}
+		//--
+
+		//--
+		$theSize = (array) $this->getPageSize((string)\strtoupper((string)\trim((string)$size)));
+		$this->DefPageSize = (array) $theSize;
+		$this->CurPageSize = (array) $theSize;
 		//--
 
 		//-- Page orientation
-		$orientation = (string) \strtolower((string)$orientation);
-		if(($orientation === 'p') || ($orientation === 'portrait')) {
+		$theOrientation = (string) \strtolower((string)\trim((string)$orientation));
+		if(($theOrientation === 'p') || ($theOrientation === 'portrait')) {
 			$this->DefOrientation = 'P';
-			$this->w = $size[0];
-			$this->h = $size[1];
-		} elseif(($orientation === 'l') || ($orientation === 'landscape')) {
+			$this->w = $theSize[0];
+			$this->h = $theSize[1];
+		} elseif(($theOrientation === 'l') || ($theOrientation === 'landscape')) {
 			$this->DefOrientation = 'L';
-			$this->w = $size[1];
-			$this->h = $size[0];
+			$this->w = $theSize[1];
+			$this->h = $theSize[0];
 		} else {
 			$this->Error('Incorrect orientation: '.$orientation);
 			return;
 		} //end if else
 		//--
 		$this->CurOrientation = $this->DefOrientation;
-		$this->wPt = $this->w*$this->k;
-		$this->hPt = $this->h*$this->k;
+		$this->wPt = $this->w * $this->k;
+		$this->hPt = $this->h * $this->k;
 		//--
 
 		//-- Page rotation
 		$this->CurRotation = 0;
 		//-- Page margins (1 cm)
-		$margin = 28.35/$this->k;
-		$this->SetMargins($margin,$margin);
+		$margin = 28.35 / $this->k;
+		$this->SetMargins($margin, $margin);
 		//-- Interior cell margin (1 mm)
-		$this->cMargin = $margin/10;
+		$this->cMargin = $margin / 10;
 		//-- Line width (0.2 mm)
-		$this->LineWidth = .567/$this->k;
+		$this->LineWidth = 0.567 / $this->k;
 		//-- Automatic page break
-		$this->SetAutoPageBreak(true,2*$margin);
+		$this->SetAutoPageBreak(true, 2 * $margin);
 		//-- Default display mode
 		$this->SetDisplayMode('default');
 		//-- Enable compression
@@ -246,19 +285,20 @@ class zFPDF
 		$this->metadata = [ 'Producer' => 'zFPDF '.self::VERSION ];
 		//--
 
+		//--
+		$this->initDocument($loadDefaultIconicFont, $useAlternateDefaultFont, $useFontCaching, $orientation, $unit, $size, $uxmFontsPath); // {{{SYNC-ZFPDF-CONSTRUCT-PARAMS}}}
+		//--
+
 	} //END FUNCTION
 
 
-	public function Header() : void {
+	final public function SpacesAliasNbPages() : string { // this is useful for prefixing to left when using center align `C` with pdf.AliasNbPages
 		//--
-		// To be implemented in the extended class ...
-		//--
-	} //END FUNCTION
-
-
-	public function Footer() : void {
-		//--
-		// To be implemented in the extended class ...
+		if((string)$this->AliasNbPages == '') {
+			return '';
+		} //end if
+		//-- sync with Golang
+		return (string) \str_repeat(' ', (int)\strlen((string)$this->AliasNbPages) - 2); // substract 2 as most of pages are intended to be between 0..999 (so be at middle between 1..3 characters)
 		//--
 	} //END FUNCTION
 
@@ -324,7 +364,7 @@ class zFPDF
 		//--
 		// Set auto page break mode and triggering margin
 		//--
-		$this->AutoPageBreak 	= (bool) $auto;
+		$this->AutoPageBreak 	= (bool)  $auto;
 		$this->bMargin 			= (float) $margin;
 		$this->PageBreakTrigger = (float) ($this->h - $margin);
 		//--
@@ -370,9 +410,7 @@ class zFPDF
 			return;
 		} //end if
 		//--
-		$isUTF8 = (bool) $this->_isascii((string)$title);
-		//--
-		$this->metadata['Title'] = (string) ($isUTF8 ? $title : $this->_UTF8encode((string)$title));
+		$this->metadata['Title'] = (string) $this->encodeString((string)$title);
 		//--
 	} //END FUNCTION
 
@@ -386,9 +424,7 @@ class zFPDF
 			return;
 		} //end if
 		//--
-		$isUTF8 = (bool) $this->_isascii((string)$author);
-		//--
-		$this->metadata['Author'] = (string) ($isUTF8 ? $author : $this->_UTF8encode((string)$author));
+		$this->metadata['Author'] = (string) $this->encodeString((string)$author);
 		//--
 	} //END FUNCTION
 
@@ -402,9 +438,7 @@ class zFPDF
 			return;
 		} //end if
 		//--
-		$isUTF8 = (bool) $this->_isascii((string)$subject);
-		//--
-		$this->metadata['Subject'] = (string) ($isUTF8 ? $subject : $this->_UTF8encode((string)$subject));
+		$this->metadata['Subject'] = (string) $this->encodeString((string)$subject);
 		//--
 	} //END FUNCTION
 
@@ -418,9 +452,7 @@ class zFPDF
 			return;
 		} //end if
 		//--
-		$isUTF8 = (bool) $this->_isascii((string)$keywords);
-		//--
-		$this->metadata['Keywords'] = (string) ($isUTF8 ? $keywords : $this->_UTF8encode((string)$keywords));
+		$this->metadata['Keywords'] = (string) $this->encodeString((string)$keywords);
 		//--
 	} //END FUNCTION
 
@@ -434,23 +466,28 @@ class zFPDF
 			return;
 		} //end if
 		//--
-		$isUTF8 = (bool) $this->_isascii((string)$creator);
-		//--
-		$this->metadata['Creator'] = (string) ($isUTF8 ? $creator : $this->_UTF8encode((string)$creator));
+		$this->metadata['Creator'] = (string) $this->encodeString((string)$creator);
 		//--
 	} //END FUNCTION
 
 
-	final public function AliasNbPages(string $alias='{nb}') : void {
+	final public function AliasNbPages(string $alias=self::AliasNumberOfPages) : string {
 		//--
 		// Define an alias for total number of pages
+		// if AliasNbPages is used in the header() protected method this needs to be initialized before set default font
 		//--
 		$alias = (string) \trim((string)$alias);
 		if((string)$alias == '') {
-			return;
+			return '';
+		} //end if
+		//--
+		if((string)$this->AliasNbPages != '') {
+			return (string) $this->AliasNbPages; // disallow set more than once
 		} //end if
 		//--
 		$this->AliasNbPages = (string) $alias;
+		//--
+		return (string) $this->AliasNbPages;
 		//--
 	} //END FUNCTION
 
@@ -468,7 +505,7 @@ class zFPDF
 		} //end if
 		//-- Page footer
 		$this->InFooter = true;
-		$this->Footer();
+		$this->footer();
 		$this->InFooter = false;
 		//-- Close page
 		$this->_endpage();
@@ -487,72 +524,73 @@ class zFPDF
 			return;
 		} //end if
 		//--
-		$family = $this->FontFamily;
-		$style = $this->FontStyle.($this->underline ? 'U' : '');
-		$fontsize = $this->FontSizePt;
-		$lw = $this->LineWidth;
-		$dc = $this->DrawColor;
-		$fc = $this->FillColor;
-		$tc = $this->TextColor;
-		$cf = $this->ColorFlag;
+		$family   = (string) $this->FontFamily;
+		$style    = (string) $this->FontStyle.($this->underline ? 'U' : '');
+		$fontsize = (int)    $this->FontSizePt;
+		//--
+		$lw = (float)  $this->LineWidth;
+		$dc = (string) $this->DrawColor;
+		$fc = (string) $this->FillColor;
+		$tc = (string) $this->TextColor;
+		$cf = (bool)   $this->ColorFlag;
 		//--
 		if($this->page > 0) {
 			//-- Page footer
 			$this->InFooter = true;
-			$this->Footer();
+			$this->footer();
 			$this->InFooter = false;
 			//-- Close page
 			$this->_endpage();
 			//--
 		} //end if
 		//-- Start new page
-		$this->_beginpage($orientation, $size, $rotation);
+		$this->_beginpage((string)$orientation, $size, (int)$rotation);
 		//-- Set line cap style to square
-		$this->_out('2 J');
+		$this->out('2 J');
 		//-- Set line width
-		$this->LineWidth = $lw;
-		$this->_out((string)\sprintf('%.2F w', $lw * $this->k));
+		$this->LineWidth = (float) $lw;
+		$this->out((string)\sprintf('%.2F w', $lw * $this->k));
 		//-- Set font
 		if($family) {
-			$this->SetFont($family, $style, $fontsize);
+			$this->SetFont((string)$family, (string)$style, (int)$fontsize);
 		} //end if
 		//-- Set colors
-		$this->DrawColor = $dc;
+		$this->DrawColor = (string) $dc;
 		if($dc != '0 G') {
-			$this->_out($dc);
+			$this->out((string)$dc);
 		} //end if
 		//--
-		$this->FillColor = $fc;
+		$this->FillColor = (string) $fc;
 		if($fc != '0 g') {
-			$this->_out($fc);
+			$this->out((string)$fc);
 		} //end if
 		//--
-		$this->TextColor = $tc;
-		$this->ColorFlag = $cf;
+		$this->TextColor = (string) $tc;
+		$this->ColorFlag = (bool)   $cf;
 		//-- Page header
 		$this->InHeader = true;
-		$this->Header();
+		$this->header();
 		$this->InHeader = false;
 		//-- Restore line width
-		if($this->LineWidth!=$lw) {
-			$this->LineWidth = $lw;
-			$this->_out((string)\sprintf('%.2F w', $lw * $this->k));
+		if((float)$this->LineWidth != (float)$lw) {
+			$this->LineWidth = (float) $lw;
+			$this->out((string)\sprintf('%.2F w', $lw * $this->k));
 		} //end if
 		//-- Restore font
 		if($family) {
-			$this->SetFont($family,$style,$fontsize);
+			$this->SetFont($family, $style, $fontsize);
 		} //end if
 		//-- Restore colors
-		if($this->DrawColor != $dc) {
-			$this->DrawColor = $dc;
-			$this->_out($dc);
+		if((string)$this->DrawColor != (string)$dc) {
+			$this->DrawColor = (string) $dc;
+			$this->out((string)$dc);
 		} //end if
-		if($this->FillColor!=$fc) {
-			$this->FillColor = $fc;
-			$this->_out($fc);
+		if((string)$this->FillColor != (string)$fc) {
+			$this->FillColor = (string)$fc;
+			$this->out((string)$fc);
 		} //end if
-		$this->TextColor = $tc;
-		$this->ColorFlag = $cf;
+		$this->TextColor = (string) $tc;
+		$this->ColorFlag = (bool)   $cf;
 		//--
 	} //END FUNCTION
 
@@ -600,10 +638,11 @@ class zFPDF
 		} //end if
 		//--
 		if($this->page > 0) {
-			$this->_out((string)$this->DrawColor);
+			$this->out((string)$this->DrawColor);
 		} //end if
 		//--
-	}
+	} //END FUNCTION
+
 
 	final public function SetFillColor(int $r, int $g, int $b) : void {
 		//--
@@ -636,7 +675,7 @@ class zFPDF
 		$this->ColorFlag = ($this->FillColor != $this->TextColor);
 		//--
 		if($this->page>0) {
-			$this->_out((string)$this->FillColor);
+			$this->out((string)$this->FillColor);
 		} //end if
 		//--
 	} //END FUNCTION
@@ -679,6 +718,10 @@ class zFPDF
 		//--
 		// Get width of a string in the current font
 		//--
+		if((string)$s == '') {
+			return 0;
+		} //end if
+		//--
 		$cw = $this->CurrentFont['cw'];
 		//--
 		$w = 0;
@@ -688,8 +731,8 @@ class zFPDF
 			$unicode = $this->UTF8StringToArray((string)$s);
 			//--
 			foreach($unicode as $char) {
-				if(isset($cw[2*$char])) {
-					$w += (\ord($cw[2*$char])<<8) + \ord($cw[2*$char+1]);
+				if(isset($cw[2 * $char])) {
+					$w += (\ord($cw[2 * $char])<<8) + \ord($cw[2 * $char + 1]);
 				} elseif(($char > 0) && ($char < 128) && isset($cw[\chr($char)])) {
 					$w += $cw[\chr($char)];
 				} elseif(isset($this->CurrentFont['desc']['MissingWidth'])) {
@@ -716,6 +759,63 @@ class zFPDF
 	} //END FUNCTION
 
 
+	final public function GetMultiLineStringHeight(string $text, float $size) : int {
+		//--
+		if((float)$size <= 0) {
+			$this->Error('GetMultiLineStringHeight: Size is zero or negative');
+			return 0; // avoid below division by zero
+		} //end if
+		//--
+		if(((string)$text == '') OR (\strpos((string)$text, "\n") === false)) {
+			return 1;
+		} //end if
+		//--
+		$text = (string) \strtr((string)$text, [
+			"\r\n" => "\n",
+			"\r"   => "\n",
+		]);
+		//--
+		$ligne = '';
+		$numLines = 0;
+		$loop = true;
+		while($loop === true) {
+			//--
+			$pos = \strpos((string)$text, "\n"); // do not cast, can be false | int
+			//--
+			if($pos === false) {
+				$loop  = false; // STOP
+				$ligne = (string) $text;
+			} else {
+				if($this->unifontSubset) {
+					$ligne = (string) \mb_substr((string)$text, 0,                    (int)$pos, 'UTF-8');
+					$text  = (string) \mb_substr((string)$text, (int)((int)$pos + 1), null,      'UTF-8');
+				} else { // aaa
+					$ligne = (string) \substr((string)$text,    0,                    (int)$pos);
+					$text  = (string) \substr((string)$text,    (int)((int)$pos + 1));
+				} //end if
+			} //end if else
+			//--
+			$length = (int) \ceil($this->GetStringWidth((string)$ligne)); // unixman: original was \floor
+			$res    = (int) (1 + \ceil($length / $size)); // unixman: original was \floor
+			//--
+			$numLines += $res;
+			//--
+		} //end while
+		//--
+		return (int) $numLines;
+		//--
+	} //END FUNCTION
+
+
+	final public function GetLineWidth() : float {
+		//--
+		// Get the current line width ; unixman, extra method
+		//--
+		return (float) $this->LineWidth;
+		//--
+	} //END FUNCTION
+
+
 	final public function SetLineWidth(float $width) : void {
 		//--
 		// Set line width
@@ -723,7 +823,7 @@ class zFPDF
 		$this->LineWidth = (float) $width;
 		//--
 		if($this->page > 0) {
-			$this->_out((string)\sprintf('%.2F w', $width * $this->k));
+			$this->out((string)\sprintf('%.2F w', $width * $this->k));
 		} //end if
 		//--
 	} //END FUNCTION
@@ -733,7 +833,7 @@ class zFPDF
 		//--
 		// Draw a line
 		//--
-		$this->_out((string)\sprintf('%.2F %.2F m %.2F %.2F l S', $x1 * $this->k, ($this->h - $y1) * $this->k, $x2 * $this->k, ($this->h - $y2) * $this->k));
+		$this->out((string)\sprintf('%.2F %.2F m %.2F %.2F l S', $x1 * $this->k, ($this->h - $y1) * $this->k, $x2 * $this->k, ($this->h - $y2) * $this->k));
 		//--
 	} //END FUNCTION
 
@@ -750,7 +850,602 @@ class zFPDF
 			$op = 'S';
 		} //end if else
 		//--
-		$this->_out((string)\sprintf('%.2F %.2F %.2F %.2F re %s', $x * $this->k, ($this->h - $y) * $this->k, $w * $this->k, -1 * ($h * $this->k), $op));
+		$this->out((string)\sprintf('%.2F %.2F %.2F %.2F re %s', $x * $this->k, ($this->h - $y) * $this->k, $w * $this->k, -1 * ($h * $this->k), $op));
+		//--
+	} //END FUNCTION
+
+
+	final public function RectRounded(float $x, float $y, float $w, float $h, float $r, string $style='') : void {
+		//--
+		// Draw a rounded rectangle ; unixman, extra method
+		//--
+		if((string)$style == 'F') {
+			$op = 'f';
+		} elseif(((string)$style == 'FD') || ((string)$style == 'DF')) {
+			$op = 'B';
+		} else {
+			$op = 'S';
+		} //end if else
+		//--
+		$MyArc = (float) 4/3 * (\sqrt(2) - 1);
+		//--
+		$this->out((string)\sprintf('%.2F %.2F m', ($x + $r) * $this->k, ($this->h - $y) * $this->k));
+		//--
+		$xc = $x + $w - $r;
+		$yc = $y + $r;
+		//--
+		$this->out((string)\sprintf('%.2F %.2F l', $xc * $this->k, ($this->h - $y) * $this->k));
+		$this->Arc($xc + $r * $MyArc, $yc - $r, $xc + $r, $yc - $r * $MyArc, $xc + $r, $yc);
+		//--
+		$xc = $x + $w - $r;
+		$yc = $y + $h - $r;
+		//--
+		$this->out((string)\sprintf('%.2F %.2F l', ($x + $w) * $this->k, ($this->h - $yc) * $this->k));
+		$this->Arc($xc + $r, $yc + $r * $MyArc, $xc + $r * $MyArc, $yc + $r, $xc, $yc + $r);
+		//--
+		$xc = $x + $r;
+		$yc = $y + $h - $r;
+		//--
+		$this->out((string)\sprintf('%.2F %.2F l', $xc * $this->k, ($this->h - ($y + $h)) * $this->k));
+		$this->Arc($xc - $r * $MyArc, $yc + $r, $xc - $r, $yc + $r * $MyArc, $xc - $r, $yc);
+		//--
+		$xc = $x + $r;
+		$yc = $y + $r;
+		//--
+		$this->out((string)\sprintf('%.2F %.2F l', $x * $this->k, ($this->h - $yc) * $this->k));
+		$this->Arc($xc - $r, $yc - $r * $MyArc, $xc - $r * $MyArc, $yc - $r, $xc, $yc - $r);
+		//--
+		$this->out((string)$op);
+		//--
+	} //END FUNCTION
+
+
+	final public function Arc(float $x1, float $y1, float $x2, float $y2, float $x3, float $y3) : void {
+		//--
+		// Draw an Arc ; unixman, extra method
+		//--
+		$this->out((string)\sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c ', $x1 * $this->k, ($this->h - $y1) * $this->k, $x2 * $this->k, ($this->h - $y2) * $this->k, $x3 * $this->k, ($this->h - $y3) * $this->k));
+		//--
+	} //END FUNCTION
+
+
+	final public function ResetLineStyle() : void {
+		//--
+		// Reset the line style to original style ; unixman, extra method
+		//--
+		$this->SetLineStyle([ 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'phase' => 0 ]);
+		//--
+	} //END FUNCTION
+
+
+	final public function SetLineStyle(array $style) : void {
+		//--
+		// Sets the line style ; unixman, extra method
+		//--
+		// Parameters:
+		// - style: Line style. Array with keys among the following:
+		//   . cap: Type of cap to put on the line (butt, round, square). The difference between 'square' and 'butt' is that 'square' projects a flat end past the end of the line.
+		//   . join: miter, round or bevel
+		//   . dash: Dash pattern. Is 0 (without dash) or array with series of length values, which are the lengths of the on and off dashes.
+		//           For example: (2) represents 2 on, 2 off, 2 on , 2 off ...
+		//                        (2,1) is 2 on, 1 off, 2 on, 1 off.. etc
+		//   . phase: Modifier of the dash pattern which is used to shift the point at which the pattern starts
+		//--
+		if((int)\Smart::array_size($style) <= 0) {
+			$this->Error('SetLineStyle: Empty Line Style Definition');
+			return;
+		} //end if
+		//--
+		if(isset($style['cap'])) {
+			$ca = [ 'butt' => 0, 'round'=> 1, 'square' => 2 ];
+			if(isset($ca[$style['cap']])) {
+				$this->out((string)$ca[$style['cap']].' J');
+			} //end if
+		} //end if
+		//--
+		if(isset($style['join'])) {
+			$ja = [ 'miter' => 0, 'round' => 1, 'bevel' => 2 ];
+			if(isset($ja[$style['join']])) {
+				$this->out((string)$ja[$style['join']].' j');
+			} //end if
+		} //end if
+		//--
+		if(isset($style['dash'])) {
+			//--
+			$dshs = '';
+			//--
+			if(\strpos((string)\strval($style['dash']), ',') !== false) {
+				//--
+				$tab = (array) \explode(',', (string)\strval($style['dash']));
+				//--
+				foreach($tab as $i => $v) {
+					//--
+					$v = (string) \trim((string)\strval($v));
+					//--
+					if(\intval($i) > 0) {
+						$dshs .= ' ';
+					} //end if
+					//--
+					$dshs .= (string) \sprintf('%.2F', \floatval($v));
+					//--
+				} //end foreach
+				//--
+				if(!isset($style['phase'])) {
+					$style['phase'] = 0;
+				} //end if
+				//--
+			} else { // dash = 0
+				//--
+				$style['phase'] = 0;
+				//--
+			} //end if else
+			//--
+			$this->out((string)\sprintf('[%s] %.2F d', (string)$dshs, \floatval($style['phase'])));
+			//--
+		} //end if
+		//--
+	} //END FUNCTION
+
+
+	final public function Curve(float $x0, float $y0, float $x1, float $y1, float $x2, float $y2, float $x3, float $y3, string $style='S', array $fill_color=[]) : void {
+		//--
+		// Draws a Bezier curve ; unixman, extra method
+		// a Bézier curve is tangent to the line between the control points at either end of the curve
+		//--
+		// Parameters:
+		// - x0, y0: Start point
+		// - x1, y1: Control point 1
+		// - x2, y2: Control point 2
+		// - x3, y3: End point
+		// - style: Style of rectangule (draw and/or fill: S, F, DF, FD)
+		// - fill_color: Fill color. Array with components (red, green, blue)
+		//--
+		if((\strpos((string)$style, 'F') !== false) && !empty($fill_color)) {
+			//--
+			$r = (int) \intval($fill_color[0] ?? null);
+			$g = (int) \intval($fill_color[1] ?? null);
+			$b = (int) \intval($fill_color[2] ?? null);
+			//--
+			$this->SetFillColor($r, $g, $b);
+			//--
+		} //end if
+		//--
+		switch((string)$style) {
+			case 'F':
+				$op = 'f';
+				break;
+			case 'FD':
+			case 'DF':
+				$op = 'B';
+				break;
+			default:
+				$op = 'S';
+				break;
+		} //end switch
+		//--
+		$this->out((string)\sprintf('%.2F %.2F m', $x0 * $this->k, ($this->h - $y0) * $this->k)); // _Point()
+		$this->out((string)\sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c', $x1 * $this->k, ($this->h - $y1) * $this->k, $x2 * $this->k, ($this->h - $y2) * $this->k, $x3 * $this->k, ($this->h - $y3) * $this->k)); // _Curve()
+		$this->out((string)$op);
+		//--
+	} //END FUNCTION
+
+
+	final public function Ellipse(float $x, float $y, float $rx, float $ry, string $style='D') : void {
+		//--
+		// Draw an Ellipse ; unixman, extra method
+		//--
+		$op = 'S';
+		if((string)$style == 'F') {
+			$op = 'f';
+		} elseif(((string)$style == 'FD') || ((string)$style == 'DF')) {
+			$op = 'B';
+		} //end if else
+		//--
+		$lx = (float) (4/3 * (\M_SQRT2 - 1) * $rx);
+		$ly = (float) (4/3 * (\M_SQRT2 -1 ) * $ry);
+		//--
+		$k = (float) $this->k;
+		$h = (float) $this->h;
+		//--
+		$this->out((string)\sprintf('%.2F %.2F m %.2F %.2F %.2F %.2F %.2F %.2F c', ($x + $rx) * $k, ($h - $y) * $k, ($x + $rx) * $k, ($h - ($y - $ly)) * $k, ($x + $lx) * $k, ($h - ($y - $ry)) * $k, $x * $k, ($h - ($y - $ry)) * $k));
+		$this->out((string)\sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c', ($x - $lx) * $k, ($h - ($y - $ry)) * $k, ($x - $rx) * $k, ($h - ($y - $ly)) * $k, ($x - $rx) * $k, ($h - $y) * $k));
+		$this->out((string)\sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c', ($x - $rx) * $k, ($h - ($y + $ly)) * $k, ($x - $lx) * $k, ($h - ($y + $ry)) * $k, $x * $k, ($h - ($y + $ry)) * $k));
+		$this->out((string)\sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c %s', ($x + $lx) * $k, ($h - ($y + $ry)) * $k, ($x + $rx) * $k, ($h - ($y + $ly)) * $k, ($x + $rx) * $k, ($h - $y) * $k, $op));
+		//--
+	} //END FUNCTION
+
+
+	final public function Circle(float $x, float $y, float $r, string $style='D') : void {
+		//--
+		// Draw a Circle ; unixman, extra method
+		//--
+		$this->Ellipse((float)$x, (float)$y, (float)$r, (float)$r, (string)$style);
+		//--
+	} //END FUNCTION
+
+
+	final public function Polygon(array $points, string $style='D') : void {
+		//--
+		// Draw a Polygon ; unixman, extra method
+		//--
+		if((int)\Smart::array_size($points) <= 0) {
+			$this->Error('Polygon: Empty Points Data');
+			return;
+		} //end if
+		if((int)\Smart::array_type_test($points) != 1) {
+			$this->Error('Polygon: Invalid Points Data');
+			return;
+		} //end if
+		//--
+		$op = 's';
+		if((string)$style == 'F') {
+			$op = 'f';
+		} elseif(((string)$style == 'FD') || ((string)$style == 'DF')) {
+			$op = 'b';
+		} //end if else
+		//--
+		$h = (float) $this->h;
+		$k = (float) $this->k;
+		//--
+		$out = '';
+		for($i=0; $i<\count($points); $i+=2){
+			//--
+			$out .= (string) \sprintf('%.2F %.2F', $points[$i] * $k, ($h - $points[$i+1]) * $k);
+			//--
+			if($i === 0) {
+				$out .= ' m ';
+			} else {
+				$out .= ' l ';
+			} //end if else
+			//--
+		} //end for
+		//--
+		$this->out((string)$out.$op);
+		//--
+	} //END FUNCTION
+
+
+	final public function TransformStart() : void {
+		//--
+		// Starts a Transformation ; unixman, extra method
+		//--
+		if($this->inTransform === true) {
+			$this->Error('TransformStart: A Transformation has already been started');
+			return;
+		} //end if
+		//--
+		$this->inTransform = true;
+		//--
+		$this->out('q');
+		//--
+	} //END FUNCTION
+
+
+	final public function TransformEnd() : void {
+		//--
+		// Ends the current Transformation ; unixman, extra method
+		// A Transformation has to be started before calling this method
+		//--
+		if($this->inTransform !== true) {
+			$this->Error('TransformEnd: No Transformation has started');
+			return;
+		} //end if
+		//--
+		$this->inTransform = false;
+		//--
+		$this->out('Q');
+		//--
+	} //END FUNCTION
+
+
+	final public function Transform(array $tm) : void {
+		//--
+		// Performs a Transformation, using a transform matrix ; unixman, extra method
+		// A Transformation has to be started before calling this method
+		//--
+		if((int)\Smart::array_size($tm) !== 6) {
+			$this->Error('Transform: Transformation Matrix have an invalid Size');
+			return;
+		} //end if
+		//--
+		for($i=0; $i<\count($tm); $i++) {
+			if(!\is_float($tm[$i])) {
+				$this->Error('Transform: Transformation Matrix element['.$i.'] is Not a Float');
+				return;
+			} //end if
+		} //end for
+		//--
+		if($this->inTransform !== true) {
+			$this->Error('Transform: No Transformation has started');
+			return;
+		} //end if
+		//--
+	//	$this->out((string)\sprintf(' %.3F %.3F %.3F %.3F %.3F %.3F cm', $tm[0], $tm[1], $tm[2], $tm[3], $tm[4], $tm[5]));
+		$this->out((string)\sprintf(' %.4F %.4F %.4F %.4F %.4F %.4F cm', $tm[0], $tm[1], $tm[2], $tm[3], $tm[4], $tm[5]));
+		//--
+	} //END FUNCTION
+
+
+	final public function Skew(int $angle_x, int $angle_y, ?float $x=null, ?float $y=null) : void {
+		//--
+		// Performs a Transformation: Skew ; unixman, extra method
+		// A Transformation has to be started before calling this method
+		//--
+		$testAngleX = (int) \abs((int)$angle_x);
+		if((int)$testAngleX > 90) {
+			$this->Error('Skew: Invalid Rotation X Angle: '.(int)$angle_x); // accepts: -90..90 degrees
+			return;
+		} //end if
+		$testAngleY = (int) \abs((int)$angle_y);
+		if((int)$testAngleY > 90) {
+			$this->Error('Skew: Invalid Rotation X Angle: '.(int)$angle_y); // accepts: -90..90 degrees
+			return;
+		} //end if
+		//--
+		if($x === null) {
+			$x = (float) $this->x;
+		} //end if
+		//--
+		if($y === null) {
+			$y = (float) $this->y;
+		} //end if
+		//--
+		$angle_x = -1 * $angle_x; // invert
+		$angle_y = -1 * $angle_y; // invert
+		//--
+		$x *= (float) $this->k;
+		$y = (float) (($this->h - $y) * $this->k);
+		//--
+		$tm = [];
+		//--
+		$tm[0] = (float) 1;
+		$tm[1] = (float) \tan((float)\deg2rad((float)$angle_y));
+		$tm[2] = (float) \tan((float)\deg2rad((float)$angle_x));
+		$tm[3] = (float) 1;
+		$tm[4] = (float) (-1 * $tm[2] * $y);
+		$tm[5] = (float) (-1 * $tm[1] * $x);
+		//--
+		if($this->inTransform !== true) {
+			$this->Error('Skew: No Transformation has started');
+			return;
+		} //end if
+		//--
+		$this->Transform((array)$tm);
+		//--
+	} //END FUNCTION
+
+
+	final public function Rotate(int $angle, ?float $x=null, ?float $y=null) : void {
+		//--
+		// Performs a Transformation: Rotate by Angle ; unixman, extra method
+		// A Transformation has to be started before calling this method
+		//--
+		$testAngle = (int) \abs((int)$angle);
+		if((int)$testAngle > 360) {
+			$this->Error('Rotate: Invalid Rotation Angle: '.(int)$angle); // accepts: 0..360 degrees
+			return;
+		} //end if
+		//--
+		if($x === null) {
+			$x = (float) $this->x;
+		} //end if
+		//--
+		if($y === null) {
+			$y = (float) $this->y;
+		} //end if
+		//--
+		$angle = 360 - $angle; // invert
+		//--
+		$x *= (float) $this->k;
+		$y = (float) (($this->h - $y) * $this->k);
+		//--
+		$tm = [];
+		//--
+		$tm[0] = (float) \cos((float)\deg2rad((float)$angle));
+		$tm[1] = (float) \sin((float)\deg2rad((float)$angle));
+		$tm[2] = (float) (-1 * $tm[1]);
+		$tm[3] = (float) $tm[0];
+		$tm[4] = (float) ($x + $tm[1] * $y - $tm[0] * $x);
+		$tm[5] = (float) ($y - $tm[0] * $y - $tm[1] * $x);
+		//--
+		if($this->inTransform !== true) {
+			$this->Error('Rotate: No Transformation has started');
+			return;
+		} //end if
+		//--
+		$this->Transform((array)$tm);
+		//--
+	} //END FUNCTION
+
+
+	final public function Scale(float $s_x, float $s_y, ?float $x=null, ?float $y=null) : void {
+		//--
+		// Performs a Transformation: Scale ; unixman, extra method
+		// A Transformation has to be started before calling this method
+		//--
+		if($x === null) {
+			$x = (float) $this->x;
+		} //end if
+		//--
+		if($y === null) {
+			$y = (float) $this->y;
+		} //end if
+		//--
+		if((float)$s_x == 0) {
+			$this->Error('Scale: ScaleX must different than Zero');
+			return;
+		} //end if
+		if((float)$s_y == 0) {
+			$this->Error('Scale: ScaleY must different than Zero');
+			return;
+		} //end if
+		//--
+		$x *= (float) $this->k;
+		$y = (float) (($this->h - $y) * $this->k);
+		//--
+		$s_x /= 100;
+		$s_y /= 100;
+		//--
+		$tm = [];
+		//--
+		$tm[0] = (float) $s_x;
+		$tm[1] = (float) 0;
+		$tm[2] = (float) 0;
+		$tm[3] = (float) $s_y;
+		$tm[4] = (float) ($x * (1 - $s_x));
+		$tm[5] = (float) ($y * (1 - $s_y));
+		//--
+		if($this->inTransform !== true) {
+			$this->Error('Scale: No Transformation has started');
+			return;
+		} //end if
+		//--
+		$this->Transform((array)$tm);
+		//--
+	} //END FUNCTION
+
+
+	final public function MirrorH(?float $x=null) : void {
+		//--
+		// Performs a Transformation: MirrorH ; unixman, extra method
+		// A Transformation has to be started before calling this method
+		//--
+		if($this->inTransform !== true) {
+			$this->Error('MirrorH: No Transformation has started');
+			return;
+		} //end if
+		//--
+		$this->Scale(-100, 100, $x, null);
+		//--
+	} //END FUNCTION
+
+
+	final public function MirrorV(?float $y=null) : void {
+		//--
+		// Performs a Transformation: MirrorV ; unixman, extra method
+		// A Transformation has to be started before calling this method
+		//--
+		if($this->inTransform !== true) {
+			$this->Error('MirrorV: No Transformation has started');
+			return;
+		} //end if
+		//--
+		$this->Scale(100, -100, null, $y);
+		//--
+	} //END FUNCTION
+
+
+	final public function MirrorP(?float $x=null, ?float $y=null) : void {
+		//--
+		// Performs a Transformation: MirrorP ; unixman, extra method
+		// A Transformation has to be started before calling this method
+		//--
+		if($this->inTransform !== true) {
+			$this->Error('MirrorP: No Transformation has started');
+			return;
+		} //end if
+		//--
+		$this->Scale(-100, -100, $x, $y);
+		//--
+	} //END FUNCTION
+
+
+	final public function MirrorL(int $angle=0, ?float $x=null, ?float $y=null) : void {
+		//--
+		// Performs a Transformation: MirrorL ; unixman, extra method
+		// A Transformation has to be started before calling this method
+		//--
+		if($this->inTransform !== true) {
+			$this->Error('MirrorL: No Transformation has started');
+			return;
+		} //end if
+		//--
+		$this->Scale(-100, 100, $x, $y);
+		$this->Rotate((int)(-2 * ($angle - 90)), $x, $y);
+		//--
+	} //END FUNCTION
+
+
+	final public function Translate(float $t_x, float $t_y) : void {
+		//--
+		// Performs a Transformation: Translate ; unixman, extra method
+		// A Transformation has to be started before calling this method
+		//--
+		$tm = [];
+		//--
+		$tm[0] = (float) 1;
+		$tm[1] = (float) 0;
+		$tm[2] = (float) 0;
+		$tm[3] = (float) 1;
+		$tm[4] = (float) ($t_x * $this->k);
+		$tm[5] = (float) (-1 * $t_y * $this->k);
+		//--
+		if($this->inTransform !== true) {
+			$this->Error('Translate: No Transformation has started');
+			return;
+		} //end if
+		//--
+		$this->Transform((array)$tm);
+		//--
+	} //END FUNCTION
+
+
+	final public function GetDefaultFontName() : string {
+		//--
+		// Get The Default Font Name ; unixman, extra method
+		//--
+		return (string) self::ZTTFontDefaultFontName;
+		//--
+	} //END FUNCTION
+
+
+	final public function GetDefaultIconicFontName() : string {
+		//--
+		// Get The Default Font Name ; unixman, extra method
+		//--
+		return (string) self::ZTTFontDefaultIconicFontName;
+		//--
+	} //END FUNCTION
+
+
+	final public function AddDefaultFontSet() : void {
+		//--
+		// Add the Default Font ; call before first AddPage() because header() needs a font ; unixman, extra method
+		//--
+		if($this->uxmUseAlternateDefaultFont === true) {
+			//--
+			$this->AddFont((string)self::ZTTFontDefaultFontName, '',   'IBMPlexSans-Text.ttf'); 			// regular
+			$this->AddFont((string)self::ZTTFontDefaultFontName, 'I',  'IBMPlexSans-TextItalic.ttf'); 		// italic
+			$this->AddFont((string)self::ZTTFontDefaultFontName, 'B',  'IBMPlexSans-SemiBold.ttf'); 		// bold
+			$this->AddFont((string)self::ZTTFontDefaultFontName, 'BI', 'IBMPlexSans-SemiBoldItalic.ttf'); 	// bold-italic
+			//--
+		} else {
+			//--
+			$this->AddFont((string)self::ZTTFontDefaultFontName, '',   'IBMPlexSans-Regular.ttf'); 			// regular
+			$this->AddFont((string)self::ZTTFontDefaultFontName, 'I',  'IBMPlexSans-Italic.ttf'); 			// italic
+			$this->AddFont((string)self::ZTTFontDefaultFontName, 'B',  'IBMPlexSans-Bold.ttf'); 			// bold
+			$this->AddFont((string)self::ZTTFontDefaultFontName, 'BI', 'IBMPlexSans-BoldItalic.ttf'); 		// bold-italic
+			//--
+		} //end if else
+		//--
+		if($this->uxmLoadDefaultIconicFont === true) {
+			$this->AddFont((string)self::ZTTFontDefaultIconicFontName, '', 'sf-icons.ttf');
+		} //end if
+		//--
+	} //END FUNCTION
+
+
+	final public function SetDefaultFontSet(string $style=self::ZTTFontDefaultFontStyle, int $defSize=self::ZTTFontDefaultFontSize) : void {
+		//--
+		// Set the Default Font ; call only after AddPage() needs to write to out() ; unixman, extra method
+		//--
+		if((int)$defSize < 1) {
+			$defSize = 1;
+		} elseif((int)$defSize > 72) {
+			$defSize = 72;
+		} //end if
+		//--
+		$this->SetFont((string)self::ZTTFontDefaultFontName, (string)$style, (int)$defSize); // this is supposed to be call after AddPage() thus will write to out()
 		//--
 	} //END FUNCTION
 
@@ -824,9 +1519,14 @@ class zFPDF
 				\SmartFileSysUtils::createDir((string)self::ZTTFontCachePath);
 			} //end if
 		} //end if
-		if(($this->uxmUseFontCache === true) AND (\SmartFileSysUtils::isDir((string)self::ZTTFontCachePath, true) === true) AND (\SmartFileSysUtils::isFile((string)$uxmCacheFName, true) === true)) { // use caching
+		if(isset(self::$cachedFonts[(string)$uxmCacheFName]) OR (($this->uxmUseFontCache === true) AND (\SmartFileSysUtils::isDir((string)self::ZTTFontCachePath, true) === true) AND (\SmartFileSysUtils::isFile((string)$uxmCacheFName, true) === true))) { // use caching
 			//-- {{{SYNC-SF-STATIC-FILES-ROOT}}} is added automatically by the below method: \SmartFileSysUtils::readStaticFile()
-			$uxmJsonCache = (string) \SmartFileSysUtils::readStaticFile((string)$uxmCacheFName);
+			$uxmJsonCache = '';
+			if(isset(self::$cachedFonts[(string)$uxmCacheFName])) {
+				$uxmJsonCache = (string) self::$cachedFonts[(string)$uxmCacheFName];
+			} elseif($this->uxmUseFontCache === true) {
+				$uxmJsonCache = (string) \SmartFileSysUtils::readStaticFile((string)$uxmCacheFName);
+			} //end if
 			$uxmJsonCache = \Smart::json_decode((string)$uxmJsonCache);
 			if(!\is_array($uxmJsonCache)) {
 				$uxmJsonCache = [];
@@ -873,25 +1573,27 @@ class zFPDF
 			$ut = \round($ttf->underlineThickness);
 			$cw = $ttf->charWidths;
 			//--
+			$uxmJsonCache  = (string) \Smart::json_encode(
+				[
+					'cache-fname' 	=> $uxmCacheFName,
+					'ttffile' 		=> $ttffile,
+					'originalsize' 	=> $originalsize,
+					'name' 			=> $name,
+					'type' 			=> $type,
+					'desc' 			=> $desc,
+					'up' 			=> $up,
+					'ut' 			=> $ut,
+					'fontkey' 		=> $fontkey,
+					'cw' 			=> \Smart::b64_enc((string)$cw),
+				],
+				true, // pretty
+				false, // escape also unicode
+				false // no html safe
+			);
+			//--
+			self::$cachedFonts[(string)$uxmCacheFName] = (string) $uxmJsonCache;
+			//--
 			if($this->uxmUseFontCache === true) {
-				//--
-				$uxmJsonCache  = (string) \Smart::json_encode(
-					[
-						'cache-fname' 	=> $uxmCacheFName,
-						'ttffile' 		=> $ttffile,
-						'originalsize' 	=> $originalsize,
-						'name' 			=> $name,
-						'type' 			=> $type,
-						'desc' 			=> $desc,
-						'up' 			=> $up,
-						'ut' 			=> $ut,
-						'fontkey' 		=> $fontkey,
-						'cw' 			=> \Smart::b64_enc((string)$cw),
-					],
-					true, // pretty
-					false, // escape also unicode
-					false // no html safe
-				);
 				//-- {{{SYNC-SF-STATIC-FILES-ROOT}}} is added automatically by the below method: \SmartFileSysUtils::writeFile()
 				\SmartFileSysUtils::writeFile((string)$uxmCacheFName, (string)$uxmJsonCache);
 				//--
@@ -900,7 +1602,8 @@ class zFPDF
 		} //end if else
 		//--
 		$i = (int) \count($this->fonts) + 1;
-		if(!empty($this->AliasNbPages)) {
+		//--
+		if((string)$this->AliasNbPages != '') { // use extended character set ; {{{SYNC-EMBEDD-NB-ALIAS-EXTRA-CHARACTERS}}}
 			$sbarr = (array) \range(0, 57);
 		} else {
 			$sbarr = (array) \range(0, 32);
@@ -933,7 +1636,9 @@ class zFPDF
 	} //END FUNCTION
 
 
-	final public function SetFontStyle(string $style, float $size=0) : void {
+	final public function SetFontStyle(string $style='', float $size=0) : void {
+		//--
+		// with default parameters will just reset the font to default style and size
 		//--
 		$this->SetFont('', (string)$style, (float)$size);
 		//--
@@ -973,13 +1678,18 @@ class zFPDF
 		//-- test if font is already loaded
 		$fontkey = (string) $family.$style;
 		if(!isset($this->fonts[$fontkey])) { // test if one of the core fonts
-			if(\in_array((string)$family, (array)$this->CoreFonts)) {
-				if(((string)$family == 'symbol') || ((string)$family == 'zapfdingbats')) {
+			if(\in_array((string)$family, (array)self::CORE_FONTS)) {
+				if((string)$family == 'sficons') {
+					if($this->uxmLoadDefaultIconicFont !== true) {
+						$this->Error('The Default Iconic Font was not loaded: '.$family);
+						return;
+					} //end if
 					$style = '';
 				} //end if
 				$fontkey = (string) $family.$style;
 				if(!isset($this->fonts[$fontkey])) {
-					$this->AddFont($family,$style);
+				//	$this->AddFont($family, $style);
+					$this->AddDefaultFontSet(); // fix by unixman
 				} //end if
 			} else {
 				$this->Error('Undefined font: '.$family.' '.$style);
@@ -990,7 +1700,7 @@ class zFPDF
 		$this->FontFamily = $family;
 		$this->FontStyle = $style;
 		$this->FontSizePt = $size;
-		$this->FontSize = $size/$this->k;
+		$this->FontSize = $size / $this->k;
 		$this->CurrentFont = &$this->fonts[$fontkey];
 		//--
 		if((string)$this->fonts[$fontkey]['type'] == 'TTF') {
@@ -1002,7 +1712,7 @@ class zFPDF
 		} //end if else
 		//--
 		if($this->page > 0) {
-			$this->_out((string)\sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
+			$this->out((string)\sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
 		} //end if
 		//--
 	} //END FUNCTION
@@ -1020,7 +1730,7 @@ class zFPDF
 		$this->FontSize = $size / $this->k;
 		//--
 		if($this->page > 0) {
-			$this->_out(sprintf('BT /F%d %.2F Tf ET',$this->CurrentFont['i'],$this->FontSizePt));
+			$this->out((string)\sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
 		} //end if
 		//--
 	} //END FUNCTION
@@ -1059,7 +1769,7 @@ class zFPDF
 		//--
 		// Put a link on the page
 		//--
-		$this->PageLinks[$this->page][] = [ $x*$this->k, $this->hPt-$y*$this->k, $w*$this->k, $h*$this->k, $link ];
+		$this->PageLinks[$this->page][] = [ $x * $this->k, $this->hPt - $y * $this->k, $w * $this->k, $h * $this->k, $link ];
 		//--
 	} //END FUNCTION
 
@@ -1091,7 +1801,7 @@ class zFPDF
 			$s = 'q '.$this->TextColor.' '.$s.' Q';
 		} //end if
 		//--
-		$this->_out((string)$s);
+		$this->out((string)$s);
 		//--
 	} //END FUNCTION
 
@@ -1105,7 +1815,7 @@ class zFPDF
 	} //END FUNCTION
 
 
-	final public function Cell(float $w, float $h=0, string $txt='', $border=0, int $ln=0, string $align='', bool $fill=false, int|string $link='') : void {
+	final public function Cell(float $w, float $h=0, string $txt='', int|string $border=0, int $ln=0, string $align='', bool $fill=false, int|string $link='') : void {
 		//--
 		// Output a cell
 		//--
@@ -1118,7 +1828,7 @@ class zFPDF
 			//--
 			if($ws > 0) {
 				$this->ws = 0;
-				$this->_out('0 Tw');
+				$this->out('0 Tw');
 			} //end if
 			//--
 			$this->AddPage($this->CurOrientation, $this->CurPageSize, $this->CurRotation);
@@ -1126,7 +1836,7 @@ class zFPDF
 			$this->x = $x;
 			if($ws > 0) {
 				$this->ws = $ws;
-				$this->_out((string)\sprintf('%.3F Tw', $ws * $k));
+				$this->out((string)\sprintf('%.3F Tw', $ws * $k));
 			} //end if
 			//--
 		} //end if
@@ -1154,7 +1864,7 @@ class zFPDF
 				$s .= (string) \sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->h - $y) * $k, $x * $k, ($this->h - ($y + $h)) * $k);
 			} //end if
 			if(\strpos((string)$border, 'T') !== false) {
-				$s .= (string) \sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->h-$y) * $k, ($x + $w) * $k, ($this->h - $y) * $k);
+				$s .= (string) \sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->h - $y) * $k, ($x + $w) * $k, ($this->h - $y) * $k);
 			} //end if
 			if(\strpos((string)$border, 'R') !== false) {
 				$s .= (string) \sprintf('%.2F %.2F m %.2F %.2F l S ',($x + $w) * $k, ($this->h - $y) * $k, ($x + $w) * $k, ($this->h - ($y + $h)) * $k);
@@ -1171,9 +1881,9 @@ class zFPDF
 				return;
 			} //end if
 			if((string)$align == 'R') {
-				$dx = $w - $this->cMargin - $this->GetStringWidth($txt);
+				$dx = $w - $this->cMargin - $this->GetStringWidth((string)$txt);
 			} elseif((string)$align=='C') {
-				$dx = ($w - $this->GetStringWidth($txt)) / 2;
+				$dx = ($w - $this->GetStringWidth((string)$txt)) / 2;
 			} else {
 				$dx = $this->cMargin;
 			} //end if else
@@ -1229,13 +1939,13 @@ class zFPDF
 			} //end if
 			//--
 			if($link) {
-				$this->Link($this->x + $dx, $this->y + 0.5 * $h - 0.5 * $this->FontSize, $this->GetStringWidth($txt), $this->FontSize,$link);
+				$this->Link($this->x + $dx, $this->y + 0.5 * $h - 0.5 * $this->FontSize, $this->GetStringWidth((string)$txt), $this->FontSize, $link);
 			} //end if
 			//--
 		} //end if
 		//--
 		if($s) {
-			$this->_out((string)$s);
+			$this->out((string)$s);
 		} //end if
 		//--
 		$this->lasth = $h;
@@ -1264,11 +1974,11 @@ class zFPDF
 		$cw = $this->CurrentFont['cw'];
 		//--
 		if($w == 0) {
-			$w = $this->w-$this->rMargin-$this->x;
+			$w = $this->w - $this->rMargin - $this->x;
 		} //end if
 		//--
-		$wmax = ($w-2*$this->cMargin);
-		//$wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
+		$wmax = ($w - 2 * $this->cMargin);
+		//$wmax = ($w - 2 * $this->cMargin) * 1000 / $this->FontSize;
 		//--
 		$s = (string) \str_replace("\r", '', (string)$txt);
 		if($this->unifontSubset) {
@@ -1332,13 +2042,13 @@ class zFPDF
 				//--
 				if($this->ws > 0) {
 					$this->ws = 0;
-					$this->_out('0 Tw');
+					$this->out('0 Tw');
 				} //end if
 				//--
 				if($this->unifontSubset) {
-					$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $i-$j, 'UTF-8'), $b, 2, $align, $fill);
+					$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
 				} else {
-					$this->Cell($w, $h, (string)\substr((string)$s, $j, $i-$j),             $b, 2, $align, $fill);
+					$this->Cell($w, $h, (string)\substr((string)$s, $j, $i - $j),             $b, 2, $align, $fill);
 				} //end if else
 				//--
 				$i++;
@@ -1363,7 +2073,7 @@ class zFPDF
 			} //end if
 			//--
 			if($this->unifontSubset) {
-				$l += $this->GetStringWidth($c);
+				$l += $this->GetStringWidth((string)$c);
 			} else {
 				$l += $cw[$c] * $this->FontSize / 1000;
 			} //end if else
@@ -1377,26 +2087,26 @@ class zFPDF
 					//--
 					if($this->ws > 0) {
 						$this->ws = 0;
-						$this->_out('0 Tw');
+						$this->out('0 Tw');
 					} //end if
 					//--
 					if($this->unifontSubset) {
-						$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $i-$j, 'UTF-8'), $b, 2, $align, $fill);
+						$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
 					} else {
-						$this->Cell($w, $h, (string)\substr((string)$s, $j, $i-$j),             $b, 2, $align, $fill);
+						$this->Cell($w, $h, (string)\substr((string)$s, $j, $i - $j),             $b, 2, $align, $fill);
 					} //end if else
 					//--
 				} else {
 					//--
 					if((string)$align == 'J') {
-						$this->ws = ($ns>1) ? ($wmax-$ls) / ($ns-1) : 0;
-						$this->_out((string)\sprintf('%.3F Tw', $this->ws * $this->k));
+						$this->ws = ($ns > 1) ? ($wmax - $ls) / ($ns - 1) : 0;
+						$this->out((string)\sprintf('%.3F Tw', $this->ws * $this->k));
 					} //end if
 					//--
 					if($this->unifontSubset) {
-						$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $sep-$j, 'UTF-8'), $b, 2, $align, $fill);
+						$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $sep - $j, 'UTF-8'), $b, 2, $align, $fill);
 					} else {
-						$this->Cell($w, $h, (string)\substr((string)$s, $j, $sep-$j), $b, 2, $align, $fill);
+						$this->Cell($w, $h, (string)\substr((string)$s, $j, $sep - $j), $b, 2, $align, $fill);
 					} //end if else
 					//--
 					$i = $sep + 1;
@@ -1423,17 +2133,17 @@ class zFPDF
 		//--
 		if($this->ws > 0) { // Last chunk
 			$this->ws = 0;
-			$this->_out('0 Tw');
+			$this->out('0 Tw');
 		} //end if
 		//--
-		if($border && \is_string($border) && (\strpos((string)$border,'B') !== false)) {
+		if($border && \is_string($border) && (\strpos((string)$border, 'B') !== false)) {
 			$b .= 'B';
 		} //end if
 		//--
 		if($this->unifontSubset) {
-			$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $i-$j, 'UTF-8'), $b, 2, $align, $fill);
+			$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
 		} else {
-			$this->Cell($w, $h, (string)\substr((string)$s, $j, $i-$j),             $b, 2, $align, $fill);
+			$this->Cell($w, $h, (string)\substr((string)$s, $j, $i - $j),             $b, 2, $align, $fill);
 		} //end if else
 		//--
 		$this->x = $this->lMargin;
@@ -1451,14 +2161,14 @@ class zFPDF
 		} //end if
 		//--
 		$cw = $this->CurrentFont['cw'];
-		$w = $this->w-$this->rMargin-$this->x;
-		$wmax = ($w-2*$this->cMargin);
+		$w = $this->w - $this->rMargin - $this->x;
+		$wmax = ($w - 2 * $this->cMargin);
 		$s = (string) \str_replace("\r", '', (string)$txt);
 		//--
 		if($this->unifontSubset) {
 			$nb = (int) \mb_strlen((string)$s, 'UTF-8');
 			if(($nb == 1) && ($s == ' ')) {
-				$this->x += $this->GetStringWidth($s);
+				$this->x += $this->GetStringWidth((string)$s);
 				return;
 			} //end if
 		} else {
@@ -1482,9 +2192,9 @@ class zFPDF
 			if((string)$c == "\n") { // Explicit line break
 				//--
 				if($this->unifontSubset) {
-					$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $i-$j, 'UTF-8'), 0, 2, '', false, $link);
+					$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
 				} else {
-					$this->Cell($w, $h, (string)\substr((string)$s, $j, $i-$j),             0, 2, '', false, $link);
+					$this->Cell($w, $h, (string)\substr((string)$s, $j, $i - $j),             0, 2, '', false, $link);
 				} //end if else
 				//--
 				$i++;
@@ -1494,8 +2204,8 @@ class zFPDF
 				//--
 				if($nl==1) {
 					$this->x = $this->lMargin;
-					$w = $this->w-$this->rMargin-$this->x;
-					$wmax = ($w-2*$this->cMargin);
+					$w = $this->w - $this->rMargin - $this->x;
+					$wmax = ($w - 2 * $this->cMargin);
 				} //end if
 				//--
 				$nl++;
@@ -1509,7 +2219,7 @@ class zFPDF
 			} //end if
 			//--
 			if($this->unifontSubset) {
-				$l += $this->GetStringWidth($c);
+				$l += $this->GetStringWidth((string)$c);
 			} else {
 				$l += $cw[$c] * $this->FontSize / 1000;
 			} //end if else
@@ -1522,8 +2232,8 @@ class zFPDF
 						//--
 						$this->x = $this->lMargin;
 						$this->y += $h;
-						$w = $this->w-$this->rMargin-$this->x;
-						$wmax = ($w-2*$this->cMargin);
+						$w = $this->w - $this->rMargin - $this->x;
+						$wmax = ($w - 2 * $this->cMargin);
 						$i++;
 						$nl++;
 						//--
@@ -1536,17 +2246,17 @@ class zFPDF
 					} //end if
 					//--
 					if($this->unifontSubset) {
-						$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $i-$j, 'UTF-8'), 0, 2, '', false, $link);
+						$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
 					} else {
-						$this->Cell($w, $h, (string)\substr((string)$s, $j, $i-$j),             0, 2, '', false, $link);
+						$this->Cell($w, $h, (string)\substr((string)$s, $j, $i - $j),             0, 2, '', false, $link);
 					} //end if else
 					//--
 				} else {
 					//--
 					if($this->unifontSubset) {
-						$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $sep-$j, 'UTF-8'), 0, 2, '', false, $link);
+						$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $sep - $j, 'UTF-8'), 0, 2, '', false, $link);
 					} else {
-						$this->Cell($w, $h, (string)\substr((string)$s, $j, $sep-$j),             0, 2, '', false, $link);
+						$this->Cell($w, $h, (string)\substr((string)$s, $j, $sep - $j),             0, 2, '', false, $link);
 					} //end if else
 					//--
 					$i = $sep + 1;
@@ -1559,8 +2269,8 @@ class zFPDF
 				//--
 				if($nl == 1) {
 					$this->x = $this->lMargin;
-					$w = $this->w-$this->rMargin-$this->x;
-					$wmax = ($w-2*$this->cMargin);
+					$w = $this->w - $this->rMargin - $this->x;
+					$wmax = ($w - 2 * $this->cMargin);
 				} //end if
 				//--
 				$nl++;
@@ -1575,7 +2285,7 @@ class zFPDF
 		//--
 		if($i != $j) { // Last chunk
 			if($this->unifontSubset) {
-				$this->Cell($l, $h, (string)\mb_substr((string)$s, $j, $i-$j, 'UTF-8'), 0, 0, '', false, $link);
+				$this->Cell($l, $h, (string)\mb_substr((string)$s, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
 			} else {
 				$this->Cell($l, $h, (string)\substr((string)$s, $j),                    0, 0, '', false, $link);
 			} //end if
@@ -1600,20 +2310,56 @@ class zFPDF
 
 	final public function Image(string $file, ?float $x=null, ?float $y=null, float $w=0, float $h=0, string $type='', int|string $link='') : void {
 		//--
+		$this->_image($file, $x, $y, $w, $h, $type, $link);
+		//--
+	} //END FUNCTION
+
+
+	final public function ImageData(string $type, string $data, ?float $x=null, ?float $y=null, float $w=0, float $h=0, int|string $link='') : void {
+		//--
+		if((string)$data == '') {
+			$this->Error('Image data is empty');
+			return;
+		} //end if
+		//--
+		$hash = (string) \SmartHashCrypto::sha384((string)$data);
+		//--
+		$file = ''; // init
+		switch((string)$type) {
+			case 'data:b64:png':
+				$file = (string) $hash.'-b64.png';
+				break;
+			case 'data:png':
+				$file = (string) $hash.'.png';
+				break;
+			default:
+				$this->Error('Unsupported data image type: '.$type.' for: '.$hash);
+				return;
+		} //end switch
+		//--
+		$this->_image((string)$file, $x, $y, $w, $h, $type, $link, (string)$data);
+		//--
+	} //END FUNCTION
+
+
+	private function _image(string $file, ?float $x=null, ?float $y=null, float $w=0, float $h=0, string $type='', int|string $link='', ?string $data=null) : void {
+		//--
 		// Insert an image on the page
 		//--
 		if((string)$file == '') {
 			$this->Error('Image file name is empty');
+			return;
 		} //end if
 		//--
-		if(!isset($this->images[$file])) {
+		if(!isset($this->images[(string)$file])) {
 			//-- First use of this image, get info
 			if((string)$type == '') {
 				$pos = \strrpos((string)$file, '.'); // do not cast
-				if(!$pos) {
+				if($pos === false) {
 					$this->Error('Image file has no extension and no type was specified: '.$file);
+					return;
 				} //end if
-				$type = \substr((string)$file, $pos+1);
+				$type = (string) \substr((string)$file, (int)$pos + 1);
 			} //end if
 			//--
 			$info = [];
@@ -1622,14 +2368,20 @@ class zFPDF
 				$type = 'jpg';
 			} //end if
 			switch((string)$type) {
+				case 'data:b64:png':
+					$info = $this->_parsedatapng((string)$data, true, (string)$file); // B64 encoded
+					break;
+				case 'data:png':
+					$info = $this->_parsedatapng((string)$data, false, (string)$file); // Raw
+					break;
 				case 'png':
-					$info = $this->_parsepng($file);
+					$info = $this->_parsepng((string)$file);
 					break;
 				case 'jpg':
-					$info = $this->_parsejpg($file);
+					$info = $this->_parsejpg((string)$file);
 					break;
 				case 'gif':
-					$info = $this->_parsegif($file);
+					$info = $this->_parsegif((string)$file);
 					break;
 				default:
 					$this->Error('Unsupported image type: '.$type.' for: '.$file);
@@ -1641,10 +2393,10 @@ class zFPDF
 			} //end if
 			//--
 			$info['i'] = (int) \count($this->images) + 1;
-			$this->images[$file] = $info;
+			$this->images[(string)$file] = $info;
 			//--
 		} else {
-			$info = $this->images[$file];
+			$info = $this->images[(string)$file];
 		} //end if else
 		//-- Automatic width and height calculation if needed
 		if(($w == 0) && ($h == 0)) { // Put image at 96 dpi
@@ -1678,7 +2430,7 @@ class zFPDF
 			$x = $this->x;
 		} //end if
 		//--
-		$this->_out((string)\sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $w * $this->k, $h * $this->k, $x * $this->k, ($this->h - ($y + $h)) * $this->k, $info['i']));
+		$this->out((string)\sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $w * $this->k, $h * $this->k, $x * $this->k, ($this->h - ($y + $h)) * $this->k, $info['i']));
 		//--
 		if($link) {
 			$this->Link($x, $y, $w, $h, $link);
@@ -1742,7 +2494,7 @@ class zFPDF
 		if($y >= 0) {
 			$this->y = $y;
 		} else {
-			$this->y = $this->h+$y;
+			$this->y = $this->h + $y;
 		} //end if
 		//--
 		if($resetX) {
@@ -1762,9 +2514,169 @@ class zFPDF
 	} //END FUNCTION
 
 
+	final public function DrawBarcode1D(array $arr, float $x, float $y, float $w, float $h, array $color=[], string $style='F') : void {
+		//--
+		// Draws a 1D BarCode ; unixman, extra method
+		//--
+		if((int)\Smart::array_size($arr) <= 0) {
+			$this->Error('DrawBarcode1D: Data is Empty or Invalid');
+			return;
+		} //end if
+		//--
+		if((int)\Smart::array_type_test($arr) != 2) {
+			$this->Error('DrawBarcode1D: Data Format is Invalid');
+			return;
+		} //end if
+		//--
+		if(!isset($arr['code']) OR (\Smart::is_nscalar($arr['code']) !== true) OR ((string)$arr['code'] == '')) {
+			$this->Error('DrawBarcode1D: Data Format is Invalid: Code');
+			return;
+		} //end if
+		if(!isset($arr['maxw']) OR (\Smart::is_nscalar($arr['maxw']) !== true) OR ((int)\intval($arr['maxw']) <= 0)) {
+			$this->Error('DrawBarcode1D: Data Format is Invalid: MaxW');
+			return;
+		} //end if
+		if(!isset($arr['maxh']) OR (\Smart::is_nscalar($arr['maxh']) !== true) OR ((int)\intval($arr['maxh']) <= 0)) {
+			$this->Error('DrawBarcode1D: Data Format is Invalid: MaxH');
+			return;
+		} //end if
+		if(!isset($arr['bcode']) OR ((int)\Smart::array_size($arr['bcode']) <= 0) OR ((int)\Smart::array_type_test($arr['bcode']) != 1)) {
+			$this->Error('DrawBarcode1D: Data Format is Invalid: BarCode');
+			return;
+		} //end if
+		//--
+		foreach($arr['bcode'] as $k => $v) { // validate
+			//--
+			if((int)\Smart::array_size($v) <= 0) {
+				$this->Error('DrawBarcode1D: Data Format['.$k.'] is Empty or Invalid: BarCode');
+				return;
+			} //end if
+			if((int)\Smart::array_type_test($v) != 2) {
+				$this->Error('DrawBarcode1D: Data Format['.$k.'] is Invalid: BarCode');
+				return;
+			} //end if
+			//--
+			if(!isset($v['t']) OR !\Smart::is_nscalar($v['t']) OR ((int)\intval($v['t']) < 0)) {
+				$this->Error('DrawBarcode1D: Data Format['.$k.'][t] is Invalid: BarCode');
+				return;
+			} //end if
+			if(!isset($v['w']) OR !\Smart::is_nscalar($v['w']) OR ((int)\intval($v['w']) < 0)) {
+				$this->Error('DrawBarcode1D: Data Format['.$k.'][w] is Invalid: BarCode');
+				return;
+			} //end if
+			if(!isset($v['h']) OR !\Smart::is_nscalar($v['h']) OR ((int)\intval($v['h']) < 0)) {
+				$this->Error('DrawBarcode1D: Data Format['.$k.'][h] is Invalid: BarCode');
+				return;
+			} //end if
+			if(!isset($v['p']) OR !\Smart::is_nscalar($v['p']) OR ((int)\intval($v['p']) < 0)) {
+				$this->Error('DrawBarcode1D: Data Format['.$k.'][p] is Invalid: BarCode');
+				return;
+			} //end if
+			//--
+		} //end foreach
+		//--
+		$r = (int) \intval($color[0] ?? null);
+		$g = (int) \intval($color[1] ?? null);
+		$b = (int) \intval($color[2] ?? null);
+		//--
+		$this->SetFillColor($r, $g, $b);
+		//--
+		foreach($arr['bcode'] as $k => $v) { // draw
+			//--
+			$bw = \round((\intval($v['w']) * $w), 3);
+			$bh = \round((\intval($v['h']) * $h / \intval($arr['maxh'])), 3);
+			//--
+			if(!!\intval($v['t'])) {
+				//--
+				$by = \round((\intval($v['p']) * $h / \intval($arr['maxh'])), 3);
+				//--
+				$this->Rect((float)$x, (float)($y + $by), (float)$bw, (float)$bh, (string)$style); // draw a vertical bar
+				//--
+			} //end if
+			//--
+			$x += $bw;
+			//--
+		} //end foreach
+		//--
+	} //END FUNCTION
+
+
+	final public function DrawBarcode2D(array $arr, float $x, float $y, float $z, array $color=[], string $style='F') : void {
+		//--
+		// Draws a 2D BarCode ; unixman, extra method
+		//--
+		if((int)\Smart::array_size($arr) <= 0) {
+			$this->Error('DrawBarcode2D: Data is Empty or Invalid');
+			return;
+		} //end if
+		//--
+		if((int)\Smart::array_type_test($arr) != 2) {
+			$this->Error('DrawBarcode2D: Data Format is Invalid');
+			return;
+		} //end if
+		//--
+		if(!isset($arr['code']) OR (\Smart::is_nscalar($arr['code']) !== true) OR ((string)$arr['code'] == '')) {
+			$this->Error('DrawBarcode2D: Data Format is Invalid: Code');
+			return;
+		} //end if
+		if(!isset($arr['num_rows']) OR (\Smart::is_nscalar($arr['num_rows']) !== true) OR ((int)\intval($arr['num_rows']) <= 0)) {
+			$this->Error('DrawBarcode2D: Data Format is Invalid: NumRows');
+			return;
+		} //end if
+		if(!isset($arr['num_cols']) OR (\Smart::is_nscalar($arr['num_cols']) !== true) OR ((int)\intval($arr['num_cols']) <= 0)) {
+			$this->Error('DrawBarcode2D: Data Format is Invalid: NumCols');
+			return;
+		} //end if
+		if(!isset($arr['bcode']) OR ((int)\Smart::array_size($arr['bcode']) <= 0) OR ((int)\Smart::array_type_test($arr['bcode']) != 1)) {
+			$this->Error('DrawBarcode2D: Data Format is Invalid: BarCode');
+			return;
+		} //end if
+		//--
+		foreach($arr['bcode'] as $k => $v) { // validate
+			//--
+			if((int)\Smart::array_size($v) <= 0) {
+				$this->Error('DrawBarcode2D: Data Format['.$k.'] is Empty or Invalid: BarCode');
+				return;
+			} //end if
+			if((int)\Smart::array_type_test($v) != 1) {
+				$this->Error('DrawBarcode2D: Data Format['.$k.'] is Invalid: BarCode');
+				return;
+			} //end if
+			//--
+		} //end foreach
+		//--
+		$r = (int) \intval($color[0] ?? null);
+		$g = (int) \intval($color[1] ?? null);
+		$b = (int) \intval($color[2] ?? null);
+		//--
+		$this->SetFillColor($r, $g, $b);
+		//--
+		for($r=0; $r<(int)\intval($arr['num_rows']); ++$r) {
+			//--
+			$bx = (float) $x;
+			//-- for each column
+			for($c=0; $c<(int)\intval($arr['num_cols']); ++$c) {
+				//--
+				if((int)\intval($arr['bcode'][$r][$c]) === 1) {
+					//--
+					$this->Rect((float)$bx, (float)$y, (float)$z, (float)$z, (string)$style); // draw a single barcode cell
+					//--
+				} //end if
+				//--
+				$bx += $z;
+				//--
+			} //end for
+			//--
+			$y += $z;
+			//--
+		} //end for
+		//--
+	} //END FUNCTION
+
+
 	final public function Output() : string {
 		//--
-		// Output PDF to some destination
+		// Output PDF as string
 		//--
 		$this->Close();
 		//--
@@ -1773,24 +2685,113 @@ class zFPDF
 	} //END FUNCTION
 
 
-	//-------- [PRIVATE METHODS]
+	//-------- [PROTECTED METHODS]
 
 
-	private function Error(?string $msg) : void {
+	protected function initDocument(bool $loadDefaultIconicFont, bool $useAlternateDefaultFont, bool $useFontCaching, string $orientation, string $unit, string $size, ?string $uxmFontsPath) : void { // {{{SYNC-ZFPDF-CONSTRUCT-PARAMS}}}
 		//--
-		// Fatal error
-		//--
-		$msg = (string) \trim((string)$msg);
-		if((string)$msg == '') {
-			$msg = 'Unknown Error';
-		} //end if
-		//--
-		throw new \Exception('zFPDF error: '.$msg);
+		// To be implemented in the extended class ...
+		// used internally for init the document with some extra things, called at the end of class constructor
 		//--
 	} //END FUNCTION
 
 
-	private function _getpagesize(string|array $size) : array {
+	protected function header() : void {
+		//--
+		// To be implemented in the extended class ...
+		// used internally for page header section
+		//--
+	} //END FUNCTION
+
+
+	protected function footer() : void {
+		//--
+		// To be implemented in the extended class ...
+		// used internally for page footer section
+		//--
+	} //END FUNCTION
+
+
+	final protected function getParam(?string $param) { // mixed
+		//--
+		switch((string)$param) {
+			case 'ws':
+				return (float) $this->ws;
+				break;
+			case 'k':
+				return (float) $this->k;
+				break;
+			case 'x':
+				return (float) $this->x;
+				break;
+			case 'y':
+				return (float) $this->y;
+				break;
+			case 'w':
+				return (float) $this->w;
+				break;
+			case 'h':
+				return (float) $this->h;
+				break;
+			case 'wPt':
+				return (float) $this->wPt;
+				break;
+			case 'hPt':
+				return (float) $this->hPt;
+				break;
+			case 'lasth':
+				return (float) $this->lasth;
+				break;
+			case 'LineWidth':
+				return (float) $this->LineWidth;
+				break;
+			case 'lMargin':
+				return (float) $this->lMargin;
+				break;
+			case 'tMargin':
+				return (float) $this->tMargin;
+				break;
+			case 'rMargin':
+				return (float) $this->rMargin;
+				break;
+			case 'bMargin':
+				return (float) $this->bMargin;
+				break;
+			case 'cMargin':
+				return (float) $this->cMargin;
+				break;
+			case 'n':
+				return (int) $this->n; // object number
+				break;
+			case 'page':
+				return (int) $this->page; // page number
+				break;
+			case 'CurRotation':
+				return (int) $this->CurRotation;
+				break;
+			case 'DefOrientation':
+				return (string) $this->DefOrientation;
+				break;
+			case 'CurOrientation':
+				return (string) $this->CurOrientation;
+				break;
+			case 'DefPageSize':
+				return (array) $this->DefPageSize;
+				break;
+			case 'CurPageSize':
+				return (array) $this->CurPageSize;
+				break;
+			default:
+				// invalid
+		} //end switch
+		//--
+		$this->Error('getParam: Invalid parameter: `'.$param.'`');
+		return null;
+		//--
+	} //END FUNCTION
+
+
+	final protected function getPageSize(string|array $size) : array {
 		//--
 		if(\is_array($size)) {
 			//--
@@ -1815,67 +2816,73 @@ class zFPDF
 	} //END FUNCTION
 
 
-	private function _beginpage(string $orientation, string|array $size, int $rotation) : void {
+	final protected function encodeString(?string $s) : string {
 		//--
-		$this->page++;
-		$this->pages[$this->page] = '';
-		$this->PageLinks[$this->page] = [];
-		$this->state = 2;
-		$this->x = $this->lMargin;
-		$this->y = $this->tMargin;
-		$this->FontFamily = '';
-		//-- page orientation
-		if((string)$orientation == '') {
-			$orientation = (string) $this->DefOrientation;
-		} else {
-			$orientation = (string) \strtoupper((string)$orientation[0]);
+		if((string)$s == '') {
+			return '';
+		} //end if
+		//--
+		$isUTF8 = (bool) $this->_isascii((string)$s);
+		//--
+		return (string) ($isUTF8 ? $s : $this->_UTF8encode((string)$s));
+		//--
+	} //END FUNCTION
+
+
+	final protected function textString(?string $s) : string {
+		//--
+		// Format a text string
+		//--
+		if(!$this->_isascii((string)$s)) {
+			$s = (string) $this->_UTF8toUTF16((string)$s);
+		} //end if
+		//--
+		return (string) '('.$this->_escape((string)$s).')';
+		//--
+	} //END FUNCTION
+
+
+	final protected function out(?string $s) : void {
+		//--
+		// Add a line to the document
+		//--
+		if($this->state <= 0) {
+			$this->Error('No page has been added yet');
+			return;
+		} elseif($this->state == 2) {
+			$this->pages[$this->page] .= (string) $s."\n";
+		} elseif($this->state == 1) {
+			$this->_put((string)$s);
+		} elseif($this->state == 3) {
+			$this->Error('The document is closed');
+			return;
 		} //end if else
-		//-- page size
-		if(empty($size)) {
-			$size = (array) $this->DefPageSize;
-		} else {
-			$size = (array)  $this->_getpagesize($size);
-		} //end if
-		//--
-		if(($orientation != $this->CurOrientation) || ($size[0] != $this->CurPageSize[0]) || ($size[1] != $this->CurPageSize[1])) { // New size or orientation
-			//--
-			if((string)$orientation == 'P') {
-				$this->w = $size[0];
-				$this->h = $size[1];
-			} else {
-				$this->w = $size[1];
-				$this->h = $size[0];
-			} //end if else
-			//--
-			$this->wPt = $this->w*$this->k;
-			$this->hPt = $this->h*$this->k;
-			$this->PageBreakTrigger = $this->h-$this->bMargin;
-			$this->CurOrientation = $orientation;
-			$this->CurPageSize = $size;
-			//--
-		} //end if
-		//--
-		if(($orientation != $this->DefOrientation) || ($size[0] != $this->DefPageSize[0]) || ($size[1] != $this->DefPageSize[1])) {
-			$this->PageInfo[$this->page]['size'] = [ $this->wPt, $this->hPt ];
-		} //end if
-		//--
-		if($rotation != 0) {
-			if(($rotation % 90) != 0) {
-				$this->Error('Incorrect rotation value: '.$rotation);
-			} //end if
-			$this->PageInfo[$this->page]['rotation'] = $rotation;
-		} //end if
-		//--
-		$this->CurRotation = $rotation;
 		//--
 	} //END FUNCTION
 
 
-	private function _endpage() : void {
+	final protected function getOffset() : int {
 		//--
-		$this->state = 1;
+		return (int) \strlen((string)$this->buffer);
 		//--
 	} //END FUNCTION
+
+
+	final protected function Error(?string $msg) : void {
+		//--
+		// Fatal error
+		//--
+		$msg = (string) \trim((string)$msg);
+		if((string)$msg == '') {
+			$msg = 'Unknown Error';
+		} //end if
+		//--
+		throw new \Exception('zFPDF error: '.$msg);
+		//--
+	} //END FUNCTION
+
+
+	//-------- [PRIVATE METHODS]
 
 
 	private function _isascii(?string $s) : bool {
@@ -1934,17 +2941,74 @@ class zFPDF
 	} //END FUNCTION
 
 
-	private function _textstring(?string $s) : string {
+	private function _beginpage(string $orientation, string|array $size, int $rotation) : void {
 		//--
-		// Format a text string
-		//--
-		if(!$this->_isascii((string)$s)) {
-			$s = (string) $this->_UTF8toUTF16((string)$s);
+		$this->page++;
+		$this->pages[$this->page] = '';
+		$this->PageLinks[$this->page] = [];
+		$this->state = 2;
+		$this->x = $this->lMargin;
+		$this->y = $this->tMargin;
+		$this->FontFamily = '';
+		//-- page orientation
+		if((string)$orientation == '') {
+			$orientation = (string) $this->DefOrientation;
+		} else {
+			$orientation = (string) \strtoupper((string)$orientation[0]);
+		} //end if else
+		//-- page size
+		if(empty($size)) {
+			$size = (array) $this->DefPageSize;
+		} else {
+			$size = (array) $this->getPageSize($size);
 		} //end if
 		//--
-		return (string) '('.$this->_escape((string)$s).')';
+		if(($orientation != $this->CurOrientation) || ($size[0] != $this->CurPageSize[0]) || ($size[1] != $this->CurPageSize[1])) { // New size or orientation
+			//--
+			if((string)$orientation == 'P') {
+				$this->w = $size[0];
+				$this->h = $size[1];
+			} else {
+				$this->w = $size[1];
+				$this->h = $size[0];
+			} //end if else
+			//--
+			$this->wPt = $this->w * $this->k;
+			$this->hPt = $this->h * $this->k;
+			$this->PageBreakTrigger = $this->h - $this->bMargin;
+			$this->CurOrientation = $orientation;
+			$this->CurPageSize = $size;
+			//--
+		} //end if
 		//--
-	}
+		if(($orientation != $this->DefOrientation) || ($size[0] != $this->DefPageSize[0]) || ($size[1] != $this->DefPageSize[1])) {
+			$this->PageInfo[$this->page]['size'] = [ $this->wPt, $this->hPt ];
+		} //end if
+		//--
+		if($rotation != 0) {
+			if(($rotation % 90) != 0) {
+				$this->Error('Incorrect rotation value: '.$rotation);
+				return;
+			} //end if
+			$this->PageInfo[$this->page]['rotation'] = $rotation;
+		} //end if
+		//--
+		$this->CurRotation = $rotation;
+		//--
+	} //END FUNCTION
+
+
+	private function _endpage() : void {
+		//--
+		if($this->inTransform === true) {
+			$this->Error('_endpage: A Transformation has not been Ended ...');
+			return;
+		} //end if
+		//--
+		$this->state = 1;
+		//--
+	} //END FUNCTION
+
 
 	private function _dounderline(float $x, float $y, ?string $txt) : string {
 		//--
@@ -2036,15 +3100,64 @@ class zFPDF
 		\imagepng($im);
 		//--
 		$data = \ob_get_clean();
+		if($data === false) {
+			$this->Error('GIF image: Unable to get Buffering Data');
+			return [];
+		} //end if
+		if((string)$data == '') {
+			$this->Error('GIF image: Buffering Data is Empty');
+			return [];
+		} //end if
 		//--
 		$im = null; // image destroy is deprecated and has no effect since PHP 8.0
 		//--
-		$f = \fopen('php://temp', 'rb+');
+	//	$f = \fopen('php://temp', 'rb+');
+		$f = \fopen('php://memory', 'rb+');
 		if(!$f) {
 			$this->Error('GIF image: Unable to create memory stream');
 			return [];
 		} //end if
-		\fwrite($f, $data);
+		\fwrite($f, (string)$data);
+		\rewind($f);
+		//--
+		$info = (array) $this->_parsepngstream($f, (string)$file);
+		//--
+		\fclose($f);
+		//--
+		return (array) $info;
+		//--
+	} //END FUNCTION
+
+
+	private function _parsedatapng(string $data, bool $isB64Encoded, string $file) : array {
+		//--
+		// Extract info from a PNG string
+		//--
+		if(\SmartFileSysUtils::checkIfSafePath((string)$file) != 1) {
+			$this->Error('Unsafe PNG image file path: '.$file);
+			return [];
+		} //end if
+		//--
+		if((string)$data == '') {
+			$this->Error('PNG image data is Empty');
+			return [];
+		} //end if
+		//--
+		if($isB64Encoded === true) {
+			$data = (string) \base64_decode((string)$data, true); // strict
+			if((string)$data == '') {
+				$this->Error('PNG image B64 decoded data is Empty');
+				return [];
+			} //end if
+		} //end if
+		//--
+	//	$f = \fopen('php://temp', 'rb+');
+		$f = \fopen('php://memory', 'rb+');
+		if(!$f) {
+			$this->Error('GIF image: Unable to create memory stream');
+			return [];
+		} //end if
+		\fwrite($f, (string)$data);
 		\rewind($f);
 		//--
 		$info = (array) $this->_parsepngstream($f, (string)$file);
@@ -2248,6 +3361,7 @@ class zFPDF
 			$s = \fread($f,$n);
 			if($s === false) {
 				$this->Error('Error while reading stream');
+				return '';
 			} //end if
 			$n -= (int) \strlen((string)$s);
 			$res .= $s;
@@ -2276,34 +3390,9 @@ class zFPDF
 	} //END FUNCTION
 
 
-	private function _out($s) : void {
-		//--
-		// Add a line to the document
-		//--
-		if($this->state <= 0) {
-			$this->Error('No page has been added yet');
-			return;
-		} elseif($this->state == 2) {
-			$this->pages[$this->page] .= $s."\n";
-		} elseif($this->state == 1) {
-			$this->_put($s);
-		} elseif($this->state == 3) {
-			$this->Error('The document is closed');
-		} //end if else
-		//--
-	} //END FUNCTION
-
-
 	private function _put(?string $s) : void {
 		//--
 		$this->buffer .= (string) $s."\n";
-		//--
-	} //END FUNCTION
-
-
-	private function _getoffset() : int {
-		//--
-		return (int) \strlen((string)$this->buffer);
 		//--
 	} //END FUNCTION
 
@@ -2316,7 +3405,7 @@ class zFPDF
 			$n = ++$this->n;
 		} //end if
 		//--
-		$this->offsets[$n] = $this->_getoffset();
+		$this->offsets[$n] = (int) $this->getOffset();
 		$this->_put($n.' 0 obj');
 		//--
 	} //END FUNCTION
@@ -2357,13 +3446,13 @@ class zFPDF
 			$rect = (string) \sprintf('%.2F %.2F %.2F %.2F', $pl[0], $pl[1], $pl[0] + $pl[2], $pl[1] - $pl[3]);
 			$s = '<</Type /Annot /Subtype /Link /Rect ['.$rect.'] /Border [0 0 0] ';
 			if(\is_string($pl[4])) {
-				$s .= '/A <</S /URI /URI '.$this->_textstring($pl[4]).'>>>>';
+				$s .= '/A <</S /URI /URI '.$this->textString($pl[4]).'>>>>';
 			} else {
 				$l = $this->links[$pl[4]];
 				if(isset($this->PageInfo[$l[0]]['size'])) {
 					$h = $this->PageInfo[$l[0]]['size'][1];
 				} else {
-					$h = ($this->DefOrientation=='P') ? $this->DefPageSize[1]*$this->k : $this->DefPageSize[0]*$this->k;
+					$h = ($this->DefOrientation=='P') ? $this->DefPageSize[1] * $this->k : $this->DefPageSize[0] * $this->k;
 				} //end if else
 				$s .= (string) \sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>', $this->PageInfo[$l[0]]['n'], $h - $l[1] * $this->k);
 			} //end if else
@@ -2406,11 +3495,11 @@ class zFPDF
 		$this->_put('/Contents '.($this->n+1).' 0 R>>');
 		$this->_put('endobj');
 		//-- Page content
-		if(!empty($this->AliasNbPages)) {
-			$alias = $this->UTF8ToUTF16BE($this->AliasNbPages, false);
-			$r = $this->UTF8ToUTF16BE($this->page, false);
-			$this->pages[$n] = \str_replace($alias, $r, $this->pages[$n]);
-			$this->pages[$n] = \str_replace($this->AliasNbPages,$this->page,$this->pages[$n]); // repeat for no pages in non-subset fonts
+		if((string)$this->AliasNbPages != '') {
+			$this->pages[$n] = (string) \strtr((string)$this->pages[$n], [ // optimization by unixman
+				(string)$this->UTF8ToUTF16BE((string)$this->AliasNbPages, false) 	=> (string)$this->UTF8ToUTF16BE((string)$this->page, false),
+				(string)$this->AliasNbPages 										=> (string)$this->page, // repeat for no pages in non-subset fonts
+			]);
 		} //end if
 		//--
 		$this->_putstreamobject($this->pages[$n]);
@@ -2536,7 +3625,7 @@ class zFPDF
 				$this->_put('/CIDSystemInfo '.($this->n + 2).' 0 R');
 				$this->_put('/FontDescriptor '.($this->n + 3).' 0 R');
 				if(isset($font['desc']['MissingWidth'])){
-					$this->_out('/DW '.$font['desc']['MissingWidth'].'');
+					$this->out('/DW '.$font['desc']['MissingWidth'].'');
 				} //end if
 				//--
 				$this->_putTTfontwidths($font, $ttf->maxUni);
@@ -2584,7 +3673,7 @@ class zFPDF
 					if($kd == 'Flags') { // SYMBOLIC font flag
 						$v = $v | 4; $v = $v & ~32;
 					} //end if
-					$this->_out(' /'.$kd.' '.$v);
+					$this->out(' /'.$kd.' '.$v);
 				} //end foreach
 				$this->_put('/FontFile2 '.($this->n + 2).' 0 R');
 				$this->_put('>>');
@@ -2729,7 +3818,7 @@ class zFPDF
 			} //end if else
 		} //end foreach
 		//--
-		$this->_out('/W ['.$w.' ]');
+		$this->out('/W ['.$w.' ]');
 		//--
 	} //END FUNCTION
 
@@ -2906,7 +3995,7 @@ class zFPDF
 		//--
 		$this->metadata['CreationDate'] = 'D:'.\substr($date, 0, -2)."'".\substr($date, -2)."'";
 		foreach($this->metadata as $key => $value) {
-			$this->_put('/'.$key.' '.$this->_textstring($value));
+			$this->_put('/'.$key.' '.$this->textString($value));
 		} //end foreach
 		//--
 	} //END FUNCTION
@@ -2975,11 +4064,11 @@ class zFPDF
 		$this->_put('>>');
 		$this->_put('endobj');
 		//-- Cross-ref
-		$offset = $this->_getoffset();
+		$offset = (int) $this->getOffset();
 		$this->_put('xref');
 		$this->_put('0 '.($this->n+1));
 		$this->_put('0000000000 65535 f ');
-		for($i=1;$i<=$this->n;$i++) {
+		for($i=1; $i<=$this->n; $i++) {
 			$this->_put((string)sprintf('%010d 00000 n ', $this->offsets[$i]));
 		} //end for
 		//-- Trailer
@@ -2993,9 +4082,6 @@ class zFPDF
 		$this->state = 3;
 		//--
 	} //END FUNCTION
-
-
-	// ********* NEW FUNCTIONS *********
 
 
 	private function UTF8ToUTF16BE(?string $str, bool $setbom=true) : string {

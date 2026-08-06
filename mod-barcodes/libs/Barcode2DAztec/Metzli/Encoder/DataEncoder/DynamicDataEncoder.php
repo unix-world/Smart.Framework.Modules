@@ -1,5 +1,8 @@
 <?php
 
+// (c) 2016-present, unix-world.org
+// License: aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
+
 /*
  * Copyright 2013 Metzli and ZXing authors
  *
@@ -33,10 +36,10 @@ class DynamicDataEncoder implements DataEncoderInterface
 
 	public function encode($data)
 	{
-		$text = str_split($data);
+		$text = \str_split($data);
 		$states = array(State::createInitialState());
-		for ($index = 0; $index < count($text); $index++) {
-			$nextChar = (($index + 1 < count($text)) ? $text[$index + 1] : '');
+		for ($index = 0; $index < \count($text); $index++) {
+			$nextChar = (($index + 1 < \count($text)) ? $text[$index + 1] : '');
 			switch ($text[$index]) {
 				case '\r':
 					$pairCode = (($nextChar == '\n') ? 2 : 0);
@@ -141,14 +144,14 @@ class DynamicDataEncoder implements DataEncoderInterface
 		$result = array();
 		foreach ($states as $newState) {
 			$add = true;
-			for ($i = 0; $i < count($result); $i++) {
+			for ($i = 0; $i < \count($result); $i++) {
 				if ($result[$i]->isBetterThanOrEqualTo($newState)) {
 					$add = false;
 					break;
 				}
 				if ($newState->isBetterThanOrEqualTo($result[$i])) {
 					unset($result[$i]);
-					$result = array_values($result);
+					$result = \array_values($result);
 					$i--;
 				}
 			}
@@ -211,7 +214,7 @@ class DynamicDataEncoder implements DataEncoderInterface
 		if (null === self::$shiftTable) {
 			self::$shiftTable = array();
 			for ($i = 0; $i < 6; $i++) {
-				self::$shiftTable[] = array_fill(0, 6, -1);
+				self::$shiftTable[] = \array_fill(0, 6, -1);
 			}
 			self::$shiftTable[self::MODE_UPPER][self::MODE_PUNCT] = 0;
 			self::$shiftTable[self::MODE_LOWER][self::MODE_PUNCT] = 0;
@@ -231,33 +234,33 @@ class DynamicDataEncoder implements DataEncoderInterface
 		if (null === self::$charMap) {
 			self::$charMap = array();
 			for ($i = 0; $i < 5; $i++) {
-				self::$charMap[] = array_fill(0, 256, 0);
+				self::$charMap[] = \array_fill(0, 256, 0);
 			}
 
-			self::$charMap[self::MODE_UPPER][ord(' ')] = 1;
-			for ($c = ord('A'); $c <= ord('Z'); $c++) {
-				self::$charMap[self::MODE_UPPER][$c] = ($c - ord('A') + 2);
+			self::$charMap[self::MODE_UPPER][\ord(' ')] = 1;
+			for ($c = \ord('A'); $c <= \ord('Z'); $c++) {
+				self::$charMap[self::MODE_UPPER][$c] = ($c - \ord('A') + 2);
 			}
 
-			self::$charMap[self::MODE_LOWER][ord(' ')] = 1;
-			for ($c = ord('a'); $c <= ord('z'); $c++) {
-				self::$charMap[self::MODE_LOWER][$c] = ($c - ord('a') + 2);
+			self::$charMap[self::MODE_LOWER][\ord(' ')] = 1;
+			for ($c = \ord('a'); $c <= \ord('z'); $c++) {
+				self::$charMap[self::MODE_LOWER][$c] = ($c - \ord('a') + 2);
 			}
 
-			self::$charMap[self::MODE_DIGIT][ord(' ')] = 1;
-			for ($c = ord('0'); $c <= ord('9'); $c++) {
-				self::$charMap[self::MODE_DIGIT][$c] = ($c - ord('0') + 2);
+			self::$charMap[self::MODE_DIGIT][\ord(' ')] = 1;
+			for ($c = \ord('0'); $c <= \ord('9'); $c++) {
+				self::$charMap[self::MODE_DIGIT][$c] = ($c - \ord('0') + 2);
 			}
-			self::$charMap[self::MODE_DIGIT][ord(',')] = 12;
-			self::$charMap[self::MODE_DIGIT][ord('.')] = 13;
+			self::$charMap[self::MODE_DIGIT][\ord(',')] = 12;
+			self::$charMap[self::MODE_DIGIT][\ord('.')] = 13;
 
 			$mixedTable = array(
 				'\0', ' ', '\1', '\2', '\3', '\4', '\5', '\6', '\7', '\b', '\t', '\n',
 				'\13', '\f', '\r', '\33', '\34', '\35', '\36', '\37', '@', '\\', '^',
 				'_', '`', '|', '~', '\177',
 			);
-			for ($i = 0; $i < count($mixedTable); $i++) {
-				self::$charMap[self::MODE_MIXED][ord($mixedTable[$i])] = $i;
+			for ($i = 0; $i < \count($mixedTable); $i++) {
+				self::$charMap[self::MODE_MIXED][\ord($mixedTable[$i])] = $i;
 			}
 
 			$punctTable = array(
@@ -265,14 +268,14 @@ class DynamicDataEncoder implements DataEncoderInterface
 				'(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?',
 				'[', ']', '{', '}',
 			);
-			for ($i = 0; $i < count($punctTable); $i++) {
-				if (ord($punctTable[$i]) > 0) {
-					self::$charMap[self::MODE_PUNCT][ord($punctTable[$i])] = $i;
+			for ($i = 0; $i < \count($punctTable); $i++) {
+				if (\ord($punctTable[$i]) > 0) {
+					self::$charMap[self::MODE_PUNCT][\ord($punctTable[$i])] = $i;
 				}
 			}
 		}
 
-		return self::$charMap[$mode][ord($char)];
+		return self::$charMap[$mode][\ord($char)];
 	}
 }
 

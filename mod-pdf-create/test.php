@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: PdfCreate Demo
-// Route: ?page=pdf-create.test&cache=no|yes
+// Route: ?page=pdf-create.test&altfont=no|yes&cache=no|yes
 // (c) 2026-present unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -22,7 +22,11 @@ define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
  */
 class SmartAppIndexController extends SmartAbstractAppController {
 
-	// r.20260130
+	// r.20260728
+
+	private const SF_URL = 'http://demo.unix-world.org/smart-framework/';
+	private const BARCODE_CACHE_TIME = -1; // -1 | 3600
+
 
 	public function Run() {
 
@@ -33,30 +37,42 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		} //end if
 		//--
 
+		//--
+		if(!\SmartAppInfo::TestIfModuleExists('mod-barcodes')) {
+			$this->PageViewSetErrorStatus(503, 'Mod Barcodes is missing !');
+			return false;
+		} //end if
+		//--
+
+		$paramUseAltFont = (string) trim((string)$this->RequestVarGet('altfont', '', [ '', 'yes' ]));
 		$paramUseCaching = (string) trim((string)$this->RequestVarGet('cache', '', [ '', 'yes' ]));
 
-//$start = microtime(true);
+	//$start = microtime(true);
+
+		$useAlternateDefaultFont = false;
+		if($paramUseAltFont === 'yes') {
+			$useAlternateDefaultFont = true;
+		} //end if
 
 		$useFontCaching = false;
 		if($paramUseCaching === 'yes') {
 			$useFontCaching = true;
 		} //end if
 
+
 	//	\SmartModExtLib\PdfCreate\Module::init(); // no need, will be called by the newPdf method below
-		$pdf = \SmartModExtLib\PdfCreate\Module::newPdf((bool)$useFontCaching);
+		$pdf = \SmartModExtLib\PdfCreate\Module::newPdf(true, (bool)$useAlternateDefaultFont, (bool)$useFontCaching);
 		$pdf->SetCompression(true);
+
+	//	$pdf->AliasNbPages(); // if AliasNbPages is used in the header() protected method this needs to be initialized before set default font
+		$pdf->AddDefaultFontSet(); // Add a Unicode font (uses UTF-8) ; call before first AddPage() because header() needs a font !
 		$pdf->AddPage();
+		$pdf->SetDefaultFontSet(); // call only after AddPage() needs to write to out()
 
 		$pdf->Image('modules/mod-pdf-create/doc/test-files/sf-logo.png', 160, 10, 32, 32);
 	//	$pdf->Image('modules/mod-pdf-create/doc/test-files/sf-logo.gif', 160, 10, 32, 32);
 	//	$pdf->Image('modules/mod-pdf-create/doc/test-files/sf-logo.jpg', 160, 10, 32, 32);
 
-		// Add a Unicode font (uses UTF-8)
-		$pdf->AddFont('IBMPlexSans', '',   'IBMPlexSans-Regular.ttf');
-		$pdf->AddFont('IBMPlexSans', 'I',  'IBMPlexSans-Italic.ttf');
-		$pdf->AddFont('IBMPlexSans', 'B',  'IBMPlexSans-Bold.ttf');
-		$pdf->AddFont('IBMPlexSans', 'BI', 'IBMPlexSans-BoldItalic.ttf');
-		$pdf->SetFont('IBMPlexSans', '', 10);
 
 		$pdf->SetFontStyle('BI', 11);
 
@@ -90,7 +106,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		$pdf->Ln(2);
 		$pdf->MultiCell(150, 4, $txt, 'TB');
 
-		$info = 'The file size of this PDF is only 60 KB.';
+		$info = 'The file size of this PDF is only 64 KB.';
 		$size = 10;
 		$ln = 6;
 
@@ -158,12 +174,62 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		$pdf->Ln($ln);
 		$pdf->Write(5, $info);
 
+		$pdf->SetDrawColor(189, 200, 200); // for BarCode Line Borders
+
+		$barcode1DTxt = (string) strtoupper((string)SmartHashCrypto::crc32b((string)self::SF_URL, true));
+		$barcode1DType = 'RMS';
+		$barcode1DJson = (string) \SmartModExtLib\Barcodes\SmartBarcodes1D::getBarcode((string)$barcode1DTxt, (string)$barcode1DType, 'json', null, null, null, false, (int)self::BARCODE_CACHE_TIME);
+		if((string)trim((string)$barcode1DJson) == '') {
+			$this->PageViewSetErrorStatus(500, 'ERROR: The 1D Barcode Failed (1) ...');
+			return;
+		} //end if
+		$barcode1DArr = Smart::json_decode((string)$barcode1DJson, true, 3);
+		if((int)Smart::array_size($barcode1DArr) <= 0) {
+			$this->PageViewSetErrorStatus(500, 'ERROR: The 1D Barcode Failed (2) ...');
+			return;
+		} //end if
+	//	print_r($barcode1DArr); die();
+		$pdf->SetFontStyle('B', 10);
+		$pdf->SetTextColor(77, 88, 88);
+		$pdf->Text(10, 142, (string)strtoupper((string)$barcode1DType).': '.$barcode1DTxt);
+		$pdf->DrawBarcode1D((array)$barcode1DArr, 10, 145, 1, 8, [189, 200, 200]);
+
+		/*
+		$barcode2DType = 'pdf417';
+		$barcode2DOpts = 3;
+		$barcode2DPtSz = 0.5;
+		*/
+		$barcode2DType = 'aztec';
+		$barcode2DOpts = null;
+		$barcode2DPtSz = 1;
+		$barcode2DJson = (string) \SmartModExtLib\Barcodes\SmartBarcodes2D::getBarcode((string)self::SF_URL, (string)$barcode2DType, 'json', null, null, $barcode2DOpts, (int)self::BARCODE_CACHE_TIME);
+		if((string)trim((string)$barcode2DJson) == '') {
+			$this->PageViewSetErrorStatus(500, 'ERROR: The 2D Barcode Failed (1) ...');
+			return;
+		} //end if
+		$barcode2DArr = Smart::json_decode((string)$barcode2DJson, true, 3);
+		if((int)Smart::array_size($barcode2DArr) <= 0) {
+			$this->PageViewSetErrorStatus(500, 'ERROR: The 1D Barcode Failed (2) ...');
+			return;
+		} //end if
+	//	print_r($barcode2DArr); die();
+		$pdf->SetFontStyle('B', 10);
+		$pdf->SetTextColor(77, 88, 88);
+		$pdf->Text(10, 202, (string)strtoupper((string)$barcode2DType).': '.self::SF_URL);
+		$pdf->DrawBarcode2D((array)$barcode2DArr, 10, 205, $barcode2DPtSz, [189, 200, 200], 'F');
+
+		$pdf->Ln();
+		$pdf->SetTextColor(237, 37, 89); // #ed2559
+		$pdf->SetFont($pdf->GetDefaultIconicFontName(), '', 128);
+		$pdf->Text(140, 110, "\u{e277}");
+
+
 		$pdf->Close();
 
-/*
-$end = microtime(true) - $start;
-die((string)$end);
-*/
+	/*
+	$end = microtime(true) - $start;
+	die((string)$end);
+	*/
 
 		//--
 		$this->PageViewSetCfg('rawpage', true);
