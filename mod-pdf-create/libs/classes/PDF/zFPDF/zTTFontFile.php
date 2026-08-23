@@ -1,11 +1,13 @@
 <?php
 
+// [===]+[!==] ready
+
 namespace PDF\zFPDF;
 
 //-- class:
 // zTTFontFile (based on TTFontFile 1.06, from tFPDF 1.33)
 // Version: 1.06.uxm
-// Date:     2026-07-28
+// Date:     2026-08-21
 // Authors:  Radu Ovidiu I. <iradu@unix-world.org>
 // Copyright (c) unix-world.org, 2026-present
 // License:  aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
@@ -24,7 +26,7 @@ final class zTTFontFile {
 	// PHP 8.1 or later
 	// depends on classes: SmartFileSysUtils
 
-	public const VERSION = '1.06.uxm.20260728';
+	public const VERSION = '1.06.uxm.20260821';
 
 	// Define the value used in the 'head' table of a created TTF file
 	// 0x74727565 TRUE for Mac
@@ -93,7 +95,7 @@ final class zTTFontFile {
 	public function getMetrics(string $file) : void {
 		//--
 		$this->filename = (string) \trim((string)$file);
-		if((string)$this->filename == '') {
+		if((string)$this->filename === '') {
 			throw new \Exception('getMetrics: File Name is Empty');
 			return;
 		} //end if
@@ -103,7 +105,7 @@ final class zTTFontFile {
 			return;
 		} //end if
 		//--
-		if(\SmartFileSysUtils::checkIfSafePath((string)$file) != 1) {
+		if(\SmartFileSysUtils::checkIfSafePath((string)$file) !== 1) {
 			throw new \Exception('getMetrics: Unsafe TTF File Path: `'.$this->filename.'`');
 			return;
 		} //end if
@@ -134,15 +136,15 @@ final class zTTFontFile {
 		$this->TTCFonts 	= [];
 		$this->version 		= (int) $this->read_ulong();
 		//--
-		if($this->version == 0x4F54544F) {
+		if((int)$this->version === (int)\intval(0x4F54544F)) {
 			throw new \Exception('getMetrics: Postscript outlines are not supported');
 			return;
 		} //end if
-		if($this->version == 0x74746366) {
+		if((int)$this->version === (int)\intval(0x74746366)) {
 			throw new \Exception('getMetrics: TrueType Fonts Collections not supported');
 			return;
 		} //end if
-		if(!in_array($this->version, [ 0x00010000, 0x74727565 ])) {
+		if(!in_array((int)$this->version, [ \intval(0x00010000), \intval(0x74727565) ])) {
 			throw new \Exception('getMetrics: Not a supported TrueType font: version='.$this->version);
 			return;
 		} //end if
@@ -158,7 +160,7 @@ final class zTTFontFile {
 	public function makeSubset(string $file, array $subset) : string { // unixman
 		//--
 		$this->filename = (string) \trim((string)$file);
-		if((string)$this->filename == '') {
+		if((string)$this->filename === '') {
 			throw new \Exception('makeSubset: File Name is Empty');
 			return '';
 		} //end if
@@ -168,7 +170,7 @@ final class zTTFontFile {
 			return '';
 		} //end if
 		//--
-		if(\SmartFileSysUtils::checkIfSafePath((string)$file) != 1) {
+		if(\SmartFileSysUtils::checkIfSafePath((string)$file) !== 1) {
 			throw new \Exception('makeSubset: Unsafe TTF File Path: `'.$this->filename.'`');
 			return '';
 		} //end if
@@ -224,9 +226,9 @@ final class zTTFontFile {
 			$encodingID = $this->read_ushort();
 			$offset = $this->read_ulong();
 			$save_pos = $this->_pos;
-			if(($platformID == 3 && $encodingID == 1) || $platformID == 0) { // Microsoft, Unicode
+			if((((int)$platformID === 3) && ((int)$encodingID === 1)) || ((int)$platformID === 0)) { // Microsoft, Unicode
 				$format = $this->get_ushort($cmap_offset + $offset);
-				if($format == 4) {
+				if((int)$format === 4) {
 					$unicode_cmap_offset = $cmap_offset + $offset;
 					break;
 				} //end if
@@ -311,11 +313,11 @@ final class zTTFontFile {
 		$prevglidx = -1;
 		//-- for each character
 		foreach($codeToGlyph as $cid => $glidx) {
-			if($cid == ($prevcid + 1) && $glidx == ($prevglidx + 1)) {
+			if(((int)$cid === (int)((int)$prevcid + 1)) && ((int)$glidx === (int)($prevglidx + 1))) {
 				$range[$rangeid][] = $glidx;
 			} else { // new range
 				$rangeid = $cid;
-				$range[$rangeid] = array();
+				$range[$rangeid] = [];
 				$range[$rangeid][] = $glidx;
 			} //end if else
 			$prevcid = $cid;
@@ -455,19 +457,19 @@ final class zTTFontFile {
 				$maxComponentElements = max($maxComponentElements, $nComponentElements);
 			} //end if
 			//--
-			$glyf .= $data;
-			$pos += $glyphLen;
-			if($pos % 4 != 0) {
-				$padding = 4 - ($pos % 4);
-				$glyf .= \str_repeat("\0", $padding);
-				$pos += $padding;
+			$glyf .= (string) $data;
+			$pos += (int) $glyphLen;
+			if((int)((int)$pos % 4) !== 0) {
+				$padding = (int) (4 - (int)((int)$pos % 4));
+				$glyf .= (string) \str_repeat("\0", $padding);
+				$pos += (int) $padding;
 			} //end if
 		} //end foreach
 		//--
-		$offsets[] = $pos;
-		$this->add('glyf', $glyf);
+		$offsets[] = (int) $pos;
+		$this->add('glyf', (string)$glyf);
 		//-- hmtx - Horizontal Metrics
-		$this->add('hmtx', $hmtxstr);
+		$this->add('hmtx', (string)$hmtxstr);
 		//-- loca - Index to location
 		$locastr = '';
 		if((($pos + 1) >> 1) > 0xFFFF) {
@@ -481,22 +483,22 @@ final class zTTFontFile {
 				$locastr .= \pack('n', ($offset / 2));
 			} //end foreach
 		} //end if else
-		$this->add('loca', $locastr);
+		$this->add('loca', (string)$locastr);
 		//-- head - Font header
 		$head = $this->get_table('head');
 		$head = $this->_set_ushort($head, 50, $indexToLocFormat);
-		$this->add('head', $head);
+		$this->add('head', (string)$head);
 		//-- hhea - Horizontal Header
 		$hhea = $this->get_table('hhea');
 		$hhea = $this->_set_ushort($hhea, 34, $numberOfHMetrics);
-		$this->add('hhea', $hhea);
+		$this->add('hhea', (string)$hhea);
 		//-- maxp - Maximum Profile
 		$maxp = $this->get_table('maxp');
 		$maxp = $this->_set_ushort($maxp, 4, $numGlyphs);
-		$this->add('maxp', $maxp);
+		$this->add('maxp', (string)$maxp);
 		//-- OS/2 - OS/2
 		$os2 = $this->get_table('OS/2');
-		$this->add('OS/2', $os2);
+		$this->add('OS/2', (string)$os2);
 		//--
 		\fclose($this->fh);
 		//-- Put the TTF file together
@@ -522,7 +524,7 @@ final class zTTFontFile {
 		for($i=0; $i<$this->numTables; $i++) {
 			$record = [];
 			$record['tag'] = $this->read_tag();
-			if((string)$record['tag'] == '') {
+			if((string)$record['tag'] === '') {
 				throw new \Exception('Font: Failed to read Table directory'); // unixman
 				return;
 			} //end if
@@ -799,7 +801,7 @@ final class zTTFontFile {
 		//--
 		$name_offset = $this->seek_table('name');
 		$format = $this->read_ushort();
-		if($format != 0) {
+		if((int)$format !== 0) {
 			throw new \Exception('Unknown name table format: '.$format);
 			return;
 		} //end if
@@ -823,12 +825,12 @@ final class zTTFontFile {
 			} //end if
 			//--
 			$N = '';
-			if($platformId == 3 && $encodingId == 1 && $languageId == 0x409) { // Microsoft, Unicode, US English, PS Name
+			if(((int)$platformId === 3) && ((int)$encodingId === 1) && ((int)$languageId === (int)\intval(0x409))) { // Microsoft, Unicode, US English, PS Name
 				//--
 				$opos = $this->_pos;
 				$this->seek($string_data_offset + $offset);
 				//--
-				if($length % 2 != 0) {
+				if((int)((int)$length % 2) !== 0) {
 					throw new \Exception('PostScript name is UTF-16BE string of odd length');
 					return;
 				} //end if
@@ -845,7 +847,7 @@ final class zTTFontFile {
 				$this->_pos = $opos;
 				$this->seek($opos);
 				//--
-			} elseif($platformId == 1 && $encodingId == 0 && $languageId == 0) { // Macintosh, Roman, English, PS Name
+			} elseif(((int)$platformId === 1) && ((int)$encodingId === 0) && ((int)$languageId === 0)) { // Macintosh, Roman, English, PS Name
 				//--
 				$opos = $this->_pos;
 				$N = $this->get_chunk($string_data_offset + $offset, $length);
@@ -854,11 +856,11 @@ final class zTTFontFile {
 				//--
 			} //end if else
 			//--
-			if($N && ($names[$nameId] == '')) {
+			if($N && ((string)$names[$nameId] === '')) {
 				//--
 				$names[$nameId] = $N;
 				$nameCount -= 1;
-				if($nameCount == 0) {
+				if((int)$nameCount === 0) {
 					break;
 				} //end if
 				//--
@@ -920,7 +922,7 @@ final class zTTFontFile {
 		$this->skip(3 * 2);
 		$indexToLocFormat = $this->read_ushort();
 		$glyphDataFormat = $this->read_ushort();
-		if($glyphDataFormat != 0) {
+		if((int)$glyphDataFormat !== 0) {
 			throw new \Exception('Unknown glyph data format: '.$glyphDataFormat);
 			return;
 		} //end if
@@ -941,7 +943,11 @@ final class zTTFontFile {
 			$usWeightClass = $this->read_ushort();
 			$this->skip(2);
 			$fsType = $this->read_ushort();
-			if($fsType == 0x0002 || ($fsType & 0x0300) != 0) {
+			if(
+				((int)$fsType === (int)\intval(0x0002))
+				||
+				((int)\intval($fsType & 0x0300) !== 0)
+			) {
 				throw new \Exception('FAILED, Font file '.$this->filename.' cannot be embedded due to copyright restrictions.');
 				return;
 			} //end if
@@ -1001,12 +1007,12 @@ final class zTTFontFile {
 		$this->seek_table('hhea');
 		$this->skip(32);
 		$metricDataFormat = $this->read_ushort();
-		if($metricDataFormat != 0) {
+		if((int)$metricDataFormat !== 0) {
 			throw new \Exception('Unknown horizontal metric data format '.$metricDataFormat);
 			return;
 		} //end if
 		$numberOfHMetrics = $this->read_ushort();
-		if($numberOfHMetrics == 0) {
+		if((int)$numberOfHMetrics === 0) {
 			throw new \Exception('Number of horizontal metrics is 0');
 			return;
 		} //end if
@@ -1024,9 +1030,9 @@ final class zTTFontFile {
 			$encodingID = $this->read_ushort();
 			$offset = $this->read_ulong();
 			$save_pos = $this->_pos;
-			if(($platformID == 3 && $encodingID == 1) || $platformID == 0) { // Microsoft, Unicode
+			if((((int)$platformID === 3) && ((int)$encodingID === 1)) || ((int)$platformID === 0)) { // Microsoft, Unicode
 				$format = $this->get_ushort($cmap_offset + $offset);
-				if($format == 4) {
+				if((int)$format === 4) {
 					if(!$unicode_cmap_offset) {
 						$unicode_cmap_offset = $cmap_offset + $offset;
 					} //end if
@@ -1137,21 +1143,21 @@ final class zTTFontFile {
 				$lsb = $this->read_ushort();
 			} //end if else
 			//--
-			if(isset($glyphToChar[$glyph]) || $glyph == 0) {
+			if(isset($glyphToChar[$glyph]) || ((int)$glyph === 0)) {
 				if($aw >= (1 << 15)) {
 					$aw = 0; // 1.03 Some (arabic) fonts have -ve values for width
 				} //end if
-				if($glyph == 0) { // although should be unsigned value - comes out as e.g. 65108 (intended -50)
+				if((int)$glyph === 0) { // although should be unsigned value - comes out as e.g. 65108 (intended -50)
 					$this->defaultWidth = $scale * $aw;
 					continue;
 				} //end if
 				foreach($glyphToChar[$glyph] as $char) {
-					if($char != 0 && $char != 65535) {
- 						$w = \intval(\round($scale * $aw));
-						if($w == 0) {
+					if(((int)$char !== 0) && ((int)$char !== 65535)) {
+ 						$w = (int) \intval(\round($scale * $aw));
+						if((int)$w === 0) {
 							$w = 65535;
 						} //end if
-						if($char < 196608) {
+						if((int)$char < 196608) {
 							$this->charWidths[$char*2]     = \chr($w >> 8);
 							$this->charWidths[$char*2 + 1] = \chr($w & 0xFF);
 							$nCharWidths++;
@@ -1168,12 +1174,12 @@ final class zTTFontFile {
 			$glyph = $pos + $numberOfHMetrics;
 			if(isset($glyphToChar[$glyph])) {
 				foreach($glyphToChar[$glyph] as $char) {
-					if(($char != 0) && ($char != 65535)) {
-						$w = \intval(\round($scale * $aw));
-						if($w == 0) {
+					if(((int)$char !== 0) && ((int)$char !== 65535)) {
+						$w = (int) \intval(\round($scale * $aw));
+						if((int)$w === 0) {
 							$w = 65535;
 						} //end if
-						if($char < 196608) {
+						if((int)$char < 196608) {
 							$this->charWidths[$char*2]     = \chr($w >> 8);
 							$this->charWidths[$char*2 + 1] = \chr($w & 0xFF);
 							$nCharWidths++;
@@ -1214,7 +1220,7 @@ final class zTTFontFile {
 		$start = $this->seek_table('loca');
 		$this->glyphPos = [];
 		//--
-		if($indexToLocFormat == 0) {
+		if((int)$indexToLocFormat === 0) {
 			//--
 			$data = $this->get_chunk($start, ($numGlyphs * 2) + 2);
 			$arr = \unpack('n*', $data);
@@ -1223,7 +1229,7 @@ final class zTTFontFile {
 				$this->glyphPos[] = ($arr[$n+1] * 2);
 			} //end for
 			//--
-		} elseif($indexToLocFormat == 1) {
+		} elseif((int)$indexToLocFormat === 1) {
 			//--
 			$data = $this->get_chunk($start, ($numGlyphs * 4) + 4);
 			$arr = \unpack('N*', $data);
@@ -1275,7 +1281,7 @@ final class zTTFontFile {
 		for($n=0; $n<$segCount; $n++) {
 			$endpoint = ($endCount[$n] + 1);
 			for($unichar=$startCount[$n]; $unichar<$endpoint; $unichar++) {
-				if($idRangeOffset[$n] == 0) {
+				if((int)$idRangeOffset[$n] === 0) {
 					$glyph = ($unichar + $idDelta[$n]) & 0xFFFF;
 				} else {
 					$offset = ($unichar - $startCount[$n]) * 2 + $idRangeOffset[$n];
@@ -1284,7 +1290,7 @@ final class zTTFontFile {
 						$glyph = 0;
 					} else {
 						$glyph = $this->get_ushort($offset);
-						if($glyph != 0) {
+						if((int)$glyph !== 0) {
 							$glyph = ($glyph + $idDelta[$n]) & 0xFFFF;
 						} //end if
 					} //end if else
@@ -1329,7 +1335,7 @@ final class zTTFontFile {
 		\ksort ($tables);
 		$offset = 12 + $numTables * 16;
 		foreach($tables as $tag => $data) {
-			if($tag == 'head') {
+			if((string)$tag === 'head') {
 				$head_start = $offset;
 			} //end if
 			$stm .= $tag;

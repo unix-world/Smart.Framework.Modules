@@ -2,6 +2,16 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK.MODULES #
 ## This apply only for for Milestone Releases
 
+August 21, 2026
+	* Mod PDF Create code fixes and optimizations + refactoring equalities vs casts for PHP 8.5: [===]+[!==]
+
+August 15, 2026
+	* sfi font fix
+	* bug fix release, refactoring equalities vs casts for PHP 8.5: [===]+[!==]
+
+August 07, 2026
+	* bug fix release, refactoring equalities vs casts for PHP 8.5: [===]+[!==]
+
 August 06, 2026
 	* bug fix release
 

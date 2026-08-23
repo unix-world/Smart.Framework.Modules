@@ -1,11 +1,13 @@
 <?php
 
+// [===]+[!==] ready
+
 namespace PDF\zFPDF;
 
 //-- class:
 // zPdf (based on tFPDF 1.33)
 // Version: 1.33.uxm
-// Date:     2026-07-28
+// Date:     2026-08-21
 // Authors:  Radu Ovidiu I. <iradu@unix-world.org>
 // Copyright (c) unix-world.org, 2026-present
 // License:  aGPLv3 (GNU AFFERO GENERAL PUBLIC LICENSE Version 3)
@@ -51,7 +53,7 @@ class zFPDF {
 	// depends on PHP Extensions: MBString, Zlib, GD
 	// depends on classes: PDF\zFPDF\zTTFontFile, Smart, SmartFileSysUtils, SmartHashCrypto
 
-	public const VERSION = '1.33.uxm.20260728';
+	public const VERSION = '1.33.uxm.20260821';
 
 	public const ZTTFontPath 		= 'modules/mod-pdf-create/libs/classes/PDF/zFPDF/';
 	public const ZTTFontCachePath 	= 'tmp/cache/zFPDF/';
@@ -165,7 +167,7 @@ class zFPDF {
 		} //end if
 		$theFontPath = (string) \trim((string)$theFontPath);
 		//--
-		if((string)$theFontPath == '') {
+		if((string)$theFontPath === '') {
 			$this->Error('Init: Fonts Path is Empty');
 			return;
 		} //end if
@@ -222,13 +224,13 @@ class zFPDF {
 
 		//-- Scale factor
 		$theUnit = (string) \strtolower((string)\trim((string)$unit));
-		if((string)$theUnit == 'pt') {
+		if((string)$theUnit === 'pt') {
 			$this->k = 1;
-		} elseif((string)$theUnit == 'mm') {
+		} elseif((string)$theUnit === 'mm') {
 			$this->k = 72/25.4;
-		} elseif((string)$theUnit == 'cm') {
+		} elseif((string)$theUnit === 'cm') {
 			$this->k = 72/2.54;
-		} elseif((string)$theUnit == 'in') {
+		} elseif((string)$theUnit === 'in') {
 			$this->k = 72;
 		} else {
 			$this->Error('Incorrect unit: '.$unit);
@@ -294,7 +296,7 @@ class zFPDF {
 
 	final public function SpacesAliasNbPages() : string { // this is useful for prefixing to left when using center align `C` with pdf.AliasNbPages
 		//--
-		if((string)$this->AliasNbPages == '') {
+		if((string)$this->AliasNbPages === '') {
 			return '';
 		} //end if
 		//-- sync with Golang
@@ -406,7 +408,7 @@ class zFPDF {
 		// Title of document
 		//--
 		$title = (string) \trim((string)$title);
-		if((string)$title == '') {
+		if((string)$title === '') {
 			return;
 		} //end if
 		//--
@@ -420,7 +422,7 @@ class zFPDF {
 		// Author of document
 		//--
 		$author = (string) \trim((string)$author);
-		if((string)$author == '') {
+		if((string)$author === '') {
 			return;
 		} //end if
 		//--
@@ -434,7 +436,7 @@ class zFPDF {
 		// Subject of document
 		//--
 		$subject = (string) \trim((string)$subject);
-		if((string)$subject == '') {
+		if((string)$subject === '') {
 			return;
 		} //end if
 		//--
@@ -448,7 +450,7 @@ class zFPDF {
 		// Keywords of document
 		//--
 		$keywords = (string) \trim((string)$keywords);
-		if((string)$keywords == '') {
+		if((string)$keywords === '') {
 			return;
 		} //end if
 		//--
@@ -462,7 +464,7 @@ class zFPDF {
 		// Creator of document
 		//--
 		$creator = (string) \trim((string)$creator);
-		if((string)$creator == '') {
+		if((string)$creator === '') {
 			return;
 		} //end if
 		//--
@@ -477,11 +479,11 @@ class zFPDF {
 		// if AliasNbPages is used in the header() protected method this needs to be initialized before set default font
 		//--
 		$alias = (string) \trim((string)$alias);
-		if((string)$alias == '') {
+		if((string)$alias === '') {
 			return '';
 		} //end if
 		//--
-		if((string)$this->AliasNbPages != '') {
+		if((string)$this->AliasNbPages !== '') {
 			return (string) $this->AliasNbPages; // disallow set more than once
 		} //end if
 		//--
@@ -496,11 +498,11 @@ class zFPDF {
 		//--
 		// Terminate document
 		//--
-		if($this->state == 3) {
+		if((int)$this->state === 3) {
 			return;
 		} //end if
 		//--
-		if($this->page == 0) {
+		if((int)$this->page === 0) {
 			$this->AddPage();
 		} //end if
 		//-- Page footer
@@ -519,7 +521,7 @@ class zFPDF {
 		//--
 		// Start a new page
 		//--
-		if($this->state == 3) {
+		if((int)$this->state === 3) {
 			$this->Error('The document is closed');
 			return;
 		} //end if
@@ -556,12 +558,12 @@ class zFPDF {
 		} //end if
 		//-- Set colors
 		$this->DrawColor = (string) $dc;
-		if($dc != '0 G') {
+		if((string)$dc !== '0 G') {
 			$this->out((string)$dc);
 		} //end if
 		//--
 		$this->FillColor = (string) $fc;
-		if($fc != '0 g') {
+		if((string)$fc !== '0 g') {
 			$this->out((string)$fc);
 		} //end if
 		//--
@@ -572,7 +574,7 @@ class zFPDF {
 		$this->header();
 		$this->InHeader = false;
 		//-- Restore line width
-		if((float)$this->LineWidth != (float)$lw) {
+		if((float)$this->LineWidth !== (float)$lw) {
 			$this->LineWidth = (float) $lw;
 			$this->out((string)\sprintf('%.2F w', $lw * $this->k));
 		} //end if
@@ -581,11 +583,11 @@ class zFPDF {
 			$this->SetFont($family, $style, $fontsize);
 		} //end if
 		//-- Restore colors
-		if((string)$this->DrawColor != (string)$dc) {
+		if((string)$this->DrawColor !== (string)$dc) {
 			$this->DrawColor = (string) $dc;
 			$this->out((string)$dc);
 		} //end if
-		if((string)$this->FillColor != (string)$fc) {
+		if((string)$this->FillColor !== (string)$fc) {
 			$this->FillColor = (string)$fc;
 			$this->out((string)$fc);
 		} //end if
@@ -631,7 +633,7 @@ class zFPDF {
 			$b = 255;
 		} //end if
 		//--
-		if(($r == 0) && ($g == 0) && ($b == 0)) {
+		if(((int)$r === 0) && ((int)$g === 0) && ((int)$b === 0)) {
 			$this->DrawColor = (string) \sprintf('%.3F G', 0/255);
 		} else {
 			$this->DrawColor = (string) \sprintf('%.3F %.3F %.3F RG', $r/255, $g/255, $b/255);
@@ -666,13 +668,13 @@ class zFPDF {
 			$b = 255;
 		} //end if
 		//--
-		if(($r == 0) && ($g == 0) && ($b == 0)) {
+		if(((int)$r === 0) && ((int)$g === 0) && ((int)$b === 0)) {
 			$this->FillColor = (string) \sprintf('%.3F g', 0/255);
 		} else {
 			$this->FillColor = (string) \sprintf('%.3F %.3F %.3F rg', $r/255, $g/255, $b/255);
 		} //end if else
 		//--
-		$this->ColorFlag = ($this->FillColor != $this->TextColor);
+		$this->ColorFlag = (bool) ((string)$this->FillColor !== (string)$this->TextColor);
 		//--
 		if($this->page>0) {
 			$this->out((string)$this->FillColor);
@@ -703,13 +705,13 @@ class zFPDF {
 			$b = 255;
 		} //end if
 		//--
-		if(($r == 0) && ($g == 0) && ($b == 0)) {
+		if(((int)$r === 0) && ((int)$g === 0) && ((int)$b === 0)) {
 			$this->TextColor = (string) \sprintf('%.3F g', 0/255);
 		} else {
 			$this->TextColor = (string) \sprintf('%.3F %.3F %.3F rg', $r/255, $g/255, $b/255);
 		} //end if else
 		//--
-		$this->ColorFlag = ($this->FillColor != $this->TextColor);
+		$this->ColorFlag = (bool) ((string)$this->FillColor !== (string)$this->TextColor);
 		//--
 	} //END FUNCTION
 
@@ -718,7 +720,7 @@ class zFPDF {
 		//--
 		// Get width of a string in the current font
 		//--
-		if((string)$s == '') {
+		if((string)$s === '') {
 			return 0;
 		} //end if
 		//--
@@ -766,7 +768,7 @@ class zFPDF {
 			return 0; // avoid below division by zero
 		} //end if
 		//--
-		if(((string)$text == '') OR (\strpos((string)$text, "\n") === false)) {
+		if(((string)$text === '') OR (\strpos((string)$text, "\n") === false)) {
 			return 1;
 		} //end if
 		//--
@@ -842,9 +844,9 @@ class zFPDF {
 		//--
 		// Draw a rectangle
 		//--
-		if((string)$style == 'F') {
+		if((string)$style === 'F') {
 			$op = 'f';
-		} elseif(((string)$style == 'FD') || ((string)$style == 'DF')) {
+		} elseif(((string)$style === 'FD') || ((string)$style === 'DF')) {
 			$op = 'B';
 		} else {
 			$op = 'S';
@@ -859,9 +861,9 @@ class zFPDF {
 		//--
 		// Draw a rounded rectangle ; unixman, extra method
 		//--
-		if((string)$style == 'F') {
+		if((string)$style === 'F') {
 			$op = 'f';
-		} elseif(((string)$style == 'FD') || ((string)$style == 'DF')) {
+		} elseif(((string)$style === 'FD') || ((string)$style === 'DF')) {
 			$op = 'B';
 		} else {
 			$op = 'S';
@@ -1035,9 +1037,9 @@ class zFPDF {
 		// Draw an Ellipse ; unixman, extra method
 		//--
 		$op = 'S';
-		if((string)$style == 'F') {
+		if((string)$style === 'F') {
 			$op = 'f';
-		} elseif(((string)$style == 'FD') || ((string)$style == 'DF')) {
+		} elseif(((string)$style === 'FD') || ((string)$style === 'DF')) {
 			$op = 'B';
 		} //end if else
 		//--
@@ -1072,15 +1074,15 @@ class zFPDF {
 			$this->Error('Polygon: Empty Points Data');
 			return;
 		} //end if
-		if((int)\Smart::array_type_test($points) != 1) {
+		if((int)\Smart::array_type_test($points) !== 1) {
 			$this->Error('Polygon: Invalid Points Data');
 			return;
 		} //end if
 		//--
 		$op = 's';
-		if((string)$style == 'F') {
+		if((string)$style === 'F') {
 			$op = 'f';
-		} elseif(((string)$style == 'FD') || ((string)$style == 'DF')) {
+		} elseif(((string)$style === 'FD') || ((string)$style === 'DF')) {
 			$op = 'b';
 		} //end if else
 		//--
@@ -1271,11 +1273,11 @@ class zFPDF {
 			$y = (float) $this->y;
 		} //end if
 		//--
-		if((float)$s_x == 0) {
+		if((float)$s_x === (float)0) {
 			$this->Error('Scale: ScaleX must different than Zero');
 			return;
 		} //end if
-		if((float)$s_y == 0) {
+		if((float)$s_y === (float)0) {
 			$this->Error('Scale: ScaleY must different than Zero');
 			return;
 		} //end if
@@ -1458,19 +1460,19 @@ class zFPDF {
 		$style  = (string) \strtoupper((string)\trim((string)$style));
 		$file   = (string) \trim((string)$file);
 		//--
-		if((string)$family == '') {
+		if((string)$family === '') {
 			$this->Error('AddFont: Font Family is Empty');
 			return;
 		} //end if
 		//--
 		// $style can be empty !
 		//--
-		if((string)$file == '') {
+		if((string)$file === '') {
 			$this->Error('AddFont: Font File is Empty');
 			return;
 		} //end if
 		//--
-		if((string)$style == 'IB') {
+		if((string)$style === 'IB') {
 			$style = 'BI';
 		} //end if
 		//--
@@ -1506,10 +1508,10 @@ class zFPDF {
 		//-- unixman
 		$b62Hash = '';
 		$hexHash = (string) \trim((string)\SmartHashCrypto::sha224((string)$ttffile.'#'.$originalsize.'@'.self::VERSION));
-		if((string)$hexHash != '') {
+		if((string)$hexHash !== '') {
 			$b62Hash = (string) \trim((string)\Smart::base_from_hex_convert((string)$hexHash, 62));
 		} //end if
-		if((string)$b62Hash == '') {
+		if((string)$b62Hash === '') {
 			$this->Error('Failed to create a cache Hash for the Font: '.$ttffilename);
 			return;
 		} //end if
@@ -1603,7 +1605,7 @@ class zFPDF {
 		//--
 		$i = (int) \count($this->fonts) + 1;
 		//--
-		if((string)$this->AliasNbPages != '') { // use extended character set ; {{{SYNC-EMBEDD-NB-ALIAS-EXTRA-CHARACTERS}}}
+		if((string)$this->AliasNbPages !== '') { // use extended character set ; {{{SYNC-EMBEDD-NB-ALIAS-EXTRA-CHARACTERS}}}
 			$sbarr = (array) \range(0, 57);
 		} else {
 			$sbarr = (array) \range(0, 32);
@@ -1649,7 +1651,7 @@ class zFPDF {
 		//--
 		// Select a font; size given in points
 		//--
-		if($family == '') {
+		if((string)$family === '') {
 			$family = (string) $this->FontFamily;
 		} else {
 			$family = (string) \strtolower((string)$family);
@@ -1664,7 +1666,7 @@ class zFPDF {
 			$this->underline = false;
 		} //end if else
 		//--
-		if((string)$style == 'IB') {
+		if((string)$style === 'IB') {
 			$style = 'BI';
 		} //end if
 		//--
@@ -1672,14 +1674,14 @@ class zFPDF {
 			$size = $this->FontSizePt;
 		} //end if
 		//-- test if font is already selected
-		if(($this->FontFamily == $family) && ($this->FontStyle == $style) && ($this->FontSizePt == $size)) {
+		if(((string)$this->FontFamily === (string)$family) && ((string)$this->FontStyle === (string)$style) && ((float)$this->FontSizePt === (float)$size)) {
 			return;
 		} //end if
 		//-- test if font is already loaded
 		$fontkey = (string) $family.$style;
 		if(!isset($this->fonts[$fontkey])) { // test if one of the core fonts
 			if(\in_array((string)$family, (array)self::CORE_FONTS)) {
-				if((string)$family == 'sficons') {
+				if((string)\strtolower((string)$family) === 'sficons') {
 					if($this->uxmLoadDefaultIconicFont !== true) {
 						$this->Error('The Default Iconic Font was not loaded: '.$family);
 						return;
@@ -1703,7 +1705,7 @@ class zFPDF {
 		$this->FontSize = $size / $this->k;
 		$this->CurrentFont = &$this->fonts[$fontkey];
 		//--
-		if((string)$this->fonts[$fontkey]['type'] == 'TTF') {
+		if((string)$this->fonts[$fontkey]['type'] === 'TTF') {
 			$this->unifontSubset = true; // unixman: TODO: embedd entire font not a subset
 		} else {
 			$this->unifontSubset = false;
@@ -1722,7 +1724,7 @@ class zFPDF {
 		//--
 		// Set font size in points
 		//--
-		if($this->FontSizePt == $size) {
+		if((float)$this->FontSizePt === (float)$size) {
 			return;
 		} //end if
 		//--
@@ -1752,11 +1754,11 @@ class zFPDF {
 		//--
 		// Set destination of internal link
 		//--
-		if($y == -1) {
+		if((float)$y === (float)-1) {
 			$y = $this->y;
 		} //end if
 		//--
-		if($page == -1) {
+		if((int)$page === -1) {
 			$page = $this->page;
 		} //end if
 		//--
@@ -1793,7 +1795,7 @@ class zFPDF {
 		} //end if else
 		//--
 		$s = (string) \sprintf('BT %.2F %.2F Td %s Tj ET', $x * $this->k, ($this->h - $y) * $this->k, (string)$txt2);
-		if($this->underline && ((string)$txt != '')) {
+		if($this->underline && ((string)$txt !== '')) {
 			$s .= ' '.$this->_dounderline($x, $y, (string)$txt);
 		} //end if
 		//--
@@ -1841,14 +1843,14 @@ class zFPDF {
 			//--
 		} //end if
 		//--
-		if($w == 0) {
-			$w = $this->w - $this->rMargin - $this->x;
+		if((float)$w === (float)0) {
+			$w = (float) ($this->w - $this->rMargin - $this->x);
 		} //end if
 		//--
 		$s = '';
-		if($fill || ($border === 1)) {
+		if($fill || ($border === 1)) { // if border is INT ; DO NOT CAST, it is mixed
 			if($fill) {
-				$op = ($border === 1) ? 'B' : 'f';
+				$op = ($border === 1) ? 'B' : 'f'; // if border is INT ; DO NOT CAST, it is mixed
 			} else {
 				$op = 'S';
 			} //end if else
@@ -1875,14 +1877,14 @@ class zFPDF {
 			//--
 		} //end if
 		//--
-		if((string)$txt != '') {
+		if((string)$txt !== '') {
 			if(!isset($this->CurrentFont)) {
 				$this->Error('No font has been set');
 				return;
 			} //end if
-			if((string)$align == 'R') {
+			if((string)$align === 'R') {
 				$dx = $w - $this->cMargin - $this->GetStringWidth((string)$txt);
-			} elseif((string)$align=='C') {
+			} elseif((string)$align === 'C') {
 				$dx = ($w - $this->GetStringWidth((string)$txt)) / 2;
 			} else {
 				$dx = $this->cMargin;
@@ -1952,7 +1954,7 @@ class zFPDF {
 		//--
 		if($ln > 0) { // Go to next line
 			$this->y += $h;
-			if($ln == 1) {
+			if((int)$ln === 1) {
 				$this->x = $this->lMargin;
 			} //end if
 		} else {
@@ -1973,26 +1975,26 @@ class zFPDF {
 		//--
 		$cw = $this->CurrentFont['cw'];
 		//--
-		if($w == 0) {
-			$w = $this->w - $this->rMargin - $this->x;
+		if((float)$w === (float)0) {
+			$w = (float) ($this->w - $this->rMargin - $this->x);
 		} //end if
 		//--
-		$wmax = ($w - 2 * $this->cMargin);
-		//$wmax = ($w - 2 * $this->cMargin) * 1000 / $this->FontSize;
+		$wmax = (float) ($w - 2 * $this->cMargin);
+		//$wmax = (float) ($w - 2 * $this->cMargin) * 1000 / $this->FontSize;
 		//--
 		$s = (string) \str_replace("\r", '', (string)$txt);
 		if($this->unifontSubset) {
 			//--
 			$nb = (int) \mb_strlen((string)$s, 'UTF-8');
 			//--
-			while(($nb > 0) && ((string)\mb_substr((string)$s, $nb-1, 1, 'UTF-8') == "\n")) {
+			while(((int)$nb > 0) && ((string)\mb_substr((string)$s, $nb - 1, 1, 'UTF-8') === "\n")) {
 				$nb--;
 			} //end while
 			//--
 		} else {
 			//--
 			$nb = (int) \strlen((string)$s);
-			if(($nb > 0) && ((string)$s[$nb-1] == "\n")) {
+			if(((int)$nb > 0) && ((string)$s[$nb - 1] === "\n")) {
 				$nb--;
 			} //end if
 			//--
@@ -2000,13 +2002,13 @@ class zFPDF {
 		//--
 		$b = 0;
 		if($border) {
-			if((\is_int($border)) && ($border === 1)) {
+			if((\is_int($border)) && ($border === 1)) { // DO NOT CAST, it is mixed
 				//--
 				$border = 'LTRB';
 				$b = 'LRT';
 				$b2 = 'LR';
 				//--
-			} elseif(\is_string($border)) {
+			} elseif(\is_string($border)) { // DO NOT CAST, it is mixed
 				//--
 				$b2 = '';
 				//--
@@ -2030,7 +2032,7 @@ class zFPDF {
 		$ns = 0;
 		$nl = 1;
 		//--
-		while($i < $nb) { // Get next character
+		while((int)$i < (int)$nb) { // Get next character
 			//--
 			if($this->unifontSubset) {
 				$c = (string) \mb_substr((string)$s, $i, 1, 'UTF-8');
@@ -2038,7 +2040,7 @@ class zFPDF {
 				$c = (string) $s[$i];
 			} //end if
 			//--
-			if((string)$c == "\n") { // Explicit line break
+			if((string)$c === "\n") { // Explicit line break
 				//--
 				if($this->ws > 0) {
 					$this->ws = 0;
@@ -2058,7 +2060,7 @@ class zFPDF {
 				$ns = 0;
 				$nl++;
 				//--
-				if($border && ($nl == 2)) {
+				if($border && ((int)$nl === 2)) {
 					$b = $b2;
 				} //end if
 				//--
@@ -2066,7 +2068,7 @@ class zFPDF {
 				//--
 			} //end if
 			//--
-			if((string)$c == ' ') {
+			if((string)$c === ' ') {
 				$sep = $i;
 				$ls = $l;
 				$ns++;
@@ -2079,9 +2081,9 @@ class zFPDF {
 			} //end if else
 			//--
 			if($l > $wmax) { // Automatic line break
-				if($sep == -1) {
+				if((int)$sep === -1) {
 					//--
-					if($i == $j) {
+					if((int)$i === (int)$j) {
 						$i++;
 					} //end if
 					//--
@@ -2098,7 +2100,7 @@ class zFPDF {
 					//--
 				} else {
 					//--
-					if((string)$align == 'J') {
+					if((string)$align === 'J') {
 						$this->ws = ($ns > 1) ? ($wmax - $ls) / ($ns - 1) : 0;
 						$this->out((string)\sprintf('%.3F Tw', $this->ws * $this->k));
 					} //end if
@@ -2109,7 +2111,7 @@ class zFPDF {
 						$this->Cell($w, $h, (string)\substr((string)$s, $j, $sep - $j), $b, 2, $align, $fill);
 					} //end if else
 					//--
-					$i = $sep + 1;
+					$i = (int) ((int)$sep + 1);
 					//--
 				} //end if else
 				//--
@@ -2119,7 +2121,7 @@ class zFPDF {
 				$ns = 0;
 				$nl++;
 				//--
-				if($border && ($nl == 2)) {
+				if($border && ((int)$nl === 2)) {
 					$b = $b2;
 				} //end if
 				//--
@@ -2131,7 +2133,7 @@ class zFPDF {
 			//--
 		} //end while
 		//--
-		if($this->ws > 0) { // Last chunk
+		if((float)$this->ws > 0) { // Last chunk
 			$this->ws = 0;
 			$this->out('0 Tw');
 		} //end if
@@ -2167,7 +2169,7 @@ class zFPDF {
 		//--
 		if($this->unifontSubset) {
 			$nb = (int) \mb_strlen((string)$s, 'UTF-8');
-			if(($nb == 1) && ($s == ' ')) {
+			if(((int)$nb === 1) && ((string)$s === ' ')) {
 				$this->x += $this->GetStringWidth((string)$s);
 				return;
 			} //end if
@@ -2189,7 +2191,7 @@ class zFPDF {
 				$c = (string) $s[$i];
 			} //end if else
 			//--
-			if((string)$c == "\n") { // Explicit line break
+			if((string)$c === "\n") { // Explicit line break
 				//--
 				if($this->unifontSubset) {
 					$this->Cell($w, $h, (string)\mb_substr((string)$s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
@@ -2199,7 +2201,7 @@ class zFPDF {
 				//--
 				$i++;
 				$sep = -1;
-				$j = $i;
+				$j = (int) $i;
 				$l = 0;
 				//--
 				if($nl==1) {
@@ -2214,19 +2216,19 @@ class zFPDF {
 				//--
 			} //end if
 			//--
-			if((string)$c == ' ') {
-				$sep = $i;
+			if((string)$c === ' ') {
+				$sep = (int) $i;
 			} //end if
 			//--
 			if($this->unifontSubset) {
-				$l += $this->GetStringWidth((string)$c);
+				$l += (float) $this->GetStringWidth((string)$c);
 			} else {
-				$l += $cw[$c] * $this->FontSize / 1000;
+				$l += (float) ($cw[$c] * $this->FontSize / 1000);
 			} //end if else
 			//--
-			if($l > $wmax) { // Automatic line break
+			if((float)$l > (float)$wmax) { // Automatic line break
 				//--
-				if($sep == -1) {
+				if((int)$sep === -1) {
 					//--
 					if($this->x > $this->lMargin) { // Move to next line
 						//--
@@ -2241,7 +2243,7 @@ class zFPDF {
 						//--
 					} //end if
 					//--
-					if($i == $j) {
+					if((int)$i === (int)$j) {
 						$i++;
 					} //end if
 					//--
@@ -2264,10 +2266,10 @@ class zFPDF {
 				} //end if else
 				//--
 				$sep = -1;
-				$j = $i;
+				$j = (int) $i;
 				$l = 0;
 				//--
-				if($nl == 1) {
+				if((int)$nl === 1) {
 					$this->x = $this->lMargin;
 					$w = $this->w - $this->rMargin - $this->x;
 					$wmax = ($w - 2 * $this->cMargin);
@@ -2283,7 +2285,7 @@ class zFPDF {
 			//--
 		} //end while
 		//--
-		if($i != $j) { // Last chunk
+		if((int)$i !== (int)$j) { // Last chunk
 			if($this->unifontSubset) {
 				$this->Cell($l, $h, (string)\mb_substr((string)$s, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
 			} else {
@@ -2317,7 +2319,7 @@ class zFPDF {
 
 	final public function ImageData(string $type, string $data, ?float $x=null, ?float $y=null, float $w=0, float $h=0, int|string $link='') : void {
 		//--
-		if((string)$data == '') {
+		if((string)$data === '') {
 			$this->Error('Image data is empty');
 			return;
 		} //end if
@@ -2346,14 +2348,14 @@ class zFPDF {
 		//--
 		// Insert an image on the page
 		//--
-		if((string)$file == '') {
+		if((string)$file === '') {
 			$this->Error('Image file name is empty');
 			return;
 		} //end if
 		//--
 		if(!isset($this->images[(string)$file])) {
 			//-- First use of this image, get info
-			if((string)$type == '') {
+			if((string)$type === '') {
 				$pos = \strrpos((string)$file, '.'); // do not cast
 				if($pos === false) {
 					$this->Error('Image file has no extension and no type was specified: '.$file);
@@ -2364,7 +2366,7 @@ class zFPDF {
 			//--
 			$info = [];
 			$type = (string) \strtolower((string)$type);
-			if((string)$type == 'jpeg') {
+			if((string)$type === 'jpeg') {
 				$type = 'jpg';
 			} //end if
 			switch((string)$type) {
@@ -2399,40 +2401,40 @@ class zFPDF {
 			$info = $this->images[(string)$file];
 		} //end if else
 		//-- Automatic width and height calculation if needed
-		if(($w == 0) && ($h == 0)) { // Put image at 96 dpi
+		if(((float)$w === (float)0) && ((float)$h === (float)0)) { // Put image at 96 dpi
 			$w = -96;
 			$h = -96;
 		} //end if
-		if($w < 0) {
+		if((float)$w < 0) {
 			$w = -1 * ($info['w'] * 72 / $w / $this->k);
 		} //end if
-		if($h < 0) {
+		if((float)$h < 0) {
 			$h = -1 * ($info['h'] * 72 / $h / $this->k);
 		} //end if
-		if($w == 0) {
+		if((float)$w === (float)0) {
 			$w = $h * $info['w'] / $info['h'];
 		} //end if
-		if($h == 0) {
+		if((float)$h === (float)0) {
 			$h = $w * $info['h'] / $info['w'];
 		} //end if
 		//--
 		if($y === null) { // Flowing mode
-			if((($this->y + $h) > $this->PageBreakTrigger) && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) { // Automatic page break
-				$x2 = $this->x;
-				$this->AddPage($this->CurOrientation,$this->CurPageSize,$this->CurRotation);
-				$this->x = $x2;
+			if(((float)((float)$this->y + (float)$h) > (float)$this->PageBreakTrigger) && (!$this->InHeader) && (!$this->InFooter) && $this->AcceptPageBreak()) { // Automatic page break
+				$x2 = (float) $this->x;
+				$this->AddPage($this->CurOrientation, $this->CurPageSize, $this->CurRotation);
+				$this->x = (float) $x2;
 			} //end if
-			$y = $this->y;
-			$this->y += $h;
+			$y = (float) $this->y;
+			$this->y += (float) $h;
 		} //end if
 		//--
 		if($x === null) {
-			$x = $this->x;
+			$x = (float) $this->x;
 		} //end if
 		//--
 		$this->out((string)\sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $w * $this->k, $h * $this->k, $x * $this->k, ($this->h - ($y + $h)) * $this->k, $info['i']));
 		//--
-		if($link) {
+		if(!!$link) {
 			$this->Link($x, $y, $w, $h, $link);
 		} //end if
 		//--
@@ -2523,12 +2525,12 @@ class zFPDF {
 			return;
 		} //end if
 		//--
-		if((int)\Smart::array_type_test($arr) != 2) {
+		if((int)\Smart::array_type_test($arr) !== 2) {
 			$this->Error('DrawBarcode1D: Data Format is Invalid');
 			return;
 		} //end if
 		//--
-		if(!isset($arr['code']) OR (\Smart::is_nscalar($arr['code']) !== true) OR ((string)$arr['code'] == '')) {
+		if(!isset($arr['code']) OR (\Smart::is_nscalar($arr['code']) !== true) OR ((string)$arr['code'] === '')) {
 			$this->Error('DrawBarcode1D: Data Format is Invalid: Code');
 			return;
 		} //end if
@@ -2540,7 +2542,7 @@ class zFPDF {
 			$this->Error('DrawBarcode1D: Data Format is Invalid: MaxH');
 			return;
 		} //end if
-		if(!isset($arr['bcode']) OR ((int)\Smart::array_size($arr['bcode']) <= 0) OR ((int)\Smart::array_type_test($arr['bcode']) != 1)) {
+		if(!isset($arr['bcode']) OR ((int)\Smart::array_size($arr['bcode']) <= 0) OR ((int)\Smart::array_type_test($arr['bcode']) !== 1)) {
 			$this->Error('DrawBarcode1D: Data Format is Invalid: BarCode');
 			return;
 		} //end if
@@ -2551,7 +2553,7 @@ class zFPDF {
 				$this->Error('DrawBarcode1D: Data Format['.$k.'] is Empty or Invalid: BarCode');
 				return;
 			} //end if
-			if((int)\Smart::array_type_test($v) != 2) {
+			if((int)\Smart::array_type_test($v) !== 2) {
 				$this->Error('DrawBarcode1D: Data Format['.$k.'] is Invalid: BarCode');
 				return;
 			} //end if
@@ -2610,12 +2612,12 @@ class zFPDF {
 			return;
 		} //end if
 		//--
-		if((int)\Smart::array_type_test($arr) != 2) {
+		if((int)\Smart::array_type_test($arr) !== 2) {
 			$this->Error('DrawBarcode2D: Data Format is Invalid');
 			return;
 		} //end if
 		//--
-		if(!isset($arr['code']) OR (\Smart::is_nscalar($arr['code']) !== true) OR ((string)$arr['code'] == '')) {
+		if(!isset($arr['code']) OR (\Smart::is_nscalar($arr['code']) !== true) OR ((string)$arr['code'] === '')) {
 			$this->Error('DrawBarcode2D: Data Format is Invalid: Code');
 			return;
 		} //end if
@@ -2627,7 +2629,7 @@ class zFPDF {
 			$this->Error('DrawBarcode2D: Data Format is Invalid: NumCols');
 			return;
 		} //end if
-		if(!isset($arr['bcode']) OR ((int)\Smart::array_size($arr['bcode']) <= 0) OR ((int)\Smart::array_type_test($arr['bcode']) != 1)) {
+		if(!isset($arr['bcode']) OR ((int)\Smart::array_size($arr['bcode']) <= 0) OR ((int)\Smart::array_type_test($arr['bcode']) !== 1)) {
 			$this->Error('DrawBarcode2D: Data Format is Invalid: BarCode');
 			return;
 		} //end if
@@ -2638,7 +2640,7 @@ class zFPDF {
 				$this->Error('DrawBarcode2D: Data Format['.$k.'] is Empty or Invalid: BarCode');
 				return;
 			} //end if
-			if((int)\Smart::array_type_test($v) != 1) {
+			if((int)\Smart::array_type_test($v) !== 1) {
 				$this->Error('DrawBarcode2D: Data Format['.$k.'] is Invalid: BarCode');
 				return;
 			} //end if
@@ -2818,7 +2820,7 @@ class zFPDF {
 
 	final protected function encodeString(?string $s) : string {
 		//--
-		if((string)$s == '') {
+		if((string)$s === '') {
 			return '';
 		} //end if
 		//--
@@ -2849,11 +2851,11 @@ class zFPDF {
 		if($this->state <= 0) {
 			$this->Error('No page has been added yet');
 			return;
-		} elseif($this->state == 2) {
+		} elseif((int)$this->state === 2) {
 			$this->pages[$this->page] .= (string) $s."\n";
-		} elseif($this->state == 1) {
+		} elseif((int)$this->state === 1) {
 			$this->_put((string)$s);
-		} elseif($this->state == 3) {
+		} elseif((int)$this->state === 3) {
 			$this->Error('The document is closed');
 			return;
 		} //end if else
@@ -2873,7 +2875,7 @@ class zFPDF {
 		// Fatal error
 		//--
 		$msg = (string) \trim((string)$msg);
-		if((string)$msg == '') {
+		if((string)$msg === '') {
 			$msg = 'Unknown Error';
 		} //end if
 		//--
@@ -2951,7 +2953,7 @@ class zFPDF {
 		$this->y = $this->tMargin;
 		$this->FontFamily = '';
 		//-- page orientation
-		if((string)$orientation == '') {
+		if((string)$orientation === '') {
 			$orientation = (string) $this->DefOrientation;
 		} else {
 			$orientation = (string) \strtoupper((string)$orientation[0]);
@@ -2963,9 +2965,9 @@ class zFPDF {
 			$size = (array) $this->getPageSize($size);
 		} //end if
 		//--
-		if(($orientation != $this->CurOrientation) || ($size[0] != $this->CurPageSize[0]) || ($size[1] != $this->CurPageSize[1])) { // New size or orientation
+		if(((string)$orientation !== (string)$this->CurOrientation) || ((float)$size[0] !== (float)$this->CurPageSize[0]) || ((float)$size[1] !== (float)$this->CurPageSize[1])) { // New size or orientation
 			//--
-			if((string)$orientation == 'P') {
+			if((string)$orientation === 'P') {
 				$this->w = $size[0];
 				$this->h = $size[1];
 			} else {
@@ -2981,12 +2983,12 @@ class zFPDF {
 			//--
 		} //end if
 		//--
-		if(($orientation != $this->DefOrientation) || ($size[0] != $this->DefPageSize[0]) || ($size[1] != $this->DefPageSize[1])) {
+		if(((string)$orientation !== (string)$this->DefOrientation) || ((float)$size[0] !== (float)$this->DefPageSize[0]) || ((float)$size[1] !== (float)$this->DefPageSize[1])) {
 			$this->PageInfo[$this->page]['size'] = [ $this->wPt, $this->hPt ];
 		} //end if
 		//--
-		if($rotation != 0) {
-			if(($rotation % 90) != 0) {
+		if((int)$rotation !== 0) {
+			if((int)((int)$rotation % 90) !== 0) {
 				$this->Error('Incorrect rotation value: '.$rotation);
 				return;
 			} //end if
@@ -3027,7 +3029,7 @@ class zFPDF {
 		//--
 		// Extract info from a JPEG file
 		//--
-		if(\SmartFileSysUtils::checkIfSafePath((string)$file) != 1) {
+		if(\SmartFileSysUtils::checkIfSafePath((string)$file) !== 1) {
 			$this->Error('Unsafe JPG image file path: '.$file);
 			return [];
 		} //end if
@@ -3052,15 +3054,15 @@ class zFPDF {
 			return [];
 		} //end if
 		//--
-		if(!isset($a['channels']) || ($a['channels'] == 3)) {
+		if(!isset($a['channels']) || ((int)\intval($a['channels'] ?? null) === 3)) {
 			$colspace = 'DeviceRGB';
-		} elseif(($a['channels'] ?? null) === 4) {
+		} elseif((int)\intval($a['channels'] ?? null) === 4) {
 			$colspace = 'DeviceCMYK';
 		} else {
 			$colspace = 'DeviceGray';
 		} //end if else
 		//--
-		$bpc = isset($a['bits']) ? $a['bits'] : 8;
+		$bpc = (int) (isset($a['bits']) ? \intval($a['bits'] ?? null) : 8);
 		//--
 		$data = (string) \file_get_contents((string)\SmartFileSysUtils::getSmartFsRootPath().$file); // {{{SYNC-SF-STATIC-FILES-ROOT}}}
 		//--
@@ -3073,7 +3075,7 @@ class zFPDF {
 		//--
 		// Extract info from a GIF file (via PNG conversion)
 		//--
-		if(\SmartFileSysUtils::checkIfSafePath((string)$file) != 1) {
+		if(\SmartFileSysUtils::checkIfSafePath((string)$file) !== 1) {
 			$this->Error('Unsafe GIF image file path: '.$file);
 			return [];
 		} //end if
@@ -3104,7 +3106,7 @@ class zFPDF {
 			$this->Error('GIF image: Unable to get Buffering Data');
 			return [];
 		} //end if
-		if((string)$data == '') {
+		if((string)$data === '') {
 			$this->Error('GIF image: Buffering Data is Empty');
 			return [];
 		} //end if
@@ -3133,19 +3135,19 @@ class zFPDF {
 		//--
 		// Extract info from a PNG string
 		//--
-		if(\SmartFileSysUtils::checkIfSafePath((string)$file) != 1) {
+		if(\SmartFileSysUtils::checkIfSafePath((string)$file) !== 1) {
 			$this->Error('Unsafe PNG image file path: '.$file);
 			return [];
 		} //end if
 		//--
-		if((string)$data == '') {
+		if((string)$data === '') {
 			$this->Error('PNG image data is Empty');
 			return [];
 		} //end if
 		//--
 		if($isB64Encoded === true) {
 			$data = (string) \base64_decode((string)$data, true); // strict
-			if((string)$data == '') {
+			if((string)$data === '') {
 				$this->Error('PNG image B64 decoded data is Empty');
 				return [];
 			} //end if
@@ -3173,7 +3175,7 @@ class zFPDF {
 		//--
 		// Extract info from a PNG file
 		//--
-		if(\SmartFileSysUtils::checkIfSafePath((string)$file) != 1) {
+		if(\SmartFileSysUtils::checkIfSafePath((string)$file) !== 1) {
 			$this->Error('Unsafe PNG image file path: '.$file);
 			return [];
 		} //end if
@@ -3213,13 +3215,13 @@ class zFPDF {
 			return [];
 		} //end if
 		//-- Check signature
-		if($this->_readstream($f, 8) != \chr(137).'PNG'.\chr(13).\chr(10).\chr(26).\chr(10)) {
+		if((string)$this->_readstream($f, 8) !== (string)\chr(137).'PNG'.\chr(13).\chr(10).\chr(26).\chr(10)) {
 			$this->Error('Not a PNG file: '.$file);
 			return [];
 		} //end if
 		//-- Read header chunk
 		$this->_readstream($f, 4);
-		if($this->_readstream($f, 4) != 'IHDR') {
+		if((string)$this->_readstream($f, 4) !== 'IHDR') {
 			$this->Error('Incorrect PNG file: '.$file);
 			return [];
 		} //end if
@@ -3232,35 +3234,35 @@ class zFPDF {
 			return [];
 		} //end if
 		//--
-		$ct = \ord($this->_readstream($f, 1));
-		if(($ct == 0) || ($ct == 4)) {
+		$ct = (int) \ord($this->_readstream($f, 1));
+		if(((int)$ct === 0) || ((int)$ct === 4)) {
 			$colspace = 'DeviceGray';
-		} elseif(($ct == 2) || ($ct == 6)) {
+		} elseif(((int)$ct === 2) || ((int)$ct === 6)) {
 			$colspace = 'DeviceRGB';
-		} elseif($ct == 3) {
+		} elseif((int)$ct === 3) {
 			$colspace = 'Indexed';
 		} else {
 			$this->Error('Unknown color type: '.$file);
 			return [];
 		} //end if
 		//--
-		if(\ord($this->_readstream($f, 1)) != 0) {
+		if((int)\ord($this->_readstream($f, 1)) !== 0) {
 			$this->Error('Unknown compression method: '.$file);
 			return [];
 		} //end if
 		//--
-		if(\ord($this->_readstream($f, 1)) != 0) {
+		if((int)\ord($this->_readstream($f, 1)) !== 0) {
 			$this->Error('Unknown filter method: '.$file);
 			return [];
 		} //end if
 		//--
-		if(\ord($this->_readstream($f, 1)) != 0) {
+		if((int)\ord($this->_readstream($f, 1)) !== 0) {
 			$this->Error('Interlacing not supported: '.$file);
 			return [];
 		} //end if
 		//--
 		$this->_readstream($f,4);
-		$dp = '/Predictor 15 /Colors '.($colspace=='DeviceRGB' ? 3 : 1).' /BitsPerComponent '.$bpc.' /Columns '.$w;
+		$dp = '/Predictor 15 /Colors '.((string)$colspace === 'DeviceRGB' ? 3 : 1).' /BitsPerComponent '.$bpc.' /Columns '.$w;
 		//-- Scan chunks looking for palette, transparency and image data
 		$pal = '';
 		$trns = '';
@@ -3268,14 +3270,14 @@ class zFPDF {
 		do {
 			$n = $this->_readint($f);
 			$type = $this->_readstream($f,4);
-			if((string)$type == 'PLTE') { // Read palette
+			if((string)$type === 'PLTE') { // Read palette
 				$pal = $this->_readstream($f,$n);
 				$this->_readstream($f,4);
-			} elseif((string)$type == 'tRNS') { // Read transparency info
+			} elseif((string)$type === 'tRNS') { // Read transparency info
 				$t = $this->_readstream($f,$n);
-				if($ct == 0) {
+				if((int)$ct === 0) {
 					$trns = [ \ord(\substr($t, 1, 1)) ]; // array
-				} elseif($ct == 2) {
+				} elseif((int)$ct === 2) {
 					$trns = [ \ord(\substr($t, 1, 1)), \ord(\substr($t, 3, 1)), \ord(\substr($t, 5, 1)) ]; // array
 				} else {
 					$pos = \strpos($t, \chr(0));
@@ -3284,17 +3286,17 @@ class zFPDF {
 					} //end if
 				} //end if else
 				$this->_readstream($f, 4);
-			} elseif((string)$type == 'IDAT') { // Read image data block
+			} elseif((string)$type === 'IDAT') { // Read image data block
 				$data .= $this->_readstream($f, $n);
 				$this->_readstream($f, 4);
-			} elseif((string)$type == 'IEND') {
+			} elseif((string)$type === 'IEND') {
 				break;
 			} else {
 				$this->_readstream($f,$n+4);
 			} //end if else
 		} while($n);
 		//--
-		if(((string)$colspace == 'Indexed') && empty($pal)) {
+		if(((string)$colspace === 'Indexed') && empty($pal)) {
 			$this->Error('Missing palette in '.$file);
 			return [];
 		} //end if
@@ -3307,7 +3309,7 @@ class zFPDF {
 			$color = '';
 			$alpha = '';
 			//--
-			if($ct == 4) { // Gray image
+			if((int)$ct === 4) { // Gray image
 				$len = 2 * $w;
 				for($i=0; $i<$h; $i++) {
 					$pos = (1 + $len) * $i;
@@ -3450,9 +3452,9 @@ class zFPDF {
 			} else {
 				$l = $this->links[$pl[4]];
 				if(isset($this->PageInfo[$l[0]]['size'])) {
-					$h = $this->PageInfo[$l[0]]['size'][1];
+					$h = (float) $this->PageInfo[$l[0]]['size'][1];
 				} else {
-					$h = ($this->DefOrientation=='P') ? $this->DefPageSize[1] * $this->k : $this->DefPageSize[0] * $this->k;
+					$h = (float) (((string)$this->DefOrientation === 'P') ? $this->DefPageSize[1] * $this->k : $this->DefPageSize[0] * $this->k);
 				} //end if else
 				$s .= (string) \sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>', $this->PageInfo[$l[0]]['n'], $h - $l[1] * $this->k);
 			} //end if else
@@ -3495,7 +3497,7 @@ class zFPDF {
 		$this->_put('/Contents '.($this->n+1).' 0 R>>');
 		$this->_put('endobj');
 		//-- Page content
-		if((string)$this->AliasNbPages != '') {
+		if((string)$this->AliasNbPages !== '') {
 			$this->pages[$n] = (string) \strtr((string)$this->pages[$n], [ // optimization by unixman
 				(string)$this->UTF8ToUTF16BE((string)$this->AliasNbPages, false) 	=> (string)$this->UTF8ToUTF16BE((string)$this->page, false),
 				(string)$this->AliasNbPages 										=> (string)$this->page, // repeat for no pages in non-subset fonts
@@ -3539,7 +3541,7 @@ class zFPDF {
 		$this->_put($kids);
 		$this->_put('/Count '.$nb);
 		//--
-		if($this->DefOrientation=='P') {
+		if((string)$this->DefOrientation === 'P') {
 			$w = $this->DefPageSize[0];
 			$h = $this->DefPageSize[1];
 		} else {
@@ -3670,7 +3672,7 @@ class zFPDF {
 				$this->_put('<</Type /FontDescriptor');
 				$this->_put('/FontName /'.$fontname);
 				foreach($font['desc'] as $kd => $v) {
-					if($kd == 'Flags') { // SYMBOLIC font flag
+					if((string)$kd === 'Flags') { // SYMBOLIC font flag
 						$v = $v | 4; $v = $v & ~32;
 					} //end if
 					$this->out(' /'.$kd.' '.$v);
@@ -3731,23 +3733,24 @@ class zFPDF {
 		//-- for each character
 		for($cid=$startcid; $cid<$cwlen; $cid++) {
 			//--
-			if((!isset($font['cw'][$cid*2]) || !isset($font['cw'][$cid*2+1])) || ($font['cw'][$cid*2] == "\00" && $font['cw'][$cid*2+1] == "\00")) {
+			if((!isset($font['cw'][$cid*2]) || !isset($font['cw'][$cid*2+1])) || (((string)$font['cw'][$cid*2] === "\00") && ((string)$font['cw'][$cid*2+1] === "\00"))) {
 				continue;
 			} //end if
 			//--
-			$width = (\ord($font['cw'][$cid*2]) << 8) + \ord($font['cw'][$cid*2+1]);
-			if($width == 65535) {
+			$width = (int) ((int)(\ord($font['cw'][$cid*2]) << 8) + (int)\ord($font['cw'][$cid*2+1]));
+		//	if((int)$width === 65535) {
+			if((int)$width >= 65535) { // fix: PHP does not have uint16, have only int, thus value by surprise may be higher than 65535 in PHP if anything goes wrong
 				$width = 0;
 			} //end if
 			//--
-			if($cid > 255 && (!isset($font['subset'][$cid]) || !$font['subset'][$cid])) {
+			if(((int)$cid > 255) && (!isset($font['subset'][$cid]) || (!$font['subset'][$cid]))) {
 				continue;
 			} //end if
 			//--
-			if(!isset($font['dw']) || (isset($font['dw']) && $width != $font['dw'])) {
-				if($cid == ($prevcid + 1)) {
-					if($width == $prevwidth) {
-						if($width == $range[$rangeid][0]) {
+			if(!isset($font['dw']) || (isset($font['dw']) && ((int)$width !== (int)$font['dw']))) {
+				if((int)$cid === (int)((int)$prevcid + 1)) {
+					if((int)$width === (int)$prevwidth) {
+						if((int)$width === (int)$range[$rangeid][0]) {
 							$range[$rangeid][] = $width;
 						} else {
 							\array_pop($range[$rangeid]);
@@ -3785,8 +3788,8 @@ class zFPDF {
 		$prevint = false;
 		//--
 		foreach($range as $k => $ws) {
-			$cws = \count($ws);
-			if(($k == $nextk) AND (!$prevint) AND ((!isset($ws['interval'])) OR ($cws < 4))) {
+			$cws = (int) \Smart::array_size($ws);
+			if(((int)$k === (int)$nextk) AND (!$prevint) AND ((!isset($ws['interval'])) OR ((int)$cws < 4))) {
 				if(isset($range[$k]['interval'])) {
 					unset($range[$k]['interval']);
 				} //end if
@@ -3811,8 +3814,8 @@ class zFPDF {
 		//--
 		$w = '';
 		foreach($range as $k => $ws) {
-			if(\count(\array_count_values($ws)) == 1) {
-				$w .= ' '.$k.' '.($k + \count($ws) - 1).' '.$ws[0];
+			if((int)\Smart::array_size(\array_count_values($ws)) === 1) {
+				$w .= ' '.$k.' '.(string)($k + (int)\Smart::array_size($ws) - 1).' '.$ws[0];
 			} else {
 				$w .= ' '.$k.' [ '.\implode(' ', $ws).' ]' . "\n";
 			} //end if else
@@ -3905,7 +3908,7 @@ class zFPDF {
 			$this->_put('/ColorSpace [/Indexed /DeviceRGB '.((int)\strlen((string)$info['pal']) / 3 - 1).' '.($this->n + 1).' 0 R]');
 		} else {
 			$this->_put('/ColorSpace /'.$info['cs']);
-			if($info['cs']=='DeviceCMYK') {
+			if((string)$info['cs'] === 'DeviceCMYK') {
 				$this->_put('/Decode [1 0 1 0 1 0 1 0]');
 			} //end if
 		} //end if else
@@ -3942,7 +3945,7 @@ class zFPDF {
 			$this->_putimage($smask);
 		} //end if
 		//-- Palette
-		if($info['cs']=='Indexed') {
+		if((string)$info['cs'] === 'Indexed') {
 			$this->_putstreamobject($info['pal']);
 		} //end if
 		//--
@@ -4008,21 +4011,21 @@ class zFPDF {
 		$this->_put('/Type /Catalog');
 		$this->_put('/Pages 1 0 R');
 		//--
-		if($this->ZoomMode=='fullpage') {
-			$this->_put('/OpenAction ['.$n.' 0 R /Fit]');
-		} elseif($this->ZoomMode=='fullwidth') {
-			$this->_put('/OpenAction ['.$n.' 0 R /FitH null]');
-		} elseif($this->ZoomMode=='real') {
-			$this->_put('/OpenAction ['.$n.' 0 R /XYZ null null 1]');
-		} elseif(!is_string($this->ZoomMode)) {
+		if(!is_string($this->ZoomMode)) {
 			$this->_put('/OpenAction ['.$n.' 0 R /XYZ null null '.\sprintf('%.2F', $this->ZoomMode / 100).']');
+		} elseif((string)$this->ZoomMode === 'fullpage') {
+			$this->_put('/OpenAction ['.$n.' 0 R /Fit]');
+		} elseif((string)$this->ZoomMode === 'fullwidth') {
+			$this->_put('/OpenAction ['.$n.' 0 R /FitH null]');
+		} elseif((string)$this->ZoomMode === 'real') {
+			$this->_put('/OpenAction ['.$n.' 0 R /XYZ null null 1]');
 		} //end if else
 		//--
-		if($this->LayoutMode=='single') {
+		if((string)$this->LayoutMode === 'single') {
 			$this->_put('/PageLayout /SinglePage');
-		} elseif($this->LayoutMode=='continuous') {
+		} elseif((string)$this->LayoutMode === 'continuous') {
 			$this->_put('/PageLayout /OneColumn');
-		} elseif($this->LayoutMode=='two') {
+		} elseif((string)$this->LayoutMode === 'two') {
 			$this->_put('/PageLayout /TwoColumnLeft');
 		} //end if else
 		//--

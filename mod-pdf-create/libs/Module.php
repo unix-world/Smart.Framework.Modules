@@ -12,6 +12,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 } //end if
 //-----------------------------------------------------
 
+// [===]+[!==] ready
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
@@ -24,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Date, PHP Pcre ; classes: Smart, \PDF\zFPDF and \PDF\zFPDF\zTTFontFile
- * @version 	v.20260728
+ * @version 	v.20260821
  * @package 	modules:PDF-Create
  *
  */

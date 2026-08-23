@@ -20,15 +20,15 @@ define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
  * @ignore
  *
  */
-class SmartAppIndexController extends SmartAbstractAppController {
+abstract class abstractController extends SmartAbstractAppController {
 
-	// r.20260728
+	// r.20260821
 
 	private const SF_URL = 'http://demo.unix-world.org/smart-framework/';
 	private const BARCODE_CACHE_TIME = -1; // -1 | 3600
 
 
-	public function Run() {
+	final public function Run() {
 
 		//-- dissalow run this sample if not test mode enabled
 		if(!defined('SMART_FRAMEWORK_TEST_MODE') OR (SMART_FRAMEWORK_TEST_MODE !== true)) {
@@ -179,7 +179,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		$barcode1DTxt = (string) strtoupper((string)SmartHashCrypto::crc32b((string)self::SF_URL, true));
 		$barcode1DType = 'RMS';
 		$barcode1DJson = (string) \SmartModExtLib\Barcodes\SmartBarcodes1D::getBarcode((string)$barcode1DTxt, (string)$barcode1DType, 'json', null, null, null, false, (int)self::BARCODE_CACHE_TIME);
-		if((string)trim((string)$barcode1DJson) == '') {
+		if((string)trim((string)$barcode1DJson) === '') {
 			$this->PageViewSetErrorStatus(500, 'ERROR: The 1D Barcode Failed (1) ...');
 			return;
 		} //end if
@@ -203,7 +203,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		$barcode2DOpts = null;
 		$barcode2DPtSz = 1;
 		$barcode2DJson = (string) \SmartModExtLib\Barcodes\SmartBarcodes2D::getBarcode((string)self::SF_URL, (string)$barcode2DType, 'json', null, null, $barcode2DOpts, (int)self::BARCODE_CACHE_TIME);
-		if((string)trim((string)$barcode2DJson) == '') {
+		if((string)trim((string)$barcode2DJson) === '') {
 			$this->PageViewSetErrorStatus(500, 'ERROR: The 2D Barcode Failed (1) ...');
 			return;
 		} //end if
@@ -245,16 +245,21 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 
 /**
+ * Index Controller
+ *
+ * @ignore
+ *
+ */
+final class SmartAppIndexController extends abstractController {} //END CLASS
+
+
+/**
  * Admin Controller (optional)
  *
  * @ignore
  *
  */
-class SmartAppAdminController extends SmartAppIndexController {
-
-	// this will clone the SmartAppIndexController to run exactly the same action in admin.php
-
-} //END CLASS
+final class SmartAppAdminController extends abstractController {} //END CLASS
 
 
 /**
@@ -263,11 +268,7 @@ class SmartAppAdminController extends SmartAppIndexController {
  * @ignore
  *
  */
-class SmartAppTaskController extends SmartAppAdminController {
-
-	// this will clone the SmartAppIndexController to run exactly the same action in task.php
-
-} //END CLASS
+final class SmartAppTaskController extends abstractController {} //END CLASS
 
 
 // end of php code
